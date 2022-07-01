@@ -127,3 +127,19 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# created by virtualenv automatically
+secret.py
+secret*
+.idea/
+
+*DS_Store*
+*.csv
+*.7z
+old/
+*.tmp
+*keys*
+logs/
+flags.txt
+
+secret.py
