@@ -1,6 +1,4 @@
 """
-BinPan Main
-=====================================
 
 This is the main classes file.
 
@@ -36,6 +34,7 @@ class Symbol(object):
     Any symbol can be used as argument and any time interval like: '1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '6h', '8h',
     '12h', '1d', '3d', '1w', '1M'
 
+    Object has several plot methods.
 
     :param str symbol:  It can be any symbol in the binance exchange, like BTCUSDT, ethbusd or any other. Capital letters doesn't matter.
 
@@ -139,6 +138,9 @@ class Symbol(object):
         2022-06-22 17:10:00+00:00	1073.42	1076.30	1073.24	1075.77	228.4269	2.456515e+05	426.0	127.7424	1.373634e+05
         100 rows × 9 columns
 
+    Created objects contain different data like:
+    - mysymbol.df: shows candles dataframe
+    - mysymbol.trades: shows aggregated trades, if requested. This is optional and can be added anytime.
     """
 
     def __init__(self,
@@ -276,21 +278,6 @@ class Symbol(object):
     def __repr__(self):
         return str(self.df)
 
-    # def update(self, **attributes):
-    #     """
-    #     Update any attribute in the object. It just changes the attribute, not changes the collected data.
-    #
-    #     :param attributes: Can be passed any attribute with its value.
-    #
-    #     :raises AttributeError: Not existing attribute.
-    #
-    #     """
-    #     for attribute, value in attributes.items():
-    #         if hasattr(self, attribute):
-    #             setattr(self, attribute, value)
-    #         else:
-    #             raise AttributeError(f'{self.__name__} has no attribute: {attribute}')
-
     def set_display_columns(self, display_columns=None):
         """
         Change the number of maximum columns shown in the display of the dataframe.
@@ -344,7 +331,7 @@ class Symbol(object):
     @staticmethod
     def set_display_decimals(display_decimals: int):
         """
-        Change the decimals shown in the dataframe.
+        Change the decimals shown in the dataframe. It changes all the columns decimals.
 
         :param int display_decimals: Integer
 
@@ -357,10 +344,12 @@ class Symbol(object):
               actions_col='actions',
               inplace=False):
         """
-        Shows data in a dataframe. The columns shown are the basic ones.
+        Shows just a basic selection of columns data in the dataframe. Any column can be excepted from been dropped.
 
+        :param list exceptions: Columns names to keep.
+        :param str actions_col: Under development. To keep tags for buy or sell actions.
+        :param bool inplace: Keep in the object just the basic columns, loosing any other one.
         :return pd.DataFrame: Pandas DataFrame
-
         """
         if inplace:
             new_candles = self.basic_dataframe(data=self.df, exceptions=exceptions, actions_col=actions_col)
@@ -371,16 +360,14 @@ class Symbol(object):
 
     def drop(self, columns=[], inplace=False) -> pd.DataFrame:
         """
-        It drops some columns from the dataframe.
+        It drops some columns from the dataframe. If columns list not passed, then defaults to the initial columns.
 
-        If columns list not passed, then defaults to the initial columns.
+        Can be used when messing with indicators to clean the object.
 
         :param: list columns: A list with the columns names to drop. If not passed, it defaults to the initial columns that remain
             from when instanced.
-
         :param: bool inplace: When true, it drops columns in the object. False just returns a copy without that columns and dataframe
             in the object remains.
-
         :return pd.DataFrame: Pandas DataFrame with columns dropped.
 
         """
@@ -404,9 +391,10 @@ class Symbol(object):
 
     def hk(self, inplace=False):
         """
-        It computes Heikin Ashi candles.
+        It computes Heikin Ashi candles. Any existing indicator column will not be recomputed. It is recommended to drop any indicator
+         before converting candles to Heikin Ashi.
 
-        :param inplace: Change object dataframe permanently whe True is selected. False throws a copy dataframe.
+        :param bool inplace: Change object dataframe permanently whe True is selected. False shows a copy dataframe.
         :return pd.DataFrame: Pandas DataFrame
 
         """
@@ -443,6 +431,16 @@ class Symbol(object):
         return start, end
 
     def get_trades(self):
+        """
+        Calls the API and creates another dataframe included in the object with the aggregated trades from API for the period of the
+         created object.
+
+          .. note::
+             If the object covers a long time interval, this action can take a relative long time. The BinPan library take care of the
+             API weight and can take a sleep to wait until API weight returns to a low value.
+
+        :return:
+        """
         trades = handlers.market.get_historical_aggregated_trades(symbol=self.symbol,
                                                                   startTime=self.start_theoretical,
                                                                   endTime=self.end_theoretical)
@@ -454,11 +452,23 @@ class Symbol(object):
         return self.trades
 
     def plot_rows(self, indicator_column: str = None, row_position: int = None):
+        """
+        Internal control formatting plots.
+        :param indicator_column:
+        :param row_position:
+        :return:
+        """
         if indicator_column and row_position:
             self.row_control.update({indicator_column: row_position})
         return self.row_control
 
     def plot_colors(self, indicator_column: str = None, color: int or str = None):
+        """
+        Internal control formatting plots.
+        :param indicator_column:
+        :param color:
+        :return:
+        """
         if indicator_column and color:
             if type(color) == int:
                 self.color_control.update({indicator_column: plotly_colors[color]})
@@ -480,6 +490,28 @@ class Symbol(object):
              actions_col: str = None,
              labels: list = [],
              default_price_for_actions='Close'):
+        """
+        Plots a candles figure for the object.
+
+        Also plots any other technical indicator grabbed.
+
+        .. image:: images/candles.png
+           :width: 1000
+           :alt: Candles with some indicators
+
+        :param width: Width of the plot.
+        :param height: Height of the plot.
+        :param candles_ta_height_ratio: Proportion between candles and the other indicators. Not considering overlay ones
+         in the candles plot.
+        :param plot_volume: Plots volume.
+        :param title: A tittle for the plot.
+        :param yaxis_title: A title for the y axis.
+        :param overlapped_indicators: Can declare as overlay in the candles plot some column.
+        :param priced_actions_col: Priced actions to plot annotations over the candles, like buy, sell, etc. Under developing.
+        :param actions_col: A column containing actions like buy or sell. Under developing.
+        :param labels: Names for the annotations instead of the price.
+        :param default_price_for_actions: Column to use as priced actions in case of not existing an specific prices actions column.
+        """
 
         if not title:
             title = self.df.index.name
@@ -512,12 +544,20 @@ class Symbol(object):
         """
         It plots a time series graph plotting trades sized by quantity and color if taker or maker buyer.
 
-        :param int max_size: Size for the markers. Default is 60.
+        Can be used with trades (requieres calling for trades before, or using candles and volume from the object to avoid
+        waiting long time intervals grabbing the trades.)
+
+        It can be useful finding support and resistance zones.
+
+        .. image:: images/plot_trades_size.png
+           :width: 1000
+           :alt: Candles with some indicators
+
+        :param int max_size: Max size for the markers. Default is 60. Useful to show whales operating.
         :param int height: Default is 1000.
         :param bool logarithmic: If logarithmic, then "y" axis scale is shown in logarithmic scale.
         :param title: Graph title
 
-        :return:
         """
         if self.trades.empty:
             binpan_logger.info("Trades not downloaded. Please add trades data with: my_binpan.get_trades()")
@@ -531,6 +571,18 @@ class Symbol(object):
                                           title=title)
 
     def plot_trades_pie(self, categories: int = 25, logarithmic=True, title: str = None):
+        """
+        Plots a pie chart. Useful profiling size of trades. Size can be distributed in a logarithmic scale.
+
+        .. image:: images/plot_trades_pie.png
+           :width: 1000
+           :alt: Candles with some indicators
+
+        :param categories: How many groups of sizes.
+        :param logarithmic: Logaritmic scale to show more small sizes.
+        :param title: A title for the plot.
+
+        """
         if self.trades.empty:
             binpan_logger.info("Trades not downloaded. Please add trades data with: my_binpan.get_trades()")
             return
@@ -550,6 +602,28 @@ class Symbol(object):
                               total_volume=None,
                               partial_vol=None,
                               **kwargs_update_layout):
+        """
+        Binance fees can be cheaper for maker orders, many times when big traders, like whales, are operating. Showing what are doing
+        makers.
+
+        It shows which kind of volume or trades came from, takers or makers.
+
+        It can be useful finding support and resistance zones.
+
+        .. image:: images/makers_vs_takers_plot.png
+           :width: 1000
+           :alt: Candles with some indicators
+
+        :param bins: How many bars.
+        :param hist_funct: The way graph data is showed. It can be 'percent', 'probability', 'density', or 'probability density'
+        :param height: Height of the graph.
+        :param from_trades: Requieres grabbing trades before.
+        :param title: A title.
+        :param total_volume: The column with the total volume. It defaults automatically.
+        :param partial_vol: The column with the partial volume. It defaults automatically. API shows maker or taker separated volumes.
+        :param kwargs_update_layout: Optional
+        :return:
+        """
         if from_trades:
             if self.trades.empty:
                 binpan_logger.info("Trades not downloaded. Please add trades data with: my_binpan.get_trades()")
@@ -561,10 +635,6 @@ class Symbol(object):
                 if not partial_vol:
                     partial_vol = 'Buyer was maker'
 
-                # TODO: vigilar esto
-
-                # makers = _df.loc[_df[partial_vol] == True][total_volume]
-                # takers = _df.loc[_df[partial_vol] == False][total_volume]
                 makers = _df.loc[_df[partial_vol]][total_volume]
                 takers = _df.loc[~_df[partial_vol]][total_volume]
 
@@ -593,13 +663,32 @@ class Symbol(object):
     def plot_trades_scatter(self,
                             x: str = ['Price', 'Close'],
                             y: str = ['Quantity', 'Volume'],
-                            symbol='Buyer was maker',
+                            dot_symbol='Buyer was maker',
                             color: str = ['Buyer was maker', 'Taker buy base volume'],
                             marginal=True,
                             from_trades=True,
                             height=1000,
                             color_referenced_to_y=True,  # useful to compare volume with taker volume for coloring
                             **kwargs):
+        """
+        A scatter plot showing each price level volume or trades.
+
+        It can be useful finding support and resistance zones.
+
+        .. image:: images/plot_trades_scatter.png
+           :width: 1000
+           :alt: Candles with some indicators
+
+        :param dot_symbol: Column with discrete values to asign different symbols for the plot marks.
+        :param x: Name of the column with prices. From trades or candles.
+        :param y: Name of the column with sizes. From trades or candles.
+        :param color: Column with values to use in color scale.
+        :param marginal: Show or not lateral plots.
+        :param from_trades: Uses trades instead of candles. Useful to avoid grabbing very long time intervals. Result should be similar.
+        :param height: Height of the plot.
+        :param color_referenced_to_y: Scales color in y axis.
+        :param kwargs: Optional plotly args.
+        """
         if self.trades.empty and from_trades:
             binpan_logger.info("Trades not downloaded. Please add trades data with: my_binpan.get_trades()")
             return
@@ -631,7 +720,7 @@ class Symbol(object):
             handlers.plotting.plot_scatter(df=data,
                                            x_col=x,
                                            y_col=y,
-                                           symbol=symbol,
+                                           symbol=dot_symbol,
                                            color=color,
                                            marginal=marginal,
                                            title=title,
@@ -639,6 +728,14 @@ class Symbol(object):
                                            **kwargs)
 
     def get_fees(self, symbol: str = None):
+        """
+        Shows applied fees for the symbol of the object.
+
+        Requires API key added. Look for the add_api_key function in the files_and_filters submodule.
+
+        :param symbol: Not to use it, just here for initializing the class.
+        :return: Dictionary
+        """
         try:
             if not symbol:
                 symbol = self.symbol
@@ -706,21 +803,25 @@ class Symbol(object):
                                       time_zone: str = None,
                                       time_index: bool = None):
         """
-         {'M': True,
-          'T': 1656166914571,
-          'a': 1218761712,
-          'f': 1424997754,
-          'l': 1424997754,
-          'm': True,
-          'p': '21185.05000000',
-          'q': '0.03395000'}
+        Parses the API response into a pandas dataframe.
 
-        :param response:
-        :param columns:
-        :param symbol:
-        :param time_zone:
-        :param time_index:
-        :return:
+        .. code-block::
+
+             {'M': True,
+              'T': 1656166914571,
+              'a': 1218761712,
+              'f': 1424997754,
+              'l': 1424997754,
+              'm': True,
+              'p': '21185.05000000',
+              'q': '0.03395000'}
+
+        :param list response: API raw response from trades.
+        :param columns: Column names.
+        :param symbol: The used symbol.
+        :param time_zone: Selected time zone.
+        :param time_index: Or integer index.
+        :return: pd.DataFrame
         """
         df = pd.DataFrame(response)
         df.rename(columns=columns, inplace=True)
@@ -744,7 +845,6 @@ class Symbol(object):
         index_name = f"{symbol} {time_zone}"
         df.index.name = index_name
         df.loc[:, 'Buyer was maker'] = df['Buyer was maker'].astype(bool)
-        print(df.info())
         return df
 
     @staticmethod
@@ -756,6 +856,8 @@ class Symbol(object):
         Delete all columns except: Open, High, Low, Close, Volume, actions.
 
         Some columns can be excepted.
+
+        Useful to drop messed technical indicators columns in one shot.
 
         :param pd.DataFrame data:        A BinPan DataFrame
         :param list exceptions:  A list of columns to avoid dropping.
@@ -784,7 +886,20 @@ class Symbol(object):
            suffix: str = None,
            color: str or int = None,
            **kwargs):
-        print(kwargs)
+        """
+        Generic moving average method. Calls pandas_ta 'ma' method.
+
+        `<https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/overlap/ma.py>`_
+
+        :param ma_name:
+        :param column_source:
+        :param inplace:
+        :param suffix:
+        :param color:
+        :param kwargs:
+        :return:
+        """
+
         if 'length' in kwargs.keys():
             if kwargs['length'] >= len(self.df):
                 msg = f"BinPan Error: Ma window larger than data length."
@@ -806,12 +921,46 @@ class Symbol(object):
         return ma
 
     def sma(self, window: int = 21, column: str = 'Close', inplace=True, suffix: str = '', color: str or int = None, **kwargs):
+        """
+        Generate technical indicator Simple Moving Average.
+
+        :param window: Rolling window including the current candles when calculating the indicator.
+        :param column: Column applied. Default is Close.
+        :param inplace: Make it permanent in the instance or not.
+        :param suffix: A decorative suffix for the name of the column created.
+        :param color: Color to show when plotting. It can be any color from plotly library or a number in the list of those.
+            <https://community.plotly.com/t/plotly-colours-list/11730>
+        :param kwargs: Optional plotly args.
+        :return: pd.DataFrame
+        """
         return self.ma(ma_name='sma', column_source=column, inplace=inplace, length=window, suffix=suffix, color=color, **kwargs)
 
     def ema(self, window: int = 21, column: str = 'Close', inplace=True, suffix: str = '', color: str or int = None, **kwargs):
+        """
+        Generate technical indicator Exponential Moving Average.
+
+        :param window: Rolling window including the current candles when calculating the indicator.
+        :param column: Column applied. Default is Close.
+        :param inplace: Make it permanent in the instance or not.
+        :param suffix: A decorative suffix for the name of the column created.
+        :param color: Color to show when plotting. It can be any color from plotly library or a number in the list of those.
+            <https://community.plotly.com/t/plotly-colours-list/11730>
+        :param kwargs: Optional plotly args.
+        :return: pd.DataFrame
+        """
         return self.ma(ma_name='ema', column_source=column, inplace=inplace, length=window, suffix=suffix, color=color, **kwargs)
 
     def supertrend(self, length: int = 10, multiplier: int = 3, inplace=True, suffix: str = '', colors: list = None, **kwargs):
+        """
+        Generate technical indicator Supertrend.
+
+        :param length: Rolling window including the current candles when calculating the indicator.
+        :param multiplier: Indicator multiplier applied.
+        :param inplace: Make it permanent in the instance or not.
+        :param suffix: A decorative suffix for the name of the column created.
+        :param kwargs: Optional plotly args.
+        :return: pd.DataFrame
+        """
         if suffix:
             kwargs.update({'suffix': suffix})
         supertrend_df = ta.supertrend(high=self.df['High'],

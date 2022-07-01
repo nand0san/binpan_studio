@@ -41,7 +41,8 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="binpan.html">BinPan Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="market.html">BinPan Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions Module</a></li>
 </ul>
 
         </div>
@@ -70,8 +71,8 @@
              
   <section id="welcome-to-binpan-s-documentation">
 <h1>Welcome to BinPan’s documentation!<a class="headerlink" href="#welcome-to-binpan-s-documentation" title="Permalink to this heading"></a></h1>
-<p>BinPan is a Python wrapper for Binance API.</p>
-<p>BinPan can make plots easily and some API requests in the same object.</p>
+<p>BinPan is a Python wrapper for Binance API, creating objects with many capabilities to analyze data.</p>
+<p>BinPan can make plots easily and grab API requests in the same object. It can also obtain some technical indicators.</p>
 <p>The objective of this module is to have a fast tool to collect and handle data from the Binance API
 in an agile way.</p>
 <p>It is intended to be useful in Jupyter Notebooks or even the python console, but it can be used in
@@ -82,7 +83,10 @@ many other ways.</p>
 <li><p>get trades.</p></li>
 <li><p>calculate technical indicators.</p></li>
 <li><p>plot candles, histograms, indicators, etc in a very simple and beautiful way.</p></li>
+<li><p>check applied fees.</p></li>
 </ul>
+<p>An example of a plot for candles and indicators:</p>
+<a class="reference internal image-reference" href="_images/candles.png"><img alt="Candles with some indicators" src="_images/candles.png" style="width: 1000px;" /></a>
 <p>Hope you find it useful breaking the market!!!</p>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h2>
@@ -100,16 +104,17 @@ many other ways.</p>
                                         <span class="n">time_zone</span><span class="o">=</span><span class="s1">&#39;Europe/Madrid&#39;</span><span class="p">,</span>
                                         <span class="n">start_time</span><span class="o">=</span><span class="s1">&#39;2021-10-31 01:00:00&#39;</span><span class="p">,</span>
                                         <span class="n">end_time</span><span class="o">=</span><span class="s1">&#39;2021-10-31 03:00:00&#39;</span><span class="p">)</span>
+<span class="n">btcusdt</span><span class="o">.</span><span class="n">sma</span><span class="p">(</span><span class="mi">21</span><span class="p">)</span>
+<span class="n">btcusdt</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
+<p>The repository contains a Jupyter Notebook with many examples.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="binpan.html">BinPan Module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="binpan.html#binpan-main">BinPan Main</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="market.html">BinPan Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="binpan.html">BinPan Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions Module</a></li>
 </ul>
 </div>
 </section>

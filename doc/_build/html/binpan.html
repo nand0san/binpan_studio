@@ -20,7 +20,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="BinPan Module" href="market.html" />
+    <link rel="next" title="Market Module" href="market.html" />
     <link rel="prev" title="Welcome to BinPan’s documentation!" href="index.html" /> 
 </head>
 
@@ -41,11 +41,9 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">BinPan Module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#binpan-main">BinPan Main</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="market.html">BinPan Module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">BinPan Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions Module</a></li>
 </ul>
 
         </div>
@@ -74,16 +72,14 @@
              
   <section id="module-binpan">
 <span id="binpan-module"></span><h1>BinPan Module<a class="headerlink" href="#module-binpan" title="Permalink to this heading"></a></h1>
-<section id="binpan-main">
-<h2>BinPan Main<a class="headerlink" href="#binpan-main" title="Permalink to this heading"></a></h2>
 <p>This is the main classes file.</p>
-</section>
 <dl class="py class">
 <dt class="sig sig-object py" id="binpan.Symbol">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">binpan.</span></span><span class="sig-name descname"><span class="pre">Symbol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'UTC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">closed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_rows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_max_rows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">320</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol" title="Permalink to this definition"></a></dt>
 <dd><p>Creates an object from binance klines and/or trade data. It contains the raw api response and a dataframe that can be modified.</p>
 <p>Any symbol can be used as argument and any time interval like: ‘1m’, ‘3m’, ‘5m’, ‘15m’, ‘30m’, ‘1h’, ‘2h’, ‘4h’, ‘6h’, ‘8h’,
 ‘12h’, ‘1d’, ‘3d’, ‘1w’, ‘1M’</p>
+<p>Object has several plot methods.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -190,13 +186,23 @@ ETHBUSD 5m UTC
 100 rows × 9 columns
 </pre></div>
 </div>
+<p>Created objects contain different data like:
+- mysymbol.df: shows candles dataframe
+- mysymbol.trades: shows aggregated trades, if requested. This is optional and can be added anytime.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="binpan.Symbol.basic">
 <span class="sig-name descname"><span class="pre">basic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exceptions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actions_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'actions'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.basic" title="Permalink to this definition"></a></dt>
-<dd><p>Shows data in a dataframe. The columns shown are the basic ones.</p>
+<dd><p>Shows just a basic selection of columns data in the dataframe. Any column can be excepted from been dropped.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return pd.DataFrame</dt>
-<dd class="field-odd"><p>Pandas DataFrame</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>exceptions</strong> (<em>list</em>) – Columns names to keep.</p></li>
+<li><p><strong>actions_col</strong> (<em>str</em>) – Under development. To keep tags for buy or sell actions.</p></li>
+<li><p><strong>inplace</strong> (<em>bool</em>) – Keep in the object just the basic columns, loosing any other one.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.DataFrame</dt>
+<dd class="field-even"><p>Pandas DataFrame</p>
 </dd>
 </dl>
 </dd></dl>
@@ -206,6 +212,7 @@ ETHBUSD 5m UTC
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">basic_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exceptions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actions_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'actions'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#binpan.Symbol.basic_dataframe" title="Permalink to this definition"></a></dt>
 <dd><p>Delete all columns except: Open, High, Low, Close, Volume, actions.</p>
 <p>Some columns can be excepted.</p>
+<p>Useful to drop messed technical indicators columns in one shot.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -223,8 +230,8 @@ ETHBUSD 5m UTC
 <dl class="py method">
 <dt class="sig sig-object py" id="binpan.Symbol.drop">
 <span class="sig-name descname"><span class="pre">drop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#binpan.Symbol.drop" title="Permalink to this definition"></a></dt>
-<dd><p>It drops some columns from the dataframe.</p>
-<p>If columns list not passed, then defaults to the initial columns.</p>
+<dd><p>It drops some columns from the dataframe. If columns list not passed, then defaults to the initial columns.</p>
+<p>Can be used when messing with indicators to clean the object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Param</dt>
 <dd class="field-odd"><p>list columns: A list with the columns names to drop. If not passed, it defaults to the initial columns that remain
@@ -241,12 +248,73 @@ in the object remains.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="binpan.Symbol.hk">
-<span class="sig-name descname"><span class="pre">hk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.hk" title="Permalink to this definition"></a></dt>
-<dd><p>It computes Heikin Ashi candles.</p>
+<dt class="sig sig-object py" id="binpan.Symbol.ema">
+<span class="sig-name descname"><span class="pre">ema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">21</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Close'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.ema" title="Permalink to this definition"></a></dt>
+<dd><p>Generate technical indicator Exponential Moving Average.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>inplace</strong> – Change object dataframe permanently whe True is selected. False throws a copy dataframe.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>window</strong> – Rolling window including the current candles when calculating the indicator.</p></li>
+<li><p><strong>column</strong> – Column applied. Default is Close.</p></li>
+<li><p><strong>inplace</strong> – Make it permanent in the instance or not.</p></li>
+<li><p><strong>suffix</strong> – A decorative suffix for the name of the column created.</p></li>
+<li><p><strong>color</strong> – Color to show when plotting. It can be any color from plotly library or a number in the list of those.
+&lt;<a class="reference external" href="https://community.plotly.com/t/plotly-colours-list/11730">https://community.plotly.com/t/plotly-colours-list/11730</a>&gt;</p></li>
+<li><p><strong>kwargs</strong> – Optional plotly args.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Symbol.get_fees">
+<span class="sig-name descname"><span class="pre">get_fees</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.get_fees" title="Permalink to this definition"></a></dt>
+<dd><p>Shows applied fees for the symbol of the object.</p>
+<p>Requires API key added. Look for the add_api_key function in the files_and_filters submodule.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>symbol</strong> – Not to use it, just here for initializing the class.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Symbol.get_trades">
+<span class="sig-name descname"><span class="pre">get_trades</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.get_trades" title="Permalink to this definition"></a></dt>
+<dd><dl>
+<dt>Calls the API and creates another dataframe included in the object with the aggregated trades from API for the period of the</dt><dd><p>created object.</p>
+<blockquote>
+<div><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the object covers a long time interval, this action can take a relative long time. The BinPan library take care of the
+API weight and can take a sleep to wait until API weight returns to a low value.</p>
+</div>
+</div></blockquote>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Symbol.hk">
+<span class="sig-name descname"><span class="pre">hk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.hk" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>It computes Heikin Ashi candles. Any existing indicator column will not be recomputed. It is recommended to drop any indicator</dt><dd><p>before converting candles to Heikin Ashi.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>inplace</strong> (<em>bool</em>) – Change object dataframe permanently whe True is selected. False shows a copy dataframe.</p>
 </dd>
 <dt class="field-even">Return pd.DataFrame</dt>
 <dd class="field-even"><p>Pandas DataFrame</p>
@@ -255,32 +323,80 @@ in the object remains.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="binpan.Symbol.parse_agg_trades_to_dataframe">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parse_agg_trades_to_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.parse_agg_trades_to_dataframe" title="Permalink to this definition"></a></dt>
-<dd><blockquote>
-<div><dl class="simple">
-<dt>{‘M’: True,</dt><dd><p>‘T’: 1656166914571,
-‘a’: 1218761712,
-‘f’: 1424997754,
-‘l’: 1424997754,
-‘m’: True,
-‘p’: ‘21185.05000000’,
-‘q’: ‘0.03395000’}</p>
-</dd>
-</dl>
-</div></blockquote>
+<dt class="sig sig-object py" id="binpan.Symbol.ma">
+<span class="sig-name descname"><span class="pre">ma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ma_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'ema'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Close'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.ma" title="Permalink to this definition"></a></dt>
+<dd><p>Generic moving average method. Calls pandas_ta ‘ma’ method.</p>
+<p><a class="reference external" href="https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/overlap/ma.py">https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/overlap/ma.py</a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>response</strong> – </p></li>
-<li><p><strong>columns</strong> – </p></li>
-<li><p><strong>symbol</strong> – </p></li>
-<li><p><strong>time_zone</strong> – </p></li>
-<li><p><strong>time_index</strong> – </p></li>
+<li><p><strong>ma_name</strong> – </p></li>
+<li><p><strong>column_source</strong> – </p></li>
+<li><p><strong>inplace</strong> – </p></li>
+<li><p><strong>suffix</strong> – </p></li>
+<li><p><strong>color</strong> – </p></li>
+<li><p><strong>kwargs</strong> – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Symbol.makers_vs_takers_plot">
+<span class="sig-name descname"><span class="pre">makers_vs_takers_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hist_funct</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sum'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">900</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_trades</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_volume</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partial_vol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs_update_layout</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.makers_vs_takers_plot" title="Permalink to this definition"></a></dt>
+<dd><p>Binance fees can be cheaper for maker orders, many times when big traders, like whales, are operating. Showing what are doing
+makers.</p>
+<p>It shows which kind of volume or trades came from, takers or makers.</p>
+<p>It can be useful finding support and resistance zones.</p>
+<a class="reference internal image-reference" href="_images/makers_vs_takers_plot.png"><img alt="Candles with some indicators" src="_images/makers_vs_takers_plot.png" style="width: 1000px;" /></a>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bins</strong> – How many bars.</p></li>
+<li><p><strong>hist_funct</strong> – The way graph data is showed. It can be ‘percent’, ‘probability’, ‘density’, or ‘probability density’</p></li>
+<li><p><strong>height</strong> – Height of the graph.</p></li>
+<li><p><strong>from_trades</strong> – Requieres grabbing trades before.</p></li>
+<li><p><strong>title</strong> – A title.</p></li>
+<li><p><strong>total_volume</strong> – The column with the total volume. It defaults automatically.</p></li>
+<li><p><strong>partial_vol</strong> – The column with the partial volume. It defaults automatically. API shows maker or taker separated volumes.</p></li>
+<li><p><strong>kwargs_update_layout</strong> – Optional</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Symbol.parse_agg_trades_to_dataframe">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parse_agg_trades_to_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.parse_agg_trades_to_dataframe" title="Permalink to this definition"></a></dt>
+<dd><p>Parses the API response into a pandas dataframe.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;M&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+ <span class="s1">&#39;T&#39;</span><span class="p">:</span> <span class="mi">1656166914571</span><span class="p">,</span>
+ <span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">1218761712</span><span class="p">,</span>
+ <span class="s1">&#39;f&#39;</span><span class="p">:</span> <span class="mi">1424997754</span><span class="p">,</span>
+ <span class="s1">&#39;l&#39;</span><span class="p">:</span> <span class="mi">1424997754</span><span class="p">,</span>
+ <span class="s1">&#39;m&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+ <span class="s1">&#39;p&#39;</span><span class="p">:</span> <span class="s1">&#39;21185.05000000&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;q&#39;</span><span class="p">:</span> <span class="s1">&#39;0.03395000&#39;</span><span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>response</strong> (<em>list</em>) – API raw response from trades.</p></li>
+<li><p><strong>columns</strong> – Column names.</p></li>
+<li><p><strong>symbol</strong> – The used symbol.</p></li>
+<li><p><strong>time_zone</strong> – Selected time zone.</p></li>
+<li><p><strong>time_index</strong> – Or integer index.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>pd.DataFrame</p>
 </dd>
 </dl>
 </dd></dl>
@@ -311,20 +427,104 @@ in the object remains.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="binpan.Symbol.plot_trades_size">
-<span class="sig-name descname"><span class="pre">plot_trades_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">60</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logarithmic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.plot_trades_size" title="Permalink to this definition"></a></dt>
-<dd><p>It plots a time series graph plotting trades sized by quantity and color if taker or maker buyer.</p>
+<dt class="sig sig-object py" id="binpan.Symbol.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1800</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">candles_ta_height_ratio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.75</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yaxis_title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Price'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlapped_indicators</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priced_actions_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'priced_actions'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actions_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_price_for_actions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Close'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.plot" title="Permalink to this definition"></a></dt>
+<dd><p>Plots a candles figure for the object.</p>
+<p>Also plots any other technical indicator grabbed.</p>
+<a class="reference internal image-reference" href="_images/candles.png"><img alt="Candles with some indicators" src="_images/candles.png" style="width: 1000px;" /></a>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>max_size</strong> (<em>int</em>) – Size for the markers. Default is 60.</p></li>
+<li><p><strong>width</strong> – Width of the plot.</p></li>
+<li><p><strong>height</strong> – Height of the plot.</p></li>
+<li><p><strong>candles_ta_height_ratio</strong> – Proportion between candles and the other indicators. Not considering overlay ones
+in the candles plot.</p></li>
+<li><p><strong>plot_volume</strong> – Plots volume.</p></li>
+<li><p><strong>title</strong> – A tittle for the plot.</p></li>
+<li><p><strong>yaxis_title</strong> – A title for the y axis.</p></li>
+<li><p><strong>overlapped_indicators</strong> – Can declare as overlay in the candles plot some column.</p></li>
+<li><p><strong>priced_actions_col</strong> – Priced actions to plot annotations over the candles, like buy, sell, etc. Under developing.</p></li>
+<li><p><strong>actions_col</strong> – A column containing actions like buy or sell. Under developing.</p></li>
+<li><p><strong>labels</strong> – Names for the annotations instead of the price.</p></li>
+<li><p><strong>default_price_for_actions</strong> – Column to use as priced actions in case of not existing an specific prices actions column.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Symbol.plot_colors">
+<span class="sig-name descname"><span class="pre">plot_colors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indicator_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.plot_colors" title="Permalink to this definition"></a></dt>
+<dd><p>Internal control formatting plots.
+:param indicator_column:
+:param color:
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Symbol.plot_rows">
+<span class="sig-name descname"><span class="pre">plot_rows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indicator_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row_position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.plot_rows" title="Permalink to this definition"></a></dt>
+<dd><p>Internal control formatting plots.
+:param indicator_column:
+:param row_position:
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Symbol.plot_trades_pie">
+<span class="sig-name descname"><span class="pre">plot_trades_pie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">categories</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logarithmic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.plot_trades_pie" title="Permalink to this definition"></a></dt>
+<dd><p>Plots a pie chart. Useful profiling size of trades. Size can be distributed in a logarithmic scale.</p>
+<a class="reference internal image-reference" href="_images/plot_trades_pie.png"><img alt="Candles with some indicators" src="_images/plot_trades_pie.png" style="width: 1000px;" /></a>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>categories</strong> – How many groups of sizes.</p></li>
+<li><p><strong>logarithmic</strong> – Logaritmic scale to show more small sizes.</p></li>
+<li><p><strong>title</strong> – A title for the plot.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Symbol.plot_trades_scatter">
+<span class="sig-name descname"><span class="pre">plot_trades_scatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['Price',</span> <span class="pre">'Close']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['Quantity',</span> <span class="pre">'Volume']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dot_symbol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Buyer</span> <span class="pre">was</span> <span class="pre">maker'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['Buyer</span> <span class="pre">was</span> <span class="pre">maker',</span> <span class="pre">'Taker</span> <span class="pre">buy</span> <span class="pre">base</span> <span class="pre">volume']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marginal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_trades</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_referenced_to_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.plot_trades_scatter" title="Permalink to this definition"></a></dt>
+<dd><p>A scatter plot showing each price level volume or trades.</p>
+<p>It can be useful finding support and resistance zones.</p>
+<a class="reference internal image-reference" href="_images/plot_trades_scatter.png"><img alt="Candles with some indicators" src="_images/plot_trades_scatter.png" style="width: 1000px;" /></a>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dot_symbol</strong> – Column with discrete values to asign different symbols for the plot marks.</p></li>
+<li><p><strong>x</strong> – Name of the column with prices. From trades or candles.</p></li>
+<li><p><strong>y</strong> – Name of the column with sizes. From trades or candles.</p></li>
+<li><p><strong>color</strong> – Column with values to use in color scale.</p></li>
+<li><p><strong>marginal</strong> – Show or not lateral plots.</p></li>
+<li><p><strong>from_trades</strong> – Uses trades instead of candles. Useful to avoid grabbing very long time intervals. Result should be similar.</p></li>
+<li><p><strong>height</strong> – Height of the plot.</p></li>
+<li><p><strong>color_referenced_to_y</strong> – Scales color in y axis.</p></li>
+<li><p><strong>kwargs</strong> – Optional plotly args.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Symbol.plot_trades_size">
+<span class="sig-name descname"><span class="pre">plot_trades_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">60</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logarithmic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.plot_trades_size" title="Permalink to this definition"></a></dt>
+<dd><p>It plots a time series graph plotting trades sized by quantity and color if taker or maker buyer.</p>
+<p>Can be used with trades (requieres calling for trades before, or using candles and volume from the object to avoid
+waiting long time intervals grabbing the trades.)</p>
+<p>It can be useful finding support and resistance zones.</p>
+<a class="reference internal image-reference" href="_images/plot_trades_size.png"><img alt="Candles with some indicators" src="_images/plot_trades_size.png" style="width: 1000px;" /></a>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>max_size</strong> (<em>int</em>) – Max size for the markers. Default is 60. Useful to show whales operating.</p></li>
 <li><p><strong>height</strong> (<em>int</em>) – Default is 1000.</p></li>
 <li><p><strong>logarithmic</strong> (<em>bool</em>) – If logarithmic, then “y” axis scale is shown in logarithmic scale.</p></li>
 <li><p><strong>title</strong> – Graph title</p></li>
 </ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
 </dd>
 </dl>
 </dd></dl>
@@ -343,7 +543,7 @@ in the object remains.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="binpan.Symbol.set_display_decimals">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_display_decimals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">display_decimals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.set_display_decimals" title="Permalink to this definition"></a></dt>
-<dd><p>Change the decimals shown in the dataframe.</p>
+<dd><p>Change the decimals shown in the dataframe. It changes all the columns decimals.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>display_decimals</strong> (<em>int</em>) – Integer</p>
@@ -385,6 +585,48 @@ in the object remains.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="binpan.Symbol.sma">
+<span class="sig-name descname"><span class="pre">sma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">21</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Close'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.sma" title="Permalink to this definition"></a></dt>
+<dd><p>Generate technical indicator Simple Moving Average.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>window</strong> – Rolling window including the current candles when calculating the indicator.</p></li>
+<li><p><strong>column</strong> – Column applied. Default is Close.</p></li>
+<li><p><strong>inplace</strong> – Make it permanent in the instance or not.</p></li>
+<li><p><strong>suffix</strong> – A decorative suffix for the name of the column created.</p></li>
+<li><p><strong>color</strong> – Color to show when plotting. It can be any color from plotly library or a number in the list of those.
+&lt;<a class="reference external" href="https://community.plotly.com/t/plotly-colours-list/11730">https://community.plotly.com/t/plotly-colours-list/11730</a>&gt;</p></li>
+<li><p><strong>kwargs</strong> – Optional plotly args.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Symbol.supertrend">
+<span class="sig-name descname"><span class="pre">supertrend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiplier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.supertrend" title="Permalink to this definition"></a></dt>
+<dd><p>Generate technical indicator Supertrend.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>length</strong> – Rolling window including the current candles when calculating the indicator.</p></li>
+<li><p><strong>multiplier</strong> – Indicator multiplier applied.</p></li>
+<li><p><strong>inplace</strong> – Make it permanent in the instance or not.</p></li>
+<li><p><strong>suffix</strong> – A decorative suffix for the name of the column created.</p></li>
+<li><p><strong>kwargs</strong> – Optional plotly args.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="binpan.Symbol.timestamps">
 <span class="sig-name descname"><span class="pre">timestamps</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.timestamps" title="Permalink to this definition"></a></dt>
 <dd><p>Get the first Open timestamp and the last Close timestamp.</p>
@@ -404,7 +646,7 @@ in the object remains.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="index.html" class="btn btn-neutral float-left" title="Welcome to BinPan’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="market.html" class="btn btn-neutral float-right" title="BinPan Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="market.html" class="btn btn-neutral float-right" title="Market Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
