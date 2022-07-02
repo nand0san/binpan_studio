@@ -26,11 +26,14 @@ Documentation
 Take a look to the basic **tutorial**. Find it in the Jupyter Notebook file `tutorial.ipynb`
 Hope you find it useful breaking the market!!!
 
-![](https://raw.githubusercontent.com/nand0san/binpan_studio/main/doc/images/candles.png)
+![](https://raw.githubusercontent.com/nand0san/binpan_studio/main/docs/images/candles.png)
 
 
 GitHub repo
 -----------
+
+Under construction (html file available in `docs/htmls` folder):
+
 ![](https://nand0san.github.io/binpan_studio/)
 
 
