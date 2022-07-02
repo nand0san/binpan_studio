@@ -7,11 +7,32 @@ HERE = pathlib.Path(__file__).parent
 # The text of the README file
 README = (HERE / "README.md").read_text()
 
+readme = open('README.md', 'r')
+README_TEXT = readme.read()
+readme.close()
+
+with open('requirements.txt') as f:
+    required = f.read().splitlines()
+
+"""
+      install_requires=[
+            'requests~=2.28.0',
+            'pytz~=2022.1',
+            'py-cpuinfo~=8.0.0',
+            'numpy==1.23.0',
+            'pandas~=1.4.2',
+            'plotly~=5.9.0',
+            'tqdm~=4.64.0',
+            'pycryptodome==3.15.0',
+            'pandas-ta==0.3.14b0'
+      ],
+"""
 
 setup(name='binpan',
-      version='1.0.1',
+      version='0.0.3',
       url='https://github.com/nand0san/binpan_studio',
       license='MIT',
+      install_requires=required,
       classifiers=[
           "License :: OSI Approved :: MIT License",
           "Programming Language :: Python :: 3",
@@ -20,7 +41,11 @@ setup(name='binpan',
       author='Fernando Alfonso',
       author_email='hancaidolosdos@hotmail.com',
       description='Binance API wrapper with backtesting tools.',
+      long_description=README_TEXT,
       long_description_content_type="text/markdown",
       package_dir={"": "."},
-      packages=find_packages(where="./handlers"),
+      packages=[
+            ".",
+            "handlers"
+      ]
       )

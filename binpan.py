@@ -22,7 +22,7 @@ import numpy as np
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
 
-__version__ = "1.0.0"
+__version__ = "0.0.3"
 
 plotly_colors = handlers.plotting.plotly_colors
 
@@ -177,7 +177,7 @@ class Symbol(object):
         self.time_cols = ['Open time', 'Close time']
         self.dts_time_cols = ['Open timestamp', 'Close timestamp']
 
-        self.version = "v1.0"
+        self.version = __version__
         self.symbol = symbol.upper()
         self.fees = self.get_fees(symbol=self.symbol)
         self.tick_interval = tick_interval

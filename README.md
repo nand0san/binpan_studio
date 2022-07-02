@@ -21,7 +21,7 @@ BinPan manages symbol objects that can:
 
 An example of a plot for candles and indicators:
 
-![Alt text](./doc/images/candles.png?raw=true "Candles example")
+![](https://raw.githubusercontent.com/nand0san/binpan_studio/main/doc/images/candles.png)
 
 Documentation is in html format in the file:
 
@@ -29,6 +29,7 @@ Documentation is in html format in the file:
 
 Hope you find it useful breaking the market!!!
 
+Code repo: https://github.com/nand0san/binpan_studio
 
 Installation
 ------------
