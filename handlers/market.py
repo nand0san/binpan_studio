@@ -3,7 +3,7 @@ from .logs import Logs
 from .quest import check_minute_weight, get_response, get_server_time
 from .time_helper import tick_seconds, end_time_from_start_time, start_time_from_end_time
 
-market_logger = Logs(filename='./logs/market_logger.log', name='market_logger', info_level='DEBUG')
+market_logger = Logs(filename='./logs/market_logger.log', name='market_logger', info_level='INFO')
 
 base_url = 'https://api.binance.com'
 
@@ -66,10 +66,7 @@ def get_candles_from_start_time(start_time: int,
 
     Verificado en un jupyter notebook.
     """
-    # curframe = inspect.currentframe()
-    # calframe = inspect.getouterframes(curframe, 2)
-    # market_logger.info(f"get_candles_from_start_time CALLED BY: {calframe[1][3]}")
-
+    market_logger.info(f"Candles for: {locals()}")
     check_minute_weight(1)
     endpoint = '/api/v3/klines?'
     params = {'symbol': symbol,
@@ -101,7 +98,7 @@ def get_agg_trades(fromId=None, symbol='BTCUSDT', limit=None, startTime=None, en
 
     Also is possible to get from starTime utc in milliseconds or until endtime
 
-    Si se prueba con mas de 1h de trades da error 1127 y si ajustas a una hora se aplica el limit de 1000 máximo.
+    Si se prueba con más de 1 h de trades da error 1127 y si ajustas a una hora se aplica el limit de 1000 máximo.
 
     Limit aplicado en modo fromId por defecto 500.
     """

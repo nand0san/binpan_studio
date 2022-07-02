@@ -6,7 +6,7 @@ import numpy as np
 from random import choice
 from .logs import Logs
 
-plot_logger = Logs(filename='./logs/plotting.log', name='plotting', info_level='DEBUG')
+plot_logger = Logs(filename='./logs/plotting.log', name='plotting', info_level='INFO')
 
 plotly_colors = ["aliceblue", "antiquewhite", "aqua", "aquamarine", "azure", "beige", "bisque", "black",
                  "blanchedalmond", "blue", "blueviolet", "brown", "burlywood", "cadetblue", "chartreuse", "chocolate",

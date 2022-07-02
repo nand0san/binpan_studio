@@ -1,4 +1,3 @@
-
 Welcome to BinPan's documentation!
 ==================================
 
@@ -6,11 +5,9 @@ BinPan is a Python wrapper for Binance API, creating objects with many capabilit
 
 BinPan can make plots easily and grab API requests in the same object. It can also obtain some technical indicators.
 
-The objective of this module is to have a fast tool to collect and handle data from the Binance API
-in an agile way.
+The objective of this module is to have a fast tool to collect and handle data from the Binance API in an agile way.
 
-It is intended to be useful in Jupyter Notebooks or even the python console, but it can be used in
-many other ways.
+It is intended to be useful in Jupyter Notebooks or even the python console, but it can be used in many other ways.
 
 BinPan manages symbol objects that can:
 
@@ -28,6 +25,10 @@ An example of a plot for candles and indicators:
 
 Hope you find it useful breaking the market!!!
 
+Github
+------
+
+Code repo: https://github.com/nand0san/binpan_studio
 
 Installation
 ------------
@@ -38,6 +39,10 @@ Installation
 
 Usage
 -----
+
+There is a tutorial in a Jupyter Notebook file in  the github repo.
+
+https://github.com/nand0san/binpan_studio/blob/main/tutorial.ipynb
 
 Importing just like this:
 
@@ -53,7 +58,6 @@ Importing just like this:
     btcusdt.sma(21)
     btcusdt.plot()
 
-The repository contains a Jupyter Notebook with many examples.
 
 
 .. toctree::

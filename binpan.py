@@ -38,7 +38,7 @@ class Symbol(object):
 
     :param str symbol:  It can be any symbol in the binance exchange, like BTCUSDT, ethbusd or any other. Capital letters doesn't matter.
 
-    :param str tick_interval: Any candles interval available in binance. Capital letters doesn't matter.
+    :param str tick_interval: Any candle's interval available in binance. Capital letters doesn't matter.
 
     :param int or str start_time:  It can be an integer in milliseconds from epoch (1970-01-01 00:00:00 UTC) or any string in the formats:
 
@@ -510,7 +510,7 @@ class Symbol(object):
         :param priced_actions_col: Priced actions to plot annotations over the candles, like buy, sell, etc. Under developing.
         :param actions_col: A column containing actions like buy or sell. Under developing.
         :param labels: Names for the annotations instead of the price.
-        :param default_price_for_actions: Column to use as priced actions in case of not existing an specific prices actions column.
+        :param default_price_for_actions: Column to use as priced actions in case of not existing a specific prices actions column.
         """
 
         if not title:
@@ -579,7 +579,7 @@ class Symbol(object):
            :alt: Candles with some indicators
 
         :param categories: How many groups of sizes.
-        :param logarithmic: Logaritmic scale to show more small sizes.
+        :param logarithmic: Logarithmic scale to show more small sizes.
         :param title: A title for the plot.
 
         """
@@ -679,7 +679,7 @@ class Symbol(object):
            :width: 1000
            :alt: Candles with some indicators
 
-        :param dot_symbol: Column with discrete values to asign different symbols for the plot marks.
+        :param dot_symbol: Column with discrete values to assign different symbols for the plot marks.
         :param x: Name of the column with prices. From trades or candles.
         :param y: Name of the column with sizes. From trades or candles.
         :param color: Column with values to use in color scale.
@@ -958,6 +958,7 @@ class Symbol(object):
         :param multiplier: Indicator multiplier applied.
         :param inplace: Make it permanent in the instance or not.
         :param suffix: A decorative suffix for the name of the column created.
+        :param list colors: DDefaults to red and green.
         :param kwargs: Optional plotly args.
         :return: pd.DataFrame
         """

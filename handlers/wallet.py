@@ -1,8 +1,8 @@
 from .logs import Logs
-from .quest import get_signed_request, base_url, check_minute_weight, post_signed_request
+from .quest import get_signed_request, base_url, check_minute_weight
 from time import time
 
-wallet_logger = Logs(filename='./logs/wallet_logger.log', name='wallet_logger', info_level='DEBUG')
+wallet_logger = Logs(filename='./logs/wallet_logger.log', name='wallet_logger', info_level='INFO')
 
 
 ##########

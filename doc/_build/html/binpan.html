@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BinPan Module &mdash; BinPan 1.0.0 documentation</title>
+  <title>BinPan Module &mdash; BinPan 1.0.5 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/style.css" type="text/css" />
@@ -84,7 +84,7 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>symbol</strong> (<em>str</em>) – It can be any symbol in the binance exchange, like BTCUSDT, ethbusd or any other. Capital letters doesn’t matter.</p></li>
-<li><p><strong>tick_interval</strong> (<em>str</em>) – Any candles interval available in binance. Capital letters doesn’t matter.</p></li>
+<li><p><strong>tick_interval</strong> (<em>str</em>) – Any candle’s interval available in binance. Capital letters doesn’t matter.</p></li>
 <li><p><strong>start_time</strong> (<em>int</em><em> or </em><em>str</em>) – <p>It can be an integer in milliseconds from epoch (1970-01-01 00:00:00 UTC) or any string in the formats:</p>
 <blockquote>
 <div><ul>
@@ -446,7 +446,7 @@ in the candles plot.</p></li>
 <li><p><strong>priced_actions_col</strong> – Priced actions to plot annotations over the candles, like buy, sell, etc. Under developing.</p></li>
 <li><p><strong>actions_col</strong> – A column containing actions like buy or sell. Under developing.</p></li>
 <li><p><strong>labels</strong> – Names for the annotations instead of the price.</p></li>
-<li><p><strong>default_price_for_actions</strong> – Column to use as priced actions in case of not existing an specific prices actions column.</p></li>
+<li><p><strong>default_price_for_actions</strong> – Column to use as priced actions in case of not existing a specific prices actions column.</p></li>
 </ul>
 </dd>
 </dl>
@@ -479,7 +479,7 @@ in the candles plot.</p></li>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>categories</strong> – How many groups of sizes.</p></li>
-<li><p><strong>logarithmic</strong> – Logaritmic scale to show more small sizes.</p></li>
+<li><p><strong>logarithmic</strong> – Logarithmic scale to show more small sizes.</p></li>
 <li><p><strong>title</strong> – A title for the plot.</p></li>
 </ul>
 </dd>
@@ -495,7 +495,7 @@ in the candles plot.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dot_symbol</strong> – Column with discrete values to asign different symbols for the plot marks.</p></li>
+<li><p><strong>dot_symbol</strong> – Column with discrete values to assign different symbols for the plot marks.</p></li>
 <li><p><strong>x</strong> – Name of the column with prices. From trades or candles.</p></li>
 <li><p><strong>y</strong> – Name of the column with sizes. From trades or candles.</p></li>
 <li><p><strong>color</strong> – Column with values to use in color scale.</p></li>
@@ -617,6 +617,7 @@ waiting long time intervals grabbing the trades.)</p>
 <li><p><strong>multiplier</strong> – Indicator multiplier applied.</p></li>
 <li><p><strong>inplace</strong> – Make it permanent in the instance or not.</p></li>
 <li><p><strong>suffix</strong> – A decorative suffix for the name of the column created.</p></li>
+<li><p><strong>colors</strong> (<em>list</em>) – DDefaults to red and green.</p></li>
 <li><p><strong>kwargs</strong> – Optional plotly args.</p></li>
 </ul>
 </dd>

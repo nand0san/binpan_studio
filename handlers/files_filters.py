@@ -3,7 +3,7 @@ from os import path
 from .starters import AesCipher
 from .logs import Logs
 
-files_logger = Logs(filename='./logs/files_logger.log', name='files_logger', info_level='DEBUG')
+files_logger = Logs(filename='./logs/files_logger.log', name='files_logger', info_level='INFO')
 
 cipher_object = AesCipher()
 

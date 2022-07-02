@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Market Module &mdash; BinPan 1.0.0 documentation</title>
+  <title>Market Module &mdash; BinPan 1.0.5 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/style.css" type="text/css" />
@@ -106,7 +106,7 @@ Maximum is 1000.</p>
 <span class="sig-prename descclassname"><span class="pre">binpan.handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_agg_trades</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fromId</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'BTCUSDT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.handlers.market.get_agg_trades" title="Permalink to this definition"></a></dt>
 <dd><p>Returns aggregated trades from id to limit or last trades if id not specified.</p>
 <p>Also is possible to get from starTime utc in milliseconds or until endtime</p>
-<p>Si se prueba con mas de 1h de trades da error 1127 y si ajustas a una hora se aplica el limit de 1000 máximo.</p>
+<p>Si se prueba con más de 1 h de trades da error 1127 y si ajustas a una hora se aplica el limit de 1000 máximo.</p>
 <p>Limit aplicado en modo fromId por defecto 500.</p>
 </dd></dl>
 

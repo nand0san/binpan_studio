@@ -27,9 +27,13 @@ Documentation is in html format in the file:
 
 `./doc/_build/html/index.html`
 
+
+Take a look to the basic *tutorial*. Find it in the Jupyter Notebook file `tutorial.ipynb`
 Hope you find it useful breaking the market!!!
 
-Code repo: https://github.com/nand0san/binpan_studio
+Code repo: 
+
+https://github.com/nand0san/binpan_studio
 
 Installation
 ------------
@@ -54,4 +58,6 @@ Importing just like this:
     btcusdt.sma(21)
     btcusdt.plot()
 ```
-The repository contains a Jupyter Notebook with many examples.
+
+### Greetings
+Thank you for the pandas_ta people for that great library.
