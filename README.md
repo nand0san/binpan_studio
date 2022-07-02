@@ -21,20 +21,24 @@ BinPan manages symbol objects that can:
 
 An example of a plot for candles and indicators:
 
+![](https://raw.githubusercontent.com/nand0san/binpan_studio/main/docs/images/candles.png)
+
+
 Documentation
 -------------
 Take a look to the basic **tutorial**. Find it in the Jupyter Notebook file `tutorial.ipynb`
-Hope you find it useful breaking the market!!!
 
-![](https://raw.githubusercontent.com/nand0san/binpan_studio/main/docs/images/candles.png)
+Under construction (html file available in `docs/htmls` folder):
+
+![](https://nand0san.github.io/binpan_studio/)
+
+Hope you find it useful breaking the market!!!
 
 
 GitHub repo
 -----------
 
-Under construction (html file available in `docs/htmls` folder):
-
-![](https://nand0san.github.io/binpan_studio/)
+![](https://github.com/nand0san/binpan_studio)
 
 
 Installation
