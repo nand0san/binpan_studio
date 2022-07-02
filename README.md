@@ -28,9 +28,9 @@ Documentation
 -------------
 Take a look to the basic **tutorial**. Find it in the Jupyter Notebook file `tutorial.ipynb`
 
-Under construction (html file available in `docs/htmls` folder):
+Under construction (html file available in `docs/html/html` folder, can be opened locally with any browser):
 
-![](https://nand0san.github.io/binpan_studio/)
+!https://nand0san.github.io/binpan_studio/docs/html/html/index.html
 
 Hope you find it useful breaking the market!!!
 
@@ -38,7 +38,7 @@ Hope you find it useful breaking the market!!!
 GitHub repo
 -----------
 
-![](https://github.com/nand0san/binpan_studio)
+https://github.com/nand0san/binpan_studio
 
 
 Installation
