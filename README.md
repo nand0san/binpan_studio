@@ -25,7 +25,7 @@ An example of a plot for candles and indicators:
 
 Documentation is in html format in the file:
 
-`./doc/_build/html/index.html`
+`./docs/_build/html/index.html`
 
 
 Take a look to the basic *tutorial*. Find it in the Jupyter Notebook file `tutorial.ipynb`

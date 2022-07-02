@@ -1,5 +1,6 @@
 from setuptools import setup, find_packages
 import pathlib
+import os
 
 # The directory containing this file
 HERE = pathlib.Path(__file__).parent
@@ -11,8 +12,14 @@ readme = open('README.md', 'r')
 README_TEXT = readme.read()
 readme.close()
 
-with open('requirements.txt') as f:
-    required = f.read().splitlines()
+read_required = open('requirements.txt', 'r')
+REQUIRED = read_required.read()
+read_required.close()
+#
+# req = os.path.abspath()
+#
+# with open(req) as f:
+#     required = f.read().splitlines()
 
 """
       install_requires=[
@@ -32,7 +39,7 @@ setup(name='binpan',
       version='0.0.3',
       url='https://github.com/nand0san/binpan_studio',
       license='MIT',
-      install_requires=required,
+      install_requires=REQUIRED,
       classifiers=[
           "License :: OSI Approved :: MIT License",
           "Programming Language :: Python :: 3",
