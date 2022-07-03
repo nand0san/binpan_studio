@@ -19,16 +19,47 @@ def get_candles_by_time_stamps(start_time: int = None,
                                tick_interval='1d',
                                limit=None) -> list:
     """
-    En caso de superarse el límite, prima el start_time ante el end_time, start_time vendrá en milisegundos.
+    Calls API for candles list buy one or two timestamps, starting and ending.
 
-    En caso de timeStamps, limit es ignorado.
+    In case the limit is exceeded, the start_time prevails over the end_time, start_time must come in milliseconds from epoch.
 
-    La API redondea el startTime hasta el siguiente open de la siguiente candle. Es decir, no incluye la vela en la que
-    está ese timeStamp, sino la siguiente vela del correspondiente tick_interval.
+    In case of two timeStamps as arguments, limit is ignored.
 
-    El endTime indicado incluirá la vela en la que está ese timestamp. Vendrá en milisegundos.
+    The API rounds the startTime up to the next open of the next candle. That is, it does not include the candle in which there is
+    that timeStamp, but the next candle of the corresponding tick_interval, except in case it exactly matches the value of an open
+    timestamp, in which case it will include it in the return.
 
-    Si no se pasan timestamps, se retornan las últimas limit velas hasta el limit.
+    The indicated endTime will include the candlestick that timestamp is on. It will come in milliseconds. It can be not a closed one if
+    is open right in between the endtime timestamp.
+
+    If no timestamps are passed, the last quantity candlesticks up to limit count are returned.
+
+    :param int start_time: A timestamp in milliseconds from epoch.
+    :param int end_time: A timestamp in milliseconds from epoch.
+    :param str symbol: A binance valid symbol.
+    :param str tick_interval: A binance valid time interval for candlesticks.
+    :param int limit: Count of candles to ask for.
+    :return list: Returns a list from the Binance API
+
+    .. code-block:: python
+
+        [
+          [
+            1499040000000,      // Open time
+            "0.01634790",       // Open
+            "0.80000000",       // High
+            "0.01575800",       // Low
+            "0.01577100",       // Close
+            "148976.11427815",  // Volume
+            1499644799999,      // Close time
+            "2434.19055334",    // Quote asset volume
+            308,                // Number of trades
+            "1756.87402397",    // Taker buy base asset volume
+            "28.46694368",      // Taker buy quote asset volume
+            "17928899.62484339" // Ignore.
+          ]
+        ]
+
     """
 
     now = get_server_time()
@@ -59,12 +90,36 @@ def get_candles_from_start_time(start_time: int,
                                 tick_interval: str = '1d',
                                 limit: int = 1000) -> list:
     """
-    Ojo que la API redondea el startTime hasta el siguiente open de la siguiente candle, excepto que coincida con un timestamp de Open
+    Calls API for candles list from one timestamp.
 
-    No trato de incluir la vela que incluiría esa start timestamp porque si no, en candles la iteración daría
-    error.
+    The API rounds the startTime up to the next open of the next candle. That is, it does not include the candle in which there is
+    that timeStamp, but the next candle of the corresponding tick_interval, except in case it exactly matches the value of an open
+    timestamp, in which case it will include it in the return.
 
-    Verificado en un jupyter notebook.
+    :param int start_time: A timestamp in milliseconds from epoch.
+    :param str symbol: A binance valid symbol.
+    :param str tick_interval: A binance valid time interval for candlesticks.
+    :param int limit: Count of candles to ask for.
+    :return list: Returns a list from the Binance API
+
+    .. code-block:: python
+
+        [
+          [
+            1499040000000,      // Open time
+            "0.01634790",       // Open
+            "0.80000000",       // High
+            "0.01575800",       // Low
+            "0.01577100",       // Close
+            "148976.11427815",  // Volume
+            1499644799999,      // Close time
+            "2434.19055334",    // Quote asset volume
+            308,                // Number of trades
+            "1756.87402397",    // Taker buy base asset volume
+            "28.46694368",      // Taker buy quote asset volume
+            "17928899.62484339" // Ignore.
+          ]
+        ]
     """
     market_logger.info(f"Candles for: {locals()}")
     check_minute_weight(1)
@@ -80,9 +135,35 @@ def get_last_candles(symbol: str = 'BTCUSDT',
                      tick_interval: str = '1d',
                      limit: int = 1000) -> list:
     """
-    Get a list of candles for a specific symbol.
-    The returned list of lists will be limited to limit value to the current candle.
+    Calls API for candles list from one timestamp for a specific symbol.
+
+    The returned list of lists will be limited to limit quantity until the current candle.
+
     Maximum is 1000.
+
+    :param str symbol: A binance valid symbol.
+    :param str tick_interval: A binance valid time interval for candlesticks.
+    :param int limit: Count of candles to ask for.
+    :return list: Returns a list from the Binance API
+
+    .. code-block:: python
+
+        [
+          [
+            1499040000000,      // Open time
+            "0.01634790",       // Open
+            "0.80000000",       // High
+            "0.01575800",       // Low
+            "0.01577100",       // Close
+            "148976.11427815",  // Volume
+            1499644799999,      // Close time
+            "2434.19055334",    // Quote asset volume
+            308,                // Number of trades
+            "1756.87402397",    // Taker buy base asset volume
+            "28.46694368",      // Taker buy quote asset volume
+            "17928899.62484339" // Ignore.
+          ]
+        ]
     """
     check_minute_weight(1)
     endpoint = '/api/v3/klines?'
@@ -92,15 +173,38 @@ def get_last_candles(symbol: str = 'BTCUSDT',
     return get_response(url=endpoint, params=params)
 
 
-def get_agg_trades(fromId=None, symbol='BTCUSDT', limit=None, startTime=None, endTime=None):
+def get_agg_trades(fromId: int = None, symbol: str = 'BTCUSDT', limit=None, startTime: int = None, endTime: int = None):
     """
-    Returns aggregated trades from id to limit or last trades if id not specified.
+    Returns aggregated trades from id to limit or last trades if id not specified. Also is possible to get from starTime utc in
+    milliseconds from epoch or until endtime milliseconds from epoch.
 
-    Also is possible to get from starTime utc in milliseconds or until endtime
+    If it is tested with more than 1 hour of trades, it gives error 1127 and if you adjust it to one hour,
+    the maximum limit of 1000 is NOT applied.
 
-    Si se prueba con más de 1 h de trades da error 1127 y si ajustas a una hora se aplica el limit de 1000 máximo.
+    Limit applied in fromId mode defaults to 500. Maximum is 1000.
 
-    Limit aplicado en modo fromId por defecto 500.
+    :param int fromId: An aggregated trade Id.
+    :param str symbol: A binance valid symbol.
+    :param int limit: Count of trades to ask for.
+    :param int startTime: A timestamp in milliseconds from epoch.
+    :param int endTime: A timestamp in milliseconds from epoch.
+    :return list: Returns a list from the Binance API
+
+    .. code-block:: python
+
+        [
+          {
+            "a": 26129,         // Aggregate tradeId
+            "p": "0.01633102",  // Price
+            "q": "4.70443515",  // Quantity
+            "f": 27781,         // First tradeId
+            "l": 27781,         // Last tradeId
+            "T": 1498793709153, // Timestamp
+            "m": true,          // Was the buyer the maker?
+            "M": true           // Was the trade the best price match?
+          }
+        ]
+
     """
     check_minute_weight(1)
     endpoint = '/api/v3/aggTrades?'
@@ -132,7 +236,29 @@ def get_agg_trades(fromId=None, symbol='BTCUSDT', limit=None, startTime=None, en
 def get_historical_aggregated_trades(symbol: str,
                                      startTime: int,
                                      endTime: int):
-    """Returns aggregated trades between timestamps. It iterates over 1 hour intervals."""
+    """
+    Returns aggregated trades between timestamps. It iterates over 1 hour intervals to avoid API one hour limit.
+
+    :param int startTime: A timestamp in milliseconds from epoch.
+    :param int endTime: A timestamp in milliseconds from epoch.
+    :param str symbol: A binance valid symbol.
+    :return list: Returns a list from the Binance API
+
+    .. code-block:: python
+
+        [
+          {
+            "a": 26129,         // Aggregate tradeId
+            "p": "0.01633102",  // Price
+            "q": "4.70443515",  // Quantity
+            "f": 27781,         // First tradeId
+            "l": 27781,         // Last tradeId
+            "T": 1498793709153, // Timestamp
+            "m": true,          // Was the buyer the maker?
+            "M": true           // Was the trade the best price match?
+          }
+        ]
+    """
     hour_ms = 60 * 60 * 1000
     if endTime - startTime < hour_ms:
         return get_agg_trades(symbol=symbol, startTime=startTime, endTime=endTime)

@@ -28,7 +28,7 @@ Documentation
 -------------
 Take a look to the basic **tutorial**. Find it in the Jupyter Notebook file `tutorial.ipynb`
 
-Under construction (html file available in `docs/html/html` folder that can be opened locally with any browser):
+Also, can be found Sphinx documentation at: 
 
 https://nand0san.github.io/binpan_studio/
 

@@ -29,15 +29,13 @@ Hope you find it useful breaking the market!!!
 Documentation
 -------------
 Take a look to the basic **tutorial**. Find it in the Jupyter Notebook file `tutorial.ipynb`
-Hope you find it useful breaking the market!!!
 
-![](https://raw.githubusercontent.com/nand0san/binpan_studio/main/doc/images/candles.png)
+https://raw.githubusercontent.com/nand0san/binpan_studio/main/doc/images/candles.png
 
 
 GitHub repo
 -----------
-![](https://nand0san.github.io/binpan_studio/)
-
+https://nand0san.github.io/binpan_studio/
 
 
 Installation
@@ -52,7 +50,7 @@ Usage
 
 There is a tutorial in a Jupyter Notebook file in  the github repo.
 
-![](https://github.com/nand0san/binpan_studio/blob/main/tutorial.ipynb)
+https://github.com/nand0san/binpan_studio/blob/main/tutorial.ipynb
 
 Importing just like this:
 
@@ -68,6 +66,12 @@ Importing just like this:
     btcusdt.sma(21)
     btcusdt.plot()
 
+Greetings
+---------
+
+Thanks to the **pantas_ta** people for that great library.
+
+Hope you find it useful breaking the market!!!
 
 
 .. toctree::
@@ -77,6 +81,7 @@ Importing just like this:
    binpan.rst
    market.rst
    exceptions.rst
+   plotting.rst
 
 Indices and tables
 ==================

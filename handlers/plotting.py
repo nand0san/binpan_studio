@@ -197,12 +197,73 @@ def candles_ta(data: pd.DataFrame,
                annotation_colors: list = None,
                annotation_names: list = None,
                labels: list = None):
-    """Se pasan los datos junto con una lista de series de mismo índice con los indicadores.
-    El campo row_pos indica en que fila se van a plotear los indicadores. Hay que tener en cuenta que si se ha marcado
-    como True el ploteado del volume, este se introduce en la fila 2 y se van a desplazar el resto de indicadores
-    automáticamente.
-    Ejemplo: rows_pos = [2, 3, 4] para tres indicadores, usaría fila 1 para el tema de velas y si se añade volumen las
-    filas para los indicadores pasarían a ser 3,4,5.
+    """
+    Data needs to be a DataFrame that at least contains the columns: Open Close High Low Volume
+
+    It plots candles and optionally volume, but can plot any list of pandas series with indicators (float values) with same index.
+
+    Indicators will be plotted below the candles in subplots according to a row position number, counting 1 as overlay in the candles
+    subplot and the rest in row subplots. Several indicators can be plotted in the same row to overlay between them and compare.
+
+    .. note::
+
+       Beware of zeros or values in a different scale when plotting overlapped over candles, that can break the scale of the graph.
+
+    Plot example:
+
+    .. image:: images/plot_ta.png
+        :width: 1000
+        :alt: Candles with some indicators
+
+    :param pd.DataFrame data: a DataFrame that at least contains the columns: Open Close High Low Volume
+    :param list indicators_series: a list of pandas series with float values as indicators.
+    :param list rows_pos: 1 means over the candles. Other numbers mean subsequent subplots under the candles.
+    :param list indicator_names: Names to show in the plot. Defaults to series name.
+    :param list indicators_colors: Color can be forced to anyone from the plotly colors list:
+
+            https://community.plotly.com/t/plotly-colours-list/11730
+
+    :param int width: Plot sizing
+    :param int height: Plot sizing
+    :param bool range_slider: For the volume plot.
+    :param float candles_ta_height_ratio: A ratio between the big candles plot and (if any) the rest of indicator subplots below.
+    :param bool plot_volume: Optional to plot volume.
+    :param str title: A title string.
+    :param str yaxis_title: A name string.
+    :param list annotations: A list of pandas series with values to plot marks or annotations overlapped in the candles plot.
+    :param list markers: Ordered like the annotations list.
+        Example
+
+        .. code-block:: python
+
+           markers = ["arrow-bar-down", "arrow-bar-up", "arrow-bar-left", "arrow-bar-right"]
+
+    :param list text_positions: Ordered like the annotations list.
+        Example
+
+        .. code-block:: python
+
+           text_positions = ["top center", "middle left", "top center", "bottom center", "top right", "middle left", "bottom right",
+            bottom left", "top right", "top right"]
+
+    :param list annotation_colors: Ordered like the annotations list.
+        Example from default colors
+
+        .. code-block:: python
+
+           annotation_colors = ['cornflowerblue', 'blue', 'lightseagreen', 'green', 'cornflowerblue', 'rosybrown', 'lightseagreen',
+            'black', 'orange', 'pink', 'red', 'rosybrown', 'cornflowerblue', 'blue', 'lightseagreen', 'green',
+            'cornflowerblue', 'rosybrown', 'lightseagreen', 'black', 'orange', 'pink', 'red', 'rosybrown']
+
+    :param list annotation_names: Ordered like the annotations list of names to show in legend.
+
+    :param list labels: Ordered like the annotations list of tags to show overlapped. It defaults to price.
+
+        Example:
+        .. code-block:: python
+
+           labels = ['buy', 'sell']
+
     """
     df_plot = data.copy(deep=True)
     if not indicators_series:
@@ -279,7 +340,56 @@ def candles_tagged(data: pd.DataFrame, width=1800, height=1000, candles_ta_heigh
                    rows_pos: list = [],
                    labels: list = [],
                    default_price_for_actions='Close'):
-    """Shortcut para plotear rápido la estrategia buy/sell"""
+    """
+
+    This is a shortcut from candles_ta. It defaults many inputs to better Jupyter Notebook usage.
+
+    Data needs to be a DataFrame that at least contains the columns: Open Close High Low Volume
+
+    It plots candles and optionally volume, but can plot any list of pandas series with indicators (float values) with same index.
+
+    Indicators will be plotted below the candles in subplots according to a row position number, counting 1 as overlay in the candles
+    subplot and the rest in row subplots. Several indicators can be plotted in the same row to overlay between them and compare.
+
+    .. note::
+
+        Beware of zeros or values in a different scale when plotting overlapped over candles, that can break the scale of the graph.
+
+    Plot example:
+
+        .. image:: images/plot_tagged.png
+            :width: 1000
+            :alt: Candles with some indicators
+
+
+    :param pd.DataFrame data: a DataFrame that at least contains the columns: Open Close High Low Volume
+    :param list indicators_series: a list of pandas series with float values as indicators.
+    :param list rows_pos: 1 means over the candles. Other numbers mean subsequent subplots under the candles.
+    :param list indicator_names: Names to show in the plot. Defaults to series name.
+    :param list indicators_colors: Color can be forced to anyone from the plotly colors list:
+
+         https://community.plotly.com/t/plotly-colours-list/11730
+
+    :param int width: Plot sizing
+    :param int height: Plot sizing
+    :param float candles_ta_height_ratio: A ratio between the big candles plot and (if any) the rest of indicator subplots below.
+    :param bool plot_volume: Optional to plot volume.
+    :param str title: A title string.
+    :param str yaxis_title: A name string.
+    :param actions_col: A column name of the column with string tags like buy, sell, etc. This is for plotting marks over candles.
+    :param priced_actions_col: The name of the column containing value of action to position over candles.
+    :param on_candles_indicator: A list of pandas series with values to plot over the candles, not in a subplot. Example: SMA.
+    :param list labels: Ordered like the annotations list of tags to show overlapped. It defaults to price. Example:
+
+        .. code-block:: python
+
+          labels = ['buy', 'sell']
+
+    :param default_price_for_actions: Column to pick prices for actions, because actions will be labeled, in example, actions values like
+        buy or sell with an arrow will be positioned from the close price if not exists a more precise value for the action.
+
+     """
+
     markers = ["arrow-bar-up", "arrow-bar-down"]
     annotation_colors = ['green', 'red']
     annotations_names = ['Buy', 'Sell']

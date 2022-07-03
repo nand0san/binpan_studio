@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plotting Module &mdash; BinPan 1.0.5 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/style.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Exceptions Module" href="exceptions.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> BinPan
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="binpan.html">BinPan Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions Module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Plotting Module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">BinPan</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Plotting Module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/plotting.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="plotting-module">
+<h1>Plotting Module<a class="headerlink" href="#plotting-module" title="Permalink to this heading"></a></h1>
+<p>This module can manage plots.</p>
+<p>Plots are from Plotly library: <a class="reference external" href="https://plotly.com/">https://plotly.com/</a></p>
+<p>Colors can be picked with the name of the color or the index number from this list:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plotly_colors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;aliceblue&quot;</span><span class="p">,</span> <span class="s2">&quot;antiquewhite&quot;</span><span class="p">,</span> <span class="s2">&quot;aqua&quot;</span><span class="p">,</span> <span class="s2">&quot;aquamarine&quot;</span><span class="p">,</span> <span class="s2">&quot;azure&quot;</span><span class="p">,</span> <span class="s2">&quot;beige&quot;</span><span class="p">,</span> <span class="s2">&quot;bisque&quot;</span><span class="p">,</span> <span class="s2">&quot;black&quot;</span><span class="p">,</span>
+                 <span class="s2">&quot;blanchedalmond&quot;</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="s2">&quot;blueviolet&quot;</span><span class="p">,</span> <span class="s2">&quot;brown&quot;</span><span class="p">,</span> <span class="s2">&quot;burlywood&quot;</span><span class="p">,</span> <span class="s2">&quot;cadetblue&quot;</span><span class="p">,</span> <span class="s2">&quot;chartreuse&quot;</span><span class="p">,</span> <span class="s2">&quot;chocolate&quot;</span><span class="p">,</span>
+                 <span class="s2">&quot;coral&quot;</span><span class="p">,</span> <span class="s2">&quot;cornflowerblue&quot;</span><span class="p">,</span> <span class="s2">&quot;cornsilk&quot;</span><span class="p">,</span> <span class="s2">&quot;crimson&quot;</span><span class="p">,</span> <span class="s2">&quot;cyan&quot;</span><span class="p">,</span> <span class="s2">&quot;darkblue&quot;</span><span class="p">,</span> <span class="s2">&quot;darkcyan&quot;</span><span class="p">,</span> <span class="s2">&quot;darkgoldenrod&quot;</span><span class="p">,</span>
+                 <span class="s2">&quot;darkgray&quot;</span><span class="p">,</span> <span class="s2">&quot;darkgrey&quot;</span><span class="p">,</span> <span class="s2">&quot;darkgreen&quot;</span><span class="p">,</span> <span class="s2">&quot;darkkhaki&quot;</span><span class="p">,</span> <span class="s2">&quot;darkmagenta&quot;</span><span class="p">,</span> <span class="s2">&quot;darkolivegreen&quot;</span><span class="p">,</span> <span class="s2">&quot;darkorange&quot;</span><span class="p">,</span>
+                 <span class="s2">&quot;darkorchid&quot;</span><span class="p">,</span> <span class="s2">&quot;darkred&quot;</span><span class="p">,</span> <span class="s2">&quot;darksalmon&quot;</span><span class="p">,</span> <span class="s2">&quot;darkseagreen&quot;</span><span class="p">,</span> <span class="s2">&quot;darkslateblue&quot;</span><span class="p">,</span> <span class="s2">&quot;darkslategray&quot;</span><span class="p">,</span>
+                 <span class="s2">&quot;darkslategrey&quot;</span><span class="p">,</span> <span class="s2">&quot;darkturquoise&quot;</span><span class="p">,</span> <span class="s2">&quot;darkviolet&quot;</span><span class="p">,</span> <span class="s2">&quot;deeppink&quot;</span><span class="p">,</span> <span class="s2">&quot;deepskyblue&quot;</span><span class="p">,</span> <span class="s2">&quot;dimgray&quot;</span><span class="p">,</span> <span class="s2">&quot;dimgrey&quot;</span><span class="p">,</span>
+                 <span class="s2">&quot;dodgerblue&quot;</span><span class="p">,</span> <span class="s2">&quot;firebrick&quot;</span><span class="p">,</span> <span class="s2">&quot;floralwhite&quot;</span><span class="p">,</span> <span class="s2">&quot;forestgreen&quot;</span><span class="p">,</span> <span class="s2">&quot;fuchsia&quot;</span><span class="p">,</span> <span class="s2">&quot;gainsboro&quot;</span><span class="p">,</span> <span class="s2">&quot;ghostwhite&quot;</span><span class="p">,</span> <span class="s2">&quot;gold&quot;</span><span class="p">,</span>
+                 <span class="s2">&quot;goldenrod&quot;</span><span class="p">,</span> <span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="s2">&quot;grey&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="s2">&quot;greenyellow&quot;</span><span class="p">,</span> <span class="s2">&quot;honeydew&quot;</span><span class="p">,</span> <span class="s2">&quot;hotpink&quot;</span><span class="p">,</span> <span class="s2">&quot;indianred&quot;</span><span class="p">,</span> <span class="s2">&quot;indigo&quot;</span><span class="p">,</span>
+                 <span class="s2">&quot;ivory&quot;</span><span class="p">,</span> <span class="s2">&quot;khaki&quot;</span><span class="p">,</span> <span class="s2">&quot;lavender&quot;</span><span class="p">,</span> <span class="s2">&quot;lavenderblush&quot;</span><span class="p">,</span> <span class="s2">&quot;lawngreen&quot;</span><span class="p">,</span> <span class="s2">&quot;lemonchiffon&quot;</span><span class="p">,</span> <span class="s2">&quot;lightblue&quot;</span><span class="p">,</span> <span class="s2">&quot;lightcoral&quot;</span><span class="p">,</span>
+                 <span class="s2">&quot;lightcyan&quot;</span><span class="p">,</span> <span class="s2">&quot;lightgoldenrodyellow&quot;</span><span class="p">,</span> <span class="s2">&quot;lightgray&quot;</span><span class="p">,</span> <span class="s2">&quot;lightgrey&quot;</span><span class="p">,</span> <span class="s2">&quot;lightgreen&quot;</span><span class="p">,</span> <span class="s2">&quot;lightpink&quot;</span><span class="p">,</span>
+                 <span class="s2">&quot;lightsalmon&quot;</span><span class="p">,</span> <span class="s2">&quot;lightseagreen&quot;</span><span class="p">,</span> <span class="s2">&quot;lightskyblue&quot;</span><span class="p">,</span> <span class="s2">&quot;lightslategray&quot;</span><span class="p">,</span> <span class="s2">&quot;lightslategrey&quot;</span><span class="p">,</span> <span class="s2">&quot;lightsteelblue&quot;</span><span class="p">,</span>
+                 <span class="s2">&quot;lightyellow&quot;</span><span class="p">,</span> <span class="s2">&quot;lime&quot;</span><span class="p">,</span> <span class="s2">&quot;limegreen&quot;</span><span class="p">,</span> <span class="s2">&quot;linen&quot;</span><span class="p">,</span> <span class="s2">&quot;magenta&quot;</span><span class="p">,</span> <span class="s2">&quot;maroon&quot;</span><span class="p">,</span> <span class="s2">&quot;mediumaquamarine&quot;</span><span class="p">,</span> <span class="s2">&quot;mediumblue&quot;</span><span class="p">,</span>
+                 <span class="s2">&quot;mediumorchid&quot;</span><span class="p">,</span> <span class="s2">&quot;mediumpurple&quot;</span><span class="p">,</span> <span class="s2">&quot;mediumseagreen&quot;</span><span class="p">,</span> <span class="s2">&quot;mediumslateblue&quot;</span><span class="p">,</span> <span class="s2">&quot;mediumspringgreen&quot;</span><span class="p">,</span>
+                 <span class="s2">&quot;mediumturquoise&quot;</span><span class="p">,</span> <span class="s2">&quot;mediumvioletred&quot;</span><span class="p">,</span> <span class="s2">&quot;midnightblue&quot;</span><span class="p">,</span> <span class="s2">&quot;mintcream&quot;</span><span class="p">,</span> <span class="s2">&quot;mistyrose&quot;</span><span class="p">,</span> <span class="s2">&quot;moccasin&quot;</span><span class="p">,</span>
+                 <span class="s2">&quot;navajowhite&quot;</span><span class="p">,</span> <span class="s2">&quot;navy&quot;</span><span class="p">,</span> <span class="s2">&quot;oldlace&quot;</span><span class="p">,</span> <span class="s2">&quot;olive&quot;</span><span class="p">,</span> <span class="s2">&quot;olivedrab&quot;</span><span class="p">,</span> <span class="s2">&quot;orange&quot;</span><span class="p">,</span> <span class="s2">&quot;orangered&quot;</span><span class="p">,</span> <span class="s2">&quot;orchid&quot;</span><span class="p">,</span>
+                 <span class="s2">&quot;palegoldenrod&quot;</span><span class="p">,</span> <span class="s2">&quot;palegreen&quot;</span><span class="p">,</span> <span class="s2">&quot;paleturquoise&quot;</span><span class="p">,</span> <span class="s2">&quot;palevioletred&quot;</span><span class="p">,</span> <span class="s2">&quot;papayawhip&quot;</span><span class="p">,</span> <span class="s2">&quot;peachpuff&quot;</span><span class="p">,</span> <span class="s2">&quot;peru&quot;</span><span class="p">,</span>
+                 <span class="s2">&quot;pink&quot;</span><span class="p">,</span> <span class="s2">&quot;plum&quot;</span><span class="p">,</span> <span class="s2">&quot;powderblue&quot;</span><span class="p">,</span> <span class="s2">&quot;purple&quot;</span><span class="p">,</span> <span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="s2">&quot;rosybrown&quot;</span><span class="p">,</span> <span class="s2">&quot;royalblue&quot;</span><span class="p">,</span> <span class="s2">&quot;rebeccapurple&quot;</span><span class="p">,</span>
+                 <span class="s2">&quot;saddlebrown&quot;</span><span class="p">,</span> <span class="s2">&quot;salmon&quot;</span><span class="p">,</span> <span class="s2">&quot;sandybrown&quot;</span><span class="p">,</span> <span class="s2">&quot;seagreen&quot;</span><span class="p">,</span> <span class="s2">&quot;seashell&quot;</span><span class="p">,</span> <span class="s2">&quot;sienna&quot;</span><span class="p">,</span> <span class="s2">&quot;silver&quot;</span><span class="p">,</span> <span class="s2">&quot;skyblue&quot;</span><span class="p">,</span>
+                 <span class="s2">&quot;slateblue&quot;</span><span class="p">,</span> <span class="s2">&quot;slategray&quot;</span><span class="p">,</span> <span class="s2">&quot;slategrey&quot;</span><span class="p">,</span> <span class="s2">&quot;snow&quot;</span><span class="p">,</span> <span class="s2">&quot;springgreen&quot;</span><span class="p">,</span> <span class="s2">&quot;steelblue&quot;</span><span class="p">,</span> <span class="s2">&quot;tan&quot;</span><span class="p">,</span> <span class="s2">&quot;teal&quot;</span><span class="p">,</span> <span class="s2">&quot;thistle&quot;</span><span class="p">,</span>
+                 <span class="s2">&quot;tomato&quot;</span><span class="p">,</span> <span class="s2">&quot;turquoise&quot;</span><span class="p">,</span> <span class="s2">&quot;violet&quot;</span><span class="p">,</span> <span class="s2">&quot;wheat&quot;</span><span class="p">,</span> <span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="s2">&quot;whitesmoke&quot;</span><span class="p">,</span> <span class="s2">&quot;yellow&quot;</span><span class="p">,</span> <span class="s2">&quot;yellowgreen&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<span class="target" id="module-binpan.handlers.plotting"></span><dl class="py function">
+<dt class="sig sig-object py" id="binpan.handlers.plotting.candles_ta">
+<span class="sig-prename descclassname"><span class="pre">binpan.handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">candles_ta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indicators_series</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rows_pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indicator_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indicators_colors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1800</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range_slider</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">candles_ta_height_ratio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Candlesticks,</span> <span class="pre">indicators,</span> <span class="pre">and</span> <span class="pre">Volume</span> <span class="pre">plot'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yaxis_title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Symbol</span> <span class="pre">Price'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_positions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotation_colors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotation_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.handlers.plotting.candles_ta" title="Permalink to this definition"></a></dt>
+<dd><p>Data needs to be a DataFrame that at least contains the columns: Open Close High Low Volume</p>
+<p>It plots candles and optionally volume, but can plot any list of pandas series with indicators (float values) with same index.</p>
+<p>Indicators will be plotted below the candles in subplots according to a row position number, counting 1 as overlay in the candles
+subplot and the rest in row subplots. Several indicators can be plotted in the same row to overlay between them and compare.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Beware of zeros or values in a different scale when plotting overlapped over candles, that can break the scale of the graph.</p>
+</div>
+<p>Plot example:</p>
+<a class="reference internal image-reference" href="_images/plot_ta.png"><img alt="Candles with some indicators" src="_images/plot_ta.png" style="width: 1000px;" /></a>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>pd.DataFrame</em>) – a DataFrame that at least contains the columns: Open Close High Low Volume</p></li>
+<li><p><strong>indicators_series</strong> (<em>list</em>) – a list of pandas series with float values as indicators.</p></li>
+<li><p><strong>rows_pos</strong> (<em>list</em>) – 1 means over the candles. Other numbers mean subsequent subplots under the candles.</p></li>
+<li><p><strong>indicator_names</strong> (<em>list</em>) – Names to show in the plot. Defaults to series name.</p></li>
+<li><p><strong>indicators_colors</strong> (<em>list</em>) – <p>Color can be forced to anyone from the plotly colors list:</p>
+<p><a class="reference external" href="https://community.plotly.com/t/plotly-colours-list/11730">https://community.plotly.com/t/plotly-colours-list/11730</a></p>
+</p></li>
+<li><p><strong>width</strong> (<em>int</em>) – Plot sizing</p></li>
+<li><p><strong>height</strong> (<em>int</em>) – Plot sizing</p></li>
+<li><p><strong>range_slider</strong> (<em>bool</em>) – For the volume plot.</p></li>
+<li><p><strong>candles_ta_height_ratio</strong> (<em>float</em>) – A ratio between the big candles plot and (if any) the rest of indicator subplots below.</p></li>
+<li><p><strong>plot_volume</strong> (<em>bool</em>) – Optional to plot volume.</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – A title string.</p></li>
+<li><p><strong>yaxis_title</strong> (<em>str</em>) – A name string.</p></li>
+<li><p><strong>annotations</strong> (<em>list</em>) – A list of pandas series with values to plot marks or annotations overlapped in the candles plot.</p></li>
+<li><p><strong>markers</strong> (<em>list</em>) – <p>Ordered like the annotations list.
+Example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">markers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;arrow-bar-down&quot;</span><span class="p">,</span> <span class="s2">&quot;arrow-bar-up&quot;</span><span class="p">,</span> <span class="s2">&quot;arrow-bar-left&quot;</span><span class="p">,</span> <span class="s2">&quot;arrow-bar-right&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+</p></li>
+<li><p><strong>text_positions</strong> (<em>list</em>) – <p>Ordered like the annotations list.
+Example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">text_positions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;top center&quot;</span><span class="p">,</span> <span class="s2">&quot;middle left&quot;</span><span class="p">,</span> <span class="s2">&quot;top center&quot;</span><span class="p">,</span> <span class="s2">&quot;bottom center&quot;</span><span class="p">,</span> <span class="s2">&quot;top right&quot;</span><span class="p">,</span> <span class="s2">&quot;middle left&quot;</span><span class="p">,</span> <span class="s2">&quot;bottom right&quot;</span><span class="p">,</span>
+ <span class="n">bottom</span> <span class="n">left</span><span class="s2">&quot;, &quot;</span><span class="n">top</span> <span class="n">right</span><span class="s2">&quot;, &quot;</span><span class="n">top</span> <span class="n">right</span><span class="s2">&quot;]</span>
+</pre></div>
+</div>
+</p></li>
+<li><p><strong>annotation_colors</strong> (<em>list</em>) – <p>Ordered like the annotations list.
+Example from default colors</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">annotation_colors</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;cornflowerblue&#39;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;lightseagreen&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="s1">&#39;cornflowerblue&#39;</span><span class="p">,</span> <span class="s1">&#39;rosybrown&#39;</span><span class="p">,</span> <span class="s1">&#39;lightseagreen&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="s1">&#39;orange&#39;</span><span class="p">,</span> <span class="s1">&#39;pink&#39;</span><span class="p">,</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;rosybrown&#39;</span><span class="p">,</span> <span class="s1">&#39;cornflowerblue&#39;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;lightseagreen&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;cornflowerblue&#39;</span><span class="p">,</span> <span class="s1">&#39;rosybrown&#39;</span><span class="p">,</span> <span class="s1">&#39;lightseagreen&#39;</span><span class="p">,</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="s1">&#39;orange&#39;</span><span class="p">,</span> <span class="s1">&#39;pink&#39;</span><span class="p">,</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;rosybrown&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</p></li>
+<li><p><strong>annotation_names</strong> (<em>list</em>) – Ordered like the annotations list of names to show in legend.</p></li>
+<li><p><strong>labels</strong> (<em>list</em>) – <p>Ordered like the annotations list of tags to show overlapped. It defaults to price.</p>
+<p>Example:
+.. code-block:: python</p>
+<blockquote>
+<div><p>labels = [‘buy’, ‘sell’]</p>
+</div></blockquote>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.handlers.plotting.candles_tagged">
+<span class="sig-prename descclassname"><span class="pre">binpan.handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">candles_tagged</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1800</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">candles_ta_height_ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_volume</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Candlesticks</span> <span class="pre">Strategy</span> <span class="pre">Plot'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yaxis_title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Symbol</span> <span class="pre">Price'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_candles_indicator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priced_actions_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'priced_actions'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actions_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indicators_series</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indicator_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indicators_colors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rows_pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_price_for_actions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Close'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.handlers.plotting.candles_tagged" title="Permalink to this definition"></a></dt>
+<dd><p>This is a shortcut from candles_ta. It defaults many inputs to better Jupyter Notebook usage.</p>
+<p>Data needs to be a DataFrame that at least contains the columns: Open Close High Low Volume</p>
+<p>It plots candles and optionally volume, but can plot any list of pandas series with indicators (float values) with same index.</p>
+<p>Indicators will be plotted below the candles in subplots according to a row position number, counting 1 as overlay in the candles
+subplot and the rest in row subplots. Several indicators can be plotted in the same row to overlay between them and compare.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Beware of zeros or values in a different scale when plotting overlapped over candles, that can break the scale of the graph.</p>
+</div>
+<p>Plot example:</p>
+<blockquote>
+<div><a class="reference internal image-reference" href="_images/plot_tagged.png"><img alt="Candles with some indicators" src="_images/plot_tagged.png" style="width: 1000px;" /></a>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>pd.DataFrame</em>) – a DataFrame that at least contains the columns: Open Close High Low Volume</p></li>
+<li><p><strong>indicators_series</strong> (<em>list</em>) – a list of pandas series with float values as indicators.</p></li>
+<li><p><strong>rows_pos</strong> (<em>list</em>) – 1 means over the candles. Other numbers mean subsequent subplots under the candles.</p></li>
+<li><p><strong>indicator_names</strong> (<em>list</em>) – Names to show in the plot. Defaults to series name.</p></li>
+<li><p><strong>indicators_colors</strong> (<em>list</em>) – <p>Color can be forced to anyone from the plotly colors list:</p>
+<p><a class="reference external" href="https://community.plotly.com/t/plotly-colours-list/11730">https://community.plotly.com/t/plotly-colours-list/11730</a></p>
+</p></li>
+<li><p><strong>width</strong> (<em>int</em>) – Plot sizing</p></li>
+<li><p><strong>height</strong> (<em>int</em>) – Plot sizing</p></li>
+<li><p><strong>candles_ta_height_ratio</strong> (<em>float</em>) – A ratio between the big candles plot and (if any) the rest of indicator subplots below.</p></li>
+<li><p><strong>plot_volume</strong> (<em>bool</em>) – Optional to plot volume.</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – A title string.</p></li>
+<li><p><strong>yaxis_title</strong> (<em>str</em>) – A name string.</p></li>
+<li><p><strong>actions_col</strong> – A column name of the column with string tags like buy, sell, etc. This is for plotting marks over candles.</p></li>
+<li><p><strong>priced_actions_col</strong> – The name of the column containing value of action to position over candles.</p></li>
+<li><p><strong>on_candles_indicator</strong> – A list of pandas series with values to plot over the candles, not in a subplot. Example: SMA.</p></li>
+<li><p><strong>labels</strong> (<em>list</em>) – <p>Ordered like the annotations list of tags to show overlapped. It defaults to price. Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;buy&#39;</span><span class="p">,</span> <span class="s1">&#39;sell&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</p></li>
+<li><p><strong>default_price_for_actions</strong> – Column to pick prices for actions, because actions will be labeled, in example, actions values like
+buy or sell with an arrow will be positioned from the close price if not exists a more precise value for the action.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.handlers.plotting.plot_trade_size">
+<span class="sig-prename descclassname"><span class="pre">binpan.handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">plot_trade_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">60</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logarithmic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Trade</span> <span class="pre">Size'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.handlers.plotting.plot_trade_size" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.handlers.plotting.plot_pie">
+<span class="sig-prename descclassname"><span class="pre">binpan.handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">plot_pie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">serie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">categories</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Size</span> <span class="pre">trade</span> <span class="pre">categories'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logarithmic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.handlers.plotting.plot_pie" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.handlers.plotting.plot_scatter">
+<span class="sig-prename descclassname"><span class="pre">binpan.handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">plot_scatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marginal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.handlers.plotting.plot_scatter" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.handlers.plotting.plot_hists_vs">
+<span class="sig-prename descclassname"><span class="pre">binpan.handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">plot_hists_vs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x0_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x1_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hist_funct</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sum'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">900</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs_update_layout</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.handlers.plotting.plot_hists_vs" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="exceptions.html" class="btn btn-neutral float-left" title="Exceptions Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fernando Alfonso.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
