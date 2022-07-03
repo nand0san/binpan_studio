@@ -41,7 +41,7 @@ def get_candles_by_time_stamps(start_time: int = None,
     :param int limit: Count of candles to ask for.
     :return list: Returns a list from the Binance API
 
-    .. code-block:: python
+    .. code-block::
 
         [
           [
@@ -102,7 +102,7 @@ def get_candles_from_start_time(start_time: int,
     :param int limit: Count of candles to ask for.
     :return list: Returns a list from the Binance API
 
-    .. code-block:: python
+    .. code-block::
 
         [
           [
@@ -146,7 +146,7 @@ def get_last_candles(symbol: str = 'BTCUSDT',
     :param int limit: Count of candles to ask for.
     :return list: Returns a list from the Binance API
 
-    .. code-block:: python
+    .. code-block::
 
         [
           [

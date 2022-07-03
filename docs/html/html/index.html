@@ -108,17 +108,17 @@
 <p>There is a tutorial in a Jupyter Notebook file in  the github repo.</p>
 <p><a class="reference external" href="https://github.com/nand0san/binpan_studio/blob/main/tutorial.ipynb">https://github.com/nand0san/binpan_studio/blob/main/tutorial.ipynb</a></p>
 <p>Importing just like this:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">binpan</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">binpan</span>
 
-<span class="n">btcusdt</span> <span class="o">=</span> <span class="n">binpan</span><span class="o">.</span><span class="n">manager</span><span class="o">.</span><span class="n">CandlesManager</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;btcusdt&#39;</span><span class="p">,</span>
-                                        <span class="n">tick_interval</span><span class="o">=</span><span class="s1">&#39;15m&#39;</span><span class="p">,</span>
-                                        <span class="n">time_zone</span><span class="o">=</span><span class="s1">&#39;Europe/Madrid&#39;</span><span class="p">,</span>
-                                        <span class="n">start_time</span><span class="o">=</span><span class="s1">&#39;2021-10-31 01:00:00&#39;</span><span class="p">,</span>
-                                        <span class="n">end_time</span><span class="o">=</span><span class="s1">&#39;2021-10-31 03:00:00&#39;</span><span class="p">)</span>
+<span class="n">btcusdt</span> <span class="o">=</span> <span class="n">binpan</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;btcusdt&#39;</span><span class="p">,</span>
+                        <span class="n">tick_interval</span><span class="o">=</span><span class="s1">&#39;15m&#39;</span><span class="p">,</span>
+                        <span class="n">time_zone</span><span class="o">=</span><span class="s1">&#39;Europe/Madrid&#39;</span><span class="p">,</span>
+                        <span class="n">end_time</span><span class="o">=</span><span class="s1">&#39;2021-10-31 03:00:00&#39;</span><span class="p">)</span>
 <span class="n">btcusdt</span><span class="o">.</span><span class="n">sma</span><span class="p">(</span><span class="mi">21</span><span class="p">)</span>
 <span class="n">btcusdt</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
+<a class="reference internal image-reference" href="_images/index_example.png"><img alt="_images/index_example.png" src="_images/index_example.png" style="width: 1000px;" /></a>
 </section>
 <section id="greetings">
 <h2>Greetings<a class="headerlink" href="#greetings" title="Permalink to this heading"></a></h2>
