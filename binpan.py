@@ -201,6 +201,7 @@ class Symbol(object):
         self.trades = pd.DataFrame(columns=list(self.trades_columns.values()))
         self.row_control = {}
         self.color_control = {}
+        self.color_fill_control = {}
         self.row_counter = 1
 
         self.set_display_columns()
@@ -438,13 +439,17 @@ class Symbol(object):
     def get_trades(self):
         """
         Calls the API and creates another dataframe included in the object with the aggregated trades from API for the period of the
-         created object.
+        created object.
 
-          .. note::
-             If the object covers a long time interval, this action can take a relative long time. The BinPan library take care of the
-             API weight and can take a sleep to wait until API weight returns to a low value.
+
+        .. note::
+
+           If the object covers a long time interval, this action can take a relative long time. The BinPan library take care of the
+           API weight and can take a sleep to wait until API weight returns to a low value.
+
 
         Example:
+
             .. code-block::
 
                	Aggregate tradeId	Price	Quantity	First tradeId	Last tradeId	Timestamp	Buyer was maker	Best price match
@@ -463,7 +468,8 @@ class Symbol(object):
                 2022-07-03 13:11:49.507000+02:00	12141095	0.000125	1.562695e+08	17183834	17183835	2022-07-03 13:11:49	False	True
                 2022-07-03 13:11:50.172000+02:00	12141096	0.000125	1.048632e+06	17183836	17183836	2022-07-03 13:11:50	False	True
 
-        :return: pd.DataFrame
+
+        :return: Pandas DataFrame
 
         """
         trades = handlers.market.get_historical_aggregated_trades(symbol=self.symbol,
@@ -476,7 +482,7 @@ class Symbol(object):
                                                          time_index=self.time_index)
         return self.trades
 
-    def plot_rows(self, indicator_column: str = None, row_position: int = None):
+    def set_plot_row(self, indicator_column: str = None, row_position: int = None):
         """
         Internal control formatting plots. Can be used to change plot subplot row of an indicator.
 
@@ -489,7 +495,7 @@ class Symbol(object):
             self.row_control.update({indicator_column: row_position})
         return self.row_control
 
-    def plot_colors(self, indicator_column: str = None, color: int or str = None) -> dict:
+    def set_plot_color(self, indicator_column: str = None, color: int or str = None) -> dict:
         """
         Internal control formatting plots. Can be used to change plot color of an indicator.
 
@@ -506,6 +512,26 @@ class Symbol(object):
         elif indicator_column:
             self.color_control.update({indicator_column: choice(plotly_colors)})
         return self.color_control
+
+    def set_plot_color_fill(self, indicator_column: str = None, color_fill: str or bool = None) -> dict:
+        """
+        Internal control formatting plots. Can be used to change plot color of an indicator.
+
+        :param str indicator_column: column name
+        :param color_fill: Color can be forced to fill to zero line. For transparent colors use rgba string code to define color.
+         Example for transparent green 'rgba(26,150,65,0.5)' or transparent red 'rgba(204,0,0,0.5)'
+        :return dict: columns with its assigned colors when plotting.
+
+        """
+        if indicator_column and color_fill:
+            if type(color_fill) == int:
+                self.color_fill_control.update({indicator_column: plotly_colors[color_fill]})
+            elif color_fill in plotly_colors or color_fill.startswith('rgba'):
+                print("fill detected")
+                self.color_fill_control.update({indicator_column: color_fill})
+        elif indicator_column:
+            self.color_fill_control.update({indicator_column: None})
+        return self.color_fill_control
 
     def plot(self,
              width=1800,
@@ -565,6 +591,7 @@ class Symbol(object):
                                          indicators_series=indicators_series,
                                          indicator_names=indicator_names,
                                          indicators_colors=indicators_colors,
+                                         fill_control=self.color_fill_control,
                                          rows_pos=rows_pos,
                                          labels=labels,
                                          default_price_for_actions=default_price_for_actions)
@@ -643,6 +670,7 @@ class Symbol(object):
            :width: 1000
            :alt: Candles with some indicators
 
+
         :param bins: How many bars.
         :param hist_funct: The way graph data is showed. It can be 'percent', 'probability', 'density', or 'probability density'
         :param height: Height of the graph.
@@ -651,7 +679,7 @@ class Symbol(object):
         :param total_volume: The column with the total volume. It defaults automatically.
         :param partial_vol: The column with the partial volume. It defaults automatically. API shows maker or taker separated volumes.
         :param kwargs_update_layout: Optional
-        :return:
+
         """
         if from_trades:
             if self.trades.empty:
@@ -708,6 +736,7 @@ class Symbol(object):
            :width: 1000
            :alt: Candles with some indicators
 
+
         :param dot_symbol: Column with discrete values to assign different symbols for the plot marks.
         :param x: Name of the column with prices. From trades or candles.
         :param y: Name of the column with sizes. From trades or candles.
@@ -717,6 +746,7 @@ class Symbol(object):
         :param height: Height of the plot.
         :param color_referenced_to_y: Scales color in y axis.
         :param kwargs: Optional plotly args.
+
         """
         if self.trades.empty and from_trades:
             binpan_logger.info("Trades not downloaded. Please add trades data with: my_binpan.get_trades()")
@@ -764,6 +794,7 @@ class Symbol(object):
 
         :param symbol: Not to use it, just here for initializing the class.
         :return: Dictionary
+
         """
         try:
             if not symbol:
@@ -850,7 +881,7 @@ class Symbol(object):
         :param symbol: The used symbol.
         :param time_zone: Selected time zone.
         :param time_index: Or integer index.
-        :return: pd.DataFrame
+        :return: Pandas DataFrame
 
         """
         df = pd.DataFrame(response)
@@ -945,8 +976,9 @@ class Symbol(object):
         if inplace:
             # plot ready
             column_name = str(ma.name)
-            self.plot_colors(indicator_column=column_name, color=color)
-            self.plot_rows(indicator_column=str(column_name), row_position=1)  # overlaps are one
+            self.set_plot_color(indicator_column=column_name, color=color)
+            self.set_plot_color_fill(indicator_column=column_name, color_fill=None)
+            self.set_plot_row(indicator_column=str(column_name), row_position=1)  # overlaps are one
             self.df.loc[:, column_name] = ma
 
         return ma
@@ -963,6 +995,7 @@ class Symbol(object):
             <https://community.plotly.com/t/plotly-colours-list/11730>
         :param kwargs: Optional plotly args.
         :return: pd.Series
+
         """
         return self.ma(ma_name='sma', column_source=column, inplace=inplace, length=window, suffix=suffix, color=color, **kwargs)
 
@@ -981,7 +1014,7 @@ class Symbol(object):
         """
         return self.ma(ma_name='ema', column_source=column, inplace=inplace, length=window, suffix=suffix, color=color, **kwargs)
 
-    def supertrend(self, length: int = 10, multiplier: int = 3, inplace=True, suffix: str = '', colors: list = None, **kwargs):
+    def supertrend(self, length: int = 10, multiplier: int = 3, inplace=True, suffix: str = None, colors: list = None, **kwargs):
         """
         Generate technical indicator Supertrend.
 
@@ -992,6 +1025,7 @@ class Symbol(object):
         :param list colors: DDefaults to red and green.
         :param kwargs: Optional plotly args.
         :return: pd.DataFrame
+
         """
         if suffix:
             kwargs.update({'suffix': suffix})
@@ -999,7 +1033,7 @@ class Symbol(object):
                                       low=self.df['Low'],
                                       close=self.df['Close'],
                                       length=length,
-                                      multiplier=multiplier,
+                                      multiplier=int(multiplier),
                                       **kwargs)
         supertrend_df.replace(0, np.nan, inplace=True)  # pandas_ta puts a zero at the beginning sometimes
 
@@ -1010,14 +1044,67 @@ class Symbol(object):
             if not colors:
                 colors = ['yellow', 'blue', 'green', 'red']
             for i, col in enumerate(column_names):
-                self.plot_colors(indicator_column=col, color=colors[i])
+                self.set_plot_color(indicator_column=col, color=colors[i])
+                self.set_plot_color_fill(indicator_column=col, color_fill=False)
                 if col.startswith("SUPERTs_"):
-                    self.plot_rows(indicator_column=col, row_position=1)  # overlaps are one
+                    self.set_plot_row(indicator_column=col, row_position=1)  # overlaps are one
                 elif col.startswith("SUPERTl_"):
-                    self.plot_rows(indicator_column=col, row_position=1)  # overlaps are one
+                    self.set_plot_row(indicator_column=col, row_position=1)  # overlaps are one
                 elif col.startswith("SUPERT_"):
-                    self.plot_rows(indicator_column=col, row_position=1)  # overlaps are one
+                    self.set_plot_row(indicator_column=col, row_position=1)  # overlaps are one
                 elif col.startswith("SUPERTd_"):
-                    self.plot_rows(indicator_column=col, row_position=self.row_counter)  # overlaps are one
+                    self.set_plot_row(indicator_column=col, row_position=self.row_counter)  # overlaps are one
             self.df = pd.concat([self.df, supertrend_df], axis=1)
         return supertrend_df
+
+    def macd(self, fast: int = 12,
+             slow: int = 26,
+             smooth: int = 9,
+             inplace=True,
+             suffix: str = '',
+             colors: list = None,
+             **kwargs):
+        """
+        Generate technical indicator Moving Average, Convergence/Divergence (MACD).
+
+            https://www.investopedia.com/terms/m/macd.asp
+
+        :param fast: Fast rolling window including the current candles when calculating the indicator.
+        :param slow: Slow rolling window including the current candles when calculating the indicator.
+        :param smooth: Factor to apply a smooth in values.
+        :param inplace: Make it permanent in the instance or not.
+        :param suffix: A decorative suffix for the name of the column created.
+        :param colors: A list of colors for the MACD dataframe columns. Is the color to show when plotting.
+        It can be any color from plotly library or a number in the list of those. Default colors defined.
+
+            <https://community.plotly.com/t/plotly-colours-list/11730>
+
+        :param kwargs: Optional from https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/momentum/macd.py
+        :return: pd.Series
+
+        """
+        macd = self.df.ta.macd(fast=fast,
+                               slow=slow,
+                               signal=smooth,
+                               suffix=suffix,
+                               **kwargs)
+
+        if inplace:
+            self.row_counter += 1
+            # plot ready
+            if not colors or len(colors) != 3:
+                colors = ['orange', 'green', 'skyblue']
+            for i, c in enumerate(macd.columns):
+                col = macd[c]
+                column_name = str(col.name)
+                self.set_plot_color(indicator_column=column_name, color=colors[i])
+                if c.startswith('MACDh_'):
+                    self.set_plot_color_fill(indicator_column=column_name, color_fill='rgba(26,150,65,0.5)')
+                else:
+                    self.set_plot_color_fill(indicator_column=column_name, color_fill=False)
+                self.set_plot_row(indicator_column=str(column_name), row_position=self.row_counter)
+                self.df.loc[:, column_name] = col
+
+        binpan_logger.debug(f"{self.color_control} {self.color_fill_control}")
+
+        return macd

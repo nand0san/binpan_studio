@@ -291,17 +291,16 @@ in the object remains.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="binpan.Symbol.get_trades">
 <span class="sig-name descname"><span class="pre">get_trades</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.get_trades" title="Permalink to this definition"></a></dt>
-<dd><dl>
-<dt>Calls the API and creates another dataframe included in the object with the aggregated trades from API for the period of the</dt><dd><p>created object.</p>
-<blockquote>
-<div><div class="admonition note">
+<dd><p>Calls the API and creates another dataframe included in the object with the aggregated trades from API for the period of the
+created object.</p>
+<div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If the object covers a long time interval, this action can take a relative long time. The BinPan library take care of the
 API weight and can take a sleep to wait until API weight returns to a low value.</p>
 </div>
-</div></blockquote>
-</dd>
-<dt>Example:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Aggregate</span> <span class="n">tradeId</span>       <span class="n">Price</span>   <span class="n">Quantity</span>        <span class="n">First</span> <span class="n">tradeId</span>   <span class="n">Last</span> <span class="n">tradeId</span>    <span class="n">Timestamp</span>       <span class="n">Buyer</span> <span class="n">was</span> <span class="n">maker</span> <span class="n">Best</span> <span class="n">price</span> <span class="n">match</span>
+<p>Example:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Aggregate</span> <span class="n">tradeId</span>       <span class="n">Price</span>   <span class="n">Quantity</span>        <span class="n">First</span> <span class="n">tradeId</span>   <span class="n">Last</span> <span class="n">tradeId</span>    <span class="n">Timestamp</span>       <span class="n">Buyer</span> <span class="n">was</span> <span class="n">maker</span> <span class="n">Best</span> <span class="n">price</span> <span class="n">match</span>
 
 <span class="n">LUNCBUSD</span> <span class="n">Europe</span><span class="o">/</span><span class="n">Madrid</span>
 
@@ -318,11 +317,10 @@ API weight and can take a sleep to wait until API weight returns to a low value.
 <span class="mi">2022</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">03</span> <span class="mi">13</span><span class="p">:</span><span class="mi">11</span><span class="p">:</span><span class="mf">50.172000</span><span class="o">+</span><span class="mi">02</span><span class="p">:</span><span class="mi">00</span>        <span class="mi">12141096</span>        <span class="mf">0.000125</span>        <span class="mf">1.048632e+06</span>    <span class="mi">17183836</span>        <span class="mi">17183836</span>        <span class="mi">2022</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">03</span> <span class="mi">13</span><span class="p">:</span><span class="mi">11</span><span class="p">:</span><span class="mi">50</span>     <span class="kc">False</span>   <span class="kc">True</span>
 </pre></div>
 </div>
-</dd>
-</dl>
+</div></blockquote>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>pd.DataFrame</p>
+<dd class="field-odd"><p>Pandas DataFrame</p>
 </dd>
 </dl>
 </dd></dl>
@@ -365,6 +363,39 @@ before converting candles to Heikin Ashi.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="binpan.Symbol.macd">
+<span class="sig-name descname"><span class="pre">macd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fast</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">26</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.macd" title="Permalink to this definition"></a></dt>
+<dd><p>Generate technical indicator Moving Average, Convergence/Divergence (MACD).</p>
+<blockquote>
+<div><p><a class="reference external" href="https://www.investopedia.com/terms/m/macd.asp">https://www.investopedia.com/terms/m/macd.asp</a></p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fast</strong> – Fast rolling window including the current candles when calculating the indicator.</p></li>
+<li><p><strong>slow</strong> – Slow rolling window including the current candles when calculating the indicator.</p></li>
+<li><p><strong>smooth</strong> – Factor to apply a smooth in values.</p></li>
+<li><p><strong>inplace</strong> – Make it permanent in the instance or not.</p></li>
+<li><p><strong>suffix</strong> – A decorative suffix for the name of the column created.</p></li>
+<li><p><strong>colors</strong> – A list of colors for the MACD dataframe columns. Is the color to show when plotting.</p></li>
+</ul>
+</dd>
+</dl>
+<p>It can be any color from plotly library or a number in the list of those. Default colors defined.</p>
+<blockquote>
+<div><p>&lt;<a class="reference external" href="https://community.plotly.com/t/plotly-colours-list/11730">https://community.plotly.com/t/plotly-colours-list/11730</a>&gt;</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>kwargs</strong> – Optional from <a class="reference external" href="https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/momentum/macd.py">https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/momentum/macd.py</a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>pd.Series</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="binpan.Symbol.makers_vs_takers_plot">
 <span class="sig-name descname"><span class="pre">makers_vs_takers_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hist_funct</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sum'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">900</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_trades</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_volume</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partial_vol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs_update_layout</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.makers_vs_takers_plot" title="Permalink to this definition"></a></dt>
 <dd><p>Binance fees can be cheaper for maker orders, many times when big traders, like whales, are operating. Showing what are doing
@@ -384,9 +415,6 @@ makers.</p>
 <li><p><strong>partial_vol</strong> – The column with the partial volume. It defaults automatically. API shows maker or taker separated volumes.</p></li>
 <li><p><strong>kwargs_update_layout</strong> – Optional</p></li>
 </ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
 </dd>
 </dl>
 </dd></dl>
@@ -416,7 +444,7 @@ makers.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>pd.DataFrame</p>
+<dd class="field-even"><p>Pandas DataFrame</p>
 </dd>
 </dl>
 </dd></dl>
@@ -468,40 +496,6 @@ in the candles plot.</p></li>
 <li><p><strong>labels</strong> – Names for the annotations instead of the price.</p></li>
 <li><p><strong>default_price_for_actions</strong> – Column to use as priced actions in case of not existing a specific prices actions column.</p></li>
 </ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="binpan.Symbol.plot_colors">
-<span class="sig-name descname"><span class="pre">plot_colors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indicator_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#binpan.Symbol.plot_colors" title="Permalink to this definition"></a></dt>
-<dd><p>Internal control formatting plots. Can be used to change plot color of an indicator.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>indicator_column</strong> (<em>str</em>) – column name</p></li>
-<li><p><strong>color</strong> – reassign color to column name</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return dict</dt>
-<dd class="field-even"><p>columns with its assigned colors when plotting.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="binpan.Symbol.plot_rows">
-<span class="sig-name descname"><span class="pre">plot_rows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indicator_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row_position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.plot_rows" title="Permalink to this definition"></a></dt>
-<dd><p>Internal control formatting plots. Can be used to change plot subplot row of an indicator.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>indicator_column</strong> (<em>str</em>) – column name</p></li>
-<li><p><strong>row_position</strong> – reassign row_position to column name</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return dict</dt>
-<dd class="field-even"><p>columns with its assigned row_position in subplots when plotting.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -621,6 +615,58 @@ waiting long time intervals grabbing the trades.)</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="binpan.Symbol.set_plot_color">
+<span class="sig-name descname"><span class="pre">set_plot_color</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indicator_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#binpan.Symbol.set_plot_color" title="Permalink to this definition"></a></dt>
+<dd><p>Internal control formatting plots. Can be used to change plot color of an indicator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>indicator_column</strong> (<em>str</em>) – column name</p></li>
+<li><p><strong>color</strong> – reassign color to column name</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return dict</dt>
+<dd class="field-even"><p>columns with its assigned colors when plotting.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Symbol.set_plot_color_fill">
+<span class="sig-name descname"><span class="pre">set_plot_color_fill</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indicator_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_fill</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#binpan.Symbol.set_plot_color_fill" title="Permalink to this definition"></a></dt>
+<dd><p>Internal control formatting plots. Can be used to change plot color of an indicator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>indicator_column</strong> (<em>str</em>) – column name</p></li>
+<li><p><strong>color_fill</strong> – Color can be forced to fill to zero line. For transparent colors use rgba string code to define color.
+Example for transparent green ‘rgba(26,150,65,0.5)’ or transparent red ‘rgba(204,0,0,0.5)’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return dict</dt>
+<dd class="field-even"><p>columns with its assigned colors when plotting.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Symbol.set_plot_row">
+<span class="sig-name descname"><span class="pre">set_plot_row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indicator_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row_position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.set_plot_row" title="Permalink to this definition"></a></dt>
+<dd><p>Internal control formatting plots. Can be used to change plot subplot row of an indicator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>indicator_column</strong> (<em>str</em>) – column name</p></li>
+<li><p><strong>row_position</strong> – reassign row_position to column name</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return dict</dt>
+<dd class="field-even"><p>columns with its assigned row_position in subplots when plotting.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="binpan.Symbol.sma">
 <span class="sig-name descname"><span class="pre">sma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">21</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Close'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.sma" title="Permalink to this definition"></a></dt>
 <dd><p>Generate technical indicator Simple Moving Average.</p>
@@ -644,7 +690,7 @@ waiting long time intervals grabbing the trades.)</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="binpan.Symbol.supertrend">
-<span class="sig-name descname"><span class="pre">supertrend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiplier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.supertrend" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">supertrend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiplier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.supertrend" title="Permalink to this definition"></a></dt>
 <dd><p>Generate technical indicator Supertrend.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

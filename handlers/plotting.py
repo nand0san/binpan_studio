@@ -81,8 +81,14 @@ def set_ta_scatter(df: pd.DataFrame, serie: pd.Series, annotations: list = None,
                       text=annotations, textposition=text_position)
 
 
-def set_ta_line(df, serie, color='blue', name='Indicator', width=0.5):
-    return go.Scatter(x=df.index, y=serie, line=dict(color=color, width=width), name=name, mode='lines')
+def set_ta_line(df, serie, color='blue', name='Indicator', width=0.5, fill_color: str or bool = None):
+    if fill_color:
+        fill = 'tozeroy'
+        fillcolor = fill_color
+    else:
+        fill = None
+        fillcolor = None
+    return go.Scatter(x=df.index, y=serie, line=dict(color=color, width=width), name=name, mode='lines', fill=fill, fillcolor=fillcolor)
 
 
 def fill_missing(ll: list, length: int):
@@ -116,7 +122,7 @@ def set_arrows(annotations: pd.Series, name: str = None, tag: str = None, textpo
                           marker_line_width=marker_line_width, marker_size=marker_size, name=name)
 
 
-def add_traces(fig, list_of_plots, rows, cols):
+def add_traces(fig, list_of_plots: list, rows: list, cols: list):
     for i, p in enumerate(list_of_plots):
         # fig.add_trace(p, row=rows[i], col=cols[i], secondary_y=secondary_y)
         fig.append_trace(p, row=rows[i], col=cols[i])
@@ -184,6 +190,7 @@ def candles_ta(data: pd.DataFrame,
                rows_pos: list = [],
                indicator_names: list = [],
                indicators_colors: list = [],
+               indicators_color_filled: dict = None,
                width=1800,
                height=1000,
                range_slider: bool = False,
@@ -213,10 +220,13 @@ def candles_ta(data: pd.DataFrame,
     :param list indicators_series: a list of pandas series with float values as indicators.
     :param list rows_pos: 1 means over the candles. Other numbers mean subsequent subplots under the candles.
     :param list indicator_names: Names to show in the plot. Defaults to series name.
-    :param list indicators_colors: Color can be forced to anyone from the plotly colors list:
+    :param list indicators_colors: Color can be forced to anyone from the plotly colors list.
 
             https://community.plotly.com/t/plotly-colours-list/11730
 
+    :param list or dict indicators_color_filled: Color can be forced to fill to zero line. Is a list of Nones for each indicator in
+        indicator list or a fillcolor. For transparent colors use rgba string code to define color. Example for transparent green
+        'rgba(26,150,65,0.5)' or transparent red 'rgba(204,0,0,0.5)'. It can be a dictionary with each indicator column name and fill color.
     :param int width: Plot sizing
     :param int height: Plot sizing
     :param bool range_slider: For the volume plot.
@@ -264,28 +274,33 @@ def candles_ta(data: pd.DataFrame,
 
            import binpan
 
-           lunc = binpan.Symbol(symbol='luncbusd',
-                                tick_interval='5m',
-                                limit = 100,
-                                time_zone = 'Europe/Madrid',
-                                time_index = True,
-                                closed = True)
+           ethbtc = binpan.Symbol(symbol='ethbtc', tick_interval='1h')
 
-           lunc.supertrend()
+           ethbtc.macd()
+           binpan.handlers.plotting.candles_ta(data = ethbtc.df,
+                                               indicators_series=[ethbtc.df['MACD_12_26_9_'], ethbtc.df['MACDh_12_26_9_'], ethbtc.df['MACDs_12_26_9_']],
+                                               indicators_color_filled=[False, 'rgba(26,150,65,0.5)', False],
+                                               rows_pos=[2,2, 2],
+                                               indicators_colors=['orange', 'green', 'skyblue'])
 
-           binpan.handlers.plotting.candles_ta(data = lunc.df,
-                                   indicators_series=[lunc.df['SUPERT_10_3.0'], lunc.df['SUPERTs_10_3.0'], lunc.df['SUPERTd_10_3.0']],
-                                   rows_pos=[1,1, 2],
-                                   indicators_colors=['green', 'red', 'blue'])
 
-    .. image:: images/candles_ta.png
+    .. image:: images/candles_ta_macd.png
         :width: 1000
         :alt: Candles with some indicators
 
     """
+    if not indicators_color_filled:
+        indicators_color_filled = {_.name: False for _ in indicators_series}
+    elif type(indicators_color_filled) == list:
+        indicators_color_filled = {s.name: indicators_color_filled[i] for i, s in enumerate(indicators_series)}
+
+    plot_logger.debug(f"candles_ta indicators_color_filled: {indicators_color_filled}")
+
     df_plot = data.copy(deep=True)
+
     if not indicators_series:
         indicators_series = []
+
     if not indicators_colors:
         indicators_colors = ['cornflowerblue', 'blue', 'lightseagreen', 'green', 'cornflowerblue', 'rosybrown', 'lightseagreen',
                              'black', 'orange', 'pink', 'red', 'rosybrown', 'cornflowerblue', 'blue', 'lightseagreen', 'green',
@@ -296,6 +311,9 @@ def candles_ta(data: pd.DataFrame,
             indicator_names = [i.name for i in indicators_series]
         except Exception:
             indicator_names = [f'Indicator {i}' for i in range(len(indicators_series))]
+
+    if not indicators_color_filled:
+        indicators_color_filled = [False for _ in indicators_series]
 
     if plot_volume:
         extra_rows = len(set(rows_pos)) + 1
@@ -319,13 +337,19 @@ def candles_ta(data: pd.DataFrame,
     else:
         traces = [candles_plot]
         rows = [1]
+
     cols = [1 for _ in range(len(rows))]
 
     # technical analysis indicators
     tas = []
+
+    plot_logger.debug(f"{indicators_colors}")
+    plot_logger.debug(f"{indicators_color_filled}")
+
     for i, indicator in enumerate(indicators_series):
+
         tas.append(set_ta_line(df=df_plot, serie=indicator, color=indicators_colors[i], name=indicator_names[i],
-                               width=1))
+                               width=1, fill_color=list(indicators_color_filled.values())[i]))
         axes += 1
 
     cols = cols + [1 for _ in range(len(tas))]
@@ -355,6 +379,7 @@ def candles_tagged(data: pd.DataFrame, width=1800, height=1000, candles_ta_heigh
                    indicators_series: list = [],
                    indicator_names: list = [],
                    indicators_colors: list = [],
+                   fill_control: dict or list = None,
                    rows_pos: list = [],
                    labels: list = [],
                    default_price_for_actions='Close'):
@@ -388,6 +413,8 @@ def candles_tagged(data: pd.DataFrame, width=1800, height=1000, candles_ta_heigh
 
          https://community.plotly.com/t/plotly-colours-list/11730
 
+    :param dict or list fill_control: A dictionary with color to fill or False bool for each indicator. Is the color to the zero line for
+        the indicator plot. If a list passed, it iterates to assign each item in the list with the same index item in the indicators list.
     :param int width: Plot sizing
     :param int height: Plot sizing
     :param float candles_ta_height_ratio: A ratio between the big candles plot and (if any) the rest of indicator subplots below.
@@ -441,14 +468,17 @@ def candles_tagged(data: pd.DataFrame, width=1800, height=1000, candles_ta_heigh
 
 
      """
+    if type(fill_control) == list:
+        fill_control = {s.name: fill_control[i] for i, s in enumerate(indicators_series)}
 
     markers = ["arrow-bar-up", "arrow-bar-down"]
     annotation_colors = ['green', 'red']
     annotations_names = ['Buy', 'Sell']
-
     rows_pos_final = []
+
     if on_candles_indicator:
         rows_pos_final = [1 for _ in range(len(on_candles_indicator))]
+
     if indicators_series and not rows_pos:
         rows_pos_final += [i + 2 for i in range(len(indicators_series))]
     else:
@@ -486,6 +516,7 @@ def candles_tagged(data: pd.DataFrame, width=1800, height=1000, candles_ta_heigh
                indicators_series=indicators_series,
                indicator_names=indicator_names,
                indicators_colors=indicators_colors,
+               indicators_color_filled=fill_control,
                labels=labels)
 
 

@@ -121,7 +121,6 @@ def get_candles_from_start_time(start_time: int,
           ]
         ]
     """
-    market_logger.info(f"Candles for: {locals()}")
     check_minute_weight(1)
     endpoint = '/api/v3/klines?'
     params = {'symbol': symbol,

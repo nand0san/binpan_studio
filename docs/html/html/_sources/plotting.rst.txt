@@ -3,7 +3,7 @@ Plotting Module
 
 This module can manage plots.
 
-Plots are from Plotly library: https://plotly.com/
+Plots made with Plotly library: https://plotly.com/
 
 Colors can be picked with the name of the color or the index number from this list:
 

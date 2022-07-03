@@ -35,7 +35,7 @@ https://nand0san.github.io/binpan_studio/
 
 GitHub repo
 -----------
-https://nand0san.github.io/binpan_studio/
+https://github.com/nand0san/binpan_studio
 
 
 Installation
