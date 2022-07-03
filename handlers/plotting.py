@@ -209,12 +209,6 @@ def candles_ta(data: pd.DataFrame,
 
        Beware of zeros or values in a different scale when plotting overlapped over candles, that can break the scale of the graph.
 
-    Plot example:
-
-    .. image:: images/plot_ta.png
-        :width: 1000
-        :alt: Candles with some indicators
-
     :param pd.DataFrame data: a DataFrame that at least contains the columns: Open Close High Low Volume
     :param list indicators_series: a list of pandas series with float values as indicators.
     :param list rows_pos: 1 means over the candles. Other numbers mean subsequent subplots under the candles.
@@ -263,6 +257,30 @@ def candles_ta(data: pd.DataFrame,
         .. code-block:: python
 
            labels = ['buy', 'sell']
+
+    Plot example:
+
+        .. code-block:: python
+
+           import binpan
+
+           lunc = binpan.Symbol(symbol='luncbusd',
+                                tick_interval='5m',
+                                limit = 100,
+                                time_zone = 'Europe/Madrid',
+                                time_index = True,
+                                closed = True)
+
+           lunc.supertrend()
+
+           binpan.handlers.plotting.candles_ta(data = lunc.df,
+                                   indicators_series=[lunc.df['SUPERT_10_3.0'], lunc.df['SUPERTs_10_3.0'], lunc.df['SUPERTd_10_3.0']],
+                                   rows_pos=[1,1, 2],
+                                   indicators_colors=['green', 'red', 'blue'])
+
+    .. image:: images/candles_ta.png
+        :width: 1000
+        :alt: Candles with some indicators
 
     """
     df_plot = data.copy(deep=True)
@@ -438,6 +456,36 @@ def candles_tagged(data: pd.DataFrame, width=1800, height=1000, candles_ta_heigh
 
 
 def plot_trade_size(data: pd.DataFrame, max_size=60, height=1000, logarithmic=False, title=f"Trade Size"):
+    """
+    Plots scatter plot from trades quantity and trades sizes. Marks are size scaled to the max size. Marks are semi transparent and colored
+    using Maker buyer or Taker buyer discrete colors. Usually red and blue.
+
+    Can let you see where are the big sized trades done and the taker or maker buyer side.
+
+    :param pd.DataFrame data: A BinPans trades dataframe.
+    :param int max_size: Size of the marks for the biggest quantity sized trades.
+    :param int height: Plot sizing.
+    :param bool logarithmic: Y axis in a logarithmic scale.
+    :param str title: Title string.
+
+    Example:
+        .. code-block:: python
+
+           import binpan
+           lunc = binpan.Symbol(symbol='luncbusd',
+                                tick_interval='5m',
+                                limit = 100,
+                                time_zone = 'Europe/Madrid',
+                                time_index = True,
+                                closed = True)
+           lunc.get_trades()
+           binpan.handlers.plotting.plot_trade_size(data = lunc.trades, logarithmic=True)
+
+        .. image:: images/plot_trades_size_log.png
+           :width: 1000
+           :alt: Trades size
+
+    """
     data['Buyer was maker'].replace({True: 'Maker buyer', False: 'Taker buyer'}, inplace=True)
     fig = px.scatter(x=data.index, y=data['Price'], color=data['Buyer was maker'], size=data['Quantity'],
                      title=title,
@@ -449,7 +497,40 @@ def normalize(max_value, min_value, data: list):
     return [(i / sum(data)) * max_value + min_value for i in data]
 
 
-def plot_pie(serie: pd.Series, categories: int = 15, title=f"Size trade categories", logarithmic=False):
+def plot_pie(serie: pd.Series,
+             categories: int = 15,
+             title=f"Size trade categories",
+             logarithmic=False):
+    """
+    Plots a pie chart from a column. Useful to see size ranges in trades, but can be used in any way.
+
+    :param pd.Series serie: pandas serie with numeric values or strings.
+    :param int categories: Category count to divide chart.
+    :param str title: String title.
+    :param bool logarithmic: If logarithmic is selected as true, the sizes of each interval will be distributed in logarithmic steps from
+     the smallest to the largest, that is, the smallest values will be divided into smaller groups that will increase exponentially in size.
+
+    Example:
+
+        .. code-block:: python
+
+           import binpan
+
+           lunc = binpan.Symbol(symbol='luncbusd',
+                                tick_interval='5m',
+                                limit = 100,
+                                time_zone = 'Europe/Madrid',
+                                time_index = True,
+                                closed = True)
+
+           lunc.get_trades()
+
+           binpan.handlers.plotting.plot_pie(serie = lunc.trades['Quantity'], logarithmic=True)
+
+        .. image:: images/plot_pie_log.png
+           :width: 1000
+           :alt: Trades size
+    """
     ma_original = serie.max()
     mi_original = serie.min()
     integer_size = len(str(ma_original).split('.')[0])
@@ -471,19 +552,18 @@ def plot_pie(serie: pd.Series, categories: int = 15, title=f"Size trade categori
         step = (ma_original - mi_original) / categories
         spread = np.arange(mi_original, ma_original, step)
 
-    orders = {serie.name: spread}
+    # orders = {serie.name: spread}
 
     pie = serie.groupby(pd.cut(serie, spread)).count()
     names = [str(i) for i in pie.index]
 
     fig = px.pie(pie,
-                 # values='Quantity',
                  values=serie.name,
                  names=names,
                  color_discrete_sequence=px.colors.sequential.RdBu,
                  title=title,
-                 hover_name=serie.name,
-                 category_orders=orders)
+                 hover_name=serie.name)
+    # category_orders=orders)
     fig.show()
 
 

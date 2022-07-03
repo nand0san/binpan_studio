@@ -108,8 +108,6 @@ subplot and the rest in row subplots. Several indicators can be plotted in the s
 <p class="admonition-title">Note</p>
 <p>Beware of zeros or values in a different scale when plotting overlapped over candles, that can break the scale of the graph.</p>
 </div>
-<p>Plot example:</p>
-<a class="reference internal image-reference" href="_images/plot_ta.png"><img alt="Candles with some indicators" src="_images/plot_ta.png" style="width: 1000px;" /></a>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -160,6 +158,27 @@ Example from default colors</p>
 </ul>
 </dd>
 </dl>
+<p>Plot example:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">binpan</span>
+
+<span class="n">lunc</span> <span class="o">=</span> <span class="n">binpan</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;luncbusd&#39;</span><span class="p">,</span>
+                     <span class="n">tick_interval</span><span class="o">=</span><span class="s1">&#39;5m&#39;</span><span class="p">,</span>
+                     <span class="n">limit</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+                     <span class="n">time_zone</span> <span class="o">=</span> <span class="s1">&#39;Europe/Madrid&#39;</span><span class="p">,</span>
+                     <span class="n">time_index</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                     <span class="n">closed</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="n">lunc</span><span class="o">.</span><span class="n">supertrend</span><span class="p">()</span>
+
+<span class="n">binpan</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">candles_ta</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="n">lunc</span><span class="o">.</span><span class="n">df</span><span class="p">,</span>
+                        <span class="n">indicators_series</span><span class="o">=</span><span class="p">[</span><span class="n">lunc</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;SUPERT_10_3.0&#39;</span><span class="p">],</span> <span class="n">lunc</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;SUPERTs_10_3.0&#39;</span><span class="p">],</span> <span class="n">lunc</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;SUPERTd_10_3.0&#39;</span><span class="p">]],</span>
+                        <span class="n">rows_pos</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+                        <span class="n">indicators_colors</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div></blockquote>
+<a class="reference internal image-reference" href="_images/candles_ta.png"><img alt="Candles with some indicators" src="_images/candles_ta.png" style="width: 1000px;" /></a>
 </dd></dl>
 
 <dl class="py function">
@@ -212,12 +231,64 @@ buy or sell with an arrow will be positioned from the close price if not exists 
 <dl class="py function">
 <dt class="sig sig-object py" id="binpan.handlers.plotting.plot_trade_size">
 <span class="sig-prename descclassname"><span class="pre">binpan.handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">plot_trade_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">60</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logarithmic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Trade</span> <span class="pre">Size'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.handlers.plotting.plot_trade_size" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Plots scatter plot from trades quantity and trades sizes. Marks are size scaled to the max size. Marks are semi transparent and colored
+using Maker buyer or Taker buyer discrete colors. Usually red and blue.</p>
+<p>Can let you see where are the big sized trades done and the taker or maker buyer side.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>pd.DataFrame</em>) – A BinPans trades dataframe.</p></li>
+<li><p><strong>max_size</strong> (<em>int</em>) – Size of the marks for the biggest quantity sized trades.</p></li>
+<li><p><strong>height</strong> (<em>int</em>) – Plot sizing.</p></li>
+<li><p><strong>logarithmic</strong> (<em>bool</em>) – Y axis in a logarithmic scale.</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Title string.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">binpan</span>
+<span class="n">lunc</span> <span class="o">=</span> <span class="n">binpan</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;luncbusd&#39;</span><span class="p">,</span>
+                     <span class="n">tick_interval</span><span class="o">=</span><span class="s1">&#39;5m&#39;</span><span class="p">,</span>
+                     <span class="n">limit</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+                     <span class="n">time_zone</span> <span class="o">=</span> <span class="s1">&#39;Europe/Madrid&#39;</span><span class="p">,</span>
+                     <span class="n">time_index</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                     <span class="n">closed</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<span class="n">lunc</span><span class="o">.</span><span class="n">get_trades</span><span class="p">()</span>
+<span class="n">binpan</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_trade_size</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="n">lunc</span><span class="o">.</span><span class="n">trades</span><span class="p">,</span> <span class="n">logarithmic</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/plot_trades_size_log.png"><img alt="Trades size" src="_images/plot_trades_size_log.png" style="width: 1000px;" /></a>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="binpan.handlers.plotting.plot_pie">
 <span class="sig-prename descclassname"><span class="pre">binpan.handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">plot_pie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">serie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">categories</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Size</span> <span class="pre">trade</span> <span class="pre">categories'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logarithmic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.handlers.plotting.plot_pie" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Plots a pie chart from a column. Useful to see size ranges in trades, but can be used in any way.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>serie</strong> (<em>pd.Series</em>) – pandas serie with numeric values or strings.</p></li>
+<li><p><strong>categories</strong> (<em>int</em>) – Category count to divide chart.</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – String title.</p></li>
+<li><p><strong>logarithmic</strong> (<em>bool</em>) – If logarithmic is selected as true, the sizes of each interval will be distributed in logarithmic steps from
+the smallest to the largest, that is, the smallest values will be divided into smaller groups that will increase exponentially in size.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">binpan</span>
+<span class="n">lunc</span> <span class="o">=</span> <span class="n">binpan</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;luncbusd&#39;</span><span class="p">,</span>
+                     <span class="n">tick_interval</span><span class="o">=</span><span class="s1">&#39;5m&#39;</span><span class="p">,</span>
+                     <span class="n">limit</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+                     <span class="n">time_zone</span> <span class="o">=</span> <span class="s1">&#39;Europe/Madrid&#39;</span><span class="p">,</span>
+                     <span class="n">time_index</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                     <span class="n">closed</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<span class="n">lunc</span><span class="o">.</span><span class="n">get_trades</span><span class="p">()</span>
+<span class="n">binpan</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_pie</span><span class="p">(</span><span class="n">serie</span> <span class="o">=</span> <span class="n">lunc</span><span class="o">.</span><span class="n">trades</span><span class="p">[</span><span class="s1">&#39;Quantity&#39;</span><span class="p">],</span> <span class="n">logarithmic</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/plot_pie_log.png"><img alt="Trades size" src="_images/plot_pie_log.png" style="width: 1000px;" /></a>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="binpan.handlers.plotting.plot_scatter">

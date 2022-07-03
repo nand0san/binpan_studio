@@ -18,13 +18,14 @@ except ImportError:
     print("""
 No API Key or API Secret
 
-API key needed for personal API calls, add it before running:
+API key would be needed for personal API calls. Any other calls will work.
 
-api_key_plain = "xxxx"
-api_secret_plain = "xxxx"
+Adding:
 
-binpan.handlers.files_filters.add_api_key(api_key_plain)
-binpan.handlers.files_filters.add_api_secret(api_secret_plain)
+binpan.handlers.files_filters.add_api_key("xxxx")
+binpan.handlers.files_filters.add_api_secret("xxxx")
+
+API keys will be added to a file called secret.py in an encrypted way. API keys in memory stay encrypted except in the API call instant.
 """)
 
 float_api_items = ['price', 'origQty', 'executedQty', 'cummulativeQuoteQty', 'stopLimitPrice', 'stopPrice', 'commission', 'qty',
