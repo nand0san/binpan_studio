@@ -5,3 +5,4 @@ BinPan Module
 
 .. autoclass:: Symbol
     :members:
+

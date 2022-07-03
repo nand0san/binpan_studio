@@ -28,9 +28,9 @@ Hope you find it useful breaking the market!!!
 
 Documentation
 -------------
-Take a look to the basic **tutorial**. Find it in the Jupyter Notebook file `tutorial.ipynb`
+Take a look to the basic **tutorial**. Find it in the Jupyter Notebook file **tutorial.ipynb**
 
-https://raw.githubusercontent.com/nand0san/binpan_studio/main/doc/images/candles.png
+https://nand0san.github.io/binpan_studio/
 
 
 GitHub repo

@@ -406,6 +406,40 @@ def candles_tagged(data: pd.DataFrame, width=1800, height=1000, candles_ta_heigh
     :param default_price_for_actions: Column to pick prices for actions, because actions will be labeled, in example, actions values like
         buy or sell with an arrow will be positioned from the close price if not exists a more precise value for the action.
 
+    Example:
+
+    .. code-block:: python
+
+       import binpan
+
+       btcusdt = binpan.Symbol(symbol='btcusdt',
+                        tick_interval='15m',
+                        time_zone='Europe/Madrid',
+                        end_time='2021-10-31 03:00:00')
+
+       btcusdt.sma(21)
+
+       df = binpan.handlers.strategies.random_strategy(data=btcusdt.df, 10, 10)
+
+       df.actions.value_counts()
+
+       -       980
+       sell     10
+       buy      10
+       Name: actions, dtype: int64
+
+       binpan.handlers.plotting.candles_tagged(data=df,
+                                               plot_volume=False,
+                                               indicators_series=[df.SMA_21],
+                                               candles_ta_height_ratio=0.8,
+                                               actions_col='actions',
+                                               labels=['buy', 'sell'])
+
+
+    .. image:: images/plot_tagged_example_02.png
+       :width: 1000
+
+
      """
 
     markers = ["arrow-bar-up", "arrow-bar-down"]
@@ -576,6 +610,43 @@ def plot_scatter(df: pd.DataFrame,
                  title: str = None,
                  height: int = 1000,
                  **kwargs):
+    """
+    Plot scatter plots with a column of values in X axis and other in Y axis.
+
+    :param pd.DataFrame df: A Dataframe.
+    :param str x_col: Name of column with X axis data.
+    :param str y_col: Name of column with Y axis data.
+    :param str symbol: Name of column with values (discrete or not) to apply a symbol each.
+    :param str color: Name of column with values (discrete or not) to apply a color each.
+    :param bool marginal: Lateral auxiliar plots.
+    :param str title: A title string.
+    :param height: Plot sizing.
+    :param kwargs: Optional plotly kwargs.
+
+    Example:
+
+    .. code-block::
+
+       lunc = binpan.Symbol(symbol='luncbusd',
+                            tick_interval='5m',
+                            limit = 100,
+                            time_zone = 'Europe/Madrid',
+                            time_index = True,
+                            closed = True)
+
+       binpan.handlers.plotting.plot_scatter(df = lunc.df,
+                                             x_col='Close',
+                                             y_col='Volume',
+                                             color='Trades',
+                                             symbol='Close',
+                                             title='Scatter plot for LUNCBUSD Close price in X and Volume in Y'
+                                             )
+
+    .. image:: images/scatter_example.png
+       :width: 1000
+       :alt: Scatter plot example
+
+    """
     if marginal:
         fig = px.scatter(df,
                          x=x_col,
@@ -599,16 +670,55 @@ def plot_scatter(df: pd.DataFrame,
     fig.show()
 
 
-def plot_hists_vs(x0,
-                  x1,
+def plot_hists_vs(x0: pd.Series,
+                  x1: pd.Series,
                   x0_name: str = None,
                   x1_name: str = None,
-                  bins=50,
-                  hist_funct='sum',
-                  height=900,
+                  bins: int = 50,
+                  hist_funct: str = 'sum',
+                  height: int = 900,
                   title: str = None,
                   **kwargs_update_layout):
+    """
+    Plots two histograms with same x scale to campare distributions of values.
 
+    :param pd.Series x0: A pandas series.
+    :param pd.Series  x1: A pandas series.
+    :param str x0_name: Name for the legend
+    :param str x1_name: Name for the legend
+    :param int bins: Number of bins or bars to show.
+    :param str hist_funct: A function to apply to data. It can be 'sum', 'count', 'average', etc...
+
+        More details in: https://plotly.com/python/histograms/#histograms-with-gohistogram
+
+    :param int height: Plot sizing.
+    :param str title: Plot title.
+    :param kwargs_update_layout: Plotly update layout options.
+
+
+    Example:
+
+    .. code-block::
+
+       lunc = binpan.Symbol(symbol='luncbusd',
+                            tick_interval='5m',
+                            limit = 100,
+                            time_zone = 'Europe/Madrid',
+                            time_index = True,
+                            closed = True)
+
+       binpan.handlers.plotting.plot_hists_vs(x0=lunc.df['High'],
+                                              x1=lunc.df['Low'],
+                                              bins=50,
+                                              hist_funct='count',
+                                              title='High and Low prices distribution.')
+
+    .. image:: images/hist_vs_dist.png
+       :width: 1000
+       :alt: Scatter plot example
+
+
+    """
     if not x0_name:
         x0_name = x0.name
     if not x1_name:

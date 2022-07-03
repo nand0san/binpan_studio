@@ -164,11 +164,11 @@ because daily time saving changes.</p>
 </dd>
 </dl>
 <p>Examples:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>binpan_object = binpan.Candles(symbol=&#39;ethbusd&#39;,
-                               tick_interval=&#39;5m&#39;,
-                               limit=100,
-                               display_rows=10)
-binpan_object.df()
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>binpan_object = binpan.Symbol(symbol=&#39;ethbusd&#39;,
+                              tick_interval=&#39;5m&#39;,
+                              limit=100,
+                              display_rows=10)
+binpan_object.df
 
                                 Open    High    Low     Close   Volume          Quote volume    Trades  Taker buy base volume   Taker buy quote volume
 
@@ -188,9 +188,11 @@ ETHBUSD 5m UTC
 100 rows × 9 columns
 </pre></div>
 </div>
-<p>Created objects contain different data like:
-- mysymbol.df: shows candles dataframe
-- mysymbol.trades: shows aggregated trades, if requested. This is optional and can be added anytime.</p>
+<p>Created objects contain different data like:</p>
+<ul class="simple">
+<li><p>mysymbol.df: shows candles dataframe</p></li>
+<li><p>mysymbol.trades: shows aggregated trades, if requested. This is optional and can be added anytime.</p></li>
+</ul>
 <dl class="py method">
 <dt class="sig sig-object py" id="binpan.Symbol.basic">
 <span class="sig-name descname"><span class="pre">basic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exceptions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actions_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'actions'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.basic" title="Permalink to this definition"></a></dt>
@@ -266,7 +268,7 @@ in the object remains.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>pd.DataFrame</p>
+<dd class="field-even"><p>pd.Series</p>
 </dd>
 </dl>
 </dd></dl>
@@ -357,7 +359,7 @@ before converting candles to Heikin Ashi.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
+<dd class="field-even"><p>pd.Series</p>
 </dd>
 </dl>
 </dd></dl>
@@ -472,20 +474,36 @@ in the candles plot.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="binpan.Symbol.plot_colors">
-<span class="sig-name descname"><span class="pre">plot_colors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indicator_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.plot_colors" title="Permalink to this definition"></a></dt>
-<dd><p>Internal control formatting plots.
-:param indicator_column:
-:param color:
-:return:</p>
+<span class="sig-name descname"><span class="pre">plot_colors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indicator_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#binpan.Symbol.plot_colors" title="Permalink to this definition"></a></dt>
+<dd><p>Internal control formatting plots. Can be used to change plot color of an indicator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>indicator_column</strong> (<em>str</em>) – column name</p></li>
+<li><p><strong>color</strong> – reassign color to column name</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return dict</dt>
+<dd class="field-even"><p>columns with its assigned colors when plotting.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="binpan.Symbol.plot_rows">
 <span class="sig-name descname"><span class="pre">plot_rows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indicator_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row_position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.plot_rows" title="Permalink to this definition"></a></dt>
-<dd><p>Internal control formatting plots.
-:param indicator_column:
-:param row_position:
-:return:</p>
+<dd><p>Internal control formatting plots. Can be used to change plot subplot row of an indicator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>indicator_column</strong> (<em>str</em>) – column name</p></li>
+<li><p><strong>row_position</strong> – reassign row_position to column name</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return dict</dt>
+<dd class="field-even"><p>columns with its assigned row_position in subplots when plotting.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -619,7 +637,7 @@ waiting long time intervals grabbing the trades.)</p>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>pd.DataFrame</p>
+<dd class="field-even"><p>pd.Series</p>
 </dd>
 </dl>
 </dd></dl>

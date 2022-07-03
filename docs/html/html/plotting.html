@@ -228,6 +228,34 @@ buy or sell with an arrow will be positioned from the close price if not exists 
 </ul>
 </dd>
 </dl>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">binpan</span>
+
+<span class="n">btcusdt</span> <span class="o">=</span> <span class="n">binpan</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;btcusdt&#39;</span><span class="p">,</span>
+                 <span class="n">tick_interval</span><span class="o">=</span><span class="s1">&#39;15m&#39;</span><span class="p">,</span>
+                 <span class="n">time_zone</span><span class="o">=</span><span class="s1">&#39;Europe/Madrid&#39;</span><span class="p">,</span>
+                 <span class="n">end_time</span><span class="o">=</span><span class="s1">&#39;2021-10-31 03:00:00&#39;</span><span class="p">)</span>
+
+<span class="n">btcusdt</span><span class="o">.</span><span class="n">sma</span><span class="p">(</span><span class="mi">21</span><span class="p">)</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">binpan</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">strategies</span><span class="o">.</span><span class="n">random_strategy</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">btcusdt</span><span class="o">.</span><span class="n">df</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+
+<span class="n">df</span><span class="o">.</span><span class="n">actions</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+
+<span class="o">-</span>       <span class="mi">980</span>
+<span class="n">sell</span>     <span class="mi">10</span>
+<span class="n">buy</span>      <span class="mi">10</span>
+<span class="n">Name</span><span class="p">:</span> <span class="n">actions</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">int64</span>
+
+<span class="n">binpan</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">candles_tagged</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span>
+                                        <span class="n">plot_volume</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                        <span class="n">indicators_series</span><span class="o">=</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">SMA_21</span><span class="p">],</span>
+                                        <span class="n">candles_ta_height_ratio</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+                                        <span class="n">actions_col</span><span class="o">=</span><span class="s1">&#39;actions&#39;</span><span class="p">,</span>
+                                        <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;buy&#39;</span><span class="p">,</span> <span class="s1">&#39;sell&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/plot_tagged_example_02.png"><img alt="_images/plot_tagged_example_02.png" src="_images/plot_tagged_example_02.png" style="width: 1000px;" /></a>
 </dd></dl>
 
 <dl class="py function">
@@ -302,12 +330,80 @@ the smallest to the largest, that is, the smallest values will be divided into s
 <dl class="py function">
 <dt class="sig sig-object py" id="binpan.handlers.plotting.plot_scatter">
 <span class="sig-prename descclassname"><span class="pre">binpan.handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">plot_scatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marginal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.handlers.plotting.plot_scatter" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Plot scatter plots with a column of values in X axis and other in Y axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – A Dataframe.</p></li>
+<li><p><strong>x_col</strong> (<em>str</em>) – Name of column with X axis data.</p></li>
+<li><p><strong>y_col</strong> (<em>str</em>) – Name of column with Y axis data.</p></li>
+<li><p><strong>symbol</strong> (<em>str</em>) – Name of column with values (discrete or not) to apply a symbol each.</p></li>
+<li><p><strong>color</strong> (<em>str</em>) – Name of column with values (discrete or not) to apply a color each.</p></li>
+<li><p><strong>marginal</strong> (<em>bool</em>) – Lateral auxiliar plots.</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – A title string.</p></li>
+<li><p><strong>height</strong> – Plot sizing.</p></li>
+<li><p><strong>kwargs</strong> – Optional plotly kwargs.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lunc</span> <span class="o">=</span> <span class="n">binpan</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;luncbusd&#39;</span><span class="p">,</span>
+                     <span class="n">tick_interval</span><span class="o">=</span><span class="s1">&#39;5m&#39;</span><span class="p">,</span>
+                     <span class="n">limit</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+                     <span class="n">time_zone</span> <span class="o">=</span> <span class="s1">&#39;Europe/Madrid&#39;</span><span class="p">,</span>
+                     <span class="n">time_index</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                     <span class="n">closed</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="n">binpan</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_scatter</span><span class="p">(</span><span class="n">df</span> <span class="o">=</span> <span class="n">lunc</span><span class="o">.</span><span class="n">df</span><span class="p">,</span>
+                                      <span class="n">x_col</span><span class="o">=</span><span class="s1">&#39;Close&#39;</span><span class="p">,</span>
+                                      <span class="n">y_col</span><span class="o">=</span><span class="s1">&#39;Volume&#39;</span><span class="p">,</span>
+                                      <span class="n">color</span><span class="o">=</span><span class="s1">&#39;Trades&#39;</span><span class="p">,</span>
+                                      <span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;Close&#39;</span><span class="p">,</span>
+                                      <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Scatter plot for LUNCBUSD Close price in X and Volume in Y&#39;</span>
+                                      <span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/scatter_example.png"><img alt="Scatter plot example" src="_images/scatter_example.png" style="width: 1000px;" /></a>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="binpan.handlers.plotting.plot_hists_vs">
-<span class="sig-prename descclassname"><span class="pre">binpan.handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">plot_hists_vs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x0_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x1_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hist_funct</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sum'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">900</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs_update_layout</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.handlers.plotting.plot_hists_vs" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">binpan.handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">plot_hists_vs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x0_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x1_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hist_funct</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'sum'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">900</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs_update_layout</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.handlers.plotting.plot_hists_vs" title="Permalink to this definition"></a></dt>
+<dd><p>Plots two histograms with same x scale to campare distributions of values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x0</strong> (<em>pd.Series</em>) – A pandas series.</p></li>
+<li><p><strong>x1</strong> (<em>pd.Series</em>) – A pandas series.</p></li>
+<li><p><strong>x0_name</strong> (<em>str</em>) – Name for the legend</p></li>
+<li><p><strong>x1_name</strong> (<em>str</em>) – Name for the legend</p></li>
+<li><p><strong>bins</strong> (<em>int</em>) – Number of bins or bars to show.</p></li>
+<li><p><strong>hist_funct</strong> (<em>str</em>) – <p>A function to apply to data. It can be ‘sum’, ‘count’, ‘average’, etc…</p>
+<p>More details in: <a class="reference external" href="https://plotly.com/python/histograms/#histograms-with-gohistogram">https://plotly.com/python/histograms/#histograms-with-gohistogram</a></p>
+</p></li>
+<li><p><strong>height</strong> (<em>int</em>) – Plot sizing.</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Plot title.</p></li>
+<li><p><strong>kwargs_update_layout</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lunc</span> <span class="o">=</span> <span class="n">binpan</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;luncbusd&#39;</span><span class="p">,</span>
+                     <span class="n">tick_interval</span><span class="o">=</span><span class="s1">&#39;5m&#39;</span><span class="p">,</span>
+                     <span class="n">limit</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+                     <span class="n">time_zone</span> <span class="o">=</span> <span class="s1">&#39;Europe/Madrid&#39;</span><span class="p">,</span>
+                     <span class="n">time_index</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                     <span class="n">closed</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="n">binpan</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_hists_vs</span><span class="p">(</span><span class="n">x0</span><span class="o">=</span><span class="n">lunc</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;High&#39;</span><span class="p">],</span>
+                                       <span class="n">x1</span><span class="o">=</span><span class="n">lunc</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Low&#39;</span><span class="p">],</span>
+                                       <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+                                       <span class="n">hist_funct</span><span class="o">=</span><span class="s1">&#39;count&#39;</span><span class="p">,</span>
+                                       <span class="n">title</span><span class="o">=</span><span class="s1">&#39;High and Low prices distribution.&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/hist_vs_dist.png"><img alt="Scatter plot example" src="_images/hist_vs_dist.png" style="width: 1000px;" /></a>
+</dd></dl>
 
 </section>
 

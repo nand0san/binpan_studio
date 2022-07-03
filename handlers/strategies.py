@@ -11,9 +11,9 @@ def random_strategy(data: pd.DataFrame, buys_qty: int = 10, sells_qty: int = 10,
     Creates a random buy and sell tag in a column of a dataframe.
 
     :param pd.DataFrame data: A dataframe.
-    :param int buys_qty: Buy tags wanted quantity.
-    :param int sells_qty: Sells tags wanted quantity.
-    :param str new_actions_col: Name of the new column with the buy and sell tags.
+    :param int buys_qty: Buy tags quantity. Default is 10.
+    :param int sells_qty: Sells tags quantity. Default is 10.
+    :param str new_actions_col: Name of the new column with the buy and sell tags. Defaults to 'actions'
     :return: pd.DataFrame
 
     """

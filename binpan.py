@@ -24,7 +24,7 @@ import numpy as np
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
 
-__version__ = "0.0.3"
+__version__ = "0.0.4"
 
 plotly_colors = handlers.plotting.plotly_colors
 
@@ -117,11 +117,11 @@ class Symbol(object):
 
     .. code-block::
 
-        binpan_object = binpan.Candles(symbol='ethbusd',
-                                       tick_interval='5m',
-                                       limit=100,
-                                       display_rows=10)
-        binpan_object.df()
+        binpan_object = binpan.Symbol(symbol='ethbusd',
+                                      tick_interval='5m',
+                                      limit=100,
+                                      display_rows=10)
+        binpan_object.df
 
                                         Open    High    Low     Close   Volume          Quote volume    Trades  Taker buy base volume   Taker buy quote volume
 
@@ -140,7 +140,9 @@ class Symbol(object):
         2022-06-22 17:10:00+00:00	1073.42	1076.30	1073.24	1075.77	228.4269	2.456515e+05	426.0	127.7424	1.373634e+05
         100 rows × 9 columns
 
+
     Created objects contain different data like:
+
     - mysymbol.df: shows candles dataframe
     - mysymbol.trades: shows aggregated trades, if requested. This is optional and can be added anytime.
 
@@ -476,21 +478,25 @@ class Symbol(object):
 
     def plot_rows(self, indicator_column: str = None, row_position: int = None):
         """
-        Internal control formatting plots.
-        :param indicator_column:
-        :param row_position:
-        :return:
+        Internal control formatting plots. Can be used to change plot subplot row of an indicator.
+
+        :param str indicator_column: column name
+        :param row_position: reassign row_position to column name
+        :return dict: columns with its assigned row_position in subplots when plotting.
+
         """
         if indicator_column and row_position:
             self.row_control.update({indicator_column: row_position})
         return self.row_control
 
-    def plot_colors(self, indicator_column: str = None, color: int or str = None):
+    def plot_colors(self, indicator_column: str = None, color: int or str = None) -> dict:
         """
-        Internal control formatting plots.
-        :param indicator_column:
-        :param color:
-        :return:
+        Internal control formatting plots. Can be used to change plot color of an indicator.
+
+        :param str indicator_column: column name
+        :param color: reassign color to column name
+        :return dict: columns with its assigned colors when plotting.
+
         """
         if indicator_column and color:
             if type(color) == int:
@@ -845,6 +851,7 @@ class Symbol(object):
         :param time_zone: Selected time zone.
         :param time_index: Or integer index.
         :return: pd.DataFrame
+
         """
         df = pd.DataFrame(response)
         df.rename(columns=columns, inplace=True)
@@ -920,7 +927,8 @@ class Symbol(object):
         :param suffix:
         :param color:
         :param kwargs:
-        :return:
+        :return: pd.Series
+
         """
 
         if 'length' in kwargs.keys():
@@ -954,7 +962,7 @@ class Symbol(object):
         :param color: Color to show when plotting. It can be any color from plotly library or a number in the list of those.
             <https://community.plotly.com/t/plotly-colours-list/11730>
         :param kwargs: Optional plotly args.
-        :return: pd.DataFrame
+        :return: pd.Series
         """
         return self.ma(ma_name='sma', column_source=column, inplace=inplace, length=window, suffix=suffix, color=color, **kwargs)
 
@@ -969,7 +977,7 @@ class Symbol(object):
         :param color: Color to show when plotting. It can be any color from plotly library or a number in the list of those.
             <https://community.plotly.com/t/plotly-colours-list/11730>
         :param kwargs: Optional plotly args.
-        :return: pd.DataFrame
+        :return: pd.Series
         """
         return self.ma(ma_name='ema', column_source=column, inplace=inplace, length=window, suffix=suffix, color=color, **kwargs)
 

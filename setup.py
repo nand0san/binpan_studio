@@ -36,7 +36,7 @@ read_required.close()
 """
 
 setup(name='binpan',
-      version='0.0.3',
+      version='0.0.4',
       url='https://github.com/nand0san/binpan_studio',
       license='MIT',
       install_requires=REQUIRED,

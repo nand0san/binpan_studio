@@ -26,7 +26,7 @@ An example of a plot for candles and indicators:
 
 Documentation
 -------------
-Take a look to the basic **tutorial**. Find it in the Jupyter Notebook file `tutorial.ipynb`
+Take a look to the basic **tutorial**. Find it in the Jupyter Notebook file **tutorial.ipynb**
 
 Also, can be found Sphinx documentation at: 
 
@@ -65,7 +65,9 @@ Importing just like this:
     btcusdt.sma(21)
     
     btcusdt.plot()
+    
 ```
 
 ### Greetings
+
 Thank you for the pandas_ta people for that great library.
