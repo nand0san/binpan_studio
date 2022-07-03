@@ -20,6 +20,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Strategies Module" href="strategies.html" />
     <link rel="prev" title="Exceptions Module" href="exceptions.html" /> 
 </head>
 
@@ -44,6 +45,7 @@
 <li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions Module</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Plotting Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
 </ul>
 
         </div>
@@ -245,8 +247,8 @@ using Maker buyer or Taker buyer discrete colors. Usually red and blue.</p>
 </ul>
 </dd>
 </dl>
-<p class="rubric">Example</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">binpan</span>
+<dl>
+<dt>Example:</dt><dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">binpan</span>
 <span class="n">lunc</span> <span class="o">=</span> <span class="n">binpan</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;luncbusd&#39;</span><span class="p">,</span>
                      <span class="n">tick_interval</span><span class="o">=</span><span class="s1">&#39;5m&#39;</span><span class="p">,</span>
                      <span class="n">limit</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
@@ -258,6 +260,8 @@ using Maker buyer or Taker buyer discrete colors. Usually red and blue.</p>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/plot_trades_size_log.png"><img alt="Trades size" src="_images/plot_trades_size_log.png" style="width: 1000px;" /></a>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -275,19 +279,24 @@ the smallest to the largest, that is, the smallest values will be divided into s
 </ul>
 </dd>
 </dl>
-<p class="rubric">Example</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">binpan</span>
+<p>Example:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">binpan</span>
+
 <span class="n">lunc</span> <span class="o">=</span> <span class="n">binpan</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;luncbusd&#39;</span><span class="p">,</span>
                      <span class="n">tick_interval</span><span class="o">=</span><span class="s1">&#39;5m&#39;</span><span class="p">,</span>
                      <span class="n">limit</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
                      <span class="n">time_zone</span> <span class="o">=</span> <span class="s1">&#39;Europe/Madrid&#39;</span><span class="p">,</span>
                      <span class="n">time_index</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                      <span class="n">closed</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+
 <span class="n">lunc</span><span class="o">.</span><span class="n">get_trades</span><span class="p">()</span>
+
 <span class="n">binpan</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_pie</span><span class="p">(</span><span class="n">serie</span> <span class="o">=</span> <span class="n">lunc</span><span class="o">.</span><span class="n">trades</span><span class="p">[</span><span class="s1">&#39;Quantity&#39;</span><span class="p">],</span> <span class="n">logarithmic</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/plot_pie_log.png"><img alt="Trades size" src="_images/plot_pie_log.png" style="width: 1000px;" /></a>
+</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
@@ -307,6 +316,7 @@ the smallest to the largest, that is, the smallest values will be divided into s
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="exceptions.html" class="btn btn-neutral float-left" title="Exceptions Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="strategies.html" class="btn btn-neutral float-right" title="Strategies Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -69,7 +69,7 @@ Importing just like this:
 Greetings
 ---------
 
-Thanks to the **pantas_ta** people for that great library.
+Thanks to the **pandas_ta** people for that great library.
 
 Hope you find it useful breaking the market!!!
 
@@ -82,6 +82,8 @@ Hope you find it useful breaking the market!!!
    market.rst
    exceptions.rst
    plotting.rst
+   strategies.rst
+
 
 Indices and tables
 ==================
