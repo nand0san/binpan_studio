@@ -56,12 +56,14 @@ Importing just like this:
 ```
     import binpan
 
-    btcusdt = binpan.manager.CandlesManager(symbol='btcusdt',
-                                            tick_interval='15m',
-                                            time_zone='Europe/Madrid',
-                                            start_time='2021-10-31 01:00:00',
-                                            end_time='2021-10-31 03:00:00')
+    btcusdt = binpan.Symbol(symbol='btcusdt',
+                            tick_interval='15m',
+                            time_zone='Europe/Madrid',
+                            start_time='2021-10-31 01:00:00',
+                            end_time='2021-10-31 03:00:00')
+                            
     btcusdt.sma(21)
+    
     btcusdt.plot()
 ```
 

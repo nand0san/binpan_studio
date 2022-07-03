@@ -13,6 +13,8 @@ import handlers.time_helper
 import handlers.plotting
 import handlers.wallet
 import handlers.files_filters
+import handlers.strategies
+
 
 import pandas_ta as ta
 from random import choice
@@ -60,13 +62,13 @@ class Symbol(object):
 
             import binpan
 
-            btcusdt = binpan.Candles(symbol='btcusdt',
-                                     tick_interval='15m',
-                                     time_zone='Europe/Madrid',
-                                     start_time='2021-10-31 01:00:00',
-                                     end_time='2021-10-31 03:00:00')
+            btcusdt = binpan.Symbol(symbol='btcusdt',
+                                    tick_interval='15m',
+                                    time_zone='Europe/Madrid',
+                                    start_time='2021-10-31 01:00:00',
+                                    end_time='2021-10-31 03:00:00')
 
-            btcusdt.candles
+            btcusdt.df
 
                                             Open	        High	        Low	        Close	        Volume
             BTCUSDT 15m Europe/Madrid
@@ -141,6 +143,7 @@ class Symbol(object):
     Created objects contain different data like:
     - mysymbol.df: shows candles dataframe
     - mysymbol.trades: shows aggregated trades, if requested. This is optional and can be added anytime.
+
     """
 
     def __init__(self,
@@ -392,7 +395,7 @@ class Symbol(object):
     def hk(self, inplace=False):
         """
         It computes Heikin Ashi candles. Any existing indicator column will not be recomputed. It is recommended to drop any indicator
-         before converting candles to Heikin Ashi.
+        before converting candles to Heikin Ashi.
 
         :param bool inplace: Change object dataframe permanently whe True is selected. False shows a copy dataframe.
         :return pd.DataFrame: Pandas DataFrame
@@ -439,7 +442,27 @@ class Symbol(object):
              If the object covers a long time interval, this action can take a relative long time. The BinPan library take care of the
              API weight and can take a sleep to wait until API weight returns to a low value.
 
-        :return:
+        Example:
+            .. code-block::
+
+               	Aggregate tradeId	Price	Quantity	First tradeId	Last tradeId	Timestamp	Buyer was maker	Best price match
+
+                LUNCBUSD Europe/Madrid
+
+                2022-07-03 04:51:45.633000+02:00	12076196	0.000125	9.314130e+04	17097916	17097916	2022-07-03 04:51:45	False	True
+                2022-07-03 04:51:45.811000+02:00	12076197	0.000125	7.510097e+04	17097917	17097917	2022-07-03 04:51:45	False	True
+                2022-07-03 04:51:45.811000+02:00	12076198	0.000125	2.204286e+06	17097918	17097918	2022-07-03 04:51:45	False	True
+                2022-07-03 04:51:46.079000+02:00	12076199	0.000125	8.826475e+04	17097919	17097919	2022-07-03 04:51:46	True	True
+                2022-07-03 04:51:46.811000+02:00	12076200	0.000125	5.362675e+06	17097920	17097920	2022-07-03 04:51:46	True	True
+                ...	...	...	...	...	...	...	...	...
+                2022-07-03 13:11:49.507000+02:00	12141092	0.000125	1.363961e+07	17183830	17183831	2022-07-03 13:11:49	False	True
+                2022-07-03 13:11:49.507000+02:00	12141093	0.000125	2.000000e+06	17183832	17183832	2022-07-03 13:11:49	False	True
+                2022-07-03 13:11:49.507000+02:00	12141094	0.000125	1.500000e+05	17183833	17183833	2022-07-03 13:11:49	False	True
+                2022-07-03 13:11:49.507000+02:00	12141095	0.000125	1.562695e+08	17183834	17183835	2022-07-03 13:11:49	False	True
+                2022-07-03 13:11:50.172000+02:00	12141096	0.000125	1.048632e+06	17183836	17183836	2022-07-03 13:11:50	False	True
+
+        :return: pd.DataFrame
+
         """
         trades = handlers.market.get_historical_aggregated_trades(symbol=self.symbol,
                                                                   startTime=self.start_theoretical,

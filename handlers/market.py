@@ -183,14 +183,14 @@ def get_agg_trades(fromId: int = None, symbol: str = 'BTCUSDT', limit=None, star
 
     Limit applied in fromId mode defaults to 500. Maximum is 1000.
 
-    :param int fromId: An aggregated trade Id.
+    :param int fromId: An aggregated trade id.
     :param str symbol: A binance valid symbol.
     :param int limit: Count of trades to ask for.
     :param int startTime: A timestamp in milliseconds from epoch.
     :param int endTime: A timestamp in milliseconds from epoch.
     :return list: Returns a list from the Binance API
 
-    .. code-block:: python
+    .. code-block::
 
         [
           {
@@ -204,7 +204,6 @@ def get_agg_trades(fromId: int = None, symbol: str = 'BTCUSDT', limit=None, star
             "M": true           // Was the trade the best price match?
           }
         ]
-
     """
     check_minute_weight(1)
     endpoint = '/api/v3/aggTrades?'
@@ -244,7 +243,7 @@ def get_historical_aggregated_trades(symbol: str,
     :param str symbol: A binance valid symbol.
     :return list: Returns a list from the Binance API
 
-    .. code-block:: python
+    .. code-block::
 
         [
           {
