@@ -32,6 +32,10 @@ Take a look to the basic **tutorial**. Find it in the Jupyter Notebook file **tu
 
 https://nand0san.github.io/binpan_studio/
 
+Python Version
+--------------
+
+Google colab ready: **python 3.7.9**
 
 GitHub repo
 -----------

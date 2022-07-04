@@ -1,6 +1,5 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 import pathlib
-import os
 
 # The directory containing this file
 HERE = pathlib.Path(__file__).parent
@@ -36,7 +35,7 @@ read_required.close()
 """
 
 setup(name='binpan',
-      version='0.0.4',
+      version='0.0.6',
       url='https://github.com/nand0san/binpan_studio',
       license='MIT',
       install_requires=REQUIRED,

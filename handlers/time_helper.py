@@ -117,7 +117,7 @@ def split_time_interval_in_full_days(ts_ini: int, ts_end: int) -> list:
 def time_interval(tick_interval: str,
                   limit: int = 1000,
                   start: int = None,
-                  end: int = None) -> tuple[int, int]:
+                  end: int = None) -> tuple:
     """
     Obtain a timestamp based on ticks intervals from a start or an end timestamp, based on limit.
 

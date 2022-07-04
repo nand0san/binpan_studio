@@ -5,6 +5,7 @@ This is the main classes file.
 """
 
 import pandas as pd
+import numpy as np
 import handlers.logs
 import handlers.market
 import handlers.quest
@@ -18,13 +19,12 @@ import handlers.strategies
 
 import pandas_ta as ta
 from random import choice
-import numpy as np
 
 
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
 
-__version__ = "0.0.4"
+__version__ = "0.0.6"
 
 plotly_colors = handlers.plotting.plotly_colors
 

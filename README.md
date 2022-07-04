@@ -34,6 +34,10 @@ https://nand0san.github.io/binpan_studio/
 
 Hope you find it useful breaking the market!!!
 
+Python Version
+--------------
+
+Google colab ready: `python 3.7.9`
 
 GitHub repo
 -----------
