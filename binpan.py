@@ -22,7 +22,7 @@ from random import choice
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
 
-__version__ = "0.0.9"
+__version__ = "0.0.10"
 
 plotly_colors = handlers.plotting.plotly_colors
 
@@ -480,6 +480,10 @@ class Symbol(object):
                                                          time_index=self.time_index)
         return self.trades
 
+    ################
+    # Plots
+    ################
+
     def set_plot_row(self, indicator_column: str = None, row_position: int = None):
         """
         Internal control formatting plots. Can be used to change plot subplot row of an indicator.
@@ -554,12 +558,12 @@ class Symbol(object):
 
         :param width: Width of the plot.
         :param height: Height of the plot.
-        :param candles_ta_height_ratio: Proportion between candles and the other indicators. Not considering overlay ones
+        :param candles_ta_height_ratio: Proportion between candles and the other indicators. Not considering overlap ones
          in the candles plot.
         :param plot_volume: Plots volume.
         :param title: A tittle for the plot.
         :param yaxis_title: A title for the y axis.
-        :param overlapped_indicators: Can declare as overlay in the candles plot some column.
+        :param overlapped_indicators: Can declare as overlap in the candles plot some column.
         :param priced_actions_col: Priced actions to plot annotations over the candles, like buy, sell, etc. Under developing.
         :param actions_col: A column containing actions like buy or sell. Under developing.
         :param labels: Names for the annotations instead of the price.
@@ -647,7 +651,7 @@ class Symbol(object):
                                    logarithmic=logarithmic,
                                    title=title)
 
-    def makers_vs_takers_plot(self,
+    def plot_makers_vs_takers(self,
                               bins=50,
                               hist_funct='sum',
                               height=900,
@@ -662,7 +666,7 @@ class Symbol(object):
 
         It shows which kind of volume or trades came from, takers or makers.
 
-        It can be useful finding support and resistance zones.
+        Can be useful finding support and resistance zones.
 
         .. image:: images/makers_vs_takers_plot.png
            :width: 1000
@@ -784,6 +788,10 @@ class Symbol(object):
                                            height=height,
                                            **kwargs)
 
+    #################
+    # Exchange Data #
+    #################
+
     def get_fees(self, symbol: str = None):
         """
         Shows applied fees for the symbol of the object.
@@ -802,6 +810,10 @@ class Symbol(object):
         except NameError:
             binpan_logger.warning("Fees cannot be requested without api key added. Add it with"
                                   " binpan.handlers.files_filters.add_api_key('xxxxxxxxxx')")
+
+    ##################
+    # Static Methods #
+    ##################
 
     @staticmethod
     def parse_candles_to_dataframe(response: list,
@@ -936,7 +948,9 @@ class Symbol(object):
             else:
                 return df_[['Open', 'High', 'Low', 'Close', 'Volume', actions_col]].copy(deep=True)
 
-    # INDICATORS
+    ##############
+    # Indicators #
+    ##############
 
     def ma(self,
            ma_name: str = 'ema',
@@ -950,12 +964,12 @@ class Symbol(object):
 
         `<https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/overlap/ma.py>`_
 
-        :param ma_name:
-        :param column_source:
-        :param inplace:
-        :param suffix:
-        :param color:
-        :param kwargs:
+        :param str ma_name: A moving average supported by the generic pandas_ta "ma" function.
+        :param str column_source: Name of column with data to be used.
+        :param bool inplace: Permanent or not.
+        :param str suffix: A string to decorate resulting pandas series name.
+        :param str or int color: A color from plotly list of colors or its index in that list.
+        :param kwargs: From https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/overlap/ma.py
         :return: pd.Series
 
         """
@@ -985,13 +999,13 @@ class Symbol(object):
         """
         Generate technical indicator Simple Moving Average.
 
-        :param window: Rolling window including the current candles when calculating the indicator.
-        :param column: Column applied. Default is Close.
-        :param inplace: Make it permanent in the instance or not.
-        :param suffix: A decorative suffix for the name of the column created.
-        :param color: Color to show when plotting. It can be any color from plotly library or a number in the list of those.
+        :param int window: Rolling window including the current candles when calculating the indicator.
+        :param str column: Column applied. Default is Close.
+        :param bool inplace: Make it permanent in the instance or not.
+        :param str suffix: A decorative suffix for the name of the column created.
+        :param str or int color: Color to show when plotting. It can be any color from plotly library or a number in the list of those.
             <https://community.plotly.com/t/plotly-colours-list/11730>
-        :param kwargs: Optional plotly args.
+        :param kwargs: Optional plotly args from https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/overlap/sma.py
         :return: pd.Series
 
         """
@@ -1001,13 +1015,13 @@ class Symbol(object):
         """
         Generate technical indicator Exponential Moving Average.
 
-        :param window: Rolling window including the current candles when calculating the indicator.
-        :param column: Column applied. Default is Close.
-        :param inplace: Make it permanent in the instance or not.
-        :param suffix: A decorative suffix for the name of the column created.
-        :param color: Color to show when plotting. It can be any color from plotly library or a number in the list of those.
+        :param int window: Rolling window including the current candles when calculating the indicator.
+        :param str column: Column applied. Default is Close.
+        :param bool inplace: Make it permanent in the instance or not.
+        :param str suffix: A decorative suffix for the name of the column created.
+        :param str or int color: Color to show when plotting. It can be any color from plotly library or index number in that list.
             <https://community.plotly.com/t/plotly-colours-list/11730>
-        :param kwargs: Optional plotly args.
+        :param kwargs: Optional plotly args from https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/overlap/ema.py
         :return: pd.Series
         """
         return self.ma(ma_name='ema', column_source=column, inplace=inplace, length=window, suffix=suffix, color=color, **kwargs)
@@ -1016,12 +1030,12 @@ class Symbol(object):
         """
         Generate technical indicator Supertrend.
 
-        :param length: Rolling window including the current candles when calculating the indicator.
-        :param multiplier: Indicator multiplier applied.
-        :param inplace: Make it permanent in the instance or not.
-        :param suffix: A decorative suffix for the name of the column created.
+        :param int length: Rolling window including the current candles when calculating the indicator.
+        :param int multiplier: Indicator multiplier applied.
+        :param bool inplace: Make it permanent in the instance or not.
+        :param str suffix: A decorative suffix for the name of the column created.
         :param list colors: DDefaults to red and green.
-        :param kwargs: Optional plotly args.
+        :param kwargs: Optional plotly args from https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/overlap/supertrend.py.
         :return: pd.DataFrame
 
         """
@@ -1033,10 +1047,9 @@ class Symbol(object):
                                       length=length,
                                       multiplier=int(multiplier),
                                       **kwargs)
-        supertrend_df.replace(0, np.nan, inplace=True)  # pandas_ta puts a zero at the beginning sometimes
+        supertrend_df.replace(0, np.nan, inplace=True)  # pandas_ta puts a zero at the beginning sometimes that can break the plot scale
 
         if inplace:
-            # plot ready
             column_names = supertrend_df.columns
             self.row_counter += 1
             if not colors:
@@ -1058,22 +1071,22 @@ class Symbol(object):
     def macd(self, fast: int = 12,
              slow: int = 26,
              smooth: int = 9,
-             inplace=True,
+             inplace: bool = True,
              suffix: str = '',
-             colors: list = None,
+             colors: list = ['orange', 'green', 'skyblue'],
              **kwargs):
         """
         Generate technical indicator Moving Average, Convergence/Divergence (MACD).
 
             https://www.investopedia.com/terms/m/macd.asp
 
-        :param fast: Fast rolling window including the current candles when calculating the indicator.
-        :param slow: Slow rolling window including the current candles when calculating the indicator.
-        :param smooth: Factor to apply a smooth in values.
-        :param inplace: Make it permanent in the instance or not.
-        :param suffix: A decorative suffix for the name of the column created.
-        :param colors: A list of colors for the MACD dataframe columns. Is the color to show when plotting.
-        It can be any color from plotly library or a number in the list of those. Default colors defined.
+        :param int fast: Fast rolling window including the current candles when calculating the indicator.
+        :param int slow: Slow rolling window including the current candles when calculating the indicator.
+        :param int smooth: Factor to apply a smooth in values. A smooth is a kind of moving average in short period like 3 or 9.
+        :param bool inplace: Make it permanent in the instance or not.
+        :param str suffix: A decorative suffix for the name of the column created.
+        :param list colors: A list of colors for the MACD dataframe columns. Is the color to show when plotting.
+            It can be any color from plotly library or a number in the list of those. Default colors defined.
 
             <https://community.plotly.com/t/plotly-colours-list/11730>
 
@@ -1089,9 +1102,6 @@ class Symbol(object):
 
         if inplace:
             self.row_counter += 1
-            # plot ready
-            if not colors or len(colors) != 3:
-                colors = ['orange', 'green', 'skyblue']
             for i, c in enumerate(macd.columns):
                 col = macd[c]
                 column_name = str(col.name)
@@ -1102,7 +1112,426 @@ class Symbol(object):
                     self.set_plot_color_fill(indicator_column=column_name, color_fill=False)
                 self.set_plot_row(indicator_column=str(column_name), row_position=self.row_counter)
                 self.df.loc[:, column_name] = col
-
-        binpan_logger.debug(f"{self.color_control} {self.color_fill_control}")
-
         return macd
+
+    def rsi(self,
+            length: int = 14,
+            inplace: bool = True,
+            suffix: str = '',
+            color: str or int = None,
+            **kwargs):
+        """
+        Relative Strength Index (RSI).
+
+            https://www.investopedia.com/terms/r/rsi.asp
+
+        :param int length: Default is 21
+        :param bool inplace: Make it permanent in the instance or not.
+        :param str suffix: A decorative suffix for the name of the column created.
+        :param str or int color: Is the color to show when plotting from plotly list or index of color in that list.
+        :param kwargs: Optional from https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/momentum/rsi.py
+        :return: A Pandas Series
+        """
+
+        rsi = ta.rsi(close=self.df['Close'],
+                     length=length,
+                     **kwargs)
+        column_name = str(rsi.name) + suffix
+
+        if inplace:
+            self.row_counter += 1
+            if not color:
+                color = 'orange'
+            self.set_plot_color(indicator_column=column_name, color=color)
+            self.set_plot_row(indicator_column=column_name, row_position=self.row_counter)
+            self.set_plot_color_fill(indicator_column=column_name, color_fill=False)
+            self.df.loc[:, column_name] = rsi
+        return rsi
+
+    def stoch_rsi(self,
+                  rsi_length: int = 14,
+                  k_smooth: int = 3,
+                  d_smooth: int = 3,
+                  inplace: bool = True,
+                  suffix: str = '',
+                  colors: list = ['orange', 'bluesky'],
+                  **kwargs):
+        """
+        Stochastic Relative Strength Index (RSI) with a fast and slow exponential moving averages.
+
+            https://www.investopedia.com/terms/s/stochrsi.asp
+
+        :param int rsi_length: Default is 21
+        :param int k_smooth: Smooth fast line with a moving average of some periods. default is 3.
+        :param int d_smooth: Smooth slow line with a moving average of some periods. default is 3.
+        :param bool inplace: Make it permanent in the instance or not.
+        :param str suffix: A decorative suffix for the name of the column created.
+        :param list colors: Is the color to show when plotting.
+        :param kwargs: Optional from https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/momentum/stochrsi.py
+        :return: A Pandas Series tuple
+        """
+
+        stoch_rsi_k, stoch_rsi_d = ta.stochrsi(close=self.df['Close'],
+                                               length=rsi_length,
+                                               rsi_length=rsi_length,
+                                               k_smooth=k_smooth,
+                                               d_smooth=d_smooth,
+                                               **kwargs)
+        if inplace:
+            self.row_counter += 1
+
+            for i, serie in enumerate([stoch_rsi_k, stoch_rsi_d]):
+                column_name = str(serie.name) + suffix
+                self.set_plot_color(indicator_column=column_name, color=colors[i])
+                self.set_plot_row(indicator_column=column_name, row_position=self.row_counter)
+                self.set_plot_color_fill(indicator_column=column_name, color_fill=False)
+                self.df.loc[:, column_name] = serie
+
+        return stoch_rsi_k, stoch_rsi_d
+
+    def on_balance_volume(self,
+                          inplace: bool = True,
+                          suffix: str = '',
+                          color: str or int = None,
+                          **kwargs):
+        """
+        On balance indicator.
+
+            https://www.investopedia.com/terms/o/onbalancevolume.asp
+
+        :param bool inplace: Make it permanent in the instance or not.
+        :param str suffix: A decorative suffix for the name of the column created.
+        :param str or int color: Is the color to show when plotting.
+        :param kwargs: Optional from https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/volume/obv.py
+        :return: A Pandas Series
+        """
+
+        on_balance = ta.obv(close=self.df['Close'],
+                            volume=self.df['Volume'],
+                            **kwargs)
+
+        column_name = str(on_balance.name) + suffix
+
+        if inplace:
+            self.row_counter += 1
+            if not color:
+                color = 'red'
+
+            self.set_plot_color(indicator_column=column_name, color=color)
+            self.set_plot_row(indicator_column=column_name, row_position=self.row_counter)
+            self.set_plot_color_fill(indicator_column=column_name, color_fill=False)
+            self.df.loc[:, column_name] = on_balance
+
+        return on_balance
+
+    def accumulation_distribution(self,
+                                  inplace: bool = True,
+                                  suffix: str = '',
+                                  color: str or int = None,
+                                  **kwargs):
+        """
+        Accumulation/Distribution indicator.
+
+            https://www.investopedia.com/terms/a/accumulationdistribution.asp
+
+        :param bool inplace: Make it permanent in the instance or not.
+        :param str suffix: A decorative suffix for the name of the column created.
+        :param str or int color: Is the color to show when plotting or index in that list.
+        :param kwargs: Optional from https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/volume/ad.py
+        :return: A Pandas Series
+        """
+
+        ad = ta.ad(high=self.df['High'],
+                   low=self.df['Low'],
+                   close=self.df['Close'],
+                   volume=self.df['Volume'],
+                   **kwargs)
+
+        column_name = str(ad.name) + suffix
+
+        if inplace:
+            self.row_counter += 1
+            if not color:
+                color = 'red'
+
+            self.set_plot_color(indicator_column=column_name, color=color)
+            self.set_plot_row(indicator_column=column_name, row_position=self.row_counter)
+            self.set_plot_color_fill(indicator_column=column_name, color_fill=False)
+            self.df.loc[:, column_name] = ad
+
+        return ad
+
+    def vwap(self,
+             anchor: str = "D",
+             inplace: bool = True,
+             suffix: str = '',
+             color: str or int = None,
+             **kwargs):
+        """
+        Volume Weighted Average Price.
+
+            https://www.investopedia.com/ask/answers/031115/why-volume-weighted-average-price-vwap-important-traders-and-analysts.asp
+
+        :param str anchor: How to anchor VWAP. Depending on the index values, it will implement various Timeseries Offset Aliases
+            as listed here: https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#timeseries-offset-aliases
+            Default: "D", that means calendar day frequency.
+        :param bool inplace: Make it permanent in the instance or not.
+        :param str suffix: A decorative suffix for the name of the column created.
+        :param str or int color: Is the color to show when plotting or index in that list.
+        :param kwargs: Optional from https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/overlap/vwap.py
+        :return: A Pandas Series
+        """
+
+        vwap = ta.vwap(high=self.df['High'],
+                       low=self.df['Low'],
+                       close=self.df['Close'],
+                       volume=self.df['Volume'],
+                       anchor=anchor,
+                       **kwargs)
+
+        column_name = str(vwap.name) + suffix
+
+        if inplace:
+            self.row_counter += 1
+            if not color:
+                color = 'red'
+            self.set_plot_color(indicator_column=column_name, color=color)
+            self.set_plot_row(indicator_column=column_name, row_position=self.row_counter)
+            self.set_plot_color_fill(indicator_column=column_name, color_fill=False)
+            self.df.loc[:, column_name] = vwap
+
+        return vwap
+
+    def atr(self,
+            length: int = 14,
+            inplace: bool = True,
+            suffix: str = '',
+            color: str or int = None,
+            **kwargs):
+        """
+        Average True Range.
+
+            https://www.investopedia.com/terms/a/atr.asp
+
+        :param str length: Window period to obtain ATR. Default is 14.
+        :param bool inplace: Make it permanent in the instance or not.
+        :param str suffix: A decorative suffix for the name of the column created.
+        :param str or int color: Is the color to show when plotting or index in that list.
+        :param kwargs: Optional from https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/volatility/atr.py
+        :return: A Pandas Series
+        """
+
+        atr = ta.atr(high=self.df['High'],
+                     low=self.df['Low'],
+                     close=self.df['Close'],
+                     length=length,
+                     **kwargs)
+
+        column_name = str(atr.name) + suffix
+
+        if inplace:
+            self.row_counter += 1
+            if not color:
+                color = 'red'
+            self.set_plot_color(indicator_column=column_name, color=color)
+            self.set_plot_row(indicator_column=column_name, row_position=self.row_counter)
+            self.set_plot_color_fill(indicator_column=column_name, color_fill=False)
+            self.df.loc[:, column_name] = atr
+
+        return atr
+
+    def cci(self,
+            length: int = 14,
+            scaling: int = None,
+            inplace: bool = True,
+            suffix: str = '',
+            color: str or int = None,
+            **kwargs):
+        """
+        Compute the Commodity Channel Index (CCI) for NIFTY based on the 14-day moving average.
+
+        CCI can be used to determine overbought and oversold levels.
+            - Readings above +100 can imply an overbought condition
+            - Readings below −100 can imply an oversold condition.
+
+        However, one should be careful because security can continue moving higher after the CCI indicator becomes
+            overbought. Likewise, securities can continue moving lower after the indicator becomes oversold.
+
+            https://blog.quantinsti.com/build-technical-indicators-in-python/
+
+        :param str length: Window period to obtain ATR. Default is 14.
+        :param str scaling: Scaling Constant. Default: 0.015.
+        :param bool inplace: Make it permanent in the instance or not.
+        :param str suffix: A decorative suffix for the name of the column created.
+        :param str or int color: Is the color to show when plotting or index in that list.
+        :param kwargs: Optional from https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/momentum/cci.py
+        :return: A Pandas Series
+        """
+
+        cci = ta.cci(high=self.df['High'],
+                     low=self.df['Low'],
+                     close=self.df['Close'],
+                     length=length,
+                     c=scaling,
+                     **kwargs)
+
+        column_name = str(cci.name) + suffix
+
+        if inplace:
+            self.row_counter += 1
+            if not color:
+                color = 'red'
+            self.set_plot_color(indicator_column=column_name, color=color)
+            self.set_plot_row(indicator_column=column_name, row_position=self.row_counter)
+            self.set_plot_color_fill(indicator_column=column_name, color_fill=False)
+            self.df.loc[:, column_name] = cci
+
+        return cci
+
+    def eom(self,
+            length: int = 14,
+            divisor: int = None,
+            drift: int = None,
+            inplace: bool = True,
+            suffix: str = '',
+            color: str or int = None,
+            **kwargs):
+        """
+        Ease of Movement (EMV) can be used to confirm a bullish or a bearish trend. A sustained positive Ease of Movement
+            together with a rising market confirms a bullish trend, while a negative Ease of Movement values with falling
+            prices confirms a bearish trend. Apart from using as a standalone indicator, Ease of Movement (EMV) is also used
+            with other indicators in chart analysis.
+
+            https://blog.quantinsti.com/build-technical-indicators-in-python/
+
+        :param str length: The short period. Default: 14
+        :param str divisor: Scaling Constant. Default is 100000000.
+        :param str drift: The diff period. Default is 1
+        :param bool inplace: Make it permanent in the instance or not.
+        :param str suffix: A decorative suffix for the name of the column created.
+        :param str or int color: Is the color to show when plotting or index in that list.
+        :param kwargs: Optional from https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/volume/eom.py
+        :return: A Pandas Series
+        """
+
+        eom = ta.eom(high=self.df['High'],
+                     low=self.df['Low'],
+                     close=self.df['Close'],
+                     volume=self.df['Volume'],
+                     length=length,
+                     divisor=divisor,
+                     drift=drift,
+                     **kwargs)
+
+        column_name = str(eom.name) + suffix
+
+        if inplace:
+            self.row_counter += 1
+            if not color:
+                color = 'red'
+            self.set_plot_color(indicator_column=column_name, color=color)
+            self.set_plot_row(indicator_column=column_name, row_position=self.row_counter)
+            self.set_plot_color_fill(indicator_column=column_name, color_fill=False)
+            self.df.loc[:, column_name] = eom
+        return eom
+
+    def roc(self,
+            length: int = 1,
+            escalar: int = 100,
+            inplace: bool = True,
+            suffix: str = '',
+            color: str or int = None,
+            **kwargs):
+        """
+        The Rate of Change (ROC) is a technical indicator that measures the percentage change between the most recent price
+            and the price "n" day’s ago. The indicator fluctuates around the zero line.
+
+                https://blog.quantinsti.com/build-technical-indicators-in-python/
+
+        :param str length: The short period. Default: 1
+        :param str escalar:  How much to magnify. Default: 100.
+        :param bool inplace: Make it permanent in the instance or not.
+        :param str suffix: A decorative suffix for the name of the column created.
+        :param str or int color: Is the color to show when plotting or index in that list.
+        :param kwargs: Optional from https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/momentum/roc.py
+        :return: A Pandas Series
+        """
+
+        roc = ta.roc(close=self.df['Close'],
+                     length=length,
+                     escalar=escalar,
+                     **kwargs)
+
+        column_name = str(roc.name) + suffix
+
+        if inplace:
+            self.row_counter += 1
+            if not color:
+                color = 'red'
+            self.set_plot_color(indicator_column=column_name, color=color)
+            self.set_plot_row(indicator_column=column_name, row_position=self.row_counter)
+            self.set_plot_color_fill(indicator_column=column_name, color_fill=False)
+            self.df.loc[:, column_name] = roc
+        return roc
+
+    def bbands(self,
+               length: int = 5,
+               std: int = 2,
+               ddof: int = 0,
+               inplace: bool = True,
+               suffix: str = '',
+               colors: list = ['green', 'orange', 'red', 'skyblue'],
+               **kwargs):
+        """
+        These bands consist of an upper Bollinger band and a lower Bollinger band and are placed two standard deviations
+        above and below a moving average.
+        Bollinger bands expand and contract based on the volatility. During a period of rising volatility, the bands widen,
+        and they contract as the volatility decreases. Prices are considered to be relatively high when they move above
+        the upper band and relatively low when they go below the lower band.
+
+            https://blog.quantinsti.com/build-technical-indicators-in-python/
+
+        :param int length: The short period. Default: 5
+        :param int std: The long period. Default: 2
+        :param int ddof: Degrees of Freedom to use. Default: 0
+        :param bool inplace: Make it permanent in the instance or not.
+        :param str suffix: A decorative suffix for the name of the column created.
+        :param list colors: A list of colors for the MACD dataframe columns. Is the color to show when plotting.
+            It can be any color from plotly library or a number in the list of those. Default colors defined.
+            https://community.plotly.com/t/plotly-colours-list/11730
+
+        :param kwargs: Optional from https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/volatility/bbands.py
+        :return: pd.Series
+
+        """
+        bbands = self.df.ta.bbands(close=self.df['Close'],
+                                   length=length,
+                                   std=std,
+                                   ddof=ddof,
+                                   suffix=suffix,
+                                   **kwargs)
+        if inplace:
+            self.row_counter += 1
+            for i, c in enumerate(bbands.columns):
+                col = bbands[c]
+                column_name = str(col.name)
+                self.set_plot_color(indicator_column=column_name, color=colors[i])
+                # TODO: definir fill color por nombre de columna
+                if c.startswith('MACDh_'):
+                    self.set_plot_color_fill(indicator_column=column_name, color_fill='rgba(26,150,65,0.5)')
+                else:
+                    self.set_plot_color_fill(indicator_column=column_name, color_fill=False)
+                self.set_plot_row(indicator_column=str(column_name), row_position=self.row_counter)
+                self.df.loc[:, column_name] = col
+        return bbands
+
+    def pandas_ta_indicator(self,
+                            indicator_function: str,
+                            **kwargs):
+        """
+        Calls any indicator in pandas_ta library.
+
+        :param indicator_function: A function name. In example: 'massi' for Mass Index or 'rsi' for RSI indicator.
+        :param kwargs: Arguments for the requested indicator. Review pandas_ta info: https://github.com/twopirllc/pandas-ta#features
+        :return: Whatever returns pandas_ta
+        """
