@@ -32,8 +32,10 @@ Take a look to the basic **tutorial**. Find it in the Jupyter Notebook file **tu
 
 https://nand0san.github.io/binpan_studio/
 
-Python Version
---------------
+Python Version and Google Colab
+-------------------------------
+
+Please install in google colab with: :code:`!pip install binpan`, then push restart runtime button and import library as usual.
 
 Google colab ready: **python 3.7.9**
 

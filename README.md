@@ -34,8 +34,10 @@ https://nand0san.github.io/binpan_studio/
 
 Hope you find it useful breaking the market!!!
 
-Python Version
---------------
+Python Version and Google Colab
+-------------------------------
+
+Please install in google colab with: `!pip install binpan`, then push restart runtime button and import library as usual.
 
 Google colab ready: `python 3.7.9`
 
