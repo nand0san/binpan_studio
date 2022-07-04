@@ -16,15 +16,13 @@ import handlers.wallet
 import handlers.files_filters
 import handlers.strategies
 
-
 import pandas_ta as ta
 from random import choice
-
 
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
 
-__version__ = "0.0.6"
+__version__ = "0.0.9"
 
 plotly_colors = handlers.plotting.plotly_colors
 
@@ -123,7 +121,7 @@ class Symbol(object):
                                       display_rows=10)
         binpan_object.df
 
-                                        Open    High    Low     Close   Volume          Quote volume    Trades  Taker buy base volume   Taker buy quote volume
+                      Open    High    Low     Close   Volume          Quote volume    Trades  Taker buy base volume   Taker buy quote volume
 
         ETHBUSD 5m UTC
 
@@ -452,7 +450,7 @@ class Symbol(object):
 
             .. code-block::
 
-               	Aggregate tradeId	Price	Quantity	First tradeId	Last tradeId	Timestamp	Buyer was maker	Best price match
+                Aggregate tradeId	Price	Quantity	First tradeId	Last tradeId	Timestamp	Buyer was maker	Best price match
 
                 LUNCBUSD Europe/Madrid
 
