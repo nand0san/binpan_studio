@@ -22,7 +22,7 @@ from random import choice
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='DEBUG')
 tick_seconds = handlers.time_helper.tick_seconds
 
-__version__ = "0.0.10"
+__version__ = "0.0.11"
 
 plotly_colors = handlers.plotting.plotly_colors
 
