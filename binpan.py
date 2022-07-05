@@ -198,7 +198,7 @@ class Symbol(object):
         self.display_width = display_width
         self.trades = pd.DataFrame(columns=list(self.trades_columns.values()))
         self.row_control = dict()
-        self.color_control = []
+        self.color_control = dict()
         self.color_fill_control = dict()
         self.row_counter = 1
 
@@ -369,20 +369,30 @@ class Symbol(object):
         Can be used when messing with indicators to clean the object.
 
         :param: list columns: A list with the columns names to drop. If not passed, it defaults to the initial columns that remain
-            from when instanced.
+            from when instanced. Defaults to any column but initial ones.
         :param: bool inplace: When true, it drops columns in the object. False just returns a copy without that columns and dataframe
             in the object remains.
         :return pd.DataFrame: Pandas DataFrame with columns dropped.
 
         """
+        current_columns = self.df.columns
         if not columns:
             columns = []
-            for col in self.df.columns:
+            for col in current_columns:
                 if not col in self.original_candles_cols:
                     columns.append(col)
         try:
             if inplace:
+                conserve_columns = {c for c in current_columns if c not in columns and c in self.color_control.keys()}
+
+                self.row_control = {c: self.row_control[c] for c in conserve_columns}
+                self.row_counter = 1 + len([i for i in list(set(self.row_control)) if i == 1])
+
+                self.color_control = {c: self.color_control[c] for c in conserve_columns}
+                self.color_fill_control = {c: self.color_fill_control[c] for c in conserve_columns}
+
                 self.df.drop(columns, axis=1, inplace=True)
+
                 return self.df
             else:
                 return self.df.drop(columns, axis=1, inplace=False)
@@ -480,6 +490,29 @@ class Symbol(object):
                                                          time_index=self.time_index)
         return self.trades
 
+    def is_new(self,
+               data: pd.Series or pd.DataFrame) -> bool:
+        """
+        Verify if indicator columns are previously created to avoid allocating new rows and colors etc.
+
+        :param pd.Series or pd.DataFrame data: Data from pandas_ta to review if is previously computed.
+        :return bool:
+        """
+        existing_columns = self.df.columns
+
+        if type(data) == pd.Series:
+            generated_columns = [data.name]
+        elif type(data) == pd.DataFrame:
+            generated_columns = data.columns
+        else:
+            msg = f"BinPan error: pandas_ta data is not pd.Series or pd.DataFrame"
+            binpan_logger.error(msg)
+            raise Exception(msg)
+        for gen_col in generated_columns:
+            if gen_col in existing_columns:
+                return False
+        return True
+
     ################
     # Plots
     ################
@@ -497,7 +530,9 @@ class Symbol(object):
             self.row_control.update({indicator_column: row_position})
         return self.row_control
 
-    def set_plot_color(self, indicator_column: str = None, color: int or str = None) -> list:
+    def set_plot_color(self,
+                       indicator_column: str = None,
+                       color: int or str = None) -> dict:
         """
         Internal control formatting plots. Can be used to change plot color of an indicator.
 
@@ -506,25 +541,15 @@ class Symbol(object):
         :return dict: columns with its assigned colors when plotting.
 
         """
-        binpan_logger.debug(f"set_plot_color: indicator_column:{indicator_column} color:{color}")
-
-        existing_colors = self.color_control
-        updated_colors = existing_colors
         if indicator_column and color:
             if type(color) == int:
-                updated_colors = self.update_tuples_list(tuples_list=existing_colors,
-                                                         k=indicator_column,
-                                                         v=plotly_colors[color])
+                self.color_control.update({indicator_column: color})
             elif color in plotly_colors:
-                updated_colors = self.update_tuples_list(tuples_list=existing_colors,
-                                                         k=indicator_column,
-                                                         v=color)
+                self.color_control.update({indicator_column: color})
+            else:
+                self.color_control.update({indicator_column: choice(plotly_colors)})
         elif indicator_column:
-            updated_colors = self.update_tuples_list(tuples_list=existing_colors,
-                                                     k=indicator_column,
-                                                     v=choice(plotly_colors))
-        self.color_control = updated_colors
-        binpan_logger.debug(f"Updated self.color_control: {updated_colors}")
+            self.color_control.update({indicator_column: choice(plotly_colors)})
         return self.color_control
 
     def set_plot_color_fill(self, indicator_column: str = None, color_fill: str or bool = None) -> dict:
@@ -541,7 +566,6 @@ class Symbol(object):
             if type(color_fill) == int:
                 self.color_fill_control.update({indicator_column: plotly_colors[color_fill]})
             elif color_fill in plotly_colors or color_fill.startswith('rgba'):
-                print("fill detected")
                 self.color_fill_control.update({indicator_column: color_fill})
         elif indicator_column:
             self.color_fill_control.update({indicator_column: None})
@@ -558,7 +582,8 @@ class Symbol(object):
              priced_actions_col='priced_actions',
              actions_col: str = None,
              labels: list = [],
-             default_price_for_actions='Close'):
+             default_price_for_actions='Close',
+             background_color=None):
         """
         Plots a candles figure for the object.
 
@@ -571,7 +596,7 @@ class Symbol(object):
         :param width: Width of the plot.
         :param height: Height of the plot.
         :param candles_ta_height_ratio: Proportion between candles and the other indicators. Not considering overlap ones
-         in the candles plot.
+            in the candles plot.
         :param plot_volume: Plots volume.
         :param title: A tittle for the plot.
         :param yaxis_title: A title for the y axis.
@@ -580,19 +605,18 @@ class Symbol(object):
         :param actions_col: A column containing actions like buy or sell. Under developing.
         :param labels: Names for the annotations instead of the price.
         :param default_price_for_actions: Column to use as priced actions in case of not existing a specific prices actions column.
+        :param str background_color: Sets background color. Select a valid plotly color name.
+
         """
-        binpan_logger.debug(f"PLOT: self.row_control:{self.row_control} self.color_control:{self.color_control} ")
         if not title:
             title = self.df.index.name
 
         indicators_series = [self.df[k] for k in self.row_control.keys()]
         indicator_names = [self.df[k].name for k in self.row_control.keys()]
-        # indicators_colors = [self.color_control[k] for k in self.row_control.keys()]
-        indicators_colors = [self.color_control[i][1] for i, k in enumerate(self.row_control)]
-        binpan_logger.debug(f"PLOT: indicator_names: {indicator_names} indicators_colors:{indicators_colors}")
+        indicators_colors = [self.color_control[k] for k in self.row_control.keys()]
         rows_pos = [self.row_control[k] for k in self.row_control.keys()]
 
-        binpan_logger.debug(f"{indicator_names}\n{indicators_colors}\n{rows_pos}")
+        # binpan_logger.debug(f"{indicator_names}\n{indicators_colors}\n{rows_pos}")
 
         handlers.plotting.candles_tagged(data=self.df,
                                          width=width,
@@ -610,7 +634,8 @@ class Symbol(object):
                                          fill_control=self.color_fill_control,
                                          rows_pos=rows_pos,
                                          labels=labels,
-                                         default_price_for_actions=default_price_for_actions)
+                                         default_price_for_actions=default_price_for_actions,
+                                         plot_bgcolor=background_color)
 
     def plot_trades_size(self, max_size=60, height=1000, logarithmic=False, title: str = None):
         """
@@ -829,22 +854,22 @@ class Symbol(object):
     # Static Methods #
     ##################
 
-    @staticmethod
-    def update_tuples_list(tuples_list: list, k, v):
-        result = []
-        updated = False
-        for i in tuples_list:
-            key = i[0]
-            value = i[1]
-            if k == key:
-                ret = (k, v)
-                updated = True
-            else:
-                ret = (key, value)
-            result.append(ret)
-        if not updated:
-            result.append((k, v))
-        return result
+    # @staticmethod
+    # def update_tuples_list(tuples_list: list, k, v):
+    #     result = []
+    #     updated = False
+    #     for i in tuples_list:
+    #         key = i[0]
+    #         value = i[1]
+    #         if k == key:
+    #             ret = (k, v)
+    #             updated = True
+    #         else:
+    #             ret = (key, value)
+    #         result.append(ret)
+    #     if not updated:
+    #         result.append((k, v))
+    #     return result
 
     @staticmethod
     def parse_candles_to_dataframe(response: list,
@@ -1016,7 +1041,7 @@ class Symbol(object):
         df = self.df.copy(deep=True)
         ma = ta.ma(name=ma_name, source=df[column_source], **kwargs)
 
-        if inplace:
+        if inplace and self.is_new(ma):
             # plot ready
             column_name = str(ma.name)
             self.set_plot_color(indicator_column=column_name, color=color)
@@ -1080,7 +1105,7 @@ class Symbol(object):
                                       **kwargs)
         supertrend_df.replace(0, np.nan, inplace=True)  # pandas_ta puts a zero at the beginning sometimes that can break the plot scale
 
-        if inplace:
+        if inplace and self.is_new(supertrend_df):
             column_names = supertrend_df.columns
             self.row_counter += 1
             if not colors:
@@ -1104,7 +1129,7 @@ class Symbol(object):
              smooth: int = 9,
              inplace: bool = True,
              suffix: str = '',
-             colors: list = ['orange', 'green', 'skyblue'],
+             colors: list = ['orange', 'green', 'blue'],
              **kwargs):
         """
         Generate technical indicator Moving Average, Convergence/Divergence (MACD).
@@ -1129,7 +1154,7 @@ class Symbol(object):
                                slow=slow,
                                signal=smooth,
                                **kwargs)
-        if inplace:
+        if inplace and self.is_new(macd):
             self.row_counter += 1
             for i, c in enumerate(macd.columns):
                 col = macd[c]
@@ -1167,7 +1192,7 @@ class Symbol(object):
                      **kwargs)
         column_name = str(rsi.name) + suffix
 
-        if inplace:
+        if inplace and self.is_new(rsi):
             self.row_counter += 1
             if not color:
                 color = 'orange'
@@ -1199,35 +1224,21 @@ class Symbol(object):
         :param kwargs: Optional from https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/momentum/stochrsi.py
         :return: A Pandas DataFrame
         """
-
-
-        binpan_logger.debug(f"COLOR control inicial: {self.color_control}")
-
         stoch_df = ta.stochrsi(close=self.df['Close'],
                                length=rsi_length,
                                rsi_length=rsi_length,
                                k_smooth=k_smooth,
                                d_smooth=d_smooth,
                                **kwargs)
-
-        binpan_logger.debug(f"len:{len(stoch_df)} type:{type(stoch_df)}")
-        if inplace:
+        if inplace and self.is_new(stoch_df):
             self.row_counter += 1
             for i, c in enumerate(stoch_df.columns):
-                serie = stoch_df[c]
-                column_name = str(serie.name) + suffix
-                binpan_logger.debug(f"Vamos a llamar a set_plot_color con: {column_name} {colors[i]}")
+                col = stoch_df[c]
+                column_name = str(col.name) + suffix
                 self.set_plot_color(indicator_column=column_name, color=colors[i])
                 self.set_plot_color_fill(indicator_column=column_name, color_fill=False)
                 self.set_plot_row(indicator_column=column_name, row_position=self.row_counter)
-                self.df.loc[:, column_name] = serie
-                binpan_logger.debug(f"resultados actualizados: {column_name} {colors[i]} self.color_control: {self.color_control}")
-
-        self.set_plot_color(indicator_column='STOCHRSId_14_14_3_3', color='green')
-        self.set_plot_color(indicator_column='STOCHRSId_14_14_3_3', color='bluesky')
-        self.set_plot_color(indicator_column='STOCHRSId_14_14_3_3', color='bluesky')
-
-        binpan_logger.debug(f"resultados actualizados fin: self.color_control: {self.color_control}")
+                self.df.loc[:, column_name] = col
         return stoch_df
 
     def on_balance_volume(self,
@@ -1253,7 +1264,7 @@ class Symbol(object):
 
         column_name = str(on_balance.name) + suffix
 
-        if inplace:
+        if inplace and self.is_new(on_balance):
             self.row_counter += 1
             if not color:
                 color = 'red'
@@ -1290,7 +1301,7 @@ class Symbol(object):
 
         column_name = str(ad.name) + suffix
 
-        if inplace:
+        if inplace and self.is_new(ad):
             self.row_counter += 1
             if not color:
                 color = 'red'
@@ -1332,7 +1343,7 @@ class Symbol(object):
 
         column_name = str(vwap.name) + suffix
 
-        if inplace:
+        if inplace and self.is_new(vwap):
             self.row_counter += 1
             if not color:
                 color = 'red'
@@ -1370,7 +1381,7 @@ class Symbol(object):
 
         column_name = str(atr.name) + suffix
 
-        if inplace:
+        if inplace and self.is_new(atr):
             self.row_counter += 1
             if not color:
                 color = 'red'
@@ -1390,13 +1401,11 @@ class Symbol(object):
             **kwargs):
         """
         Compute the Commodity Channel Index (CCI) for NIFTY based on the 14-day moving average.
-
         CCI can be used to determine overbought and oversold levels.
             - Readings above +100 can imply an overbought condition
             - Readings below −100 can imply an oversold condition.
-
         However, one should be careful because security can continue moving higher after the CCI indicator becomes
-            overbought. Likewise, securities can continue moving lower after the indicator becomes oversold.
+        overbought. Likewise, securities can continue moving lower after the indicator becomes oversold.
 
             https://blog.quantinsti.com/build-technical-indicators-in-python/
 
@@ -1418,7 +1427,7 @@ class Symbol(object):
 
         column_name = str(cci.name) + suffix
 
-        if inplace:
+        if inplace and self.is_new(cci):
             self.row_counter += 1
             if not color:
                 color = 'red'
@@ -1431,17 +1440,17 @@ class Symbol(object):
 
     def eom(self,
             length: int = 14,
-            divisor: int = None,
-            drift: int = None,
+            divisor: int = 100000000,
+            drift: int = 1,
             inplace: bool = True,
             suffix: str = '',
             color: str or int = None,
             **kwargs):
         """
         Ease of Movement (EMV) can be used to confirm a bullish or a bearish trend. A sustained positive Ease of Movement
-            together with a rising market confirms a bullish trend, while a negative Ease of Movement values with falling
-            prices confirms a bearish trend. Apart from using as a standalone indicator, Ease of Movement (EMV) is also used
-            with other indicators in chart analysis.
+        together with a rising market confirms a bullish trend, while a negative Ease of Movement values with falling
+        prices confirms a bearish trend. Apart from using as a standalone indicator, Ease of Movement (EMV) is also used
+        with other indicators in chart analysis.
 
             https://blog.quantinsti.com/build-technical-indicators-in-python/
 
@@ -1466,7 +1475,7 @@ class Symbol(object):
 
         column_name = str(eom.name) + suffix
 
-        if inplace:
+        if inplace and self.is_new(eom):
             self.row_counter += 1
             if not color:
                 color = 'red'
@@ -1485,7 +1494,7 @@ class Symbol(object):
             **kwargs):
         """
         The Rate of Change (ROC) is a technical indicator that measures the percentage change between the most recent price
-            and the price "n" day’s ago. The indicator fluctuates around the zero line.
+        and the price "n" day’s ago. The indicator fluctuates around the zero line.
 
                 https://blog.quantinsti.com/build-technical-indicators-in-python/
 
@@ -1505,7 +1514,7 @@ class Symbol(object):
 
         column_name = str(roc.name) + suffix
 
-        if inplace:
+        if inplace and self.is_new(roc):
             self.row_counter += 1
             if not color:
                 color = 'red'
@@ -1521,7 +1530,7 @@ class Symbol(object):
                ddof: int = 0,
                inplace: bool = True,
                suffix: str = '',
-               colors: list = ['green', 'orange', 'red', 'skyblue'],
+               colors: list = ['red', 'orange', 'green'],
                **kwargs):
         """
         These bands consist of an upper Bollinger band and a lower Bollinger band and are placed two standard deviations
@@ -1551,19 +1560,18 @@ class Symbol(object):
                                    ddof=ddof,
                                    suffix=suffix,
                                    **kwargs)
-        if inplace:
-            self.row_counter += 1
+        if inplace and self.is_new(bbands):
+            binpan_logger.debug(bbands.columns)
             for i, c in enumerate(bbands.columns):
+
                 col = bbands[c]
                 column_name = str(col.name)
-                self.set_plot_color(indicator_column=column_name, color=colors[i])
-                # TODO: definir fill color por nombre de columna
-                if c.startswith('MACDh_'):
-                    self.set_plot_color_fill(indicator_column=column_name, color_fill='rgba(26,150,65,0.5)')
-                else:
-                    self.set_plot_color_fill(indicator_column=column_name, color_fill=False)
-                self.set_plot_row(indicator_column=str(column_name), row_position=self.row_counter)
                 self.df.loc[:, column_name] = col
+                if c.startswith('BBB') or c.startswith('BBP'):
+                    continue
+                self.set_plot_color(indicator_column=column_name, color=colors[i])
+                self.set_plot_color_fill(indicator_column=column_name, color_fill=False)
+                self.set_plot_row(indicator_column=str(column_name), row_position=1)
         return bbands
 
     @staticmethod
@@ -1571,6 +1579,8 @@ class Symbol(object):
                             **kwargs):
         """
         Calls any indicator in pandas_ta library with function name as first argument and any kwargs the function will use.
+        More info:
+            https://github.com/twopirllc/pandas-ta
 
         :param name: A function name. In example: 'massi' for Mass Index or 'rsi' for RSI indicator.
         :param kwargs: Arguments for the requested indicator. Review pandas_ta info: https://github.com/twopirllc/pandas-ta#features

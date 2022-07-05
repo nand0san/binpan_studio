@@ -6,7 +6,7 @@ import numpy as np
 from random import choice
 from .logs import Logs
 
-plot_logger = Logs(filename='./logs/plotting.log', name='plotting', info_level='DEBUG')
+plot_logger = Logs(filename='./logs/plotting.log', name='plotting', info_level='INFO')
 
 plotly_colors = ["aliceblue", "antiquewhite", "aqua", "aquamarine", "azure", "beige", "bisque", "black",
                  "blanchedalmond", "blue", "blueviolet", "brown", "burlywood", "cadetblue", "chartreuse", "chocolate",
@@ -203,7 +203,8 @@ def candles_ta(data: pd.DataFrame,
                text_positions: list = None,
                annotation_colors: list = None,
                annotation_names: list = None,
-               labels: list = None):
+               labels: list = None,
+               plot_bgcolor = None):
     """
     Data needs to be a DataFrame that at least contains the columns: Open Close High Low Volume
 
@@ -278,7 +279,8 @@ def candles_ta(data: pd.DataFrame,
 
            ethbtc.macd()
            binpan.handlers.plotting.candles_ta(data = ethbtc.df,
-                                               indicators_series=[ethbtc.df['MACD_12_26_9_'], ethbtc.df['MACDh_12_26_9_'], ethbtc.df['MACDs_12_26_9_']],
+                                               indicators_series=[ethbtc.df['MACD_12_26_9_'], ethbtc.df['MACDh_12_26_9_'],
+                                                    ethbtc.df['MACDs_12_26_9_']],
                                                indicators_color_filled=[False, 'rgba(26,150,65,0.5)', False],
                                                rows_pos=[2,2, 2],
                                                indicators_colors=['orange', 'green', 'skyblue'])
@@ -287,6 +289,8 @@ def candles_ta(data: pd.DataFrame,
     .. image:: images/candles_ta_macd.png
         :width: 1000
         :alt: Candles with some indicators
+
+    :param plot_bgcolor: Set background color.
 
     """
     if not indicators_color_filled:
@@ -366,6 +370,10 @@ def candles_ta(data: pd.DataFrame,
 
     fig = add_traces(fig, traces, rows=rows, cols=cols)
     fig = set_layout_format(fig, axes, title, yaxis_title, width, height, range_slider)
+
+    if plot_bgcolor:
+        fig.update_layout(plot_bgcolor=plot_bgcolor)
+
     fig.show()
 
 
@@ -382,7 +390,8 @@ def candles_tagged(data: pd.DataFrame, width=1800, height=1000, candles_ta_heigh
                    fill_control: dict or list = None,
                    rows_pos: list = [],
                    labels: list = [],
-                   default_price_for_actions='Close'):
+                   default_price_for_actions='Close',
+                   plot_bgcolor=None):
     """
 
     This is a shortcut from candles_ta. It defaults many inputs to better Jupyter Notebook usage.
@@ -466,10 +475,9 @@ def candles_tagged(data: pd.DataFrame, width=1800, height=1000, candles_ta_heigh
     .. image:: images/plot_tagged_example_02.png
        :width: 1000
 
+    :param plot_bgcolor: Set background color.
 
     """
-
-    plot_logger.debug(f"candles_tagged: {locals()}")
 
     if type(fill_control) == list:
         fill_control = {s.name: fill_control[i] for i, s in enumerate(indicators_series)}
@@ -520,7 +528,8 @@ def candles_tagged(data: pd.DataFrame, width=1800, height=1000, candles_ta_heigh
                indicator_names=indicator_names,
                indicators_colors=indicators_colors,
                indicators_color_filled=fill_control,
-               labels=labels)
+               labels=labels,
+               plot_bgcolor=plot_bgcolor)
 
 
 def plot_trade_size(data: pd.DataFrame, max_size=60, height=1000, logarithmic=False, title=f"Trade Size"):
