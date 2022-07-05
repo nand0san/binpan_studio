@@ -19,7 +19,7 @@ import handlers.strategies
 import pandas_ta as ta
 from random import choice
 
-binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
+binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='DEBUG')
 tick_seconds = handlers.time_helper.tick_seconds
 
 __version__ = "0.0.10"
@@ -197,9 +197,9 @@ class Symbol(object):
         self.display_max_rows = display_max_rows
         self.display_width = display_width
         self.trades = pd.DataFrame(columns=list(self.trades_columns.values()))
-        self.row_control = {}
-        self.color_control = {}
-        self.color_fill_control = {}
+        self.row_control = dict()
+        self.color_control = []
+        self.color_fill_control = dict()
         self.row_counter = 1
 
         self.set_display_columns()
@@ -497,7 +497,7 @@ class Symbol(object):
             self.row_control.update({indicator_column: row_position})
         return self.row_control
 
-    def set_plot_color(self, indicator_column: str = None, color: int or str = None) -> dict:
+    def set_plot_color(self, indicator_column: str = None, color: int or str = None) -> list:
         """
         Internal control formatting plots. Can be used to change plot color of an indicator.
 
@@ -506,13 +506,25 @@ class Symbol(object):
         :return dict: columns with its assigned colors when plotting.
 
         """
+        binpan_logger.debug(f"set_plot_color: indicator_column:{indicator_column} color:{color}")
+
+        existing_colors = self.color_control
+        updated_colors = existing_colors
         if indicator_column and color:
             if type(color) == int:
-                self.color_control.update({indicator_column: plotly_colors[color]})
+                updated_colors = self.update_tuples_list(tuples_list=existing_colors,
+                                                         k=indicator_column,
+                                                         v=plotly_colors[color])
             elif color in plotly_colors:
-                self.color_control.update({indicator_column: color})
+                updated_colors = self.update_tuples_list(tuples_list=existing_colors,
+                                                         k=indicator_column,
+                                                         v=color)
         elif indicator_column:
-            self.color_control.update({indicator_column: choice(plotly_colors)})
+            updated_colors = self.update_tuples_list(tuples_list=existing_colors,
+                                                     k=indicator_column,
+                                                     v=choice(plotly_colors))
+        self.color_control = updated_colors
+        binpan_logger.debug(f"Updated self.color_control: {updated_colors}")
         return self.color_control
 
     def set_plot_color_fill(self, indicator_column: str = None, color_fill: str or bool = None) -> dict:
@@ -569,13 +581,15 @@ class Symbol(object):
         :param labels: Names for the annotations instead of the price.
         :param default_price_for_actions: Column to use as priced actions in case of not existing a specific prices actions column.
         """
-
+        binpan_logger.debug(f"PLOT: self.row_control:{self.row_control} self.color_control:{self.color_control} ")
         if not title:
             title = self.df.index.name
 
         indicators_series = [self.df[k] for k in self.row_control.keys()]
         indicator_names = [self.df[k].name for k in self.row_control.keys()]
-        indicators_colors = [self.color_control[k] for k in self.row_control.keys()]
+        # indicators_colors = [self.color_control[k] for k in self.row_control.keys()]
+        indicators_colors = [self.color_control[i][1] for i, k in enumerate(self.row_control)]
+        binpan_logger.debug(f"PLOT: indicator_names: {indicator_names} indicators_colors:{indicators_colors}")
         rows_pos = [self.row_control[k] for k in self.row_control.keys()]
 
         binpan_logger.debug(f"{indicator_names}\n{indicators_colors}\n{rows_pos}")
@@ -814,6 +828,23 @@ class Symbol(object):
     ##################
     # Static Methods #
     ##################
+
+    @staticmethod
+    def update_tuples_list(tuples_list: list, k, v):
+        result = []
+        updated = False
+        for i in tuples_list:
+            key = i[0]
+            value = i[1]
+            if k == key:
+                ret = (k, v)
+                updated = True
+            else:
+                ret = (key, value)
+            result.append(ret)
+        if not updated:
+            result.append((k, v))
+        return result
 
     @staticmethod
     def parse_candles_to_dataframe(response: list,
@@ -1097,20 +1128,18 @@ class Symbol(object):
         macd = self.df.ta.macd(fast=fast,
                                slow=slow,
                                signal=smooth,
-                               suffix=suffix,
                                **kwargs)
-
         if inplace:
             self.row_counter += 1
             for i, c in enumerate(macd.columns):
                 col = macd[c]
-                column_name = str(col.name)
+                column_name = str(col.name) + suffix
                 self.set_plot_color(indicator_column=column_name, color=colors[i])
                 if c.startswith('MACDh_'):
                     self.set_plot_color_fill(indicator_column=column_name, color_fill='rgba(26,150,65,0.5)')
                 else:
                     self.set_plot_color_fill(indicator_column=column_name, color_fill=False)
-                self.set_plot_row(indicator_column=str(column_name), row_position=self.row_counter)
+                self.set_plot_row(indicator_column=column_name, row_position=self.row_counter)
                 self.df.loc[:, column_name] = col
         return macd
 
@@ -1154,8 +1183,8 @@ class Symbol(object):
                   d_smooth: int = 3,
                   inplace: bool = True,
                   suffix: str = '',
-                  colors: list = ['orange', 'bluesky'],
-                  **kwargs):
+                  colors: list = ['orange', 'blue'],
+                  **kwargs) -> pd.DataFrame:
         """
         Stochastic Relative Strength Index (RSI) with a fast and slow exponential moving averages.
 
@@ -1168,26 +1197,38 @@ class Symbol(object):
         :param str suffix: A decorative suffix for the name of the column created.
         :param list colors: Is the color to show when plotting.
         :param kwargs: Optional from https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/momentum/stochrsi.py
-        :return: A Pandas Series tuple
+        :return: A Pandas DataFrame
         """
 
-        stoch_rsi_k, stoch_rsi_d = ta.stochrsi(close=self.df['Close'],
-                                               length=rsi_length,
-                                               rsi_length=rsi_length,
-                                               k_smooth=k_smooth,
-                                               d_smooth=d_smooth,
-                                               **kwargs)
+
+        binpan_logger.debug(f"COLOR control inicial: {self.color_control}")
+
+        stoch_df = ta.stochrsi(close=self.df['Close'],
+                               length=rsi_length,
+                               rsi_length=rsi_length,
+                               k_smooth=k_smooth,
+                               d_smooth=d_smooth,
+                               **kwargs)
+
+        binpan_logger.debug(f"len:{len(stoch_df)} type:{type(stoch_df)}")
         if inplace:
             self.row_counter += 1
-
-            for i, serie in enumerate([stoch_rsi_k, stoch_rsi_d]):
+            for i, c in enumerate(stoch_df.columns):
+                serie = stoch_df[c]
                 column_name = str(serie.name) + suffix
+                binpan_logger.debug(f"Vamos a llamar a set_plot_color con: {column_name} {colors[i]}")
                 self.set_plot_color(indicator_column=column_name, color=colors[i])
-                self.set_plot_row(indicator_column=column_name, row_position=self.row_counter)
                 self.set_plot_color_fill(indicator_column=column_name, color_fill=False)
+                self.set_plot_row(indicator_column=column_name, row_position=self.row_counter)
                 self.df.loc[:, column_name] = serie
+                binpan_logger.debug(f"resultados actualizados: {column_name} {colors[i]} self.color_control: {self.color_control}")
 
-        return stoch_rsi_k, stoch_rsi_d
+        self.set_plot_color(indicator_column='STOCHRSId_14_14_3_3', color='green')
+        self.set_plot_color(indicator_column='STOCHRSId_14_14_3_3', color='bluesky')
+        self.set_plot_color(indicator_column='STOCHRSId_14_14_3_3', color='bluesky')
+
+        binpan_logger.debug(f"resultados actualizados fin: self.color_control: {self.color_control}")
+        return stoch_df
 
     def on_balance_volume(self,
                           inplace: bool = True,
@@ -1496,7 +1537,7 @@ class Symbol(object):
         :param int ddof: Degrees of Freedom to use. Default: 0
         :param bool inplace: Make it permanent in the instance or not.
         :param str suffix: A decorative suffix for the name of the column created.
-        :param list colors: A list of colors for the MACD dataframe columns. Is the color to show when plotting.
+        :param list colors: A list of colors for the indicator dataframe columns. Is the color to show when plotting.
             It can be any color from plotly library or a number in the list of those. Default colors defined.
             https://community.plotly.com/t/plotly-colours-list/11730
 
@@ -1525,13 +1566,292 @@ class Symbol(object):
                 self.df.loc[:, column_name] = col
         return bbands
 
-    def pandas_ta_indicator(self,
-                            indicator_function: str,
+    @staticmethod
+    def pandas_ta_indicator(name: str,
                             **kwargs):
         """
-        Calls any indicator in pandas_ta library.
+        Calls any indicator in pandas_ta library with function name as first argument and any kwargs the function will use.
 
-        :param indicator_function: A function name. In example: 'massi' for Mass Index or 'rsi' for RSI indicator.
+        :param name: A function name. In example: 'massi' for Mass Index or 'rsi' for RSI indicator.
         :param kwargs: Arguments for the requested indicator. Review pandas_ta info: https://github.com/twopirllc/pandas-ta#features
         :return: Whatever returns pandas_ta
         """
+
+        if name == "ebsw":
+            return ta.ebsw(**kwargs)
+        elif name == "ao":
+            return ta.ao(**kwargs)
+        elif name == "apo":
+            return ta.apo(**kwargs)
+        elif name == "bias":
+            return ta.bias(**kwargs)
+        elif name == "bop":
+            return ta.bop(**kwargs)
+        elif name == "brar":
+            return ta.brar(**kwargs)
+        elif name == "cci":
+            return ta.cci(**kwargs)
+        elif name == "cfo":
+            return ta.cfo(**kwargs)
+        elif name == "cg":
+            return ta.cg(**kwargs)
+        elif name == "cmo":
+            return ta.cmo(**kwargs)
+        elif name == "coppock":
+            return ta.coppock(**kwargs)
+        elif name == "cti":
+            return ta.cti(**kwargs)
+        elif name == "dm":
+            return ta.dm(**kwargs)
+        elif name == "er":
+            return ta.er(**kwargs)
+        elif name == "eri":
+            return ta.eri(**kwargs)
+        elif name == "fisher":
+            return ta.fisher(**kwargs)
+        elif name == "inertia":
+            return ta.inertia(**kwargs)
+        elif name == "kdj":
+            return ta.kdj(**kwargs)
+        elif name == "kst":
+            return ta.kst(**kwargs)
+        elif name == "macd":
+            return ta.macd(**kwargs)
+        elif name == "mom":
+            return ta.mom(**kwargs)
+        elif name == "pgo":
+            return ta.pgo(**kwargs)
+        elif name == "ppo":
+            return ta.ppo(**kwargs)
+        elif name == "psl":
+            return ta.psl(**kwargs)
+        elif name == "pvo":
+            return ta.pvo(**kwargs)
+        elif name == "qqe":
+            return ta.qqe(**kwargs)
+        elif name == "roc":
+            return ta.roc(**kwargs)
+        elif name == "rsi":
+            return ta.rsi(**kwargs)
+        elif name == "rsx":
+            return ta.rsx(**kwargs)
+        elif name == "rvgi":
+            return ta.rvgi(**kwargs)
+        elif name == "stc":
+            return ta.stc(**kwargs)
+        elif name == "slope":
+            return ta.slope(**kwargs)
+        elif name == "squeeze":
+            return ta.squeeze(**kwargs)
+        elif name == "squeeze_pro":
+            return ta.squeeze_pro(**kwargs)
+        elif name == "stoch":
+            return ta.stoch(**kwargs)
+        elif name == "stochrsi":
+            return ta.stochrsi(**kwargs)
+        elif name == "td_seq":
+            return ta.td_seq(**kwargs)
+        elif name == "trix":
+            return ta.trix(**kwargs)
+        elif name == "tsi":
+            return ta.tsi(**kwargs)
+        elif name == "uo":
+            return ta.uo(**kwargs)
+        elif name == "willr":
+            return ta.willr(**kwargs)
+        elif name == "alma":
+            return ta.alma(**kwargs)
+        elif name == "dema":
+            return ta.dema(**kwargs)
+        elif name == "ema":
+            return ta.ema(**kwargs)
+        elif name == "fwma":
+            return ta.fwma(**kwargs)
+        elif name == "hilo":
+            return ta.hilo(**kwargs)
+        elif name == "hl2":
+            return ta.hl2(**kwargs)
+        elif name == "hlc3":
+            return ta.hlc3(**kwargs)
+        elif name == "hma":
+            return ta.hma(**kwargs)
+        elif name == "hwma":
+            return ta.hwma(**kwargs)
+        elif name == "ichimoku":
+            return ta.ichimoku(**kwargs)
+        elif name == "jma":
+            return ta.jma(**kwargs)
+        elif name == "kama":
+            return ta.kama(**kwargs)
+        elif name == "linreg":
+            return ta.linreg(**kwargs)
+        elif name == "mcgd":
+            return ta.mcgd(**kwargs)
+        elif name == "midpoint":
+            return ta.midpoint(**kwargs)
+        elif name == "midprice":
+            return ta.midprice(**kwargs)
+        elif name == "ohlc4":
+            return ta.ohlc4(**kwargs)
+        elif name == "pwma":
+            return ta.pwma(**kwargs)
+        elif name == "rma":
+            return ta.rma(**kwargs)
+        elif name == "sinwma":
+            return ta.sinwma(**kwargs)
+        elif name == "sma":
+            return ta.sma(**kwargs)
+        elif name == "ssf":
+            return ta.ssf(**kwargs)
+        elif name == "supertrend":
+            return ta.supertrend(**kwargs)
+        elif name == "swma":
+            return ta.swma(**kwargs)
+        elif name == "t3":
+            return ta.t3(**kwargs)
+        elif name == "tema":
+            return ta.tema(**kwargs)
+        elif name == "trima":
+            return ta.trima(**kwargs)
+        elif name == "vidya":
+            return ta.vidya(**kwargs)
+        elif name == "vwap":
+            return ta.vwap(**kwargs)
+        elif name == "vwma":
+            return ta.vwma(**kwargs)
+        elif name == "wcp":
+            return ta.wcp(**kwargs)
+        elif name == "wma":
+            return ta.wma(**kwargs)
+        elif name == "zlma":
+            return ta.zlma(**kwargs)
+        elif name == "drawdown":
+            return ta.drawdown(**kwargs)
+        elif name == "log_return":
+            return ta.log_return(**kwargs)
+        elif name == "percent_return":
+            return ta.percent_return(**kwargs)
+        elif name == "entropy":
+            return ta.entropy(**kwargs)
+        elif name == "kurtosis":
+            return ta.kurtosis(**kwargs)
+        elif name == "mad":
+            return ta.mad(**kwargs)
+        elif name == "median":
+            return ta.median(**kwargs)
+        elif name == "quantile":
+            return ta.quantile(**kwargs)
+        elif name == "skew":
+            return ta.skew(**kwargs)
+        elif name == "stdev":
+            return ta.stdev(**kwargs)
+        elif name == "tos_stdevall":
+            return ta.tos_stdevall(**kwargs)
+        elif name == "variance":
+            return ta.variance(**kwargs)
+        elif name == "zscore":
+            return ta.zscore(**kwargs)
+        elif name == "adx":
+            return ta.adx(**kwargs)
+        elif name == "amat":
+            return ta.amat(**kwargs)
+        elif name == "aroon":
+            return ta.aroon(**kwargs)
+        elif name == "chop":
+            return ta.chop(**kwargs)
+        elif name == "cksp":
+            return ta.cksp(**kwargs)
+        elif name == "decay":
+            return ta.decay(**kwargs)
+        elif name == "decreasing":
+            return ta.decreasing(**kwargs)
+        elif name == "dpo":
+            return ta.dpo(**kwargs)
+        elif name == "increasing":
+            return ta.increasing(**kwargs)
+        elif name == "long_run":
+            return ta.long_run(**kwargs)
+        elif name == "psar":
+            return ta.psar(**kwargs)
+        elif name == "qstick":
+            return ta.qstick(**kwargs)
+        elif name == "short_run":
+            return ta.short_run(**kwargs)
+        elif name == "tsignals":
+            return ta.tsignals(**kwargs)
+        elif name == "ttm_trend":
+            return ta.ttm_trend(**kwargs)
+        elif name == "vhf":
+            return ta.vhf(**kwargs)
+        elif name == "vortex":
+            return ta.vortex(**kwargs)
+        elif name == "xsignals":
+            return ta.xsignals(**kwargs)
+        elif name == "above":
+            return ta.above(**kwargs)
+        elif name == "above_value":
+            return ta.above_value(**kwargs)
+        elif name == "below":
+            return ta.below(**kwargs)
+        elif name == "below_value":
+            return ta.below_value(**kwargs)
+        elif name == "cross":
+            return ta.cross(**kwargs)
+        elif name == "aberration":
+            return ta.aberration(**kwargs)
+        elif name == "accbands":
+            return ta.accbands(**kwargs)
+        elif name == "atr":
+            return ta.atr(**kwargs)
+        elif name == "bbands":
+            return ta.bbands(**kwargs)
+        elif name == "donchian":
+            return ta.donchian(**kwargs)
+        elif name == "hwc":
+            return ta.hwc(**kwargs)
+        elif name == "kc":
+            return ta.kc(**kwargs)
+        elif name == "massi":
+            return ta.massi(**kwargs)
+        elif name == "natr":
+            return ta.natr(**kwargs)
+        elif name == "pdist":
+            return ta.pdist(**kwargs)
+        elif name == "rvi":
+            return ta.rvi(**kwargs)
+        elif name == "thermo":
+            return ta.thermo(**kwargs)
+        elif name == "true_range":
+            return ta.true_range(**kwargs)
+        elif name == "ui":
+            return ta.ui(**kwargs)
+        elif name == "ad":
+            return ta.ad(**kwargs)
+        elif name == "adosc":
+            return ta.adosc(**kwargs)
+        elif name == "aobv":
+            return ta.aobv(**kwargs)
+        elif name == "cmf":
+            return ta.cmf(**kwargs)
+        elif name == "efi":
+            return ta.efi(**kwargs)
+        elif name == "eom":
+            return ta.eom(**kwargs)
+        elif name == "kvo":
+            return ta.kvo(**kwargs)
+        elif name == "mfi":
+            return ta.mfi(**kwargs)
+        elif name == "nvi":
+            return ta.nvi(**kwargs)
+        elif name == "obv":
+            return ta.obv(**kwargs)
+        elif name == "pvi":
+            return ta.pvi(**kwargs)
+        elif name == "pvol":
+            return ta.pvol(**kwargs)
+        elif name == "pvr":
+            return ta.pvr(**kwargs)
+        elif name == "pvt":
+            return ta.pvt(**kwargs)
+        elif name == "vp":
+            return ta.vp(**kwargs)

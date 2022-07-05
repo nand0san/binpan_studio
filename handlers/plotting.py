@@ -6,7 +6,7 @@ import numpy as np
 from random import choice
 from .logs import Logs
 
-plot_logger = Logs(filename='./logs/plotting.log', name='plotting', info_level='INFO')
+plot_logger = Logs(filename='./logs/plotting.log', name='plotting', info_level='DEBUG')
 
 plotly_colors = ["aliceblue", "antiquewhite", "aqua", "aquamarine", "azure", "beige", "bisque", "black",
                  "blanchedalmond", "blue", "blueviolet", "brown", "burlywood", "cadetblue", "chartreuse", "chocolate",
@@ -467,7 +467,10 @@ def candles_tagged(data: pd.DataFrame, width=1800, height=1000, candles_ta_heigh
        :width: 1000
 
 
-     """
+    """
+
+    plot_logger.debug(f"candles_tagged: {locals()}")
+
     if type(fill_control) == list:
         fill_control = {s.name: fill_control[i] for i, s in enumerate(indicators_series)}
 
