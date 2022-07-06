@@ -22,7 +22,7 @@ from random import choice
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='DEBUG')
 tick_seconds = handlers.time_helper.tick_seconds
 
-__version__ = "0.0.11"
+__version__ = "0.0.12"
 
 plotly_colors = handlers.plotting.plotly_colors
 
@@ -165,6 +165,7 @@ class Symbol(object):
 
         self.original_candles_cols = ['Open time', 'Open', 'High', 'Low', 'Close', 'Volume', 'Close time', 'Quote volume',
                                       'Trades', 'Taker buy base volume', 'Taker buy quote volume', 'Ignore']
+
         self.presentation_columns = ['Open', 'High', 'Low', 'Close', 'Volume', 'Quote volume', 'Trades', 'Taker buy base volume',
                                      'Taker buy quote volume']
 
@@ -197,6 +198,7 @@ class Symbol(object):
         self.display_max_rows = display_max_rows
         self.display_width = display_width
         self.trades = pd.DataFrame(columns=list(self.trades_columns.values()))
+        self.orderbook = pd.DataFrame(columns=['Price', 'Quantity', 'Side'])
         self.row_control = dict()
         self.color_control = dict()
         self.color_fill_control = dict()
@@ -827,6 +829,25 @@ class Symbol(object):
                                            height=height,
                                            **kwargs)
 
+    def plot_orderbook(self,
+                       accumulated=True,
+                       title='Depth orderbook plot',
+                       height=500,
+                       plot_y="Quantity",
+                       **kwargs):
+        """
+        Plots orderbook depth.
+        """
+        if self.orderbook.empty:
+            binpan_logger.info("Orderbook not downloaded. Please add orderbook data with: my_binpan.get_orderbook()")
+            return
+        handlers.plotting.orderbook_depth(df=self.orderbook,
+                                          accumulated=accumulated,
+                                          title=title,
+                                          height=height,
+                                          plot_y=plot_y,
+                                          **kwargs)
+
     #################
     # Exchange Data #
     #################
@@ -850,26 +871,28 @@ class Symbol(object):
             binpan_logger.warning("Fees cannot be requested without api key added. Add it with"
                                   " binpan.handlers.files_filters.add_api_key('xxxxxxxxxx')")
 
+    def get_orderbook(self,
+                      limit: int = 5000) -> pd.DataFrame:
+        """
+        Gets orderbook.
+
+        :param int limit: Defaults to maximum: 5000
+        :return pd.DataFrame:
+        """
+        orders = handlers.market.get_order_book(symbol=self.symbol,
+                                                limit=limit)
+        bids = pd.DataFrame(data=orders['bids'], columns=['Price', 'Quantity']).astype(float)
+        bids.loc[:, 'Side'] = 'bid'
+        asks = pd.DataFrame(data=orders['asks'], columns=['Price', 'Quantity']).astype(float)
+        asks.loc[:, 'Side'] = 'ask'
+        ob = pd.concat([bids, asks]).sort_values(by=['Price'], ascending=False).reset_index(drop=True)
+        ob.index.name = f"{self.symbol} updateId:{orders['lastUpdateId']}"
+        self.orderbook = ob
+        return self.orderbook
+
     ##################
     # Static Methods #
     ##################
-
-    # @staticmethod
-    # def update_tuples_list(tuples_list: list, k, v):
-    #     result = []
-    #     updated = False
-    #     for i in tuples_list:
-    #         key = i[0]
-    #         value = i[1]
-    #         if k == key:
-    #             ret = (k, v)
-    #             updated = True
-    #         else:
-    #             ret = (key, value)
-    #         result.append(ret)
-    #     if not updated:
-    #         result.append((k, v))
-    #     return result
 
     @staticmethod
     def parse_candles_to_dataframe(response: list,
@@ -1865,3 +1888,21 @@ class Symbol(object):
             return ta.pvt(**kwargs)
         elif name == "vp":
             return ta.vp(**kwargs)
+
+
+class Exchange(object):
+
+    def __init__(self,
+                 symbol: str,
+                 tick_interval: str,
+                 start_time: int or str = None,
+                 end_time: int or str = None,
+                 limit: int = 1000,
+                 time_zone: str = 'UTC',
+                 time_index: bool = True,
+                 closed: bool = True,
+                 display_columns=25,
+                 display_rows=10,
+                 display_max_rows=25,
+                 display_width=320):
+        return

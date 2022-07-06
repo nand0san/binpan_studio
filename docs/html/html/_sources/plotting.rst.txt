@@ -45,3 +45,5 @@ Colors can be picked with the name of the color or the index number from this li
 
 .. autofunction:: plot_hists_vs
 
+.. autofunction:: orderbook_depth
+

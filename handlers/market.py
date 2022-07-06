@@ -13,6 +13,10 @@ base_url = 'https://api.binance.com'
 # ###################################
 
 
+###########
+# Candles #
+###########
+
 def get_candles_by_time_stamps(start_time: int = None,
                                end_time: int = None,
                                symbol='BTCUSDT',
@@ -171,6 +175,10 @@ def get_last_candles(symbol: str = 'BTCUSDT',
               'limit': limit}
     return get_response(url=endpoint, params=params)
 
+##########
+# Trades #
+##########
+
 
 def get_agg_trades(fromId: int = None, symbol: str = 'BTCUSDT', limit=None, startTime: int = None, endTime: int = None):
     """
@@ -265,3 +273,21 @@ def get_historical_aggregated_trades(symbol: str,
         for i in tqdm(range(startTime, endTime, hour_ms)):
             trades += get_agg_trades(symbol=symbol, startTime=i, endTime=i + hour_ms)
         return trades
+
+#############
+# Orderbook #
+#############
+
+
+def get_order_book(symbol='BTCUSDT', limit=5000) -> dict:
+    """
+    Returns a dictionary with timestamp, bids and asks. Bids and asks are a list of lists with strings representing price and quantity.
+    :param str symbol: A Binance valid symbol.
+    :param int limit: Max is 5000. Default 5000.
+    :return dict:
+    """
+    check_minute_weight(limit // 100 or 1)
+    endpoint = '/api/v3/depth?'
+    query = {'symbol': symbol, 'limit': limit}
+    return get_response(url=endpoint, params=query)
+

@@ -204,7 +204,7 @@ def candles_ta(data: pd.DataFrame,
                annotation_colors: list = None,
                annotation_names: list = None,
                labels: list = None,
-               plot_bgcolor = None):
+               plot_bgcolor=None):
     """
     Data needs to be a DataFrame that at least contains the columns: Open Close High Low Volume
 
@@ -351,7 +351,6 @@ def candles_ta(data: pd.DataFrame,
     plot_logger.debug(f"{indicators_color_filled}")
 
     for i, indicator in enumerate(indicators_series):
-
         tas.append(set_ta_line(df=df_plot, serie=indicator, color=indicators_colors[i], name=indicator_names[i],
                                width=1, fill_color=list(indicators_color_filled.values())[i]))
         axes += 1
@@ -758,7 +757,7 @@ def plot_hists_vs(x0: pd.Series,
 
     .. image:: images/hist_vs_dist.png
        :width: 1000
-       :alt: Scatter plot example
+       :alt: Histogram plot example
 
 
     """
@@ -798,4 +797,50 @@ def plot_hists_vs(x0: pd.Series,
         **kwargs_update_layout)
 
     fig.update_traces(opacity=0.75)
+    fig.show()
+
+
+def orderbook_depth(df: pd.DataFrame,
+                    accumulated=True,
+                    title='Depth orderbook plot',
+                    height=500,
+                    plot_y="Quantity",
+                    **kwargs):
+    """
+    Plots orderbook from a BinPan orderbook dataframe.
+
+    :param pd.DAtaFrame df: BinPan orderbook dataframe.
+    :param bool accumulated: If true, applies cumsum to asks and bids.
+    :param str title: A title string.
+    :param int height: Plot sizing.
+    :param str plot_y: Column name with y axis data. Defaults to Quantity.
+    :param kwargs: Plotly kwargs.
+
+    Example:
+
+    .. code-block::
+
+        lunc = binpan.Symbol(symbol='luncbusd',
+                            tick_interval='5m',
+                            limit = 100,
+                            time_zone = 'Europe/Madrid',
+                            time_index = True,
+                            closed = True)
+
+        lunc.get_orderbook()
+
+    .. image:: images/plot_orderbook.png
+       :width: 1000
+       :alt: Plot example
+
+    """
+    ob = df.copy(deep=True)
+    if accumulated:
+        c_asks = ob[ob['Side'] == 'ask']['Quantity'][::-1].cumsum()
+        c_bids = ob[ob['Side'] == 'bid']['Quantity'].cumsum()
+        cumulated = pd.concat([c_asks, c_bids])
+        ob.loc[:, 'Accumulated Quantity'] = cumulated
+        plot_y = 'Accumulated Quantity'
+
+    fig = px.line(ob, x="Price", y=plot_y, color='Side', height=height, title=title, **kwargs)
     fig.show()

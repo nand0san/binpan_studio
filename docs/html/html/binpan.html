@@ -426,6 +426,19 @@ with other indicators in chart analysis.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="binpan.Symbol.get_orderbook">
+<span class="sig-name descname"><span class="pre">get_orderbook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#binpan.Symbol.get_orderbook" title="Permalink to this definition"></a></dt>
+<dd><p>Gets orderbook.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>limit</strong> (<em>int</em>) – Defaults to maximum: 5000</p>
+</dd>
+<dt class="field-even">Return pd.DataFrame</dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="binpan.Symbol.get_trades">
 <span class="sig-name descname"><span class="pre">get_trades</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.get_trades" title="Permalink to this definition"></a></dt>
 <dd><p>Calls the API and creates another dataframe included in the object with the aggregated trades from API for the period of the
@@ -687,6 +700,12 @@ makers.</p>
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Symbol.plot_orderbook">
+<span class="sig-name descname"><span class="pre">plot_orderbook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">accumulated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Depth</span> <span class="pre">orderbook</span> <span class="pre">plot'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Quantity'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.plot_orderbook" title="Permalink to this definition"></a></dt>
+<dd><p>Plots orderbook depth.</p>
 </dd></dl>
 
 <dl class="py method">

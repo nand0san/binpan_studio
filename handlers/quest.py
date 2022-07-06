@@ -4,7 +4,7 @@ import requests
 import hmac
 import hashlib
 from time import sleep
-import inspect
+# import inspect
 from .logs import Logs
 from .exceptions import BinanceAPIException, BinanceRequestException
 from .starters import AesCipher, get_exchange_limits
@@ -74,14 +74,14 @@ def check_minute_weight(ip_weigth):
         l = limits[k]  # esto fallará con movidas de sapi seguramente
         if v > l:
             w = l - v
-            msg = f"Waiting {w} seconds for weight to restore...."
+            msg = f"Waiting {w} seconds for weight to restore {k}...."
             print(msg)
             weight_logger.warning(msg)
             sleep(abs(w))
             weight[k] = 0
         else:
             weight[k] += ip_weigth
-    weight_logger.debug(f"Updated curr_weight: {weight}")
+        weight_logger.debug(f"Updated curr_weight {k}: {weight}")
 
 
 def get_server_time():
@@ -127,9 +127,9 @@ def get_response(url, params=None, headers=None):
     update_weights(response.headers)
     quest_logger.debug(f"get_response parameters: {locals()}")
 
-    curframe = inspect.currentframe()
-    calframe = inspect.getouterframes(curframe, 2)
-    quest_logger.debug(f"GET RESPONSE CALLED BY: {calframe[1][3]}")
+    # curframe = inspect.currentframe()
+    # calframe = inspect.getouterframes(curframe, 2)
+    # quest_logger.debug(f"GET RESPONSE CALLED BY: {calframe[1][3]}")
 
     return handle_api_response(response)
 

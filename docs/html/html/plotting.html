@@ -413,7 +413,37 @@ the smallest to the largest, that is, the smallest values will be divided into s
                                        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;High and Low prices distribution.&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="_images/hist_vs_dist.png"><img alt="Scatter plot example" src="_images/hist_vs_dist.png" style="width: 1000px;" /></a>
+<a class="reference internal image-reference" href="_images/hist_vs_dist.png"><img alt="Histogram plot example" src="_images/hist_vs_dist.png" style="width: 1000px;" /></a>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.handlers.plotting.orderbook_depth">
+<span class="sig-prename descclassname"><span class="pre">binpan.handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">orderbook_depth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">accumulated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Depth</span> <span class="pre">orderbook</span> <span class="pre">plot'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Quantity'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.handlers.plotting.orderbook_depth" title="Permalink to this definition"></a></dt>
+<dd><p>Plots orderbook from a BinPan orderbook dataframe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DAtaFrame</em>) – BinPan orderbook dataframe.</p></li>
+<li><p><strong>accumulated</strong> (<em>bool</em>) – If true, applies cumsum to asks and bids.</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – A title string.</p></li>
+<li><p><strong>height</strong> (<em>int</em>) – Plot sizing.</p></li>
+<li><p><strong>plot_y</strong> (<em>str</em>) – Column name with y axis data. Defaults to Quantity.</p></li>
+<li><p><strong>kwargs</strong> – Plotly kwargs.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lunc</span> <span class="o">=</span> <span class="n">binpan</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;luncbusd&#39;</span><span class="p">,</span>
+                    <span class="n">tick_interval</span><span class="o">=</span><span class="s1">&#39;5m&#39;</span><span class="p">,</span>
+                    <span class="n">limit</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+                    <span class="n">time_zone</span> <span class="o">=</span> <span class="s1">&#39;Europe/Madrid&#39;</span><span class="p">,</span>
+                    <span class="n">time_index</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                    <span class="n">closed</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="n">lunc</span><span class="o">.</span><span class="n">get_orderbook</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/plot_orderbook.png"><img alt="Plot example" src="_images/plot_orderbook.png" style="width: 1000px;" /></a>
 </dd></dl>
 
 </section>
