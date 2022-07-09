@@ -1,7 +1,7 @@
 Welcome to BinPan's documentation!
 ==================================
 
-BinPan is a Python wrapper for Binance API. Useful creating objects with many capabilities in data analyze.
+BinPan is a Python wrapper for Binance API. Useful creating objects with many capabilities in data analysis.
 
 BinPan can show plots easily and fetch API requests into the same object. It can also obtain some technical indicators.
 
