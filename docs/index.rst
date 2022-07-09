@@ -1,15 +1,15 @@
 Welcome to BinPan's documentation!
 ==================================
 
-BinPan is a Python wrapper for Binance API, creating objects with many capabilities to analyze data.
+BinPan is a Python wrapper for Binance API. Useful creating objects with many capabilities in data analyze.
 
-BinPan can make plots easily and grab API requests in the same object. It can also obtain some technical indicators.
+BinPan can show plots easily and fetch API requests into the same object. It can also obtain some technical indicators.
 
-The objective of this module is to have a fast tool to collect and handle data from the Binance API in an agile way.
+The target of this module is to have a fast tool for collecting and handling data from the Binance API easily.
 
 It is intended to be useful in Jupyter Notebooks or even the python console, but it can be used in many other ways.
 
-BinPan manages symbol objects that can:
+BinPan manages symbol objects that can do:
 
 - get candles with time zone and indexing options.
 - get trades.

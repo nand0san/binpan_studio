@@ -414,7 +414,8 @@ def candles_tagged(data: pd.DataFrame, width=1800, height=1000, candles_ta_heigh
 
 
     :param pd.DataFrame data: a DataFrame that at least contains the columns: Open Close High Low Volume
-    :param list indicators_series: a list of pandas series with float values as indicators.
+    :param list indicators_series: a list of pandas series with float values as indicators. Usually not overlap with candles indicators.
+        But to plot in a subplot.
     :param list rows_pos: 1 means over the candles. Other numbers mean subsequent subplots under the candles.
     :param list indicator_names: Names to show in the plot. Defaults to series name.
     :param list indicators_colors: Color can be forced to anyone from the plotly colors list:
@@ -431,7 +432,7 @@ def candles_tagged(data: pd.DataFrame, width=1800, height=1000, candles_ta_heigh
     :param str yaxis_title: A name string.
     :param actions_col: A column name of the column with string tags like buy, sell, etc. This is for plotting marks over candles.
     :param priced_actions_col: The name of the column containing value of action to position over candles.
-    :param on_candles_indicator: A list of pandas series with values to plot over the candles, not in a subplot. Example: SMA.
+    :param on_candles_indicator: A list of pandas series with values to plot overlapping candles, not in a subplot. Example: SMA.
     :param list labels: Ordered like the annotations list of tags to show overlapped. It defaults to price. Example:
 
         .. code-block:: python

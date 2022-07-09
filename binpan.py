@@ -20,7 +20,7 @@ import handlers.exchange
 import pandas_ta as ta
 from random import choice
 
-binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='DEBUG')
+binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
 
 __version__ = "0.0.13"
@@ -320,12 +320,6 @@ class Symbol(object):
                 overtime_candle_ts = handlers.time_helper.open_from_milliseconds(ms=raw_candles[-1][0], tick_interval=self.tick_interval)
 
             raw_candles = [i for i in raw_candles if int(i[0]) < overtime_candle_ts]
-
-        # # elimina la vela sobrante en caso de start_time
-        # if start_time and not end_time:
-        #     raw_candles = raw_candles[:limit]
-        # if not start_time and end_time:
-        #     raw_candles = raw_candles[-limit:]
 
         self.raw = raw_candles
 

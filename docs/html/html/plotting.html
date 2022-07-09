@@ -207,7 +207,8 @@ subplot and the rest in row subplots. Several indicators can be plotted in the s
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>pd.DataFrame</em>) – a DataFrame that at least contains the columns: Open Close High Low Volume</p></li>
-<li><p><strong>indicators_series</strong> (<em>list</em>) – a list of pandas series with float values as indicators.</p></li>
+<li><p><strong>indicators_series</strong> (<em>list</em>) – a list of pandas series with float values as indicators. Usually not overlap with candles indicators.
+But to plot in a subplot.</p></li>
 <li><p><strong>rows_pos</strong> (<em>list</em>) – 1 means over the candles. Other numbers mean subsequent subplots under the candles.</p></li>
 <li><p><strong>indicator_names</strong> (<em>list</em>) – Names to show in the plot. Defaults to series name.</p></li>
 <li><p><strong>indicators_colors</strong> (<em>list</em>) – <p>Color can be forced to anyone from the plotly colors list:</p>
@@ -223,7 +224,7 @@ the indicator plot. If a list passed, it iterates to assign each item in the lis
 <li><p><strong>yaxis_title</strong> (<em>str</em>) – A name string.</p></li>
 <li><p><strong>actions_col</strong> – A column name of the column with string tags like buy, sell, etc. This is for plotting marks over candles.</p></li>
 <li><p><strong>priced_actions_col</strong> – The name of the column containing value of action to position over candles.</p></li>
-<li><p><strong>on_candles_indicator</strong> – A list of pandas series with values to plot over the candles, not in a subplot. Example: SMA.</p></li>
+<li><p><strong>on_candles_indicator</strong> – A list of pandas series with values to plot overlapping candles, not in a subplot. Example: SMA.</p></li>
 <li><p><strong>labels</strong> (<em>list</em>) – <p>Ordered like the annotations list of tags to show overlapped. It defaults to price. Example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;buy&#39;</span><span class="p">,</span> <span class="s1">&#39;sell&#39;</span><span class="p">]</span>
 </pre></div>
