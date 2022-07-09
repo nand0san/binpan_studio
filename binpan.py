@@ -13,8 +13,9 @@ import handlers.exceptions
 import handlers.time_helper
 import handlers.plotting
 import handlers.wallet
-import handlers.files_filters
+import handlers.files
 import handlers.strategies
+import handlers.exchange
 
 import pandas_ta as ta
 from random import choice
@@ -22,7 +23,7 @@ from random import choice
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='DEBUG')
 tick_seconds = handlers.time_helper.tick_seconds
 
-__version__ = "0.0.12"
+__version__ = "0.0.13"
 
 plotly_colors = handlers.plotting.plotly_colors
 
@@ -848,6 +849,72 @@ class Symbol(object):
                                           plot_y=plot_y,
                                           **kwargs)
 
+    ###########
+    # Filters #
+    ###########
+
+    ###############
+    # Backtesting #
+    ###############
+
+    def backtesting(self,
+                    actions: pd.Series = None,
+                    base: float = 0,
+                    quote: float = 1000,
+                    priced_actions_col: str = None,
+                    fee: float = 0.001,
+                    dust: bool = True,
+                    actions_col: str or pd.Series = 'actions') -> (pd.Series, pd.Series):
+
+        # TODO: tener en cuenta el polvo en el backtesting
+
+        """
+        Devuelve dos series tipo wallet, con las operaciones de cambio base a wallet.
+        Puedes no pasarle los actions y los pilla de la columna indicada.
+        """
+
+        df_ = self.df.copy(deep=True)
+
+        if type(actions) == str:
+            actions_ = df_[actions_col].copy(deep=True)
+        else:
+            actions_ = actions.copy(deep=True)
+
+        base_wallet, quote_wallet = [], []
+
+        last_action = 0
+
+        for index, row in df_.iterrows():
+
+            curr_action = str(actions_[index])
+
+            if curr_action == 'buy' and last_action != 'buy':
+
+                if priced_actions_col:
+                    price = df_.loc[index, priced_actions_col]
+
+                else:
+                    price = row['Close']
+
+                base, quote = self.buy_base_backtesting(row=row, price=price, base=base, quote=quote, fee=fee)
+                last_action = 'buy'
+
+            elif curr_action == 'sell' and last_action != 'sell':
+
+                if priced_actions_col:
+                    price = df_.loc[index, priced_actions_col]
+
+                else:
+                    price = row['Close']
+
+                base, quote = self.sell_base_backtesting(row=row, price=price, base=base, quote=quote, fee=fee)
+                last_action = 'sell'
+
+            base_wallet.append(base)
+            quote_wallet.append(quote)
+
+        return pd.Series(base_wallet), pd.Series(quote_wallet)
+
     #################
     # Exchange Data #
     #################
@@ -893,6 +960,42 @@ class Symbol(object):
     ##################
     # Static Methods #
     ##################
+
+    @staticmethod
+    def buy_base_backtesting(row: pd.Series, price: float, base: float, quote: float, fee=0.001) -> tuple:
+        high_value = row['High']
+        low_value = row['Low']
+
+        if low_value <= price <= high_value:
+            ordered_price = price
+
+        elif price > high_value:
+            ordered_price = high_value
+
+        else:
+            return base, quote
+
+        base += (quote / ordered_price) * (1 - fee)
+        quote = 0
+        return base, quote
+
+    @staticmethod
+    def sell_base_backtesting(row: pd.Series, price: float, base: float, quote: float, fee=0.001) -> tuple:
+        high_value = row['High']
+        low_value = row['Low']
+
+        if low_value <= price <= high_value:
+            ordered_price = price
+
+        elif price < low_value:
+            ordered_price = low_value
+
+        else:
+            return base, quote
+
+        quote += base * ordered_price * (1 - fee)
+        base = 0
+        return base, quote
 
     @staticmethod
     def parse_candles_to_dataframe(response: list,

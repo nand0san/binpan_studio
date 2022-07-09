@@ -49,6 +49,7 @@ https://github.com/nand0san/binpan_studio
 
 Installation
 ------------
+Pypi repository: https://pypi.org/project/binpan/
 
 ```
    pip install binpan

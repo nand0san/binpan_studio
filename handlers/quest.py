@@ -1,13 +1,14 @@
 # coding=utf-8
+from .logs import Logs
+from .exceptions import BinanceAPIException, BinanceRequestException
+from .starters import AesCipher
+from .exchange import get_exchange_limits
+
 from urllib.parse import urljoin, urlencode
 import requests
 import hmac
 import hashlib
 from time import sleep
-# import inspect
-from .logs import Logs
-from .exceptions import BinanceAPIException, BinanceRequestException
-from .starters import AesCipher, get_exchange_limits
 
 try:
     global api_secret, api_key
@@ -48,6 +49,11 @@ cipher_object = AesCipher()
 limits = get_exchange_limits()
 
 weight = {}
+
+
+#################
+# Aux functions #
+#################
 
 
 def update_weights(header):
@@ -230,6 +236,7 @@ def post_signed_request(url: str, params_json: dict = None, recvWindow: int = 10
     quest_logger.debug("get_semi_signed_request: headers: " + str(headers.keys()))
     return convert_response_type(ret)
 
+
 #
 # def delete_signed_request(url: str, params_json: dict = None, recvWindow: int = 10000):
 #     """
@@ -246,3 +253,17 @@ def post_signed_request(url: str, params_json: dict = None, recvWindow: int = 10
 #     if not (tick_interval in tick_interval_values):
 #         raise Exception(f"BinPan Error on tick_interval: {tick_interval} not in "
 #                         f"expected API intervals.\n{tick_interval_values}")
+
+####################
+# Generic Requests #
+####################
+
+def api_raw_get(endpoint: str,
+                base_url: str = None,
+                params: dict = None,
+                headers: dict = None,
+                weight: int = 1):
+    check_minute_weight(weight)
+    return get_response(url=base_url+endpoint,
+                        params=params,
+                        headers=headers)
