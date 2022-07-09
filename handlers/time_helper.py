@@ -149,7 +149,10 @@ def ceil_division(a: float, b: float) -> int:
 
 def ticks_between_timestamps(start: int,
                              end: int,
-                             tick_interval: str) -> int:
+                             tick_interval: str,
+                             asked_start=None,
+                             asked_end=None,
+                             asked_end_is_future=None) -> int:
     """
     Dados dos timestamps en milliseconds y un tick interval te dice cuantas velas entran ahi.
 
@@ -157,12 +160,17 @@ def ticks_between_timestamps(start: int,
         - si el start es un open se toma la vela en la que abre, si no, se toma la siguiente vela.
         - si el end es un open se toma la vela de ese open también, si no, igualmente, la vela que contiene al end.
 
+    El limit no se tiene en cuenta aquí, previamente se habrá tenido en cuenta.
     """
     start_open = open_from_milliseconds(ms=start, tick_interval=tick_interval)
     if start_open != start:
         start_open = next_open_by_milliseconds(ms=start, tick_interval=tick_interval)
     end_close = close_from_milliseconds(end, tick_interval=tick_interval)
-    return ceil_division(end_close - start_open, tick_seconds[tick_interval]*1000)
+    ret = ceil_division(end_close - start_open, tick_seconds[tick_interval]*1000)
+    # if (asked_start and not asked_end) or (not asked_start and asked_end):
+    #     return ret - 1
+    # else:
+    return ret
 
 
 def get_ticks_to_timestamp_utc(ticks_interval: str, timestamp: int = None):

@@ -1,8 +1,7 @@
 # coding=utf-8
 from .logs import Logs
 from .exceptions import BinanceAPIException, BinanceRequestException
-from .starters import AesCipher
-from .exchange import get_exchange_limits
+from .starters import AesCipher, get_exchange_limits
 
 from urllib.parse import urljoin, urlencode
 import requests
@@ -41,7 +40,7 @@ tick_seconds = {'1m': 60, '3m': 60 * 3, '5m': 5 * 60, '15m': 15 * 60, '30m': 30 
 
 tick_interval_values = ['1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '6h', '8h', '12h', '1d', '3d', '1w', '1M']
 
-weight_logger = Logs(filename='./logs/weight.log', name='weight', info_level='INFO')
+weight_logger = Logs(filename='./logs/weight.log', name='weight', info_level='DEBUG')
 quest_logger = Logs(filename='./logs/quest.log', name='quest', info_level='INFO')
 
 cipher_object = AesCipher()
@@ -101,8 +100,8 @@ def get_server_time():
 ##################
 
 def extract_weights(header):
+    weight_logger.debug(f"Header: {header}")
     ret = {k: int(v) for k, v in header.items() if 'WEIGHT' in k.upper() or 'COUNT' in k.upper()}
-    weight_logger.debug(f"Extracted weights: {ret}")
     return ret
 
 
@@ -126,9 +125,12 @@ def convert_response_type(response_data: dict or list) -> dict or list:
     return response
 
 
-def get_response(url, params=None, headers=None):
+def get_response(url: str,
+                 params: dict or tuple = None,
+                 headers: dict = None):
     if not url.startswith(base_url):
         url = urljoin(base_url, url)
+
     response = requests.get(url, params=params, headers=headers)
     update_weights(response.headers)
     quest_logger.debug(f"get_response parameters: {locals()}")
@@ -177,7 +179,7 @@ def hashed_signature(url_params):  # los params para la signatura son los params
 #     return format(num_str, 'f')
 
 
-def parse_request(params_json: dict, recvWindow: int) -> (list, dict):
+def sign_request(params_json: dict, recvWindow: int) -> (list, dict):
     quest_logger.debug(f"parse_request: {params_json}")
 
     if params_json is None:
@@ -206,12 +208,16 @@ def parse_request(params_json: dict, recvWindow: int) -> (list, dict):
     return params_tuples, headers
 
 
-def get_signed_request(url: str, params_json: dict = None, recvWindow: int = 10000):
-    """ Hace un get firmado a una url junto con un diccionario de parámetros
-        Para evitar errores de orden de parámetros se pasan en formato tupla
-        https://dev.binance.vision/t/faq-signature-for-this-request-is-not-valid/176/4
+def get_signed_request(url: str,
+                       params: dict or tuple = None,
+                       recvWindow: int = 10000):
     """
-    params_tuples, headers = parse_request(params_json=params_json, recvWindow=recvWindow)
+    Hace un get firmado a una url junto con un diccionario de parámetros
+    Para evitar errores de orden de parámetros se pasan en formato tupla
+        https://dev.binance.vision/t/faq-signature-for-this-request-is-not-valid/176/4
+
+    """
+    params_tuples, headers = sign_request(params_json=params, recvWindow=recvWindow)
     ret = get_response(url, params=params_tuples, headers=headers)
     quest_logger.debug("get_signed_request: params_tuples: " + str(params_tuples))
     quest_logger.debug("get_signed_request: headers: " + str(headers.keys()))
@@ -230,7 +236,7 @@ def post_signed_request(url: str, params_json: dict = None, recvWindow: int = 10
     """
     Hace un POST firmado a una url junto con un diccionario de parámetros
     """
-    params_tuples, headers = parse_request(params_json=params_json, recvWindow=recvWindow)
+    params_tuples, headers = sign_request(params_json=params_json, recvWindow=recvWindow)
     ret = post_response(url, params=params_tuples, headers=headers)
     quest_logger.debug("post_signed_request: params_tuples: " + str(params_tuples))
     quest_logger.debug("get_semi_signed_request: headers: " + str(headers.keys()))
@@ -259,11 +265,20 @@ def post_signed_request(url: str, params_json: dict = None, recvWindow: int = 10
 ####################
 
 def api_raw_get(endpoint: str,
-                base_url: str = None,
+                base_url: str = '',
                 params: dict = None,
                 headers: dict = None,
                 weight: int = 1):
     check_minute_weight(weight)
-    return get_response(url=base_url+endpoint,
+    return get_response(url=base_url + endpoint,
                         params=params,
                         headers=headers)
+
+
+def api_raw_signed_get(endpoint: str,
+                       base_url: str = '',
+                       params: dict = None,
+                       weight: int = 1):
+    check_minute_weight(weight)
+    return get_signed_request(url=base_url + endpoint,
+                              params=params)

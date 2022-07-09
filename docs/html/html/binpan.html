@@ -188,10 +188,39 @@ ETHBUSD 5m UTC
 100 rows × 9 columns
 </pre></div>
 </div>
-<p>Created objects contain different data like:</p>
+<p>Created objects contain different instantiated variables like <strong>mysymbol.df</strong> that shows the candles dataframe:</p>
 <ul class="simple">
 <li><p>mysymbol.df: shows candles dataframe</p></li>
 <li><p>mysymbol.trades: shows aggregated trades, if requested. This is optional and can be added anytime.</p></li>
+<li><p>mysymbol.version: Version of BinPan.</p></li>
+<li><p>mysymbol.symbol: symbol instantiated.</p></li>
+<li><p>mysymbol.fees: personal fees applied for the symbol.</p></li>
+<li><p>mysymbol.tick_interval: tick_interval selected.</p></li>
+<li><p>mysymbol.start_time: start time instantiated.</p></li>
+<li><p>mysymbol.end_time: end time instantiated.</p></li>
+<li><p>mysymbol.limit: limit of candles in the instance, but if instantiated with start and end times, can be overridden.</p></li>
+<li><p>mysymbol.time_zone: timezone of the dates in the index of the dataframe.</p></li>
+<li><p>mysymbol.time_index: time index if true or integer index if false.</p></li>
+<li><p>mysymbol.closed: asked for dropping not closed candles.</p></li>
+<li><p>mysymbol.start_ms_time: timestamp obtained from api in the first candle.</p></li>
+<li><p>mysymbol.end_ms_time: timestamp obtained from api in the last candle.</p></li>
+<li><p>mysymbol.display_columns: display columns in shell</p></li>
+<li><p>mysymbol.display_rows: display rows in shell</p></li>
+<li><p>mysymbol.display_max_rows: display max_rows in shell</p></li>
+<li><p>mysymbol.display_width: display width in shell</p></li>
+<li><p>mysymbol.trades: a pandas dataframe (if requested) with aggregated trades between start and end of the dataframe timestamps.</p></li>
+<li><p>mysymbol.orderbook: a pandas dataframe (if requested) with last orderbook requested.</p></li>
+<li><p>mysymbol.row_control: dictionary with data about plotting control. Represents each dataframe colum position in the plots.</p></li>
+<li><p>mysymbol.color_control: dictionary with data about plotting control. Represents each dataframe colum color in the plots.</p></li>
+<li><p>mysymbol.color_fill_control: dictionary with data about plotting control. Represents each dataframe colum with color filled to zero line in the plots.</p></li>
+<li><p>mysymbol.row_counter: counter for the indicator rows in a plot.</p></li>
+<li><p>mysymbol.len: length of the dataframe</p></li>
+<li><p>mysymbol.raw: api klines raw response when instantiated.</p></li>
+<li><p>mysymbol.info_dic: exchangeInfo data when instantiated. It includes, filters, fees, and many other data for all symbols in the exchange.</p></li>
+<li><p>mysymbol.order_filters: filters applied for the symbol when ordering.</p></li>
+<li><p>mysymbol.order_types: list of type of orders available for that symbol.</p></li>
+<li><p>mysymbol.permissions: list of possible trading ways, like SPOT or MARGIN.</p></li>
+<li><p>mysymbol.precision: decimals quantity applied for base and quote assets.</p></li>
 </ul>
 <dl class="py method">
 <dt class="sig sig-object py" id="binpan.Symbol.accumulation_distribution">
@@ -236,6 +265,13 @@ ETHBUSD 5m UTC
 <dd class="field-even"><p>A Pandas Series</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Symbol.backtesting">
+<span class="sig-name descname"><span class="pre">backtesting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">actions:</span> <span class="pre">~typing.Optional[~pandas.core.series.Series]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quote:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priced_actions_col:</span> <span class="pre">~typing.Optional[str]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fee:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dust:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actions_col:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'actions')</span> <span class="pre">-&gt;</span> <span class="pre">(&lt;class</span> <span class="pre">'pandas.core.series.Series'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'pandas.core.series.Series'&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.backtesting" title="Permalink to this definition"></a></dt>
+<dd><p>Devuelve dos series tipo wallet, con las operaciones de cambio base a wallet.
+Puedes no pasarle los actions y los pilla de la columna indicada.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -312,12 +348,10 @@ It can be any color from plotly library or a number in the list of those. Defaul
 <span class="sig-name descname"><span class="pre">cci</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">14</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scaling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.cci" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the Commodity Channel Index (CCI) for NIFTY based on the 14-day moving average.
 CCI can be used to determine overbought and oversold levels.</p>
-<blockquote>
-<div><ul class="simple">
+<ul class="simple">
 <li><p>Readings above +100 can imply an overbought condition</p></li>
 <li><p>Readings below −100 can imply an oversold condition.</p></li>
 </ul>
-</div></blockquote>
 <p>However, one should be careful because security can continue moving higher after the CCI indicator becomes
 overbought. Likewise, securities can continue moving lower after the indicator becomes oversold.</p>
 <blockquote>
@@ -426,6 +460,20 @@ with other indicators in chart analysis.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="binpan.Symbol.get_order_filters">
+<span class="sig-name descname"><span class="pre">get_order_filters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#binpan.Symbol.get_order_filters" title="Permalink to this definition"></a></dt>
+<dd><p>Get exchange info about the symbol for order filters.
+:return dict:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Symbol.get_order_types">
+<span class="sig-name descname"><span class="pre">get_order_types</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#binpan.Symbol.get_order_types" title="Permalink to this definition"></a></dt>
+<dd><p>Get exchange info about the symbol for order types.
+:return dict:</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="binpan.Symbol.get_orderbook">
 <span class="sig-name descname"><span class="pre">get_orderbook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#binpan.Symbol.get_orderbook" title="Permalink to this definition"></a></dt>
 <dd><p>Gets orderbook.</p>
@@ -436,6 +484,20 @@ with other indicators in chart analysis.</p>
 <dt class="field-even">Return pd.DataFrame</dt>
 <dd class="field-even"><p></p></dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Symbol.get_permissions">
+<span class="sig-name descname"><span class="pre">get_permissions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#binpan.Symbol.get_permissions" title="Permalink to this definition"></a></dt>
+<dd><p>Get exchange info about the symbol for trading permissions.
+:return dict:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Symbol.get_precision">
+<span class="sig-name descname"><span class="pre">get_precision</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#binpan.Symbol.get_precision" title="Permalink to this definition"></a></dt>
+<dd><p>Get exchange info about the symbol for assets precision.
+:return dict:</p>
 </dd></dl>
 
 <dl class="py method">
@@ -578,15 +640,12 @@ It can be any color from plotly library or a number in the list of those. Defaul
 <dl class="py method">
 <dt class="sig sig-object py" id="binpan.Symbol.pandas_ta_indicator">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pandas_ta_indicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.pandas_ta_indicator" title="Permalink to this definition"></a></dt>
-<dd><p>Calls any indicator in pandas_ta library with function name as first argument and any kwargs the function will use.
-More info:</p>
-<blockquote>
-<div><p><a class="reference external" href="https://github.com/twopirllc/pandas-ta">https://github.com/twopirllc/pandas-ta</a></p>
-</div></blockquote>
+<dd><p>Calls any indicator in pandas_ta library with function name as first argument and any kwargs the function will use.</p>
+<p>More info: <a class="reference external" href="https://github.com/twopirllc/pandas-ta">https://github.com/twopirllc/pandas-ta</a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> – A function name. In example: ‘massi’ for Mass Index or ‘rsi’ for RSI indicator.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – A function name. In example: ‘massi’ for Mass Index or ‘rsi’ for RSI indicator.</p></li>
 <li><p><strong>kwargs</strong> – Arguments for the requested indicator. Review pandas_ta info: <a class="reference external" href="https://github.com/twopirllc/pandas-ta#features">https://github.com/twopirllc/pandas-ta#features</a></p></li>
 </ul>
 </dd>

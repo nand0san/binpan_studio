@@ -1,24 +1,31 @@
-import requests
-from .quest import api_raw_get
+from .quest import api_raw_get, api_raw_signed_get
+from .logs import Logs
 
+exchange_logger = Logs(filename='./logs/exchange_logger.log', name='exchange_logger', info_level='INFO')
 
 #########################
 # exchange general data #
 #########################
+
 
 def get_exchange_info() -> dict:
     """
     Returns general exchange info from /api/v3/exchangeInfo endpoint.
 
     :return dict: dict_keys(['timezone', 'serverTime', 'rateLimits', 'exchangeFilters', 'symbols'])
+
     """
     endpoint = '/api/v3/exchangeInfo'
     return api_raw_get(endpoint=endpoint,
-                       weight=1)
+                       weight=10)
 
 
 def get_info_dic() -> dict:
-    """Obtiene el diccionario de cada symbol con su información del exchange"""
+    """
+    Get the dictionary of each symbol with its information from the exchange.
+
+    :return dict: Returns info for each symbol as keys in the dict.
+    """
     return {k['symbol']: k for k in get_exchange_info()['symbols']}
 
 
@@ -29,13 +36,17 @@ def get_info_dic() -> dict:
 
 def get_account_status() -> dict:
     """
-    Returns general exchange info from /api/v3/exchangeInfo endpoint.
+    Fetch account status detail.
 
-    :return dict: dict_keys(['timezone', 'serverTime', 'rateLimits', 'exchangeFilters', 'symbols'])
+    For Machine Learning limits, restrictions will be applied to account. If a user has been restricted by the ML system, they may
+    check the reason and the duration by using the [/sapi/v1/account/status] endpoint
+
+    :return dict: Example { "data": "Normal" }
+
     """
-    check_minute_weight(1)
     endpoint = '/sapi/v1/account/status'
-    return get_response(url=endpoint)
+    return api_raw_signed_get(endpoint=endpoint,
+                              weight=1)
 
 
 #################
@@ -63,13 +74,9 @@ def get_exchange_limits(info_dict: dict = None) -> dict:
 
     :return dict:
     """
-    # # sapi not implemented
-    # base_url = 'https://api.binance.com'
-    # endpoint = '/api/v3/exchangeInfo'
-    # data = requests.get(base_url + endpoint).json()
 
     if not info_dict:
-        info_dict = get_info_dic()
+        info_dict = get_exchange_info()
 
     limits = info_dict['rateLimits']
 
@@ -116,5 +123,21 @@ def flatten_filter(filters: list) -> dict:
 
 def get_symbols_filters(info_dic: dict = None) -> dict:
     if not info_dic:
-        info_dic = binpan_modules.api_control.market.get_info_dic()
+        info_dic = get_info_dic()
     return {k: flatten_filter(v['filters']) for k, v in info_dic.items()}
+
+
+def get_precision(info_dic: dict = None) -> dict:
+    if not info_dic:
+        info_dic = get_info_dic()
+    return {k: {'baseAssetPrecision': v['baseAssetPrecision'],
+                'quoteAssetPrecision': v['quoteAssetPrecision'],
+                'baseCommissionPrecision': v['baseCommissionPrecision'],
+                'quoteCommissionPrecision': v['quoteCommissionPrecision']}
+            for k, v in info_dic.items()}
+
+
+def get_orderTypes_and_permissions(info_dic: dict = None) -> dict:
+    if not info_dic:
+        info_dic = get_info_dic()
+    return {k: {'orderTypes': v['orderTypes'], 'permissions': v['permissions']} for k, v in info_dic.items()}

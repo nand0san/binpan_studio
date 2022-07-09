@@ -140,10 +140,39 @@ class Symbol(object):
         100 rows × 9 columns
 
 
-    Created objects contain different data like:
+    Created objects contain different instantiated variables like **mysymbol.df** that shows the candles dataframe:
 
     - mysymbol.df: shows candles dataframe
     - mysymbol.trades: shows aggregated trades, if requested. This is optional and can be added anytime.
+    - mysymbol.version: Version of BinPan.
+    - mysymbol.symbol: symbol instantiated.
+    - mysymbol.fees: personal fees applied for the symbol.
+    - mysymbol.tick_interval: tick_interval selected.
+    - mysymbol.start_time: start time instantiated.
+    - mysymbol.end_time: end time instantiated.
+    - mysymbol.limit: limit of candles in the instance, but if instantiated with start and end times, can be overridden.
+    - mysymbol.time_zone: timezone of the dates in the index of the dataframe.
+    - mysymbol.time_index: time index if true or integer index if false.
+    - mysymbol.closed: asked for dropping not closed candles.
+    - mysymbol.start_ms_time: timestamp obtained from api in the first candle.
+    - mysymbol.end_ms_time: timestamp obtained from api in the last candle.
+    - mysymbol.display_columns: display columns in shell
+    - mysymbol.display_rows: display rows in shell
+    - mysymbol.display_max_rows: display max_rows in shell
+    - mysymbol.display_width: display width in shell
+    - mysymbol.trades: a pandas dataframe (if requested) with aggregated trades between start and end of the dataframe timestamps.
+    - mysymbol.orderbook: a pandas dataframe (if requested) with last orderbook requested.
+    - mysymbol.row_control: dictionary with data about plotting control. Represents each dataframe colum position in the plots.
+    - mysymbol.color_control: dictionary with data about plotting control. Represents each dataframe colum color in the plots.
+    - mysymbol.color_fill_control: dictionary with data about plotting control. Represents each dataframe colum with color filled to zero line in the plots.
+    - mysymbol.row_counter: counter for the indicator rows in a plot.
+    - mysymbol.len: length of the dataframe
+    - mysymbol.raw: api klines raw response when instantiated.
+    - mysymbol.info_dic: exchangeInfo data when instantiated. It includes, filters, fees, and many other data for all symbols in the exchange.
+    - mysymbol.order_filters: filters applied for the symbol when ordering.
+    - mysymbol.order_types: list of type of orders available for that symbol.
+    - mysymbol.permissions: list of possible trading ways, like SPOT or MARGIN.
+    - mysymbol.precision: decimals quantity applied for base and quote assets.
 
     """
 
@@ -225,49 +254,78 @@ class Symbol(object):
                                                                                           limit=self.limit,
                                                                                           start=self.start_time,
                                                                                           end=self.end_time)
+        if not start_time and end_time:  # because last line considers limit plus one when
+            self.start_theoretical += tick_seconds[tick_interval] * 1000
+
+        # velas del futuro se descartan sin importar el limit
+        now = handlers.time_helper.utc()
+        current_close = handlers.time_helper.close_from_milliseconds(now, tick_interval=tick_interval)
+        self.end_theoretical = min(self.end_theoretical, current_close)
+
+        current_open = handlers.time_helper.open_from_milliseconds(ms=now, tick_interval=self.tick_interval)
+
         if self.closed:
-            now = handlers.time_helper.utc()
-            current_open = handlers.time_helper.open_from_milliseconds(ms=now, tick_interval=self.tick_interval)
             if self.end_theoretical >= current_open:
                 self.end_theoretical = current_open - 1000  # resta para solicitar la vela anterior, que está cerrada
 
-        self.ticks = handlers.time_helper.ticks_between_timestamps(start=self.start_theoretical,
-                                                                   end=self.end_theoretical,
-                                                                   tick_interval=self.tick_interval)
+        self.ticks_quantity = handlers.time_helper.ticks_between_timestamps(start=self.start_theoretical,
+                                                                            end=self.end_theoretical,
+                                                                            asked_start=start_time,
+                                                                            asked_end=end_time,
+                                                                            tick_interval=self.tick_interval)
         # loop big queries
-        if self.ticks > 1000:
+        if self.ticks_quantity > 1000:
             raw_candles = []
-            start_pointer = self.start_theoretical
-            end_pointer = handlers.time_helper.open_from_milliseconds(ms=self.end_theoretical, tick_interval=self.tick_interval)
+
+            # set pointers for the loop
+            start_pointer = handlers.time_helper.open_from_milliseconds(ms=self.start_theoretical, tick_interval=self.tick_interval)
+
+            if end_time:  # this is calculated without considering if it's in the future or not
+                end_pointer = handlers.time_helper.open_from_milliseconds(ms=self.end_theoretical, tick_interval=self.tick_interval)
+            else:
+                self.end_theoretical = self.end_theoretical - (tick_seconds[tick_interval] * 1000)
+                end_pointer = handlers.time_helper.open_from_milliseconds(ms=self.end_theoretical, tick_interval=self.tick_interval)
 
             while start_pointer <= self.end_theoretical:
-
                 response = handlers.market.get_candles_from_start_time(start_time=start_pointer,
                                                                        symbol=self.symbol,
                                                                        tick_interval=self.tick_interval,
                                                                        limit=1000)
-                raw_candles = raw_candles + response
-                last_raw_open_ts = raw_candles[-1][0]  # mira el open
+                raw_candles += response
+                last_raw_open_ts = int(raw_candles[-1][0])  # looks for the open
                 if last_raw_open_ts >= end_pointer:
                     break
-                start_pointer = int(response[-1][0]) + (tick_seconds[tick_interval] * 1000)
+                start_pointer = last_raw_open_ts + (tick_seconds[tick_interval] * 1000)
 
             # descarta sobrantes
             overtime_candle_ts = handlers.time_helper.next_open_by_milliseconds(ms=end_pointer, tick_interval=self.tick_interval)
+
             raw_candles = [i for i in raw_candles if int(i[0]) < overtime_candle_ts]
 
         elif not end_time and not start_time:
             raw_candles = handlers.market.get_last_candles(symbol=self.symbol,
                                                            tick_interval=tick_interval,
                                                            limit=limit)
+            if self.closed:
+                raw_candles = raw_candles[:-1]
         else:
             raw_candles = handlers.market.get_candles_by_time_stamps(start_time=self.start_time,
                                                                      end_time=self.end_time,
                                                                      symbol=self.symbol,
                                                                      tick_interval=self.tick_interval,
                                                                      limit=self.limit)
-        if self.closed:
-            raw_candles = raw_candles[:-1]
+            if not self.closed:
+                overtime_candle_ts = handlers.time_helper.next_open_by_milliseconds(ms=raw_candles[-1][0], tick_interval=self.tick_interval)
+            else:
+                overtime_candle_ts = handlers.time_helper.open_from_milliseconds(ms=raw_candles[-1][0], tick_interval=self.tick_interval)
+
+            raw_candles = [i for i in raw_candles if int(i[0]) < overtime_candle_ts]
+
+        # # elimina la vela sobrante en caso de start_time
+        # if start_time and not end_time:
+        #     raw_candles = raw_candles[:limit]
+        # if not start_time and end_time:
+        #     raw_candles = raw_candles[-limit:]
 
         self.raw = raw_candles
 
@@ -281,6 +339,13 @@ class Symbol(object):
         self.df = dataframe
         # self.candles = dataframe[self.presentation_columns]
         self.len = len(self.df)
+
+        # exchange data
+        self.info_dic = handlers.exchange.get_info_dic()
+        self.order_filters = self.get_order_filters()
+        self.order_types = self.get_order_types()
+        self.permissions = self.get_permissions()
+        self.precision = self.get_precision()
 
     def __repr__(self):
         return str(self.df)
@@ -849,9 +914,45 @@ class Symbol(object):
                                           plot_y=plot_y,
                                           **kwargs)
 
-    ###########
-    # Filters #
-    ###########
+    #################
+    # Exchange data #
+    #################
+
+    def get_order_filters(self) -> dict:
+        """
+        Get exchange info about the symbol for order filters.
+        :return dict:
+        """
+        filters = handlers.exchange.get_symbols_filters(info_dic=self.info_dic)
+        self.order_filters = filters[self.symbol]
+        return self.order_filters
+
+    def get_order_types(self) -> dict:
+        """
+        Get exchange info about the symbol for order types.
+        :return dict:
+        """
+        order_types_precision = handlers.exchange.get_orderTypes_and_permissions(info_dic=self.info_dic)
+        self.order_types = order_types_precision[self.symbol]['orderTypes']
+        return self.order_types
+
+    def get_permissions(self) -> dict:
+        """
+        Get exchange info about the symbol for trading permissions.
+        :return dict:
+        """
+        permissions = handlers.exchange.get_orderTypes_and_permissions(info_dic=self.info_dic)
+        self.permissions = permissions[self.symbol]['permissions']
+        return self.permissions
+
+    def get_precision(self) -> dict:
+        """
+        Get exchange info about the symbol for assets precision.
+        :return dict:
+        """
+        precision = handlers.exchange.get_precision(info_dic=self.info_dic)
+        self.precision = precision[self.symbol]
+        return self.precision
 
     ###############
     # Backtesting #
@@ -1528,8 +1629,10 @@ class Symbol(object):
         """
         Compute the Commodity Channel Index (CCI) for NIFTY based on the 14-day moving average.
         CCI can be used to determine overbought and oversold levels.
-            - Readings above +100 can imply an overbought condition
-            - Readings below −100 can imply an oversold condition.
+
+        - Readings above +100 can imply an overbought condition
+        - Readings below −100 can imply an oversold condition.
+
         However, one should be careful because security can continue moving higher after the CCI indicator becomes
         overbought. Likewise, securities can continue moving lower after the indicator becomes oversold.
 
@@ -1705,10 +1808,10 @@ class Symbol(object):
                             **kwargs):
         """
         Calls any indicator in pandas_ta library with function name as first argument and any kwargs the function will use.
-        More info:
-            https://github.com/twopirllc/pandas-ta
 
-        :param name: A function name. In example: 'massi' for Mass Index or 'rsi' for RSI indicator.
+        More info: https://github.com/twopirllc/pandas-ta
+
+        :param str name: A function name. In example: 'massi' for Mass Index or 'rsi' for RSI indicator.
         :param kwargs: Arguments for the requested indicator. Review pandas_ta info: https://github.com/twopirllc/pandas-ta#features
         :return: Whatever returns pandas_ta
         """
@@ -2009,3 +2112,4 @@ class Exchange(object):
                  display_max_rows=25,
                  display_width=320):
         return
+
