@@ -38,4 +38,4 @@ class BinanceRequestException(Exception):
         self.message = message
 
     def __str__(self):
-        return 'BinanceRequestException: %s' % self.message
+        return f'BinanceRequestException: {self.message}'

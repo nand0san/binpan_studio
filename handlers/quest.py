@@ -7,6 +7,7 @@ from urllib.parse import urljoin, urlencode
 import requests
 import hmac
 import hashlib
+import copy
 from time import sleep
 
 try:
@@ -45,64 +46,100 @@ quest_logger = Logs(filename='./logs/quest.log', name='quest', info_level='INFO'
 
 cipher_object = AesCipher()
 
-limits = get_exchange_limits()
+# rate limits
+api_rate_limits = get_exchange_limits()
 
-weight = {}
+current_limit_headers = {'X-SAPI-USED-IP-WEIGHT-1M': 0,
+                         'x-mbx-used-weight': 0,
+                         'x-mbx-used-weight-1m': 0}
 
+aplicable_limits = {'X-SAPI-USED-IP-WEIGHT-1M': api_rate_limits['REQUEST_1M'],
+                    'x-mbx-used-weight': api_rate_limits['REQUEST_5M'],
+                    'x-mbx-used-weight-1m': api_rate_limits['REQUEST_1M']}
+
+api_limits_weight_decrease_per_seconds = {'X-SAPI-USED-IP-WEIGHT-1M': api_rate_limits['REQUEST_1M'] // 60,
+                                          'x-mbx-used-weight-1m': api_rate_limits['REQUEST_1M'] // 60,
+                                          'x-mbx-used-weight': api_rate_limits['REQUEST_5M'] // (60 * 5)}  # is the five minutes api limit?
+
+
+# TODO: identify headers for order endpoints
 
 #################
 # Aux functions #
 #################
 
 
-def update_weights(header):
-    global weight
-    weight_headers = extract_weights(header)
+def update_weights(headers, father_url: str):
+    global current_limit_headers
 
-    # curframe = inspect.currentframe()
-    # calframe = inspect.getouterframes(curframe, 2)
-    # quest_logger.info(f"update_weights CALLED BY: {calframe[1][3]}")
+    weight_logger.debug(f"Header: {headers}")
+    weight_headers = {k: int(v) for k, v in headers.items() if 'WEIGHT' in k.upper() or 'COUNT' in k.upper()}
+    weight_headers = {k: 0 if k not in weight_headers.keys() else v for k, v in current_limit_headers.items()}
 
-    weight_logger.debug(f"Extracted from header: {weight_headers}")
+    # register for detecting new weight headers
+    weight_logger.info(f"Father url: {father_url} Weights updated from API: {weight_headers}")
 
     for k, v in weight_headers.items():
-        weight[k] = v
+        current_limit_headers[k] = v
+    weight_logger.info(f"Current weights registered: {current_limit_headers}")
 
 
-def check_minute_weight(ip_weigth):
-    global weight, limits
-    # add to curr_weight
-    test_weight = {k: v + ip_weigth for k, v in weight.items()}
+def check_weight(weight: int,
+                 endpoint: str,
+                 no_wait=False):
+    global api_rate_limits, current_limit_headers
 
-    # check
-    for k, v in test_weight.items():
-        l = limits[k]  # esto fallará con movidas de sapi seguramente
-        if v > l:
-            w = l - v
-            msg = f"Waiting {w} seconds for weight to restore {k}...."
-            print(msg)
-            weight_logger.warning(msg)
-            sleep(abs(w))
-            weight[k] = 0
+    weight_logger.debug(f"Checking weight for {endpoint}")
+
+    test_headers = copy.deepcopy(current_limit_headers)
+    # identify
+
+    if '/api/v3/order/' in endpoint:
+        header_to_update = ''  # TODO: unknown yet
+        test_headers[header_to_update] += weight
+        waitable_for = [header_to_update]
+    elif '/sapi/v1/' in endpoint:
+        header_to_update = 'X-SAPI-USED-IP-WEIGHT-1M'
+        test_headers[header_to_update] += weight
+        waitable_for = [header_to_update]
+    elif '/api/v3/' in endpoint:
+        header_to_update = 'x-mbx-used-weight-1m'
+        test_headers[header_to_update] += weight
+        waitable_for = [header_to_update]
+        header_to_update = 'x-mbx-used-weight'
+        test_headers[header_to_update] += weight
+        waitable_for.append(header_to_update)
+    else:
+        msg = f"BinPan error: Unknown endpoint for weight check: {endpoint}"
+        weight_logger.error(msg)
+        raise Exception(msg)
+
+    # check & wait
+    weight_logger.debug(f"BEFORE WAIT Current weights registered: {current_limit_headers}")
+
+    for head, value in test_headers.items():
+        if value > aplicable_limits[head] and current_limit_headers[head] > 0:
+            excess = ((value - aplicable_limits[head]) // api_limits_weight_decrease_per_seconds[head]) + 2
+            if not no_wait and head in waitable_for:
+                weight_logger.warning(f"{head}={value} > {aplicable_limits[head]} Current value: {current_limit_headers[head]}")
+                weight_logger.warning(f"Waiting {excess} seconds for {head} to decrease rate.")
+                sleep(excess)
+            current_limit_headers[head] = aplicable_limits[head]
         else:
-            weight[k] += ip_weigth
-        weight_logger.debug(f"Updated curr_weight {k}: {weight}")
+            current_limit_headers[head] += weight  # should be updated with response headers
+
+    weight_logger.debug(f"Checked and waited:  {current_limit_headers}")
 
 
-def get_server_time():
-    check_minute_weight(1)
+def get_server_time(no_wait=False):
     endpoint = '/api/v3/time'
+    check_weight(1, endpoint=endpoint, no_wait=no_wait)
     return int(get_response(url=endpoint)['serverTime'])
 
 
 ##################
 # ## Requests ## #
 ##################
-
-def extract_weights(header):
-    weight_logger.debug(f"Header: {header}")
-    ret = {k: int(v) for k, v in header.items() if 'WEIGHT' in k.upper() or 'COUNT' in k.upper()}
-    return ret
 
 
 def convert_response_type(response_data: dict or list) -> dict or list:
@@ -132,7 +169,8 @@ def get_response(url: str,
         url = urljoin(base_url, url)
 
     response = requests.get(url, params=params, headers=headers)
-    update_weights(response.headers)
+    update_weights(headers=response.headers,
+                   father_url=url)
     quest_logger.debug(f"get_response parameters: {locals()}")
 
     # curframe = inspect.currentframe()
@@ -147,7 +185,7 @@ def post_response(url, params=None, headers=None):
     if not url.startswith(base_url):
         url = urljoin(base_url, url)
     response = requests.post(url, params=params, headers=headers)
-    update_weights(response.headers)
+    update_weights(response.headers, father_url=url)
     quest_logger.debug(f"post_response: response: {response}")
     return handle_api_response(response)
 
@@ -268,8 +306,10 @@ def api_raw_get(endpoint: str,
                 base_url: str = '',
                 params: dict = None,
                 headers: dict = None,
-                weight: int = 1):
-    check_minute_weight(weight)
+                weight: int = 1,
+                no_wait=False):
+    check_weight(weight, endpoint=base_url + endpoint, no_wait=no_wait)
+
     return get_response(url=base_url + endpoint,
                         params=params,
                         headers=headers)
@@ -278,7 +318,8 @@ def api_raw_get(endpoint: str,
 def api_raw_signed_get(endpoint: str,
                        base_url: str = '',
                        params: dict = None,
-                       weight: int = 1):
-    check_minute_weight(weight)
+                       weight: int = 1,
+                       no_wait=False):
+    check_weight(weight, endpoint=base_url + endpoint, no_wait=no_wait)
     return get_signed_request(url=base_url + endpoint,
                               params=params)

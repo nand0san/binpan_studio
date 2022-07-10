@@ -1,6 +1,6 @@
 from tqdm import tqdm
 from .logs import Logs
-from .quest import check_minute_weight, get_response, get_server_time
+from .quest import check_weight, get_response, get_server_time
 from .time_helper import tick_seconds, end_time_from_start_time, start_time_from_end_time
 
 market_logger = Logs(filename='./logs/market_logger.log', name='market_logger', info_level='INFO')
@@ -70,8 +70,9 @@ def get_candles_by_time_stamps(start_time: int = None,
     if end_time and end_time > now:
         end_time = None
         # end_time = min(end_time, now)
-    check_minute_weight(1)
+
     endpoint = '/api/v3/klines?'
+    check_weight(1, endpoint=endpoint)
 
     if not start_time and end_time:
         start_time = end_time - (limit * tick_seconds[tick_interval] * 1000)
@@ -125,8 +126,10 @@ def get_candles_from_start_time(start_time: int,
           ]
         ]
     """
-    check_minute_weight(1)
+
     endpoint = '/api/v3/klines?'
+    check_weight(1, endpoint=endpoint)
+
     params = {'symbol': symbol,
               'interval': tick_interval,
               'startTime': start_time,
@@ -168,12 +171,26 @@ def get_last_candles(symbol: str = 'BTCUSDT',
           ]
         ]
     """
-    check_minute_weight(1)
+
     endpoint = '/api/v3/klines?'
+    check_weight(1, endpoint=endpoint)
     params = {'symbol': symbol,
               'interval': tick_interval,
               'limit': limit}
     return get_response(url=endpoint, params=params)
+
+
+def get_prices_dic() -> dict:
+    """
+    Gets all symbols current prices into a dictionary.
+
+    :return dict:
+    """
+    endpoint = '/api/v3/ticker/price'
+    check_weight(2, endpoint=endpoint)
+    ret = get_response(url=endpoint)
+    return {d['symbol']: float(d['price']) for d in ret}
+
 
 ##########
 # Trades #
@@ -212,8 +229,10 @@ def get_agg_trades(fromId: int = None, symbol: str = 'BTCUSDT', limit=None, star
           }
         ]
     """
-    check_minute_weight(1)
+
     endpoint = '/api/v3/aggTrades?'
+    check_weight(1, endpoint=endpoint)
+
     if fromId and not startTime and not endTime:
         query = {'symbol': symbol, 'limit': limit, 'fromId': fromId}
     elif startTime and endTime:  # Limited to one hour by api
@@ -286,8 +305,103 @@ def get_order_book(symbol='BTCUSDT', limit=5000) -> dict:
     :param int limit: Max is 5000. Default 5000.
     :return dict:
     """
-    check_minute_weight(limit // 100 or 1)
+
     endpoint = '/api/v3/depth?'
+    check_weight(limit // 100 or 1, endpoint=endpoint)
+
     query = {'symbol': symbol, 'limit': limit}
     return get_response(url=endpoint, params=query)
 
+
+####################
+# coin conversions #
+####################
+
+
+def intermediate_conversion(coin: str,
+                            prices: dict = None,
+                            try_coin: str = 'BTC',
+                            coin_qty: float = 1) -> float or None:
+    """
+    Uses an intermediate symbol for conversion.
+
+    :param str coin:
+    :param dict prices:
+    :param str try_coin:
+    :param float coin_qty:
+    :return float: converted value.
+    """
+    if not prices:
+        prices = get_prices_dic()
+
+    if coin + try_coin in prices.keys():
+        price = prices[coin + try_coin]
+        try_symbol = f"{try_coin}USDT"
+        return price * coin_qty * prices[try_symbol]
+
+    elif try_coin + coin in prices.keys():
+        price = 1 / prices[try_coin + coin]
+        try_symbol = f"USDT{try_coin}"
+        try:
+            return price * coin_qty * prices[try_symbol]
+        except KeyError:
+            return None
+
+    else:
+        return None
+
+
+def convert_coin(coin: str = 'BTC',
+                 convert_to: str = 'USDT',
+                 coin_qty: float = 1,
+                 prices: dict = None) -> float or None:
+    """
+    Calculates a coin converted to other coin with current exchange prices.
+
+    :param coin:
+    :param convert_to:
+    :param coin_qty:
+    :param prices:
+    :return:
+    """
+    coin = coin.upper()
+    convert_to = convert_to.upper()
+
+    if coin == convert_to:
+        return coin_qty
+
+    if not prices:
+        prices = get_prices_dic()
+
+    symbol_a = coin + convert_to
+    symbol_b = convert_to + coin
+
+    if symbol_a in prices.keys():
+        return coin_qty * prices[symbol_a]
+
+    elif symbol_b in prices.keys():
+        return coin_qty * (1 / prices[symbol_b])
+    else:
+        # try using btc intermediate
+        # try:
+        ret1 = intermediate_conversion(coin=coin, prices=prices, try_coin='BTC', coin_qty=coin_qty)
+        if ret1:
+            return ret1
+        ret2 = intermediate_conversion(coin=coin, prices=prices, try_coin='BUSD', coin_qty=coin_qty)
+        if ret2:
+            return ret2
+        ret3 = intermediate_conversion(coin=coin, prices=prices, try_coin='BNB', coin_qty=coin_qty)
+        if ret3:
+            return ret3
+        ret4 = intermediate_conversion(coin=coin, prices=prices, try_coin='ETH', coin_qty=coin_qty)
+        if ret4:
+            return ret4
+        ret5 = intermediate_conversion(coin=coin, prices=prices, try_coin='TUSD', coin_qty=coin_qty)
+        if ret5:
+            return ret5
+        ret6 = intermediate_conversion(coin=coin, prices=prices, try_coin='USDC', coin_qty=coin_qty)
+        if ret6:
+            return ret6
+        else:
+            market_logger.warning(f"No possible conversion for {coin} to {convert_to}")
+            return None

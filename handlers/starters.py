@@ -53,27 +53,40 @@ def get_exchange_limits() -> dict:
     # info_dic = {k['symbol']: k for k in response['symbols']}
 
     limits = response['rateLimits']
-
     limits_dict = {}
-
-    for i in limits:
-        if i['rateLimitType'].upper() == 'ORDERS':
-            k1 = f"x-mbx-order-count-{i['intervalNum']}{i['interval'][0].lower()}"
-            k2 = f"x-mbx-order-count-{i['intervalNum']}{i['interval'][0].lower()}"
-
-        elif i['rateLimitType'].upper() == 'REQUEST_WEIGHT':
-            k1 = f"x-mbx-used-weight-{i['intervalNum']}{i['interval'][0].lower()}"
-            k2 = f"X-SAPI-USED-IP-WEIGHT-{i['intervalNum']}{i['interval'][0].upper()}"
-
-        elif i['rateLimitType'].upper() == 'RAW_REQUESTS':
-            k1 = "x-mbx-used-weight"
-            k2 = "x-mbx-used-weight"
+    for limit in limits:
+        if 'REQUEST' in limit['rateLimitType']:
+            interval = str(limit['intervalNum'])
+            interval += limit['interval'][0]
+            limits_dict[f'REQUEST_{interval}'] = limit['limit']
+        elif 'ORDERS' in limit['rateLimitType']:
+            interval = str(limit['intervalNum'])
+            interval += limit['interval'][0]
+            limits_dict[f'ORDERS_{interval}'] = limit['limit']
         else:
-            raise Exception("BinPan Rate Limit not parsed")
-
-        v = i['limit']
-
-        limits_dict[k1] = v
-        limits_dict[k2] = v
+            msg = f"BinPan error: Unknown limit from API: {limit}"
+            raise Exception(msg)
+    #
+    #
+    #
+    # for i in limits:
+    #     if i['rateLimitType'].upper() == 'ORDERS':
+    #         k1 = f"x-mbx-order-count-{i['intervalNum']}{i['interval'][0].lower()}"
+    #         k2 = f"x-mbx-order-count-{i['intervalNum']}{i['interval'][0].lower()}"
+    #
+    #     elif i['rateLimitType'].upper() == 'REQUEST_WEIGHT':
+    #         k1 = f"x-mbx-used-weight-{i['intervalNum']}{i['interval'][0].lower()}"
+    #         k2 = f"X-SAPI-USED-IP-WEIGHT-{i['intervalNum']}{i['interval'][0].upper()}"
+    #
+    #     elif i['rateLimitType'].upper() == 'RAW_REQUESTS':
+    #         k1 = "x-mbx-used-weight"
+    #         k2 = "x-mbx-used-weight"
+    #     else:
+    #         raise Exception("BinPan Rate Limit not parsed")
+    #
+    #     v = i['limit']
+    #
+    #     limits_dict[k1] = v
+    #     limits_dict[k2] = v
 
     return limits_dict

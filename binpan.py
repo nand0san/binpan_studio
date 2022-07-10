@@ -27,6 +27,10 @@ __version__ = "0.0.14"
 
 plotly_colors = handlers.plotting.plotly_colors
 
+pd.set_option('display.max_columns', 20)
+pd.set_option('display.width', 250)
+pd.set_option('display.min_rows', 10)
+
 
 class Symbol(object):
     """
@@ -142,37 +146,38 @@ class Symbol(object):
 
     Created objects contain different instantiated variables like **mysymbol.df** that shows the candles dataframe:
 
-    - mysymbol.df: shows candles dataframe
-    - mysymbol.trades: shows aggregated trades, if requested. This is optional and can be added anytime.
-    - mysymbol.version: Version of BinPan.
-    - mysymbol.symbol: symbol instantiated.
-    - mysymbol.fees: personal fees applied for the symbol.
-    - mysymbol.tick_interval: tick_interval selected.
-    - mysymbol.start_time: start time instantiated.
-    - mysymbol.end_time: end time instantiated.
-    - mysymbol.limit: limit of candles in the instance, but if instantiated with start and end times, can be overridden.
-    - mysymbol.time_zone: timezone of the dates in the index of the dataframe.
-    - mysymbol.time_index: time index if true or integer index if false.
-    - mysymbol.closed: asked for dropping not closed candles.
-    - mysymbol.start_ms_time: timestamp obtained from api in the first candle.
-    - mysymbol.end_ms_time: timestamp obtained from api in the last candle.
-    - mysymbol.display_columns: display columns in shell
-    - mysymbol.display_rows: display rows in shell
-    - mysymbol.display_max_rows: display max_rows in shell
-    - mysymbol.display_width: display width in shell
-    - mysymbol.trades: a pandas dataframe (if requested) with aggregated trades between start and end of the dataframe timestamps.
-    - mysymbol.orderbook: a pandas dataframe (if requested) with last orderbook requested.
-    - mysymbol.row_control: dictionary with data about plotting control. Represents each dataframe colum position in the plots.
-    - mysymbol.color_control: dictionary with data about plotting control. Represents each dataframe colum color in the plots.
-    - mysymbol.color_fill_control: dictionary with data about plotting control. Represents each dataframe colum with color filled to zero line in the plots.
-    - mysymbol.row_counter: counter for the indicator rows in a plot.
-    - mysymbol.len: length of the dataframe
-    - mysymbol.raw: api klines raw response when instantiated.
-    - mysymbol.info_dic: exchangeInfo data when instantiated. It includes, filters, fees, and many other data for all symbols in the exchange.
-    - mysymbol.order_filters: filters applied for the symbol when ordering.
-    - mysymbol.order_types: list of type of orders available for that symbol.
-    - mysymbol.permissions: list of possible trading ways, like SPOT or MARGIN.
-    - mysymbol.precision: decimals quantity applied for base and quote assets.
+    - **mysymbol.df**: shows candles dataframe
+    - **mysymbol.trades**: a pandas dataframe (if requested) with aggregated trades between start and end of the dataframe timestamps.
+    - **mysymbol.version**: Version of BinPan.
+    - **mysymbol.symbol**: symbol instantiated.
+    - **mysymbol.fees**: personal fees applied for the symbol.
+    - **mysymbol.tick_interval**: tick_interval selected.
+    - **mysymbol.start_time**: start time instantiated.
+    - **mysymbol.end_time**: end time instantiated.
+    - **mysymbol.limit**: limit of candles in the instance, but if instantiated with start and end times, can be overridden.
+    - **mysymbol.time_zone**: timezone of the dates in the index of the dataframe.
+    - **mysymbol.time_index**: time index if true or integer index if false.
+    - **mysymbol.closed**: asked for dropping not closed candles.
+    - **mysymbol.start_ms_time**: timestamp obtained from api in the first candle.
+    - **mysymbol.end_ms_time**: timestamp obtained from api in the last candle.
+    - **mysymbol.display_columns**: display columns in shell
+    - **mysymbol.display_rows**: display rows in shell
+    - **mysymbol.display_max_rows**: display max_rows in shell
+    - **mysymbol.display_width**: display width in shell
+    - **mysymbol.orderbook**: a pandas dataframe (if requested) with last orderbook requested.
+    - **mysymbol.row_control**: dictionary with data about plotting control. Represents each dataframe colum position in the plots.
+    - **mysymbol.color_control**: dictionary with data about plotting control. Represents each dataframe colum color in the plots.
+    - **mysymbol.color_fill_control**: dictionary with data about plotting control. Represents each dataframe colum with color filled to
+      zero line in the plots.
+    - **mysymbol.row_counter**: counter for the indicator rows in a plot.
+    - **mysymbol.len**: length of the dataframe
+    - **mysymbol.raw**: api klines raw response when instantiated.
+    - **mysymbol.info_dic**: exchangeInfo data when instantiated. It includes, filters, fees, and many other data for all symbols in the
+      exchange.
+    - **mysymbol.order_filters**: filters applied for the symbol when ordering.
+    - **mysymbol.order_types**: list of type of orders available for that symbol.
+    - **mysymbol.permissions**: list of possible trading ways, like SPOT or MARGIN.
+    - **mysymbol.precision**: decimals quantity applied for base and quote assets.
 
     """
 
@@ -343,6 +348,115 @@ class Symbol(object):
 
     def __repr__(self):
         return str(self.df)
+
+    ##################
+    # Show variables #
+    ##################
+
+    def df(self):
+        """
+        Returns candles dataframe.
+
+        :return pd.DataFrame:
+        """
+        return self.df
+
+    def trades(self):
+        """
+        Returns candles dataframe.
+
+        :return pd.DataFrame:
+        """
+        return self.trades
+
+    def symbol(self):
+        """
+        Returns symbol.
+
+        :return str:
+        """
+        return self.symbol
+
+    def version(self):
+        """
+        Returns version on BinPan.
+
+        :return str:
+        """
+        return self.version
+
+    def fees(self):
+        """
+        Returns fees for symbol.
+
+        :return dict:
+        """
+        return self.version
+
+    def tick_interval(self):
+        """
+        Returns tick_interval for symbol.
+
+        :return str:
+        """
+        return self.tick_interval
+
+    def start_time(self):
+        """
+        Returns start_time on instance.
+
+        :return int:
+        """
+        return self.start_time
+
+    def end_time(self):
+        """
+        Returns end_time on instance.
+
+        :return int:
+        """
+        return self.end_time
+
+    def limit(self):
+        """
+        Returns limit on instance.
+
+        :return int:
+        """
+        return self.limit
+
+    def time_zone(self):
+        """
+        Returns time_zone for symbol.
+
+        :return str:
+        """
+        return self.time_zone
+
+    def time_index(self):
+        """
+        Returns if time_index.
+
+        :return bool:
+        """
+        return self.time_index
+
+    def closed(self):
+        """
+        Returns if not closed candles were dropped when instantiated.
+
+        :return bool:
+        """
+        return self.closed
+
+    def info_dic(self):
+        """
+        Returns exchangeInfo data when instantiated. It includes, filters, fees, and many other data for all symbols in the
+        exchange.
+
+        :return dict:
+        """
+        return self.info_dic
 
     def set_display_columns(self, display_columns=None):
         """
@@ -1022,12 +1136,14 @@ class Symbol(object):
 
         :param symbol: Not to use it, just here for initializing the class.
         :return: Dictionary
-
         """
+
         try:
             if not symbol:
                 symbol = self.symbol
-            return handlers.wallet.get_fees(symbol=symbol)
+            # return handlers.wallet.get_fees(symbol=symbol)
+            return handlers.exchange.get_fees(symbol=symbol)
+
 
         except NameError:
             binpan_logger.warning("Fees cannot be requested without api key added. Add it with"
@@ -2091,19 +2207,181 @@ class Symbol(object):
 
 
 class Exchange(object):
+    """
+    Exchange data in an instance.
+
+    Exchange objects collects:
+
+    - fees: fees applied to the user requesting for every symbol in a pandas dataframe.
+    - system_status: API state can be normal o under maintenance.
+    - coins: A dataframe with all the coin's data.
+    - networks: A dataframe with info about every coin and its blockchain networks info.
+    - info_dic: A dictionary with all raw symbols info each.
+
+    """
+
+    def __init__(self):
+        self.fees = handlers.exchange.get_fees()
+        self.system_status = handlers.exchange.get_system_status()
+        self.coins, self.networks = handlers.exchange.get_coins_info()
+        self.info_dic = handlers.exchange.get_info_dic()
+
+    def filters(self, symbol: str):
+        """
+        Returns exchange filters applied for orders with the selected symbol.
+
+        :param str symbol:
+        :return dict:
+        """
+        return handlers.exchange.get_filters(symbol=symbol,
+                                             info_dic=self.info_dic)
+
+    def fees(self, symbol: str):
+        """
+        Returns exchange fees applied for orders with the selected symbol.
+
+        :param str symbol:
+        :return pd.Series:
+        """
+        return self.fees.loc[symbol.upper()]
+
+    def coin(self, coin: str):
+        """
+        Returns coin exchange info in a pandas serie.
+
+        :param str coin:
+        :return pd.Series:
+        """
+        return self.coins.loc[coin.upper()]
+
+    def network(self, coin: str):
+        """
+        Returns a dataframe with all exchange networks of a coin.
+
+        :param str coin:
+        :return pd.Series:
+        """
+        return self.networks.loc[coin.upper()]
+
+    def info(self, symbol: str):
+        """
+        Returns a dict with all merged exchange info about a symbol.
+
+        :param str symbol:
+        :return dict:
+        """
+        return self.info_dic[symbol.upper()]
+
+
+class Wallet(object):
 
     def __init__(self,
-                 symbol: str,
-                 tick_interval: str,
-                 start_time: int or str = None,
-                 end_time: int or str = None,
-                 limit: int = 1000,
-                 time_zone: str = 'UTC',
-                 time_index: bool = True,
-                 closed: bool = True,
-                 display_columns=25,
-                 display_rows=10,
-                 display_max_rows=25,
-                 display_width=320):
-        return
+                 time_zone='UTC',
+                 snapshot_days: int = 7):
+        self.time_zone = time_zone
+        self.spot = handlers.wallet.daily_account_snapshot(account_type='SPOT',
+                                                           limit=snapshot_days,
+                                                           time_zone=self.time_zone)
 
+        self.margin = handlers.wallet.daily_account_snapshot(account_type='MARGIN',
+                                                             limit=snapshot_days,
+                                                             time_zone=self.time_zone)
+
+    def spot_snapshot(self,
+                      startTime: int or str = None,
+                      endTime: int or str = None,
+                      snapshot_days=30,
+                      time_zone=None):
+        """
+        Updates spot wallet snapshot.
+
+        :param int startTime:
+        :param int endTime:
+        :param int snapshot_days:
+        :param str time_zone: A time zone for time index.
+        :return pd.DataFrame:
+        """
+        if time_zone:
+            self.time_zone = time_zone
+
+        if type(startTime) == str:
+            startTime = handlers.time_helper.convert_string_to_milliseconds(str(startTime), timezoned=self.time_zone)
+
+        if type(endTime) == str:
+            endTime = handlers.time_helper.convert_string_to_milliseconds(str(endTime), timezoned=self.time_zone)
+
+        self.spot = handlers.wallet.daily_account_snapshot(account_type='SPOT',
+                                                           startTime=startTime,
+                                                           endTime=endTime,
+                                                           limit=snapshot_days,
+                                                           time_zone=self.time_zone)
+        return self.spot
+
+    def margin_snapshot(self,
+                        startTime: int or str = None,
+                        endTime: int or str = None,
+                        snapshot_days=30,
+                        time_zone=None):
+        if time_zone:
+            self.time_zone = time_zone
+
+        if type(startTime) == str:
+            startTime = handlers.time_helper.convert_string_to_milliseconds(startTime, timezoned=self.time_zone)
+
+        if type(endTime) == str:
+            endTime = handlers.time_helper.convert_string_to_milliseconds(endTime, timezoned=self.time_zone)
+
+        self.spot = handlers.wallet.daily_account_snapshot(account_type='MARGIN',
+                                                           startTime=startTime,
+                                                           endTime=endTime,
+                                                           limit=snapshot_days,
+                                                           time_zone=self.time_zone)
+        return self.margin
+
+    def spot_wallet_performance(self, days: int = 7, convert_to: str = 'BTC'):
+        """
+        Calculate difference between current wallet value and days before.
+
+        :param int days: Days to compare balances.
+        :param str convert_to: Converts balances to a coin.
+        :return float: Value increase or decrease with current value of convert_to coin.
+        """
+        if days != 7:
+            self.spot = handlers.wallet.daily_account_snapshot(account_type='SPOT',
+                                                               limit=days,
+                                                               time_zone=self.time_zone)
+        if not self.spot.empty:
+            totalAssetOfBtc = self.spot['totalAssetOfBtc'].tolist()
+            performance = totalAssetOfBtc[-1] - totalAssetOfBtc[0]
+            if convert_to == 'BTC':
+                return performance
+            else:
+                return handlers.market.convert_coin(coin='BTC',
+                                                    convert_to=convert_to,
+                                                    coin_qty=performance)
+        else:
+            return 0
+
+    def margin_wallet_performance(self, days: int = 7, convert_to: str = 'BTC'):
+        """
+        Calculate difference between current wallet value and days before.
+
+        :param int days: Days to compare balances.
+        :param str convert_to: Converts balances to a coin.
+        :return float: Value increase or decrease with current value of convert_to coin.
+        """
+        if days != 7:
+            self.spot = handlers.wallet.daily_account_snapshot(account_type='MARGIN',
+                                                               limit=days,
+                                                               time_zone=self.time_zone)
+        if not self.spot.empty:
+            totalAssetOfBtc = self.spot['totalAssetOfBtc'].tolist()
+            performance = totalAssetOfBtc[-1] - totalAssetOfBtc[0]
+            if convert_to == 'BTC':
+                return performance
+            else:
+                return handlers.market.convert_coin(coin='BTC',
+                                                    convert_to=convert_to,
+                                                    coin_qty=performance)
+        else:
+            return 0

@@ -190,37 +190,39 @@ ETHBUSD 5m UTC
 </div>
 <p>Created objects contain different instantiated variables like <strong>mysymbol.df</strong> that shows the candles dataframe:</p>
 <ul class="simple">
-<li><p>mysymbol.df: shows candles dataframe</p></li>
-<li><p>mysymbol.trades: shows aggregated trades, if requested. This is optional and can be added anytime.</p></li>
-<li><p>mysymbol.version: Version of BinPan.</p></li>
-<li><p>mysymbol.symbol: symbol instantiated.</p></li>
-<li><p>mysymbol.fees: personal fees applied for the symbol.</p></li>
-<li><p>mysymbol.tick_interval: tick_interval selected.</p></li>
-<li><p>mysymbol.start_time: start time instantiated.</p></li>
-<li><p>mysymbol.end_time: end time instantiated.</p></li>
-<li><p>mysymbol.limit: limit of candles in the instance, but if instantiated with start and end times, can be overridden.</p></li>
-<li><p>mysymbol.time_zone: timezone of the dates in the index of the dataframe.</p></li>
-<li><p>mysymbol.time_index: time index if true or integer index if false.</p></li>
-<li><p>mysymbol.closed: asked for dropping not closed candles.</p></li>
-<li><p>mysymbol.start_ms_time: timestamp obtained from api in the first candle.</p></li>
-<li><p>mysymbol.end_ms_time: timestamp obtained from api in the last candle.</p></li>
-<li><p>mysymbol.display_columns: display columns in shell</p></li>
-<li><p>mysymbol.display_rows: display rows in shell</p></li>
-<li><p>mysymbol.display_max_rows: display max_rows in shell</p></li>
-<li><p>mysymbol.display_width: display width in shell</p></li>
-<li><p>mysymbol.trades: a pandas dataframe (if requested) with aggregated trades between start and end of the dataframe timestamps.</p></li>
-<li><p>mysymbol.orderbook: a pandas dataframe (if requested) with last orderbook requested.</p></li>
-<li><p>mysymbol.row_control: dictionary with data about plotting control. Represents each dataframe colum position in the plots.</p></li>
-<li><p>mysymbol.color_control: dictionary with data about plotting control. Represents each dataframe colum color in the plots.</p></li>
-<li><p>mysymbol.color_fill_control: dictionary with data about plotting control. Represents each dataframe colum with color filled to zero line in the plots.</p></li>
-<li><p>mysymbol.row_counter: counter for the indicator rows in a plot.</p></li>
-<li><p>mysymbol.len: length of the dataframe</p></li>
-<li><p>mysymbol.raw: api klines raw response when instantiated.</p></li>
-<li><p>mysymbol.info_dic: exchangeInfo data when instantiated. It includes, filters, fees, and many other data for all symbols in the exchange.</p></li>
-<li><p>mysymbol.order_filters: filters applied for the symbol when ordering.</p></li>
-<li><p>mysymbol.order_types: list of type of orders available for that symbol.</p></li>
-<li><p>mysymbol.permissions: list of possible trading ways, like SPOT or MARGIN.</p></li>
-<li><p>mysymbol.precision: decimals quantity applied for base and quote assets.</p></li>
+<li><p><strong>mysymbol.df</strong>: shows candles dataframe</p></li>
+<li><p><strong>mysymbol.trades</strong>: shows aggregated trades, if requested. This is optional and can be added anytime.</p></li>
+<li><p><strong>mysymbol.version</strong>: Version of BinPan.</p></li>
+<li><p><strong>mysymbol.symbol</strong>: symbol instantiated.</p></li>
+<li><p><strong>mysymbol.fees</strong>: personal fees applied for the symbol.</p></li>
+<li><p><strong>mysymbol.tick_interval</strong>: tick_interval selected.</p></li>
+<li><p><strong>mysymbol.start_time</strong>: start time instantiated.</p></li>
+<li><p><strong>mysymbol.end_time</strong>: end time instantiated.</p></li>
+<li><p><strong>mysymbol.limit</strong>: limit of candles in the instance, but if instantiated with start and end times, can be overridden.</p></li>
+<li><p><strong>mysymbol.time_zone</strong>: timezone of the dates in the index of the dataframe.</p></li>
+<li><p><strong>mysymbol.time_index</strong>: time index if true or integer index if false.</p></li>
+<li><p><strong>mysymbol.closed</strong>: asked for dropping not closed candles.</p></li>
+<li><p><strong>mysymbol.start_ms_time</strong>: timestamp obtained from api in the first candle.</p></li>
+<li><p><strong>mysymbol.end_ms_time</strong>: timestamp obtained from api in the last candle.</p></li>
+<li><p><strong>mysymbol.display_columns</strong>: display columns in shell</p></li>
+<li><p><strong>mysymbol.display_rows</strong>: display rows in shell</p></li>
+<li><p><strong>mysymbol.display_max_rows</strong>: display max_rows in shell</p></li>
+<li><p><strong>mysymbol.display_width</strong>: display width in shell</p></li>
+<li><p><strong>mysymbol.trades</strong>: a pandas dataframe (if requested) with aggregated trades between start and end of the dataframe timestamps.</p></li>
+<li><p><strong>mysymbol.orderbook</strong>: a pandas dataframe (if requested) with last orderbook requested.</p></li>
+<li><p><strong>mysymbol.row_control</strong>: dictionary with data about plotting control. Represents each dataframe colum position in the plots.</p></li>
+<li><p><strong>mysymbol.color_control</strong>: dictionary with data about plotting control. Represents each dataframe colum color in the plots.</p></li>
+<li><p><strong>mysymbol.color_fill_control</strong>: dictionary with data about plotting control. Represents each dataframe colum with color filled to
+zero line in the plots.</p></li>
+<li><p><strong>mysymbol.row_counter</strong>: counter for the indicator rows in a plot.</p></li>
+<li><p><strong>mysymbol.len</strong>: length of the dataframe</p></li>
+<li><p><strong>mysymbol.raw</strong>: api klines raw response when instantiated.</p></li>
+<li><p><strong>mysymbol.info_dic</strong>: exchangeInfo data when instantiated. It includes, filters, fees, and many other data for all symbols in the
+exchange.</p></li>
+<li><p><strong>mysymbol.order_filters</strong>: filters applied for the symbol when ordering.</p></li>
+<li><p><strong>mysymbol.order_types</strong>: list of type of orders available for that symbol.</p></li>
+<li><p><strong>mysymbol.permissions</strong>: list of possible trading ways, like SPOT or MARGIN.</p></li>
+<li><p><strong>mysymbol.precision</strong>: decimals quantity applied for base and quote assets.</p></li>
 </ul>
 <dl class="py method">
 <dt class="sig sig-object py" id="binpan.Symbol.accumulation_distribution">
