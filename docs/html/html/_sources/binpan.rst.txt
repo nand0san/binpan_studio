@@ -12,3 +12,5 @@ BinPan Module
 .. autoclass:: Wallet
     :members:
 
+.. autoclass:: Redis
+    :members:

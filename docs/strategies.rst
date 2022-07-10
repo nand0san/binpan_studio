@@ -1,7 +1,7 @@
 Strategies Module
 =================
 
-This module can manage market data from Binance API.
+This module can manage trading strategies.
 
 .. automodule:: binpan.handlers.strategies
 

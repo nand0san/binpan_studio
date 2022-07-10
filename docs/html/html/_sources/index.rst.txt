@@ -96,6 +96,7 @@ Hope you find it useful breaking the market!!!
    plotting.rst
    strategies.rst
    wallet.rst
+   redis.rst
 
 
 Indices and tables

@@ -1,7 +1,7 @@
 Wallet Module
 =============
 
-This module can manage market data from Binance API.
+This module can manage wallet data from Binance API.
 
 .. automodule:: binpan.handlers.wallet
 

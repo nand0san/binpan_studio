@@ -20,6 +20,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Redis Module" href="redis.html" />
     <link rel="prev" title="Strategies Module" href="strategies.html" /> 
 </head>
 
@@ -46,6 +47,7 @@
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Wallet Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis.html">Redis Module</a></li>
 </ul>
 
         </div>
@@ -74,29 +76,7 @@
              
   <section id="wallet-module">
 <h1>Wallet Module<a class="headerlink" href="#wallet-module" title="Permalink to this heading"></a></h1>
-<p>This module can manage market data from Binance API.</p>
-<span class="target" id="module-binpan.handlers.wallet"></span><dl class="py function">
-<dt class="sig sig-object py" id="binpan.handlers.wallet.daily_account_snapshot">
-<span class="sig-prename descclassname"><span class="pre">binpan.handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">daily_account_snapshot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">account_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'SPOT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#binpan.handlers.wallet.daily_account_snapshot" title="Permalink to this definition"></a></dt>
-<dd><p>The query time period must be inside the previous 30 days.
-Support query within the last month, one month only.
-If startTime and endTime not sent, return records of the last days by default.</p>
-<p>Weight(IP): 2400</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>account_type</strong> (<em>str</em>) – SPOT or MARGIN</p></li>
-<li><p><strong>limit</strong> (<em>int</em>) – Days limit. Default 30.</p></li>
-<li><p><strong>startTime</strong> (<em>int</em><em> or </em><em>str</em>) – Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42</p></li>
-<li><p><strong>endTime</strong> (<em>int</em><em> or </em><em>str</em>) – Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42</p></li>
-<li><p><strong>time_zone</strong> (<em>str</em>) – A time zone to parse index like ‘Europe/Madrid’</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return pd.DataFrame</dt>
-<dd class="field-even"><p></p></dd>
-</dl>
-</dd></dl>
-
+<p>This module can manage wallet data from Binance API.</p>
 </section>
 
 
@@ -104,6 +84,7 @@ If startTime and endTime not sent, return records of the last days by default.</
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="strategies.html" class="btn btn-neutral float-left" title="Strategies Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="redis.html" class="btn btn-neutral float-right" title="Redis Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
