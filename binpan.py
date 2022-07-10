@@ -16,8 +16,11 @@ import handlers.wallet
 import handlers.files
 import handlers.strategies
 import handlers.exchange
+import handlers.redis
+
 
 import pandas_ta as ta
+import redis
 from random import choice
 
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
@@ -2437,3 +2440,15 @@ class Wallet(object):
                                                     coin_qty=performance)
         else:
             return 0
+
+
+def redis_cosummer(ip: str = '127.0.0.1',
+                   port: int = 6379,
+                   db: int = 0,
+                   decode_responses: bool = True):
+    # noinspection PyTypeChecker
+    return redis.StrictRedis(host=ip,
+                             port=port,
+                             db=db,
+                             decode_responses=decode_responses,
+                             socket_connect_timeout=1)

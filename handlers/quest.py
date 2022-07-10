@@ -3,12 +3,14 @@ from .logs import Logs
 from .exceptions import BinanceAPIException, BinanceRequestException
 from .starters import AesCipher, get_exchange_limits
 
+
 from urllib.parse import urljoin, urlencode
 import requests
 import hmac
 import hashlib
 import copy
 from time import sleep
+
 
 try:
     global api_secret, api_key
@@ -172,10 +174,6 @@ def get_response(url: str,
     update_weights(headers=response.headers,
                    father_url=url)
     quest_logger.debug(f"get_response parameters: {locals()}")
-
-    # curframe = inspect.currentframe()
-    # calframe = inspect.getouterframes(curframe, 2)
-    # quest_logger.debug(f"GET RESPONSE CALLED BY: {calframe[1][3]}")
 
     return handle_api_response(response)
 

@@ -8,3 +8,4 @@ plotly~=5.9.0
 py-cpuinfo~=8.0.0
 pycryptodome~=3.15.0
 pandas-ta==0.3.14b0
+redis~=4.3.4
