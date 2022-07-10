@@ -356,13 +356,13 @@ def convert_coin(coin: str = 'BTC',
                  coin_qty: float = 1,
                  prices: dict = None) -> float or None:
     """
-    Calculates a coin converted to other coin with current exchange prices.
+    Calculates a coin quantity value converted to other coin with current exchange prices.
 
-    :param coin:
-    :param convert_to:
-    :param coin_qty:
-    :param prices:
-    :return:
+    :param str coin: An existing coin string.
+    :param str convert_to: An existing coin string.
+    :param float coin_qty: How many coins to convert to.
+    :param dict prices: A dictionary with symbols and prices.
+    :return float: Converted value for the quantity
     """
     coin = coin.upper()
     convert_to = convert_to.upper()
@@ -382,8 +382,6 @@ def convert_coin(coin: str = 'BTC',
     elif symbol_b in prices.keys():
         return coin_qty * (1 / prices[symbol_b])
     else:
-        # try using btc intermediate
-        # try:
         ret1 = intermediate_conversion(coin=coin, prices=prices, try_coin='BTC', coin_qty=coin_qty)
         if ret1:
             return ret1

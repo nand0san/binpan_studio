@@ -43,6 +43,7 @@
 <li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Module</a></li>
 </ul>
 
         </div>
@@ -77,16 +78,20 @@
  | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
  | <a href="#E"><strong>E</strong></a>
+ | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
  | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
+ | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
+ | <a href="#N"><strong>N</strong></a>
  | <a href="#O"><strong>O</strong></a>
  | <a href="#P"><strong>P</strong></a>
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
  | <a href="#V"><strong>V</strong></a>
+ | <a href="#W"><strong>W</strong></a>
  
 </div>
 <h2 id="A">A</h2>
@@ -123,8 +128,6 @@
         <li><a href="binpan.html#module-binpan">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     binpan.handlers.exceptions
 
@@ -132,6 +135,8 @@
         <li><a href="exceptions.html#module-binpan.handlers.exceptions">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     binpan.handlers.market
 
@@ -153,6 +158,13 @@
         <li><a href="strategies.html#module-binpan.handlers.strategies">module</a>
 </li>
       </ul></li>
+      <li>
+    binpan.handlers.wallet
+
+      <ul>
+        <li><a href="wallet.html#module-binpan.handlers.wallet">module</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -161,11 +173,17 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="plotting.html#binpan.handlers.plotting.candles_ta">candles_ta() (in module binpan.handlers.plotting)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="plotting.html#binpan.handlers.plotting.candles_tagged">candles_tagged() (in module binpan.handlers.plotting)</a>
 </li>
       <li><a href="binpan.html#binpan.Symbol.cci">cci() (binpan.Symbol method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="binpan.html#binpan.Symbol.closed">closed() (binpan.Symbol method)</a>
+</li>
+      <li><a href="binpan.html#binpan.Exchange.coin">coin() (binpan.Exchange method)</a>
+</li>
+      <li><a href="market.html#binpan.handlers.market.convert_coin">convert_coin() (in module binpan.handlers.market)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -173,6 +191,12 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="wallet.html#binpan.handlers.wallet.daily_account_snapshot">daily_account_snapshot() (in module binpan.handlers.wallet)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="binpan.html#binpan.Symbol.df">df() (binpan.Symbol method)</a>
+</li>
       <li><a href="binpan.html#binpan.Symbol.drop">drop() (binpan.Symbol method)</a>
 </li>
   </ul></td>
@@ -183,9 +207,27 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="binpan.html#binpan.Symbol.ema">ema() (binpan.Symbol method)</a>
 </li>
+      <li><a href="binpan.html#binpan.Symbol.end_time">end_time() (binpan.Symbol method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="binpan.html#binpan.Symbol.eom">eom() (binpan.Symbol method)</a>
+</li>
+      <li><a href="binpan.html#binpan.Exchange">Exchange (class in binpan)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="F">F</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="binpan.html#binpan.Exchange.fee">fee() (binpan.Exchange method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="binpan.html#binpan.Symbol.fees">fees() (binpan.Symbol method)</a>
+</li>
+      <li><a href="binpan.html#binpan.Exchange.filter">filter() (binpan.Exchange method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -233,7 +275,21 @@
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="binpan.html#binpan.Exchange.info">info() (binpan.Exchange method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="binpan.html#binpan.Symbol.info_dic">info_dic() (binpan.Symbol method)</a>
+</li>
       <li><a href="binpan.html#binpan.Symbol.is_new">is_new() (binpan.Symbol method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="L">L</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="binpan.html#binpan.Symbol.limit">limit() (binpan.Symbol method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -244,6 +300,10 @@
       <li><a href="binpan.html#binpan.Symbol.ma">ma() (binpan.Symbol method)</a>
 </li>
       <li><a href="binpan.html#binpan.Symbol.macd">macd() (binpan.Symbol method)</a>
+</li>
+      <li><a href="binpan.html#binpan.Wallet.margin_snapshot">margin_snapshot() (binpan.Wallet method)</a>
+</li>
+      <li><a href="binpan.html#binpan.Wallet.margin_wallet_performance">margin_wallet_performance() (binpan.Wallet method)</a>
 </li>
       <li>
     module
@@ -259,7 +319,17 @@
 </li>
         <li><a href="strategies.html#module-binpan.handlers.strategies">binpan.handlers.strategies</a>
 </li>
+        <li><a href="wallet.html#module-binpan.handlers.wallet">binpan.handlers.wallet</a>
+</li>
       </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="N">N</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="binpan.html#binpan.Exchange.network">network() (binpan.Exchange method)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -338,13 +408,19 @@
 </li>
       <li><a href="binpan.html#binpan.Symbol.set_plot_color">set_plot_color() (binpan.Symbol method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="binpan.html#binpan.Symbol.set_plot_color_fill">set_plot_color_fill() (binpan.Symbol method)</a>
 </li>
       <li><a href="binpan.html#binpan.Symbol.set_plot_row">set_plot_row() (binpan.Symbol method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="binpan.html#binpan.Symbol.sma">sma() (binpan.Symbol method)</a>
+</li>
+      <li><a href="binpan.html#binpan.Wallet.spot_snapshot">spot_snapshot() (binpan.Wallet method)</a>
+</li>
+      <li><a href="binpan.html#binpan.Wallet.spot_wallet_performance">spot_wallet_performance() (binpan.Wallet method)</a>
+</li>
+      <li><a href="binpan.html#binpan.Symbol.start_time">start_time() (binpan.Symbol method)</a>
 </li>
       <li><a href="binpan.html#binpan.Symbol.stoch_rsi">stoch_rsi() (binpan.Symbol method)</a>
 </li>
@@ -352,13 +428,25 @@
 </li>
       <li><a href="binpan.html#binpan.Symbol">Symbol (class in binpan)</a>
 </li>
+      <li><a href="binpan.html#binpan.Symbol.symbol">symbol() (binpan.Symbol method)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="binpan.html#binpan.Symbol.tick_interval">tick_interval() (binpan.Symbol method)</a>
+</li>
+      <li><a href="binpan.html#binpan.Symbol.time_index">time_index() (binpan.Symbol method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="binpan.html#binpan.Symbol.time_zone">time_zone() (binpan.Symbol method)</a>
+</li>
       <li><a href="binpan.html#binpan.Symbol.timestamps">timestamps() (binpan.Symbol method)</a>
+</li>
+      <li><a href="binpan.html#binpan.Symbol.trades">trades() (binpan.Symbol method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -366,7 +454,19 @@
 <h2 id="V">V</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="binpan.html#binpan.Symbol.version">version() (binpan.Symbol method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="binpan.html#binpan.Symbol.vwap">vwap() (binpan.Symbol method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="binpan.html#binpan.Wallet">Wallet (class in binpan)</a>
 </li>
   </ul></td>
 </tr></table>

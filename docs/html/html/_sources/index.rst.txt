@@ -95,6 +95,7 @@ Hope you find it useful breaking the market!!!
    exceptions.rst
    plotting.rst
    strategies.rst
+   wallet.rst
 
 
 Indices and tables

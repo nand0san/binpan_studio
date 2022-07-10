@@ -45,14 +45,14 @@ class Symbol(object):
 
     :param str tick_interval: Any candle's interval available in binance. Capital letters doesn't matter.
 
-    :param int or str start_time:  It can be an integer in milliseconds from epoch (1970-01-01 00:00:00 UTC) or any string in the formats:
+    :param int or str startTime:  It can be an integer in milliseconds from epoch (1970-01-01 00:00:00 UTC) or any string in the formats:
 
         - %Y-%m-%d %H:%M:%S.%f:       **2022-05-11 06:45:42.124567**
         - %Y-%m-%d %H:%M:%S:          **2022-05-11 06:45:42**
 
        If start time is passed, it gets the next open according to the tick interval selected except an exact open time passed.
 
-    :param int or str end_time:    It can be an integer in milliseconds from epoch (1970-01-01 00:00:00 UTC) or any string in the formats:
+    :param int or str endTime:    It can be an integer in milliseconds from epoch (1970-01-01 00:00:00 UTC) or any string in the formats:
 
         - %Y-%m-%d %H:%M:%S.%f:       **2022-05-11 06:45:42.124**
         - %Y-%m-%d %H:%M:%S:          **2022-05-11 06:45:42**
@@ -184,8 +184,8 @@ class Symbol(object):
     def __init__(self,
                  symbol: str,
                  tick_interval: str,
-                 start_time: int or str = None,
-                 end_time: int or str = None,
+                 startTime: int or str = None,
+                 endTime: int or str = None,
                  limit: int = 1000,
                  time_zone: str = 'UTC',
                  time_index: bool = True,
@@ -220,8 +220,8 @@ class Symbol(object):
         self.symbol = symbol.upper()
         self.fees = self.get_fees(symbol=self.symbol)
         self.tick_interval = tick_interval
-        self.start_time = start_time
-        self.end_time = end_time
+        self.start_time = startTime
+        self.end_time = endTime
         self.limit = limit
         self.time_zone = time_zone
         self.time_index = time_index
@@ -248,18 +248,22 @@ class Symbol(object):
                            f" start={self.start_time}, end={self.end_time}, {self.time_zone}, time_index={self.time_index}"
                            f", closed_candles={self.closed}")
 
-        if type(self.start_time) == str:
-            self.start_time = handlers.time_helper.convert_string_to_milliseconds(self.start_time, timezoned=self.time_zone)
-
-        if type(self.end_time) == str:
-            self.end_time = handlers.time_helper.convert_string_to_milliseconds(self.end_time, timezoned=self.time_zone)
+        startTime = handlers.wallet.convert_str_date_to_ms(date=startTime, time_zone=time_zone)
+        endTime = handlers.wallet.convert_str_date_to_ms(date=endTime, time_zone=time_zone)
+        #
+        # if type(self.start_time) == str:
+        #     self.start_time = handlers.time_helper.convert_string_to_milliseconds(self.start_time, timezoned=self.time_zone)
+        #
+        # if type(self.end_time) == str:
+        #     self.end_time = handlers.time_helper.convert_string_to_milliseconds(self.end_time, timezoned=self.time_zone)
 
         # check for limit quantity for big queries
         self.start_theoretical, self.end_theoretical = handlers.time_helper.time_interval(tick_interval=self.tick_interval,
                                                                                           limit=self.limit,
                                                                                           start=self.start_time,
                                                                                           end=self.end_time)
-        if not start_time and end_time:  # because last line considers limit plus one when
+
+        if not startTime and endTime:  # because last line considers limit plus one when
             self.start_theoretical += tick_seconds[tick_interval] * 1000
 
         # velas del futuro se descartan sin importar el limit
@@ -275,8 +279,8 @@ class Symbol(object):
 
         self.ticks_quantity = handlers.time_helper.ticks_between_timestamps(start=self.start_theoretical,
                                                                             end=self.end_theoretical,
-                                                                            asked_start=start_time,
-                                                                            asked_end=end_time,
+                                                                            asked_start=startTime,
+                                                                            asked_end=endTime,
                                                                             tick_interval=self.tick_interval)
         # loop big queries
         if self.ticks_quantity > 1000:
@@ -285,7 +289,7 @@ class Symbol(object):
             # set pointers for the loop
             start_pointer = handlers.time_helper.open_from_milliseconds(ms=self.start_theoretical, tick_interval=self.tick_interval)
 
-            if end_time:  # this is calculated without considering if it's in the future or not
+            if endTime:  # this is calculated without considering if it's in the future or not
                 end_pointer = handlers.time_helper.open_from_milliseconds(ms=self.end_theoretical, tick_interval=self.tick_interval)
             else:
                 self.end_theoretical = self.end_theoretical - (tick_seconds[tick_interval] * 1000)
@@ -307,7 +311,7 @@ class Symbol(object):
 
             raw_candles = [i for i in raw_candles if int(i[0]) < overtime_candle_ts]
 
-        elif not end_time and not start_time:
+        elif not endTime and not startTime:
             raw_candles = handlers.market.get_last_candles(symbol=self.symbol,
                                                            tick_interval=tick_interval,
                                                            limit=limit)
@@ -1143,7 +1147,6 @@ class Symbol(object):
                 symbol = self.symbol
             # return handlers.wallet.get_fees(symbol=symbol)
             return handlers.exchange.get_fees(symbol=symbol)
-
 
         except NameError:
             binpan_logger.warning("Fees cannot be requested without api key added. Add it with"
@@ -2208,9 +2211,9 @@ class Symbol(object):
 
 class Exchange(object):
     """
-    Exchange data in an instance.
+    Exchange data.
 
-    Exchange objects collects:
+    Exchange data collected:
 
     - fees: fees applied to the user requesting for every symbol in a pandas dataframe.
     - system_status: API state can be normal o under maintenance.
@@ -2221,22 +2224,22 @@ class Exchange(object):
     """
 
     def __init__(self):
+        self.info_dic = handlers.exchange.get_info_dic()
         self.fees = handlers.exchange.get_fees()
+        self.filters = handlers.exchange.get_symbols_filters(info_dic=self.info_dic)
         self.system_status = handlers.exchange.get_system_status()
         self.coins, self.networks = handlers.exchange.get_coins_info()
-        self.info_dic = handlers.exchange.get_info_dic()
 
-    def filters(self, symbol: str):
+    def filter(self, symbol: str):
         """
         Returns exchange filters applied for orders with the selected symbol.
 
         :param str symbol:
         :return dict:
         """
-        return handlers.exchange.get_filters(symbol=symbol,
-                                             info_dic=self.info_dic)
+        return self.filters[symbol.upper()]
 
-    def fees(self, symbol: str):
+    def fee(self, symbol: str):
         """
         Returns exchange fees applied for orders with the selected symbol.
 
@@ -2263,29 +2266,42 @@ class Exchange(object):
         """
         return self.networks.loc[coin.upper()]
 
-    def info(self, symbol: str):
+    def info(self, symbol: str = None):
         """
-        Returns a dict with all merged exchange info about a symbol.
+        Update from API and returns a dict with all merged exchange info about a symbol.
 
         :param str symbol:
         :return dict:
         """
-        return self.info_dic[symbol.upper()]
+        self.info_dic = handlers.exchange.get_info_dic()
+        self.filters = handlers.exchange.get_symbols_filters(info_dic=self.info_dic)
+        if symbol:
+            return self.info_dic[symbol.upper()]
+        return self.info_dic
 
 
 class Wallet(object):
 
     def __init__(self,
                  time_zone='UTC',
-                 snapshot_days: int = 7):
+                 snapshot_days: int = 30):
         self.time_zone = time_zone
+
         self.spot = handlers.wallet.daily_account_snapshot(account_type='SPOT',
                                                            limit=snapshot_days,
                                                            time_zone=self.time_zone)
 
-        self.margin = handlers.wallet.daily_account_snapshot(account_type='MARGIN',
-                                                             limit=snapshot_days,
-                                                             time_zone=self.time_zone)
+        # self.margin = handlers.wallet.daily_account_snapshot(account_type='MARGIN',
+        #                                                      limit=snapshot_days,
+        #                                                      time_zone=self.time_zone)
+        self.spot_startTime = None
+        self.spot_endTime = None
+        self.spot_requested_days = snapshot_days
+
+        self.margin = pd.DataFrame()
+        self.margin_startTime = None
+        self.margin_endTime = None
+        self.margin_requested_days = None
 
     def spot_snapshot(self,
                       startTime: int or str = None,
@@ -2295,26 +2311,26 @@ class Wallet(object):
         """
         Updates spot wallet snapshot.
 
-        :param int startTime:
-        :param int endTime:
-        :param int snapshot_days:
-        :param str time_zone: A time zone for time index.
-        :return pd.DataFrame:
+        :param int or str startTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
+        :param int or str endTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
+        :param int snapshot_days: Days to look if not start time or endtime passed.
+        :param str time_zone: A time zone for time index conversion.
+        :return pd.DataFrame: Spot wallet snapshot for the time period requested.
         """
         if time_zone:
             self.time_zone = time_zone
 
-        if type(startTime) == str:
-            startTime = handlers.time_helper.convert_string_to_milliseconds(str(startTime), timezoned=self.time_zone)
-
-        if type(endTime) == str:
-            endTime = handlers.time_helper.convert_string_to_milliseconds(str(endTime), timezoned=self.time_zone)
-
         self.spot = handlers.wallet.daily_account_snapshot(account_type='SPOT',
-                                                           startTime=startTime,
-                                                           endTime=endTime,
+                                                           startTime=handlers.wallet.convert_str_date_to_ms(date=startTime,
+                                                                                                            time_zone=self.time_zone),
+                                                           endTime=handlers.wallet.convert_str_date_to_ms(date=endTime,
+                                                                                                          time_zone=self.time_zone),
                                                            limit=snapshot_days,
                                                            time_zone=self.time_zone)
+        self.spot_startTime = startTime
+        self.spot_endTime = endTime
+        self.spot_requested_days = snapshot_days
+
         return self.spot
 
     def margin_snapshot(self,
@@ -2322,34 +2338,56 @@ class Wallet(object):
                         endTime: int or str = None,
                         snapshot_days=30,
                         time_zone=None):
+        """
+        Updates margin wallet snapshot.
+
+        :param int or str startTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
+        :param int or str endTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
+        :param int snapshot_days: Days to look if not start time or endtime passed.
+        :param str time_zone: A time zone for time index conversion.
+        :return pd.DataFrame: Spot wallet snapshot for the time period requested.
+        """
         if time_zone:
             self.time_zone = time_zone
 
-        if type(startTime) == str:
-            startTime = handlers.time_helper.convert_string_to_milliseconds(startTime, timezoned=self.time_zone)
-
-        if type(endTime) == str:
-            endTime = handlers.time_helper.convert_string_to_milliseconds(endTime, timezoned=self.time_zone)
-
         self.spot = handlers.wallet.daily_account_snapshot(account_type='MARGIN',
-                                                           startTime=startTime,
-                                                           endTime=endTime,
+                                                           startTime=handlers.wallet.convert_str_date_to_ms(date=startTime,
+                                                                                                            time_zone=self.time_zone),
+                                                           endTime=handlers.wallet.convert_str_date_to_ms(date=endTime,
+                                                                                                          time_zone=self.time_zone),
                                                            limit=snapshot_days,
                                                            time_zone=self.time_zone)
+        self.margin_startTime = startTime
+        self.margin_endTime = endTime
+        self.margin_requested_days = snapshot_days
         return self.margin
 
-    def spot_wallet_performance(self, days: int = 7, convert_to: str = 'BTC'):
+    def spot_wallet_performance(self,
+                                startTime=None,
+                                endTime=None,
+                                days: int = 30,
+                                convert_to: str = 'BUSD'):
         """
-        Calculate difference between current wallet value and days before.
+        Calculate difference between current wallet not locked values and days before.
 
+        :param int or str startTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
+        :param int or str endTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
         :param int days: Days to compare balances.
         :param str convert_to: Converts balances to a coin.
         :return float: Value increase or decrease with current value of convert_to coin.
         """
-        if days != 7:
+        if days != self.spot_requested_days or startTime != self.spot_startTime or endTime != self.spot_endTime:
             self.spot = handlers.wallet.daily_account_snapshot(account_type='SPOT',
+                                                               startTime=handlers.wallet.convert_str_date_to_ms(date=startTime,
+                                                                                                                time_zone=self.time_zone),
+                                                               endTime=handlers.wallet.convert_str_date_to_ms(date=endTime,
+                                                                                                              time_zone=self.time_zone),
                                                                limit=days,
                                                                time_zone=self.time_zone)
+            self.spot_startTime = startTime
+            self.spot_endTime = endTime
+            self.spot_requested_days = days
+
         if not self.spot.empty:
             totalAssetOfBtc = self.spot['totalAssetOfBtc'].tolist()
             performance = totalAssetOfBtc[-1] - totalAssetOfBtc[0]
@@ -2362,20 +2400,34 @@ class Wallet(object):
         else:
             return 0
 
-    def margin_wallet_performance(self, days: int = 7, convert_to: str = 'BTC'):
+    def margin_wallet_performance(self,
+                                  startTime=None,
+                                  endTime=None,
+                                  days: int = 30,
+                                  convert_to: str = 'BUSD'):
         """
-        Calculate difference between current wallet value and days before.
+        Calculate difference between current wallet not locked values and days before.
 
+        :param int or str startTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
+        :param int or str endTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
         :param int days: Days to compare balances.
         :param str convert_to: Converts balances to a coin.
         :return float: Value increase or decrease with current value of convert_to coin.
         """
-        if days != 7:
-            self.spot = handlers.wallet.daily_account_snapshot(account_type='MARGIN',
-                                                               limit=days,
-                                                               time_zone=self.time_zone)
-        if not self.spot.empty:
-            totalAssetOfBtc = self.spot['totalAssetOfBtc'].tolist()
+        if days != self.margin_requested_days or startTime != self.margin_startTime or endTime != self.margin_endTime:
+            self.margin = handlers.wallet.daily_account_snapshot(account_type='MARGIN',
+                                                                 startTime=handlers.wallet.convert_str_date_to_ms(date=startTime,
+                                                                                                                  time_zone=self.time_zone),
+                                                                 endTime=handlers.wallet.convert_str_date_to_ms(date=endTime,
+                                                                                                                time_zone=self.time_zone),
+                                                                 limit=days,
+                                                                 time_zone=self.time_zone)
+            self.margin_startTime = startTime
+            self.margin_endTime = endTime
+            self.margin_requested_days = days
+
+        if not self.margin.empty:
+            totalAssetOfBtc = self.margin['totalAssetOfBtc'].tolist()
             performance = totalAssetOfBtc[-1] - totalAssetOfBtc[0]
             if convert_to == 'BTC':
                 return performance

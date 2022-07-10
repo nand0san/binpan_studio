@@ -3,6 +3,8 @@ import pandas as pd
 from .logs import Logs
 from .quest import api_raw_signed_get
 from .time_helper import convert_milliseconds_to_str
+from .time_helper import convert_string_to_milliseconds
+
 
 wallet_logger = Logs(filename='./logs/wallet_logger.log', name='wallet_logger', info_level='INFO')
 
@@ -12,42 +14,43 @@ wallet_logger = Logs(filename='./logs/wallet_logger.log', name='wallet_logger', 
 ##########
 
 
-# def get_fees(symbol: str = None) -> dict:
-#     """
-#     Returns fees for a symbol or for every symbol if not passed.
-#     :param symbol:
-#     :return:
-#     """
-#     check_minute_weight(1)
-#     endpoint = '/sapi/v1/asset/tradeFee'
-#     timestamp = int(time() * 1000)  # ahorramos una llamada al servidor BNB
-#     if symbol:
-#         symbol = symbol.upper()
-#     ret = get_signed_request(base_url + endpoint, {'symbol': symbol, 'timestamp': timestamp})
-#     wallet_logger.debug(f"{ret}")
-#     return {i['symbol']: {'makerCommission': i['makerCommission'],
-#                           'takerCommission': i['takerCommission']} for i in ret}
+def convert_str_date_to_ms(date: str or int,
+                           time_zone: str):
+    """
+    Converts dates strings formatted as "2022-05-11 06:45:42" to timestamp in milliseconds.
+
+    :param str or int date: Date to check format.
+    :param time_zone: A time zone like 'Europe/Madrid'
+    :return int: Milliseconds of timestamp.
+    """
+    if type(date) == str:
+        date = convert_string_to_milliseconds(date, timezoned=time_zone)
+    return date
+
 
 def daily_account_snapshot(account_type: str = 'SPOT',
-                           startTime: int = None,
+                           startTime: int or str = None,
                            endTime: int = None,
                            limit=30,
                            time_zone=None) -> pd.DataFrame:
     """
-    The query time period must be less than 30 days.
+    The query time period must be inside the previous 30 days.
     Support query within the last month, one month only.
-    If startTime and endTime not sent, return records of the last 7 days by default.
+    If startTime and endTime not sent, return records of the last days by default.
 
     Weight(IP): 2400
 
-    :param account_type:
-    :param limit: Days limit.
-    :param int startTime: Period bounding for the snapshot.
-    :param int endTime: Period bounding for the snapshot.
+    :param str account_type: SPOT or MARGIN
+    :param int limit: Days limit. Default 30.
+    :param int or str startTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
+    :param int or str endTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
     :param str time_zone: A time zone to parse index like 'Europe/Madrid'
     :return pd.DataFrame:
 
     """
+    startTime = convert_str_date_to_ms(date=startTime, time_zone=time_zone)
+    endTime = convert_str_date_to_ms(date=endTime, time_zone=time_zone)
+
     available = ['SPOT', 'MARGIN']
     if account_type not in available:
         exc = f"BinPan error: {account_type} not in {available}"

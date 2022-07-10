@@ -46,6 +46,7 @@
 <li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Module</a></li>
 </ul>
 
         </div>
@@ -77,7 +78,7 @@
 <p>This is the main classes file.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="binpan.Symbol">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">binpan.</span></span><span class="sig-name descname"><span class="pre">Symbol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'UTC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">closed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_rows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_max_rows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">320</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">binpan.</span></span><span class="sig-name descname"><span class="pre">Symbol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'UTC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">closed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_rows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_max_rows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">320</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol" title="Permalink to this definition"></a></dt>
 <dd><p>Creates an object from binance klines and/or trade data. It contains the raw api response and a dataframe that can be modified.</p>
 <p>Any symbol can be used as argument and any time interval like: ‘1m’, ‘3m’, ‘5m’, ‘15m’, ‘30m’, ‘1h’, ‘2h’, ‘4h’, ‘6h’, ‘8h’,
 ‘12h’, ‘1d’, ‘3d’, ‘1w’, ‘1M’</p>
@@ -87,7 +88,7 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>symbol</strong> (<em>str</em>) – It can be any symbol in the binance exchange, like BTCUSDT, ethbusd or any other. Capital letters doesn’t matter.</p></li>
 <li><p><strong>tick_interval</strong> (<em>str</em>) – Any candle’s interval available in binance. Capital letters doesn’t matter.</p></li>
-<li><p><strong>start_time</strong> (<em>int</em><em> or </em><em>str</em>) – <p>It can be an integer in milliseconds from epoch (1970-01-01 00:00:00 UTC) or any string in the formats:</p>
+<li><p><strong>startTime</strong> (<em>int</em><em> or </em><em>str</em>) – <p>It can be an integer in milliseconds from epoch (1970-01-01 00:00:00 UTC) or any string in the formats:</p>
 <blockquote>
 <div><ul>
 <li><p>%Y-%m-%d %H:%M:%S.%f:       <strong>2022-05-11 06:45:42.124567</strong></p></li>
@@ -96,7 +97,7 @@
 </div></blockquote>
 <p>If start time is passed, it gets the next open according to the tick interval selected except an exact open time passed.</p>
 </p></li>
-<li><p><strong>end_time</strong> (<em>int</em><em> or </em><em>str</em>) – <p>It can be an integer in milliseconds from epoch (1970-01-01 00:00:00 UTC) or any string in the formats:</p>
+<li><p><strong>endTime</strong> (<em>int</em><em> or </em><em>str</em>) – <p>It can be an integer in milliseconds from epoch (1970-01-01 00:00:00 UTC) or any string in the formats:</p>
 <blockquote>
 <div><ul>
 <li><p>%Y-%m-%d %H:%M:%S.%f:       <strong>2022-05-11 06:45:42.124</strong></p></li>
@@ -191,7 +192,7 @@ ETHBUSD 5m UTC
 <p>Created objects contain different instantiated variables like <strong>mysymbol.df</strong> that shows the candles dataframe:</p>
 <ul class="simple">
 <li><p><strong>mysymbol.df</strong>: shows candles dataframe</p></li>
-<li><p><strong>mysymbol.trades</strong>: shows aggregated trades, if requested. This is optional and can be added anytime.</p></li>
+<li><p><strong>mysymbol.trades</strong>: a pandas dataframe (if requested) with aggregated trades between start and end of the dataframe timestamps.</p></li>
 <li><p><strong>mysymbol.version</strong>: Version of BinPan.</p></li>
 <li><p><strong>mysymbol.symbol</strong>: symbol instantiated.</p></li>
 <li><p><strong>mysymbol.fees</strong>: personal fees applied for the symbol.</p></li>
@@ -208,7 +209,6 @@ ETHBUSD 5m UTC
 <li><p><strong>mysymbol.display_rows</strong>: display rows in shell</p></li>
 <li><p><strong>mysymbol.display_max_rows</strong>: display max_rows in shell</p></li>
 <li><p><strong>mysymbol.display_width</strong>: display width in shell</p></li>
-<li><p><strong>mysymbol.trades</strong>: a pandas dataframe (if requested) with aggregated trades between start and end of the dataframe timestamps.</p></li>
 <li><p><strong>mysymbol.orderbook</strong>: a pandas dataframe (if requested) with last orderbook requested.</p></li>
 <li><p><strong>mysymbol.row_control</strong>: dictionary with data about plotting control. Represents each dataframe colum position in the plots.</p></li>
 <li><p><strong>mysymbol.color_control</strong>: dictionary with data about plotting control. Represents each dataframe colum color in the plots.</p></li>
@@ -377,6 +377,26 @@ overbought. Likewise, securities can continue moving lower after the indicator b
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="binpan.Symbol.closed">
+<span class="sig-name descname"><span class="pre">closed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.closed" title="Permalink to this definition"></a></dt>
+<dd><p>Returns if not closed candles were dropped when instantiated.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return bool</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Symbol.df">
+<span class="sig-name descname"><span class="pre">df</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.df" title="Permalink to this definition"></a></dt>
+<dd><p>Returns candles dataframe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return pd.DataFrame</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="binpan.Symbol.drop">
 <span class="sig-name descname"><span class="pre">drop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#binpan.Symbol.drop" title="Permalink to this definition"></a></dt>
 <dd><p>It drops some columns from the dataframe. If columns list not passed, then defaults to the initial columns.</p>
@@ -419,6 +439,16 @@ in the object remains.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="binpan.Symbol.end_time">
+<span class="sig-name descname"><span class="pre">end_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.end_time" title="Permalink to this definition"></a></dt>
+<dd><p>Returns end_time on instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return int</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="binpan.Symbol.eom">
 <span class="sig-name descname"><span class="pre">eom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">14</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">divisor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100000000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drift</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.eom" title="Permalink to this definition"></a></dt>
 <dd><p>Ease of Movement (EMV) can be used to confirm a bullish or a bearish trend. A sustained positive Ease of Movement
@@ -443,6 +473,16 @@ with other indicators in chart analysis.</p>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>A Pandas Series</p>
 </dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Symbol.fees">
+<span class="sig-name descname"><span class="pre">fees</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.fees" title="Permalink to this definition"></a></dt>
+<dd><p>Returns fees for symbol.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return dict</dt>
+<dd class="field-odd"><p></p></dd>
 </dl>
 </dd></dl>
 
@@ -555,6 +595,17 @@ before converting candles to Heikin Ashi.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="binpan.Symbol.info_dic">
+<span class="sig-name descname"><span class="pre">info_dic</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.info_dic" title="Permalink to this definition"></a></dt>
+<dd><p>Returns exchangeInfo data when instantiated. It includes, filters, fees, and many other data for all symbols in the
+exchange.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return dict</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="binpan.Symbol.is_new">
 <span class="sig-name descname"><span class="pre">is_new</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#binpan.Symbol.is_new" title="Permalink to this definition"></a></dt>
 <dd><p>Verify if indicator columns are previously created to avoid allocating new rows and colors etc.</p>
@@ -564,6 +615,16 @@ before converting candles to Heikin Ashi.</p>
 </dd>
 <dt class="field-even">Return bool</dt>
 <dd class="field-even"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Symbol.limit">
+<span class="sig-name descname"><span class="pre">limit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.limit" title="Permalink to this definition"></a></dt>
+<dd><p>Returns limit on instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return int</dt>
+<dd class="field-odd"><p></p></dd>
 </dl>
 </dd></dl>
 
@@ -1006,6 +1067,16 @@ Example for transparent green ‘rgba(26,150,65,0.5)’ or transparent red ‘rg
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="binpan.Symbol.start_time">
+<span class="sig-name descname"><span class="pre">start_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.start_time" title="Permalink to this definition"></a></dt>
+<dd><p>Returns start_time on instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return int</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="binpan.Symbol.stoch_rsi">
 <span class="sig-name descname"><span class="pre">stoch_rsi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rsi_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">14</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k_smooth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_smooth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['orange',</span> <span class="pre">'blue']</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#binpan.Symbol.stoch_rsi" title="Permalink to this definition"></a></dt>
 <dd><p>Stochastic Relative Strength Index (RSI) with a fast and slow exponential moving averages.</p>
@@ -1052,6 +1123,46 @@ Example for transparent green ‘rgba(26,150,65,0.5)’ or transparent red ‘rg
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="binpan.Symbol.symbol">
+<span class="sig-name descname"><span class="pre">symbol</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.symbol" title="Permalink to this definition"></a></dt>
+<dd><p>Returns symbol.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return str</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Symbol.tick_interval">
+<span class="sig-name descname"><span class="pre">tick_interval</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.tick_interval" title="Permalink to this definition"></a></dt>
+<dd><p>Returns tick_interval for symbol.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return str</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Symbol.time_index">
+<span class="sig-name descname"><span class="pre">time_index</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.time_index" title="Permalink to this definition"></a></dt>
+<dd><p>Returns if time_index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return bool</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Symbol.time_zone">
+<span class="sig-name descname"><span class="pre">time_zone</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.time_zone" title="Permalink to this definition"></a></dt>
+<dd><p>Returns time_zone for symbol.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return str</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="binpan.Symbol.timestamps">
 <span class="sig-name descname"><span class="pre">timestamps</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.timestamps" title="Permalink to this definition"></a></dt>
 <dd><p>Get the first Open timestamp and the last Close timestamp.</p>
@@ -1059,6 +1170,26 @@ Example for transparent green ‘rgba(26,150,65,0.5)’ or transparent red ‘rg
 <dt class="field-odd">Return tuple(int, int)</dt>
 <dd class="field-odd"><p>Start Open timestamp and end close timestamp</p>
 </dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Symbol.trades">
+<span class="sig-name descname"><span class="pre">trades</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.trades" title="Permalink to this definition"></a></dt>
+<dd><p>Returns candles dataframe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return pd.DataFrame</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Symbol.version">
+<span class="sig-name descname"><span class="pre">version</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.version" title="Permalink to this definition"></a></dt>
+<dd><p>Returns version on BinPan.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return str</dt>
+<dd class="field-odd"><p></p></dd>
 </dl>
 </dd></dl>
 
@@ -1083,6 +1214,166 @@ Default: “D”, that means calendar day frequency.</p></li>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>A Pandas Series</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="binpan.Exchange">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">binpan.</span></span><span class="sig-name descname"><span class="pre">Exchange</span></span><a class="headerlink" href="#binpan.Exchange" title="Permalink to this definition"></a></dt>
+<dd><p>Exchange data.</p>
+<p>Exchange data collected:</p>
+<ul class="simple">
+<li><p>fees: fees applied to the user requesting for every symbol in a pandas dataframe.</p></li>
+<li><p>system_status: API state can be normal o under maintenance.</p></li>
+<li><p>coins: A dataframe with all the coin’s data.</p></li>
+<li><p>networks: A dataframe with info about every coin and its blockchain networks info.</p></li>
+<li><p>info_dic: A dictionary with all raw symbols info each.</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Exchange.coin">
+<span class="sig-name descname"><span class="pre">coin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Exchange.coin" title="Permalink to this definition"></a></dt>
+<dd><p>Returns coin exchange info in a pandas serie.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>coin</strong> (<em>str</em>) – </p>
+</dd>
+<dt class="field-even">Return pd.Series</dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Exchange.fee">
+<span class="sig-name descname"><span class="pre">fee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Exchange.fee" title="Permalink to this definition"></a></dt>
+<dd><p>Returns exchange fees applied for orders with the selected symbol.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>symbol</strong> (<em>str</em>) – </p>
+</dd>
+<dt class="field-even">Return pd.Series</dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Exchange.filter">
+<span class="sig-name descname"><span class="pre">filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Exchange.filter" title="Permalink to this definition"></a></dt>
+<dd><p>Returns exchange filters applied for orders with the selected symbol.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>symbol</strong> (<em>str</em>) – </p>
+</dd>
+<dt class="field-even">Return dict</dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Exchange.info">
+<span class="sig-name descname"><span class="pre">info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Exchange.info" title="Permalink to this definition"></a></dt>
+<dd><p>Update from API and returns a dict with all merged exchange info about a symbol.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>symbol</strong> (<em>str</em>) – </p>
+</dd>
+<dt class="field-even">Return dict</dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Exchange.network">
+<span class="sig-name descname"><span class="pre">network</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Exchange.network" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a dataframe with all exchange networks of a coin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>coin</strong> (<em>str</em>) – </p>
+</dd>
+<dt class="field-even">Return pd.Series</dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="binpan.Wallet">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">binpan.</span></span><span class="sig-name descname"><span class="pre">Wallet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'UTC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snapshot_days</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">30</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Wallet" title="Permalink to this definition"></a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="binpan.Wallet.margin_snapshot">
+<span class="sig-name descname"><span class="pre">margin_snapshot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snapshot_days</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Wallet.margin_snapshot" title="Permalink to this definition"></a></dt>
+<dd><p>Updates margin wallet snapshot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>startTime</strong> (<em>int</em><em> or </em><em>str</em>) – Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42</p></li>
+<li><p><strong>endTime</strong> (<em>int</em><em> or </em><em>str</em>) – Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42</p></li>
+<li><p><strong>snapshot_days</strong> (<em>int</em>) – Days to look if not start time or endtime passed.</p></li>
+<li><p><strong>time_zone</strong> (<em>str</em>) – A time zone for time index conversion.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.DataFrame</dt>
+<dd class="field-even"><p>Spot wallet snapshot for the time period requested.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Wallet.margin_wallet_performance">
+<span class="sig-name descname"><span class="pre">margin_wallet_performance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">days</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BUSD'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Wallet.margin_wallet_performance" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate difference between current wallet not locked values and days before.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>startTime</strong> (<em>int</em><em> or </em><em>str</em>) – Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42</p></li>
+<li><p><strong>endTime</strong> (<em>int</em><em> or </em><em>str</em>) – Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42</p></li>
+<li><p><strong>days</strong> (<em>int</em>) – Days to compare balances.</p></li>
+<li><p><strong>convert_to</strong> (<em>str</em>) – Converts balances to a coin.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return float</dt>
+<dd class="field-even"><p>Value increase or decrease with current value of convert_to coin.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Wallet.spot_snapshot">
+<span class="sig-name descname"><span class="pre">spot_snapshot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snapshot_days</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Wallet.spot_snapshot" title="Permalink to this definition"></a></dt>
+<dd><p>Updates spot wallet snapshot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>startTime</strong> (<em>int</em><em> or </em><em>str</em>) – Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42</p></li>
+<li><p><strong>endTime</strong> (<em>int</em><em> or </em><em>str</em>) – Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42</p></li>
+<li><p><strong>snapshot_days</strong> (<em>int</em>) – Days to look if not start time or endtime passed.</p></li>
+<li><p><strong>time_zone</strong> (<em>str</em>) – A time zone for time index conversion.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.DataFrame</dt>
+<dd class="field-even"><p>Spot wallet snapshot for the time period requested.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Wallet.spot_wallet_performance">
+<span class="sig-name descname"><span class="pre">spot_wallet_performance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">days</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BUSD'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Wallet.spot_wallet_performance" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate difference between current wallet not locked values and days before.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>startTime</strong> (<em>int</em><em> or </em><em>str</em>) – Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42</p></li>
+<li><p><strong>endTime</strong> (<em>int</em><em> or </em><em>str</em>) – Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42</p></li>
+<li><p><strong>days</strong> (<em>int</em>) – Days to compare balances.</p></li>
+<li><p><strong>convert_to</strong> (<em>str</em>) – Converts balances to a coin.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return float</dt>
+<dd class="field-even"><p>Value increase or decrease with current value of convert_to coin.</p>
 </dd>
 </dl>
 </dd></dl>

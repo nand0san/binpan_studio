@@ -6,3 +6,9 @@ BinPan Module
 .. autoclass:: Symbol
     :members:
 
+.. autoclass:: Exchange
+    :members:
+
+.. autoclass:: Wallet
+    :members:
+
