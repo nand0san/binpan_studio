@@ -1,9 +1,9 @@
 Redis Module
 ============
 
-This module can manage REdis database data from Binance API with its original Binance format.
+This module can manage Redis database data from Binance API with its original Binance format.
 
-.. automodule:: binpan.handlers.redis
+.. automodule:: binpan.handlers.redis_fetch
 
 .. autofunction:: fetch_filter_query
 

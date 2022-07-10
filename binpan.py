@@ -6,6 +6,7 @@ This is the main classes file.
 
 import pandas as pd
 import numpy as np
+
 import handlers.logs
 import handlers.market
 import handlers.quest
@@ -16,17 +17,15 @@ import handlers.wallet
 import handlers.files
 import handlers.strategies
 import handlers.exchange
-import handlers.redis
-
+import handlers.redis_fetch
 
 import pandas_ta as ta
-import redis
 from random import choice
 
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
 
-__version__ = "0.0.14"
+__version__ = "0.0.15"
 
 plotly_colors = handlers.plotting.plotly_colors
 
@@ -253,12 +252,6 @@ class Symbol(object):
 
         startTime = handlers.wallet.convert_str_date_to_ms(date=startTime, time_zone=time_zone)
         endTime = handlers.wallet.convert_str_date_to_ms(date=endTime, time_zone=time_zone)
-        #
-        # if type(self.start_time) == str:
-        #     self.start_time = handlers.time_helper.convert_string_to_milliseconds(self.start_time, timezoned=self.time_zone)
-        #
-        # if type(self.end_time) == str:
-        #     self.end_time = handlers.time_helper.convert_string_to_milliseconds(self.end_time, timezoned=self.time_zone)
 
         # check for limit quantity for big queries
         self.start_theoretical, self.end_theoretical = handlers.time_helper.time_interval(tick_interval=self.tick_interval,
@@ -2445,10 +2438,20 @@ class Wallet(object):
 def redis_cosummer(ip: str = '127.0.0.1',
                    port: int = 6379,
                    db: int = 0,
-                   decode_responses: bool = True):
+                   decode_responses: bool = True) -> object:
+    """
+    A redis consumer client creator for the Redis module.
+
+    :param str ip: Redis host ip.
+    :param int port: Default is 6379
+    :param int db: Default is 0.
+    :param bool decode_responses: It decodes responses from redis, avoiding bytes objects to be returned.
+    :return object: A redis client.
+    """
+    import redis as rd
     # noinspection PyTypeChecker
-    return redis.StrictRedis(host=ip,
-                             port=port,
-                             db=db,
-                             decode_responses=decode_responses,
-                             socket_connect_timeout=1)
+    return rd.StrictRedis(host=ip,
+                          port=port,
+                          db=db,
+                          decode_responses=decode_responses,
+                          socket_connect_timeout=1)
