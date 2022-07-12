@@ -1,5 +1,9 @@
+import pandas as pd
+from csv import QUOTE_ALL
+from time import time
 from sys import path
-from os import path
+from os import listdir, path, mkdir, replace, makedirs
+
 from .starters import AesCipher
 from .logs import Logs
 
@@ -8,7 +12,63 @@ files_logger = Logs(filename='./logs/files_logger.log', name='files_logger', inf
 cipher_object = AesCipher()
 
 
-# Interfaces
+################
+# Files manage #
+################
+
+def create_dir(path):
+    """Crea una carpeta en la ruta designada si no existe. No da error si ya existe"""
+    if not path.exists(path):
+        makedirs(path)
+
+
+def save_dataframe_to_csv(filename, data: pd.DataFrame, col_sep=',', index=False, timestamp=True) -> None:
+    """Graba en un csv con separador a elegir, un dataframe. Cada campo de cada columna irá entrecomillado"""
+    if filename.lower().endswith(".csv"):
+        filename = filename.replace('.csv', '')
+    if timestamp:
+        filename = filename + '_' + str(time()).split('.')[0]
+    filename += '.csv'
+    data.to_csv(filename, sep=col_sep, header=True, encoding='utf-8', quoting=QUOTE_ALL, index=index)
+
+
+def append_row_to_csv(filename, data: pd.DataFrame, col_sep=',', index=False, timestamp=True, header=True) -> None:
+    """Añade lineas a un csv con separador a elegir, un dataframe. Cada campo de cada columna irá entrecomillado"""
+    if path.isfile(filename):
+        header = False
+    if filename.lower().endswith(".csv"):
+        filename = filename.replace('.csv', '')
+    if timestamp:
+        filename = filename + '_' + str(time()).split('.')[0]
+    filename += '.csv'
+    data.to_csv(filename, sep=col_sep, header=header, encoding='utf-8', quoting=QUOTE_ALL, index=index, mode='a')
+
+
+def find_csvs_in_path(files_path: str = '.', extension='csv'):
+    ret = []
+    for r in listdir(files_path):
+        full_path = path.join(files_path, r)
+        if path.isfile(full_path):
+            ret.append(full_path)
+    return [f for f in ret if f.endswith(extension)]
+
+
+def move_old_csvs(files_path: str = '.', extension='csv'):
+    files_path = path.abspath(files_path)
+    old = path.join(files_path, 'old')
+    if not path.exists(old):
+        mkdir(old)
+    csvs = find_csvs_in_path(files_path=files_path, extension=extension)
+    for file in csvs:
+        file_name = path.basename(file)
+        dst = path.join(files_path, 'old', file_name)
+        print(f'Moving old file {file}')
+        replace(file, dst)
+
+
+def read_csv_to_dataframe(filename: str, col_sep=',', index_col=None) -> pd.DataFrame:
+    return pd.read_csv(filepath_or_buffer=filename, sep=col_sep, index_col=index_col, skip_blank_lines=True,
+                       quoting=QUOTE_ALL)
 
 
 def read_file(filename: str) -> list:

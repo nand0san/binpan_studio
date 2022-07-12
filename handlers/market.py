@@ -1,6 +1,7 @@
 from tqdm import tqdm
+from time import time
 from .logs import Logs
-from .quest import check_weight, get_response, get_server_time
+from .quest import check_weight, get_response
 from .time_helper import tick_seconds, end_time_from_start_time, start_time_from_end_time
 
 market_logger = Logs(filename='./logs/market_logger.log', name='market_logger', info_level='INFO')
@@ -66,7 +67,7 @@ def get_candles_by_time_stamps(start_time: int = None,
 
     """
 
-    now = get_server_time()
+    now = int(time()*1000)
     if end_time and end_time > now:
         end_time = None
         # end_time = min(end_time, now)
@@ -91,8 +92,8 @@ def get_candles_by_time_stamps(start_time: int = None,
 
 
 def get_candles_from_start_time(start_time: int,
-                                symbol: str = 'BTCUSDT',
-                                tick_interval: str = '1d',
+                                symbol: str,
+                                tick_interval: str,
                                 limit: int = 1000) -> list:
     """
     Calls API for candles list from one timestamp.

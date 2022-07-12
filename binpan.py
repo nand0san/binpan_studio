@@ -8,6 +8,7 @@ import pandas as pd
 import numpy as np
 
 import handlers.logs
+import handlers.starters
 import handlers.market
 import handlers.quest
 import handlers.exceptions
@@ -25,7 +26,7 @@ from random import choice
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
 
-__version__ = "0.0.15"
+__version__ = "0.0.18"
 
 plotly_colors = handlers.plotting.plotly_colors
 
@@ -275,8 +276,6 @@ class Symbol(object):
 
         self.ticks_quantity = handlers.time_helper.ticks_between_timestamps(start=self.start_theoretical,
                                                                             end=self.end_theoretical,
-                                                                            asked_start=startTime,
-                                                                            asked_end=endTime,
                                                                             tick_interval=self.tick_interval)
         # loop big queries
         if self.ticks_quantity > 1000:
@@ -1359,7 +1358,7 @@ class Symbol(object):
         :param str ma_name: A moving average supported by the generic pandas_ta "ma" function.
         :param str column_source: Name of column with data to be used.
         :param bool inplace: Permanent or not.
-        :param str suffix: A string to decorate resulting pandas series name.
+        :param str suffix: A string to decorate resulting Pandas series name.
         :param str or int color: A color from plotly list of colors or its index in that list.
         :param kwargs: From https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/overlap/ma.py
         :return: pd.Series

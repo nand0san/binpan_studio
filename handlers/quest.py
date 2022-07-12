@@ -94,8 +94,9 @@ def check_weight(weight: int,
     weight_logger.debug(f"Checking weight for {endpoint}")
 
     test_headers = copy.deepcopy(current_limit_headers)
-    # identify
 
+
+    # identify
     if '/api/v3/order/' in endpoint:
         header_to_update = ''  # TODO: unknown yet
         test_headers[header_to_update] += weight
@@ -301,10 +302,11 @@ def post_signed_request(url: str, params_json: dict = None, recvWindow: int = 10
 ####################
 
 def api_raw_get(endpoint: str,
+                weight: int,
                 base_url: str = '',
                 params: dict = None,
                 headers: dict = None,
-                weight: int = 1,
+
                 no_wait=False):
     check_weight(weight, endpoint=base_url + endpoint, no_wait=no_wait)
 
