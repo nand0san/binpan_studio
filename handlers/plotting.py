@@ -1,6 +1,7 @@
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import plotly.express as px
+import plotly.figure_factory as ff
 import pandas as pd
 import numpy as np
 from random import choice
@@ -844,4 +845,38 @@ def orderbook_depth(df: pd.DataFrame,
         plot_y = 'Accumulated Quantity'
 
     fig = px.line(ob, x="Price", y=plot_y, color='Side', height=height, title=title, **kwargs)
+    fig.show()
+
+
+def dist_plot(df: pd.DataFrame,
+              x_col: str = 'Price',
+              color: str = 'Side',
+              bins: int = 300,
+              histnorm: str = 'density',
+              height: int = 800,
+              title: str = "Distribution"):
+    """
+    Plot a distribution plot for a dataframe column. Plots line for kernel distribution.
+
+    :param pd.DataFrame df: A BinPan Dataframe like orderbook, candles, or any other.
+    :param str x_col: Column name for x-axis data.
+    :param str color: Column name with tags or any values for using as color scale.
+    :param int bins: Columns in histogram.
+    :param str histnorm: One of 'percent', 'probability', 'density', or 'probability density' from plotly express documentation.
+        https://plotly.github.io/plotly.py-docs/generated/plotly.express.histogram.html
+    :param int height: Plot sizing.
+    :param str title: A title string
+
+    """
+    filtered_df = df.copy()
+
+    fig = ff.create_distplot([filtered_df["Price"].tolist()],
+                             group_labels=["Price"],
+                             show_hist=False,
+                             ).add_traces(
+        px.histogram(filtered_df, x=x_col, nbins=bins, color=color, histnorm=histnorm)
+        .update_traces(yaxis="y3", name=x_col)
+        .data)
+
+    fig.update_layout(height=height, title=title, yaxis3={"overlaying": "y", "side": "right"}, showlegend=True)
     fig.show()

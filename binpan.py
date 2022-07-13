@@ -132,7 +132,7 @@ class Symbol(object):
     :param bool time_index:  Shows human-readable index in the dataframe. Set to False shows numeric index. default is True.
 
     :param bool closed:      The last candle is a closed one in the moment of the creation, instead of a running candle not closed yet.
-    :param bool redis_conn: If enabled, BinPan will look for a secret file with the redis ip, port and any other parameter in a map.
+    :param bool from_redis: If enabled, BinPan will look for a secret file with the redis ip, port and any other parameter in a map.
        secret.py file map example: redis_conf = {'host':'192.168.1.5','port': 6379,'db': 0,'decode_responses': True}
 
     :param int display_columns:     Number of columns in the dataframe display. Convenient to adjust in jupyter notebooks.
@@ -213,7 +213,7 @@ class Symbol(object):
                  time_zone: str = 'UTC',
                  time_index: bool = True,
                  closed: bool = True,
-                 redis_conn: bool = False,
+                 from_redis: bool = False,
                  display_columns=25,
                  display_rows=10,
                  display_max_rows=25,
@@ -251,13 +251,13 @@ class Symbol(object):
         self.time_index = time_index
         self.closed = closed
 
-        if redis_conn:
+        if from_redis:
             try:
                 self.from_redis = redis_client(**redis_conf)
             except Exception as exc:
                 binpan_logger.warning(f"BinPan error: Redis parameters misconfiguration in secret.py -> {exc}")
         else:
-            self.from_redis = redis_conn
+            self.from_redis = from_redis
 
         self.display_columns = display_columns
         self.display_rows = display_rows
@@ -1014,7 +1014,7 @@ class Symbol(object):
     def plot_orderbook(self,
                        accumulated=True,
                        title='Depth orderbook plot',
-                       height=500,
+                       height=800,
                        plot_y="Quantity",
                        **kwargs):
         """
@@ -1029,6 +1029,39 @@ class Symbol(object):
                                           height=height,
                                           plot_y=plot_y,
                                           **kwargs)
+
+    def plot_orderbook_density(self,
+                               x_col="Price",
+                               color='Side',
+                               bins=300,
+                               histnorm: str = 'density',
+                               height: int = 800,
+                               title: str = "Distribution"):
+        """
+        Plot a distribution plot for a dataframe column. Plots line for kernel distribution.
+
+        :param pd.DataFrame df: A BinPan Dataframe like orderbook, candles, or any other.
+        :param str x_col: Column name for x-axis data.
+        :param str color: Column name with tags or any values for using as color scale.
+        :param int bins: Columns in histogram.
+        :param str histnorm: One of 'percent', 'probability', 'density', or 'probability density' from plotly express documentation.
+            https://plotly.github.io/plotly.py-docs/generated/plotly.express.histogram.html
+        :param int height: Plot sizing.
+        :param str title: A title string
+
+        """
+
+        if self.orderbook.empty:
+            binpan_logger.info("Orderbook not downloaded. Please add orderbook data with: my_binpan.get_orderbook()")
+            return
+
+        handlers.plotting.dist_plot(df=self.orderbook,
+                                    x_col=x_col,
+                                    color=color,
+                                    bins=bins,
+                                    histnorm=histnorm,
+                                    height=height,
+                                    title=title)
 
     #################
     # Exchange data #
