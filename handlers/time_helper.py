@@ -139,7 +139,7 @@ def time_interval(tick_interval: str,
         end = int(start) + total_interval_ms
     elif not start and end:
         start = int(end) - total_interval_ms
-    return start, end
+    return int(start), int(end)
 
 
 def ceil_division(a: float, b: float) -> int:

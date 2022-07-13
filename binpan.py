@@ -23,16 +23,34 @@ import handlers.redis_fetch
 import pandas_ta as ta
 from random import choice
 
+try:
+    from secret import redis_conf
+except:
+    pass
+
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
 
-__version__ = "0.0.18"
+__version__ = "0.0.19"
 
 plotly_colors = handlers.plotting.plotly_colors
 
 pd.set_option('display.max_columns', 20)
 pd.set_option('display.width', 250)
 pd.set_option('display.min_rows', 10)
+
+klines_columns = {"t": "Open time",
+                  "o": "Open",
+                  "h": "High",
+                  "l": "Low",
+                  "c": "Close",
+                  "v": "Volume",
+                  "T": "Close time",
+                  "q": "Quote volume",
+                  "n": "Trades",
+                  "V": "Taker buy base volume",
+                  "Q": "Taker buy quote volume",
+                  "B": "Ignore"}
 
 
 class Symbol(object):
@@ -48,14 +66,14 @@ class Symbol(object):
 
     :param str tick_interval: Any candle's interval available in binance. Capital letters doesn't matter.
 
-    :param int or str startTime:  It can be an integer in milliseconds from epoch (1970-01-01 00:00:00 UTC) or any string in the formats:
+    :param int or str start_time:  It can be an integer in milliseconds from epoch (1970-01-01 00:00:00 UTC) or any string in the formats:
 
         - %Y-%m-%d %H:%M:%S.%f:       **2022-05-11 06:45:42.124567**
         - %Y-%m-%d %H:%M:%S:          **2022-05-11 06:45:42**
 
        If start time is passed, it gets the next open according to the tick interval selected except an exact open time passed.
 
-    :param int or str endTime:    It can be an integer in milliseconds from epoch (1970-01-01 00:00:00 UTC) or any string in the formats:
+    :param int or str end_time:    It can be an integer in milliseconds from epoch (1970-01-01 00:00:00 UTC) or any string in the formats:
 
         - %Y-%m-%d %H:%M:%S.%f:       **2022-05-11 06:45:42.124**
         - %Y-%m-%d %H:%M:%S:          **2022-05-11 06:45:42**
@@ -114,6 +132,8 @@ class Symbol(object):
     :param bool time_index:  Shows human-readable index in the dataframe. Set to False shows numeric index. default is True.
 
     :param bool closed:      The last candle is a closed one in the moment of the creation, instead of a running candle not closed yet.
+    :param bool redis_conn: If enabled, BinPan will look for a secret file with the redis ip, port and any other parameter in a map.
+       secret.py file map example: redis_conf = {'host':'192.168.1.5','port': 6379,'db': 0,'decode_responses': True}
 
     :param int display_columns:     Number of columns in the dataframe display. Convenient to adjust in jupyter notebooks.
     :param int display_rows:        Number of rows in the dataframe display. Convenient to adjust in jupyter notebooks.
@@ -187,12 +207,13 @@ class Symbol(object):
     def __init__(self,
                  symbol: str,
                  tick_interval: str,
-                 startTime: int or str = None,
-                 endTime: int or str = None,
+                 start_time: int or str = None,
+                 end_time: int or str = None,
                  limit: int = 1000,
                  time_zone: str = 'UTC',
                  time_index: bool = True,
                  closed: bool = True,
+                 redis_conn: bool = False,
                  display_columns=25,
                  display_rows=10,
                  display_max_rows=25,
@@ -223,14 +244,21 @@ class Symbol(object):
         self.symbol = symbol.upper()
         self.fees = self.get_fees(symbol=self.symbol)
         self.tick_interval = tick_interval
-        self.start_time = startTime
-        self.end_time = endTime
+        self.start_time = start_time
+        self.end_time = end_time
         self.limit = limit
         self.time_zone = time_zone
         self.time_index = time_index
         self.closed = closed
-        self.start_ms_time = None
-        self.end_ms_time = None
+
+        if redis_conn:
+            try:
+                self.from_redis = redis_client(**redis_conf)
+            except Exception as exc:
+                binpan_logger.warning(f"BinPan error: Redis parameters misconfiguration in secret.py -> {exc}")
+        else:
+            self.from_redis = redis_conn
+
         self.display_columns = display_columns
         self.display_rows = display_rows
         self.display_max_rows = display_max_rows
@@ -251,79 +279,61 @@ class Symbol(object):
                            f" start={self.start_time}, end={self.end_time}, {self.time_zone}, time_index={self.time_index}"
                            f", closed_candles={self.closed}")
 
-        startTime = handlers.wallet.convert_str_date_to_ms(date=startTime, time_zone=time_zone)
-        endTime = handlers.wallet.convert_str_date_to_ms(date=endTime, time_zone=time_zone)
+        ##############
+        # timestamps #
+        ##############
 
-        # check for limit quantity for big queries
-        self.start_theoretical, self.end_theoretical = handlers.time_helper.time_interval(tick_interval=self.tick_interval,
-                                                                                          limit=self.limit,
-                                                                                          start=self.start_time,
-                                                                                          end=self.end_time)
+        start_time = handlers.wallet.convert_str_date_to_ms(date=start_time, time_zone=time_zone)
+        end_time = handlers.wallet.convert_str_date_to_ms(date=end_time, time_zone=time_zone)
+        self.start_time = start_time
+        self.end_time = end_time
 
-        if not startTime and endTime:  # because last line considers limit plus one when
-            self.start_theoretical += tick_seconds[tick_interval] * 1000
+        # work with open timestamps
+        if start_time:
+            self.start_time = handlers.time_helper.open_from_milliseconds(ms=start_time, tick_interval=self.tick_interval)
 
-        # velas del futuro se descartan sin importar el limit
+        if end_time:
+            self.end_time = handlers.time_helper.open_from_milliseconds(ms=end_time, tick_interval=self.tick_interval)
+
+        # fill missing timestamps
+        self.start_time, self.end_time = handlers.time_helper.time_interval(tick_interval=self.tick_interval,
+                                                                            limit=self.limit,
+                                                                            start=self.start_time,
+                                                                            end=self.end_time)
+        # discard not closed
         now = handlers.time_helper.utc()
-        current_close = handlers.time_helper.close_from_milliseconds(now, tick_interval=tick_interval)
-        self.end_theoretical = min(self.end_theoretical, current_close)
-
         current_open = handlers.time_helper.open_from_milliseconds(ms=now, tick_interval=self.tick_interval)
-
         if self.closed:
-            if self.end_theoretical >= current_open:
-                self.end_theoretical = current_open - 1000  # resta para solicitar la vela anterior, que está cerrada
+            if self.end_time >= current_open:
+                self.end_time = current_open - 1000
 
-        self.ticks_quantity = handlers.time_helper.ticks_between_timestamps(start=self.start_theoretical,
-                                                                            end=self.end_theoretical,
-                                                                            tick_interval=self.tick_interval)
-        # loop big queries
-        if self.ticks_quantity > 1000:
-            raw_candles = []
+        #################
+        # query candles #
+        #################
 
-            # set pointers for the loop
-            start_pointer = handlers.time_helper.open_from_milliseconds(ms=self.start_theoretical, tick_interval=self.tick_interval)
+        # prepare iteration for big loops
+        tick_milliseconds = int(tick_seconds[tick_interval] * 1000)
+        ranges = [(i, i + (1000 * tick_milliseconds)) for i in range(self.start_time, self.end_time, tick_milliseconds * 1000)]
 
-            if endTime:  # this is calculated without considering if it's in the future or not
-                end_pointer = handlers.time_helper.open_from_milliseconds(ms=self.end_theoretical, tick_interval=self.tick_interval)
-            else:
-                self.end_theoretical = self.end_theoretical - (tick_seconds[tick_interval] * 1000)
-                end_pointer = handlers.time_helper.open_from_milliseconds(ms=self.end_theoretical, tick_interval=self.tick_interval)
-
-            while start_pointer <= self.end_theoretical:
-                response = handlers.market.get_candles_from_start_time(start_time=start_pointer,
-                                                                       symbol=self.symbol,
-                                                                       tick_interval=self.tick_interval,
-                                                                       limit=1000)
-                raw_candles += response
-                last_raw_open_ts = int(raw_candles[-1][0])  # looks for the open
-                if last_raw_open_ts >= end_pointer:
-                    break
-                start_pointer = last_raw_open_ts + (tick_seconds[tick_interval] * 1000)
+        # loop
+        raw_candles = []
+        for r in ranges:
+            start = r[0]
+            end = r[1]
+            response = handlers.market.get_candles_by_time_stamps(start_time=start,
+                                                                  end_time=end,
+                                                                  symbol=self.symbol,
+                                                                  tick_interval=self.tick_interval,
+                                                                  redis_client=self.from_redis)
+            raw_candles += response
 
             # descarta sobrantes
-            overtime_candle_ts = handlers.time_helper.next_open_by_milliseconds(ms=end_pointer, tick_interval=self.tick_interval)
-
-            raw_candles = [i for i in raw_candles if int(i[0]) < overtime_candle_ts]
-
-        elif not endTime and not startTime:
-            raw_candles = handlers.market.get_last_candles(symbol=self.symbol,
-                                                           tick_interval=tick_interval,
-                                                           limit=limit)
-            if self.closed:
-                raw_candles = raw_candles[:-1]
-        else:
-            raw_candles = handlers.market.get_candles_by_time_stamps(start_time=self.start_time,
-                                                                     end_time=self.end_time,
-                                                                     symbol=self.symbol,
-                                                                     tick_interval=self.tick_interval,
-                                                                     limit=self.limit)
-            if not self.closed:
-                overtime_candle_ts = handlers.time_helper.next_open_by_milliseconds(ms=raw_candles[-1][0], tick_interval=self.tick_interval)
+            overtime_candle_ts = handlers.time_helper.next_open_by_milliseconds(ms=self.end_time, tick_interval=self.tick_interval)
+            if type(raw_candles[0]) == list:  # if from binance
+                raw_candles = [i for i in raw_candles if int(i[0]) < overtime_candle_ts]
             else:
-                overtime_candle_ts = handlers.time_helper.open_from_milliseconds(ms=raw_candles[-1][0], tick_interval=self.tick_interval)
-
-            raw_candles = [i for i in raw_candles if int(i[0]) < overtime_candle_ts]
+                open_ts_key = list(raw_candles[0].keys())[0]
+                raw_candles = [i for i in raw_candles if int(i[open_ts_key]) < overtime_candle_ts]
 
         self.raw = raw_candles
 
@@ -335,7 +345,6 @@ class Symbol(object):
                                                     time_zone=self.time_zone,
                                                     time_index=self.time_index)
         self.df = dataframe
-        # self.candles = dataframe[self.presentation_columns]
         self.len = len(self.df)
 
         # exchange data
@@ -656,8 +665,8 @@ class Symbol(object):
 
         """
         trades = handlers.market.get_historical_aggregated_trades(symbol=self.symbol,
-                                                                  startTime=self.start_theoretical,
-                                                                  endTime=self.end_theoretical)
+                                                                  startTime=self.start_time,
+                                                                  endTime=self.end_time)
         self.trades = self.parse_agg_trades_to_dataframe(response=trades,
                                                          columns=self.trades_columns,
                                                          symbol=self.symbol,
@@ -1069,16 +1078,24 @@ class Symbol(object):
                     actions: pd.Series = None,
                     base: float = 0,
                     quote: float = 1000,
-                    priced_actions_col: str = None,
+                    priced_actions_col: str = 'Close',
                     fee: float = 0.001,
-                    dust: bool = True,
                     actions_col: str or pd.Series = 'actions') -> (pd.Series, pd.Series):
-
         # TODO: tener en cuenta el polvo en el backtesting
-
         """
-        Devuelve dos series tipo wallet, con las operaciones de cambio base a wallet.
-        Puedes no pasarle los actions y los pilla de la columna indicada.
+        Returns two pandas series as base wallet and quote wallet over time. Its expected a serie with strings like 'buy' or 'sell'.
+        That serie is called the "actions". If it is available a column with the exact price of the actions, can be passed in
+        actions_col parameter by column name or a pandas series, if not, Closed price column can be a good approximation.
+
+        All actions will be considered to buy all base as possible or to sell all base as posible.
+
+        :param pd.Series actions: A pandas series with buy or sell strings for simulate actions.
+        :param float base: A starting quantity of symbol's base.
+        :param float quote: A starting quantity of symbol's quote.
+        :param pd.Series or str priced_actions_col: Column with the prices for the action emulation.
+        :param float fee: Binance applicable fee for trading. DEfault is 0.001.
+        :param str or pd.Series actions_col:
+        :return tuple: Two series with the base wallet and qiote wallet funds in time.
         """
 
         df_ = self.df.copy(deep=True)
@@ -1098,22 +1115,14 @@ class Symbol(object):
 
             if curr_action == 'buy' and last_action != 'buy':
 
-                if priced_actions_col:
-                    price = df_.loc[index, priced_actions_col]
-
-                else:
-                    price = row['Close']
+                price = df_.loc[index, priced_actions_col]
 
                 base, quote = self.buy_base_backtesting(row=row, price=price, base=base, quote=quote, fee=fee)
                 last_action = 'buy'
 
             elif curr_action == 'sell' and last_action != 'sell':
 
-                if priced_actions_col:
-                    price = df_.loc[index, priced_actions_col]
-
-                else:
-                    price = row['Close']
+                price = df_.loc[index, priced_actions_col]
 
                 base, quote = self.sell_base_backtesting(row=row, price=price, base=base, quote=quote, fee=fee)
                 last_action = 'sell'
@@ -1233,7 +1242,21 @@ class Symbol(object):
         :return:                Pandas DataFrame
 
         """
-        df = pd.DataFrame(response, columns=columns)
+        # check if redis columns
+        if type(response[0]) == list:
+            df = pd.DataFrame(response, columns=columns)
+        else:
+            response_keys = list(response[0].keys())
+            response_keys.sort()
+            sort_columns = columns
+            sort_columns.sort()
+
+            if response_keys != sort_columns:  # json keys from redis different
+                columns = list(klines_columns.keys())
+                df = pd.DataFrame(response, columns=columns)
+                df.rename(columns=klines_columns, inplace=True)
+            else:
+                df = pd.DataFrame(response, columns=columns)
 
         for col in df.columns:
             df[col] = pd.to_numeric(arg=df[col], downcast='integer')
@@ -1255,6 +1278,9 @@ class Symbol(object):
 
         index_name = f"{symbol} {tick_interval} {time_zone}"
         df.index.name = index_name
+
+        # if came from a loop there are duplicated values in step connections to be removed.
+        df.drop_duplicates(inplace=True)
         return df
 
     @staticmethod
@@ -2434,10 +2460,11 @@ class Wallet(object):
             return 0
 
 
-def redis_cosummer(ip: str = '127.0.0.1',
-                   port: int = 6379,
-                   db: int = 0,
-                   decode_responses: bool = True) -> object:
+def redis_client(ip: str = None,
+                 port: int = None,
+                 db: int = None,
+                 decode_responses: bool = None,
+                 **kwargs) -> object:
     """
     A redis consumer client creator for the Redis module.
 
@@ -2445,12 +2472,16 @@ def redis_cosummer(ip: str = '127.0.0.1',
     :param int port: Default is 6379
     :param int db: Default is 0.
     :param bool decode_responses: It decodes responses from redis, avoiding bytes objects to be returned.
+    :param kwargs: If passed, object is instantiated exclusively with kwargs, then discards any passed parameter.
     :return object: A redis client.
     """
-    import redis as rd
-    # noinspection PyTypeChecker
-    return rd.StrictRedis(host=ip,
-                          port=port,
-                          db=db,
-                          decode_responses=decode_responses,
-                          socket_connect_timeout=1)
+    from redis import StrictRedis
+
+    if kwargs:
+        return StrictRedis(**kwargs)
+    else:
+        # noinspection PyTypeChecker
+        return StrictRedis(host=ip,
+                           port=port,
+                           db=db,
+                           decode_responses=decode_responses)

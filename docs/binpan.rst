@@ -12,5 +12,4 @@ BinPan Module
 .. autoclass:: Wallet
     :members:
 
-.. autofunction:: redis_cosummer
 

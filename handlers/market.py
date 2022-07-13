@@ -1,5 +1,10 @@
 from tqdm import tqdm
 from time import time
+# import redis as rd
+# from redis import StrictRedis
+import json
+
+import handlers.time_helper
 from .logs import Logs
 from .quest import check_weight, get_response
 from .time_helper import tick_seconds, end_time_from_start_time, start_time_from_end_time
@@ -9,20 +14,16 @@ market_logger = Logs(filename='./logs/market_logger.log', name='market_logger', 
 base_url = 'https://api.binance.com'
 
 
-# ###################################
-# # API market
-# ###################################
-
-
 ###########
 # Candles #
 ###########
 
-def get_candles_by_time_stamps(start_time: int = None,
+def get_candles_by_time_stamps(symbol: str,
+                               tick_interval: str,
+                               start_time: int = None,
                                end_time: int = None,
-                               symbol='BTCUSDT',
-                               tick_interval='1d',
-                               limit=None) -> list:
+                               limit=1000,
+                               redis_client: object = None) -> list:
     """
     Calls API for candles list buy one or two timestamps, starting and ending.
 
@@ -39,11 +40,12 @@ def get_candles_by_time_stamps(start_time: int = None,
 
     If no timestamps are passed, the last quantity candlesticks up to limit count are returned.
 
-    :param int start_time: A timestamp in milliseconds from epoch.
-    :param int end_time: A timestamp in milliseconds from epoch.
     :param str symbol: A binance valid symbol.
     :param str tick_interval: A binance valid time interval for candlesticks.
+    :param int start_time: A timestamp in milliseconds from epoch.
+    :param int end_time: A timestamp in milliseconds from epoch.
     :param int limit: Count of candles to ask for.
+    :param bool redis_client: A redis instance of a connector.
     :return list: Returns a list from the Binance API
 
     .. code-block::
@@ -66,20 +68,19 @@ def get_candles_by_time_stamps(start_time: int = None,
         ]
 
     """
-
-    now = int(time()*1000)
-    if end_time and end_time > now:
-        end_time = None
-        # end_time = min(end_time, now)
-
     endpoint = '/api/v3/klines?'
-    check_weight(1, endpoint=endpoint)
+
+    tick_milliseconds = int(tick_seconds[tick_interval] * 1000)
+
+    if not start_time and not end_time:
+        end_time = int(time()) * 1000
 
     if not start_time and end_time:
-        start_time = end_time - (limit * tick_seconds[tick_interval] * 1000)
-
+        start_time = end_time - (limit * tick_milliseconds)
+        start_time = handlers.time_helper.open_from_milliseconds(ms=start_time, tick_interval=tick_interval)
     elif start_time and not end_time:
-        end_time = start_time + (limit * tick_seconds[tick_interval] * 1000) - 1
+        end_time = start_time + (limit * tick_milliseconds)  # ??? for getting limit exactly
+        end_time = handlers.time_helper.open_from_milliseconds(ms=end_time, tick_interval=tick_interval)
 
     params = {'symbol': symbol,
               'interval': tick_interval,
@@ -88,97 +89,18 @@ def get_candles_by_time_stamps(start_time: int = None,
               'limit': limit}
 
     params = {k: v for k, v in params.items() if v}
-    return get_response(url=endpoint, params=params)
 
+    if redis_client:
+        ret = redis_client.zrangebyscore(name=f"{symbol.lower()}@kline_{tick_interval}",
+                                         min=start_time,
+                                         max=end_time,
+                                         withscores=False)
 
-def get_candles_from_start_time(start_time: int,
-                                symbol: str,
-                                tick_interval: str,
-                                limit: int = 1000) -> list:
-    """
-    Calls API for candles list from one timestamp.
+        return [json.loads(i) for i in ret]
 
-    The API rounds the startTime up to the next open of the next candle. That is, it does not include the candle in which there is
-    that timeStamp, but the next candle of the corresponding tick_interval, except in case it exactly matches the value of an open
-    timestamp, in which case it will include it in the return.
-
-    :param int start_time: A timestamp in milliseconds from epoch.
-    :param str symbol: A binance valid symbol.
-    :param str tick_interval: A binance valid time interval for candlesticks.
-    :param int limit: Count of candles to ask for.
-    :return list: Returns a list from the Binance API
-
-    .. code-block::
-
-        [
-          [
-            1499040000000,      // Open time
-            "0.01634790",       // Open
-            "0.80000000",       // High
-            "0.01575800",       // Low
-            "0.01577100",       // Close
-            "148976.11427815",  // Volume
-            1499644799999,      // Close time
-            "2434.19055334",    // Quote asset volume
-            308,                // Number of trades
-            "1756.87402397",    // Taker buy base asset volume
-            "28.46694368",      // Taker buy quote asset volume
-            "17928899.62484339" // Ignore.
-          ]
-        ]
-    """
-
-    endpoint = '/api/v3/klines?'
-    check_weight(1, endpoint=endpoint)
-
-    params = {'symbol': symbol,
-              'interval': tick_interval,
-              'startTime': start_time,
-              'limit': limit}
-    return get_response(url=endpoint, params=params)
-
-
-def get_last_candles(symbol: str = 'BTCUSDT',
-                     tick_interval: str = '1d',
-                     limit: int = 1000) -> list:
-    """
-    Calls API for candles list from one timestamp for a specific symbol.
-
-    The returned list of lists will be limited to limit quantity until the current candle.
-
-    Maximum is 1000.
-
-    :param str symbol: A binance valid symbol.
-    :param str tick_interval: A binance valid time interval for candlesticks.
-    :param int limit: Count of candles to ask for.
-    :return list: Returns a list from the Binance API
-
-    .. code-block::
-
-        [
-          [
-            1499040000000,      // Open time
-            "0.01634790",       // Open
-            "0.80000000",       // High
-            "0.01575800",       // Low
-            "0.01577100",       // Close
-            "148976.11427815",  // Volume
-            1499644799999,      // Close time
-            "2434.19055334",    // Quote asset volume
-            308,                // Number of trades
-            "1756.87402397",    // Taker buy base asset volume
-            "28.46694368",      // Taker buy quote asset volume
-            "17928899.62484339" // Ignore.
-          ]
-        ]
-    """
-
-    endpoint = '/api/v3/klines?'
-    check_weight(1, endpoint=endpoint)
-    params = {'symbol': symbol,
-              'interval': tick_interval,
-              'limit': limit}
-    return get_response(url=endpoint, params=params)
+    else:
+        check_weight(1, endpoint=endpoint)
+        return get_response(url=endpoint, params=params)
 
 
 def get_prices_dic() -> dict:
@@ -293,6 +215,7 @@ def get_historical_aggregated_trades(symbol: str,
         for i in tqdm(range(startTime, endTime, hour_ms)):
             trades += get_agg_trades(symbol=symbol, startTime=i, endTime=i + hour_ms)
         return trades
+
 
 #############
 # Orderbook #

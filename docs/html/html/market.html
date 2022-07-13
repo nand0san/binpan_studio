@@ -79,7 +79,7 @@
 <p>This module can manage market data from Binance API.</p>
 <span class="target" id="module-binpan.handlers.market"></span><dl class="py function">
 <dt class="sig sig-object py" id="binpan.handlers.market.get_candles_by_time_stamps">
-<span class="sig-prename descclassname"><span class="pre">binpan.handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_candles_by_time_stamps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'BTCUSDT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1d'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#binpan.handlers.market.get_candles_by_time_stamps" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">binpan.handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_candles_by_time_stamps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redis_client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">object</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#binpan.handlers.market.get_candles_by_time_stamps" title="Permalink to this definition"></a></dt>
 <dd><p>Calls API for candles list buy one or two timestamps, starting and ending.</p>
 <p>In case the limit is exceeded, the start_time prevails over the end_time, start_time must come in milliseconds from epoch.</p>
 <p>In case of two timeStamps as arguments, limit is ignored.</p>
@@ -92,89 +92,12 @@ is open right in between the endtime timestamp.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>symbol</strong> (<em>str</em>) – A binance valid symbol.</p></li>
+<li><p><strong>tick_interval</strong> (<em>str</em>) – A binance valid time interval for candlesticks.</p></li>
 <li><p><strong>start_time</strong> (<em>int</em>) – A timestamp in milliseconds from epoch.</p></li>
 <li><p><strong>end_time</strong> (<em>int</em>) – A timestamp in milliseconds from epoch.</p></li>
-<li><p><strong>symbol</strong> (<em>str</em>) – A binance valid symbol.</p></li>
-<li><p><strong>tick_interval</strong> (<em>str</em>) – A binance valid time interval for candlesticks.</p></li>
 <li><p><strong>limit</strong> (<em>int</em>) – Count of candles to ask for.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return list</dt>
-<dd class="field-even"><p>Returns a list from the Binance API</p>
-</dd>
-</dl>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
-  <span class="p">[</span>
-    <span class="mi">1499040000000</span><span class="p">,</span>      <span class="o">//</span> <span class="n">Open</span> <span class="n">time</span>
-    <span class="s2">&quot;0.01634790&quot;</span><span class="p">,</span>       <span class="o">//</span> <span class="n">Open</span>
-    <span class="s2">&quot;0.80000000&quot;</span><span class="p">,</span>       <span class="o">//</span> <span class="n">High</span>
-    <span class="s2">&quot;0.01575800&quot;</span><span class="p">,</span>       <span class="o">//</span> <span class="n">Low</span>
-    <span class="s2">&quot;0.01577100&quot;</span><span class="p">,</span>       <span class="o">//</span> <span class="n">Close</span>
-    <span class="s2">&quot;148976.11427815&quot;</span><span class="p">,</span>  <span class="o">//</span> <span class="n">Volume</span>
-    <span class="mi">1499644799999</span><span class="p">,</span>      <span class="o">//</span> <span class="n">Close</span> <span class="n">time</span>
-    <span class="s2">&quot;2434.19055334&quot;</span><span class="p">,</span>    <span class="o">//</span> <span class="n">Quote</span> <span class="n">asset</span> <span class="n">volume</span>
-    <span class="mi">308</span><span class="p">,</span>                <span class="o">//</span> <span class="n">Number</span> <span class="n">of</span> <span class="n">trades</span>
-    <span class="s2">&quot;1756.87402397&quot;</span><span class="p">,</span>    <span class="o">//</span> <span class="n">Taker</span> <span class="n">buy</span> <span class="n">base</span> <span class="n">asset</span> <span class="n">volume</span>
-    <span class="s2">&quot;28.46694368&quot;</span><span class="p">,</span>      <span class="o">//</span> <span class="n">Taker</span> <span class="n">buy</span> <span class="n">quote</span> <span class="n">asset</span> <span class="n">volume</span>
-    <span class="s2">&quot;17928899.62484339&quot;</span> <span class="o">//</span> <span class="n">Ignore</span><span class="o">.</span>
-  <span class="p">]</span>
-<span class="p">]</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="binpan.handlers.market.get_candles_from_start_time">
-<span class="sig-prename descclassname"><span class="pre">binpan.handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_candles_from_start_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#binpan.handlers.market.get_candles_from_start_time" title="Permalink to this definition"></a></dt>
-<dd><p>Calls API for candles list from one timestamp.</p>
-<p>The API rounds the startTime up to the next open of the next candle. That is, it does not include the candle in which there is
-that timeStamp, but the next candle of the corresponding tick_interval, except in case it exactly matches the value of an open
-timestamp, in which case it will include it in the return.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>start_time</strong> (<em>int</em>) – A timestamp in milliseconds from epoch.</p></li>
-<li><p><strong>symbol</strong> (<em>str</em>) – A binance valid symbol.</p></li>
-<li><p><strong>tick_interval</strong> (<em>str</em>) – A binance valid time interval for candlesticks.</p></li>
-<li><p><strong>limit</strong> (<em>int</em>) – Count of candles to ask for.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return list</dt>
-<dd class="field-even"><p>Returns a list from the Binance API</p>
-</dd>
-</dl>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
-  <span class="p">[</span>
-    <span class="mi">1499040000000</span><span class="p">,</span>      <span class="o">//</span> <span class="n">Open</span> <span class="n">time</span>
-    <span class="s2">&quot;0.01634790&quot;</span><span class="p">,</span>       <span class="o">//</span> <span class="n">Open</span>
-    <span class="s2">&quot;0.80000000&quot;</span><span class="p">,</span>       <span class="o">//</span> <span class="n">High</span>
-    <span class="s2">&quot;0.01575800&quot;</span><span class="p">,</span>       <span class="o">//</span> <span class="n">Low</span>
-    <span class="s2">&quot;0.01577100&quot;</span><span class="p">,</span>       <span class="o">//</span> <span class="n">Close</span>
-    <span class="s2">&quot;148976.11427815&quot;</span><span class="p">,</span>  <span class="o">//</span> <span class="n">Volume</span>
-    <span class="mi">1499644799999</span><span class="p">,</span>      <span class="o">//</span> <span class="n">Close</span> <span class="n">time</span>
-    <span class="s2">&quot;2434.19055334&quot;</span><span class="p">,</span>    <span class="o">//</span> <span class="n">Quote</span> <span class="n">asset</span> <span class="n">volume</span>
-    <span class="mi">308</span><span class="p">,</span>                <span class="o">//</span> <span class="n">Number</span> <span class="n">of</span> <span class="n">trades</span>
-    <span class="s2">&quot;1756.87402397&quot;</span><span class="p">,</span>    <span class="o">//</span> <span class="n">Taker</span> <span class="n">buy</span> <span class="n">base</span> <span class="n">asset</span> <span class="n">volume</span>
-    <span class="s2">&quot;28.46694368&quot;</span><span class="p">,</span>      <span class="o">//</span> <span class="n">Taker</span> <span class="n">buy</span> <span class="n">quote</span> <span class="n">asset</span> <span class="n">volume</span>
-    <span class="s2">&quot;17928899.62484339&quot;</span> <span class="o">//</span> <span class="n">Ignore</span><span class="o">.</span>
-  <span class="p">]</span>
-<span class="p">]</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="binpan.handlers.market.get_last_candles">
-<span class="sig-prename descclassname"><span class="pre">binpan.handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_last_candles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BTCUSDT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'1d'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#binpan.handlers.market.get_last_candles" title="Permalink to this definition"></a></dt>
-<dd><p>Calls API for candles list from one timestamp for a specific symbol.</p>
-<p>The returned list of lists will be limited to limit quantity until the current candle.</p>
-<p>Maximum is 1000.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>symbol</strong> (<em>str</em>) – A binance valid symbol.</p></li>
-<li><p><strong>tick_interval</strong> (<em>str</em>) – A binance valid time interval for candlesticks.</p></li>
-<li><p><strong>limit</strong> (<em>int</em>) – Count of candles to ask for.</p></li>
+<li><p><strong>redis_client</strong> (<em>bool</em>) – A redis instance of a connector.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return list</dt>
