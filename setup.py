@@ -14,7 +14,7 @@ readme.close()
 read_required = open('requirements.txt', 'r')
 REQUIRED = read_required.read()
 read_required.close()
-#
+
 # req = os.path.abspath()
 #
 # with open(req) as f:
@@ -35,7 +35,7 @@ read_required.close()
 """
 
 setup(name='binpan',
-      version='0.0.19',
+      version='0.0.21',
       url='https://github.com/nand0san/binpan_studio',
       license='MIT',
       install_requires=REQUIRED,

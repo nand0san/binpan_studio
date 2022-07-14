@@ -31,7 +31,7 @@ except:
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
 
-__version__ = "0.0.19"
+__version__ = "0.0.21"
 
 plotly_colors = handlers.plotting.plotly_colors
 
@@ -1040,7 +1040,6 @@ class Symbol(object):
         """
         Plot a distribution plot for a dataframe column. Plots line for kernel distribution.
 
-        :param pd.DataFrame df: A BinPan Dataframe like orderbook, candles, or any other.
         :param str x_col: Column name for x-axis data.
         :param str color: Column name with tags or any values for using as color scale.
         :param int bins: Columns in histogram.
@@ -1128,7 +1127,7 @@ class Symbol(object):
         :param pd.Series or str priced_actions_col: Column with the prices for the action emulation.
         :param float fee: Binance applicable fee for trading. DEfault is 0.001.
         :param str or pd.Series actions_col:
-        :return tuple: Two series with the base wallet and qiote wallet funds in time.
+        :return tuple: Two series with the base wallet and quote wallet funds in time.
         """
 
         df_ = self.df.copy(deep=True)
@@ -2497,7 +2496,7 @@ def redis_client(ip: str = None,
                  port: int = None,
                  db: int = None,
                  decode_responses: bool = None,
-                 **kwargs) -> object:
+                 **kwargs):
     """
     A redis consumer client creator for the Redis module.
 
