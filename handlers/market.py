@@ -25,12 +25,13 @@ klines_columns = {"t": "Open time",
                   "Q": "Taker buy quote volume",
                   "B": "Ignore"}
 
+
 ##########
 # Prices #
 ##########
 
 
-def get_last_price(symbol: str = None) -> dict:
+def get_last_price(symbol: str = None) -> dict or list:
     endpoint = '/api/v3/ticker/price'
     if symbol:
         weight = 1
@@ -38,7 +39,13 @@ def get_last_price(symbol: str = None) -> dict:
         weight = 2
     res = api_raw_get(endpoint=endpoint, weight=weight, params={'symbol': symbol})
     market_logger.debug(f"get_last_price: {res}")
-    return {k: float(v) for k, v in res.items()}  # TODO: ver si esto viene en dict o string json sin parsear
+    if type(res) == str:
+        market_logger.error(f"Optimizar función get_last price y sacar loops posibles")
+        res = json.loads(res)
+    if type(res) == dict:
+        return {k: float(v) for k, v in res.items()}  # TODO: ver si esto viene en dict o string json sin parsear
+    elif type(res) == list:
+        return {k: float(v) for k, v in res[0].items()}  # TODO: ver si esto viene en dict o string json sin parsear
 
 
 ###########

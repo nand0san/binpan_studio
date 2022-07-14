@@ -3,14 +3,12 @@ from .logs import Logs
 from .exceptions import BinanceAPIException, BinanceRequestException
 from .starters import AesCipher, get_exchange_limits
 
-
 from urllib.parse import urljoin, urlencode
 import requests
 import hmac
 import hashlib
 import copy
 from time import sleep
-
 
 try:
     global api_secret, api_key
@@ -94,7 +92,6 @@ def check_weight(weight: int,
     weight_logger.debug(f"Checking weight for {endpoint}")
 
     test_headers = copy.deepcopy(current_limit_headers)
-
 
     # identify
     if '/api/v3/order/' in endpoint:
@@ -226,18 +223,18 @@ def hashed_signature(url_params):  # los params para la signatura son los params
 #     return format(num_str, 'f')
 
 
-def sign_request(params_json: dict, recvWindow: int) -> (list, dict):
-    quest_logger.debug(f"parse_request: {params_json}")
+def sign_request(params: dict, recvWindow: int) -> (list, dict):
+    quest_logger.debug(f"parse_request: {params}")
 
-    if params_json is None:
-        params_json = {}
+    if params is None:
+        params = {}
 
     # clean none params
-    params_json.update({'recvWindow': recvWindow})
-    params_json = {k: v for k, v in params_json.items() if v is not None}
+    params.update({'recvWindow': recvWindow})
+    params = {k: v for k, v in params.items() if v is not None}
 
     params_tuples = []
-    for k, v in params_json.items():
+    for k, v in params.items():
         if type(v) != list:
             params_tuples.append((k, v,))
         else:
@@ -264,37 +261,37 @@ def get_signed_request(url: str,
         https://dev.binance.vision/t/faq-signature-for-this-request-is-not-valid/176/4
 
     """
-    params_tuples, headers = sign_request(params_json=params, recvWindow=recvWindow)
+    params_tuples, headers = sign_request(params=params, recvWindow=recvWindow)
     ret = get_response(url, params=params_tuples, headers=headers)
     quest_logger.debug("get_signed_request: params_tuples: " + str(params_tuples))
     quest_logger.debug("get_signed_request: headers: " + str(headers.keys()))
     return convert_response_type(ret)
 
 
-def get_semi_signed_request(url, params_json=None):
+def get_semi_signed_request(url, params=None):
     """Requests get with api key header and params"""
     headers = {"X-MBX-APIKEY": cipher_object.decrypt(api_key)}
-    ret = get_response(url=url, params=params_json, headers=headers)
+    ret = get_response(url=url, params=params, headers=headers)
     quest_logger.debug("get_semi_signed_request: headers: " + str(headers.keys()))
     return convert_response_type(ret)
 
 
-def post_signed_request(url: str, params_json: dict = None, recvWindow: int = 10000):
+def post_signed_request(url: str, params: dict = None, recvWindow: int = 10000):
     """
     Hace un POST firmado a una url junto con un diccionario de parámetros
     """
-    params_tuples, headers = sign_request(params_json=params_json, recvWindow=recvWindow)
+    params_tuples, headers = sign_request(params=params, recvWindow=recvWindow)
     ret = post_response(url, params=params_tuples, headers=headers)
     quest_logger.debug("post_signed_request: params_tuples: " + str(params_tuples))
     quest_logger.debug("get_semi_signed_request: headers: " + str(headers.keys()))
     return convert_response_type(ret)
 
 
-def delete_signed_request(url: str, params_json: dict = None, recvWindow: int = 10000):
+def delete_signed_request(url: str, params: dict = None, recvWindow: int = 10000):
     """
     Hace un DELETE firmado a una url junto con un diccionario de parámetros
     """
-    params_tuples, headers = sign_request(params_json=params_json, recvWindow=recvWindow)
+    params_tuples, headers = sign_request(params=params, recvWindow=recvWindow)
     ret = delete_response(url, params=params_tuples, headers=headers)
     quest_logger.debug("delete_signed_request: params_tuples: " + str(params_tuples))
     quest_logger.debug("get_semi_signed_request: headers: " + str(headers.keys()))
@@ -332,3 +329,13 @@ def api_raw_signed_get(endpoint: str,
     check_weight(weight, endpoint=base_url + endpoint, no_wait=no_wait)
     return get_signed_request(url=base_url + endpoint,
                               params=params)
+
+
+def api_raw_signed_post(endpoint: str,
+                        base_url: str = '',
+                        params: dict = None,
+                        weight: int = 1,
+                        no_wait=False):
+    check_weight(weight, endpoint=base_url + endpoint, no_wait=no_wait)
+    return post_signed_request(url=base_url + endpoint,
+                               params=params)
