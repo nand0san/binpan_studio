@@ -82,25 +82,45 @@ def get_candles_by_time_stamps(symbol: str,
         end_time = start_time + (limit * tick_milliseconds)  # ??? for getting limit exactly
         end_time = handlers.time_helper.open_from_milliseconds(ms=end_time, tick_interval=tick_interval)
 
-    params = {'symbol': symbol,
-              'interval': tick_interval,
-              'startTime': start_time,
-              'endTime': end_time,
-              'limit': limit}
+    # prepare iteration for big loops
+    tick_milliseconds = int(tick_seconds[tick_interval] * 1000)
+    ranges = [(i, i + (1000 * tick_milliseconds)) for i in range(start_time, end_time, tick_milliseconds * 1000)]
 
-    params = {k: v for k, v in params.items() if v}
+    # loop
 
-    if redis_client:
-        ret = redis_client.zrangebyscore(name=f"{symbol.lower()}@kline_{tick_interval}",
-                                         min=start_time,
-                                         max=end_time,
-                                         withscores=False)
+    raw_candles = []
+    for r in ranges:
+        start = r[0]
+        end = r[1]
 
-        return [json.loads(i) for i in ret]
+        if redis_client:
+            ret = redis_client.zrangebyscore(name=f"{symbol.lower()}@kline_{tick_interval}",
+                                             min=start,
+                                             max=end,
+                                             withscores=False)
 
-    else:
-        check_weight(1, endpoint=endpoint)
-        return get_response(url=endpoint, params=params)
+            response = [json.loads(i) for i in ret]
+        else:
+            params = {'symbol': symbol,
+                      'interval': tick_interval,
+                      'startTime': start,
+                      'endTime': end,
+                      'limit': limit}
+            params = {k: v for k, v in params.items() if v}
+            check_weight(1, endpoint=endpoint)
+            response = get_response(url=endpoint, params=params)
+
+        raw_candles += response
+
+        # descarta sobrantes
+        overtime_candle_ts = handlers.time_helper.next_open_by_milliseconds(ms=end_time, tick_interval=tick_interval)
+        if type(raw_candles[0]) == list:  # if from binance
+            raw_candles = [i for i in raw_candles if int(i[0]) < overtime_candle_ts]
+        else:
+            open_ts_key = list(raw_candles[0].keys())[0]
+            raw_candles = [i for i in raw_candles if int(i[open_ts_key]) < overtime_candle_ts]
+
+    return raw_candles
 
 
 def get_prices_dic() -> dict:

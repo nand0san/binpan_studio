@@ -31,7 +31,7 @@ except:
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
 
-__version__ = "0.0.21"
+__version__ = "0.0.22"
 
 plotly_colors = handlers.plotting.plotly_colors
 
@@ -311,31 +311,38 @@ class Symbol(object):
         # query candles #
         #################
 
-        # prepare iteration for big loops
-        tick_milliseconds = int(tick_seconds[tick_interval] * 1000)
-        ranges = [(i, i + (1000 * tick_milliseconds)) for i in range(self.start_time, self.end_time, tick_milliseconds * 1000)]
+        # # prepare iteration for big loops
+        # tick_milliseconds = int(tick_seconds[tick_interval] * 1000)
+        # ranges = [(i, i + (1000 * tick_milliseconds)) for i in range(self.start_time, self.end_time, tick_milliseconds * 1000)]
+        #
+        # # loop
+        # raw_candles = []
+        # for r in ranges:
+        #     start = r[0]
+        #     end = r[1]
+        #     response = handlers.market.get_candles_by_time_stamps(start_time=start,
+        #                                                           end_time=end,
+        #                                                           symbol=self.symbol,
+        #                                                           tick_interval=self.tick_interval,
+        #                                                           redis_client=self.from_redis)
+        #     raw_candles += response
+        #
+        #     # descarta sobrantes
+        #     overtime_candle_ts = handlers.time_helper.next_open_by_milliseconds(ms=self.end_time, tick_interval=self.tick_interval)
+        #     if type(raw_candles[0]) == list:  # if from binance
+        #         raw_candles = [i for i in raw_candles if int(i[0]) < overtime_candle_ts]
+        #     else:
+        #         open_ts_key = list(raw_candles[0].keys())[0]
+        #         raw_candles = [i for i in raw_candles if int(i[open_ts_key]) < overtime_candle_ts]
+        #
+        # self.raw = raw_candles
 
-        # loop
-        raw_candles = []
-        for r in ranges:
-            start = r[0]
-            end = r[1]
-            response = handlers.market.get_candles_by_time_stamps(start_time=start,
-                                                                  end_time=end,
-                                                                  symbol=self.symbol,
-                                                                  tick_interval=self.tick_interval,
-                                                                  redis_client=self.from_redis)
-            raw_candles += response
-
-            # descarta sobrantes
-            overtime_candle_ts = handlers.time_helper.next_open_by_milliseconds(ms=self.end_time, tick_interval=self.tick_interval)
-            if type(raw_candles[0]) == list:  # if from binance
-                raw_candles = [i for i in raw_candles if int(i[0]) < overtime_candle_ts]
-            else:
-                open_ts_key = list(raw_candles[0].keys())[0]
-                raw_candles = [i for i in raw_candles if int(i[open_ts_key]) < overtime_candle_ts]
-
-        self.raw = raw_candles
+        self.raw = handlers.market.get_candles_by_time_stamps(symbol=self.symbol,
+                                                              tick_interval=self.tick_interval,
+                                                              start_time=self.start_time,
+                                                              end_time=self.end_time,
+                                                              limit=self.limit,
+                                                              redis_client=self.from_redis)
 
         dataframe = self.parse_candles_to_dataframe(response=self.raw,
                                                     columns=self.original_candles_cols,
