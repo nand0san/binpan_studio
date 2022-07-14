@@ -1,7 +1,6 @@
 from tqdm import tqdm
 from time import time
-# import redis as rd
-# from redis import StrictRedis
+import pandas as pd
 import json
 
 import handlers.time_helper
@@ -12,6 +11,19 @@ from .time_helper import tick_seconds, end_time_from_start_time, start_time_from
 market_logger = Logs(filename='./logs/market_logger.log', name='market_logger', info_level='INFO')
 
 base_url = 'https://api.binance.com'
+
+klines_columns = {"t": "Open time",
+                  "o": "Open",
+                  "h": "High",
+                  "l": "Low",
+                  "c": "Close",
+                  "v": "Volume",
+                  "T": "Close time",
+                  "q": "Quote volume",
+                  "n": "Trades",
+                  "V": "Taker buy base volume",
+                  "Q": "Taker buy quote volume",
+                  "B": "Ignore"}
 
 
 ###########
@@ -133,6 +145,74 @@ def get_prices_dic() -> dict:
     check_weight(2, endpoint=endpoint)
     ret = get_response(url=endpoint)
     return {d['symbol']: float(d['price']) for d in ret}
+
+
+def parse_candles_to_dataframe(response: list,
+                               columns: list,
+                               symbol: str,
+                               tick_interval: str,
+                               time_cols: list,
+                               time_zone: str = None,
+                               time_index=False) -> pd.DataFrame:
+    """
+    Format a list of lists by changing the indicated time fields to string format.
+
+    Passing a time_zone, for example 'Europe/Madrid', will change the time from utc to the indicated zone.
+
+    It will automatically sort the DataFrame using the first column of the time_cols list.
+
+    The index of the DataFrame will be numeric correlative.
+
+    :param list(lists) response:        API klines response. List of lists.
+    :param list columns:         Column names.
+    :param str symbol:          Symbol requested
+    :param str tick_interval:   Tick interval between candles.
+    :param list time_cols:       Columns to take dates from.
+    :param str time_zone:       Time zone to convert dates.
+    :param bool time_index:      True gets dates index, False just numeric index.
+    :return:                Pandas DataFrame
+
+    """
+    # check if redis columns
+    if type(response[0]) == list:
+        df = pd.DataFrame(response, columns=columns)
+    else:
+        response_keys = list(response[0].keys())
+        response_keys.sort()
+        sort_columns = columns
+        sort_columns.sort()
+
+        if response_keys != sort_columns:  # json keys from redis different
+            columns = list(klines_columns.keys())
+            df = pd.DataFrame(response, columns=columns)
+            df.rename(columns=klines_columns, inplace=True)
+        else:
+            df = pd.DataFrame(response, columns=columns)
+
+    for col in df.columns:
+        df[col] = pd.to_numeric(arg=df[col], downcast='integer')
+
+    df.loc[:, 'Open timestamp'] = df['Open time']
+    df.loc[:, 'Close timestamp'] = df['Close time']
+
+    if time_zone != 'UTC':  # converts to time zone the time columns
+        for col in time_cols:
+            df.loc[:, col] = handlers.time_helper.convert_utc_ms_column_to_time_zone(df, col, time_zone=time_zone)
+            df.loc[:, col] = df[col].apply(lambda x: handlers.time_helper.convert_datetime_to_string(x))
+    else:
+        for col in time_cols:
+            df.loc[:, col] = df[col].apply(lambda x: handlers.time_helper.convert_milliseconds_to_utc_string(x))
+
+    if time_index:
+        date_index = df['Open timestamp'].apply(handlers.time_helper.convert_milliseconds_to_time_zone_datetime, timezoned=time_zone)
+        df.set_index(date_index, inplace=True)
+
+    index_name = f"{symbol} {tick_interval} {time_zone}"
+    df.index.name = index_name
+
+    # if came from a loop there are duplicated values in step connections to be removed.
+    df.drop_duplicates(inplace=True)
+    return df
 
 
 ##########

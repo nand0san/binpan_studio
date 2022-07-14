@@ -31,26 +31,13 @@ except:
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
 
-__version__ = "0.0.22"
+__version__ = "0.0.23"
 
 plotly_colors = handlers.plotting.plotly_colors
 
 pd.set_option('display.max_columns', 20)
 pd.set_option('display.width', 250)
 pd.set_option('display.min_rows', 10)
-
-klines_columns = {"t": "Open time",
-                  "o": "Open",
-                  "h": "High",
-                  "l": "Low",
-                  "c": "Close",
-                  "v": "Volume",
-                  "T": "Close time",
-                  "q": "Quote volume",
-                  "n": "Trades",
-                  "V": "Taker buy base volume",
-                  "Q": "Taker buy quote volume",
-                  "B": "Ignore"}
 
 
 class Symbol(object):
@@ -311,32 +298,6 @@ class Symbol(object):
         # query candles #
         #################
 
-        # # prepare iteration for big loops
-        # tick_milliseconds = int(tick_seconds[tick_interval] * 1000)
-        # ranges = [(i, i + (1000 * tick_milliseconds)) for i in range(self.start_time, self.end_time, tick_milliseconds * 1000)]
-        #
-        # # loop
-        # raw_candles = []
-        # for r in ranges:
-        #     start = r[0]
-        #     end = r[1]
-        #     response = handlers.market.get_candles_by_time_stamps(start_time=start,
-        #                                                           end_time=end,
-        #                                                           symbol=self.symbol,
-        #                                                           tick_interval=self.tick_interval,
-        #                                                           redis_client=self.from_redis)
-        #     raw_candles += response
-        #
-        #     # descarta sobrantes
-        #     overtime_candle_ts = handlers.time_helper.next_open_by_milliseconds(ms=self.end_time, tick_interval=self.tick_interval)
-        #     if type(raw_candles[0]) == list:  # if from binance
-        #         raw_candles = [i for i in raw_candles if int(i[0]) < overtime_candle_ts]
-        #     else:
-        #         open_ts_key = list(raw_candles[0].keys())[0]
-        #         raw_candles = [i for i in raw_candles if int(i[open_ts_key]) < overtime_candle_ts]
-        #
-        # self.raw = raw_candles
-
         self.raw = handlers.market.get_candles_by_time_stamps(symbol=self.symbol,
                                                               tick_interval=self.tick_interval,
                                                               start_time=self.start_time,
@@ -344,13 +305,13 @@ class Symbol(object):
                                                               limit=self.limit,
                                                               redis_client=self.from_redis)
 
-        dataframe = self.parse_candles_to_dataframe(response=self.raw,
-                                                    columns=self.original_candles_cols,
-                                                    time_cols=self.time_cols,
-                                                    symbol=self.symbol,
-                                                    tick_interval=self.tick_interval,
-                                                    time_zone=self.time_zone,
-                                                    time_index=self.time_index)
+        dataframe = handlers.market.parse_candles_to_dataframe(response=self.raw,
+                                                               columns=self.original_candles_cols,
+                                                               time_cols=self.time_cols,
+                                                               symbol=self.symbol,
+                                                               tick_interval=self.tick_interval,
+                                                               time_zone=self.time_zone,
+                                                               time_index=self.time_index)
         self.df = dataframe
         self.len = len(self.df)
 
@@ -1254,73 +1215,73 @@ class Symbol(object):
         base = 0
         return base, quote
 
-    @staticmethod
-    def parse_candles_to_dataframe(response: list,
-                                   columns: list,
-                                   symbol: str,
-                                   tick_interval: str,
-                                   time_cols: list,
-                                   time_zone: str = None,
-                                   time_index=False) -> pd.DataFrame:
-        """
-        Format a list of lists by changing the indicated time fields to string format.
-
-        Passing a time_zone, for example 'Europe/Madrid', will change the time from utc to the indicated zone.
-
-        It will automatically sort the DataFrame using the first column of the time_cols list.
-
-        The index of the DataFrame will be numeric correlative.
-
-        :param list(lists) response:        API klines response. List of lists.
-        :param list columns:         Column names.
-        :param str symbol:          Symbol requested
-        :param str tick_interval:   Tick interval between candles.
-        :param list time_cols:       Columns to take dates from.
-        :param str time_zone:       Time zone to convert dates.
-        :param bool time_index:      True gets dates index, False just numeric index.
-        :return:                Pandas DataFrame
-
-        """
-        # check if redis columns
-        if type(response[0]) == list:
-            df = pd.DataFrame(response, columns=columns)
-        else:
-            response_keys = list(response[0].keys())
-            response_keys.sort()
-            sort_columns = columns
-            sort_columns.sort()
-
-            if response_keys != sort_columns:  # json keys from redis different
-                columns = list(klines_columns.keys())
-                df = pd.DataFrame(response, columns=columns)
-                df.rename(columns=klines_columns, inplace=True)
-            else:
-                df = pd.DataFrame(response, columns=columns)
-
-        for col in df.columns:
-            df[col] = pd.to_numeric(arg=df[col], downcast='integer')
-
-        df.loc[:, 'Open timestamp'] = df['Open time']
-        df.loc[:, 'Close timestamp'] = df['Close time']
-
-        if time_zone != 'UTC':  # converts to time zone the time columns
-            for col in time_cols:
-                df.loc[:, col] = handlers.time_helper.convert_utc_ms_column_to_time_zone(df, col, time_zone=time_zone)
-                df.loc[:, col] = df[col].apply(lambda x: handlers.time_helper.convert_datetime_to_string(x))
-        else:
-            for col in time_cols:
-                df.loc[:, col] = df[col].apply(lambda x: handlers.time_helper.convert_milliseconds_to_utc_string(x))
-
-        if time_index:
-            date_index = df['Open timestamp'].apply(handlers.time_helper.convert_milliseconds_to_time_zone_datetime, timezoned=time_zone)
-            df.set_index(date_index, inplace=True)
-
-        index_name = f"{symbol} {tick_interval} {time_zone}"
-        df.index.name = index_name
-
-        # if came from a loop there are duplicated values in step connections to be removed.
-        df.drop_duplicates(inplace=True)
-        return df
+    # @staticmethod
+    # def parse_candles_to_dataframe(response: list,
+    #                                columns: list,
+    #                                symbol: str,
+    #                                tick_interval: str,
+    #                                time_cols: list,
+    #                                time_zone: str = None,
+    #                                time_index=False) -> pd.DataFrame:
+    #     """
+    #     Format a list of lists by changing the indicated time fields to string format.
+    #
+    #     Passing a time_zone, for example 'Europe/Madrid', will change the time from utc to the indicated zone.
+    #
+    #     It will automatically sort the DataFrame using the first column of the time_cols list.
+    #
+    #     The index of the DataFrame will be numeric correlative.
+    #
+    #     :param list(lists) response:        API klines response. List of lists.
+    #     :param list columns:         Column names.
+    #     :param str symbol:          Symbol requested
+    #     :param str tick_interval:   Tick interval between candles.
+    #     :param list time_cols:       Columns to take dates from.
+    #     :param str time_zone:       Time zone to convert dates.
+    #     :param bool time_index:      True gets dates index, False just numeric index.
+    #     :return:                Pandas DataFrame
+    #
+    #     """
+    #     # check if redis columns
+    #     if type(response[0]) == list:
+    #         df = pd.DataFrame(response, columns=columns)
+    #     else:
+    #         response_keys = list(response[0].keys())
+    #         response_keys.sort()
+    #         sort_columns = columns
+    #         sort_columns.sort()
+    #
+    #         if response_keys != sort_columns:  # json keys from redis different
+    #             columns = list(klines_columns.keys())
+    #             df = pd.DataFrame(response, columns=columns)
+    #             df.rename(columns=klines_columns, inplace=True)
+    #         else:
+    #             df = pd.DataFrame(response, columns=columns)
+    #
+    #     for col in df.columns:
+    #         df[col] = pd.to_numeric(arg=df[col], downcast='integer')
+    #
+    #     df.loc[:, 'Open timestamp'] = df['Open time']
+    #     df.loc[:, 'Close timestamp'] = df['Close time']
+    #
+    #     if time_zone != 'UTC':  # converts to time zone the time columns
+    #         for col in time_cols:
+    #             df.loc[:, col] = handlers.time_helper.convert_utc_ms_column_to_time_zone(df, col, time_zone=time_zone)
+    #             df.loc[:, col] = df[col].apply(lambda x: handlers.time_helper.convert_datetime_to_string(x))
+    #     else:
+    #         for col in time_cols:
+    #             df.loc[:, col] = df[col].apply(lambda x: handlers.time_helper.convert_milliseconds_to_utc_string(x))
+    #
+    #     if time_index:
+    #         date_index = df['Open timestamp'].apply(handlers.time_helper.convert_milliseconds_to_time_zone_datetime, timezoned=time_zone)
+    #         df.set_index(date_index, inplace=True)
+    #
+    #     index_name = f"{symbol} {tick_interval} {time_zone}"
+    #     df.index.name = index_name
+    #
+    #     # if came from a loop there are duplicated values in step connections to be removed.
+    #     df.drop_duplicates(inplace=True)
+    #     return df
 
     @staticmethod
     def parse_agg_trades_to_dataframe(response: list,
