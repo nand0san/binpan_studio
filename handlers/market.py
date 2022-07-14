@@ -5,7 +5,7 @@ import json
 
 import handlers.time_helper
 from .logs import Logs
-from .quest import check_weight, get_response
+from .quest import check_weight, get_response, api_raw_get
 from .time_helper import tick_seconds, end_time_from_start_time, start_time_from_end_time
 
 market_logger = Logs(filename='./logs/market_logger.log', name='market_logger', info_level='INFO')
@@ -24,6 +24,21 @@ klines_columns = {"t": "Open time",
                   "V": "Taker buy base volume",
                   "Q": "Taker buy quote volume",
                   "B": "Ignore"}
+
+##########
+# Prices #
+##########
+
+
+def get_last_price(symbol: str = None) -> dict:
+    endpoint = '/api/v3/ticker/price'
+    if symbol:
+        weight = 1
+    else:
+        weight = 2
+    res = api_raw_get(endpoint=endpoint, weight=weight, params={'symbol': symbol})
+    market_logger.debug(f"get_last_price: {res}")
+    return {k: float(v) for k, v in res.items()}  # TODO: ver si esto viene en dict o string json sin parsear
 
 
 ###########
@@ -148,11 +163,11 @@ def get_prices_dic() -> dict:
 
 
 def parse_candles_to_dataframe(response: list,
-                               columns: list,
                                symbol: str,
                                tick_interval: str,
-                               time_cols: list,
-                               time_zone: str = None,
+                               columns: list = None,
+                               time_cols: list = ['Open time', 'Close time'],
+                               time_zone: str or None = 'UTC',
                                time_index=False) -> pd.DataFrame:
     """
     Format a list of lists by changing the indicated time fields to string format.
@@ -164,15 +179,19 @@ def parse_candles_to_dataframe(response: list,
     The index of the DataFrame will be numeric correlative.
 
     :param list(lists) response:        API klines response. List of lists.
-    :param list columns:         Column names.
     :param str symbol:          Symbol requested
     :param str tick_interval:   Tick interval between candles.
+    :param list columns:         Column names. Default is BinPan dataframe columns.
     :param list time_cols:       Columns to take dates from.
-    :param str time_zone:       Time zone to convert dates.
+    :param str or None time_zone: Optional. Time zone to convert dates in index.
     :param bool time_index:      True gets dates index, False just numeric index.
-    :return:                Pandas DataFrame
+    :return:                    Pandas DataFrame
 
     """
+    if not columns:
+        columns = ['Open time', 'Open', 'High', 'Low', 'Close', 'Volume', 'Close time', 'Quote volume',
+                   'Trades', 'Taker buy base volume', 'Taker buy quote volume', 'Ignore']
+
     # check if redis columns
     if type(response[0]) == list:
         df = pd.DataFrame(response, columns=columns)
@@ -195,7 +214,7 @@ def parse_candles_to_dataframe(response: list,
     df.loc[:, 'Open timestamp'] = df['Open time']
     df.loc[:, 'Close timestamp'] = df['Close time']
 
-    if time_zone != 'UTC':  # converts to time zone the time columns
+    if type(time_zone) == str and time_zone != 'UTC':  # converts to time zone the time columns
         for col in time_cols:
             df.loc[:, col] = handlers.time_helper.convert_utc_ms_column_to_time_zone(df, col, time_zone=time_zone)
             df.loc[:, col] = df[col].apply(lambda x: handlers.time_helper.convert_datetime_to_string(x))
@@ -203,12 +222,14 @@ def parse_candles_to_dataframe(response: list,
         for col in time_cols:
             df.loc[:, col] = df[col].apply(lambda x: handlers.time_helper.convert_milliseconds_to_utc_string(x))
 
-    if time_index:
+    if time_index and time_zone:
         date_index = df['Open timestamp'].apply(handlers.time_helper.convert_milliseconds_to_time_zone_datetime, timezoned=time_zone)
         df.set_index(date_index, inplace=True)
-
-    index_name = f"{symbol} {tick_interval} {time_zone}"
-    df.index.name = index_name
+        index_name = f"{symbol} {tick_interval} {time_zone}"
+        df.index.name = index_name
+    else:
+        index_name = f"{symbol} {tick_interval}"
+        df.index.name = index_name
 
     # if came from a loop there are duplicated values in step connections to be removed.
     df.drop_duplicates(inplace=True)

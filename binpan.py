@@ -7,7 +7,9 @@ This is the main classes file.
 import pandas as pd
 import numpy as np
 
-import handlers.logs
+import handlers
+
+import handlers.logs as logs
 import handlers.starters
 import handlers.market
 import handlers.quest
@@ -19,6 +21,8 @@ import handlers.files
 import handlers.strategies
 import handlers.exchange
 import handlers.redis_fetch
+import handlers.messages
+
 
 import pandas_ta as ta
 from random import choice
@@ -31,7 +35,7 @@ except:
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
 
-__version__ = "0.0.23"
+__version__ = "0.0.27"
 
 plotly_colors = handlers.plotting.plotly_colors
 

@@ -5,7 +5,6 @@ from .quest import api_raw_signed_get
 from .time_helper import convert_milliseconds_to_str
 from .time_helper import convert_string_to_milliseconds
 
-
 wallet_logger = Logs(filename='./logs/wallet_logger.log', name='wallet_logger', info_level='INFO')
 
 
@@ -100,3 +99,67 @@ def daily_account_snapshot(account_type: str = 'SPOT',
             ret = ret.set_index('updateTime').sort_index()
             ret.index.name = f"{account_type} timestamp"
     return ret
+
+
+##########
+# trades #
+##########
+
+
+def get_spot_trades_list(symbol: str,
+                         limit: int = 1000,
+                         recvWindow: int = 10000) -> list:
+    endpoint = '/api/v3/myTrades'
+    return api_raw_signed_get(endpoint=endpoint,
+                              params={'limit': limit,
+                                      'symbol': symbol,
+                                      'recvWindow': recvWindow},
+                              weight=10)
+
+
+############
+# balances #
+############
+
+
+def get_spot_account_info(recvWindow: int = 10000) -> dict:
+    endpoint = '/api/v3/account'
+    return api_raw_signed_get(endpoint=endpoint,
+                              params={'recvWindow': recvWindow},
+                              weight=10)
+
+
+def spot_free_balances_parsed(data_dic: dict = None) -> dict:
+    ret = {}
+    if not data_dic:
+        data_dic = get_spot_account_info()
+    wallet_logger.debug(f"spot_free_balances_parsed len(get_spot_account_info()):{len(data_dic)}")
+    for asset in data_dic['balances']:
+        qty = float(asset['free'])
+        if qty:
+            ret.update({asset['asset']: qty})
+    return ret
+
+
+def spot_locked_balances_parsed(data_dic: dict = None) -> dict:
+    ret = {}
+    if not data_dic:
+        data_dic = get_spot_account_info()
+    wallet_logger.debug(f"spot_locked_balances_parsed get_spot_account_info: {len(data_dic)}")
+
+    for asset in data_dic['balances']:
+        qty = float(asset['locked'])
+        if qty:
+            ret.update({asset['asset']: qty})
+    return ret
+
+
+def get_coins_with_balance() -> list:
+    """Retorna una lista de símbolos con balance positivo en la cuenta"""
+    data_dic = get_spot_account_info()
+    free = spot_free_balances_parsed(data_dic=data_dic)
+    locked = spot_locked_balances_parsed(data_dic=data_dic)
+    free = [symbol for symbol, balance in free.items() if float(balance) > 0]
+    locked = [symbol for symbol, balance in locked.items() if float(balance) > 0]
+    symbols = free + locked
+    return list(set(symbols))

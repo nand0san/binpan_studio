@@ -189,9 +189,19 @@ def post_response(url, params=None, headers=None):
     return handle_api_response(response)
 
 
-def handle_api_response(response):
+def delete_response(url, params: list = None, headers: dict = None):
+    if not url.startswith(base_url):
+        url = urljoin(base_url, url)
+    response = requests.delete(url, params=params, headers=headers)
+    update_weights(response.headers, father_url=url)
+    quest_logger.debug(f"delete_response: response: {response}")
+    return handle_api_response(response)
+
+
+def handle_api_response(response) -> dict or list:
     """
     Raises if there is any problem with the server response or returns a json.
+
     :return: dict
     """
     if not (200 <= response.status_code < 300):
@@ -280,18 +290,17 @@ def post_signed_request(url: str, params_json: dict = None, recvWindow: int = 10
     return convert_response_type(ret)
 
 
-#
-# def delete_signed_request(url: str, params_json: dict = None, recvWindow: int = 10000):
-#     """
-#     Hace un DELETE firmado a una url junto con un diccionario de parámetros
-#     """
-#     params_tuples, headers = parse_request(params_json=params_json, recvWindow=recvWindow)
-#     ret = delete_response(url, params=params_tuples, headers=headers)
-#     quest_logger.debug("delete_signed_request: params_tuples: " + str(params_tuples))
-#     quest_logger.debug("get_semi_signed_request: headers: " + str(headers.keys()))
-#     return convert_response_type(ret)
-#
-#
+def delete_signed_request(url: str, params_json: dict = None, recvWindow: int = 10000):
+    """
+    Hace un DELETE firmado a una url junto con un diccionario de parámetros
+    """
+    params_tuples, headers = sign_request(params_json=params_json, recvWindow=recvWindow)
+    ret = delete_response(url, params=params_tuples, headers=headers)
+    quest_logger.debug("delete_signed_request: params_tuples: " + str(params_tuples))
+    quest_logger.debug("get_semi_signed_request: headers: " + str(headers.keys()))
+    return convert_response_type(ret)
+
+
 # def check_tick_interval(tick_interval):
 #     if not (tick_interval in tick_interval_values):
 #         raise Exception(f"BinPan Error on tick_interval: {tick_interval} not in "
