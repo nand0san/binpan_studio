@@ -56,18 +56,8 @@ API keys will be added to a file called secret.py in an encrypted way. API keys 
 """
     binpan_logger.warning(msg)
 
-# try:
-#     from secret import encoded_chat_id, encoded_telegram_bot_id
-#
-#     chat_id = encoded_chat_id
-#     bot_id = encoded_telegram_bot_id
-# except Exception as exc:
-#     msg = f"TELEGRAM: Not found telegram bot key or chat key for the telegram message module."
-#     binpan_logger.warning(msg)
-#     encoded_telegram_bot_id = ''
-#     encoded_chat_id = ''
 
-__version__ = "0.0.30"
+__version__ = "0.0.31"
 
 plotly_colors = handlers.plotting.plotly_colors
 
