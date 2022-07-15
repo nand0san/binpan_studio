@@ -1286,27 +1286,66 @@ Default: “D”, that means calendar day frequency.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="binpan.Exchange.info">
-<span class="sig-name descname"><span class="pre">info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Exchange.info" title="Permalink to this definition"></a></dt>
-<dd><p>Update from API and returns a dict with all merged exchange info about a symbol.</p>
+<dt class="sig sig-object py" id="binpan.Exchange.get_df">
+<span class="sig-name descname"><span class="pre">get_df</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Exchange.get_df" title="Permalink to this definition"></a></dt>
+<dd><p>Extended symbols dataframe with exchange info about trading permissions, trading or blocked symbol, order types, margin allowed, etc</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return pd.DataFrame</dt>
+<dd class="field-odd"><p>An exchange dataframe with all symbols data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Exchange.get_order_types">
+<span class="sig-name descname"><span class="pre">get_order_types</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Exchange.get_order_types" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a dataframe with order types for symbol.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return pd.DataFrame</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Exchange.get_symbols">
+<span class="sig-name descname"><span class="pre">get_symbols</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quote</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Exchange.get_symbols" title="Permalink to this definition"></a></dt>
+<dd><p>Return list of symbols for a coin. Can be selected symbols where it is base, or quote, or both.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>symbol</strong> (<em>str</em>) – </p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>coin</strong> (<em>str</em>) – An existing binance coin.</p></li>
+<li><p><strong>base</strong> (<em>str</em>) – Activate return of symbols where coin is base.</p></li>
+<li><p><strong>quote</strong> (<em>str</em>) – Activate return of symbols where coin is quote.</p></li>
+</ul>
 </dd>
-<dt class="field-even">Return dict</dt>
-<dd class="field-even"><p></p></dd>
+<dt class="field-even">Return list</dt>
+<dd class="field-even"><p>List of symbols where it is base, quote or both.</p>
+</dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="binpan.Exchange.network">
 <span class="sig-name descname"><span class="pre">network</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Exchange.network" title="Permalink to this definition"></a></dt>
-<dd><p>Returns a dataframe with all exchange networks of a coin.</p>
+<dd><p>Returns a dataframe with all exchange networks of one specified coin or every coin.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>coin</strong> (<em>str</em>) – </p>
 </dd>
 <dt class="field-even">Return pd.Series</dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Exchange.update_info">
+<span class="sig-name descname"><span class="pre">update_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Exchange.update_info" title="Permalink to this definition"></a></dt>
+<dd><p>Updates from API and returns a dict with all merged exchange info about a symbol.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>symbol</strong> (<em>str</em>) – </p>
+</dd>
+<dt class="field-even">Return dict</dt>
 <dd class="field-even"><p></p></dd>
 </dl>
 </dd></dl>

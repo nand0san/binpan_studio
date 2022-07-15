@@ -7,6 +7,7 @@ This is the main classes file.
 import pandas as pd
 import numpy as np
 
+# import binpan
 import handlers
 
 import handlers.logs as logs
@@ -27,15 +28,46 @@ import handlers.messages
 import pandas_ta as ta
 from random import choice
 
-try:
-    from secret import redis_conf
-except:
-    pass
-
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
 
-__version__ = "0.0.27"
+try:
+    from secret import redis_conf
+except:
+    msg = "REDIS: No redis configuration."
+    binpan_logger.warning(msg)
+    pass
+
+
+try:
+    from secret import api_key, api_secret
+except ImportError:
+    msg = """BINANCE:
+No API Key or API Secret
+
+API key would be needed for personal API calls. Any other calls will work.
+
+Adding:
+
+binpan.handlers.files.add_api_key("xxxx")
+binpan.handlers.files.add_api_secret("xxxx")
+
+API keys will be added to a file called secret.py in an encrypted way. API keys in memory stay encrypted except in the API call instant.
+"""
+    binpan_logger.warning(msg)
+
+# try:
+#     from secret import encoded_chat_id, encoded_telegram_bot_id
+#
+#     chat_id = encoded_chat_id
+#     bot_id = encoded_telegram_bot_id
+# except Exception as exc:
+#     msg = f"TELEGRAM: Not found telegram bot key or chat key for the telegram message module."
+#     binpan_logger.warning(msg)
+#     encoded_telegram_bot_id = ''
+#     encoded_chat_id = ''
+
+__version__ = "0.0.30"
 
 plotly_colors = handlers.plotting.plotly_colors
 
@@ -2250,10 +2282,15 @@ class Exchange(object):
 
     def __init__(self):
         self.info_dic = handlers.exchange.get_info_dic()
+        self.bases = handlers.exchange.get_bases_dic(info_dic=self.info_dic)
+        self.quotes = handlers.exchange.get_quotes_dic(info_dic=self.info_dic)
         self.fees = handlers.exchange.get_fees()
         self.filters = handlers.exchange.get_symbols_filters(info_dic=self.info_dic)
         self.system_status = handlers.exchange.get_system_status()
         self.coins, self.networks = handlers.exchange.get_coins_info()
+        self.symbols = self.get_symbols()
+        self.df = self.get_df()
+        self.order_types = self.get_order_types()
 
     def filter(self, symbol: str):
         """
@@ -2284,25 +2321,79 @@ class Exchange(object):
 
     def network(self, coin: str):
         """
-        Returns a dataframe with all exchange networks of a coin.
+        Returns a dataframe with all exchange networks of one specified coin or every coin.
 
         :param str coin:
         :return pd.Series:
         """
         return self.networks.loc[coin.upper()]
 
-    def info(self, symbol: str = None):
+    def update_info(self, symbol: str = None):
         """
-        Update from API and returns a dict with all merged exchange info about a symbol.
+        Updates from API and returns a dict with all merged exchange info about a symbol.
 
         :param str symbol:
         :return dict:
         """
         self.info_dic = handlers.exchange.get_info_dic()
         self.filters = handlers.exchange.get_symbols_filters(info_dic=self.info_dic)
+        self.bases = handlers.exchange.get_bases_dic(info_dic=self.info_dic)
+        self.quotes = handlers.exchange.get_quotes_dic(info_dic=self.info_dic)
+        self.fees = handlers.exchange.get_fees()
+        self.system_status = handlers.exchange.get_system_status()
+        self.coins, self.networks = handlers.exchange.get_coins_info()
+        self.symbols = self.get_symbols()
+        self.df = self.get_df()
+        self.order_types = self.get_order_types()
+
         if symbol:
             return self.info_dic[symbol.upper()]
         return self.info_dic
+
+    def get_symbols(self, coin: str = None, base=True, quote=True):
+        """
+        Return list of symbols for a coin. Can be selected symbols where it is base, or quote, or both.
+
+        :param str coin: An existing binance coin.
+        :param str base: Activate return of symbols where coin is base.
+        :param str quote: Activate return of symbols where coin is quote.
+        :return list: List of symbols where it is base, quote or both.
+        """
+        if not coin:
+            self.symbols = list(self.info_dic.keys())
+            return self.symbols
+
+        else:
+            ret = []
+            if base:
+                ret += [i for i in self.symbols if self.bases[i] == coin.upper()]
+            if quote:
+                ret += [i for i in self.symbols if self.quotes[i] == coin.upper()]
+            return ret
+
+    def get_df(self):
+        """
+        Extended symbols dataframe with exchange info about trading permissions, trading or blocked symbol, order types, margin allowed, etc
+
+        :return pd.DataFrame: An exchange dataframe with all symbols data.
+
+        """
+        df = pd.DataFrame(self.info_dic.values()).set_index('symbol', drop=True)
+        per_df = pd.DataFrame(data=df['permissions'].tolist(), index=df.index)
+        per_df.columns = per_df.value_counts().index[0]
+        self.df = pd.concat([df.drop('permissions', axis=1), per_df.astype(bool)], axis=1)
+        return self.df
+
+    def get_order_types(self):
+        """
+        Returns a dataframe with order types for symbol.
+
+        :return pd.DataFrame:
+        """
+        ord_df = pd.DataFrame(data=self.df['orderTypes'].tolist(), index=self.df.index)
+        ord_df.columns = ord_df.value_counts().index[0]
+        self.order_types = ord_df.astype(bool)
+        return self.order_types
 
 
 class Wallet(object):
