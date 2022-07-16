@@ -186,6 +186,10 @@ def deploy_traces(annotations, colors, markers, text_positions, mark_names, tags
     return annotations_traces
 
 
+###################
+# market plotting #
+###################
+
 def candles_ta(data: pd.DataFrame,
                indicators_series: list = None,
                rows_pos: list = [],
@@ -533,6 +537,10 @@ def candles_tagged(data: pd.DataFrame, width=1800, height=1000, candles_ta_heigh
                plot_bgcolor=plot_bgcolor)
 
 
+################
+# trades plots #
+################
+
 def plot_trade_size(data: pd.DataFrame,
                     max_size: int = 60,
                     height: int = 1000,
@@ -587,6 +595,10 @@ def plot_trade_size(data: pd.DataFrame,
 def normalize(max_value, min_value, data: list):
     return [(i / sum(data)) * max_value + min_value for i in data]
 
+
+###################
+# analyzing plots #
+###################
 
 def plot_pie(serie: pd.Series,
              categories: int = 15,
@@ -867,7 +879,8 @@ def dist_plot(df: pd.DataFrame,
               bins: int = 300,
               histnorm: str = 'density',
               height: int = 800,
-              title: str = "Distribution"):
+              title: str = "Distribution",
+              **update_layout_kwargs):
     """
     Plot a distribution plot for a dataframe column. Plots line for kernel distribution.
 
@@ -880,6 +893,12 @@ def dist_plot(df: pd.DataFrame,
     :param int height: Plot sizing.
     :param str title: A title string
 
+    Example from binpan Symbol plot_orderbook_density method.
+
+    .. image:: images/orderbook_density.png
+       :width: 1000
+       :alt: Plot example
+
     """
     filtered_df = df.copy()
 
@@ -891,5 +910,5 @@ def dist_plot(df: pd.DataFrame,
         .update_traces(yaxis="y3", name=x_col)
         .data)
 
-    fig.update_layout(height=height, title=title, yaxis3={"overlaying": "y", "side": "right"}, showlegend=True)
+    fig.update_layout(height=height, title=title, yaxis3={"overlaying": "y", "side": "right"}, showlegend=True, **update_layout_kwargs)
     fig.show()

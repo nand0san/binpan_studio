@@ -32,20 +32,26 @@ klines_columns = {"t": "Open time",
 
 
 def get_last_price(symbol: str = None) -> dict or list:
+    """
+    Returns all prices of symbols in a dict or if symbol specified, the float price of symbol.
+
+    :param str symbol: A binance symbol.
+    :return dict or list:
+
+    """
     endpoint = '/api/v3/ticker/price'
     if symbol:
         weight = 1
+        symbol = symbol.upper()
     else:
         weight = 2
     res = api_raw_get(endpoint=endpoint, weight=weight, params={'symbol': symbol})
     market_logger.debug(f"get_last_price: {res}")
-    if type(res) == str:
-        market_logger.error(f"Optimizar función get_last price y sacar loops posibles")
-        res = json.loads(res)
+
     if type(res) == dict:
-        return {k: float(v) for k, v in res.items()}  # TODO: ver si esto viene en dict o string json sin parsear
+        return float(res['price'])
     elif type(res) == list:
-        return {k: float(v) for k, v in res[0].items()}  # TODO: ver si esto viene en dict o string json sin parsear
+        return {k['symbol']: float(k['price']) for k in res}
 
 
 ###########

@@ -5,6 +5,11 @@ This module can manage plots.
 
 Plots made with Plotly library: https://plotly.com/
 
+.. automodule:: binpan.handlers.plotting
+
+Colors
+------
+
 Colors can be picked with the name of the color or the index number from this list:
 
 .. code-block::
@@ -30,14 +35,20 @@ Colors can be picked with the name of the color or the index number from this li
                      "slateblue", "slategray", "slategrey", "snow", "springgreen", "steelblue", "tan", "teal", "thistle",
                      "tomato", "turquoise", "violet", "wheat", "white", "whitesmoke", "yellow", "yellowgreen"]
 
-
-.. automodule:: binpan.handlers.plotting
+Candles Plots
+-------------
 
 .. autofunction:: candles_ta
 
 .. autofunction:: candles_tagged
 
+Trades Plots
+------------
+
 .. autofunction:: plot_trade_size
+
+Analysis Plots
+--------------
 
 .. autofunction:: plot_pie
 
@@ -46,4 +57,7 @@ Colors can be picked with the name of the color or the index number from this li
 .. autofunction:: plot_hists_vs
 
 .. autofunction:: orderbook_depth
+
+.. autofunction:: dist_plot
+
 

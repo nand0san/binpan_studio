@@ -46,7 +46,13 @@
 <li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Wallet Module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Wallet Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#wallet-snapshots">Wallet snapshots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#trades">Trades</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#balances">Balances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#helper">Helper</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
 </ul>
 
@@ -77,7 +83,9 @@
   <section id="wallet-module">
 <h1>Wallet Module<a class="headerlink" href="#wallet-module" title="Permalink to this heading"></a></h1>
 <p>This module can manage wallet data from Binance API.</p>
-<span class="target" id="module-binpan.handlers.wallet"></span><dl class="py function">
+<span class="target" id="module-binpan.handlers.wallet"></span><section id="wallet-snapshots">
+<h2>Wallet snapshots<a class="headerlink" href="#wallet-snapshots" title="Permalink to this heading"></a></h2>
+<dl class="py function">
 <dt class="sig sig-object py" id="binpan.handlers.wallet.daily_account_snapshot">
 <span class="sig-prename descclassname"><span class="pre">binpan.handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">daily_account_snapshot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">account_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'SPOT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#binpan.handlers.wallet.daily_account_snapshot" title="Permalink to this definition"></a></dt>
 <dd><p>The query time period must be inside the previous 30 days.
@@ -99,6 +107,151 @@ If startTime and endTime not sent, return records of the last days by default.</
 </dl>
 </dd></dl>
 
+</section>
+<section id="trades">
+<h2>Trades<a class="headerlink" href="#trades" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.handlers.wallet.get_spot_trades_list">
+<span class="sig-prename descclassname"><span class="pre">binpan.handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_spot_trades_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orderId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fromId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recvWindow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#binpan.handlers.wallet.get_spot_trades_list" title="Permalink to this definition"></a></dt>
+<dd><p>Get trades for a specific account and symbol.</p>
+<p>Weight(IP): 10</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>symbol</strong> (<em>str</em>) – Symbol’s trades.</p></li>
+<li><p><strong>limit</strong> (<em>int</em>) – Default 500; max 1000.</p></li>
+<li><p><strong>fromId</strong> – TradeId to fetch from. Default gets most recent trades. If fromId is set, it will get id &gt;= that fromId. Otherwise,
+most recent trades are returned.</p></li>
+<li><p><strong>endTime</strong> (<em>int</em>) – Optional.</p></li>
+<li><p><strong>startTime</strong> (<em>int</em>) – Optional.</p></li>
+<li><p><strong>orderId</strong> (<em>int</em>) – This can only be used in combination with symbol.</p></li>
+<li><p><strong>recvWindow</strong> (<em>int</em>) – The value cannot be greater than 60000</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return list</dt>
+<dd class="field-even"><p>A list.</p>
+<dl>
+<dt>Example:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+   <span class="p">{</span>
+       <span class="s2">&quot;symbol&quot;</span><span class="p">:</span> <span class="s2">&quot;BNBBTC&quot;</span><span class="p">,</span>
+       <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">28457</span><span class="p">,</span>
+       <span class="s2">&quot;orderId&quot;</span><span class="p">:</span> <span class="mi">100234</span><span class="p">,</span>
+       <span class="s2">&quot;orderListId&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">//</span><span class="n">Unless</span> <span class="n">OCO</span><span class="p">,</span> <span class="n">the</span> <span class="n">value</span> <span class="n">will</span> <span class="n">always</span> <span class="n">be</span> <span class="o">-</span><span class="mi">1</span>
+       <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;4.00000100&quot;</span><span class="p">,</span>
+       <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;12.00000000&quot;</span><span class="p">,</span>
+       <span class="s2">&quot;quoteQty&quot;</span><span class="p">:</span> <span class="s2">&quot;48.000012&quot;</span><span class="p">,</span>
+       <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;10.10000000&quot;</span><span class="p">,</span>
+       <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;BNB&quot;</span><span class="p">,</span>
+       <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="mi">1499865549590</span><span class="p">,</span>
+       <span class="s2">&quot;isBuyer&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
+       <span class="s2">&quot;isMaker&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
+       <span class="s2">&quot;isBestMatch&quot;</span><span class="p">:</span> <span class="n">true</span>
+     <span class="p">}</span>
+  <span class="p">]</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="balances">
+<h2>Balances<a class="headerlink" href="#balances" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.handlers.wallet.get_spot_account_info">
+<span class="sig-prename descclassname"><span class="pre">binpan.handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_spot_account_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recvWindow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#binpan.handlers.wallet.get_spot_account_info" title="Permalink to this definition"></a></dt>
+<dd><p>Get current account information.</p>
+<p>Weight(IP): 10</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>recvWindow</strong> (<em>int</em>) – The value cannot be greater than 60000</p>
+</dd>
+<dt class="field-even">Return dict</dt>
+<dd class="field-even"><p>A dictionary with data.</p>
+<dl>
+<dt>Example:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+   <span class="s2">&quot;makerCommission&quot;</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
+   <span class="s2">&quot;takerCommission&quot;</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
+   <span class="s2">&quot;buyerCommission&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+   <span class="s2">&quot;sellerCommission&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+   <span class="s2">&quot;canTrade&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
+   <span class="s2">&quot;canWithdraw&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
+   <span class="s2">&quot;canDeposit&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
+   <span class="s2">&quot;updateTime&quot;</span><span class="p">:</span> <span class="mi">123456789</span><span class="p">,</span>
+   <span class="s2">&quot;accountType&quot;</span><span class="p">:</span> <span class="s2">&quot;SPOT&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;balances&quot;</span><span class="p">:</span> <span class="p">[</span>
+     <span class="p">{</span><span class="s2">&quot;asset&quot;</span><span class="p">:</span> <span class="s2">&quot;BTC&quot;</span><span class="p">,</span> <span class="s2">&quot;free&quot;</span><span class="p">:</span> <span class="s2">&quot;4723846.89208129&quot;</span><span class="p">,</span><span class="s2">&quot;locked&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span><span class="p">},</span>
+     <span class="p">{</span><span class="s2">&quot;asset&quot;</span><span class="p">:</span> <span class="s2">&quot;LTC&quot;</span><span class="p">,</span><span class="s2">&quot;free&quot;</span><span class="p">:</span> <span class="s2">&quot;4763368.68006011&quot;</span><span class="p">,</span><span class="s2">&quot;locked&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span><span class="p">}</span>
+   <span class="p">],</span>
+   <span class="s2">&quot;permissions&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;SPOT&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.handlers.wallet.spot_free_balances_parsed">
+<span class="sig-prename descclassname"><span class="pre">binpan.handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">spot_free_balances_parsed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#binpan.handlers.wallet.spot_free_balances_parsed" title="Permalink to this definition"></a></dt>
+<dd><p>Parses available balances from account info.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data_dic</strong> (<em>dict</em>) – If available, account info can be passed as data_dic parameter to avoid API calling.</p>
+</dd>
+<dt class="field-even">Return dict</dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.handlers.wallet.spot_locked_balances_parsed">
+<span class="sig-prename descclassname"><span class="pre">binpan.handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">spot_locked_balances_parsed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#binpan.handlers.wallet.spot_locked_balances_parsed" title="Permalink to this definition"></a></dt>
+<dd><p>Parses locked in order balances from account info.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data_dic</strong> (<em>dict</em>) – If available, account info can be passed as data_dic parameter to avoid API calling.</p>
+</dd>
+<dt class="field-even">Return dict</dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.handlers.wallet.get_coins_with_balance">
+<span class="sig-prename descclassname"><span class="pre">binpan.handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_coins_with_balance</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#binpan.handlers.wallet.get_coins_with_balance" title="Permalink to this definition"></a></dt>
+<dd><p>Get the non-zero balances of an account, free or locked ones. Useful getting wallet value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return list</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="helper">
+<h2>Helper<a class="headerlink" href="#helper" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.handlers.wallet.convert_str_date_to_ms">
+<span class="sig-prename descclassname"><span class="pre">binpan.handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">convert_str_date_to_ms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.handlers.wallet.convert_str_date_to_ms" title="Permalink to this definition"></a></dt>
+<dd><p>Converts dates strings formatted as “2022-05-11 06:45:42” to timestamp in milliseconds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>date</strong> (<em>str</em><em> or </em><em>int</em>) – Date to check format.</p></li>
+<li><p><strong>time_zone</strong> – A time zone like ‘Europe/Madrid’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return int</dt>
+<dd class="field-even"><p>Milliseconds of timestamp.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 </section>
 
 

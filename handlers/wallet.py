@@ -9,9 +9,8 @@ wallet_logger = Logs(filename='./logs/wallet_logger.log', name='wallet_logger', 
 
 
 ##########
-# WALLET #
+# Helper #
 ##########
-
 
 def convert_str_date_to_ms(date: str or int,
                            time_zone: str):
@@ -25,6 +24,11 @@ def convert_str_date_to_ms(date: str or int,
     if type(date) == str:
         date = convert_string_to_milliseconds(date, timezoned=time_zone)
     return date
+
+
+##########
+# WALLET #
+##########
 
 
 def daily_account_snapshot(account_type: str = 'SPOT',
@@ -108,11 +112,55 @@ def daily_account_snapshot(account_type: str = 'SPOT',
 
 def get_spot_trades_list(symbol: str,
                          limit: int = 1000,
+                         orderId: int = None,
+                         startTime: int = None,
+                         endTime: int = None,
+                         fromId: int = None,
                          recvWindow: int = 10000) -> list:
+    """
+    Get trades for a specific account and symbol.
+
+    Weight(IP): 10
+
+    :param str symbol: Symbol's trades.
+    :param int limit: Default 500; max 1000.
+    :param fromId: TradeId to fetch from. Default gets most recent trades. If fromId is set, it will get id >= that fromId. Otherwise,
+       most recent trades are returned.
+    :param int endTime: Optional.
+    :param int startTime: Optional.
+    :param int orderId: This can only be used in combination with symbol.
+    :param int recvWindow: The value cannot be greater than 60000
+    :return list: A list.
+
+        Example:
+               .. code-block::
+
+                         [
+                            {
+                                "symbol": "BNBBTC",
+                                "id": 28457,
+                                "orderId": 100234,
+                                "orderListId": -1, //Unless OCO, the value will always be -1
+                                "price": "4.00000100",
+                                "qty": "12.00000000",
+                                "quoteQty": "48.000012",
+                                "commission": "10.10000000",
+                                "commissionAsset": "BNB",
+                                "time": 1499865549590,
+                                "isBuyer": true,
+                                "isMaker": false,
+                                "isBestMatch": true
+                              }
+                           ]
+    """
     endpoint = '/api/v3/myTrades'
     return api_raw_signed_get(endpoint=endpoint,
                               params={'limit': limit,
                                       'symbol': symbol,
+                                      'orderId': orderId,
+                                      'startTime': startTime,
+                                      'endTime': endTime,
+                                      'fromId': fromId,
                                       'recvWindow': recvWindow},
                               weight=10)
 
@@ -123,6 +171,35 @@ def get_spot_trades_list(symbol: str,
 
 
 def get_spot_account_info(recvWindow: int = 10000) -> dict:
+    """
+    Get current account information.
+
+    Weight(IP): 10
+
+    :param int recvWindow: The value cannot be greater than 60000
+    :return dict: A dictionary with data.
+
+        Example:
+            .. code-block::
+
+               {
+                  "makerCommission": 15,
+                  "takerCommission": 15,
+                  "buyerCommission": 0,
+                  "sellerCommission": 0,
+                  "canTrade": true,
+                  "canWithdraw": true,
+                  "canDeposit": true,
+                  "updateTime": 123456789,
+                  "accountType": "SPOT",
+                  "balances": [
+                    {"asset": "BTC", "free": "4723846.89208129","locked": "0.00000000"},
+                    {"asset": "LTC","free": "4763368.68006011","locked": "0.00000000"}
+                  ],
+                  "permissions": ["SPOT"]
+               }
+
+    """
     endpoint = '/api/v3/account'
     return api_raw_signed_get(endpoint=endpoint,
                               params={'recvWindow': recvWindow},
@@ -130,6 +207,12 @@ def get_spot_account_info(recvWindow: int = 10000) -> dict:
 
 
 def spot_free_balances_parsed(data_dic: dict = None) -> dict:
+    """
+    Parses available balances from account info.
+
+    :param dict data_dic: If available, account info can be passed as data_dic parameter to avoid API calling.
+    :return dict:
+    """
     ret = {}
     if not data_dic:
         data_dic = get_spot_account_info()
@@ -142,6 +225,12 @@ def spot_free_balances_parsed(data_dic: dict = None) -> dict:
 
 
 def spot_locked_balances_parsed(data_dic: dict = None) -> dict:
+    """
+    Parses locked in order balances from account info.
+
+    :param dict data_dic: If available, account info can be passed as data_dic parameter to avoid API calling.
+    :return dict:
+    """
     ret = {}
     if not data_dic:
         data_dic = get_spot_account_info()
@@ -155,7 +244,11 @@ def spot_locked_balances_parsed(data_dic: dict = None) -> dict:
 
 
 def get_coins_with_balance() -> list:
-    """Retorna una lista de símbolos con balance positivo en la cuenta"""
+    """
+    Get the non-zero balances of an account, free or locked ones. Useful getting wallet value.
+
+    :return list:
+    """
     data_dic = get_spot_account_info()
     free = spot_free_balances_parsed(data_dic=data_dic)
     locked = spot_locked_balances_parsed(data_dic=data_dic)

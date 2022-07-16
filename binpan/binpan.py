@@ -24,7 +24,6 @@ import handlers.exchange
 import handlers.redis_fetch
 import handlers.messages
 
-
 import pandas_ta as ta
 from random import choice
 
@@ -37,7 +36,6 @@ except:
     msg = "REDIS: No redis configuration."
     binpan_logger.warning(msg)
     pass
-
 
 try:
     from secret import api_key, api_secret
@@ -56,8 +54,7 @@ API keys will be added to a file called secret.py in an encrypted way. API keys 
 """
     binpan_logger.warning(msg)
 
-
-__version__ = "0.0.39"
+__version__ = "0.0.40"
 
 plotly_colors = handlers.plotting.plotly_colors
 
@@ -1030,7 +1027,8 @@ class Symbol(object):
                                bins=300,
                                histnorm: str = 'density',
                                height: int = 800,
-                               title: str = "Distribution"):
+                               title: str = "Distribution",
+                               **update_layout_kwargs):
         """
         Plot a distribution plot for a dataframe column. Plots line for kernel distribution.
 
@@ -1054,7 +1052,8 @@ class Symbol(object):
                                     bins=bins,
                                     histnorm=histnorm,
                                     height=height,
-                                    title=title)
+                                    title=title,
+                                    **update_layout_kwargs)
 
     #################
     # Exchange data #
