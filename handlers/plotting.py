@@ -533,7 +533,12 @@ def candles_tagged(data: pd.DataFrame, width=1800, height=1000, candles_ta_heigh
                plot_bgcolor=plot_bgcolor)
 
 
-def plot_trade_size(data: pd.DataFrame, max_size=60, height=1000, logarithmic=False, title=f"Trade Size"):
+def plot_trade_size(data: pd.DataFrame,
+                    max_size: int = 60,
+                    height: int = 1000,
+                    logarithmic: bool = False,
+                    title: str = None,
+                    **kwargs_update_layout):
     """
     Plots scatter plot from trades quantity and trades sizes. Marks are size scaled to the max size. Marks are semi transparent and colored
     using Maker buyer or Taker buyer discrete colors. Usually red and blue.
@@ -545,6 +550,7 @@ def plot_trade_size(data: pd.DataFrame, max_size=60, height=1000, logarithmic=Fa
     :param int height: Plot sizing.
     :param bool logarithmic: Y axis in a logarithmic scale.
     :param str title: Title string.
+    :param kwargs_update_layout: Update layout plotly options.
 
     Example:
         .. code-block:: python
@@ -566,8 +572,15 @@ def plot_trade_size(data: pd.DataFrame, max_size=60, height=1000, logarithmic=Fa
     """
     data['Buyer was maker'].replace({True: 'Maker buyer', False: 'Taker buyer'}, inplace=True)
     fig = px.scatter(x=data.index, y=data['Price'], color=data['Buyer was maker'], size=data['Quantity'],
-                     title=title,
-                     height=height, size_max=max_size, log_y=logarithmic)
+                     size_max=max_size, log_y=logarithmic)
+    if not title:
+        title = f"Trades size {data.index.name}"
+    fig.update_layout(
+        title=title,
+        xaxis_title_text=f'{data.index.name}',
+        yaxis_title_text=f'Price',
+        height=height,
+        **kwargs_update_layout)
     fig.show()
 
 

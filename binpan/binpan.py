@@ -8,9 +8,9 @@ import pandas as pd
 import numpy as np
 
 # import binpan
-import handlers
+# import handlers
 
-import handlers.logs as logs
+import handlers.logs
 import handlers.starters
 import handlers.market
 import handlers.quest
@@ -57,7 +57,7 @@ API keys will be added to a file called secret.py in an encrypted way. API keys 
     binpan_logger.warning(msg)
 
 
-__version__ = "0.0.31"
+__version__ = "0.0.39"
 
 plotly_colors = handlers.plotting.plotly_colors
 

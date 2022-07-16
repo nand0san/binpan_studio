@@ -35,14 +35,15 @@ read_required.close()
 """
 
 setup(name='binpan',
-      version='0.0.31',
+      version='0.0.39',
       url='https://github.com/nand0san/binpan_studio',
       license='MIT',
       install_requires=REQUIRED,
+      python_requires='>=3.7',
       classifiers=[
-          "License :: OSI Approved :: MIT License",
-          "Programming Language :: Python :: 3",
-          "Programming Language :: Python :: 3.9",
+            "License :: OSI Approved :: MIT License",
+            "Programming Language :: Python :: 3",
+            "Programming Language :: Python :: 3.7"
       ],
       author='Fernando Alfonso',
       author_email='hancaidolosdos@hotmail.com',
@@ -50,8 +51,5 @@ setup(name='binpan',
       long_description=README_TEXT,
       long_description_content_type="text/markdown",
       package_dir={"": "."},
-      packages=[
-            ".",
-            "handlers"
-      ]
+      packages=["handlers", "binpan"]
       )

@@ -13,7 +13,7 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath('../binpan'))
 sys.path.insert(0, os.path.abspath('../handlers'))
 
 # -- Project information -----------------------------------------------------
@@ -23,7 +23,7 @@ copyright = '2022, Fernando Alfonso'
 author = 'Fernando Alfonso'
 
 # The full version, including alpha/beta/rc tags
-release = '1.0.5'
+release = '0.0.40'
 
 # -- General configuration ---------------------------------------------------
 
