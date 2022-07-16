@@ -10,6 +10,8 @@ Wallet snapshots
 
 .. autofunction:: daily_account_snapshot
 
+.. autofunction:: assets_convertible_dust
+
 Trades
 ------
 

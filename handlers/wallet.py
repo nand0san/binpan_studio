@@ -1,7 +1,7 @@
 import pandas as pd
 
 from .logs import Logs
-from .quest import api_raw_signed_get
+from .quest import api_raw_signed_get, api_raw_signed_post
 from .time_helper import convert_milliseconds_to_str
 from .time_helper import convert_string_to_milliseconds
 
@@ -43,12 +43,12 @@ def daily_account_snapshot(account_type: str = 'SPOT',
 
     Weight(IP): 2400
 
-    :param str account_type: SPOT or MARGIN
+    :param str account_type: SPOT or MARGIN (cross)
     :param int limit: Days limit. Default 30.
     :param int or str startTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
     :param int or str endTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
     :param str time_zone: A time zone to parse index like 'Europe/Madrid'
-    :return pd.DataFrame:
+    :return pd.DataFrame: Pandas DataFrame
 
     """
     startTime = convert_str_date_to_ms(date=startTime, time_zone=time_zone)
@@ -103,6 +103,36 @@ def daily_account_snapshot(account_type: str = 'SPOT',
             ret = ret.set_index('updateTime').sort_index()
             ret.index.name = f"{account_type} timestamp"
     return ret
+
+
+def assets_convertible_dust() -> dict:
+    """
+    Assets dust that can be converted to BNB.
+    Weight(IP): 1
+
+    :return dict: A dictionary.
+
+    .. code-block::
+
+       {
+            "details": [
+                {
+                    "asset": "ADA",
+                    "assetFullName": "ADA",
+                    "amountFree": "6.21",   //Convertible amount
+                    "toBTC": "0.00016848",  //BTC amount
+                    "toBNB": "0.01777302",  //BNB amount（Not deducted commission fee）
+                    "toBNBOffExchange": "0.01741756", //BNB amount（Deducted commission fee）
+                    "exchange": "0.00035546" //Commission fee
+                }
+            ],
+            "totalTransferBtc": "0.00016848",
+            "totalTransferBNB": "0.01777302",
+            "dribbletPercentage": "0.02"     //Commission fee
+        }
+
+    """
+    return api_raw_signed_post(endpoint='/sapi/v1/asset/dust-btc', weight=1)
 
 
 ##########

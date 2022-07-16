@@ -54,7 +54,7 @@ API keys will be added to a file called secret.py in an encrypted way. API keys 
 """
     binpan_logger.warning(msg)
 
-__version__ = "0.0.40"
+__version__ = "0.0.43"
 
 plotly_colors = handlers.plotting.plotly_colors
 
@@ -285,9 +285,9 @@ class Symbol(object):
         self.set_display_rows()
         self.set_display_max_rows()
 
-        binpan_logger.info(f"New instance of CandlesManager {self.version}: {self.symbol}, {self.tick_interval}, limit={self.limit},"
-                           f" start={self.start_time}, end={self.end_time}, {self.time_zone}, time_index={self.time_index}"
-                           f", closed_candles={self.closed}")
+        binpan_logger.debug(f"New instance of BinPan Symbol {self.version}: {self.symbol}, {self.tick_interval}, limit={self.limit},"
+                            f" start={self.start_time}, end={self.end_time}, {self.time_zone}, time_index={self.time_index}"
+                            f", closed_candles={self.closed}")
 
         ##############
         # timestamps #

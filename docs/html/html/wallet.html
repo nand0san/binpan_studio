@@ -95,7 +95,7 @@ If startTime and endTime not sent, return records of the last days by default.</
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>account_type</strong> (<em>str</em>) – SPOT or MARGIN</p></li>
+<li><p><strong>account_type</strong> (<em>str</em>) – SPOT or MARGIN (cross)</p></li>
 <li><p><strong>limit</strong> (<em>int</em>) – Days limit. Default 30.</p></li>
 <li><p><strong>startTime</strong> (<em>int</em><em> or </em><em>str</em>) – Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42</p></li>
 <li><p><strong>endTime</strong> (<em>int</em><em> or </em><em>str</em>) – Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42</p></li>
@@ -103,8 +103,39 @@ If startTime and endTime not sent, return records of the last days by default.</
 </ul>
 </dd>
 <dt class="field-even">Return pd.DataFrame</dt>
-<dd class="field-even"><p></p></dd>
+<dd class="field-even"><p>Pandas DataFrame</p>
+</dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.handlers.wallet.assets_convertible_dust">
+<span class="sig-prename descclassname"><span class="pre">binpan.handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">assets_convertible_dust</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#binpan.handlers.wallet.assets_convertible_dust" title="Permalink to this definition"></a></dt>
+<dd><p>Assets dust that can be converted to BNB.
+Weight(IP): 1</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return dict</dt>
+<dd class="field-odd"><p>A dictionary.</p>
+</dd>
+</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>{
+     &quot;details&quot;: [
+         {
+             &quot;asset&quot;: &quot;ADA&quot;,
+             &quot;assetFullName&quot;: &quot;ADA&quot;,
+             &quot;amountFree&quot;: &quot;6.21&quot;,   //Convertible amount
+             &quot;toBTC&quot;: &quot;0.00016848&quot;,  //BTC amount
+             &quot;toBNB&quot;: &quot;0.01777302&quot;,  //BNB amount（Not deducted commission fee）
+             &quot;toBNBOffExchange&quot;: &quot;0.01741756&quot;, //BNB amount（Deducted commission fee）
+             &quot;exchange&quot;: &quot;0.00035546&quot; //Commission fee
+         }
+     ],
+     &quot;totalTransferBtc&quot;: &quot;0.00016848&quot;,
+     &quot;totalTransferBNB&quot;: &quot;0.01777302&quot;,
+     &quot;dribbletPercentage&quot;: &quot;0.02&quot;     //Commission fee
+ }
+</pre></div>
+</div>
 </dd></dl>
 
 </section>

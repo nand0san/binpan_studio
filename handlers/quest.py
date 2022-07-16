@@ -1,6 +1,8 @@
 # coding=utf-8
 from .logs import Logs
+
 from .exceptions import BinanceAPIException, BinanceRequestException
+
 from .starters import AesCipher, get_exchange_limits
 
 from urllib.parse import urljoin, urlencode
