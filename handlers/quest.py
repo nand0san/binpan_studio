@@ -77,11 +77,11 @@ def update_weights(headers, father_url: str):
     weight_headers = {k: 0 if k not in weight_headers.keys() else v for k, v in current_limit_headers.items()}
 
     # register for detecting new weight headers
-    weight_logger.info(f"Father url: {father_url} Weights updated from API: {weight_headers}")
+    weight_logger.debug(f"Father url: {father_url} Weights updated from API: {weight_headers}")
 
     for k, v in weight_headers.items():
         current_limit_headers[k] = v
-    weight_logger.info(f"Current weights registered: {current_limit_headers}")
+    weight_logger.debug(f"Current weights registered: {current_limit_headers}")
 
 
 def check_weight(weight: int,
