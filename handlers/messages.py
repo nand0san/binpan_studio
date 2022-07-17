@@ -12,7 +12,19 @@ try:
     chat_id = encoded_chat_id
     bot_id = encoded_telegram_bot_id
 except Exception as exc:
-    msg = f" Not found telegram bot key or chat key for the telegram message module."
+    msg = """
+Not found telegram bot key or chat key for the telegram message module.
+
+Example adding bot key and chat id:
+    
+    from binpan import handlers
+
+    # from @BotFather, get the bot api key
+    handlers.files.add_any_key(key="xxxxxxxxxx", key_name="encoded_telegram_bot_id")
+
+    # write to your bot and then get your chat id from https://api.telegram.org/bot<YourBOTToken>/getUpdates
+    handlers.files.add_any_key(key="xxxxxxxxxx", key_name="encoded_chat_id")
+"""
     msg_logger.warning(msg)
     encoded_telegram_bot_id = ''
     encoded_chat_id = ''
@@ -34,10 +46,10 @@ def telegram_bot_send_text(msg: dict or str,
         from binpan import handlers
 
         # from @BotFather, get the bot api key
-        handlers.add_any_key(key="xxxxxxxxxx", key_name="encoded_telegram_bot_id")
+        handlers.files.add_any_key(key="xxxxxxxxxx", key_name="encoded_telegram_bot_id")
 
         # write to your bot and then get your chat id from https://api.telegram.org/bot<YourBOTToken>/getUpdates
-        handlers.add_any_key(key="xxxxxxxxxx", key_name="encoded_chat_id")
+        handlers.files.add_any_key(key="xxxxxxxxxx", key_name="encoded_chat_id")
 
 
     :param str msg: A message

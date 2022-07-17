@@ -47,8 +47,10 @@ API key would be needed for personal API calls. Any other calls will work.
 
 Adding:
 
-binpan.handlers.files.add_api_key("xxxx")
-binpan.handlers.files.add_api_secret("xxxx")
+from binpan import handlers
+
+handlers.files.add_api_key("xxxx")
+handlers.files.add_api_secret("xxxx")
 
 API keys will be added to a file called secret.py in an encrypted way. API keys in memory stay encrypted except in the API call instant.
 """
