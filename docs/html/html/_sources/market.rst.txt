@@ -3,6 +3,12 @@ Market Module
 
 This module can manage market data from Binance API.
 
+To import this module:
+
+.. code-block::
+
+   from handlers import market
+
 Klines
 ------
 

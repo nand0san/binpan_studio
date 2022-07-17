@@ -3,6 +3,12 @@ Wallet Module
 
 This module can manage wallet data from Binance API.
 
+To import this module:
+
+.. code-block::
+
+   from handlers import wallet
+
 .. automodule:: handlers.wallet
 
 Wallet snapshots

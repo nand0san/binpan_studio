@@ -5,6 +5,13 @@ This module can manage plots.
 
 Plots made with Plotly library: https://plotly.com/
 
+To import this module:
+
+.. code-block::
+
+   from handlers import plotting
+
+
 .. automodule:: handlers.plotting
 
 Colors

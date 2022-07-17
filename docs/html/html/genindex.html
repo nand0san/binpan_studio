@@ -45,6 +45,8 @@
 <li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="files.html">Files Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="messages.html">Notifications Module</a></li>
 </ul>
 
         </div>
@@ -101,8 +103,16 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="binpan.html#binpan.Symbol.accumulation_distribution">accumulation_distribution() (binpan.Symbol method)</a>
 </li>
+      <li><a href="files.html#handlers.files.add_any_key">add_any_key() (in module handlers.files)</a>
+</li>
+      <li><a href="files.html#handlers.files.add_api_key">add_api_key() (in module handlers.files)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="files.html#handlers.files.add_api_secret">add_api_secret() (in module handlers.files)</a>
+</li>
+      <li><a href="files.html#handlers.files.append_row_to_csv">append_row_to_csv() (in module handlers.files)</a>
+</li>
       <li><a href="wallet.html#handlers.wallet.assets_convertible_dust">assets_convertible_dust() (in module handlers.wallet)</a>
 </li>
       <li><a href="binpan.html#binpan.Symbol.atr">atr() (binpan.Symbol method)</a>
@@ -153,15 +163,17 @@
 </li>
       <li><a href="binpan.html#binpan.Symbol.cci">cci() (binpan.Symbol method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="binpan.html#binpan.Symbol.closed">closed() (binpan.Symbol method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="binpan.html#binpan.Exchange.coin">coin() (binpan.Exchange method)</a>
 </li>
       <li><a href="market.html#handlers.market.convert_coin">convert_coin() (in module handlers.market)</a>
 </li>
       <li><a href="wallet.html#handlers.wallet.convert_str_date_to_ms">convert_str_date_to_ms() (in module handlers.wallet)</a>
+</li>
+      <li><a href="files.html#handlers.files.create_dir">create_dir() (in module handlers.files)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -211,10 +223,10 @@
 </li>
       <li><a href="redis_fetch.html#handlers.redis_fetch.fetch_list">fetch_list() (in module handlers.redis_fetch)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="redis_fetch.html#handlers.redis_fetch.fetch_list_filter_query">fetch_list_filter_query() (in module handlers.redis_fetch)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="redis_fetch.html#handlers.redis_fetch.fetch_set_and_parse">fetch_set_and_parse() (in module handlers.redis_fetch)</a>
 </li>
       <li><a href="redis_fetch.html#handlers.redis_fetch.fetch_zset_range">fetch_zset_range() (in module handlers.redis_fetch)</a>
@@ -222,6 +234,8 @@
       <li><a href="redis_fetch.html#handlers.redis_fetch.fetch_zset_timestamps">fetch_zset_timestamps() (in module handlers.redis_fetch)</a>
 </li>
       <li><a href="binpan.html#binpan.Exchange.filter">filter() (binpan.Exchange method)</a>
+</li>
+      <li><a href="files.html#handlers.files.find_csvs_in_path">find_csvs_in_path() (in module handlers.files)</a>
 </li>
       <li><a href="redis_fetch.html#handlers.redis_fetch.find_row_index_in_redis_key">find_row_index_in_redis_key() (in module handlers.redis_fetch)</a>
 </li>
@@ -274,10 +288,24 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li>
+    handlers.files
+
+      <ul>
+        <li><a href="files.html#module-handlers.files">module</a>
+</li>
+      </ul></li>
+      <li>
     handlers.market
 
       <ul>
         <li><a href="market.html#module-handlers.market">module</a>
+</li>
+      </ul></li>
+      <li>
+    handlers.messages
+
+      <ul>
+        <li><a href="messages.html#module-handlers.messages">module</a>
 </li>
       </ul></li>
       <li>
@@ -287,6 +315,8 @@
         <li><a href="plotting.html#module-handlers.plotting">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     handlers.redis_fetch
 
@@ -294,8 +324,6 @@
         <li><a href="redis_fetch.html#module-handlers.redis_fetch">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     handlers.strategies
 
@@ -356,7 +384,11 @@
 </li>
         <li><a href="exceptions.html#module-binpan.handlers.exceptions">binpan.handlers.exceptions</a>
 </li>
+        <li><a href="files.html#module-handlers.files">handlers.files</a>
+</li>
         <li><a href="market.html#module-handlers.market">handlers.market</a>
+</li>
+        <li><a href="messages.html#module-handlers.messages">handlers.messages</a>
 </li>
         <li><a href="plotting.html#module-handlers.plotting">handlers.plotting</a>
 </li>
@@ -367,6 +399,10 @@
         <li><a href="wallet.html#module-handlers.wallet">handlers.wallet</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="files.html#handlers.files.move_old_csvs">move_old_csvs() (in module handlers.files)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -433,8 +469,12 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="strategies.html#handlers.strategies.random_strategy">random_strategy() (in module handlers.strategies)</a>
 </li>
+      <li><a href="files.html#handlers.files.read_csv_to_dataframe">read_csv_to_dataframe() (in module handlers.files)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="files.html#handlers.files.read_file">read_file() (in module handlers.files)</a>
+</li>
       <li><a href="binpan.html#binpan.Symbol.roc">roc() (binpan.Symbol method)</a>
 </li>
       <li><a href="binpan.html#binpan.Symbol.rsi">rsi() (binpan.Symbol method)</a>
@@ -445,11 +485,15 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="files.html#handlers.files.save_dataframe_to_csv">save_dataframe_to_csv() (in module handlers.files)</a>
+</li>
+      <li><a href="files.html#handlers.files.save_file">save_file() (in module handlers.files)</a>
+</li>
       <li><a href="binpan.html#binpan.Symbol.set_display_columns">set_display_columns() (binpan.Symbol method)</a>
 </li>
       <li><a href="binpan.html#binpan.Symbol.set_display_decimals">set_display_decimals() (binpan.Symbol static method)</a>
 </li>
-      <li><a href="binpan.html#binpan.Symbol.set_display_max_rows">set_display_max_rows() (binpan.Symbol method)</a>
+      <li><a href="binpan.html#binpan.Symbol.set_display_min_rows">set_display_min_rows() (binpan.Symbol method)</a>
 </li>
       <li><a href="binpan.html#binpan.Symbol.set_display_rows">set_display_rows() (binpan.Symbol method)</a>
 </li>
@@ -461,10 +505,10 @@
 </li>
       <li><a href="binpan.html#binpan.Symbol.set_plot_row">set_plot_row() (binpan.Symbol method)</a>
 </li>
-      <li><a href="binpan.html#binpan.Symbol.sma">sma() (binpan.Symbol method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="binpan.html#binpan.Symbol.sma">sma() (binpan.Symbol method)</a>
+</li>
       <li><a href="wallet.html#handlers.wallet.spot_free_balances_parsed">spot_free_balances_parsed() (in module handlers.wallet)</a>
 </li>
       <li><a href="wallet.html#handlers.wallet.spot_locked_balances_parsed">spot_locked_balances_parsed() (in module handlers.wallet)</a>
@@ -489,6 +533,8 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="messages.html#handlers.messages.telegram_bot_send_text">telegram_bot_send_text() (in module handlers.messages)</a>
+</li>
       <li><a href="binpan.html#binpan.Symbol.tick_interval">tick_interval() (binpan.Symbol method)</a>
 </li>
       <li><a href="binpan.html#binpan.Symbol.time_index">time_index() (binpan.Symbol method)</a>

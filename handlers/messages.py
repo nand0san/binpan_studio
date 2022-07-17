@@ -24,8 +24,24 @@ def telegram_bot_send_text(msg: dict or str,
     """
     Sends a telegram message.
 
+    It takes bot key and chat id from secret encrypted file. It is required to create previously the bot and chat keys with the
+    variable names *encoded_chat_id*, *encoded_telegram_bot_id*.
+
+    Example adding bot key and chat id:
+
+    .. code-block:: python
+
+        from binpan import handlers
+
+        # from @BotFather, get the bot api key
+        handlers.add_any_key(key="xxxxxxxxxx", key_name="encoded_telegram_bot_id")
+
+        # write to your bot and then get your chat id from https://api.telegram.org/bot<YourBOTToken>/getUpdates
+        handlers.add_any_key(key="xxxxxxxxxx", key_name="encoded_chat_id")
+
+
     :param str msg: A message
-    :param str parse_mode: Parsing telegram message.
+    :param str parse_mode: Parsing telegram message. Default is 'Markdown&text'.
     :param disable_notification: Avoids getting notified by the telegram message. Only working in group chats.
         https://stackoverflow.com/questions/64360221/disable-notification-in-python-telegram-bot
     :return: Telegrams API response.

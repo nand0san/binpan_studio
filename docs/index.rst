@@ -107,6 +107,8 @@ Hope you find it useful breaking the market!!!
    strategies.rst
    wallet.rst
    redis_fetch.rst
+   files.rst
+   messages.rst
 
 
 Indices and tables

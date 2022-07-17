@@ -3,6 +3,9 @@ from .time_helper import convert_utc_ms_column_to_time_zone, convert_datetime_to
     convert_milliseconds_to_time_zone_datetime
 import pandas as pd
 import json
+from .logs import Logs
+
+redis_logger = Logs(filename='./logs/redis_fetch.log', name='redis_fetch', info_level='INFO')
 
 
 ##########
@@ -134,7 +137,9 @@ def push_to_ordered_set(redisClient: object,
 
 
 def fetch_zset_range(redisClient: object,
-                     key: str,
+                     key: str = None,
+                     symbol=None,
+                     tick_interval=None,
                      start_index=0,
                      end_index=-1,
                      with_scores=False) -> list:
@@ -143,12 +148,16 @@ def fetch_zset_range(redisClient: object,
     if with_Scores.
 
     :param object redisClient: A redis connector.
-    :param str key: Redis key name.
+    :param str key: Redis key name. Optional, symbol and tick interval can be used too.
+    :param str symbol: A Binance valid Symbol.
+    :param str tick_interval: A binance tick interval. Like 5m, 1h etc
     :param int start_index: Numeric index in redis key.
     :param int end_index: Numeric index in redis key.
     :param bool with_scores: Will return rows with its index in a tuple if true.
     :return list: A list of rows in the redis set or a list of tuples with rows and scores if with_scores true.
     """
+    if not key:
+        key = f"{symbol}@kline_{tick_interval}"
     return redisClient.zrange(name=key, start=start_index, end=end_index, withscores=with_scores)
 
 
@@ -196,7 +205,9 @@ def fetch_set_and_parse(redisClient: object,
     """
     symbol = key.split('@')[0].upper()
     tick_interval = key[-2:]
-    data = fetch_zset_range(redisClient=redisClient, key=key, with_scores=False)
+    data = fetch_zset_range(redisClient=redisClient, key=key.lower(), with_scores=False)
+    if not data:
+        redis_logger.warning(f"BinPan warning: No data found in Redis for {key}")
     return redis_klines_parser(json_list=data, symbol=symbol, tick_interval=tick_interval)
 
 

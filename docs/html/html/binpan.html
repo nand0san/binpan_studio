@@ -41,13 +41,20 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">BinPan Module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">BinPan Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#symbol-class">Symbol Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#exchange-class">Exchange Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wallet-class">Wallet Class</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="files.html">Files Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="messages.html">Notifications Module</a></li>
 </ul>
 
         </div>
@@ -74,12 +81,21 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-binpan">
-<span id="binpan-module"></span><h1>BinPan Module<a class="headerlink" href="#module-binpan" title="Permalink to this heading"></a></h1>
-<p>This is the main classes file.</p>
+  <section id="binpan-module">
+<h1>BinPan Module<a class="headerlink" href="#binpan-module" title="Permalink to this heading"></a></h1>
+<p>Can be imported this way:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">binpan</span> <span class="kn">import</span> <span class="n">binpan</span>
+</pre></div>
+</div>
+<span class="target" id="module-binpan"></span><p>This is the main classes file.</p>
+<section id="symbol-class">
+<h2>Symbol Class<a class="headerlink" href="#symbol-class" title="Permalink to this heading"></a></h2>
+<p>This class can manage klines, trades and many more data.</p>
+<p>Also include technical indicators, make plots, and get some exchange data.</p>
+<p>There is a tutorial in a Jupyter Notebook file in <a class="reference external" href="https://github.com/nand0san/binpan_studio">https://github.com/nand0san/binpan_studio</a></p>
 <dl class="py class">
 <dt class="sig sig-object py" id="binpan.Symbol">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">binpan.</span></span><span class="sig-name descname"><span class="pre">Symbol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'UTC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">closed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_redis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_rows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_max_rows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">320</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">binpan.</span></span><span class="sig-name descname"><span class="pre">Symbol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'UTC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">closed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_redis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_rows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_min_rows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">320</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol" title="Permalink to this definition"></a></dt>
 <dd><p>Creates an object from binance klines and/or trade data. It contains the raw api response and a dataframe that can be modified.</p>
 <p>Any symbol can be used as argument and any time interval like: ‘1m’, ‘3m’, ‘5m’, ‘15m’, ‘30m’, ‘1h’, ‘2h’, ‘4h’, ‘6h’, ‘8h’,
 ‘12h’, ‘1d’, ‘3d’, ‘1w’, ‘1M’</p>
@@ -210,7 +226,7 @@ ETHBUSD 5m UTC
 <li><p><strong>mysymbol.end_ms_time</strong>: timestamp obtained from api in the last candle.</p></li>
 <li><p><strong>mysymbol.display_columns</strong>: display columns in shell</p></li>
 <li><p><strong>mysymbol.display_rows</strong>: display rows in shell</p></li>
-<li><p><strong>mysymbol.display_max_rows</strong>: display max_rows in shell</p></li>
+<li><p><strong>mysymbol.display_min_rows</strong>: display max_rows in shell</p></li>
 <li><p><strong>mysymbol.display_width</strong>: display width in shell</p></li>
 <li><p><strong>mysymbol.orderbook</strong>: a pandas dataframe (if requested) with last orderbook requested.</p></li>
 <li><p><strong>mysymbol.row_control</strong>: dictionary with data about plotting control. Represents each dataframe colum position in the plots.</p></li>
@@ -975,12 +991,12 @@ and the price “n” day’s ago. The indicator fluctuates around the zero line
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="binpan.Symbol.set_display_max_rows">
-<span class="sig-name descname"><span class="pre">set_display_max_rows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">display_max_rows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.set_display_max_rows" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="binpan.Symbol.set_display_min_rows">
+<span class="sig-name descname"><span class="pre">set_display_min_rows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">display_min_rows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.set_display_min_rows" title="Permalink to this definition"></a></dt>
 <dd><p>Change the number of minimum rows shown in the display of the dataframe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>display_max_rows</strong> (<em>int</em>) – Integer</p>
+<dd class="field-odd"><p><strong>display_min_rows</strong> (<em>int</em>) – Integer</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1235,17 +1251,22 @@ Default: “D”, that means calendar day frequency.</p></li>
 
 </dd></dl>
 
+</section>
+<section id="exchange-class">
+<h2>Exchange Class<a class="headerlink" href="#exchange-class" title="Permalink to this heading"></a></h2>
+<p>This class is oriented in managing data from exchange, like Symbols status, coins networks etc.</p>
+<p>There is a tutorial in a Jupyter Notebook file in <a class="reference external" href="https://github.com/nand0san/binpan_studio">https://github.com/nand0san/binpan_studio</a></p>
 <dl class="py class">
 <dt class="sig sig-object py" id="binpan.Exchange">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">binpan.</span></span><span class="sig-name descname"><span class="pre">Exchange</span></span><a class="headerlink" href="#binpan.Exchange" title="Permalink to this definition"></a></dt>
 <dd><p>Exchange data.</p>
-<p>Exchange data collected:</p>
+<p>Exchange data collected in class variables:</p>
 <ul class="simple">
-<li><p>fees: fees applied to the user requesting for every symbol in a pandas dataframe.</p></li>
-<li><p>system_status: API state can be normal o under maintenance.</p></li>
-<li><p>coins: A dataframe with all the coin’s data.</p></li>
-<li><p>networks: A dataframe with info about every coin and its blockchain networks info.</p></li>
-<li><p>info_dic: A dictionary with all raw symbols info each.</p></li>
+<li><p><strong>fees</strong>: fees applied to the user requesting for every symbol in a pandas dataframe.</p></li>
+<li><p><strong>system_status</strong>: API state can be normal o under maintenance.</p></li>
+<li><p><strong>coins</strong>: A dataframe with all the coin’s data.</p></li>
+<li><p><strong>networks</strong>: A dataframe with info about every coin and its blockchain networks info.</p></li>
+<li><p><strong>info_dic</strong>: A dictionary with all raw symbols info each.</p></li>
 </ul>
 <dl class="py method">
 <dt class="sig sig-object py" id="binpan.Exchange.coin">
@@ -1309,14 +1330,14 @@ Default: “D”, that means calendar day frequency.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="binpan.Exchange.get_symbols">
-<span class="sig-name descname"><span class="pre">get_symbols</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quote</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Exchange.get_symbols" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_symbols</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quote</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Exchange.get_symbols" title="Permalink to this definition"></a></dt>
 <dd><p>Return list of symbols for a coin. Can be selected symbols where it is base, or quote, or both.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>coin</strong> (<em>str</em>) – An existing binance coin.</p></li>
-<li><p><strong>base</strong> (<em>str</em>) – Activate return of symbols where coin is base.</p></li>
-<li><p><strong>quote</strong> (<em>str</em>) – Activate return of symbols where coin is quote.</p></li>
+<li><p><strong>base</strong> (<em>bool</em>) – Activate return of symbols where coin is base.</p></li>
+<li><p><strong>quote</strong> (<em>bool</em>) – Activate return of symbols where coin is quote.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return list</dt>
@@ -1353,6 +1374,11 @@ Default: “D”, that means calendar day frequency.</p></li>
 
 </dd></dl>
 
+</section>
+<section id="wallet-class">
+<h2>Wallet Class<a class="headerlink" href="#wallet-class" title="Permalink to this heading"></a></h2>
+<p>This class can show wallet data for you. Free assets, locked assets or wallet snapshots for
+performance analysis.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="binpan.Wallet">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">binpan.</span></span><span class="sig-name descname"><span class="pre">Wallet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'UTC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snapshot_days</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">30</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Wallet" title="Permalink to this definition"></a></dt>
@@ -1434,6 +1460,7 @@ Default: “D”, that means calendar day frequency.</p></li>
 
 </dd></dl>
 
+</section>
 </section>
 
 

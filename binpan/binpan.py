@@ -54,7 +54,7 @@ API keys will be added to a file called secret.py in an encrypted way. API keys 
 """
     binpan_logger.warning(msg)
 
-__version__ = "0.0.45"
+__version__ = "0.0.46"
 
 plotly_colors = handlers.plotting.plotly_colors
 
@@ -195,7 +195,7 @@ class Symbol(object):
     - **mysymbol.end_ms_time**: timestamp obtained from api in the last candle.
     - **mysymbol.display_columns**: display columns in shell
     - **mysymbol.display_rows**: display rows in shell
-    - **mysymbol.display_max_rows**: display max_rows in shell
+    - **mysymbol.display_min_rows**: display max_rows in shell
     - **mysymbol.display_width**: display width in shell
     - **mysymbol.orderbook**: a pandas dataframe (if requested) with last orderbook requested.
     - **mysymbol.row_control**: dictionary with data about plotting control. Represents each dataframe colum position in the plots.
@@ -226,8 +226,11 @@ class Symbol(object):
                  from_redis: bool = False,
                  display_columns=25,
                  display_rows=10,
-                 display_max_rows=25,
+                 display_min_rows=25,
                  display_width=320):
+
+        if not symbol.isalnum():
+            binpan_logger.error(f"BinPan error: Ilegal characters in symbol.")
 
         # check correct tick interval passed
         tick_interval = handlers.time_helper.check_tick_interval(tick_interval)
@@ -271,7 +274,7 @@ class Symbol(object):
 
         self.display_columns = display_columns
         self.display_rows = display_rows
-        self.display_max_rows = display_max_rows
+        self.display_min_rows = display_min_rows
         self.display_width = display_width
         self.trades = pd.DataFrame(columns=list(self.trades_columns.values()))
         self.orderbook = pd.DataFrame(columns=['Price', 'Quantity', 'Side'])
@@ -283,7 +286,7 @@ class Symbol(object):
         self.set_display_columns()
         self.set_display_width()
         self.set_display_rows()
-        self.set_display_max_rows()
+        self.set_display_min_rows()
 
         binpan_logger.debug(f"New instance of BinPan Symbol {self.version}: {self.symbol}, {self.tick_interval}, limit={self.limit},"
                             f" start={self.start_time}, end={self.end_time}, {self.time_zone}, time_index={self.time_index}"
@@ -482,15 +485,15 @@ class Symbol(object):
         else:
             pd.set_option('display.min_rows', self.display_rows)
 
-    def set_display_max_rows(self, display_max_rows=None):
+    def set_display_min_rows(self, display_min_rows=None):
         """
         Change the number of minimum rows shown in the display of the dataframe.
 
-        :param int display_max_rows: Integer
+        :param int display_min_rows: Integer
 
         """
-        if display_max_rows:
-            pd.set_option('display.max_rows', display_max_rows)
+        if display_min_rows:
+            pd.set_option('display.max_rows', display_min_rows)
 
         else:
             pd.set_option('display.max_rows', self.display_rows)
@@ -1515,7 +1518,7 @@ class Symbol(object):
             column_names = supertrend_df.columns
             self.row_counter += 1
             if not colors:
-                colors = ['yellow', 'blue', 'green', 'red']
+                colors = ['brown', 'blue', 'green', 'red']
             for i, col in enumerate(column_names):
                 self.set_plot_color(indicator_column=col, color=colors[i])
                 self.set_plot_color_fill(indicator_column=col, color_fill=False)
@@ -2281,13 +2284,13 @@ class Exchange(object):
     """
     Exchange data.
 
-    Exchange data collected:
+    Exchange data collected in class variables:
 
-    - fees: fees applied to the user requesting for every symbol in a pandas dataframe.
-    - system_status: API state can be normal o under maintenance.
-    - coins: A dataframe with all the coin's data.
-    - networks: A dataframe with info about every coin and its blockchain networks info.
-    - info_dic: A dictionary with all raw symbols info each.
+    - **fees**: fees applied to the user requesting for every symbol in a pandas dataframe.
+    - **system_status**: API state can be normal o under maintenance.
+    - **coins**: A dataframe with all the coin's data.
+    - **networks**: A dataframe with info about every coin and its blockchain networks info.
+    - **info_dic**: A dictionary with all raw symbols info each.
 
     """
 
@@ -2302,6 +2305,9 @@ class Exchange(object):
         self.symbols = self.get_symbols()
         self.df = self.get_df()
         self.order_types = self.get_order_types()
+
+    def __repr__(self):
+        return str(self.df)
 
     def filter(self, symbol: str):
         """
@@ -2361,13 +2367,13 @@ class Exchange(object):
             return self.info_dic[symbol.upper()]
         return self.info_dic
 
-    def get_symbols(self, coin: str = None, base=True, quote=True):
+    def get_symbols(self, coin: str = None, base: bool = True, quote: bool = True):
         """
         Return list of symbols for a coin. Can be selected symbols where it is base, or quote, or both.
 
         :param str coin: An existing binance coin.
-        :param str base: Activate return of symbols where coin is base.
-        :param str quote: Activate return of symbols where coin is quote.
+        :param bool base: Activate return of symbols where coin is base.
+        :param bool quote: Activate return of symbols where coin is quote.
         :return list: List of symbols where it is base, quote or both.
         """
         if not coin:

@@ -48,6 +48,8 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Strategies Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="files.html">Files Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="messages.html">Notifications Module</a></li>
 </ul>
 
         </div>
@@ -77,6 +79,10 @@
   <section id="strategies-module">
 <h1>Strategies Module<a class="headerlink" href="#strategies-module" title="Permalink to this heading"></a></h1>
 <p>This module can manage trading strategies.</p>
+<p>This module can be imported:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">handlers</span> <span class="kn">import</span> <span class="n">strategies</span>
+</pre></div>
+</div>
 <span class="target" id="module-handlers.strategies"></span><dl class="py function">
 <dt class="sig sig-object py" id="handlers.strategies.random_strategy">
 <span class="sig-prename descclassname"><span class="pre">handlers.strategies.</span></span><span class="sig-name descname"><span class="pre">random_strategy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buys_qty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sells_qty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_actions_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'actions'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.strategies.random_strategy" title="Permalink to this definition"></a></dt>

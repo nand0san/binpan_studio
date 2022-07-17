@@ -3,6 +3,12 @@ Redis Module
 
 This module can manage Redis database data from Binance API with its original Binance format.
 
+To import this module:
+
+.. code-block::
+
+   from handlers import redis_fetch
+
 .. automodule:: handlers.redis_fetch
 
 Fetching Database Keys

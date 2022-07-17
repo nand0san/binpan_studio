@@ -20,6 +20,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Files Module" href="files.html" />
     <link rel="prev" title="Wallet Module" href="wallet.html" /> 
 </head>
 
@@ -52,6 +53,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#fetching-redis-ordered-sets">Fetching Redis Ordered Sets</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="files.html">Files Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="messages.html">Notifications Module</a></li>
 </ul>
 
         </div>
@@ -81,6 +84,10 @@
   <section id="redis-module">
 <h1>Redis Module<a class="headerlink" href="#redis-module" title="Permalink to this heading"></a></h1>
 <p>This module can manage Redis database data from Binance API with its original Binance format.</p>
+<p>To import this module:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">handlers</span> <span class="kn">import</span> <span class="n">redis_fetch</span>
+</pre></div>
+</div>
 <span class="target" id="module-handlers.redis_fetch"></span><section id="fetching-database-keys">
 <h2>Fetching Database Keys<a class="headerlink" href="#fetching-database-keys" title="Permalink to this heading"></a></h2>
 <dl class="py function">
@@ -237,14 +244,16 @@ Note: The GT, LT and NX options are mutually exclusive.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.redis_fetch.fetch_zset_range">
-<span class="sig-prename descclassname"><span class="pre">handlers.redis_fetch.</span></span><span class="sig-name descname"><span class="pre">fetch_zset_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">redisClient</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.redis_fetch.fetch_zset_range" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.redis_fetch.</span></span><span class="sig-name descname"><span class="pre">fetch_zset_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">redisClient</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.redis_fetch.fetch_zset_range" title="Permalink to this definition"></a></dt>
 <dd><p>Fetch a redis ordered set by its key name and start end indexes. Optionally returns with redis index (scores) in a tuple each row
 if with_Scores.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>redisClient</strong> (<em>object</em>) – A redis connector.</p></li>
-<li><p><strong>key</strong> (<em>str</em>) – Redis key name.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – Redis key name. Optional, symbol and tick interval can be used too.</p></li>
+<li><p><strong>symbol</strong> (<em>str</em>) – A Binance valid Symbol.</p></li>
+<li><p><strong>tick_interval</strong> (<em>str</em>) – A binance tick interval. Like 5m, 1h etc</p></li>
 <li><p><strong>start_index</strong> (<em>int</em>) – Numeric index in redis key.</p></li>
 <li><p><strong>end_index</strong> (<em>int</em>) – Numeric index in redis key.</p></li>
 <li><p><strong>with_scores</strong> (<em>bool</em>) – Will return rows with its index in a tuple if true.</p></li>
@@ -310,6 +319,7 @@ Example of data in one score of the zset:</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="wallet.html" class="btn btn-neutral float-left" title="Wallet Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="files.html" class="btn btn-neutral float-right" title="Files Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
