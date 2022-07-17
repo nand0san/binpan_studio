@@ -5,7 +5,7 @@ This module can manage plots.
 
 Plots made with Plotly library: https://plotly.com/
 
-.. automodule:: binpan.handlers.plotting
+.. automodule:: handlers.plotting
 
 Colors
 ------

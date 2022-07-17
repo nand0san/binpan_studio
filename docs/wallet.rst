@@ -3,7 +3,7 @@ Wallet Module
 
 This module can manage wallet data from Binance API.
 
-.. automodule:: binpan.handlers.wallet
+.. automodule:: handlers.wallet
 
 Wallet snapshots
 ----------------
