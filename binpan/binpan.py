@@ -54,7 +54,7 @@ API keys will be added to a file called secret.py in an encrypted way. API keys 
 """
     binpan_logger.warning(msg)
 
-__version__ = "0.0.44"
+__version__ = "0.0.45"
 
 plotly_colors = handlers.plotting.plotly_colors
 
