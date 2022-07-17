@@ -46,7 +46,12 @@
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Module</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Redis Module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Redis Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#fetching-database-keys">Fetching Database Keys</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fetching-redis-lists">Fetching Redis lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fetching-redis-ordered-sets">Fetching Redis Ordered Sets</a></li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -76,7 +81,9 @@
   <section id="redis-module">
 <h1>Redis Module<a class="headerlink" href="#redis-module" title="Permalink to this heading"></a></h1>
 <p>This module can manage Redis database data from Binance API with its original Binance format.</p>
-<span class="target" id="module-binpan.handlers.redis_fetch"></span><dl class="py function">
+<span class="target" id="module-binpan.handlers.redis_fetch"></span><section id="fetching-database-keys">
+<h2>Fetching Database Keys<a class="headerlink" href="#fetching-database-keys" title="Permalink to this heading"></a></h2>
+<dl class="py function">
 <dt class="sig sig-object py" id="binpan.handlers.redis_fetch.fetch_keys">
 <span class="sig-prename descclassname"><span class="pre">binpan.handlers.redis_fetch.</span></span><span class="sig-name descname"><span class="pre">fetch_keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">redisClient</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_tick_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#binpan.handlers.redis_fetch.fetch_keys" title="Permalink to this definition"></a></dt>
 <dd><p>Fetch all keys in redis database.</p>
@@ -93,6 +100,9 @@
 </dl>
 </dd></dl>
 
+</section>
+<section id="fetching-redis-lists">
+<h2>Fetching Redis lists<a class="headerlink" href="#fetching-redis-lists" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="binpan.handlers.redis_fetch.fetch_list">
 <span class="sig-prename descclassname"><span class="pre">binpan.handlers.redis_fetch.</span></span><span class="sig-name descname"><span class="pre">fetch_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">redisClient</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#binpan.handlers.redis_fetch.fetch_list" title="Permalink to this definition"></a></dt>
@@ -192,6 +202,10 @@ index by iteration.</p>
 </dl>
 </dd></dl>
 
+</section>
+<section id="fetching-redis-ordered-sets">
+<h2>Fetching Redis Ordered Sets<a class="headerlink" href="#fetching-redis-ordered-sets" title="Permalink to this heading"></a></h2>
+<p>It is expected to use as scoring, the “Open timestamp” or timestamp, of each element in set.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="binpan.handlers.redis_fetch.push_to_ordered_set">
 <span class="sig-prename descclassname"><span class="pre">binpan.handlers.redis_fetch.</span></span><span class="sig-name descname"><span class="pre">push_to_ordered_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">redisClient</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapping</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">LT</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">XX</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">NX</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">GT</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">CH</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">INCR</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.handlers.redis_fetch.push_to_ordered_set" title="Permalink to this definition"></a></dt>
@@ -265,7 +279,7 @@ Optionally returns with redis index (scores) in a tuple each row if with_Scores.
 
 <dl class="py function">
 <dt class="sig sig-object py" id="binpan.handlers.redis_fetch.fetch_set_and_parse">
-<span class="sig-prename descclassname"><span class="pre">binpan.handlers.redis_fetch.</span></span><span class="sig-name descname"><span class="pre">fetch_set_and_parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">redisClient</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#binpan.handlers.redis_fetch.fetch_set_and_parse" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">binpan.handlers.redis_fetch.</span></span><span class="sig-name descname"><span class="pre">fetch_set_and_parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">redisClient</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#binpan.handlers.redis_fetch.fetch_set_and_parse" title="Permalink to this definition"></a></dt>
 <dd><p>Fetch a websocket channel from redis and parses to a BinPan dataframe.</p>
 <p>Data is expected to be in a redis ordered set with klines data each row and with Open timestamp as score.
 Example of data in one score of the zset:</p>
@@ -279,7 +293,7 @@ Example of data in one score of the zset:</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>redisClient</strong> (<em>object</em>) – A redis connector.</p></li>
-<li><p><strong>stream</strong> (<em>str</em>) – Key redis name.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – Key redis name.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return pd.DataFrame</dt>
@@ -288,6 +302,7 @@ Example of data in one score of the zset:</p>
 </dl>
 </dd></dl>
 
+</section>
 </section>
 
 

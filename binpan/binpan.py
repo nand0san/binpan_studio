@@ -537,7 +537,7 @@ class Symbol(object):
         else:
             return self.basic_dataframe(data=self.df, exceptions=exceptions, actions_col=actions_col)
 
-    def drop(self, columns=[], inplace=False) -> pd.DataFrame:
+    def drop(self, columns_to_drop=[], inplace=False) -> pd.DataFrame:
         """
         It drops some columns from the dataframe. If columns list not passed, then defaults to the initial columns.
 
@@ -551,29 +551,39 @@ class Symbol(object):
 
         """
         current_columns = self.df.columns
-        if not columns:
-            columns = []
+        if not columns_to_drop:
+            columns_to_drop = []
             for col in current_columns:
                 if not col in self.original_candles_cols:
-                    columns.append(col)
+                    columns_to_drop.append(col)
+            # self.row_counter = 1
         try:
             if inplace:
-                conserve_columns = {c for c in current_columns if c not in columns and c in self.color_control.keys()}
-
+                conserve_columns = [c for c in current_columns if c not in columns_to_drop and c in self.row_control.keys()]
+                # conserve_columns = [c for c in current_columns if c not in columns_to_drop]
                 self.row_control = {c: self.row_control[c] for c in conserve_columns}
-                self.row_counter = 1 + len([i for i in list(set(self.row_control)) if i == 1])
+                extra_rows = set(self.row_control.values())
+                try:
+                    extra_rows.remove(1)
+                except KeyError:
+                    pass
+                self.row_counter = 1 + len(extra_rows)
+
+                # reacondicionar rows de lo que ha quedado
+                unique_rows_index = {v: i + 2 for i, v in enumerate(extra_rows)}
+                self.row_control = {c: unique_rows_index[self.row_control[c]] for c in conserve_columns}
 
                 self.color_control = {c: self.color_control[c] for c in conserve_columns}
                 self.color_fill_control = {c: self.color_fill_control[c] for c in conserve_columns}
 
-                self.df.drop(columns, axis=1, inplace=True)
+                self.df.drop(columns_to_drop, axis=1, inplace=True)
 
                 return self.df
             else:
-                return self.df.drop(columns, axis=1, inplace=False)
+                return self.df.drop(columns_to_drop, axis=1, inplace=False)
 
         except KeyError:
-            wrong = (set(self.df.columns) | set(columns)) - set(self.df.columns)
+            wrong = (set(self.df.columns) | set(columns_to_drop)) - set(self.df.columns)
             msg = f"BinPan Exception: Wrong column names to drop: {wrong}"
             binpan_logger.error(msg)
             raise Exception(msg)
@@ -666,25 +676,32 @@ class Symbol(object):
         return self.trades
 
     def is_new(self,
-               data: pd.Series or pd.DataFrame) -> bool:
+               source_data: pd.Series or pd.DataFrame) -> bool:
         """
         Verify if indicator columns are previously created to avoid allocating new rows and colors etc.
 
-        :param pd.Series or pd.DataFrame data: Data from pandas_ta to review if is previously computed.
+        :param pd.Series or pd.DataFrame source_data: Data from pandas_ta to review if is previously computed.
         :return bool:
         """
-        existing_columns = self.df.columns
+        # existing_columns = list(self.df.columns)
 
-        if type(data) == pd.Series:
-            generated_columns = [data.name]
-        elif type(data) == pd.DataFrame:
-            generated_columns = data.columns
+        source_data = source_data.copy(deep=True)
+
+        generated_columns = []
+
+        if type(source_data) == pd.Series:
+            binpan_logger.debug(f"IS NEW: {source_data.name}")
+            serie_name = str(source_data.name)
+            generated_columns.append(serie_name)
+        elif type(source_data) == pd.DataFrame:
+            generated_columns = list(source_data.columns)
         else:
-            msg = f"BinPan error: pandas_ta data is not pd.Series or pd.DataFrame"
+            msg = f"BinPan error: (is_new?) pandas_ta data is not pd.Series or pd.DataFrame"
             binpan_logger.error(msg)
             raise Exception(msg)
         for gen_col in generated_columns:
-            if gen_col in existing_columns:
+            if gen_col in self.df.columns:
+                binpan_logger.info(f"Existing column: {gen_col}")
                 return False
         return True
 
@@ -1027,7 +1044,7 @@ class Symbol(object):
                                bins=300,
                                histnorm: str = 'density',
                                height: int = 800,
-                               title: str = "Distribution",
+                               title: str = None,
                                **update_layout_kwargs):
         """
         Plot a distribution plot for a dataframe column. Plots line for kernel distribution.
@@ -1045,6 +1062,9 @@ class Symbol(object):
         if self.orderbook.empty:
             binpan_logger.info("Orderbook not downloaded. Please add orderbook data with: my_binpan.get_orderbook()")
             return
+
+        if not title:
+            title = f"Distribution plot for order book {self.symbol}"
 
         handlers.plotting.dist_plot(df=self.orderbook,
                                     x_col=x_col,
@@ -1652,8 +1672,9 @@ class Symbol(object):
 
         if inplace and self.is_new(on_balance):
             self.row_counter += 1
+
             if not color:
-                color = 'red'
+                color = 'pink'
 
             self.set_plot_color(indicator_column=column_name, color=color)
             self.set_plot_row(indicator_column=column_name, row_position=self.row_counter)
@@ -1730,14 +1751,13 @@ class Symbol(object):
         column_name = str(vwap.name) + suffix
 
         if inplace and self.is_new(vwap):
-            self.row_counter += 1
+            # self.row_counter += 1
             if not color:
-                color = 'red'
+                color = 'darkgrey'
             self.set_plot_color(indicator_column=column_name, color=color)
-            self.set_plot_row(indicator_column=column_name, row_position=self.row_counter)
+            self.set_plot_row(indicator_column=column_name, row_position=1)
             self.set_plot_color_fill(indicator_column=column_name, color_fill=False)
             self.df.loc[:, column_name] = vwap
-
         return vwap
 
     def atr(self,
@@ -1967,6 +1987,8 @@ class Symbol(object):
                             **kwargs):
         """
         Calls any indicator in pandas_ta library with function name as first argument and any kwargs the function will use.
+
+        Generic calls are not added to object, just returned.
 
         More info: https://github.com/twopirllc/pandas-ta
 
@@ -2552,11 +2574,11 @@ def redis_client(ip: str = None,
     """
     A redis consumer client creator for the Redis module.
 
-    :param str ip: Redis host ip.
+    :param str ip: Redis host ip. DEfault is 127.0.0.1
     :param int port: Default is 6379
     :param int db: Default is 0.
-    :param bool decode_responses: It decodes responses from redis, avoiding bytes objects to be returned.
-    :param kwargs: If passed, object is instantiated exclusively with kwargs, then discards any passed parameter.
+    :param bool decode_responses: It decodes responses from redis, avoiding bytes objects to be returned. Default is True.
+    :param kwargs: If passed, object is instantiated exclusively with kwargs, discarding any passed parameter.
     :return object: A redis client.
     """
     from redis import StrictRedis
@@ -2564,6 +2586,16 @@ def redis_client(ip: str = None,
     if kwargs:
         return StrictRedis(**kwargs)
     else:
+        # noinspection PyTypeChecker
+        if not ip:
+            ip = '127.0.0.1'
+        if not port:
+            port = 6379
+        if not db:
+            db = 0
+        if not decode_responses:
+            decode_responses = True
+
         # noinspection PyTypeChecker
         return StrictRedis(host=ip,
                            port=port,

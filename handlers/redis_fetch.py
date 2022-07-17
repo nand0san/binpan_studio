@@ -176,7 +176,7 @@ def fetch_zset_timestamps(redisClient: object,
 
 
 def fetch_set_and_parse(redisClient: object,
-                        stream: str) -> pd.DataFrame:
+                        key: str) -> pd.DataFrame:
     """
     Fetch a websocket channel from redis and parses to a BinPan dataframe.
 
@@ -191,13 +191,18 @@ def fetch_set_and_parse(redisClient: object,
        # score for this entry would be Open timestamp: 1657651320000
 
     :param object redisClient: A redis connector.
-    :param str stream: Key redis name.
+    :param str key: Key redis name.
     :return pd.DataFrame: BinPan dataframe.
     """
-    symbol = stream.split('@')[0].upper()
-    tick_interval = stream[-2:]
-    data = fetch_zset_range(redisClient=redisClient, key=stream, with_scores=False)
+    symbol = key.split('@')[0].upper()
+    tick_interval = key[-2:]
+    data = fetch_zset_range(redisClient=redisClient, key=key, with_scores=False)
     return redis_klines_parser(json_list=data, symbol=symbol, tick_interval=tick_interval)
+
+
+################
+# List objects #
+################
 
 
 def fetch_list(redisClient: object,

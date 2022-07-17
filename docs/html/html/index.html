@@ -116,7 +116,7 @@
 <p>There is a tutorial in a Jupyter Notebook file in  the github repo.</p>
 <p><a class="reference external" href="https://github.com/nand0san/binpan_studio/blob/main/tutorial.ipynb">https://github.com/nand0san/binpan_studio/blob/main/tutorial.ipynb</a></p>
 <p>Importing just like this:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">binpan</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">binpan</span> <span class="kn">import</span> <span class="n">binpan</span>
 
 <span class="n">btcusdt</span> <span class="o">=</span> <span class="n">binpan</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;btcusdt&#39;</span><span class="p">,</span>
                         <span class="n">tick_interval</span><span class="o">=</span><span class="s1">&#39;15m&#39;</span><span class="p">,</span>
@@ -153,7 +153,12 @@
 <li class="toctree-l2"><a class="reference internal" href="wallet.html#helper">Helper</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="redis_fetch.html#fetching-database-keys">Fetching Database Keys</a></li>
+<li class="toctree-l2"><a class="reference internal" href="redis_fetch.html#fetching-redis-lists">Fetching Redis lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="redis_fetch.html#fetching-redis-ordered-sets">Fetching Redis Ordered Sets</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </section>

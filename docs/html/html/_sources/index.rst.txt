@@ -64,7 +64,7 @@ Importing just like this:
 
 .. code-block:: python
 
-    import binpan
+    from binpan import binpan
 
     btcusdt = binpan.Symbol(symbol='btcusdt',
                             tick_interval='15m',
