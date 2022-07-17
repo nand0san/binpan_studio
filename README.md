@@ -23,6 +23,14 @@ An example of a plot for candles and indicators:
 ![](https://raw.githubusercontent.com/nand0san/binpan_studio/main/docs/images/candles.png)
 
 
+BinPan contains no binance **order method, withdraw method** or any dangerous command.
+
+If you decide to add API keys for using some account methods, BinPan will encrypt it in a file, and in memory,
+but it is better to not enable trading on the Binance API key configuration, just for your own peace of mind.
+
+Be careful out there!
+
+
 Documentation
 -------------
 Take a look to the basic **tutorial**. Find it in the Jupyter Notebook file **tutorial.ipynb**

@@ -23,6 +23,16 @@ An example of a plot for candles and indicators:
    :width: 1000
    :alt: Candles with some indicators
 
+.. note::
+
+    BinPan contains no Binance order method, withdraw method or any dangerous command.
+
+    If you decide to add API keys for using some account methods, BinPan will encrypt it in a file, and in memory,
+    but it is better to not enable trading on the Binance API key configuration, just for your own peace of mind.
+
+    Be careful out there!
+
+
 Hope you find it useful breaking the market!!!
 
 

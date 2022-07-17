@@ -132,7 +132,11 @@ def assets_convertible_dust() -> dict:
         }
 
     """
-    return api_raw_signed_post(endpoint='/sapi/v1/asset/dust-btc', weight=1)
+    yn = input(f"This command may change or convert assets from your wallet!!! are you sure? (y/n)")
+    if yn.upper().startswith('Y'):
+        return api_raw_signed_post(endpoint='/sapi/v1/asset/dust-btc', weight=1)
+    else:
+        wallet_logger.warning("Canceled!")
 
 
 ##########
