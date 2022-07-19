@@ -97,10 +97,10 @@ variable names <em>encoded_chat_id</em>, <em>encoded_telegram_bot_id</em>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">binpan</span> <span class="kn">import</span> <span class="n">handlers</span>
 
 <span class="c1"># from @BotFather, get the bot api key</span>
-<span class="n">handlers</span><span class="o">.</span><span class="n">add_any_key</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;xxxxxxxxxx&quot;</span><span class="p">,</span> <span class="n">key_name</span><span class="o">=</span><span class="s2">&quot;encoded_telegram_bot_id&quot;</span><span class="p">)</span>
+<span class="n">handlers</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">add_any_key</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;xxxxxxxxxx&quot;</span><span class="p">,</span> <span class="n">key_name</span><span class="o">=</span><span class="s2">&quot;encoded_telegram_bot_id&quot;</span><span class="p">)</span>
 
 <span class="c1"># write to your bot and then get your chat id from https://api.telegram.org/bot&lt;YourBOTToken&gt;/getUpdates</span>
-<span class="n">handlers</span><span class="o">.</span><span class="n">add_any_key</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;xxxxxxxxxx&quot;</span><span class="p">,</span> <span class="n">key_name</span><span class="o">=</span><span class="s2">&quot;encoded_chat_id&quot;</span><span class="p">)</span>
+<span class="n">handlers</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">add_any_key</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;xxxxxxxxxx&quot;</span><span class="p">,</span> <span class="n">key_name</span><span class="o">=</span><span class="s2">&quot;encoded_chat_id&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="field-list simple">

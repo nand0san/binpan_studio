@@ -154,11 +154,14 @@ def get_candles_by_time_stamps(symbol: str,
 
         # descarta sobrantes
         overtime_candle_ts = handlers.time_helper.next_open_by_milliseconds(ms=end_time, tick_interval=tick_interval)
-        if type(raw_candles[0]) == list:  # if from binance
-            raw_candles = [i for i in raw_candles if int(i[0]) < overtime_candle_ts]
+        if raw_candles:
+            if type(raw_candles[0]) == list:  # if from binance
+                raw_candles = [i for i in raw_candles if int(i[0]) < overtime_candle_ts]
+            else:
+                open_ts_key = list(raw_candles[0].keys())[0]
+                raw_candles = [i for i in raw_candles if int(i[open_ts_key]) < overtime_candle_ts]
         else:
-            open_ts_key = list(raw_candles[0].keys())[0]
-            raw_candles = [i for i in raw_candles if int(i[open_ts_key]) < overtime_candle_ts]
+            break
 
     return raw_candles
 

@@ -56,7 +56,7 @@ API keys will be added to a file called secret.py in an encrypted way. API keys 
 """
     binpan_logger.warning(msg)
 
-__version__ = "0.0.46"
+__version__ = "0.0.47"
 
 plotly_colors = handlers.plotting.plotly_colors
 
@@ -593,6 +593,53 @@ class Symbol(object):
             binpan_logger.error(msg)
             raise Exception(msg)
 
+    def insert_indicator(self, data: pd.Series or pd.DataFrame, rows: list, colors: list, color_fills: list, suffix: str = ''):
+        """
+        Adds indicator to dataframe.
+
+        :param pd.Series or pd.DataFrame or np.ndarray data:Source data from pandas_ta or any other. Expected named series.
+        :param rows: Rows position for autoplot each serie. 1 is overlap, ANY OTHER INTEGER will calculate row position.
+        :param colors: Colors list for each serie indicator.
+        :param color_fills: Colors to fill indicator til y-axis or False to avoid. Example for transparent green 'rgba(26,150,65,0.5)'.
+        :param str suffix: A suffix for the new column name/s.
+        :return pd.DataFrame: Instance candles dataframe.
+
+        """
+        current_df = self.df.copy(deep=True)
+
+        data_series = list()
+
+        if type(data) == pd.Series:
+            data_series = [data]
+            if list(data.index) == list(current_df.index):
+                current_df.loc[:, data.name] = data
+            else:  # TODO: new column BREAKS IN ILOC?
+                current_df.iloc[:, current_df.columns.get_loc(data.name)] = data
+
+        elif type(data) == pd.DataFrame:
+            data_series = [data[col] for col in data.columns]
+            current_df = pd.concat([current_df, data], axis=1)
+
+        elif type(data) == np.ndarray:  # TODO: new column BREAKS IN ILOC?
+            data_series = pd.Series(data=data, index=current_df.index)
+            current_df.iloc[:, current_df.columns.get_loc(data.name)] = data
+
+        if self.is_new(data):
+            for i, serie in enumerate(data_series):
+                column_name = str(serie.name) + suffix
+
+                self.set_plot_color(indicator_column=column_name, color=colors[i])
+                if rows[i] != 1:
+                    self.row_counter += 1
+                    self.set_plot_color_fill(indicator_column=column_name, color_fill=color_fills[i])
+                    self.set_plot_row(indicator_column=column_name, row_position=self.row_counter)
+                else:
+                    self.set_plot_color_fill(indicator_column=column_name, color_fill=color_fills[i])
+                    self.set_plot_row(indicator_column=column_name, row_position=1)
+                    current_df.loc[:, column_name] = serie
+        self.df = current_df
+        return self.df
+
     def hk(self, inplace=False):
         """
         It computes Heikin Ashi candles. Any existing indicator column will not be recomputed. It is recommended to drop any indicator
@@ -695,7 +742,6 @@ class Symbol(object):
         generated_columns = []
 
         if type(source_data) == pd.Series:
-            binpan_logger.debug(f"IS NEW: {source_data.name}")
             serie_name = str(source_data.name)
             generated_columns.append(serie_name)
         elif type(source_data) == pd.DataFrame:
@@ -708,6 +754,9 @@ class Symbol(object):
             if gen_col in self.df.columns:
                 binpan_logger.info(f"Existing column: {gen_col}")
                 return False
+            else:
+                binpan_logger.info(f"New column: {gen_col}")
+
         return True
 
     ################
@@ -811,6 +860,8 @@ class Symbol(object):
         indicators_series = [self.df[k] for k in self.row_control.keys()]
         indicator_names = [self.df[k].name for k in self.row_control.keys()]
         indicators_colors = [self.color_control[k] for k in self.row_control.keys()]
+        indicators_colors = [c if type(c) == str else plotly_colors[c] for c in indicators_colors]
+
         rows_pos = [self.row_control[k] for k in self.row_control.keys()]
 
         # binpan_logger.debug(f"{indicator_names}\n{indicators_colors}\n{rows_pos}")
@@ -1422,7 +1473,7 @@ class Symbol(object):
     def ma(self,
            ma_name: str = 'ema',
            column_source: str = 'Close',
-           inplace: bool = True,
+           inplace: bool = False,
            suffix: str = None,
            color: str or int = None,
            **kwargs):
@@ -1433,7 +1484,7 @@ class Symbol(object):
 
         :param str ma_name: A moving average supported by the generic pandas_ta "ma" function.
         :param str column_source: Name of column with data to be used.
-        :param bool inplace: Permanent or not.
+        :param bool inplace: Permanent or not. Default is false, because of some testing required sometimes.
         :param str suffix: A string to decorate resulting Pandas series name.
         :param str or int color: A color from plotly list of colors or its index in that list.
         :param kwargs: From https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/overlap/ma.py
