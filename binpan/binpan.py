@@ -56,7 +56,7 @@ API keys will be added to a file called secret.py in an encrypted way. API keys 
 """
     binpan_logger.warning(msg)
 
-__version__ = "0.0.47"
+__version__ = "0.0.48"
 
 plotly_colors = handlers.plotting.plotly_colors
 
@@ -595,20 +595,28 @@ class Symbol(object):
 
     def insert_indicator(self,
                          data: pd.Series or pd.DataFrame,
-                         rows: list, colors: list,
-                         color_fills: list,
+                         rows: list,
+                         colors: list = None,
+                         color_fills: list = None,
                          suffix: str = ''):
         """
         Adds indicator to dataframe.
 
-        :param pd.Series or pd.DataFrame or np.ndarray data:Source data from pandas_ta or any other. Expected named series.
+        :param pd.Series or pd.DataFrame or np.ndarray data: Source data from pandas_ta or any other. Expected named series.
         :param rows: Rows position for autoplot each serie. 1 is overlap, ANY OTHER INTEGER will calculate row position.
-        :param colors: Colors list for each serie indicator.
+        :param colors: Colors list for each serie indicator. Default is random colors.
         :param color_fills: Colors to fill indicator til y-axis or False to avoid. Example for transparent green 'rgba(26,150,65,0.5)'.
-        :param str suffix: A suffix for the new column name/s.
+           Default is all False.
+        :param str suffix: A suffix for the new column name/s. If numpy array inserted, it uses "Inserted" as column name.
+           Can be used a suffix.
         :return pd.DataFrame: Instance candles dataframe.
 
         """
+        if not colors:
+            colors = [choice(plotly_colors) for _ in range(len(rows))]
+
+        if not color_fills:
+            colors = [False for _ in range(len(rows))]
 
         current_df = self.df.copy(deep=True)
 
