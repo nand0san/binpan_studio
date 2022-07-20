@@ -15,10 +15,8 @@ read_required = open('requirements.txt', 'r')
 REQUIRED = read_required.read()
 read_required.close()
 
-# req = os.path.abspath()
-#
-# with open(req) as f:
-#     required = f.read().splitlines()
+my_version = '0.0.50'
+
 
 """
       install_requires=[
@@ -35,7 +33,7 @@ read_required.close()
 """
 
 setup(name='binpan',
-      version='0.0.48',
+      version=my_version,
       url='https://github.com/nand0san/binpan_studio',
       license='MIT',
       install_requires=REQUIRED,

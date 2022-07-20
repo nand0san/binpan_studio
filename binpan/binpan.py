@@ -7,8 +7,6 @@ This is the main classes file.
 import pandas as pd
 import numpy as np
 
-# import binpan
-# import handlers
 
 import handlers.logs
 import handlers.starters
@@ -29,6 +27,14 @@ from random import choice
 
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
+
+try:
+    from setup import my_version
+except Exception:
+    my_version = 'Developing'
+
+__version__ = my_version
+
 
 try:
     from secret import redis_conf
@@ -56,9 +62,9 @@ API keys will be added to a file called secret.py in an encrypted way. API keys 
 """
     binpan_logger.warning(msg)
 
-__version__ = "0.0.48"
 
 plotly_colors = handlers.plotting.plotly_colors
+
 
 pd.set_option('display.max_columns', 20)
 pd.set_option('display.width', 250)
@@ -594,7 +600,7 @@ class Symbol(object):
             raise Exception(msg)
 
     def insert_indicator(self,
-                         data: pd.Series or pd.DataFrame,
+                         source_data: pd.Series or pd.DataFrame,
                          rows: list,
                          colors: list = None,
                          color_fills: list = None,
@@ -602,7 +608,7 @@ class Symbol(object):
         """
         Adds indicator to dataframe.
 
-        :param pd.Series or pd.DataFrame or np.ndarray data: Source data from pandas_ta or any other. Expected named series.
+        :param pd.Series or pd.DataFrame or np.ndarray source_data: Source data from pandas_ta or any other. Expected named series.
         :param rows: Rows position for autoplot each serie. 1 is overlap, ANY OTHER INTEGER will calculate row position.
         :param colors: Colors list for each serie indicator. Default is random colors.
         :param color_fills: Colors to fill indicator til y-axis or False to avoid. Example for transparent green 'rgba(26,150,65,0.5)'.
@@ -612,29 +618,39 @@ class Symbol(object):
         :return pd.DataFrame: Instance candles dataframe.
 
         """
+
         if not colors:
             colors = [choice(plotly_colors) for _ in range(len(rows))]
 
         if not color_fills:
-            colors = [False for _ in range(len(rows))]
+            color_fills = [False for _ in range(len(rows))]
 
         current_df = self.df.copy(deep=True)
 
-        data_series = list()
+        # data_series = list()
 
-        if type(data) == pd.Series:
+        if type(source_data) == pd.Series:
+            data = source_data.copy(deep=True)
             data_series = [data]
             if not list(data.index) == list(current_df.index):
                 data.index = current_df.index
             current_df.loc[:, data.name] = data
 
-        elif type(data) == pd.DataFrame:
+        elif type(source_data) == pd.DataFrame:
+            data = source_data.copy(deep=True)
             data_series = [data[col] for col in data.columns]
+            # data.index = current_df.index
+            data.set_index(current_df.index, inplace=True)
             current_df = pd.concat([current_df, data], axis=1)
 
-        elif type(data) == np.ndarray:
+        elif type(source_data) == np.ndarray:
+            data = source_data.copy()
             data_ser = pd.Series(data=data, index=current_df.index, name='Inserted')
             data_series = [data_ser]
+        else:
+            msg = f"BinPan Warning: Unexpected data type {type(source_data)}"
+            binpan_logger.warning(msg)
+            return
 
         if self.is_new(data):
             last_row = self.row_counter
