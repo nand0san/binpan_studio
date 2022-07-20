@@ -593,7 +593,11 @@ class Symbol(object):
             binpan_logger.error(msg)
             raise Exception(msg)
 
-    def insert_indicator(self, data: pd.Series or pd.DataFrame, rows: list, colors: list, color_fills: list, suffix: str = ''):
+    def insert_indicator(self,
+                         data: pd.Series or pd.DataFrame,
+                         rows: list, colors: list,
+                         color_fills: list,
+                         suffix: str = ''):
         """
         Adds indicator to dataframe.
 
@@ -605,38 +609,38 @@ class Symbol(object):
         :return pd.DataFrame: Instance candles dataframe.
 
         """
+
         current_df = self.df.copy(deep=True)
 
         data_series = list()
 
         if type(data) == pd.Series:
             data_series = [data]
-            if list(data.index) == list(current_df.index):
-                current_df.loc[:, data.name] = data
-            else:  # TODO: new column BREAKS IN ILOC?
-                current_df.iloc[:, current_df.columns.get_loc(data.name)] = data
+            if not list(data.index) == list(current_df.index):
+                data.index = current_df.index
+            current_df.loc[:, data.name] = data
 
         elif type(data) == pd.DataFrame:
             data_series = [data[col] for col in data.columns]
             current_df = pd.concat([current_df, data], axis=1)
 
-        elif type(data) == np.ndarray:  # TODO: new column BREAKS IN ILOC?
-            data_series = pd.Series(data=data, index=current_df.index)
-            current_df.iloc[:, current_df.columns.get_loc(data.name)] = data
+        elif type(data) == np.ndarray:
+            data_ser = pd.Series(data=data, index=current_df.index, name='Inserted')
+            data_series = [data_ser]
 
         if self.is_new(data):
+            last_row = self.row_counter
+            rows = [r + last_row - 1 if r != 1 else 1 for r in rows]  # places in available row
+
             for i, serie in enumerate(data_series):
                 column_name = str(serie.name) + suffix
-
+                current_df.loc[:, column_name] = serie
                 self.set_plot_color(indicator_column=column_name, color=colors[i])
-                if rows[i] != 1:
-                    self.row_counter += 1
-                    self.set_plot_color_fill(indicator_column=column_name, color_fill=color_fills[i])
-                    self.set_plot_row(indicator_column=column_name, row_position=self.row_counter)
-                else:
-                    self.set_plot_color_fill(indicator_column=column_name, color_fill=color_fills[i])
-                    self.set_plot_row(indicator_column=column_name, row_position=1)
-                    current_df.loc[:, column_name] = serie
+                self.set_plot_color_fill(indicator_column=column_name, color_fill=color_fills[i])
+                self.set_plot_row(indicator_column=column_name, row_position=rows[i])
+
+            self.row_counter = max(rows)
+
         self.df = current_df
         return self.df
 
@@ -736,6 +740,9 @@ class Symbol(object):
         :return bool:
         """
         # existing_columns = list(self.df.columns)
+
+        if type(source_data) == np.ndarray:
+            return True
 
         source_data = source_data.copy(deep=True)
 

@@ -160,7 +160,7 @@ def get_candles_by_time_stamps(symbol: str,
             else:
                 open_ts_key = list(raw_candles[0].keys())[0]
                 raw_candles = [i for i in raw_candles if int(i[open_ts_key]) < overtime_candle_ts]
-        else:
+        else:  # TODO: make this thing work, WHEN BIG INDEX, THROWS AN INDEX ERROR
             break
 
     return raw_candles
