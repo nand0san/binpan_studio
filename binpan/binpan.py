@@ -638,10 +638,9 @@ class Symbol(object):
 
         elif type(source_data) == pd.DataFrame:
             data = source_data.copy(deep=True)
-            data_series = [data[col] for col in data.columns]
-            # data.index = current_df.index
             data.set_index(current_df.index, inplace=True)
             current_df = pd.concat([current_df, data], axis=1)
+            data_series = [data[col] for col in data.columns]
 
         elif type(source_data) == np.ndarray:
             data = source_data.copy()
@@ -652,7 +651,7 @@ class Symbol(object):
             binpan_logger.warning(msg)
             return
 
-        if self.is_new(data):
+        if self.is_new(data, suffix):
             last_row = self.row_counter
             rows = [r + last_row - 1 if r != 1 else 1 for r in rows]  # places in available row
 
@@ -665,7 +664,7 @@ class Symbol(object):
 
             self.row_counter = max(rows)
 
-        self.df = current_df
+            self.df = current_df
         return self.df
 
     def hk(self, inplace=False):
@@ -756,11 +755,13 @@ class Symbol(object):
         return self.trades
 
     def is_new(self,
-               source_data: pd.Series or pd.DataFrame) -> bool:
+               source_data: pd.Series or pd.DataFrame,
+               suffix: str = '') -> bool:
         """
         Verify if indicator columns are previously created to avoid allocating new rows and colors etc.
 
         :param pd.Series or pd.DataFrame source_data: Data from pandas_ta to review if is previously computed.
+        :param str suffix: If suffix passed, it takes it into account when searching for existence.
         :return bool:
         """
         # existing_columns = list(self.df.columns)
@@ -773,12 +774,12 @@ class Symbol(object):
         generated_columns = []
 
         if type(source_data) == pd.Series:
-            serie_name = str(source_data.name)
+            serie_name = str(source_data.name) + suffix
             generated_columns.append(serie_name)
         elif type(source_data) == pd.DataFrame:
-            generated_columns = list(source_data.columns)
+            generated_columns = [c + suffix for c in list(source_data.columns)]
         else:
-            msg = f"BinPan error: (is_new?) pandas_ta data is not pd.Series or pd.DataFrame"
+            msg = f"BinPan error: (is_new?) source data is not pd.Series or pd.DataFrame"
             binpan_logger.error(msg)
             raise Exception(msg)
         for gen_col in generated_columns:
@@ -852,7 +853,7 @@ class Symbol(object):
              width=1800,
              height=1000,
              candles_ta_height_ratio: float = 0.75,
-             plot_volume: bool = True,
+             volume: bool = True,
              title: str = None,
              yaxis_title='Price',
              overlapped_indicators: list = [],
@@ -874,7 +875,7 @@ class Symbol(object):
         :param height: Height of the plot.
         :param candles_ta_height_ratio: Proportion between candles and the other indicators. Not considering overlap ones
             in the candles plot.
-        :param plot_volume: Plots volume.
+        :param volume: Plots volume.
         :param title: A tittle for the plot.
         :param yaxis_title: A title for the y axis.
         :param overlapped_indicators: Can declare as overlap in the candles plot some column.
@@ -901,7 +902,7 @@ class Symbol(object):
                                          width=width,
                                          height=height,
                                          candles_ta_height_ratio=candles_ta_height_ratio,
-                                         plot_volume=plot_volume,
+                                         plot_volume=volume,
                                          title=title,
                                          yaxis_title=yaxis_title,
                                          on_candles_indicator=overlapped_indicators,
@@ -2083,7 +2084,7 @@ class Symbol(object):
         :param kwargs: Arguments for the requested indicator. Review pandas_ta info: https://github.com/twopirllc/pandas-ta#features
         :return: Whatever returns pandas_ta
         """
-
+        # TODO: add to autoplot
         if name == "ebsw":
             return ta.ebsw(**kwargs)
         elif name == "ao":

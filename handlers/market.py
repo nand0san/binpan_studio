@@ -209,20 +209,26 @@ def parse_candles_to_dataframe(response: list,
                    'Trades', 'Taker buy base volume', 'Taker buy quote volume', 'Ignore']
 
     # check if redis columns
-    if type(response[0]) == list:
-        df = pd.DataFrame(response, columns=columns)
-    else:
-        response_keys = list(response[0].keys())
-        response_keys.sort()
-        sort_columns = columns
-        sort_columns.sort()
-
-        if response_keys != sort_columns:  # json keys from redis different
-            columns = list(klines_columns.keys())
+    if response:
+        if type(response[0]) == list:
             df = pd.DataFrame(response, columns=columns)
-            df.rename(columns=klines_columns, inplace=True)
         else:
-            df = pd.DataFrame(response, columns=columns)
+            response_keys = list(response[0].keys())
+            response_keys.sort()
+            sort_columns = columns
+            sort_columns.sort()
+
+            if response_keys != sort_columns:  # json keys from redis different
+                columns = list(klines_columns.keys())
+                df = pd.DataFrame(response, columns=columns)
+                df.rename(columns=klines_columns, inplace=True)
+            else:
+                df = pd.DataFrame(response, columns=columns)
+    else:
+        msg = f"BinPan Warning: No response to parse for {symbol} from {tick_interval}. " \
+              f"Check symbol status with: binpan.Exchange().df.loc['{symbol}'].to_dict()['status']"
+        market_logger.warning(msg)
+        return pd.DataFrame(columns=columns)
 
     for col in df.columns:
         df[col] = pd.to_numeric(arg=df[col], downcast='integer')
