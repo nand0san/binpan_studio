@@ -225,8 +225,8 @@ def parse_candles_to_dataframe(raw_response: list,
             else:
                 df = pd.DataFrame(raw_response, columns=columns)
     else:
-        msg = f"BinPan Warning: No response to parse for {symbol} from {tick_interval}. " \
-              f"Check symbol status with: binpan.Exchange().df.loc['{symbol}'].to_dict()['status']"
+        msg = f"BinPan Warning: No response to parse for {symbol} {tick_interval}. " \
+              f"Check symbol requested time interval or {symbol} online status: binpan.Exchange().df.loc['{symbol}'].to_dict()['status']"
         market_logger.warning(msg)
         return pd.DataFrame(columns=columns + ['Open timestamp', 'Close timestamp'])
 
