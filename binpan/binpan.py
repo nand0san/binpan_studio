@@ -1,3 +1,4 @@
+
 """
 
 This is the main classes file.
@@ -29,7 +30,7 @@ binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', 
 tick_seconds = handlers.time_helper.tick_seconds
 
 
-__version__ = "0.0.58"
+__version__ = "0.0.60"
 
 
 try:

@@ -47,7 +47,7 @@ Python Version and Google Colab
 
 Please install in google colab with: :code:`!pip install binpan`, then push restart runtime button and import library as usual.
 
-Google colab ready: **python 3.7.9**
+Recommended Python version: **3.7**
 
 GitHub repo
 -----------

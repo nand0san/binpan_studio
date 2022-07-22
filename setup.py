@@ -15,21 +15,8 @@ read_required = open('requirements.txt', 'r')
 REQUIRED = read_required.read()
 read_required.close()
 
-my_version = "0.0.58"
+my_version = "0.0.60"
 
-"""
-      install_requires=[
-            'requests~=2.28.0',
-            'pytz~=2022.1',
-            'py-cpuinfo~=8.0.0',
-            'numpy==1.23.0',
-            'pandas~=1.4.2',
-            'plotly~=5.9.0',
-            'tqdm~=4.64.0',
-            'pycryptodome==3.15.0',
-            'pandas-ta==0.3.14b0'
-      ],
-"""
 
 setup(name='binpan',
       version=my_version,
@@ -40,7 +27,7 @@ setup(name='binpan',
       classifiers=[
           "License :: OSI Approved :: MIT License",
           "Programming Language :: Python :: 3",
-          "Programming Language :: Python :: 3.7"
+          "Programming Language :: Python :: 3.7",
       ],
       author='Fernando Alfonso',
       author_email='hancaidolosdos@hotmail.com',
