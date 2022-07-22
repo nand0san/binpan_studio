@@ -7,7 +7,7 @@ Can be imported this way:
 
    from binpan import binpan
 
-.. automodule:: binpan
+.. automodule:: binpan.binpan
 
 Symbol Class
 ------------

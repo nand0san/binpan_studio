@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Exceptions Module &mdash; BinPan 0.0.40 documentation</title>
+  <title>Exceptions Module &mdash; BinPan 0.0.57 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/style.css" type="text/css" />
@@ -83,6 +83,83 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">handlers</span> <span class="kn">import</span> <span class="n">exceptions</span>
 </pre></div>
 </div>
+<span class="target" id="module-handlers.exceptions"></span><dl class="py exception">
+<dt class="sig sig-object py" id="handlers.exceptions.BinanceAPIException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.exceptions.</span></span><span class="sig-name descname"><span class="pre">BinanceAPIException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.exceptions.BinanceAPIException" title="Permalink to this definition"></a></dt>
+<dd><p>Extract exception from response.</p>
+<p>Exceptions from <a class="reference external" href="https://github.com/sammchardy/python-binance">https://github.com/sammchardy/python-binance</a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="handlers.exceptions.BinanceRequestException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.exceptions.</span></span><span class="sig-name descname"><span class="pre">BinanceRequestException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.exceptions.BinanceRequestException" title="Permalink to this definition"></a></dt>
+<dd><p>Request methods exceptions.</p>
+<p>Exceptions from <a class="reference external" href="https://github.com/sammchardy/python-binance">https://github.com/sammchardy/python-binance</a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="handlers.exceptions.BinanceOrderException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.exceptions.</span></span><span class="sig-name descname"><span class="pre">BinanceOrderException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.exceptions.BinanceOrderException" title="Permalink to this definition"></a></dt>
+<dd><p>Orders exceptions from API.</p>
+<p>Exceptions from <a class="reference external" href="https://github.com/sammchardy/python-binance">https://github.com/sammchardy/python-binance</a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="handlers.exceptions.BinanceOrderMinAmountException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.exceptions.</span></span><span class="sig-name descname"><span class="pre">BinanceOrderMinAmountException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.exceptions.BinanceOrderMinAmountException" title="Permalink to this definition"></a></dt>
+<dd><p>Symbol filter exceptions: Minimum Amount</p>
+<p>Exceptions from <a class="reference external" href="https://github.com/sammchardy/python-binance">https://github.com/sammchardy/python-binance</a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="handlers.exceptions.BinanceOrderMinPriceException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.exceptions.</span></span><span class="sig-name descname"><span class="pre">BinanceOrderMinPriceException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.exceptions.BinanceOrderMinPriceException" title="Permalink to this definition"></a></dt>
+<dd><p>Symbol filter exceptions: Minimum Price</p>
+<p>Exceptions from <a class="reference external" href="https://github.com/sammchardy/python-binance">https://github.com/sammchardy/python-binance</a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="handlers.exceptions.BinanceOrderMinTotalException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.exceptions.</span></span><span class="sig-name descname"><span class="pre">BinanceOrderMinTotalException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.exceptions.BinanceOrderMinTotalException" title="Permalink to this definition"></a></dt>
+<dd><p>Symbol filter exceptions: Minimum Total</p>
+<p>Exceptions from <a class="reference external" href="https://github.com/sammchardy/python-binance">https://github.com/sammchardy/python-binance</a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="handlers.exceptions.BinanceOrderUnknownSymbolException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.exceptions.</span></span><span class="sig-name descname"><span class="pre">BinanceOrderUnknownSymbolException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.exceptions.BinanceOrderUnknownSymbolException" title="Permalink to this definition"></a></dt>
+<dd><p>Unknown symbol.</p>
+<p>Exceptions from <a class="reference external" href="https://github.com/sammchardy/python-binance">https://github.com/sammchardy/python-binance</a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="handlers.exceptions.BinanceOrderInactiveSymbolException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.exceptions.</span></span><span class="sig-name descname"><span class="pre">BinanceOrderInactiveSymbolException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.exceptions.BinanceOrderInactiveSymbolException" title="Permalink to this definition"></a></dt>
+<dd><p>Order interactive exception.</p>
+<p>Exceptions from <a class="reference external" href="https://github.com/sammchardy/python-binance">https://github.com/sammchardy/python-binance</a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="handlers.exceptions.NotImplementedException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.exceptions.</span></span><span class="sig-name descname"><span class="pre">NotImplementedException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.exceptions.NotImplementedException" title="Permalink to this definition"></a></dt>
+<dd><p>Not implemented.</p>
+<p>Exceptions from <a class="reference external" href="https://github.com/sammchardy/python-binance">https://github.com/sammchardy/python-binance</a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="id0">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.exceptions.</span></span><span class="sig-name descname"><span class="pre">BinanceAPIException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id0" title="Permalink to this definition"></a></dt>
+<dd><p>Extract exception from response.</p>
+<p>Exceptions from <a class="reference external" href="https://github.com/sammchardy/python-binance">https://github.com/sammchardy/python-binance</a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="id1">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.exceptions.</span></span><span class="sig-name descname"><span class="pre">BinanceRequestException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id1" title="Permalink to this definition"></a></dt>
+<dd><p>Request methods exceptions.</p>
+<p>Exceptions from <a class="reference external" href="https://github.com/sammchardy/python-binance">https://github.com/sammchardy/python-binance</a></p>
+</dd></dl>
+
 </section>
 
 

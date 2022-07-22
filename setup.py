@@ -1,5 +1,7 @@
 from setuptools import setup
 import pathlib
+from secret import my_version
+
 
 # The directory containing this file
 HERE = pathlib.Path(__file__).parent
@@ -14,8 +16,6 @@ readme.close()
 read_required = open('requirements.txt', 'r')
 REQUIRED = read_required.read()
 read_required.close()
-
-my_version = '0.0.55'
 
 
 """

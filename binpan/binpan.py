@@ -28,9 +28,10 @@ from random import choice
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
 
+
 try:
-    from ..setup import my_version
-except Exception:
+    from ..secret import my_version
+except:
     my_version = 'Developing'
 
 __version__ = my_version

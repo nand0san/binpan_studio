@@ -9,6 +9,8 @@ import json
 
 class BinanceAPIException(Exception):
     """
+    Extract exception from response.
+
     Exceptions from https://github.com/sammchardy/python-binance
     """
 
@@ -31,6 +33,8 @@ class BinanceAPIException(Exception):
 
 class BinanceRequestException(Exception):
     """
+    Request methods exceptions.
+
     Exceptions from https://github.com/sammchardy/python-binance
     """
 
@@ -43,6 +47,8 @@ class BinanceRequestException(Exception):
 
 class BinanceOrderException(Exception):
     """
+    Orders exceptions from API.
+
     Exceptions from https://github.com/sammchardy/python-binance
     """
     def __init__(self, code, message):
@@ -55,6 +61,8 @@ class BinanceOrderException(Exception):
 
 class BinanceOrderMinAmountException(BinanceOrderException):
     """
+    Symbol filter exceptions: Minimum Amount
+
     Exceptions from https://github.com/sammchardy/python-binance
     """
     def __init__(self, value):
@@ -64,6 +72,8 @@ class BinanceOrderMinAmountException(BinanceOrderException):
 
 class BinanceOrderMinPriceException(BinanceOrderException):
     """
+    Symbol filter exceptions: Minimum Price
+
     Exceptions from https://github.com/sammchardy/python-binance
     """
     def __init__(self, value):
@@ -73,6 +83,8 @@ class BinanceOrderMinPriceException(BinanceOrderException):
 
 class BinanceOrderMinTotalException(BinanceOrderException):
     """
+    Symbol filter exceptions: Minimum Total
+
     Exceptions from https://github.com/sammchardy/python-binance
     """
     def __init__(self, value):
@@ -82,6 +94,8 @@ class BinanceOrderMinTotalException(BinanceOrderException):
 
 class BinanceOrderUnknownSymbolException(BinanceOrderException):
     """
+    Unknown symbol.
+
     Exceptions from https://github.com/sammchardy/python-binance
     """
     def __init__(self, value):
@@ -91,6 +105,8 @@ class BinanceOrderUnknownSymbolException(BinanceOrderException):
 
 class BinanceOrderInactiveSymbolException(BinanceOrderException):
     """
+    Order interactive exception.
+
     Exceptions from https://github.com/sammchardy/python-binance
     """
     def __init__(self, value):
@@ -100,6 +116,8 @@ class BinanceOrderInactiveSymbolException(BinanceOrderException):
 
 class NotImplementedException(Exception):
     """
+    Not implemented.
+
     Exceptions from https://github.com/sammchardy/python-binance
     """
     def __init__(self, value):

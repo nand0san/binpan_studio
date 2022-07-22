@@ -10,7 +10,7 @@ Can be imported this way:
    from handlers import exceptions
 
 
-.. automodule:: binpan.handlers.exceptions
+.. automodule:: handlers.exceptions
     :members:
 
 .. autoclass:: BinanceAPIException

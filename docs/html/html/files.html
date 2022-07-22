@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Files Module &mdash; BinPan 0.0.40 documentation</title>
+  <title>Files Module &mdash; BinPan 0.0.57 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/style.css" type="text/css" />
@@ -87,12 +87,178 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">handlers</span> <span class="kn">import</span> <span class="n">files</span>
 </pre></div>
 </div>
-<section id="files-and-folders">
+<span class="target" id="module-handlers.files"></span><section id="files-and-folders">
 <h2>Files and Folders<a class="headerlink" href="#files-and-folders" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.files.create_dir">
+<span class="sig-prename descclassname"><span class="pre">handlers.files.</span></span><span class="sig-name descname"><span class="pre">create_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.files.create_dir" title="Permalink to this definition"></a></dt>
+<dd><p>Create a folder at the designated path if it doesn’t exist. No error if it already exists</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – Path for the new directory.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.files.save_dataframe_to_csv">
+<span class="sig-prename descclassname"><span class="pre">handlers.files.</span></span><span class="sig-name descname"><span class="pre">save_dataframe_to_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">','</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#handlers.files.save_dataframe_to_csv" title="Permalink to this definition"></a></dt>
+<dd><p>Save a dataframe in a csv with a separator between columns. Each field of each column will be enclosed in double quotes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<em>str</em>) – The file name.</p></li>
+<li><p><strong>data</strong> (<em>pd.DataFrame</em>) – The dataframe with date in columns.</p></li>
+<li><p><strong>col_sep</strong> (<em>str</em>) – Default is ‘,’</p></li>
+<li><p><strong>index</strong> (<em>bool</em>) – Keep index or not when saving. DEfault is False (drop index)</p></li>
+<li><p><strong>timestamp</strong> (<em>bool</em>) – Add a timestamp to the file name automatically. Default is true.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.files.append_row_to_csv">
+<span class="sig-prename descclassname"><span class="pre">handlers.files.</span></span><span class="sig-name descname"><span class="pre">append_row_to_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_sep</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">','</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#handlers.files.append_row_to_csv" title="Permalink to this definition"></a></dt>
+<dd><p>Add lines to a csv with separator to choose, a dataframe. Each field of each column will be enclosed in quotes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<em>str</em>) – The file to use.</p></li>
+<li><p><strong>data</strong> (<em>pd.DataFrame</em>) – Data to append to the file.</p></li>
+<li><p><strong>col_sep</strong> (<em>str</em>) – Expected column separators. Default is “,”</p></li>
+<li><p><strong>index</strong> (<em>bool</em>) – Keeps index in file as first column/s.</p></li>
+<li><p><strong>header</strong> (<em>bool</em>) – Keeps header. Default is True.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.files.find_csvs_in_path">
+<span class="sig-prename descclassname"><span class="pre">handlers.files.</span></span><span class="sig-name descname"><span class="pre">find_csvs_in_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'csv'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.files.find_csvs_in_path" title="Permalink to this definition"></a></dt>
+<dd><p>Locate all files with desired extension.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>files_path</strong> (<em>str</em>) – A path.</p></li>
+<li><p><strong>extension</strong> (<em>str</em>) – A extension like “csv”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.files.move_old_csvs">
+<span class="sig-prename descclassname"><span class="pre">handlers.files.</span></span><span class="sig-name descname"><span class="pre">move_old_csvs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'csv'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.files.move_old_csvs" title="Permalink to this definition"></a></dt>
+<dd><p>Move all existing files in a path with desired extension to a folder called “old”.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>files_path</strong> (<em>str</em>) – A path.</p></li>
+<li><p><strong>extension</strong> (<em>str</em>) – A extension. Default is “csv”.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.files.read_csv_to_dataframe">
+<span class="sig-prename descclassname"><span class="pre">handlers.files.</span></span><span class="sig-name descname"><span class="pre">read_csv_to_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_sep</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">','</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.files.read_csv_to_dataframe" title="Permalink to this definition"></a></dt>
+<dd><p>Creates a csv file from a dataframe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<em>str</em>) – The file name with or without path.</p></li>
+<li><p><strong>col_sep</strong> (<em>str</em>) – Column separator. DEfault is “,”</p></li>
+<li><p><strong>index_col</strong> (<em>bool</em>) – If False, index is dropped. Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.DataFrame</dt>
+<dd class="field-even"><p>A dataframe with data in columns using file rows header.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.files.read_file">
+<span class="sig-prename descclassname"><span class="pre">handlers.files.</span></span><span class="sig-name descname"><span class="pre">read_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.files.read_file" title="Permalink to this definition"></a></dt>
+<dd><p>Read a file to a list of strings each line.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return list</dt>
+<dd class="field-odd"><p>list with a string each row in the file.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.files.save_file">
+<span class="sig-prename descclassname"><span class="pre">handlers.files.</span></span><span class="sig-name descname"><span class="pre">save_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'w'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#handlers.files.save_file" title="Permalink to this definition"></a></dt>
+<dd><p>Save a new file from a list of lists each line.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<em>str</em>) – a file name to save.</p></li>
+<li><p><strong>data</strong> (<em>list</em>) – Data in a list of strings each line.</p></li>
+<li><p><strong>mode</strong> (<em>str</em>) – ‘w’ to rewrite full file or ‘a’ to append to existing file.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="secrets-archive">
 <h2>Secrets Archive<a class="headerlink" href="#secrets-archive" title="Permalink to this heading"></a></h2>
 <p>To add encrypted data to secret.py file.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.files.add_api_key">
+<span class="sig-prename descclassname"><span class="pre">handlers.files.</span></span><span class="sig-name descname"><span class="pre">add_api_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api_key_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#handlers.files.add_api_key" title="Permalink to this definition"></a></dt>
+<dd><p>Checks if exists in secret.py file and if not, then adds a line with the API key (not secret API key) encrypted value for working
+with the package.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>api_key_value</strong> (<em>str</em>) – API key</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.files.add_api_secret">
+<span class="sig-prename descclassname"><span class="pre">handlers.files.</span></span><span class="sig-name descname"><span class="pre">add_api_secret</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api_secret_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#handlers.files.add_api_secret" title="Permalink to this definition"></a></dt>
+<dd><p>Checks if exists in secret.py file and if not, then adds a line with the API secret encrypted value for working with the package.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>api_secret_value</strong> (<em>str</em>) – API key</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.files.add_any_key">
+<span class="sig-prename descclassname"><span class="pre">handlers.files.</span></span><span class="sig-name descname"><span class="pre">add_any_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#handlers.files.add_any_key" title="Permalink to this definition"></a></dt>
+<dd><p>Checks if exists in a file and if not, then adds a line with the api key value for working with the package.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>str</em>) – Any API key or secret to encrypt in secret.py file.</p></li>
+<li><p><strong>key_name</strong> (<em>str</em>) – Variable name to import it later.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example to add telegram data for notifications handler:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">binpan</span> <span class="kn">import</span> <span class="n">handlers</span>
+
+<span class="n">handlers</span><span class="o">.</span><span class="n">add_any_key</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;xxxxxxxxxx&quot;</span><span class="p">,</span> <span class="n">key_name</span><span class="o">=</span><span class="s2">&quot;encoded_chat_id&quot;</span><span class="p">)</span>
+<span class="n">handlers</span><span class="o">.</span><span class="n">add_any_key</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;xxxxxxxxxx&quot;</span><span class="p">,</span> <span class="n">key_name</span><span class="o">=</span><span class="s2">&quot;encoded_telegram_bot_id&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</dd></dl>
+
 </section>
 </section>
 
