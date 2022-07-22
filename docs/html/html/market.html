@@ -43,7 +43,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="binpan.html">BinPan Module</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Market Module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-handlers.market">Klines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#klines">Klines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#trades">Trades</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#coin-conversion">Coin Conversion</a></li>
 </ul>
@@ -88,175 +88,14 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">handlers</span> <span class="kn">import</span> <span class="n">market</span>
 </pre></div>
 </div>
-<section id="module-handlers.market">
-<span id="klines"></span><h2>Klines<a class="headerlink" href="#module-handlers.market" title="Permalink to this heading"></a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="handlers.market.get_candles_by_time_stamps">
-<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_candles_by_time_stamps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redis_client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">object</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.market.get_candles_by_time_stamps" title="Permalink to this definition"></a></dt>
-<dd><p>Calls API for candles list buy one or two timestamps, starting and ending.</p>
-<p>In case the limit is exceeded, the start_time prevails over the end_time, start_time must come in milliseconds from epoch.</p>
-<p>In case of two timeStamps as arguments, limit is ignored.</p>
-<p>The API rounds the startTime up to the next open of the next candle. That is, it does not include the candle in which there is
-that timeStamp, but the next candle of the corresponding tick_interval, except in case it exactly matches the value of an open
-timestamp, in which case it will include it in the return.</p>
-<p>The indicated endTime will include the candlestick that timestamp is on. It will come in milliseconds. It can be not a closed one if
-is open right in between the endtime timestamp.</p>
-<p>If no timestamps are passed, the last quantity candlesticks up to limit count are returned.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>symbol</strong> (<em>str</em>) – A binance valid symbol.</p></li>
-<li><p><strong>tick_interval</strong> (<em>str</em>) – A binance valid time interval for candlesticks.</p></li>
-<li><p><strong>start_time</strong> (<em>int</em>) – A timestamp in milliseconds from epoch.</p></li>
-<li><p><strong>end_time</strong> (<em>int</em>) – A timestamp in milliseconds from epoch.</p></li>
-<li><p><strong>limit</strong> (<em>int</em>) – Count of candles to ask for.</p></li>
-<li><p><strong>redis_client</strong> (<em>bool</em>) – A redis instance of a connector.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return list</dt>
-<dd class="field-even"><p>Returns a list from the Binance API</p>
-</dd>
-</dl>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
-  <span class="p">[</span>
-    <span class="mi">1499040000000</span><span class="p">,</span>      <span class="o">//</span> <span class="n">Open</span> <span class="n">time</span>
-    <span class="s2">&quot;0.01634790&quot;</span><span class="p">,</span>       <span class="o">//</span> <span class="n">Open</span>
-    <span class="s2">&quot;0.80000000&quot;</span><span class="p">,</span>       <span class="o">//</span> <span class="n">High</span>
-    <span class="s2">&quot;0.01575800&quot;</span><span class="p">,</span>       <span class="o">//</span> <span class="n">Low</span>
-    <span class="s2">&quot;0.01577100&quot;</span><span class="p">,</span>       <span class="o">//</span> <span class="n">Close</span>
-    <span class="s2">&quot;148976.11427815&quot;</span><span class="p">,</span>  <span class="o">//</span> <span class="n">Volume</span>
-    <span class="mi">1499644799999</span><span class="p">,</span>      <span class="o">//</span> <span class="n">Close</span> <span class="n">time</span>
-    <span class="s2">&quot;2434.19055334&quot;</span><span class="p">,</span>    <span class="o">//</span> <span class="n">Quote</span> <span class="n">asset</span> <span class="n">volume</span>
-    <span class="mi">308</span><span class="p">,</span>                <span class="o">//</span> <span class="n">Number</span> <span class="n">of</span> <span class="n">trades</span>
-    <span class="s2">&quot;1756.87402397&quot;</span><span class="p">,</span>    <span class="o">//</span> <span class="n">Taker</span> <span class="n">buy</span> <span class="n">base</span> <span class="n">asset</span> <span class="n">volume</span>
-    <span class="s2">&quot;28.46694368&quot;</span><span class="p">,</span>      <span class="o">//</span> <span class="n">Taker</span> <span class="n">buy</span> <span class="n">quote</span> <span class="n">asset</span> <span class="n">volume</span>
-    <span class="s2">&quot;17928899.62484339&quot;</span> <span class="o">//</span> <span class="n">Ignore</span><span class="o">.</span>
-  <span class="p">]</span>
-<span class="p">]</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="handlers.market.parse_candles_to_dataframe">
-<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">parse_candles_to_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_cols</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['Open</span> <span class="pre">time',</span> <span class="pre">'Close</span> <span class="pre">time']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'UTC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.market.parse_candles_to_dataframe" title="Permalink to this definition"></a></dt>
-<dd><p>Format a list of lists by changing the indicated time fields to string format.</p>
-<p>Passing a time_zone, for example ‘Europe/Madrid’, will change the time from utc to the indicated zone.</p>
-<p>It will automatically sort the DataFrame using the first column of the time_cols list.</p>
-<p>The index of the DataFrame will be numeric correlative.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>response</strong> (<em>list</em><em>(</em><em>lists</em><em>)</em>) – API klines response. List of lists.</p></li>
-<li><p><strong>symbol</strong> (<em>str</em>) – Symbol requested</p></li>
-<li><p><strong>tick_interval</strong> (<em>str</em>) – Tick interval between candles.</p></li>
-<li><p><strong>columns</strong> (<em>list</em>) – Column names. Default is BinPan dataframe columns.</p></li>
-<li><p><strong>time_cols</strong> (<em>list</em>) – Columns to take dates from.</p></li>
-<li><p><strong>time_zone</strong> (<em>str</em><em> or </em><em>None</em>) – Optional. Time zone to convert dates in index.</p></li>
-<li><p><strong>time_index</strong> (<em>bool</em>) – True gets dates index, False just numeric index.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Pandas DataFrame</p>
-</dd>
-</dl>
-</dd></dl>
-
+<section id="klines">
+<h2>Klines<a class="headerlink" href="#klines" title="Permalink to this heading"></a></h2>
 </section>
 <section id="trades">
 <h2>Trades<a class="headerlink" href="#trades" title="Permalink to this heading"></a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="handlers.market.get_agg_trades">
-<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_agg_trades</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fromId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BTCUSDT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.market.get_agg_trades" title="Permalink to this definition"></a></dt>
-<dd><p>Returns aggregated trades from id to limit or last trades if id not specified. Also is possible to get from starTime utc in
-milliseconds from epoch or until endtime milliseconds from epoch.</p>
-<p>If it is tested with more than 1 hour of trades, it gives error 1127 and if you adjust it to one hour,
-the maximum limit of 1000 is NOT applied.</p>
-<p>Limit applied in fromId mode defaults to 500. Maximum is 1000.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>fromId</strong> (<em>int</em>) – An aggregated trade id.</p></li>
-<li><p><strong>symbol</strong> (<em>str</em>) – A binance valid symbol.</p></li>
-<li><p><strong>limit</strong> (<em>int</em>) – Count of trades to ask for.</p></li>
-<li><p><strong>startTime</strong> (<em>int</em>) – A timestamp in milliseconds from epoch.</p></li>
-<li><p><strong>endTime</strong> (<em>int</em>) – A timestamp in milliseconds from epoch.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return list</dt>
-<dd class="field-even"><p>Returns a list from the Binance API</p>
-</dd>
-</dl>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[
-  {
-    &quot;a&quot;: 26129,         // Aggregate tradeId
-    &quot;p&quot;: &quot;0.01633102&quot;,  // Price
-    &quot;q&quot;: &quot;4.70443515&quot;,  // Quantity
-    &quot;f&quot;: 27781,         // First tradeId
-    &quot;l&quot;: 27781,         // Last tradeId
-    &quot;T&quot;: 1498793709153, // Timestamp
-    &quot;m&quot;: true,          // Was the buyer the maker?
-    &quot;M&quot;: true           // Was the trade the best price match?
-  }
-]
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="handlers.market.get_historical_aggregated_trades">
-<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_historical_aggregated_trades</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.market.get_historical_aggregated_trades" title="Permalink to this definition"></a></dt>
-<dd><p>Returns aggregated trades between timestamps. It iterates over 1 hour intervals to avoid API one hour limit.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>startTime</strong> (<em>int</em>) – A timestamp in milliseconds from epoch.</p></li>
-<li><p><strong>endTime</strong> (<em>int</em>) – A timestamp in milliseconds from epoch.</p></li>
-<li><p><strong>symbol</strong> (<em>str</em>) – A binance valid symbol.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return list</dt>
-<dd class="field-even"><p>Returns a list from the Binance API</p>
-</dd>
-</dl>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[
-  {
-    &quot;a&quot;: 26129,         // Aggregate tradeId
-    &quot;p&quot;: &quot;0.01633102&quot;,  // Price
-    &quot;q&quot;: &quot;4.70443515&quot;,  // Quantity
-    &quot;f&quot;: 27781,         // First tradeId
-    &quot;l&quot;: 27781,         // Last tradeId
-    &quot;T&quot;: 1498793709153, // Timestamp
-    &quot;m&quot;: true,          // Was the buyer the maker?
-    &quot;M&quot;: true           // Was the trade the best price match?
-  }
-]
-</pre></div>
-</div>
-</dd></dl>
-
 </section>
 <section id="coin-conversion">
 <h2>Coin Conversion<a class="headerlink" href="#coin-conversion" title="Permalink to this heading"></a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="handlers.market.convert_coin">
-<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">convert_coin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BTC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'USDT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coin_qty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.market.convert_coin" title="Permalink to this definition"></a></dt>
-<dd><p>Calculates a coin quantity value converted to other coin with current exchange prices.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>coin</strong> (<em>str</em>) – An existing coin string.</p></li>
-<li><p><strong>convert_to</strong> (<em>str</em>) – An existing coin string.</p></li>
-<li><p><strong>coin_qty</strong> (<em>float</em>) – How many coins to convert to.</p></li>
-<li><p><strong>prices</strong> (<em>dict</em>) – A dictionary with symbols and prices.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return float</dt>
-<dd class="field-even"><p>Converted value for the quantity</p>
-</dd>
-</dl>
-</dd></dl>
-
 </section>
 </section>
 

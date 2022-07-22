@@ -339,7 +339,7 @@ class Symbol(object):
                                                               limit=self.limit,
                                                               redis_client=self.from_redis)
 
-        dataframe = handlers.market.parse_candles_to_dataframe(response=self.raw,
+        dataframe = handlers.market.parse_candles_to_dataframe(raw_response=self.raw,
                                                                columns=self.original_candles_cols,
                                                                time_cols=self.time_cols,
                                                                symbol=self.symbol,

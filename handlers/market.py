@@ -127,7 +127,6 @@ def get_candles_by_time_stamps(symbol: str,
     ranges = [(i, i + (1000 * tick_milliseconds)) for i in range(start_time, end_time, tick_milliseconds * 1000)]
 
     # loop
-
     raw_candles = []
     for r in ranges:
         start = r[0]
@@ -152,16 +151,16 @@ def get_candles_by_time_stamps(symbol: str,
 
         raw_candles += response
 
-        # descarta sobrantes
-        overtime_candle_ts = handlers.time_helper.next_open_by_milliseconds(ms=end_time, tick_interval=tick_interval)
-        if raw_candles:
-            if type(raw_candles[0]) == list:  # if from binance
-                raw_candles = [i for i in raw_candles if int(i[0]) < overtime_candle_ts]
-            else:
-                open_ts_key = list(raw_candles[0].keys())[0]
-                raw_candles = [i for i in raw_candles if int(i[open_ts_key]) < overtime_candle_ts]
-        else:  # TODO: make this thing work, WHEN BIG INDEX, THROWS AN INDEX ERROR
-            break
+    # TODO: CORRECT INDENTATION?
+
+    # descarta sobrantes
+    overtime_candle_ts = handlers.time_helper.next_open_by_milliseconds(ms=end_time, tick_interval=tick_interval)
+    if raw_candles:
+        if type(raw_candles[0]) == list:  # if from binance
+            raw_candles = [i for i in raw_candles if int(i[0]) < overtime_candle_ts]
+        else:
+            open_ts_key = list(raw_candles[0].keys())[0]
+            raw_candles = [i for i in raw_candles if int(i[open_ts_key]) < overtime_candle_ts]
 
     return raw_candles
 
@@ -178,7 +177,7 @@ def get_prices_dic() -> dict:
     return {d['symbol']: float(d['price']) for d in ret}
 
 
-def parse_candles_to_dataframe(response: list,
+def parse_candles_to_dataframe(raw_response: list,
                                symbol: str,
                                tick_interval: str,
                                columns: list = None,
@@ -194,7 +193,7 @@ def parse_candles_to_dataframe(response: list,
 
     The index of the DataFrame will be numeric correlative.
 
-    :param list(lists) response:        API klines response. List of lists.
+    :param list(lists) raw_response:        API klines response. List of lists.
     :param str symbol:          Symbol requested
     :param str tick_interval:   Tick interval between candles.
     :param list columns:         Column names. Default is BinPan dataframe columns.
@@ -209,26 +208,27 @@ def parse_candles_to_dataframe(response: list,
                    'Trades', 'Taker buy base volume', 'Taker buy quote volume', 'Ignore']
 
     # check if redis columns
-    if response:
-        if type(response[0]) == list:
-            df = pd.DataFrame(response, columns=columns)
+    if raw_response:
+        print(raw_response)
+        if type(raw_response[0]) == list:
+            df = pd.DataFrame(raw_response, columns=columns)
         else:
-            response_keys = list(response[0].keys())
+            response_keys = list(raw_response[0].keys())
             response_keys.sort()
             sort_columns = columns
             sort_columns.sort()
 
             if response_keys != sort_columns:  # json keys from redis different
                 columns = list(klines_columns.keys())
-                df = pd.DataFrame(response, columns=columns)
+                df = pd.DataFrame(raw_response, columns=columns)
                 df.rename(columns=klines_columns, inplace=True)
             else:
-                df = pd.DataFrame(response, columns=columns)
+                df = pd.DataFrame(raw_response, columns=columns)
     else:
         msg = f"BinPan Warning: No response to parse for {symbol} from {tick_interval}. " \
               f"Check symbol status with: binpan.Exchange().df.loc['{symbol}'].to_dict()['status']"
         market_logger.warning(msg)
-        return pd.DataFrame(columns=columns)
+        return pd.DataFrame(columns=columns + ['Open timestamp', 'Close timestamp'])
 
     for col in df.columns:
         df[col] = pd.to_numeric(arg=df[col], downcast='integer')
