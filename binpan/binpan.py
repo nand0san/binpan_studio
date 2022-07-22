@@ -30,7 +30,7 @@ binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', 
 tick_seconds = handlers.time_helper.tick_seconds
 
 
-__version__ = "0.0.60"
+__version__ = "0.0.61"
 
 
 try:
@@ -1199,6 +1199,12 @@ class Symbol(object):
         precision = handlers.exchange.get_precision(info_dic=self.info_dic)
         self.precision = precision[self.symbol]
         return self.precision
+
+    def get_status(self) -> str:
+        """
+        Return the symbol status, TRADING, BREAK, etc.
+        """
+        return Exchange().df.loc[self.symbol].to_dict()['status']
 
     ###############
     # Backtesting #
@@ -2382,7 +2388,7 @@ class Exchange(object):
         self.quotes = handlers.exchange.get_quotes_dic(info_dic=self.info_dic)
         self.fees = handlers.exchange.get_fees()
         self.filters = handlers.exchange.get_symbols_filters(info_dic=self.info_dic)
-        self.system_status = handlers.exchange.get_system_status()
+        self.status = handlers.exchange.get_system_status()
         self.coins, self.networks = handlers.exchange.get_coins_info()
         self.symbols = self.get_symbols()
         self.df = self.get_df()
@@ -2439,7 +2445,7 @@ class Exchange(object):
         self.bases = handlers.exchange.get_bases_dic(info_dic=self.info_dic)
         self.quotes = handlers.exchange.get_quotes_dic(info_dic=self.info_dic)
         self.fees = handlers.exchange.get_fees()
-        self.system_status = handlers.exchange.get_system_status()
+        self.status = handlers.exchange.get_system_status()
         self.coins, self.networks = handlers.exchange.get_coins_info()
         self.symbols = self.get_symbols()
         self.df = self.get_df()
