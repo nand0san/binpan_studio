@@ -209,7 +209,6 @@ def parse_candles_to_dataframe(raw_response: list,
 
     # check if redis columns
     if raw_response:
-        print(raw_response)
         if type(raw_response[0]) == list:
             df = pd.DataFrame(raw_response, columns=columns)
         else:
