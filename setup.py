@@ -1,7 +1,5 @@
 from setuptools import setup
 import pathlib
-from secret import my_version
-
 
 # The directory containing this file
 HERE = pathlib.Path(__file__).parent
@@ -17,6 +15,7 @@ read_required = open('requirements.txt', 'r')
 REQUIRED = read_required.read()
 read_required.close()
 
+my_version = "0.0.58"
 
 """
       install_requires=[
@@ -39,9 +38,9 @@ setup(name='binpan',
       install_requires=REQUIRED,
       python_requires='>=3.7',
       classifiers=[
-            "License :: OSI Approved :: MIT License",
-            "Programming Language :: Python :: 3",
-            "Programming Language :: Python :: 3.7"
+          "License :: OSI Approved :: MIT License",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3.7"
       ],
       author='Fernando Alfonso',
       author_email='hancaidolosdos@hotmail.com',

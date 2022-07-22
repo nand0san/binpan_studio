@@ -25,12 +25,8 @@ author = 'Fernando Alfonso'
 
 # The full version, including alpha/beta/rc tags
 
-try:
-    from secret import my_version
-except:
-    my_version = 'Developing'
 
-release = my_version
+release = "0.0.58"
 
 # -- General configuration ---------------------------------------------------
 

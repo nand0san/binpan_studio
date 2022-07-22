@@ -11,7 +11,6 @@ class BinanceAPIException(Exception):
     """
     Extract exception from response.
 
-    Exceptions from https://github.com/sammchardy/python-binance
     """
 
     def __init__(self, response, status_code, text):
@@ -35,7 +34,6 @@ class BinanceRequestException(Exception):
     """
     Request methods exceptions.
 
-    Exceptions from https://github.com/sammchardy/python-binance
     """
 
     def __init__(self, message):
@@ -49,7 +47,6 @@ class BinanceOrderException(Exception):
     """
     Orders exceptions from API.
 
-    Exceptions from https://github.com/sammchardy/python-binance
     """
     def __init__(self, code, message):
         self.code = code
@@ -63,7 +60,6 @@ class BinanceOrderMinAmountException(BinanceOrderException):
     """
     Symbol filter exceptions: Minimum Amount
 
-    Exceptions from https://github.com/sammchardy/python-binance
     """
     def __init__(self, value):
         message = "Amount must be a multiple of %s" % value
@@ -74,7 +70,6 @@ class BinanceOrderMinPriceException(BinanceOrderException):
     """
     Symbol filter exceptions: Minimum Price
 
-    Exceptions from https://github.com/sammchardy/python-binance
     """
     def __init__(self, value):
         message = "Price must be at least %s" % value
@@ -85,7 +80,6 @@ class BinanceOrderMinTotalException(BinanceOrderException):
     """
     Symbol filter exceptions: Minimum Total
 
-    Exceptions from https://github.com/sammchardy/python-binance
     """
     def __init__(self, value):
         message = "Total must be at least %s" % value
@@ -96,7 +90,6 @@ class BinanceOrderUnknownSymbolException(BinanceOrderException):
     """
     Unknown symbol.
 
-    Exceptions from https://github.com/sammchardy/python-binance
     """
     def __init__(self, value):
         message = "Unknown symbol %s" % value
@@ -107,7 +100,6 @@ class BinanceOrderInactiveSymbolException(BinanceOrderException):
     """
     Order interactive exception.
 
-    Exceptions from https://github.com/sammchardy/python-binance
     """
     def __init__(self, value):
         message = "Attempting to trade an inactive symbol %s" % value
@@ -118,7 +110,6 @@ class NotImplementedException(Exception):
     """
     Not implemented.
 
-    Exceptions from https://github.com/sammchardy/python-binance
     """
     def __init__(self, value):
         message = f'Not implemented: {value}'

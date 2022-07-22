@@ -29,12 +29,7 @@ binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', 
 tick_seconds = handlers.time_helper.tick_seconds
 
 
-try:
-    from ..secret import my_version
-except:
-    my_version = 'Developing'
-
-__version__ = my_version
+__version__ = "0.0.58"
 
 
 try:
