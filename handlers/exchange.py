@@ -188,12 +188,12 @@ def get_orderTypes_and_permissions(info_dic: dict = None) -> dict:
     return {k: {'orderTypes': v['orderTypes'], 'permissions': v['permissions']} for k, v in info_dic.items()}
 
 
-def get_fees(symbol: str = None) -> pd.DataFrame:
+def get_fees_dict(symbol: str = None) -> dict:
     """
     Returns fees for a symbol or for every symbol if not passed.
 
     :param str symbol: Optional to request just one symbol instead of all.
-    :return pd.DataFrame: A pandas dataframe with all the fees applied each symbol.
+    :return dict: A dict with maker and taker fees.
     """
     endpoint = '/sapi/v1/asset/tradeFee'
     if symbol:
@@ -201,8 +201,18 @@ def get_fees(symbol: str = None) -> pd.DataFrame:
     ret = api_raw_signed_get(endpoint,
                              params={'symbol': symbol},
                              weight=1)
-    ret = {i['symbol']: {'makerCommission': i['makerCommission'],
-                         'takerCommission': i['takerCommission']} for i in ret}
+    return {i['symbol']: {'makerCommission': float(i['makerCommission']),
+                          'takerCommission': float(i['takerCommission'])} for i in ret}
+
+
+def get_fees(symbol: str = None) -> pd.DataFrame:
+    """
+    Returns fees for a symbol or for every symbol if not passed.
+
+    :param str symbol: Optional to request just one symbol instead of all.
+    :return pd.DataFrame: A pandas dataframe with all the fees applied each symbol.
+    """
+    ret = get_fees_dict(symbol=symbol)
     return pd.DataFrame(ret).transpose()
 
 
@@ -282,6 +292,7 @@ def get_legal_coins(coins_dic: dict = None) -> list:
         coins_dic = get_coins_info_dic()
     return [coin for coin, data in coins_dic.items() if data['isLegalMoney'] is True]
 
+
 #######################
 # Exchange Statistics #
 #######################
@@ -309,6 +320,7 @@ def get_bases_dic(info_dic: dict = None) -> dict:
     if not info_dic:
         info_dic = get_info_dic()
     return {k: v['baseAsset'] for k, v in info_dic.items()}
+
 
 # TODO: traido de cache, posible borrado
 # def get_exchange_dicts() -> tuple:
