@@ -32,7 +32,9 @@ Example adding bot key and chat id:
 
 def telegram_bot_send_text(msg: dict or str,
                            parse_mode='Markdown&text',
-                           disable_notification=False) -> dict:
+                           disable_notification=False,
+                           alt_enc_bot_id: str = None,
+                           alt_chat_id: str = None) -> dict:
     """
     Sends a telegram message.
 
@@ -56,6 +58,8 @@ def telegram_bot_send_text(msg: dict or str,
     :param str parse_mode: Parsing telegram message. Default is 'Markdown&text'.
     :param disable_notification: Avoids getting notified by the telegram message. Only working in group chats.
         https://stackoverflow.com/questions/64360221/disable-notification-in-python-telegram-bot
+    :param str alt_enc_bot_id: Optional alternative bot api key.
+    :param str alt_chat_id: Optional alternative chat id.
     :return: Telegrams API response.
     """
 
@@ -64,16 +68,21 @@ def telegram_bot_send_text(msg: dict or str,
     else:
         bot_message = msg
 
+    if not alt_enc_bot_id:
+        alt_enc_bot_id = encoded_telegram_bot_id
+    if not alt_chat_id:
+        alt_chat_id = encoded_chat_id
+
     bot_message = str(bot_message)
-    encoded_telegram_bot_id = cipher_object.decrypt(bot_id)
-    encoded_chat_id = cipher_object.decrypt(chat_id)
+    alt_enc_bot_id = cipher_object.decrypt(bot_id)
+    alt_chat_id = cipher_object.decrypt(chat_id)
 
     if disable_notification:
-        send_text = f'https://api.telegram.org/bot{encoded_telegram_bot_id}/sendMessage?chat_id={encoded_chat_id}&' \
+        send_text = f'https://api.telegram.org/bot{alt_enc_bot_id}/sendMessage?chat_id={alt_chat_id}&' \
                     f'parse_mode={parse_mode}={bot_message}&disable_notification=true'
 
     else:
-        send_text = f'https://api.telegram.org/bot{encoded_telegram_bot_id}/sendMessage?chat_id={encoded_chat_id}&' \
+        send_text = f'https://api.telegram.org/bot{alt_enc_bot_id}/sendMessage?chat_id={alt_chat_id}&' \
                     f'parse_mode={parse_mode}={bot_message} '
     response = requests.get(send_text)
 
