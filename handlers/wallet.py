@@ -166,26 +166,27 @@ def get_spot_trades_list(symbol: str,
     :param int recvWindow: The value cannot be greater than 60000
     :return list: A list.
 
-        Example:
-               .. code-block::
+    Example:
 
-                         [
-                            {
-                                "symbol": "BNBBTC",
-                                "id": 28457,
-                                "orderId": 100234,
-                                "orderListId": -1, //Unless OCO, the value will always be -1
-                                "price": "4.00000100",
-                                "qty": "12.00000000",
-                                "quoteQty": "48.000012",
-                                "commission": "10.10000000",
-                                "commissionAsset": "BNB",
-                                "time": 1499865549590,
-                                "isBuyer": true,
-                                "isMaker": false,
-                                "isBestMatch": true
-                              }
-                           ]
+           .. code-block::
+
+                     [
+                        {
+                            "symbol": "BNBBTC",
+                            "id": 28457,
+                            "orderId": 100234,
+                            "orderListId": -1, //Unless OCO, the value will always be -1
+                            "price": "4.00000100",
+                            "qty": "12.00000000",
+                            "quoteQty": "48.000012",
+                            "commission": "10.10000000",
+                            "commissionAsset": "BNB",
+                            "time": 1499865549590,
+                            "isBuyer": true,
+                            "isMaker": false,
+                            "isBestMatch": true
+                          }
+                       ]
     """
     endpoint = '/api/v3/myTrades'
     return api_raw_signed_get(endpoint=endpoint,
@@ -213,25 +214,26 @@ def get_spot_account_info(recvWindow: int = 10000) -> dict:
     :param int recvWindow: The value cannot be greater than 60000
     :return dict: A dictionary with data.
 
-        Example:
-            .. code-block::
+    Example:
 
-               {
-                  "makerCommission": 15,
-                  "takerCommission": 15,
-                  "buyerCommission": 0,
-                  "sellerCommission": 0,
-                  "canTrade": true,
-                  "canWithdraw": true,
-                  "canDeposit": true,
-                  "updateTime": 123456789,
-                  "accountType": "SPOT",
-                  "balances": [
-                    {"asset": "BTC", "free": "4723846.89208129","locked": "0.00000000"},
-                    {"asset": "LTC","free": "4763368.68006011","locked": "0.00000000"}
-                  ],
-                  "permissions": ["SPOT"]
-               }
+        .. code-block::
+
+           {
+              "makerCommission": 15,
+              "takerCommission": 15,
+              "buyerCommission": 0,
+              "sellerCommission": 0,
+              "canTrade": true,
+              "canWithdraw": true,
+              "canDeposit": true,
+              "updateTime": 123456789,
+              "accountType": "SPOT",
+              "balances": [
+                {"asset": "BTC", "free": "4723846.89208129","locked": "0.00000000"},
+                {"asset": "LTC","free": "4763368.68006011","locked": "0.00000000"}
+              ],
+              "permissions": ["SPOT"]
+           }
 
     """
     endpoint = '/api/v3/account'

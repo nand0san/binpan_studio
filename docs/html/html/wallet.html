@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wallet Module &mdash; BinPan 0.0.60 documentation</title>
+  <title>Wallet Module &mdash; BinPan 0.0.61 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/style.css" type="text/css" />
@@ -152,7 +152,7 @@ Weight(IP): 1</p>
 <span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_spot_trades_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orderId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fromId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recvWindow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.wallet.get_spot_trades_list" title="Permalink to this definition"></a></dt>
 <dd><p>Get trades for a specific account and symbol.</p>
 <p>Weight(IP): 10</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>symbol</strong> (<em>str</em>) – Symbol’s trades.</p></li>
@@ -167,8 +167,11 @@ most recent trades are returned.</p></li>
 </dd>
 <dt class="field-even">Return list</dt>
 <dd class="field-even"><p>A list.</p>
-<dl>
-<dt>Example:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+</dd>
+</dl>
+<p>Example:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
    <span class="p">{</span>
        <span class="s2">&quot;symbol&quot;</span><span class="p">:</span> <span class="s2">&quot;BNBBTC&quot;</span><span class="p">,</span>
        <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">28457</span><span class="p">,</span>
@@ -187,10 +190,7 @@ most recent trades are returned.</p></li>
   <span class="p">]</span>
 </pre></div>
 </div>
-</dd>
-</dl>
-</dd>
-</dl>
+</div></blockquote>
 </dd></dl>
 
 </section>
@@ -201,14 +201,17 @@ most recent trades are returned.</p></li>
 <span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_spot_account_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recvWindow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.wallet.get_spot_account_info" title="Permalink to this definition"></a></dt>
 <dd><p>Get current account information.</p>
 <p>Weight(IP): 10</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>recvWindow</strong> (<em>int</em>) – The value cannot be greater than 60000</p>
 </dd>
 <dt class="field-even">Return dict</dt>
 <dd class="field-even"><p>A dictionary with data.</p>
-<dl>
-<dt>Example:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+</dd>
+</dl>
+<p>Example:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
    <span class="s2">&quot;makerCommission&quot;</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
    <span class="s2">&quot;takerCommission&quot;</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
    <span class="s2">&quot;buyerCommission&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
@@ -226,10 +229,7 @@ most recent trades are returned.</p></li>
 <span class="p">}</span>
 </pre></div>
 </div>
-</dd>
-</dl>
-</dd>
-</dl>
+</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
