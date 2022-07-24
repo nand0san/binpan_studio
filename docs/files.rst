@@ -19,7 +19,7 @@ Files and Folders
 
 .. autofunction:: save_dataframe_to_csv
 
-.. autofunction:: append_row_to_csv
+.. autofunction:: append_dataframe_to_csv
 
 .. autofunction:: find_csvs_in_path
 

@@ -122,11 +122,14 @@ variable names <em>encoded_chat_id</em>, <em>encoded_telegram_bot_id</em>.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.messages.telegram_parse_dict">
-<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">telegram_parse_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.messages.telegram_parse_dict" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">telegram_parse_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'UTC'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.messages.telegram_parse_dict" title="Permalink to this definition"></a></dt>
 <dd><p>Parses a dict and downcast types.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>msg_dict</strong> (<em>dict</em>) – Dict to parse as message.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>msg_data</strong> (<em>dict</em>) – Dict to parse as message.</p></li>
+<li><p><strong>timezone</strong> (<em>str</em>) – A time zone to parse more human readable any field containing “time” in the name.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return str</dt>
 <dd class="field-even"><p>A markdown v1 parsed telegram string.</p>
