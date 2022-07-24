@@ -46,7 +46,7 @@ def save_dataframe_to_csv(filename, data: pd.DataFrame, col_sep=',', index=False
     data.to_csv(filename, sep=col_sep, header=True, encoding='utf-8', quoting=QUOTE_ALL, index=index)
 
 
-def append_row_to_csv(filename: str, data: pd.DataFrame, col_sep: str = ',', index: bool = False, header=True) -> None:
+def append_dataframe_to_csv(filename: str, data: pd.DataFrame, col_sep: str = ',', index: bool = False, header=True) -> None:
     """
     Add lines to a csv with separator to choose, a dataframe. Each field of each column will be enclosed in quotes
 
@@ -56,13 +56,11 @@ def append_row_to_csv(filename: str, data: pd.DataFrame, col_sep: str = ',', ind
     :param bool index: Keeps index in file as first column/s.
     :param bool header: Keeps header. Default is True.
     """
-    # if path.isfile(filename):
-    #     header = False
-    # if filename.lower().endswith(".csv"):
-    #     filename = filename.replace('.csv', '')
-    # # if timestamp:
-    # #     filename = filename + '_' + str(time()).split('.')[0]
-    # filename += '.csv'
+    if path.isfile(filename):
+        header = False
+    if filename.lower().endswith(".csv"):
+        filename = filename.replace('.csv', '')
+    filename += '.csv'
     data.to_csv(filename, sep=col_sep, header=header, encoding='utf-8', quoting=QUOTE_ALL, index=index, mode='a')
 
 

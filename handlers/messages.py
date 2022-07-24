@@ -1,10 +1,12 @@
 from .starters import AesCipher
 import requests
 from .logs import Logs
+from .time_helper import convert_milliseconds_to_str
 
 msg_logger = Logs(filename='./logs/msg_logger.log', name='msg_logger', info_level='INFO')
 
 cipher_object = AesCipher()
+
 
 try:
     from secret import encoded_chat_id, encoded_telegram_bot_id
@@ -91,15 +93,16 @@ def telegram_bot_send_text(msg: dict or str,
     return response.json()
 
 
-def telegram_parse_dict(msg_dict: dict):
+def telegram_parse_dict(msg_data: dict, timezone='UTC'):
     """
     Parses a dict and downcast types.
 
-    :param dict msg_dict: Dict to parse as message.
+    :param dict msg_data: Dict to parse as message.
+    :param str timezone: A time zone to parse more human readable any field containing "time" in the name.
     :return str: A markdown v1 parsed telegram string.
     """
+    msg_dict = msg_data.copy()
     parsed_msg = ""
-
     for k, v in msg_dict.items():
         try:
             fv1 = float(v)
@@ -110,14 +113,18 @@ def telegram_parse_dict(msg_dict: dict):
             assert fv2 == fv1
         except:
             fv2 = fv1
-
-        if type(fv2) == float:
-            row = f"*{k}*: `{fv2:.8f}`\n"
+        if 'pct' in k:
+            fv2 = fv2*100
+            row = f"*{k}* : `{fv2:.2f}`\n"
+        elif type(fv2) == float:
+            row = f"*{k}* : `{fv2:.8f}`\n"
         elif type(fv2) == int:
-            row = f"*{k}*: `{fv2}`\n"
+            row = f"*{k}* : `{fv2}`\n"
         else:
-            row = f"*{k}*: {fv2}\n"
-
+            if 'time' in k:
+                date = convert_milliseconds_to_str(ms=fv2, timezoned=timezone)
+                row = f"*{k}* : {date}\n"
+            else:
+                row = f"*{k}* : {fv2}\n"
         parsed_msg += row
-
     return parsed_msg
