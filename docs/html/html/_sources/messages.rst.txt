@@ -17,3 +17,6 @@ Telegram Messages
 
 .. autofunction:: telegram_bot_send_text
 
+
+.. autofunction:: telegram_parse_dict
+

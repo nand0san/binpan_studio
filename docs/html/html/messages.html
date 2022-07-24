@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Notifications Module &mdash; BinPan 0.0.61 documentation</title>
+  <title>Notifications Module &mdash; BinPan 0.0.62 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/style.css" type="text/css" />
@@ -89,7 +89,7 @@
 <h2>Telegram Messages<a class="headerlink" href="#telegram-messages" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.messages.telegram_bot_send_text">
-<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">telegram_bot_send_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parse_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Markdown&amp;text'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_notification</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.messages.telegram_bot_send_text" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">telegram_bot_send_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parse_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Markdown&amp;text'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_notification</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alt_enc_bot_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alt_chat_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.messages.telegram_bot_send_text" title="Permalink to this definition"></a></dt>
 <dd><p>Sends a telegram message.</p>
 <p>It takes bot key and chat id from secret encrypted file. It is required to create previously the bot and chat keys with the
 variable names <em>encoded_chat_id</em>, <em>encoded_telegram_bot_id</em>.</p>
@@ -110,10 +110,26 @@ variable names <em>encoded_chat_id</em>, <em>encoded_telegram_bot_id</em>.</p>
 <li><p><strong>parse_mode</strong> (<em>str</em>) – Parsing telegram message. Default is ‘Markdown&amp;text’.</p></li>
 <li><p><strong>disable_notification</strong> – Avoids getting notified by the telegram message. Only working in group chats.
 <a class="reference external" href="https://stackoverflow.com/questions/64360221/disable-notification-in-python-telegram-bot">https://stackoverflow.com/questions/64360221/disable-notification-in-python-telegram-bot</a></p></li>
+<li><p><strong>alt_enc_bot_id</strong> (<em>str</em>) – Optional alternative bot api key.</p></li>
+<li><p><strong>alt_chat_id</strong> (<em>str</em>) – Optional alternative chat id.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Telegrams API response.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.messages.telegram_parse_dict">
+<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">telegram_parse_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.messages.telegram_parse_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Parses a dict and downcast types.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>msg_dict</strong> (<em>dict</em>) – Dict to parse as message.</p>
+</dd>
+<dt class="field-even">Return str</dt>
+<dd class="field-even"><p>A markdown v1 parsed telegram string.</p>
 </dd>
 </dl>
 </dd></dl>

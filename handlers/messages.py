@@ -89,3 +89,35 @@ def telegram_bot_send_text(msg: dict or str,
     msg_logger.info("TELEGRAM " + " ".join(bot_message.replace('\n', ' ').split()))
 
     return response.json()
+
+
+def telegram_parse_dict(msg_dict: dict):
+    """
+    Parses a dict and downcast types.
+
+    :param dict msg_dict: Dict to parse as message.
+    :return str: A markdown v1 parsed telegram string.
+    """
+    parsed_msg = ""
+
+    for k, v in msg_dict.items():
+        try:
+            fv1 = float(v)
+        except:
+            fv1 = v
+        try:
+            fv2 = int(fv1)
+            assert fv2 == fv1
+        except:
+            fv2 = fv1
+
+        if type(fv2) == float:
+            row = f"*{k}*: `{fv2:.8f}`\n"
+        elif type(fv2) == int:
+            row = f"*{k}*: `{fv2}`\n"
+        else:
+            row = f"*{k}*: {fv2}\n"
+
+        parsed_msg += row
+
+    return parsed_msg
