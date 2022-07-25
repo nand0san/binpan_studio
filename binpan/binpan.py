@@ -30,7 +30,7 @@ binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', 
 tick_seconds = handlers.time_helper.tick_seconds
 
 
-__version__ = "0.0.63"
+__version__ = "0.0.64"
 
 
 try:
@@ -651,7 +651,7 @@ class Symbol(object):
             if suffix:
                 data_ser = pd.Series(data=data, index=current_df.index, name=suffix)
             else:
-                data_ser = pd.Series(data=data, index=current_df.index, name=f'Inserted_{len(self.columns)}')
+                data_ser = pd.Series(data=data, index=current_df.index, name=f'Inserted_{len(self.df.columns)}')
             data_series = [data_ser]
         else:
             msg = f"BinPan Warning: Unexpected data type {type(source_data)}"
