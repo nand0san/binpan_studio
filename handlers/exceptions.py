@@ -1,5 +1,7 @@
 import json
+from handlers.logs import Logs
 
+exceptions_logger = Logs(filename='./logs/exceptions.log', name='exceptions', info_level='INFO')
 
 ############################
 # Exceptions
@@ -114,3 +116,19 @@ class NotImplementedException(Exception):
     def __init__(self, value):
         message = f'Not implemented: {value}'
         super().__init__(message)
+
+
+class BinPanException(Exception):
+    """
+    Message the exception and logs it.
+    """
+
+    def __init__(self, exception_class, doc, message):
+        self.exception_class = exception_class
+        self.doc = doc
+        self.message = message
+
+    def __str__(self):
+
+        msg = f'BinPan Exception: {self.exception_class} {self.doc} {self.message}'
+        exceptions_logger.error(msg)

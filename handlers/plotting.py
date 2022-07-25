@@ -6,6 +6,8 @@ import pandas as pd
 import numpy as np
 from random import choice
 from .logs import Logs
+from .exceptions import BinPanException
+
 
 plot_logger = Logs(filename='./logs/plotting.log', name='plotting', info_level='INFO')
 
@@ -203,11 +205,11 @@ def candles_ta(data: pd.DataFrame,
                plot_volume: bool = True,
                title: str = 'Candlesticks, indicators, and Volume plot',
                yaxis_title: str = 'Symbol Price',
-               annotations: list = None,
+               annotation_values: list = None,
                markers: list = None,
                text_positions: list = None,
                annotation_colors: list = None,
-               annotation_names: list = None,
+               annotation_legend_names: list = None,
                labels: list = None,
                plot_bgcolor=None):
     """
@@ -240,7 +242,7 @@ def candles_ta(data: pd.DataFrame,
     :param bool plot_volume: Optional to plot volume.
     :param str title: A title string.
     :param str yaxis_title: A name string.
-    :param list annotations: A list of pandas series with values to plot marks or annotations overlapped in the candles plot.
+    :param list annotation_values: A list of pandas series with values to plot marks or annotations overlapped in the candles plot.
     :param list markers: Ordered like the annotations list.
         Example
 
@@ -265,9 +267,9 @@ def candles_ta(data: pd.DataFrame,
             'black', 'orange', 'pink', 'red', 'rosybrown', 'cornflowerblue', 'blue', 'lightseagreen', 'green',
             'cornflowerblue', 'rosybrown', 'lightseagreen', 'black', 'orange', 'pink', 'red', 'rosybrown']
 
-    :param list annotation_names: Ordered like the annotations list of names to show in legend.
+    :param list annotation_legend_names: Ordered like the annotations list of names to show in legend.
 
-    :param list labels: Ordered like the annotations list of tags to show overlapped. It defaults to price.
+    :param list labels: Ordered like the annotations list of tags to plot overlapped. It defaults to price value if omitted.
 
         Example:
         .. code-block:: python
@@ -299,7 +301,7 @@ def candles_ta(data: pd.DataFrame,
 
     """
     if not indicators_color_filled:
-        indicators_color_filled = {_.name: False for _ in indicators_series}
+        indicators_color_filled = {i.name: False for i in indicators_series}
     elif type(indicators_color_filled) == list:
         indicators_color_filled = {s.name: indicators_color_filled[i] for i, s in enumerate(indicators_series)}
 
@@ -311,9 +313,7 @@ def candles_ta(data: pd.DataFrame,
         indicators_series = []
 
     if not indicators_colors:
-        indicators_colors = ['cornflowerblue', 'blue', 'lightseagreen', 'green', 'cornflowerblue', 'rosybrown', 'lightseagreen',
-                             'black', 'orange', 'pink', 'red', 'rosybrown', 'cornflowerblue', 'blue', 'lightseagreen', 'green',
-                             'cornflowerblue', 'rosybrown', 'lightseagreen', 'black', 'orange', 'pink', 'red', 'rosybrown']
+        indicators_colors = [choice(plotly_colors) for _ in range(len(indicators_series))]
 
     if not indicator_names:
         try:
@@ -365,11 +365,11 @@ def candles_ta(data: pd.DataFrame,
     traces = traces + tas
 
     # anotaciones, siempre van en la primera fila, la de las velas
-    if annotations:
-        annotations_traces = deploy_traces(annotations=annotations, colors=annotation_colors, markers=markers,
-                                           text_positions=text_positions, mark_names=annotation_names, tags=labels)
-        rows += [1 for _ in range(len(annotations))]
-        cols += [1 for _ in range(len(annotations))]
+    if annotation_values:
+        annotations_traces = deploy_traces(annotations=annotation_values, colors=annotation_colors, markers=markers,
+                                           text_positions=text_positions, mark_names=annotation_legend_names, tags=labels)
+        rows += [1 for _ in range(len(annotation_values))]
+        cols += [1 for _ in range(len(annotation_values))]
         traces += annotations_traces
 
     fig = add_traces(fig, traces, rows=rows, cols=cols)
@@ -381,21 +381,26 @@ def candles_ta(data: pd.DataFrame,
     fig.show()
 
 
-def candles_tagged(data: pd.DataFrame, width=1800, height=1000, candles_ta_height_ratio=0.5,
+def candles_tagged(data: pd.DataFrame,
+                   width=1800,
+                   height=1000,
+                   candles_ta_height_ratio=0.5,
                    plot_volume=True,
                    title: str = 'Candlesticks Strategy Plot',
                    yaxis_title: str = 'Symbol Price',
                    on_candles_indicator: list = [],
-                   priced_actions_col='priced_actions',
-                   actions_col: str = None,
-                   indicators_series: list = [],
+                   indicator_series: list = [],
                    indicator_names: list = [],
-                   indicators_colors: list = [],
+                   indicator_colors: list = [],
                    fill_control: dict or list = None,
                    rows_pos: list = [],
+                   plot_bgcolor=None,
+                   actions_col: str = None,
+                   priced_actions_col='Close',
                    labels: list = [],
-                   default_price_for_actions='Close',
-                   plot_bgcolor=None):
+                   markers: list = None,
+                   marker_colors: list = None,
+                   marker_legend_name: list = None):
     """
 
     This is a shortcut from candles_ta. It defaults many inputs to better Jupyter Notebook usage.
@@ -419,102 +424,233 @@ def candles_tagged(data: pd.DataFrame, width=1800, height=1000, candles_ta_heigh
 
 
     :param pd.DataFrame data: a DataFrame that at least contains the columns: Open Close High Low Volume
-    :param list indicators_series: a list of pandas series with float values as indicators. Usually not overlap with candles indicators.
-        But to plot in a subplot.
-    :param list rows_pos: 1 means over the candles. Other numbers mean subsequent subplots under the candles.
-    :param list indicator_names: Names to show in the plot. Defaults to series name.
-    :param list indicators_colors: Color can be forced to anyone from the plotly colors list:
-
-         https://community.plotly.com/t/plotly-colours-list/11730
-
-    :param dict or list fill_control: A dictionary with color to fill or False bool for each indicator. Is the color to the zero line for
-        the indicator plot. If a list passed, it iterates to assign each item in the list with the same index item in the indicators list.
     :param int width: Plot sizing
     :param int height: Plot sizing
     :param float candles_ta_height_ratio: A ratio between the big candles plot and (if any) the rest of indicator subplots below.
     :param bool plot_volume: Optional to plot volume.
     :param str title: A title string.
     :param str yaxis_title: A name string.
-    :param actions_col: A column name of the column with string tags like buy, sell, etc. This is for plotting marks over candles.
-    :param priced_actions_col: The name of the column containing value of action to position over candles.
     :param on_candles_indicator: A list of pandas series with values to plot overlapping candles, not in a subplot. Example: SMA.
-    :param list labels: Ordered like the annotations list of tags to show overlapped. It defaults to price. Example:
+    :param list indicator_series: a list of pandas series with float values as indicators. Usually not overlap with candles indicators.
+        But to plot in a subplot.
+    :param list indicator_names: Names to show in the plot. Defaults to series name.
+    :param list indicator_colors: Color can be forced to anyone from the plotly colors list:
+
+         https://community.plotly.com/t/plotly-colours-list/11730
+    :param dict or list fill_control: A dictionary with color to fill or False bool for each indicator. Is the color to the zero line for
+        the indicator plot. If a list passed, it iterates to assign each item in the list with the same index item in the indicators list.
+    :param list rows_pos: 1 means over the candles. Other numbers mean subsequent subplots under the candles.
+    :param plot_bgcolor: Set background color.
+    :param actions_col: A column name of the column with string tags like buy, sell, etc. This is for plotting annotation marks
+        overlapped over candles. It is *mandatory* for managing markers, annotations and legend names of annotations.
+    :param priced_actions_col: The name of the column containing value of action to position over candles.
+
+        Example:
+
+            .. code-block:: python
+
+                from binpan import binpan
+                from handlers.strategies import random_strategy
+
+                btcusdt = binpan.Symbol(symbol='btcusdt',
+                                tick_interval='15m',
+                                time_zone='Europe/Madrid',
+                                end_time='2021-10-31 03:00:00')
+
+                btcusdt.sma(21)
+
+
+                df = random_strategy(data=btcusdt.df, buys_qty=10, sells_qty=12)
+
+                df.actions.value_counts()
+
+               sell     10
+               buy      10
+               Name: actions, dtype: int64
+
+                binpan.handlers.plotting.candles_tagged(data=df,
+                                                       plot_volume=False,
+                                                       on_candles_indicator=[df.SMA_21],
+                                                       candles_ta_height_ratio=0.8,
+                                                       actions_col='actions',
+                                                       labels=['buy', 'sell'])
+
+
+            .. image:: images/plot_tagged_example_02.png
+               :width: 1000
+
+    :param list labels: Ordered like the annotations list of tags to show overlapped. Position defaults to close price. Example:
 
         .. code-block:: python
 
           labels = ['buy', 'sell']
 
-    :param default_price_for_actions: Column to pick prices for actions, because actions will be labeled, in example, actions values like
-        buy or sell with an arrow will be positioned from the close price if not exists a more precise value for the action.
 
-    Example:
+    :param list markers: Plotly marker type. Usually, if referenced by number will be a not filled mark and using string name will be
+        a color filled one. Check plotly info: https://plotly.com/python/marker-style/
 
-    .. code-block:: python
+        .. code-block::
 
-       import binpan
+            plotly_markers = [0, '0', 'circle', 100, '100', 'circle-open', 200, '200',
+                    'circle-dot', 300, '300', 'circle-open-dot', 1, '1',
+                    'square', 101, '101', 'square-open', 201, '201',
+                    'square-dot', 301, '301', 'square-open-dot', 2, '2',
+                    'diamond', 102, '102', 'diamond-open', 202, '202',
+                    'diamond-dot', 302, '302', 'diamond-open-dot', 3, '3',
+                    'cross', 103, '103', 'cross-open', 203, '203',
+                    'cross-dot', 303, '303', 'cross-open-dot', 4, '4', 'x',
+                    104, '104', 'x-open', 204, '204', 'x-dot', 304, '304',
+                    'x-open-dot', 5, '5', 'triangle-up', 105, '105',
+                    'triangle-up-open', 205, '205', 'triangle-up-dot', 305,
+                    '305', 'triangle-up-open-dot', 6, '6', 'triangle-down',
+                    106, '106', 'triangle-down-open', 206, '206',
+                    'triangle-down-dot', 306, '306', 'triangle-down-open-dot',
+                    7, '7', 'triangle-left', 107, '107', 'triangle-left-open',
+                    207, '207', 'triangle-left-dot', 307, '307',
+                    'triangle-left-open-dot', 8, '8', 'triangle-right', 108,
+                    '108', 'triangle-right-open', 208, '208',
+                    'triangle-right-dot', 308, '308',
+                    'triangle-right-open-dot', 9, '9', 'triangle-ne', 109,
+                    '109', 'triangle-ne-open', 209, '209', 'triangle-ne-dot',
+                    309, '309', 'triangle-ne-open-dot', 10, '10',
+                    'triangle-se', 110, '110', 'triangle-se-open', 210, '210',
+                    'triangle-se-dot', 310, '310', 'triangle-se-open-dot', 11,
+                    '11', 'triangle-sw', 111, '111', 'triangle-sw-open', 211,
+                    '211', 'triangle-sw-dot', 311, '311',
+                    'triangle-sw-open-dot', 12, '12', 'triangle-nw', 112,
+                    '112', 'triangle-nw-open', 212, '212', 'triangle-nw-dot',
+                    312, '312', 'triangle-nw-open-dot', 13, '13', 'pentagon',
+                    113, '113', 'pentagon-open', 213, '213', 'pentagon-dot',
+                    313, '313', 'pentagon-open-dot', 14, '14', 'hexagon', 114,
+                    '114', 'hexagon-open', 214, '214', 'hexagon-dot', 314,
+                    '314', 'hexagon-open-dot', 15, '15', 'hexagon2', 115,
+                    '115', 'hexagon2-open', 215, '215', 'hexagon2-dot', 315,
+                    '315', 'hexagon2-open-dot', 16, '16', 'octagon', 116,
+                    '116', 'octagon-open', 216, '216', 'octagon-dot', 316,
+                    '316', 'octagon-open-dot', 17, '17', 'star', 117, '117',
+                    'star-open', 217, '217', 'star-dot', 317, '317',
+                    'star-open-dot', 18, '18', 'hexagram', 118, '118',
+                    'hexagram-open', 218, '218', 'hexagram-dot', 318, '318',
+                    'hexagram-open-dot', 19, '19', 'star-triangle-up', 119,
+                    '119', 'star-triangle-up-open', 219, '219',
+                    'star-triangle-up-dot', 319, '319',
+                    'star-triangle-up-open-dot', 20, '20',
+                    'star-triangle-down', 120, '120',
+                    'star-triangle-down-open', 220, '220',
+                    'star-triangle-down-dot', 320, '320',
+                    'star-triangle-down-open-dot', 21, '21', 'star-square',
+                    121, '121', 'star-square-open', 221, '221',
+                    'star-square-dot', 321, '321', 'star-square-open-dot', 22,
+                    '22', 'star-diamond', 122, '122', 'star-diamond-open',
+                    222, '222', 'star-diamond-dot', 322, '322',
+                    'star-diamond-open-dot', 23, '23', 'diamond-tall', 123,
+                    '123', 'diamond-tall-open', 223, '223',
+                    'diamond-tall-dot', 323, '323', 'diamond-tall-open-dot',
+                    24, '24', 'diamond-wide', 124, '124', 'diamond-wide-open',
+                    224, '224', 'diamond-wide-dot', 324, '324',
+                    'diamond-wide-open-dot', 25, '25', 'hourglass', 125,
+                    '125', 'hourglass-open', 26, '26', 'bowtie', 126, '126',
+                    'bowtie-open', 27, '27', 'circle-cross', 127, '127',
+                    'circle-cross-open', 28, '28', 'circle-x', 128, '128',
+                    'circle-x-open', 29, '29', 'square-cross', 129, '129',
+                    'square-cross-open', 30, '30', 'square-x', 130, '130',
+                    'square-x-open', 31, '31', 'diamond-cross', 131, '131',
+                    'diamond-cross-open', 32, '32', 'diamond-x', 132, '132',
+                    'diamond-x-open', 33, '33', 'cross-thin', 133, '133',
+                    'cross-thin-open', 34, '34', 'x-thin', 134, '134',
+                    'x-thin-open', 35, '35', 'asterisk', 135, '135',
+                    'asterisk-open', 36, '36', 'hash', 136, '136',
+                    'hash-open', 236, '236', 'hash-dot', 336, '336',
+                    'hash-open-dot', 37, '37', 'y-up', 137, '137',
+                    'y-up-open', 38, '38', 'y-down', 138, '138',
+                    'y-down-open', 39, '39', 'y-left', 139, '139',
+                    'y-left-open', 40, '40', 'y-right', 140, '140',
+                    'y-right-open', 41, '41', 'line-ew', 141, '141',
+                    'line-ew-open', 42, '42', 'line-ns', 142, '142',
+                    'line-ns-open', 43, '43', 'line-ne', 143, '143',
+                    'line-ne-open', 44, '44', 'line-nw', 144, '144',
+                    'line-nw-open', 45, '45', 'arrow-up', 145, '145',
+                    'arrow-up-open', 46, '46', 'arrow-down', 146, '146',
+                    'arrow-down-open', 47, '47', 'arrow-left', 147, '147',
+                    'arrow-left-open', 48, '48', 'arrow-right', 148, '148',
+                    'arrow-right-open', 49, '49', 'arrow-bar-up', 149, '149',
+                    'arrow-bar-up-open', 50, '50', 'arrow-bar-down', 150,
+                    '150', 'arrow-bar-down-open', 51, '51', 'arrow-bar-left',
+                    151, '151', 'arrow-bar-left-open', 52, '52',
+                    'arrow-bar-right', 152, '152', 'arrow-bar-right-open']
 
-       btcusdt = binpan.Symbol(symbol='btcusdt',
-                        tick_interval='15m',
-                        time_zone='Europe/Madrid',
-                        end_time='2021-10-31 03:00:00')
-
-       btcusdt.sma(21)
-
-       df = binpan.handlers.strategies.random_strategy(data=btcusdt.df, 10, 10)
-
-       df.actions.value_counts()
-
-       -       980
-       sell     10
-       buy      10
-       Name: actions, dtype: int64
-
-       binpan.handlers.plotting.candles_tagged(data=df,
-                                               plot_volume=False,
-                                               indicators_series=[df.SMA_21],
-                                               candles_ta_height_ratio=0.8,
-                                               actions_col='actions',
-                                               labels=['buy', 'sell'])
-
-
-    .. image:: images/plot_tagged_example_02.png
-       :width: 1000
-
-    :param plot_bgcolor: Set background color.
+    :param list marker_colors: Colors of the annotations.
+    :param list marker_legend_name: A list with the names to print as tags over the annotations.
 
     """
+    annotations_values = []
 
     if type(fill_control) == list:
-        fill_control = {s.name: fill_control[i] for i, s in enumerate(indicators_series)}
+        fill_control = {s.name: fill_control[i] for i, s in enumerate(indicator_series)}
 
-    markers = ["arrow-bar-up", "arrow-bar-down"]
-    annotation_colors = ['green', 'red']
-    annotations_names = ['Buy', 'Sell']
+    if actions_col:  # this trigger all annotation and markers thing
+        if not labels:
+            labels = list(data[actions_col].value_counts().index)
+        if not markers:
+            # markers = ["arrow-bar-up", "arrow-bar-down"]
+            markers = ["arrow-left" for _ in range(len(labels))]
+
+        if not marker_colors:
+            marker_colors = [choice(plotly_colors) for _ in range(len(labels))]
+
+        if not marker_legend_name:
+            marker_legend_name = [i[0].upper() + i[1:] for i in labels]
+
+        actions = list(data[actions_col].value_counts().index)
+        for action in actions:
+            annotations_values.append(data[data[actions_col] == action][priced_actions_col])
+
+        # action_values_serie = pd.Series()
+        # for idx, action in data[actions_col].dropna().iteritems():
+
+        # else:
+        #     annotations_values = [data[data[actions_col] == 'buy'][priced_actions_col],
+        #                           data[data[actions_col] == 'sell'][priced_actions_col]]
+        # else:
+        #     annotations_values = [data[data[actions_col] == 'buy'][priced_actions_col],
+        #                           data[data[actions_col] == 'sell'][priced_actions_col]]
+
+        # verify annotations, colors, labels and names
+        try:
+            assert len(labels) == len(markers)
+            assert len(labels) == len(marker_colors)
+            assert len(labels) == len(marker_legend_name)
+            # assert len(annotations_values) == len(data[actions_col].dropna())
+
+        except Exception as exc:
+            raise BinPanException(exc.__class__,
+                                  "Plotting labels, annotation colors or names not consistent with markers list length",
+                                  "Function candles_tagged")
+
+    # indicator allocating rows
     rows_pos_final = []
 
     if on_candles_indicator:
         rows_pos_final = [1 for _ in range(len(on_candles_indicator))]
 
-    if indicators_series and not rows_pos:
-        rows_pos_final += [i + 2 for i in range(len(indicators_series))]
+    if indicator_series and not rows_pos:
+        rows_pos_final += [i + 2 for i in range(len(indicator_series))]
     else:
-        rows_pos_final += rows_pos + [i + 2 for i in range(len(indicators_series) - len(rows_pos))]
+        rows_pos_final += rows_pos + [i + 2 for i in range(len(indicator_series) - len(rows_pos))]
 
-    indicators_series = on_candles_indicator + indicators_series
+    indicator_series = on_candles_indicator + indicator_series
 
-    if priced_actions_col in data.columns:
-        annotations_values = [data[data[actions_col] == 'buy'][priced_actions_col],
-                              data[data[actions_col] == 'sell'][priced_actions_col]]
-    elif actions_col:
-        annotations_values = [data[data[actions_col] == 'buy'][default_price_for_actions],
-                              data[data[actions_col] == 'sell'][default_price_for_actions]]
-    else:
-        annotations_values = None
+    # indicator names for legend
     if not indicator_names:
         try:
-            indicator_names = [i.name for i in indicators_series]
+            indicator_names = [i.name for i in indicator_series]
         except Exception:
-            pass
+            indicator_names = []
+            for i, ind in enumerate(indicator_series):
+                try:
+                    indicator_names.append(ind.name)
+                except:
+                    indicator_names.append(f'Indicator_{i}')
 
     candles_ta(data,
                width=width,
@@ -524,16 +660,16 @@ def candles_tagged(data: pd.DataFrame, width=1800, height=1000, candles_ta_heigh
                plot_volume=plot_volume,
                title=title,
                yaxis_title=yaxis_title,
-               annotations=annotations_values,
+               annotation_values=annotations_values,
                markers=markers,
                rows_pos=rows_pos_final,
-               annotation_colors=annotation_colors,
-               annotation_names=annotations_names,
-               indicators_series=indicators_series,
-               indicator_names=indicator_names,
-               indicators_colors=indicators_colors,
-               indicators_color_filled=fill_control,
                labels=labels,
+               annotation_colors=marker_colors,
+               annotation_legend_names=marker_legend_name,
+               indicators_series=indicator_series,
+               indicator_names=indicator_names,
+               indicators_colors=indicator_colors,
+               indicators_color_filled=fill_control,
                plot_bgcolor=plot_bgcolor)
 
 

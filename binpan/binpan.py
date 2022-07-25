@@ -842,8 +842,10 @@ class Symbol(object):
                 self.color_fill_control.update({indicator_column: plotly_colors[color_fill]})
             elif color_fill in plotly_colors or color_fill.startswith('rgba'):
                 self.color_fill_control.update({indicator_column: color_fill})
+            else:
+                self.color_fill_control.update({indicator_column: False})
         elif indicator_column:
-            self.color_fill_control.update({indicator_column: None})
+            self.color_fill_control.update({indicator_column: False})
         return self.color_fill_control
 
     def plot(self,
@@ -854,10 +856,11 @@ class Symbol(object):
              title: str = None,
              yaxis_title='Price',
              overlapped_indicators: list = [],
-             priced_actions_col='priced_actions',
+             priced_actions_col='Close',
              actions_col: str = None,
              labels: list = [],
-             default_price_for_actions='Close',
+             markers: list = None,
+             marker_colors: list = None,
              background_color=None):
         """
         Plots a candles figure for the object.
@@ -879,7 +882,9 @@ class Symbol(object):
         :param priced_actions_col: Priced actions to plot annotations over the candles, like buy, sell, etc. Under developing.
         :param actions_col: A column containing actions like buy or sell. Under developing.
         :param labels: Names for the annotations instead of the price.
-        :param default_price_for_actions: Column to use as priced actions in case of not existing a specific prices actions column.
+        :param markers: Plotly marker type. Usually, if referenced by number will be a not filled mark and using string name will be
+            a color filled one. Check plotly info: https://plotly.com/python/marker-style/
+        :param list marker_colors: Colors of the annotations.
         :param str background_color: Sets background color. Select a valid plotly color name.
 
         """
@@ -895,6 +900,8 @@ class Symbol(object):
 
         # binpan_logger.debug(f"{indicator_names}\n{indicators_colors}\n{rows_pos}")
 
+        # if priced_actions_col and not actions_col:
+
         handlers.plotting.candles_tagged(data=self.df,
                                          width=width,
                                          height=height,
@@ -905,14 +912,15 @@ class Symbol(object):
                                          on_candles_indicator=overlapped_indicators,
                                          priced_actions_col=priced_actions_col,
                                          actions_col=actions_col,
-                                         indicators_series=indicators_series,
+                                         indicator_series=indicators_series,
                                          indicator_names=indicator_names,
-                                         indicators_colors=indicators_colors,
+                                         indicator_colors=indicators_colors,
                                          fill_control=self.color_fill_control,
                                          rows_pos=rows_pos,
                                          labels=labels,
-                                         default_price_for_actions=default_price_for_actions,
-                                         plot_bgcolor=background_color)
+                                         plot_bgcolor=background_color,
+                                         markers=markers,
+                                         marker_colors=marker_colors)
 
     def plot_trades_size(self, max_size=60, height=1000, logarithmic=False, title: str = None):
         """

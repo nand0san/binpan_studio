@@ -7,3 +7,4 @@ tqdm==4.64.0
 plotly==5.9.0
 py-cpuinfo==8.0.0
 pandas-ta==0.3.14b0
+scipy~=1.7.3
