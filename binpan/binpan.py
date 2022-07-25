@@ -30,7 +30,7 @@ binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', 
 tick_seconds = handlers.time_helper.tick_seconds
 
 
-__version__ = "0.0.64"
+__version__ = "0.0.67"
 
 
 try:
@@ -636,7 +636,7 @@ class Symbol(object):
             else:
                 col_name = str(data.name) + suffix
 
-            data.nam = col_name
+            data.name = col_name
             data_series = [data]
 
         elif type(source_data) == pd.DataFrame:
@@ -652,7 +652,11 @@ class Symbol(object):
                 data_ser = pd.Series(data=data, index=current_df.index, name=suffix)
             else:
                 data_ser = pd.Series(data=data, index=current_df.index, name=f'Inserted_{len(self.df.columns)}')
+
+            del data
+            data = data_ser
             data_series = [data_ser]
+
         else:
             msg = f"BinPan Warning: Unexpected data type {type(source_data)}"
             binpan_logger.warning(msg)
@@ -664,10 +668,7 @@ class Symbol(object):
             rows = [r + last_row - 1 if r != 1 else 1 for r in rows]  # downcast rows to available except 1 (overlap)
 
             for i, serie in enumerate(data_series):
-                if serie.name:
-                    column_name = str(serie.name) + suffix
-                else:
-                    column_name = suffix
+                column_name = str(serie.name)  # suffix is added before this to names
                 current_df.loc[:, column_name] = serie
                 self.set_plot_color(indicator_column=column_name, color=colors[i])
                 self.set_plot_color_fill(indicator_column=column_name, color_fill=color_fills[i])
