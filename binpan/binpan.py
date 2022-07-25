@@ -36,8 +36,8 @@ __version__ = "0.0.63"
 try:
     from secret import redis_conf
 except:
-    msg = "REDIS: No redis configuration."
-    binpan_logger.warning(msg)
+    msg = "REDIS: Redis configuration not found in secret.py, if needed, must be passed latter to client."
+    binpan_logger.info(msg)
     pass
 
 try:
@@ -610,8 +610,7 @@ class Symbol(object):
         :param colors: Colors list for each serie indicator. Default is random colors.
         :param color_fills: Colors to fill indicator til y-axis or False to avoid. Example for transparent green 'rgba(26,150,65,0.5)'.
            Default is all False.
-        :param str suffix: A suffix for the new column name/s. If numpy array inserted, it uses "Inserted" as column name.
-           Can be used a suffix.
+        :param str suffix: A suffix for the new column name/s. If numpy array or nameless pandas series, suffix is the whole name.
         :return pd.DataFrame: Instance candles dataframe.
 
         """
@@ -624,36 +623,45 @@ class Symbol(object):
 
         current_df = self.df.copy(deep=True)
 
-        # data_series = list()
-
+        # get names
         if type(source_data) == pd.Series:
             data = source_data.copy(deep=True)
-            data_series = [data]
             if not list(data.index) == list(current_df.index):
                 data.index = current_df.index
-            current_df.loc[:, data.name] = data
+            if not data.name:
+                if suffix:
+                    col_name = suffix
+                else:
+                    col_name = f'Inserted_{len(self.df.columns)}' + suffix
+            else:
+                col_name = str(data.name) + suffix
+
+            data.nam = col_name
+            data_series = [data]
 
         elif type(source_data) == pd.DataFrame:
             data = source_data.copy(deep=True)
             data.set_index(current_df.index, inplace=True)
-            current_df = pd.concat([current_df, data], axis=1)
             data_series = [data[col] for col in data.columns]
+            for ser in data_series:
+                ser.name = str(ser.name) + suffix
 
         elif type(source_data) == np.ndarray:
             data = source_data.copy()
             if suffix:
-                data_ser = pd.Series(data=data, index=current_df.index, name='')
+                data_ser = pd.Series(data=data, index=current_df.index, name=suffix)
             else:
-                data_ser = pd.Series(data=data, index=current_df.index, name=f'Inserted_{len(self.df)}')
+                data_ser = pd.Series(data=data, index=current_df.index, name=f'Inserted_{len(self.columns)}')
             data_series = [data_ser]
         else:
             msg = f"BinPan Warning: Unexpected data type {type(source_data)}"
             binpan_logger.warning(msg)
             return
 
-        if self.is_new(data, suffix):
+        if self.is_new(source_data=data, suffix=''):  # suffix is added before this to names
+
             last_row = self.row_counter
-            rows = [r + last_row - 1 if r != 1 else 1 for r in rows]  # places in available row
+            rows = [r + last_row - 1 if r != 1 else 1 for r in rows]  # downcast rows to available except 1 (overlap)
 
             for i, serie in enumerate(data_series):
                 if serie.name:
@@ -668,6 +676,7 @@ class Symbol(object):
             self.row_counter = max(rows)
 
             self.df = current_df
+
         return self.df
 
     def hk(self, inplace=False):
@@ -779,12 +788,15 @@ class Symbol(object):
         if type(source_data) == pd.Series:
             serie_name = str(source_data.name) + suffix
             generated_columns.append(serie_name)
+
         elif type(source_data) == pd.DataFrame:
             generated_columns = [c + suffix for c in list(source_data.columns)]
+
         else:
             msg = f"BinPan error: (is_new?) source data is not pd.Series or pd.DataFrame"
             binpan_logger.error(msg)
             raise Exception(msg)
+
         for gen_col in generated_columns:
             if gen_col in self.df.columns:
                 binpan_logger.info(f"Existing column: {gen_col}")
