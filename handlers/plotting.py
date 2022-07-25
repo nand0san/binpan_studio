@@ -583,14 +583,20 @@ def candles_tagged(data: pd.DataFrame,
     :param list marker_legend_name: A list with the names to print as tags over the annotations.
 
     """
+    data_ = data.copy(deep=True)
     annotations_values = []
 
     if type(fill_control) == list:
         fill_control = {s.name: fill_control[i] for i, s in enumerate(indicator_series)}
 
     if actions_col:  # this trigger all annotation and markers thing
+
+        # check type
+        data_string_actions_col = data_[actions_col].astype('string')
+
         if not labels:
-            labels = list(data[actions_col].value_counts().index)
+            labels = list(data_string_actions_col.value_counts().index)
+
         if not markers:
             # markers = ["arrow-bar-up", "arrow-bar-down"]
             markers = ["arrow-left" for _ in range(len(labels))]
@@ -599,11 +605,14 @@ def candles_tagged(data: pd.DataFrame,
             marker_colors = [choice(plotly_colors) for _ in range(len(labels))]
 
         if not marker_legend_name:
-            marker_legend_name = [i[0].upper() + i[1:] for i in labels]
+            try:
+                marker_legend_name = [i[0].upper() + i[1:] for i in labels]
+            except Exception as exc:
+                raise BinPanException(exc.__class__, "Actions are not subscriptable.", "Check actions column is a strings column.")
 
-        actions = list(data[actions_col].value_counts().index)
+        actions = list(data_string_actions_col.value_counts().index)
         for action in actions:
-            annotations_values.append(data[data[actions_col] == action][priced_actions_col])
+            annotations_values.append(data_[data_[actions_col] == action][priced_actions_col])
 
         # action_values_serie = pd.Series()
         # for idx, action in data[actions_col].dropna().iteritems():
@@ -652,7 +661,7 @@ def candles_tagged(data: pd.DataFrame,
                 except:
                     indicator_names.append(f'Indicator_{i}')
 
-    candles_ta(data,
+    candles_ta(data_,
                width=width,
                height=height,
                range_slider=False,

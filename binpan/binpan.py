@@ -30,7 +30,7 @@ binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', 
 tick_seconds = handlers.time_helper.tick_seconds
 
 
-__version__ = "0.0.62"
+__version__ = "0.0.63"
 
 
 try:
@@ -641,7 +641,10 @@ class Symbol(object):
 
         elif type(source_data) == np.ndarray:
             data = source_data.copy()
-            data_ser = pd.Series(data=data, index=current_df.index, name='Inserted')
+            if suffix:
+                data_ser = pd.Series(data=data, index=current_df.index, name='')
+            else:
+                data_ser = pd.Series(data=data, index=current_df.index, name=f'Inserted_{len(self.df)}')
             data_series = [data_ser]
         else:
             msg = f"BinPan Warning: Unexpected data type {type(source_data)}"
@@ -653,7 +656,10 @@ class Symbol(object):
             rows = [r + last_row - 1 if r != 1 else 1 for r in rows]  # places in available row
 
             for i, serie in enumerate(data_series):
-                column_name = str(serie.name) + suffix
+                if serie.name:
+                    column_name = str(serie.name) + suffix
+                else:
+                    column_name = suffix
                 current_df.loc[:, column_name] = serie
                 self.set_plot_color(indicator_column=column_name, color=colors[i])
                 self.set_plot_color_fill(indicator_column=column_name, color_fill=color_fills[i])

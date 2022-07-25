@@ -26,7 +26,7 @@ author = 'Fernando Alfonso'
 # The full version, including alpha/beta/rc tags
 
 
-release = "0.0.62"
+release = "0.0.63"
 
 # -- General configuration ---------------------------------------------------
 
