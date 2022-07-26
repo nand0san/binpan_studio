@@ -4,6 +4,7 @@ from .time_helper import convert_utc_ms_column_to_time_zone, convert_datetime_to
 import pandas as pd
 import json
 from .logs import Logs
+from redis import StrictRedis
 
 redis_logger = Logs(filename='./logs/redis_fetch.log', name='redis_fetch', info_level='INFO')
 
@@ -70,16 +71,16 @@ def redis_klines_parser(json_list: List[str],
                'Taker buy quote volume', 'Ignore', 'Open timestamp', 'Close timestamp']]
 
 
-##################
-# Redis Requests #
-##################
+###############
+# Redis Utils #
+###############
 
-def fetch_keys(redisClient: object,
+def fetch_keys(redisClient: StrictRedis,
                filter_tick_interval=None) -> list:
     """
     Fetch all keys in redis database.
 
-    :param object redisClient: A redis connector.
+    :param StrictRedis redisClient: A redis connector.
     :param str filter_tick_interval: Optional. A binance klines tick interval to fetch all keys for that interval.
     :return list: Returns all keys for a tick interval if passed, else all existing keys in redis.
     """
@@ -89,21 +90,11 @@ def fetch_keys(redisClient: object,
     return list(ret)
 
 
-def push_line_to_redis(redisClient: object,
-                       key: str, data: str):
-    """
-    Pushes another line to the end of a list key in redis database.
+###############
+# Redis Zsets #
+###############
 
-    :param object redisClient: A redis connector.
-    :param str key: The redis key name.
-    :param str data: Data to push. If not string type will be converted to string.
-    :return: redis feedback info.
-
-    """
-    return redisClient.rpush(key, str(data))
-
-
-def push_to_ordered_set(redisClient: object,
+def push_to_ordered_set(redisClient: StrictRedis,
                         key: str,
                         mapping: dict,
                         LT=False,
@@ -116,7 +107,7 @@ def push_to_ordered_set(redisClient: object,
     """
     Pushes elements to the ordered set with a score as index.
 
-    :param object redisClient: A redis client connector.
+    :param StrictRedis redisClient: A redis client connector.
     :param str key: The redis key name.
     :param list mapping: Data to push in the format {data: score}
     :param LT: Only update existing elements if the new score is less than the current score. This flag doesn't prevent adding new elements.
@@ -136,7 +127,7 @@ def push_to_ordered_set(redisClient: object,
     return redisClient.zadd(name=key, mapping=mapping, lt=LT, xx=XX, nx=NX, gt=GT, ch=CH, incr=INCR)
 
 
-def fetch_zset_range(redisClient: object,
+def fetch_zset_range(redisClient: StrictRedis,
                      key: str = None,
                      symbol=None,
                      tick_interval=None,
@@ -147,7 +138,7 @@ def fetch_zset_range(redisClient: object,
     Fetch a redis ordered set by its key name and start end indexes. Optionally returns with redis index (scores) in a tuple each row
     if with_Scores.
 
-    :param object redisClient: A redis connector.
+    :param StrictRedis redisClient: A redis connector.
     :param str key: Redis key name. Optional, symbol and tick interval can be used too.
     :param str symbol: A Binance valid Symbol.
     :param str tick_interval: A binance tick interval. Like 5m, 1h etc
@@ -155,13 +146,39 @@ def fetch_zset_range(redisClient: object,
     :param int end_index: Numeric index in redis key.
     :param bool with_scores: Will return rows with its index in a tuple if true.
     :return list: A list of rows in the redis set or a list of tuples with rows and scores if with_scores true.
+
+
+    Example:
+
+    .. code-block::
+
+        from binpan import binpan
+        from handlers import redis_fetch
+        from random import choice
+
+        redis_client = binpan.redis_client(ip='192.168.69.43')
+
+        keys = redis_fetch.fetch_keys(redisClient=redis_client)
+        stream = choice(keys)
+
+        print(stream)
+
+        >>> 'galabusd@kline_5m'
+
+        redis_fetch.fetch_zset_range(redisClient=redis_client, key=stream, start_index=0, end_index=3)
+
+        >>> ['{"t": 1658765700000, "o": "0.05011000", "h": "0.05017000", "l": "0.05004000", "c": "0.05006000", "v": "345741.00000000", "T": 1658765999999, "q": "17315.68030000", "n": 87, "V": "84642.00000000", "Q": "4239.51131000", "B": "0"}',
+             '{"t": 1658766000000, "o": "0.05005000", "h": "0.05010000", "l": "0.04999000", "c": "0.04999000", "v": "448270.00000000", "T": 1658766299999, "q": "22422.46695000", "n": 68, "V": "132503.00000000", "Q": "6628.86299000", "B": "0"}',
+             '{"t": 1658766300000, "o": "0.04998000", "h": "0.05004000", "l": "0.04995000", "c": "0.05000000", "v": "268084.00000000", "T": 1658766599999, "q": "13396.55626000", "n": 57, "V": "94341.00000000", "Q": "4715.14561000", "B": "0"}',
+             '{"t": 1658766600000, "o": "0.04998000", "h": "0.05010000", "l": "0.04996000", "c": "0.05002000", "v": "402674.00000000", "T": 1658766899999, "q": "20162.97689000", "n": 68, "V": "154895.00000000", "Q": "7753.09416000", "B": "0"}']
+
     """
     if not key:
         key = f"{symbol}@kline_{tick_interval}"
     return redisClient.zrange(name=key, start=start_index, end=end_index, withscores=with_scores)
 
 
-def fetch_zset_timestamps(redisClient: object,
+def fetch_zset_timestamps(redisClient: StrictRedis,
                           key: str,
                           start_timestamp: int,
                           end_timestamp: int = None,
@@ -170,12 +187,50 @@ def fetch_zset_timestamps(redisClient: object,
     Fetch a redis ordered set by its key name and start end scores. Optionally with redis index (scores) in a tuple each row.
     Optionally returns with redis index (scores) in a tuple each row if with_Scores.
 
-    :param object redisClient: A redis connector.
+    :param StrictRedis redisClient: A redis connector.
     :param str key: Redis key name.
     :param int start_timestamp: Usually a timestamp as index in redis key.
     :param int end_timestamp: Usually a timestamp as index in redis key.
     :param bool with_scores: Will return rows with its index in a tuple if true.
     :return list: A list of rows in the redis set or a list of tuples with rows and scores if with_scores true.
+
+    Example:
+
+    .. code-block::
+
+        from binpan import binpan
+        from handlers import redis_fetch
+        from random import choice
+
+        redis_client = binpan.redis_client(ip='192.168.69.43')
+
+        keys = redis_fetch.fetch_keys(redisClient=redis_client)
+        stream = choice(keys)
+
+        print(stream)
+
+        >>> 'galabusd@kline_5m'
+
+        redis_fetch.fetch_zset_timestamps(redisClient=redis_client, key=stream, start_timestamp=1658765700000, end_timestamp= 1658766600000, with_scores=True)
+
+        >>> [('{"t": 1658765700000, "o": "0.05011000", "h": "0.05017000", "l": "0.05004000", "c": "0.05006000", "v": "345741.00000000", "T": 1658765999999, "q": "17315.68030000", "n": 87, "V": "84642.00000000", "Q": "4239.51131000", "B": "0"}',
+              1658765700000.0),
+             ('{"t": 1658766000000, "o": "0.05005000", "h": "0.05010000", "l": "0.04999000", "c": "0.04999000", "v": "448270.00000000", "T": 1658766299999, "q": "22422.46695000", "n": 68, "V": "132503.00000000", "Q": "6628.86299000", "B": "0"}',
+              1658766000000.0),
+             ('{"t": 1658766300000, "o": "0.04998000", "h": "0.05004000", "l": "0.04995000", "c": "0.05000000", "v": "268084.00000000", "T": 1658766599999, "q": "13396.55626000", "n": 57, "V": "94341.00000000", "Q": "4715.14561000", "B": "0"}',
+              1658766300000.0),
+             ('{"t": 1658766600000, "o": "0.04998000", "h": "0.05010000", "l": "0.04996000", "c": "0.05002000", "v": "402674.00000000", "T": 1658766899999, "q": "20162.97689000", "n": 68, "V": "154895.00000000", "Q": "7753.09416000", "B": "0"}',
+              1658766600000.0)]
+
+        # Now without scores
+
+        redis_fetch.fetch_zset_timestamps(redisClient=redis_client, key=stream, start_timestamp=1658765700000, end_timestamp= 1658766600000, with_scores=False)
+
+        >>> ['{"t": 1658765700000, "o": "0.05011000", "h": "0.05017000", "l": "0.05004000", "c": "0.05006000", "v": "345741.00000000", "T": 1658765999999, "q": "17315.68030000", "n": 87, "V": "84642.00000000", "Q": "4239.51131000", "B": "0"}',
+            '{"t": 1658766000000, "o": "0.05005000", "h": "0.05010000", "l": "0.04999000", "c": "0.04999000", "v": "448270.00000000", "T": 1658766299999, "q": "22422.46695000", "n": 68, "V": "132503.00000000", "Q": "6628.86299000", "B": "0"}',
+            '{"t": 1658766300000, "o": "0.04998000", "h": "0.05004000", "l": "0.04995000", "c": "0.05000000", "v": "268084.00000000", "T": 1658766599999, "q": "13396.55626000", "n": 57, "V": "94341.00000000", "Q": "4715.14561000", "B": "0"}',
+            '{"t": 1658766600000, "o": "0.04998000", "h": "0.05010000", "l": "0.04996000", "c": "0.05002000", "v": "402674.00000000", "T": 1658766899999, "q": "20162.97689000", "n": 68, "V": "154895.00000000", "Q": "7753.09416000", "B": "0"}']
+
     """
     ret = redisClient.zrangebyscore(name=key,
                                     min=start_timestamp,
@@ -184,7 +239,7 @@ def fetch_zset_timestamps(redisClient: object,
     return ret
 
 
-def fetch_set_and_parse(redisClient: object,
+def fetch_set_and_parse(redisClient: StrictRedis,
                         key: str) -> pd.DataFrame:
     """
     Fetch a websocket channel from redis and parses to a BinPan dataframe.
@@ -199,7 +254,7 @@ def fetch_set_and_parse(redisClient: object,
 
        # score for this entry would be Open timestamp: 1657651320000
 
-    :param object redisClient: A redis connector.
+    :param StrictRedis redisClient: A redis connector.
     :param str key: Key redis name.
     :return pd.DataFrame: BinPan dataframe.
     """
@@ -211,12 +266,54 @@ def fetch_set_and_parse(redisClient: object,
     return redis_klines_parser(json_list=data, symbol=symbol, tick_interval=tick_interval)
 
 
+def zset_length_between_scores(redisClient: StrictRedis,
+                               name: str,
+                               min_index: int,
+                               max_index: int) -> int:
+    """
+    Returns count of elements between start score and end score (including elements with score equal to min or max).
+
+    :param StrictRedis redisClient: A redis client.
+    :param str name: A redis available key (zset name).
+    :param min_index: A score presumed value.
+    :param max_index: A score presumed value.
+    :return int: Count of scores in redis between ()
+    """
+    return redisClient.zcount(name=name, min=min_index, max=max_index)
+
+
+def zset_length(redisClient: StrictRedis,
+                name: str) -> int:
+    """
+    Returns count of elements in a set.
+
+    :param StrictRedis redisClient: A redis client.
+    :param str name: A redis available key (zset name).
+    :return int: Count elements in zset.
+    """
+    return redisClient.zcard(name=name)
+
+
 ################
 # List objects #
 ################
 
 
-def fetch_list(redisClient: object,
+def push_line_to_redis(redisClient: StrictRedis,
+                       key: str, data: str):
+    """
+    Pushes another line to the end of a list key in redis database.
+
+    :param StrictRedis redisClient: A redis connector.
+    :param str key: The redis key name.
+    :param str data: Data to push. If not string type will be converted to string.
+    :return: redis feedback info.
+
+    """
+    return redisClient.rpush(key, str(data))
+
+
+def fetch_list(redisClient: StrictRedis,
                key: str,
                start_index=0,
                end_index=-1) -> list:
@@ -233,7 +330,7 @@ def fetch_list(redisClient: object,
     return redisClient.lrange(key, start_index, end_index)
 
 
-def fetch_data_in_list(redisClient: object,
+def fetch_data_in_list(redisClient: StrictRedis,
                        key: str,
                        start_index=0,
                        end_index=-1) -> list:
@@ -249,7 +346,7 @@ def fetch_data_in_list(redisClient: object,
     return redisClient.lrange(key, start_index, end_index)
 
 
-def insert_line_before_index_in_list(redisClient: object,
+def insert_line_before_index_in_list(redisClient: StrictRedis,
                                      key: str,
                                      idx: int,
                                      value: str):
@@ -274,7 +371,7 @@ def insert_line_before_index_in_list(redisClient: object,
     redisClient.lrem(name=key, count=0, value=tag)
 
 
-def find_row_index_in_redis_key(redisClient: object,
+def find_row_index_in_redis_key(redisClient: StrictRedis,
                                 symbol: str,
                                 tick_interval: str,
                                 row_reference: str) -> int:
@@ -309,7 +406,7 @@ def find_row_index_in_redis_key(redisClient: object,
         raise Exception("Not contemplated situation!!!!")
 
 
-def fetch_list_filter_query(redisClient: object,
+def fetch_list_filter_query(redisClient: StrictRedis,
                             coin_filter: str = None,
                             symbol_filter: str = None,
                             tick_interval_filter: str = None,
