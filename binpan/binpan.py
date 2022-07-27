@@ -2401,22 +2401,38 @@ class Exchange(object):
 
     Exchange data collected in class variables:
 
-    - **fees**: fees applied to the user requesting for every symbol in a pandas dataframe.
-    - **system_status**: API state can be normal o under maintenance.
-    - **coins**: A dataframe with all the coin's data.
-    - **networks**: A dataframe with info about every coin and its blockchain networks info.
-    - **info_dic**: A dictionary with all raw symbols info each.
+    - **my_exchange_instance.info_dic**: A dictionary with all raw symbols info each.
+    - **my_exchange_instance.coins_dic**: A dictionary with all coins info.
+    - **my_exchange_instance.bases**: A dictionary with all bases for all symbols.
+    - **my_exchange_instance.quotes**: A dictionary with all quotes for all symbols.
+    - **my_exchange_instance.leveraged**: A list with all leveraged coins.
+    - **my_exchange_instance.leveraged_symbols**: A list with all leveraged symbols.
+    - **my_exchange_instance.fees**: dataframe qith fees applied to the user requesting for every symbol.
+    - **my_exchange_instance.filters**: A dictionary with all trading filters detailed with all symbols.
+    - **my_exchange_instance.status**: API status can be normal o under maintenance.
+    - **my_exchange_instance.coins**: A dataframe with all the coin's data.
+    - **my_exchange_instance.networks**: A dataframe with info about every coin and its blockchain networks info.
+    - **my_exchange_instance.coins_list**: A list with all the coin's names.
+    - **my_exchange_instance.symbols**: A list with all the symbols names.
+    - **my_exchange_instance.df**: A dataframe with all the symbols info.
+    - **my_exchange_instance.order_types**: Dataframe with each symbol order types.
 
     """
 
     def __init__(self):
         self.info_dic = handlers.exchange.get_info_dic()
+        self.coins_dic = handlers.exchange.get_coins_info_dic()
         self.bases = handlers.exchange.get_bases_dic(info_dic=self.info_dic)
         self.quotes = handlers.exchange.get_quotes_dic(info_dic=self.info_dic)
+        self.leveraged = handlers.exchange.get_leveraged_coins(coins_dic=self.coins_dic)
+        self.leveraged_symbols = handlers.exchange.get_leveraged_symbols(info_dic=self.info_dic, leveraged_coins=self.leveraged)
+
         self.fees = handlers.exchange.get_fees()
         self.filters = handlers.exchange.get_symbols_filters(info_dic=self.info_dic)
         self.status = handlers.exchange.get_system_status()
-        self.coins, self.networks = handlers.exchange.get_coins_info()
+        self.coins, self.networks = handlers.exchange.get_coins_and_networks_info()
+        self.coins_list = list(self.coins.index)
+
         self.symbols = self.get_symbols()
         self.df = self.get_df()
         self.order_types = self.get_order_types()
@@ -2473,7 +2489,7 @@ class Exchange(object):
         self.quotes = handlers.exchange.get_quotes_dic(info_dic=self.info_dic)
         self.fees = handlers.exchange.get_fees()
         self.status = handlers.exchange.get_system_status()
-        self.coins, self.networks = handlers.exchange.get_coins_info()
+        self.coins, self.networks = handlers.exchange.get_coins_and_networks_info()
         self.symbols = self.get_symbols()
         self.df = self.get_df()
         self.order_types = self.get_order_types()

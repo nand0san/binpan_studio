@@ -1294,11 +1294,21 @@ It can be any color from plotly library or a number in the list of those. Defaul
 <dd><p>Exchange data.</p>
 <p>Exchange data collected in class variables:</p>
 <ul class="simple">
-<li><p><strong>fees</strong>: fees applied to the user requesting for every symbol in a pandas dataframe.</p></li>
-<li><p><strong>system_status</strong>: API state can be normal o under maintenance.</p></li>
-<li><p><strong>coins</strong>: A dataframe with all the coin’s data.</p></li>
-<li><p><strong>networks</strong>: A dataframe with info about every coin and its blockchain networks info.</p></li>
-<li><p><strong>info_dic</strong>: A dictionary with all raw symbols info each.</p></li>
+<li><p><strong>my_exchange_instance.info_dic</strong>: A dictionary with all raw symbols info each.</p></li>
+<li><p><strong>my_exchange_instance.coins_dic</strong>: A dictionary with all coins info.</p></li>
+<li><p><strong>my_exchange_instance.bases</strong>: A dictionary with all bases for all symbols.</p></li>
+<li><p><strong>my_exchange_instance.quotes</strong>: A dictionary with all quotes for all symbols.</p></li>
+<li><p><strong>my_exchange_instance.leveraged</strong>: A list with all leveraged coins.</p></li>
+<li><p><strong>my_exchange_instance.leveraged_symbols</strong>: A list with all leveraged symbols.</p></li>
+<li><p><strong>my_exchange_instance.fees</strong>: dataframe qith fees applied to the user requesting for every symbol.</p></li>
+<li><p><strong>my_exchange_instance.filters</strong>: A dictionary with all trading filters detailed with all symbols.</p></li>
+<li><p><strong>my_exchange_instance.status</strong>: API status can be normal o under maintenance.</p></li>
+<li><p><strong>my_exchange_instance.coins</strong>: A dataframe with all the coin’s data.</p></li>
+<li><p><strong>my_exchange_instance.networks</strong>: A dataframe with info about every coin and its blockchain networks info.</p></li>
+<li><p><strong>my_exchange_instance.coins_list</strong>: A list with all the coin’s names.</p></li>
+<li><p><strong>my_exchange_instance.symbols</strong>: A list with all the symbols names.</p></li>
+<li><p><strong>my_exchange_instance.df</strong>: A dataframe with all the symbols info.</p></li>
+<li><p><strong>my_exchange_instance.order_types</strong>: Dataframe with each symbol order types.</p></li>
 </ul>
 <dl class="py method">
 <dt class="sig sig-object py" id="binpan.binpan.Exchange.filter">

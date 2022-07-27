@@ -447,3 +447,73 @@ def fetch_list_filter_query(redisClient: StrictRedis,
                                   end_index=end_index)
         ret[ticker] = data
     return ret
+
+
+#############
+# pipelines #
+#############
+
+
+def execute_pipeline(pipeline: StrictRedis.pipeline):
+    """
+    Executes a pipeline buffer.
+
+    :param redisClient pipeline: A redis client pipeline.
+    :return: Redis response.
+    """
+    return pipeline.execute()
+
+
+def get_pipeline_buffer(pipeline: StrictRedis.pipeline) -> StrictRedis.pipeline:
+    """
+    Gets pipeline buffered commands.
+
+    :param redisClient pipeline: A redis client pipeline.
+    :return: Redis response.
+    """
+    return pipeline.command_stack
+
+
+def flush_pipeline(pipeline: StrictRedis.pipeline) -> StrictRedis.pipeline:
+    """
+    Flush pipeline buffered commands.
+
+    :param redisClient pipeline: A redis client pipeline.
+    :return: Redis response.
+    """
+    return pipeline.command_stack
+
+
+def pipe_buffer_ordered_set(pipeline: StrictRedis,
+                            key: str,
+                            mapping: dict,
+                            LT=False,
+                            XX=False,
+                            NX=True,
+                            GT=False,
+                            CH=True,
+                            INCR=False,
+                            ):
+    """
+        Fills a pipeline buffer to "pipeline.execute()" later with commands of pushes of elements to an ordered set with a score as index.
+
+        :param redisClient pipeline: A redis client pipeline.
+        :param str key: The redis key name.
+        :param list mapping: Data to push in the format {data: score}
+        :param LT: Only update existing elements if the new score is less than the current score. This flag doesn't prevent adding new elements.
+        :param XX: Only update elements that already exist. Don't add new elements.
+        :param NX: Only add new elements. Don't update already existing elements. This is the default only true value.
+        :param GT: Only update existing elements if the new score is greater than the current score. This flag doesn't prevent adding new
+           elements.
+        :param CH: Modify the return value from the number of new elements added, to the total number of elements changed (CH is an abbreviation
+           of changed). Changed elements are new elements added and elements already existing for which the score was updated. So elements
+           specified in the command line having the same score as they had in the past are not counted. Note: normally the return value of ZADD
+           only counts the number of new elements added.
+        :param INCR: When this option is specified ZADD acts like ZINCRBY. Only one score-element pair can be specified in this mode.
+           Note: The GT, LT and NX options are mutually exclusive.
+        :return: redis feedback info.
+
+    """
+    pipeline.zadd(name=key, mapping=mapping, lt=LT, xx=XX, nx=NX, gt=GT, ch=CH, incr=INCR)
+    return pipeline
+

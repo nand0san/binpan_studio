@@ -232,7 +232,7 @@ def get_system_status():
                        weight=1)['msg']
 
 
-def get_coins_info():
+def get_coins_and_networks_info() -> tuple:
     """
     Get information of coins (available for deposit and withdraw) for user.
 
@@ -268,9 +268,13 @@ def get_coins_info():
 
 def get_coins_info_list(coin: str = None) -> list:
     """
-    Trae todas las monedas si no se especifica una.
+    Bring all coins exchange info in a list if no one is specified.
 
-    Devuelve una lista de diccionarios, uno por cada moneda"""
+    Returns a list of dictionaries, one for each currency.
+
+    :param str coin: Limit response to a coin.
+    :return list: A list of dictionaries each coin.
+    """
 
     endpoint = '/sapi/v1/capital/config/getall'
     check_weight(weight=10, endpoint=endpoint)
@@ -282,15 +286,85 @@ def get_coins_info_list(coin: str = None) -> list:
 
 
 def get_coins_info_dic(coin: str = None) -> dict:
+    """
+    Useful managing coins info in a big dictionary with coins as keys.
+
+    :param str coin: Limit response to a coin.
+    :return list: A dictionary with each coin data as value.
+    """
     coins_data_list = get_coins_info_list(coin=coin)
     return {c['coin']: c for c in coins_data_list}
 
 
 def get_legal_coins(coins_dic: dict = None) -> list:
-    """Trae las monedas que contienen isLegalMoney=true"""
+    """
+    Fetch coins containing isLegalMoney=true
+
+    :param dict coins_dic: Avoid fetching the API by passing a dict with coins data.
+    :return list: A list with coins names.
+    """
     if not coins_dic:
         coins_dic = get_coins_info_dic()
     return [coin for coin, data in coins_dic.items() if data['isLegalMoney'] is True]
+
+
+def get_leveraged_coins(coins_dic: dict = None) -> list:
+    """
+    Search for Binance leveraged coins by searching UP or DOWN before an existing coin, examples:
+
+        .. code-block:: python
+
+            ['1INCHDOWN', '1INCHUP', 'AAVEDOWN', 'AAVEUP', 'ADADOWN', ... ]
+
+    :param dict coins_dic: Avoid fetching the API by passing a dict with coins data.
+    :return list: A list with leveraged coins names.
+    """
+    if not coins_dic:
+        coins_dic = get_coins_info_dic()
+
+    leveraged = []
+
+    coins_up = [i + 'UP' for i in coins_dic.keys()]
+    coins_down = [i + 'DOWN' for i in coins_dic.keys()]
+
+    for coin, _ in coins_dic.items():
+        if coin in coins_up:
+            leveraged.append(coin)
+        elif coin in coins_down:
+            leveraged.append(coin)
+    return leveraged
+
+
+def get_leveraged_symbols(info_dic: dict = None, leveraged_coins: list = None):
+    """
+    Search for Binance symbols based on leveraged coins by searching UP or DOWN before an existing coin in symbol,
+    leveraged coins examples are:
+
+        .. code-block:: python
+
+            # leveraged coins
+            ['1INCHDOWN', '1INCHUP', 'AAVEDOWN', 'AAVEUP', 'ADADOWN', ... ]
+
+            # leveraged symbols
+
+    :param dict info_dic: Avoid fetching the API by passing a dict with symbols data.
+    :param list leveraged_coins: Avoid fetching the API for getting coins by passing a list with coins data.
+    :return list: A list with leveraged coins names.
+    """
+    if not info_dic:
+        info_dic = get_info_dic()
+    if not leveraged_coins:
+        leveraged_coins = get_leveraged_coins()
+
+    bases = get_bases_dic(info_dic=info_dic)
+    quotes = get_quotes_dic(info_dic=info_dic)
+    leveraged_symbols = []
+    for symbol in info_dic.keys():
+        b = bases[symbol]
+        q = quotes[symbol]
+        if b in leveraged_coins or q in leveraged_coins:
+            leveraged_symbols.append(symbol)
+    return leveraged_symbols
 
 
 #######################
