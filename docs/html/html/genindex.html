@@ -39,14 +39,14 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="binpan.html">BinPan Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="files.html">Files Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="messages.html">Messages Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="files.html">Files Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="messages.html">Notifications Module</a></li>
 </ul>
 
         </div>
@@ -253,6 +253,8 @@
       <li><a href="binpan.html#binpan.binpan.Exchange.get_df">get_df() (binpan.binpan.Exchange method)</a>
 </li>
       <li><a href="binpan.html#binpan.binpan.Symbol.get_fees">get_fees() (binpan.binpan.Symbol method)</a>
+</li>
+      <li><a href="messages.html#handlers.messages.get_fills_price">get_fills_price() (in module handlers.messages)</a>
 </li>
       <li><a href="market.html#handlers.market.get_historical_aggregated_trades">get_historical_aggregated_trades() (in module handlers.market)</a>
 </li>
@@ -527,6 +529,8 @@
 </li>
       <li><a href="files.html#handlers.files.save_file">save_file() (in module handlers.files)</a>
 </li>
+      <li><a href="messages.html#handlers.messages.send_balances">send_balances() (in module handlers.messages)</a>
+</li>
       <li><a href="binpan.html#binpan.binpan.Symbol.set_display_columns">set_display_columns() (binpan.binpan.Symbol method)</a>
 </li>
       <li><a href="binpan.html#binpan.binpan.Symbol.set_display_decimals">set_display_decimals() (binpan.binpan.Symbol static method)</a>
@@ -541,10 +545,10 @@
 </li>
       <li><a href="binpan.html#binpan.binpan.Symbol.set_plot_color_fill">set_plot_color_fill() (binpan.binpan.Symbol method)</a>
 </li>
-      <li><a href="binpan.html#binpan.binpan.Symbol.set_plot_row">set_plot_row() (binpan.binpan.Symbol method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="binpan.html#binpan.binpan.Symbol.set_plot_row">set_plot_row() (binpan.binpan.Symbol method)</a>
+</li>
       <li><a href="binpan.html#binpan.binpan.Symbol.sma">sma() (binpan.binpan.Symbol method)</a>
 </li>
       <li><a href="wallet.html#handlers.wallet.spot_free_balances_parsed">spot_free_balances_parsed() (in module handlers.wallet)</a>
@@ -573,12 +577,16 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="messages.html#handlers.messages.telegram_bot_send_text">telegram_bot_send_text() (in module handlers.messages)</a>
 </li>
+      <li><a href="messages.html#handlers.messages.telegram_parse_dataframe_markdown">telegram_parse_dataframe_markdown() (in module handlers.messages)</a>
+</li>
       <li><a href="messages.html#handlers.messages.telegram_parse_dict">telegram_parse_dict() (in module handlers.messages)</a>
 </li>
-      <li><a href="binpan.html#binpan.binpan.Symbol.tick_interval">tick_interval() (binpan.binpan.Symbol method)</a>
+      <li><a href="messages.html#handlers.messages.telegram_parse_order_markdown">telegram_parse_order_markdown() (in module handlers.messages)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="binpan.html#binpan.binpan.Symbol.tick_interval">tick_interval() (binpan.binpan.Symbol method)</a>
+</li>
       <li><a href="binpan.html#binpan.binpan.Symbol.time_index">time_index() (binpan.binpan.Symbol method)</a>
 </li>
       <li><a href="binpan.html#binpan.binpan.Symbol.time_zone">time_zone() (binpan.binpan.Symbol method)</a>

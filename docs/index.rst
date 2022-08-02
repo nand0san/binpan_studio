@@ -101,14 +101,14 @@ Hope you find it useful breaking the market!!!
    :caption: Contents:
 
    binpan.rst
-   market.rst
    exceptions.rst
+   files.rst
+   market.rst
+   messages.rst
    plotting.rst
+   redis_fetch.rst
    strategies.rst
    wallet.rst
-   redis_fetch.rst
-   files.rst
-   messages.rst
 
 
 Indices and tables

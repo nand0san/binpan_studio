@@ -6,17 +6,13 @@ from .time_helper import convert_milliseconds_to_str
 from .wallet import get_spot_trades_list, get_spot_balances_df, get_spot_balances_total_value
 from pandas import DataFrame
 
-
 msg_logger = Logs(filename='./logs/msg_logger.log', name='msg_logger', info_level='INFO')
 
 cipher_object = AesCipher()
 
-
 try:
     from secret import encoded_chat_id, encoded_telegram_bot_id
 
-    chat_id = encoded_chat_id
-    bot_id = encoded_telegram_bot_id
 except Exception as exc:
     msg = """
 Not found telegram bot key or chat key for the telegram message module.
@@ -70,26 +66,21 @@ def telegram_bot_send_text(msg: dict or str,
     """
 
     if type(msg) == dict:
-        bot_message = msg.copy()
+        bot_message = str(msg.copy())
     else:
-        bot_message = msg
+        bot_message = str(msg)
 
     if not alt_enc_bot_id:
-        alt_enc_bot_id = encoded_telegram_bot_id
+        alt_enc_bot_id = cipher_object.decrypt(encoded_telegram_bot_id)
     if not alt_chat_id:
-        alt_chat_id = encoded_chat_id
+        alt_chat_id = cipher_object.decrypt(encoded_chat_id)
 
-    bot_message = str(bot_message)
-    alt_enc_bot_id = cipher_object.decrypt(bot_id)
-    alt_chat_id = cipher_object.decrypt(chat_id)
+    send_text = f'https://api.telegram.org/bot{alt_enc_bot_id}/sendMessage?chat_id={alt_chat_id}&' \
+                f'parse_mode={parse_mode}={bot_message}'
 
     if disable_notification:
-        send_text = f'https://api.telegram.org/bot{alt_enc_bot_id}/sendMessage?chat_id={alt_chat_id}&' \
-                    f'parse_mode={parse_mode}={bot_message}&disable_notification=true'
+        send_text += "&disable_notification=true"
 
-    else:
-        send_text = f'https://api.telegram.org/bot{alt_enc_bot_id}/sendMessage?chat_id={alt_chat_id}&' \
-                    f'parse_mode={parse_mode}={bot_message} '
     response = requests.get(send_text)
 
     msg_logger.info("TELEGRAM " + " ".join(bot_message.replace('\n', ' ').split()))
@@ -118,7 +109,7 @@ def telegram_parse_dict(msg_data: dict, timezone='UTC'):
         except:
             fv2 = fv1
         if 'pct' in k:
-            fv2 = fv2*100
+            fv2 = fv2 * 100
             row = f"*{k}* : `{fv2:.2f}`\n"
         elif type(fv2) == float:
             row = f"*{k}* : `{fv2:.8f}`\n"
@@ -176,7 +167,7 @@ def telegram_parse_dataframe_markdown(data: DataFrame,
 
 def get_fills_price(original_order_dict: dict) -> float:
     """
-    Obtain averaged price for the order.
+    Obtain averaged price from order API response.
 
     :param dict original_order_dict: API order dict response.
     :return float: Price averaged.
@@ -221,7 +212,7 @@ def telegram_parse_order_markdown(original_order: dict, timezoned='Europe/Madrid
     """
     Parses API order response to telegram string.
 
-    :param dict original_order: API order resopnse.
+    :param dict original_order: API order response.
     :param str timezoned: a time zone like 'Europe/Madrid' for human readable timestamps.
     :return str: Parsed telegram style  string.
     """
@@ -265,7 +256,9 @@ def telegram_parse_order_markdown(original_order: dict, timezoned='Europe/Madrid
 
 def send_balances(convert_to: str = 'BUSD') -> float:
     """
-    Sends telegram message with total value of spot wallet.
+    Sends telegram message with total value of spot wallet in selected coin.
+
+    It returns free and locked assets value added.
 
     :param str convert_to: A Binance coin.
     :return float: total value of wallet.
