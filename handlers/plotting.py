@@ -280,17 +280,20 @@ def candles_ta(data: pd.DataFrame,
 
         .. code-block:: python
 
-           import binpan
+            from binpan import binpan
 
-           ethbtc = binpan.Symbol(symbol='ethbtc', tick_interval='1h')
+            ethbtc = binpan.Symbol(symbol='ethbtc', tick_interval='1h')
 
-           ethbtc.macd()
-           binpan.handlers.plotting.candles_ta(data = ethbtc.df,
-                                               indicators_series=[ethbtc.df['MACD_12_26_9_'], ethbtc.df['MACDh_12_26_9_'],
-                                                    ethbtc.df['MACDs_12_26_9_']],
-                                               indicators_color_filled=[False, 'rgba(26,150,65,0.5)', False],
-                                               rows_pos=[2,2, 2],
-                                               indicators_colors=['orange', 'green', 'skyblue'])
+            ethbtc.macd(fast=12, slow=26, smooth=9)
+            print(ethbtc.df)
+
+            binpan.handlers.plotting.candles_ta(data=ethbtc.df,
+                                                indicators_series=[ethbtc.df['MACD_12_26_9'],
+                                                                   ethbtc.df['MACDh_12_26_9'],
+                                                                   ethbtc.df['MACDs_12_26_9']],
+                                                indicators_color_filled=[False, 'rgba(26,150,65,0.5)', False],
+                                                rows_pos=[2, 2, 2],
+                                                indicators_colors=['orange', 'green', 'skyblue'])
 
 
     .. image:: images/candles_ta_macd.png
@@ -708,7 +711,8 @@ def plot_trade_size(data: pd.DataFrame,
     Example:
         .. code-block:: python
 
-           import binpan
+           from binpan import binpan
+
            lunc = binpan.Symbol(symbol='luncbusd',
                                 tick_interval='5m',
                                 limit = 100,
@@ -762,7 +766,7 @@ def plot_pie(serie: pd.Series,
 
         .. code-block:: python
 
-           import binpan
+           from binpan import binpan
 
            lunc = binpan.Symbol(symbol='luncbusd',
                                 tick_interval='5m',
@@ -841,6 +845,8 @@ def plot_scatter(df: pd.DataFrame,
 
     .. code-block::
 
+       from binpan import binpan
+
        lunc = binpan.Symbol(symbol='luncbusd',
                             tick_interval='5m',
                             limit = 100,
@@ -913,6 +919,8 @@ def plot_hists_vs(x0: pd.Series,
     Example:
 
     .. code-block::
+
+       from binpan import binpan
 
        lunc = binpan.Symbol(symbol='luncbusd',
                             tick_interval='5m',
@@ -991,6 +999,8 @@ def orderbook_depth(df: pd.DataFrame,
     Example:
 
     .. code-block::
+
+        from binpan import binpan
 
         lunc = binpan.Symbol(symbol='luncbusd',
                             tick_interval='5m',

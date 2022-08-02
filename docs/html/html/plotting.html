@@ -184,16 +184,19 @@ Example from default colors</p>
 </dl>
 <p>Plot example:</p>
 <blockquote>
-<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">binpan</span>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">binpan</span> <span class="kn">import</span> <span class="n">binpan</span>
 
 <span class="n">ethbtc</span> <span class="o">=</span> <span class="n">binpan</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;ethbtc&#39;</span><span class="p">,</span> <span class="n">tick_interval</span><span class="o">=</span><span class="s1">&#39;1h&#39;</span><span class="p">)</span>
 
-<span class="n">ethbtc</span><span class="o">.</span><span class="n">macd</span><span class="p">()</span>
-<span class="n">binpan</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">candles_ta</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="n">ethbtc</span><span class="o">.</span><span class="n">df</span><span class="p">,</span>
-                                    <span class="n">indicators_series</span><span class="o">=</span><span class="p">[</span><span class="n">ethbtc</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;MACD_12_26_9_&#39;</span><span class="p">],</span> <span class="n">ethbtc</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;MACDh_12_26_9_&#39;</span><span class="p">],</span>
-                                         <span class="n">ethbtc</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;MACDs_12_26_9_&#39;</span><span class="p">]],</span>
+<span class="n">ethbtc</span><span class="o">.</span><span class="n">macd</span><span class="p">(</span><span class="n">fast</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">slow</span><span class="o">=</span><span class="mi">26</span><span class="p">,</span> <span class="n">smooth</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ethbtc</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
+
+<span class="n">binpan</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">candles_ta</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">ethbtc</span><span class="o">.</span><span class="n">df</span><span class="p">,</span>
+                                    <span class="n">indicators_series</span><span class="o">=</span><span class="p">[</span><span class="n">ethbtc</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;MACD_12_26_9&#39;</span><span class="p">],</span>
+                                                       <span class="n">ethbtc</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;MACDh_12_26_9&#39;</span><span class="p">],</span>
+                                                       <span class="n">ethbtc</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;MACDs_12_26_9&#39;</span><span class="p">]],</span>
                                     <span class="n">indicators_color_filled</span><span class="o">=</span><span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;rgba(26,150,65,0.5)&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">],</span>
-                                    <span class="n">rows_pos</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+                                    <span class="n">rows_pos</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
                                     <span class="n">indicators_colors</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;orange&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="s1">&#39;skyblue&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
@@ -404,7 +407,8 @@ using Maker buyer or Taker buyer discrete colors. Usually red and blue.</p>
 </dd>
 </dl>
 <dl>
-<dt>Example:</dt><dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">binpan</span>
+<dt>Example:</dt><dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">binpan</span> <span class="kn">import</span> <span class="n">binpan</span>
+
 <span class="n">lunc</span> <span class="o">=</span> <span class="n">binpan</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;luncbusd&#39;</span><span class="p">,</span>
                      <span class="n">tick_interval</span><span class="o">=</span><span class="s1">&#39;5m&#39;</span><span class="p">,</span>
                      <span class="n">limit</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
@@ -440,7 +444,7 @@ the smallest to the largest, that is, the smallest values will be divided into s
 </dl>
 <p>Example:</p>
 <blockquote>
-<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">binpan</span>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">binpan</span> <span class="kn">import</span> <span class="n">binpan</span>
 
 <span class="n">lunc</span> <span class="o">=</span> <span class="n">binpan</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;luncbusd&#39;</span><span class="p">,</span>
                      <span class="n">tick_interval</span><span class="o">=</span><span class="s1">&#39;5m&#39;</span><span class="p">,</span>
@@ -478,7 +482,9 @@ the smallest to the largest, that is, the smallest values will be divided into s
 </dd>
 </dl>
 <p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lunc</span> <span class="o">=</span> <span class="n">binpan</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;luncbusd&#39;</span><span class="p">,</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">binpan</span> <span class="kn">import</span> <span class="n">binpan</span>
+
+<span class="n">lunc</span> <span class="o">=</span> <span class="n">binpan</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;luncbusd&#39;</span><span class="p">,</span>
                      <span class="n">tick_interval</span><span class="o">=</span><span class="s1">&#39;5m&#39;</span><span class="p">,</span>
                      <span class="n">limit</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
                      <span class="n">time_zone</span> <span class="o">=</span> <span class="s1">&#39;Europe/Madrid&#39;</span><span class="p">,</span>
@@ -519,7 +525,9 @@ the smallest to the largest, that is, the smallest values will be divided into s
 </dd>
 </dl>
 <p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lunc</span> <span class="o">=</span> <span class="n">binpan</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;luncbusd&#39;</span><span class="p">,</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">binpan</span> <span class="kn">import</span> <span class="n">binpan</span>
+
+<span class="n">lunc</span> <span class="o">=</span> <span class="n">binpan</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;luncbusd&#39;</span><span class="p">,</span>
                      <span class="n">tick_interval</span><span class="o">=</span><span class="s1">&#39;5m&#39;</span><span class="p">,</span>
                      <span class="n">limit</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
                      <span class="n">time_zone</span> <span class="o">=</span> <span class="s1">&#39;Europe/Madrid&#39;</span><span class="p">,</span>
@@ -553,7 +561,9 @@ the smallest to the largest, that is, the smallest values will be divided into s
 </dd>
 </dl>
 <p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lunc</span> <span class="o">=</span> <span class="n">binpan</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;luncbusd&#39;</span><span class="p">,</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">binpan</span> <span class="kn">import</span> <span class="n">binpan</span>
+
+<span class="n">lunc</span> <span class="o">=</span> <span class="n">binpan</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;luncbusd&#39;</span><span class="p">,</span>
                     <span class="n">tick_interval</span><span class="o">=</span><span class="s1">&#39;5m&#39;</span><span class="p">,</span>
                     <span class="n">limit</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
                     <span class="n">time_zone</span> <span class="o">=</span> <span class="s1">&#39;Europe/Madrid&#39;</span><span class="p">,</span>
