@@ -2,6 +2,10 @@ from .starters import AesCipher
 import requests
 from .logs import Logs
 from .time_helper import convert_milliseconds_to_str
+# from .time_helper import convert_utc_ms_column_to_time_zone
+from .wallet import get_spot_trades_list, get_spot_balances_df, get_spot_balances_total_value
+from pandas import DataFrame
+
 
 msg_logger = Logs(filename='./logs/msg_logger.log', name='msg_logger', info_level='INFO')
 
@@ -128,3 +132,152 @@ def telegram_parse_dict(msg_data: dict, timezone='UTC'):
                 row = f"*{k}* : {fv2}\n"
         parsed_msg += row
     return parsed_msg
+
+
+# futuro bot #
+
+
+def tab_str(text: str, indentation=8) -> str:
+    """
+    Indentation for telegram messages.
+    :param str text: A message with spaces to insert tabulations in.
+    :param int indentation: The spaces quantity to insert.
+    :return str: Tabulated message.
+    """
+    sp = text.split()
+    ret = ""
+    for i in sp:
+        length = len(i)
+        ind = (indentation - length) % indentation
+        ret += i + " " * ind
+    return ret
+
+
+def telegram_parse_dataframe_markdown(data: DataFrame,
+                                      indentation: int = 6,
+                                      title: str = "Balances") -> str:
+    """
+    Parses a Dataframe in telegrams message format.
+
+    :param DataFrame data: A dataframe
+    :param int indentation: Spaces to insert each tabulation.
+    :param str title: a header or title to the result.
+    :return str: String parsed with tabulations.
+    """
+    ret = f"*{title}*: \n"
+    cols = data.columns
+    ret += "```\n"
+    for idx, row in data.iterrows():
+        data_row = row.tolist()
+        str_row = f" {idx} " + ''.join([f"{cols[i]}: {d:.8f} " for i, d in enumerate(data_row)])
+        ret += str(tab_str(str_row, indentation=indentation)) + "\n"
+    return ret + "```"
+
+
+def get_fills_price(original_order_dict: dict) -> float:
+    """
+    Obtain averaged price for the order.
+
+    :param dict original_order_dict: API order dict response.
+    :return float: Price averaged.
+    """
+    ordered = original_order_dict.copy()
+
+    symbol = ordered['symbol']
+
+    if 'fills' in ordered.keys():
+        if type(ordered['fills']) == dict:
+            return float(ordered['fills']['price'])
+        elif type(ordered['fills']) == list:
+            n = 0
+            m = 0
+            for fill in ordered['fills']:
+                price = float(fill['price'])
+                qty = float(fill['qty'])
+                n += price * qty
+                m += qty
+            return n / m
+        else:
+            raise Exception(f"BinPan Error: Error en parseo de orden ejecutada.\n{ordered}")
+    else:
+        # if it was a buy market order, it has no price, price = 0.0, then get from API trades
+        price_ret = float(ordered['price'])
+        if price_ret != 0:
+            return price_ret
+        else:  # https://dev.binance.vision/t/how-to-get-the-price-of-a-market-order-that-is-already-filled/4046
+            msg_logger.info(f"Get fills from API trades!")
+            orderId = ordered['orderId']
+            trades = get_spot_trades_list(symbol=symbol, limit=25)
+            trade = [i for i in trades if i['orderId'] == orderId]
+            if trade:
+                msg_logger.debug(f"fill_price: Trade: {trade}")
+                return trade[-1]['price']
+            else:
+                msg_logger.error("fill_price: Trade not found, increase get trades limit")
+                raise Exception(f"BinPan Error: Trade not found, increase get trades limit")
+
+
+def telegram_parse_order_markdown(original_order: dict, timezoned='Europe/Madrid'):
+    """
+    Parses API order response to telegram string.
+
+    :param dict original_order: API order resopnse.
+    :param str timezoned: a time zone like 'Europe/Madrid' for human readable timestamps.
+    :return str: Parsed telegram style  string.
+    """
+    order_ = original_order.copy()
+    parsed = ""
+
+    if 'fills' in order_.keys():
+        order_['fills'] = get_fills_price(order_)
+        order_['price'] = order_['fills']
+    try:
+        order_.pop('clientOrderId', None)
+    except Exception as exc:
+        msg_logger.debug(f"Error popping key clientOrderId {exc}")
+    try:
+        order_.pop('orderListId', None)
+    except Exception as exc:
+        msg_logger.debug(f"Error popping key orderListId {exc}")
+    order_['symbol'] = f"*{order_['symbol']}*\n------------------------------------------------"
+    if 'time' in order_.keys():
+        date = convert_milliseconds_to_str(int(order_['time']), timezoned=timezoned)
+        order_.update({'time': date})
+    if 'updateTime' in order_.keys():
+        date = convert_milliseconds_to_str(int(order_['updateTime']), timezoned=timezoned)
+        order_.update({'updateTime': date})
+    if 'price' in order_.keys():
+        order_.update({'price': f"```{order_['price']}```"})
+    if 'origQty' in order_.keys():
+        order_.update({'origQty': f"```{order_['origQty']}```"})
+    if 'stopPrice' in order_.keys():
+        order_.update({'stopPrice': f"```{order_['stopPrice']}```"})
+    if 'fills' in order_.keys():
+        order_.update({'fills': f"`{order_['fills']}`"})
+
+    for key, val in order_.items():
+        if val:
+            line = rf"*{key}*: {val}" + "\n"
+            parsed += line
+
+    return parsed
+
+
+def send_balances(convert_to: str = 'BUSD') -> float:
+    """
+    Sends telegram message with total value of spot wallet.
+
+    :param str convert_to: A Binance coin.
+    :return float: total value of wallet.
+
+    """
+    balances_df = get_spot_balances_df()
+    parsed_balances = telegram_parse_dataframe_markdown(balances_df)
+
+    # add total value in usdt
+    total_value = get_spot_balances_total_value(balances_df=balances_df,
+                                                convert_to=convert_to)
+
+    parsed_balances += f"\n*Total value*: `{total_value}` \n*Quote*: `{convert_to}`"
+    telegram_bot_send_text(parsed_balances)
+    return total_value

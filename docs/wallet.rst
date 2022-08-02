@@ -34,6 +34,11 @@ Balances
 
 .. autofunction:: get_coins_with_balance
 
+.. autofunction:: get_spot_balances_df
+
+.. autofunction:: get_spot_balances_total_value
+
+
 Helper
 ------
 

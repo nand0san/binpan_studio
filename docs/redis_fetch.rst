@@ -46,10 +46,16 @@ Parsing
 .. autofunction:: redis_klines_parser
 
 
-Fetching Database Keys
-----------------------
+Utils
+-----
 
 .. autofunction:: fetch_keys
+
+.. autofunction:: klines_continuity
+
+.. autofunction:: klines_ohlc_to_numpy
+
+.. autofunction:: redis_baliza
 
 
 Fetching Redis Ordered Sets
@@ -83,6 +89,24 @@ Fetching Redis lists
 .. autofunction:: find_row_index_in_redis_key
 
 .. autofunction:: fetch_list_filter_query
+
+
+Pipelines
+---------
+
+.. autofunction:: execute_pipeline
+
+.. autofunction:: flush_pipeline
+
+.. autofunction:: pipe_buffer_ordered_set
+
+.. autofunction:: pipe_zset_timestamps
+
+.. autofunction:: pipe_time_interval_bulk_ohlc_data
+
+
+
+
 
 
 

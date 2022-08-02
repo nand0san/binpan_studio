@@ -4,6 +4,7 @@ from .logs import Logs
 from .quest import api_raw_signed_get, api_raw_signed_post
 from .time_helper import convert_milliseconds_to_str
 from .time_helper import convert_string_to_milliseconds
+from .market import get_prices_dic, convert_coin
 
 wallet_logger = Logs(filename='./logs/wallet_logger.log', name='wallet_logger', info_level='INFO')
 
@@ -247,7 +248,7 @@ def spot_free_balances_parsed(data_dic: dict = None) -> dict:
     Parses available balances from account info.
 
     :param dict data_dic: If available, account info can be passed as data_dic parameter to avoid API calling.
-    :return dict:
+    :return dict: Free balances.
     """
     ret = {}
     if not data_dic:
@@ -265,7 +266,7 @@ def spot_locked_balances_parsed(data_dic: dict = None) -> dict:
     Parses locked in order balances from account info.
 
     :param dict data_dic: If available, account info can be passed as data_dic parameter to avoid API calling.
-    :return dict:
+    :return dict: Locked balances.
     """
     ret = {}
     if not data_dic:
@@ -292,3 +293,78 @@ def get_coins_with_balance() -> list:
     locked = [symbol for symbol, balance in locked.items() if float(balance) > 0]
     symbols = free + locked
     return list(set(symbols))
+
+
+def get_spot_balances_df(filter_empty: bool = True) -> pd.DataFrame:
+    """
+    Create a dataframe with the free or blocked amounts of the spot wallet. The index is the assets list.
+
+    Example:
+
+    .. code-block:: python
+
+       from handlers.messages import get_spot_balances_df
+
+       df = get_spot_balances_df()
+
+       print(df)
+
+                   free      locked
+            asset
+            BNB    0.128359     0.0
+            BUSD   0.000001     0.0
+
+
+    :param bool filter_empty: Discards empty quantities.
+    :return pd.DataFrame: A dataframe with assets locked or free.
+    """
+    balances = get_spot_account_info()['balances']
+    df_ = pd.DataFrame(balances)
+    df_['free'] = df_['free'].apply(pd.to_numeric)
+    df_['locked'] = df_['locked'].apply(pd.to_numeric)
+    df_.set_index('asset', drop=True, inplace=True)
+    if filter_empty:
+        return df_[(df_['free'] != 0) | (df_['locked'] != 0)]
+    else:
+        return df_
+
+
+def get_spot_balances_total_value(balances_df: pd.DataFrame = None,
+                                  convert_to: str = 'BUSD') -> float:
+    """
+    Returns total value expressed in a quote coin. Counts free and locked assets.
+    
+    :param pd.DataFrame balances_df: A BinPan balances dataframe. 
+    :param str convert_to: A Binance coin. 
+    :return float: Total quantity expressed in quote. 
+    """
+    if type(balances_df) != pd.DataFrame:
+        balances_df = get_spot_balances_df()
+
+    prices = get_prices_dic()
+
+    symbols = list(balances_df.index)
+    free_values = balances_df['free'].tolist()
+    locked_values = balances_df['locked'].tolist()
+    total = 0
+
+    for i in range(len(symbols)):
+        coin = symbols[i]
+        free = float(free_values[i])
+        locked = float(locked_values[i])
+
+        if free:
+            free = convert_coin(coin=coin,
+                                prices=prices,
+                                convert_to=convert_to,
+                                coin_qty=free)
+
+        if locked:
+            locked = convert_coin(coin=coin,
+                                  prices=prices,
+                                  convert_to=convert_to,
+                                  coin_qty=locked)
+        total += float(free)
+        total += float(locked)
+
+    return total

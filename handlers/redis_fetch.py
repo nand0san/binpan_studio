@@ -1,12 +1,28 @@
 from typing import List
 from .time_helper import convert_utc_ms_column_to_time_zone, convert_datetime_to_string, convert_milliseconds_to_utc_string, \
-    convert_milliseconds_to_time_zone_datetime
+    convert_milliseconds_to_time_zone_datetime, convert_milliseconds_to_str, open_from_milliseconds, next_open_by_milliseconds
+from .market import tick_seconds
 import pandas as pd
 import json
 from .logs import Logs
 from redis import StrictRedis
+from time import sleep, time
+import numpy as np
 
 redis_logger = Logs(filename='./logs/redis_fetch.log', name='redis_fetch', info_level='INFO')
+
+klines_columns = {"t": "Open timestamp",
+                  "o": "Open",
+                  "h": "High",
+                  "l": "Low",
+                  "c": "Close",
+                  "v": "Volume",
+                  "T": "Close timestamp",
+                  "q": "Quote volume",
+                  "n": "Trades",
+                  "V": "Taker buy base volume",
+                  "Q": "Taker buy quote volume",
+                  "B": "Ignore"}
 
 
 ##########
@@ -16,7 +32,7 @@ redis_logger = Logs(filename='./logs/redis_fetch.log', name='redis_fetch', info_
 def redis_klines_parser(json_list: List[str],
                         symbol: str,
                         tick_interval: str,
-                        time_zone: str = 'UTC',
+                        time_zone: str = 'Europe/madrid',
                         time_index: bool = True,
                         ) -> pd.DataFrame:
     """
@@ -28,19 +44,8 @@ def redis_klines_parser(json_list: List[str],
     :param str time_zone:  A time zone for converting the index. Example: 'Europe/Madrid'
     :param bool time_index: If true, index are datetime format, else integer index.
     :return pd.DataFrame: A BinPan dataframe.
+
     """
-    klines_columns = {"t": "Open timestamp",
-                      "o": "Open",
-                      "h": "High",
-                      "l": "Low",
-                      "c": "Close",
-                      "v": "Volume",
-                      "T": "Close timestamp",
-                      "q": "Quote volume",
-                      "n": "Trades",
-                      "V": "Taker buy base volume",
-                      "Q": "Taker buy quote volume",
-                      "B": "Ignore"}
 
     time_cols = ['Open time', 'Close time']
     dicts_data = [json.loads(i) for i in json_list]
@@ -88,6 +93,98 @@ def fetch_keys(redisClient: StrictRedis,
     if filter_tick_interval:
         ret = [i for i in ret if i.endswith(filter_tick_interval)]
     return list(ret)
+
+
+def klines_continuity(klines: list, tick_interval: str):
+    """
+    Check klines missing.
+
+    :param list klines: List of raw candles response in a list of strings, not json parsed yet.
+    :param str tick_interval: Binance klines interval.
+    :return bool: If true, klines are continuous.
+    """
+    try:
+        start = int(klines[0][6:19])
+        end = int(klines[-1][6:19])
+        ticks = int((end - start) / (tick_seconds[tick_interval] * 1000))
+        assert ticks + 1 == len(klines)
+        return True
+    except:
+        print("Klines not continuously spaced!")
+        return False
+
+
+def klines_ohlc_to_numpy(klines: list) -> tuple:
+    """
+    Extract open, high, low and close numpy arrays from raw klines (list of json strings).
+
+    :param list klines: A list with json strings.
+    :return tuple: A tuple with numpy arrays with data: open, high, low and close.
+    """
+    open_ = []
+    high = []
+    low = []
+    close = []
+    for row in klines:
+        json_row = json.loads(row)
+
+        open_.append(json_row['o'])
+        high.append(json_row['h'])
+        low.append(json_row['l'])
+        close.append(json_row['c'])
+
+    ret1 = np.fromiter(open_, dtype=np.float64)
+    ret2 = np.fromiter(high, dtype=np.float64)
+    ret3 = np.fromiter(low, dtype=np.float64)
+    ret4 = np.fromiter(close, dtype=np.float64)
+
+    return ret1, ret2, ret3, ret4
+
+
+def redis_baliza(redis_client: StrictRedis, symbol='BTCUSDT',
+                 tick_interval='1m',
+                 time_zone='Europe/madrid') -> int:
+    """
+    Returns when Redis data available waiting until the next open timestamp appears.
+
+    Expected format for the redis data is:
+
+    .. code-block::
+
+       '{"t": 1657651320000, "o": "0.10100000", "h": "0.10100000", "l": "0.10100000", "c": "0.10100000", "v": "0.00000000",
+         "T": 1657651379999, "q": "0.00000000", "n": 0, "V": "0.00000000", "Q": "0.00000000", "B": "0"}'
+
+
+    :param StrictRedis redis_client: A redis client.
+    :param str symbol: Symbol.
+    :param str tick_interval: Binance tick interval.
+    :param str time_zone: A time zone for messages.
+    :return int: Timestamp of the open waited for.
+    """
+
+    now = int(time() * 1000)
+    my_open = open_from_milliseconds(now, tick_interval=tick_interval)
+    next_open = next_open_by_milliseconds(now, tick_interval=tick_interval)
+
+    redis_logger.debug(f"Baliza started at {convert_milliseconds_to_str(ms=my_open, timezoned=time_zone)} "
+                       f"and waiting until {convert_milliseconds_to_str(ms=next_open, timezoned=time_zone)} is closed.")
+
+    while True:
+        now = int(time() * 1000)
+        last_redis_ts = fetch_zset_range(redisClient=redis_client,
+                                         symbol=symbol.lower(),
+                                         tick_interval=tick_interval,
+                                         start_index=-1)
+        fetched_open_ts = int(last_redis_ts[-1][6:19])
+        if fetched_open_ts >= my_open:
+
+            redis_logger.debug(
+                f"Fetched at {convert_milliseconds_to_str(ms=now, timezoned=time_zone)} with a "
+                f"late of {(now - next_open) / 1000} seconds.")
+            break
+        else:
+            sleep(0.01)
+    return fetched_open_ts
 
 
 ###############
@@ -337,6 +434,12 @@ def fetch_data_in_list(redisClient: StrictRedis,
     """
     Fetch data from redis for a given key. Data expected format is redis list.
 
+    .. code-block::
+
+       '{"t": 1657651320000, "o": "0.10100000", "h": "0.10100000", "l": "0.10100000", "c": "0.10100000", "v": "0.00000000",
+         "T": 1657651379999, "q": "0.00000000", "n": 0, "V": "0.00000000", "Q": "0.00000000", "B": "0"}'
+
+
     :param object redisClient: A redis connector.
     :param str key: An existing redis key.
     :param int start_index: first index in the redis key to fetch for.
@@ -417,6 +520,11 @@ def fetch_list_filter_query(redisClient: StrictRedis,
 
     Is expected to fetch redis list data.
 
+    .. code-block::
+
+       '{"t": 1657651320000, "o": "0.10100000", "h": "0.10100000", "l": "0.10100000", "c": "0.10100000", "v": "0.00000000",
+         "T": 1657651379999, "q": "0.00000000", "n": 0, "V": "0.00000000", "Q": "0.00000000", "B": "0"}'
+
     :param object redisClient: Connector for redis.
     :param str coin_filter: A coin string to filter out all redis keys without it.
     :param str symbol_filter: Optional. A symbol string to filter out all redis keys without it. Symbol filter prevales over coin filter.
@@ -453,6 +561,7 @@ def fetch_list_filter_query(redisClient: StrictRedis,
 # pipelines #
 #############
 
+# TODO: actualizar con lo nuevo de binance cache
 
 def execute_pipeline(pipeline: StrictRedis.pipeline):
     """
@@ -464,14 +573,14 @@ def execute_pipeline(pipeline: StrictRedis.pipeline):
     return pipeline.execute()
 
 
-def get_pipeline_buffer(pipeline: StrictRedis.pipeline) -> StrictRedis.pipeline:
-    """
-    Gets pipeline buffered commands.
-
-    :param redisClient pipeline: A redis client pipeline.
-    :return: Redis response.
-    """
-    return pipeline.command_stack
+# def get_pipeline_buffer(pipeline: StrictRedis.pipeline) -> StrictRedis.pipeline:
+#     """
+#     Gets pipeline buffered commands.
+#
+#     :param redisClient pipeline: A redis client pipeline.
+#     :return: Redis response.
+#     """
+#     return pipeline.
 
 
 def flush_pipeline(pipeline: StrictRedis.pipeline) -> StrictRedis.pipeline:
@@ -517,3 +626,71 @@ def pipe_buffer_ordered_set(pipeline: StrictRedis,
     pipeline.zadd(name=key, mapping=mapping, lt=LT, xx=XX, nx=NX, gt=GT, ch=CH, incr=INCR)
     return pipeline
 
+
+def pipe_zset_timestamps(pipeline: StrictRedis.pipeline,
+                         key: str,
+                         start_timestamp: int,
+                         end_timestamp: int = None,
+                         with_scores=False) -> StrictRedis.pipeline:
+    """
+    Puts into pipeline buffer a redis ordered set by its key name and start end scores. Optionally with redis index (scores)
+    in a tuple each row. Optionally returns with redis index (scores) in a tuple each row if with_Scores.
+
+    :param StrictRedis.pipeline pipeline: A redis pipeline.
+    :param str key: Redis key name.
+    :param int start_timestamp: Usually a timestamp as index in redis key.
+    :param int end_timestamp: Usually a timestamp as index in redis key.
+    :param bool with_scores: Will return rows with its index in a tuple if true.
+    :return StrictRedis.pipeline: A pipeline ready to execute.
+    """
+    return pipeline.zrangebyscore(name=key,
+                                  min=start_timestamp,
+                                  max=end_timestamp,
+                                  withscores=with_scores)
+
+
+def pipe_time_interval_bulk_ohlc_data(pipeline: StrictRedis.pipeline,
+                                      min_index: int,
+                                      max_index: int,
+                                      my_keys: list,
+                                      length=202,
+                                      batch=200) -> dict:
+    """
+    Pipes to redis, check time integrity and parse in a list of tuples with stream and open, high, low, close arrays.
+    """
+
+    ohlc_arrays = {}
+
+    for i in range(0, len(my_keys), batch):
+        batch_keys = my_keys[i:i + batch]
+        for key in batch_keys:
+            pipeline = pipe_zset_timestamps(pipeline=pipeline,
+                                            key=key,
+                                            start_timestamp=min_index,
+                                            end_timestamp=max_index)
+
+        raw_klines = pipeline.execute()
+        print(f"Data to parse: {bool(any(raw_klines))} not empty len:{len([n for n in raw_klines if n])}")
+        if not any(raw_klines):
+            continue
+
+        # check length
+        for ii, k in enumerate(batch_keys):
+            if len(raw_klines[ii]) != length:
+                print(f"Missing klines for {k}")
+                continue
+            tick_interval = k.split('_')[-1]
+            if klines_continuity(klines=raw_klines[ii], tick_interval=tick_interval):
+                # parseo en numpy OHLC
+                # fixme: esto da type error
+                ohlc_arrays[k] = klines_ohlc_to_numpy(klines=raw_klines[ii])
+            else:
+                print(f"No continuity for ---- {k}")
+
+    print()
+    if my_keys:
+        print(f"From {len(my_keys)} keys, valid: {len(ohlc_arrays)} - pct: {100 * len(ohlc_arrays) / len(my_keys):.2f}")
+    else:
+        print("No keys fetched!!!")
+    print()
+    return ohlc_arrays

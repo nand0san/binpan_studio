@@ -241,7 +241,8 @@ most recent trades are returned.</p></li>
 <dd class="field-odd"><p><strong>data_dic</strong> (<em>dict</em>) – If available, account info can be passed as data_dic parameter to avoid API calling.</p>
 </dd>
 <dt class="field-even">Return dict</dt>
-<dd class="field-even"><p></p></dd>
+<dd class="field-even"><p>Free balances.</p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -254,7 +255,8 @@ most recent trades are returned.</p></li>
 <dd class="field-odd"><p><strong>data_dic</strong> (<em>dict</em>) – If available, account info can be passed as data_dic parameter to avoid API calling.</p>
 </dd>
 <dt class="field-even">Return dict</dt>
-<dd class="field-even"><p></p></dd>
+<dd class="field-even"><p>Locked balances.</p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -265,6 +267,50 @@ most recent trades are returned.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Return list</dt>
 <dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.wallet.get_spot_balances_df">
+<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_spot_balances_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_empty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.wallet.get_spot_balances_df" title="Permalink to this definition"></a></dt>
+<dd><p>Create a dataframe with the free or blocked amounts of the spot wallet. The index is the assets list.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">handlers.messages</span> <span class="kn">import</span> <span class="n">get_spot_balances_df</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">get_spot_balances_df</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+            <span class="n">free</span>      <span class="n">locked</span>
+     <span class="n">asset</span>
+     <span class="n">BNB</span>    <span class="mf">0.128359</span>     <span class="mf">0.0</span>
+     <span class="n">BUSD</span>   <span class="mf">0.000001</span>     <span class="mf">0.0</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filter_empty</strong> (<em>bool</em>) – Discards empty quantities.</p>
+</dd>
+<dt class="field-even">Return pd.DataFrame</dt>
+<dd class="field-even"><p>A dataframe with assets locked or free.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.wallet.get_spot_balances_total_value">
+<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_spot_balances_total_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">balances_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BUSD'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.wallet.get_spot_balances_total_value" title="Permalink to this definition"></a></dt>
+<dd><p>Returns total value expressed in a quote coin. Counts free and locked assets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>balances_df</strong> (<em>pd.DataFrame</em>) – A BinPan balances dataframe.</p></li>
+<li><p><strong>convert_to</strong> (<em>str</em>) – A Binance coin.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return float</dt>
+<dd class="field-even"><p>Total quantity expressed in quote.</p>
+</dd>
 </dl>
 </dd></dl>
 
