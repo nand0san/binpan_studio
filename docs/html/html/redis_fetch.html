@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Redis Module &mdash; BinPan 0.0.67 documentation</title>
+  <title>Redis Module &mdash; BinPan 0.0.68 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/style.css" type="text/css" />
@@ -20,8 +20,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Files Module" href="files.html" />
-    <link rel="prev" title="Wallet Module" href="wallet.html" /> 
+    <link rel="next" title="Strategies Module" href="strategies.html" />
+    <link rel="prev" title="Plotting Module" href="plotting.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -42,11 +42,11 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="binpan.html">BinPan Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="files.html">Files Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="messages.html">Messages Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Module</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Redis Module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#parsing">Parsing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#utils">Utils</a></li>
@@ -55,8 +55,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#pipelines">Pipelines</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="files.html">Files Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="messages.html">Notifications Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Module</a></li>
 </ul>
 
         </div>
@@ -141,13 +141,14 @@
 <h2>Utils<a class="headerlink" href="#utils" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.redis_fetch.fetch_keys">
-<span class="sig-prename descclassname"><span class="pre">handlers.redis_fetch.</span></span><span class="sig-name descname"><span class="pre">fetch_keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">redisClient</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Redis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_tick_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.redis_fetch.fetch_keys" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.redis_fetch.</span></span><span class="sig-name descname"><span class="pre">fetch_keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">redisClient</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Redis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_tick_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_quote</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.redis_fetch.fetch_keys" title="Permalink to this definition"></a></dt>
 <dd><p>Fetch all keys in redis database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>redisClient</strong> (<em>StrictRedis</em>) – A redis connector.</p></li>
 <li><p><strong>filter_tick_interval</strong> (<em>str</em>) – Optional. A binance klines tick interval to fetch all keys for that interval.</p></li>
+<li><p><strong>filter_quote</strong> (<em>str</em>) – Filter symbols without a quote.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return list</dt>
@@ -189,7 +190,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.redis_fetch.redis_baliza">
-<span class="sig-prename descclassname"><span class="pre">handlers.redis_fetch.</span></span><span class="sig-name descname"><span class="pre">redis_baliza</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">redis_client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Redis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'BTCUSDT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1m'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Europe/madrid'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.redis_fetch.redis_baliza" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.redis_fetch.</span></span><span class="sig-name descname"><span class="pre">redis_baliza</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">redis_client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Redis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Europe/madrid'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.redis_fetch.redis_baliza" title="Permalink to this definition"></a></dt>
 <dd><p>Returns when Redis data available waiting until the next open timestamp appears.</p>
 <p>Expected format for the redis data is:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;{&quot;t&quot;: 1657651320000, &quot;o&quot;: &quot;0.10100000&quot;, &quot;h&quot;: &quot;0.10100000&quot;, &quot;l&quot;: &quot;0.10100000&quot;, &quot;c&quot;: &quot;0.10100000&quot;, &quot;v&quot;: &quot;0.00000000&quot;,</span>
@@ -628,8 +629,8 @@ in a tuple each row. Optionally returns with redis index (scores) in a tuple eac
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="wallet.html" class="btn btn-neutral float-left" title="Wallet Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="files.html" class="btn btn-neutral float-right" title="Files Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="plotting.html" class="btn btn-neutral float-left" title="Plotting Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="strategies.html" class="btn btn-neutral float-right" title="Strategies Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -81,17 +81,21 @@ def redis_klines_parser(json_list: List[str],
 ###############
 
 def fetch_keys(redisClient: StrictRedis,
-               filter_tick_interval=None) -> list:
+               filter_tick_interval=None,
+               filter_quote: str = None) -> list:
     """
     Fetch all keys in redis database.
 
     :param StrictRedis redisClient: A redis connector.
     :param str filter_tick_interval: Optional. A binance klines tick interval to fetch all keys for that interval.
+    :param str filter_quote: Filter symbols without a quote.
     :return list: Returns all keys for a tick interval if passed, else all existing keys in redis.
     """
     ret = redisClient.scan_iter()
     if filter_tick_interval:
         ret = [i for i in ret if i.endswith(filter_tick_interval)]
+    if filter_quote:
+        ret = [i for i in ret if i.endswith(filter_quote.lower())]
     return list(ret)
 
 
@@ -141,8 +145,9 @@ def klines_ohlc_to_numpy(klines: list) -> tuple:
     return ret1, ret2, ret3, ret4
 
 
-def redis_baliza(redis_client: StrictRedis, symbol='BTCUSDT',
-                 tick_interval='1m',
+def redis_baliza(redis_client: StrictRedis,
+                 symbol: str,
+                 tick_interval: str,
                  time_zone='Europe/madrid') -> int:
     """
     Returns when Redis data available waiting until the next open timestamp appears.
@@ -166,24 +171,30 @@ def redis_baliza(redis_client: StrictRedis, symbol='BTCUSDT',
     my_open = open_from_milliseconds(now, tick_interval=tick_interval)
     next_open = next_open_by_milliseconds(now, tick_interval=tick_interval)
 
-    redis_logger.debug(f"Baliza started at {convert_milliseconds_to_str(ms=my_open, timezoned=time_zone)} "
-                       f"and waiting until {convert_milliseconds_to_str(ms=next_open, timezoned=time_zone)} is closed.")
+    redis_logger.debug(
+        f"Baliza {symbol} {tick_interval} started at {convert_milliseconds_to_str(ms=my_open, timezoned=time_zone)} and waiting "
+        f"until {convert_milliseconds_to_str(ms=next_open, timezoned=time_zone)} is open.")
 
     while True:
+
         now = int(time() * 1000)
         last_redis_ts = fetch_zset_range(redisClient=redis_client,
                                          symbol=symbol.lower(),
                                          tick_interval=tick_interval,
                                          start_index=-1)
         fetched_open_ts = int(last_redis_ts[-1][6:19])
-        if fetched_open_ts >= my_open:
+
+        # redis_logger.debug(f"Fetched {convert_milliseconds_to_str(ms=fetched_open_ts, timezoned=time_zone)}")
+
+        if fetched_open_ts >= my_open:  # because redis candles apper just when closed
 
             redis_logger.debug(
-                f"Fetched at {convert_milliseconds_to_str(ms=now, timezoned=time_zone)} with a "
-                f"late of {(now - next_open) / 1000} seconds.")
+                f"Fetched at {convert_milliseconds_to_str(ms=now, timezoned=time_zone)} with a late of {(now - next_open) / 1000} seconds.")
             break
+
         else:
             sleep(0.01)
+
     return fetched_open_ts
 
 
@@ -670,27 +681,24 @@ def pipe_time_interval_bulk_ohlc_data(pipeline: StrictRedis.pipeline,
                                             end_timestamp=max_index)
 
         raw_klines = pipeline.execute()
-        print(f"Data to parse: {bool(any(raw_klines))} not empty len:{len([n for n in raw_klines if n])}")
+        redis_logger.debug(f"Data to parse: {bool(any(raw_klines))} not empty len:{len([n for n in raw_klines if n])}")
         if not any(raw_klines):
             continue
 
         # check length
         for ii, k in enumerate(batch_keys):
             if len(raw_klines[ii]) != length:
-                print(f"Missing klines for {k}")
+                redis_logger.info(f"Missing klines for {k}")
                 continue
             tick_interval = k.split('_')[-1]
             if klines_continuity(klines=raw_klines[ii], tick_interval=tick_interval):
                 # parseo en numpy OHLC
-                # fixme: esto da type error
                 ohlc_arrays[k] = klines_ohlc_to_numpy(klines=raw_klines[ii])
             else:
-                print(f"No continuity for ---- {k}")
+                redis_logger.info(f"No continuity for {k}")
 
-    print()
     if my_keys:
-        print(f"From {len(my_keys)} keys, valid: {len(ohlc_arrays)} - pct: {100 * len(ohlc_arrays) / len(my_keys):.2f}")
+        redis_logger.debug(f"From {len(my_keys)} keys, valid: {len(ohlc_arrays)} - pct: {100 * len(ohlc_arrays) / len(my_keys):.2f}")
     else:
-        print("No keys fetched!!!")
-    print()
+        redis_logger.info("No keys fetched!!!")
     return ohlc_arrays
