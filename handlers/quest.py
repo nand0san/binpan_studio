@@ -51,9 +51,9 @@ cipher_object = AesCipher()
 # rate limits
 api_rate_limits = get_exchange_limits()
 
-current_limit_headers = {'X-SAPI-USED-IP-WEIGHT-1M': 0,
-                         'x-mbx-used-weight': 0,
-                         'x-mbx-used-weight-1m': 0}
+current_weight = {'X-SAPI-USED-IP-WEIGHT-1M': 0,
+                  'x-mbx-used-weight': 0,
+                  'x-mbx-used-weight-1m': 0}
 
 aplicable_limits = {'X-SAPI-USED-IP-WEIGHT-1M': api_rate_limits['REQUEST_1M'],
                     'x-mbx-used-weight': api_rate_limits['REQUEST_5M'],
@@ -72,28 +72,41 @@ api_limits_weight_decrease_per_seconds = {'X-SAPI-USED-IP-WEIGHT-1M': api_rate_l
 
 
 def update_weights(headers, father_url: str):
-    global current_limit_headers
+    global current_weight
 
     weight_logger.debug(f"Header: {headers}")
+
+    # get weight headers from headers
     weight_headers = {k: int(v) for k, v in headers.items() if 'WEIGHT' in k.upper() or 'COUNT' in k.upper()}
-    weight_headers = {k: 0 if k not in weight_headers.keys() else v for k, v in current_limit_headers.items()}
+    # weight_headers = {k: 0 if k not in weight_headers.keys() else v for k, v in current_limit_headers.items()}
 
-    # register for detecting new weight headers
-    weight_logger.debug(f"Father url: {father_url} Weights updated from API: {weight_headers}")
+    # register headers for detecting new weight headers
+    weight_logger.info(f"Father url: {father_url} Weights updated from API: {weight_headers}")
 
-    for k, v in weight_headers.items():
-        current_limit_headers[k] = v
-    weight_logger.debug(f"Current weights registered: {current_limit_headers}")
+    new_weight = {}
+
+    # generate new weights updated
+    for k, v in current_weight.items():
+
+        if k in weight_headers.keys():  # update if received
+            new_weight[k] = v
+
+        else:  # decrease if not received, non negative
+            new_weight[k] = max(weight_headers[k] - 1, 0)
+
+    current_weight = new_weight
+
+    weight_logger.info(f"Current weights updated: {current_weight}")
 
 
 def check_weight(weight: int,
                  endpoint: str,
                  no_wait=False):
-    global api_rate_limits, current_limit_headers
+    global api_rate_limits, current_weight
 
     weight_logger.debug(f"Checking weight for {endpoint}")
 
-    test_headers = copy.deepcopy(current_limit_headers)
+    test_headers = copy.deepcopy(current_weight)
 
     # identify
     if '/api/v3/order/' in endpoint:
@@ -117,20 +130,20 @@ def check_weight(weight: int,
         raise Exception(msg)
 
     # check & wait
-    weight_logger.debug(f"BEFORE WAIT Current weights registered: {current_limit_headers}")
+    weight_logger.debug(f"BEFORE WAIT Current weights registered: {current_weight}")
 
     for head, value in test_headers.items():
-        if value > aplicable_limits[head] and current_limit_headers[head] > 0:
+        if value > aplicable_limits[head] and current_weight[head] > 0:
             excess = ((value - aplicable_limits[head]) // api_limits_weight_decrease_per_seconds[head]) + 2
             if not no_wait and head in waitable_for:
-                weight_logger.warning(f"{head}={value} > {aplicable_limits[head]} Current value: {current_limit_headers[head]}")
+                weight_logger.warning(f"{head}={value} > {aplicable_limits[head]} Current value: {current_weight[head]}")
                 weight_logger.warning(f"Waiting {excess} seconds for {head} to decrease rate.")
                 sleep(excess)
-            current_limit_headers[head] = aplicable_limits[head]
+            current_weight[head] = aplicable_limits[head]
         else:
-            current_limit_headers[head] += weight  # should be updated with response headers
+            current_weight[head] += weight  # should be updated with response headers
 
-    weight_logger.debug(f"Checked and waited:  {current_limit_headers}")
+    weight_logger.debug(f"Checked and waited:  {current_weight}")
 
 
 def get_server_time(no_wait=False):

@@ -335,7 +335,7 @@ def get_leveraged_coins(coins_dic: dict = None) -> list:
     return leveraged
 
 
-def get_leveraged_symbols(info_dic: dict = None, leveraged_coins: list = None):
+def get_leveraged_symbols(info_dic: dict = None, leveraged_coins: list = None) -> list:
     """
     Search for Binance symbols based on leveraged coins by searching UP or DOWN before an existing coin in symbol,
     leveraged coins examples are:

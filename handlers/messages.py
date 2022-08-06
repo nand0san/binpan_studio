@@ -237,12 +237,14 @@ def telegram_parse_order_markdown(original_order: dict, timezoned='Europe/Madrid
     if 'updateTime' in order_.keys():
         date = convert_milliseconds_to_str(int(order_['updateTime']), timezoned=timezoned)
         order_.update({'updateTime': date})
+    if 'quantity' in order_.keys():
+        order_.update({'quantity': f"`{order_['quantity']}`"})
     if 'price' in order_.keys():
-        order_.update({'price': f"```{order_['price']}```"})
+        order_.update({'price': f"`{order_['price']}`"})
     if 'origQty' in order_.keys():
-        order_.update({'origQty': f"```{order_['origQty']}```"})
+        order_.update({'origQty': f"`{order_['origQty']}`"})
     if 'stopPrice' in order_.keys():
-        order_.update({'stopPrice': f"```{order_['stopPrice']}```"})
+        order_.update({'stopPrice': f"`{order_['stopPrice']}`"})
     if 'fills' in order_.keys():
         order_.update({'fills': f"`{order_['fills']}`"})
 

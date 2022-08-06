@@ -95,7 +95,7 @@ def fetch_keys(redisClient: StrictRedis,
     if filter_tick_interval:
         ret = [i for i in ret if i.endswith(filter_tick_interval)]
     if filter_quote:
-        ret = [i for i in ret if i.endswith(filter_quote.lower())]
+        ret = [i for i in ret if i.split('@')[0].endswith(filter_quote.lower())]
     return list(ret)
 
 
