@@ -92,7 +92,7 @@ def update_weights(headers, father_url: str):
             new_weight[k] = v
 
         else:  # decrease if not received, non negative
-            new_weight[k] = max(weight_headers[k] - 1, 0)
+            new_weight[k] = max(current_weight[k] - 1, 0)
 
     current_weight = new_weight
 
