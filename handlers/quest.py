@@ -12,6 +12,7 @@ import hashlib
 import copy
 from time import sleep
 
+
 try:
     global api_secret, api_key
     # noinspection PyUnresolvedReferences
@@ -51,9 +52,12 @@ cipher_object = AesCipher()
 # rate limits
 api_rate_limits = get_exchange_limits()
 
-current_weight = {'X-SAPI-USED-IP-WEIGHT-1M': 0,
-                  'x-mbx-used-weight': 0,
-                  'x-mbx-used-weight-1m': 0}
+# current_weight = {'X-SAPI-USED-IP-WEIGHT-1M': 0,
+#                   'x-mbx-used-weight': 0,
+#                   'x-mbx-used-weight-1m': 0}
+
+current_weight = {}
+endpoint_headers = {}  # read temp file
 
 aplicable_limits = {'X-SAPI-USED-IP-WEIGHT-1M': api_rate_limits['REQUEST_1M'],
                     'x-mbx-used-weight': api_rate_limits['REQUEST_5M'],
@@ -71,6 +75,19 @@ api_limits_weight_decrease_per_seconds = {'X-SAPI-USED-IP-WEIGHT-1M': api_rate_l
 #################
 
 
+def add_header_for_endpoint(endpoint: str, header: str):
+    global endpoint_headers
+
+    if endpoint in endpoint_headers.keys():
+        my_headers = endpoint_headers[endpoint]
+        if header not in my_headers:
+            my_headers.append(header)
+            endpoint_headers.update({endpoint: my_headers})
+    else:
+        endpoint_headers.update({endpoint: [header]})
+        weight_logger.debug(f"New endpoint headers control: {endpoint} -> {endpoint_headers[endpoint]}")
+
+
 def update_weights(headers, father_url: str):
     global current_weight
 
@@ -78,77 +95,61 @@ def update_weights(headers, father_url: str):
 
     # get weight headers from headers
     weight_headers = {k: int(v) for k, v in headers.items() if 'WEIGHT' in k.upper() or 'COUNT' in k.upper()}
-    # weight_headers = {k: 0 if k not in weight_headers.keys() else v for k, v in current_limit_headers.items()}
+    weight_logger.debug(f"Father url: {father_url} Weights updated from API: {weight_headers}")
 
-    # register headers for detecting new weight headers
-    weight_logger.info(f"Father url: {father_url} Weights updated from API: {weight_headers}")
+    for head, value in weight_headers.items():
+        add_header_for_endpoint(father_url, head)
 
-    new_weight = {}
-
-    # generate new weights updated
+    # decrease all other weights
     for k, v in current_weight.items():
+        new_v = max(0, v - 1)  # is possible to decrease too much not used endpoints when using a variety of them
+        current_weight.update({k: new_v})
 
-        if k in weight_headers.keys():  # update if received
-            new_weight[k] = v
+    # annotate new weights updated
+    for k, v in weight_headers.items():
+        current_weight.update({k: v})
 
-        else:  # decrease if not received, non negative
-            new_weight[k] = max(current_weight[k] - 1, 0)
-
-    current_weight = new_weight
-
-    weight_logger.info(f"Current weights updated: {current_weight}")
+    weight_logger.debug(f"Current weights updated: {current_weight}")
 
 
 def check_weight(weight: int,
-                 endpoint: str,
-                 no_wait=False):
-    global api_rate_limits, current_weight
+                 endpoint: str):
+    global current_weight, endpoint_headers, aplicable_limits, api_limits_weight_decrease_per_seconds
 
     weight_logger.debug(f"Checking weight for {endpoint}")
 
-    test_headers = copy.deepcopy(current_weight)
+    future_weights = copy.deepcopy(current_weight)
 
-    # identify
-    if '/api/v3/order/' in endpoint:
-        header_to_update = ''  # TODO: unknown yet
-        test_headers[header_to_update] += weight
-        waitable_for = [header_to_update]
-    elif '/sapi/v1/' in endpoint:
-        header_to_update = 'X-SAPI-USED-IP-WEIGHT-1M'
-        test_headers[header_to_update] += weight
-        waitable_for = [header_to_update]
-    elif '/api/v3/' in endpoint:
-        header_to_update = 'x-mbx-used-weight-1m'
-        test_headers[header_to_update] += weight
-        waitable_for = [header_to_update]
-        header_to_update = 'x-mbx-used-weight'
-        test_headers[header_to_update] += weight
-        waitable_for.append(header_to_update)
-    else:
-        msg = f"BinPan error: Unknown endpoint for weight check: {endpoint}"
-        weight_logger.error(msg)
-        raise Exception(msg)
+    if not future_weights:  # cold start
+        return
+    weight_logger.debug(f"Future weight headers: {future_weights}")
 
-    # check & wait
-    weight_logger.debug(f"BEFORE WAIT Current weights registered: {current_weight}")
+    # añade los headers nuevos al archivo de endpoint headers
+    for future_key in future_weights.keys():
+        add_header_for_endpoint(endpoint, future_key)
 
-    for head, value in test_headers.items():
-        if value > aplicable_limits[head] and current_weight[head] > 0:
-            excess = ((value - aplicable_limits[head]) // api_limits_weight_decrease_per_seconds[head]) + 2
-            if not no_wait and head in waitable_for:
-                weight_logger.warning(f"{head}={value} > {aplicable_limits[head]} Current value: {current_weight[head]}")
-                weight_logger.warning(f"Waiting {excess} seconds for {head} to decrease rate.")
-                sleep(excess)
-            current_weight[head] = aplicable_limits[head]
-        else:
-            current_weight[head] += weight  # should be updated with response headers
+    # busca los headers a incrementar usando el archivo de endpoint headers
+    for endpoint_archived, end_headers_list in endpoint_headers.items():
+        if endpoint_archived == endpoint:
+            for head in end_headers_list:
+                future_weights[head] += weight
 
-    weight_logger.debug(f"Checked and waited:  {current_weight}")
+    # check if needed header for this endpoint is overloaded
+    aplicable_headers = endpoint_headers[endpoint]
+    for aplicable_head in aplicable_headers:
+        curr_limit = aplicable_limits[aplicable_head]  # must raise if new header in limits control
+        future_weight = future_weights[aplicable_head]
+        if future_weight >= curr_limit:
+            excess = ((future_weight - curr_limit) // api_limits_weight_decrease_per_seconds[aplicable_head]) + 2
+
+            weight_logger.warning(f"{aplicable_head}={future_weight} > {aplicable_limits[aplicable_head]} Current value: {current_weight[aplicable_head]}")
+            weight_logger.warning(f"Waiting {excess} seconds for {aplicable_head} to decrease rate.")
+            sleep(excess)
 
 
-def get_server_time(no_wait=False):
+def get_server_time():
     endpoint = '/api/v3/time'
-    check_weight(1, endpoint=endpoint, no_wait=no_wait)
+    check_weight(1, endpoint=endpoint)
     return int(get_response(url=endpoint)['serverTime'])
 
 
@@ -272,7 +273,7 @@ def get_signed_request(url: str,
                        recvWindow: int = 10000):
     """
     Hace un get firmado a una url junto con un diccionario de parámetros
-    Para evitar errores de orden de parámetros se pasan en formato tupla
+    Para evitar errores de orden de parámetros se pasan en formato tuple
         https://dev.binance.vision/t/faq-signature-for-this-request-is-not-valid/176/4
 
     """
@@ -326,10 +327,8 @@ def api_raw_get(endpoint: str,
                 weight: int,
                 base_url: str = '',
                 params: dict = None,
-                headers: dict = None,
-
-                no_wait=False):
-    check_weight(weight, endpoint=base_url + endpoint, no_wait=no_wait)
+                headers: dict = None):
+    check_weight(weight, endpoint=base_url + endpoint)
 
     return get_response(url=base_url + endpoint,
                         params=params,
@@ -339,9 +338,8 @@ def api_raw_get(endpoint: str,
 def api_raw_signed_get(endpoint: str,
                        base_url: str = '',
                        params: dict = None,
-                       weight: int = 1,
-                       no_wait=False):
-    check_weight(weight, endpoint=base_url + endpoint, no_wait=no_wait)
+                       weight: int = 1):
+    check_weight(weight, endpoint=base_url + endpoint)
     return get_signed_request(url=base_url + endpoint,
                               params=params)
 
@@ -349,8 +347,7 @@ def api_raw_signed_get(endpoint: str,
 def api_raw_signed_post(endpoint: str,
                         base_url: str = '',
                         params: dict = None,
-                        weight: int = 1,
-                        no_wait=False):
-    check_weight(weight, endpoint=base_url + endpoint, no_wait=no_wait)
+                        weight: int = 1):
+    check_weight(weight, endpoint=base_url + endpoint)
     return post_signed_request(url=base_url + endpoint,
                                params=params)
