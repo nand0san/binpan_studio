@@ -31,7 +31,7 @@ binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', 
 tick_seconds = handlers.time_helper.tick_seconds
 
 
-__version__ = "0.0.73"
+__version__ = "0.0.74"
 
 
 try:
@@ -2104,6 +2104,46 @@ class Symbol(object):
                 self.set_plot_color_fill(indicator_column=column_name, color_fill=False)
                 self.set_plot_row(indicator_column=str(column_name), row_position=1)
         return bbands
+
+    def stoch(self,
+              k_length: int = 14,
+              stoch_d=3,
+              k_smooth: int = 1,
+              inplace: bool = True,
+              suffix: str = '',
+              colors: list = ['orange', 'blue'],
+              **kwargs) -> pd.DataFrame:
+        """
+        Stochastic Oscillator with a fast and slow exponential moving averages.
+
+            https://www.investopedia.com/terms/s/stochasticoscillator.asp
+
+        :param int k_length: The Fast %K period. Default: 14
+        :param int stoch_d: The Slow %K period. Default: 3
+        :param int k_smooth: The Slow %D period. Default: 3
+        :param bool inplace: Make it permanent in the instance or not.
+        :param str suffix: A decorative suffix for the name of the column created.
+        :param list colors: Is the color to show when plotting.
+        :param kwargs: Optional from https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/momentum/stoch.py
+        :return: A Pandas DataFrame
+        """
+        stoch_df = ta.stoch(high=self.df['High'],
+                            low=self.df['Low'],
+                            close=self.df['Close'],
+                            k=k_length,
+                            d=stoch_d,
+                            k_smooth=k_smooth,
+                            **kwargs)
+        if inplace and self.is_new(stoch_df):
+            self.row_counter += 1
+            for i, c in enumerate(stoch_df.columns):
+                col = stoch_df[c]
+                column_name = str(col.name) + suffix
+                self.set_plot_color(indicator_column=column_name, color=colors[i])
+                self.set_plot_color_fill(indicator_column=column_name, color_fill=False)
+                self.set_plot_row(indicator_column=column_name, row_position=self.row_counter)
+                self.df.loc[:, column_name] = col
+        return stoch_df
 
     @staticmethod
     def pandas_ta_indicator(name: str,

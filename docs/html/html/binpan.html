@@ -1264,6 +1264,31 @@ It can be any color from plotly library or a number in the list of those. Defaul
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="binpan.binpan.Symbol.stoch">
+<span class="sig-name descname"><span class="pre">stoch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">14</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stoch_d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k_smooth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['orange',</span> <span class="pre">'blue']</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#binpan.binpan.Symbol.stoch" title="Permalink to this definition"></a></dt>
+<dd><p>Stochastic Oscillator with a fast and slow exponential moving averages.</p>
+<blockquote>
+<div><p><a class="reference external" href="https://www.investopedia.com/terms/s/stochasticoscillator.asp">https://www.investopedia.com/terms/s/stochasticoscillator.asp</a></p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>k_length</strong> (<em>int</em>) – The Fast %K period. Default: 14</p></li>
+<li><p><strong>stoch_d</strong> (<em>int</em>) – The Slow %K period. Default: 3</p></li>
+<li><p><strong>k_smooth</strong> (<em>int</em>) – The Slow %D period. Default: 3</p></li>
+<li><p><strong>inplace</strong> (<em>bool</em>) – Make it permanent in the instance or not.</p></li>
+<li><p><strong>suffix</strong> (<em>str</em>) – A decorative suffix for the name of the column created.</p></li>
+<li><p><strong>colors</strong> (<em>list</em>) – Is the color to show when plotting.</p></li>
+<li><p><strong>kwargs</strong> – Optional from <a class="reference external" href="https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/momentum/stoch.py">https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/momentum/stoch.py</a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A Pandas DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="binpan.binpan.Symbol.pandas_ta_indicator">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pandas_ta_indicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.binpan.Symbol.pandas_ta_indicator" title="Permalink to this definition"></a></dt>
 <dd><p>Calls any indicator in pandas_ta library with function name as first argument and any kwargs the function will use.</p>
