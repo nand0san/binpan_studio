@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BinPan Module &mdash; BinPan 0.0.71 documentation</title>
+  <title>BinPan Module &mdash; BinPan 0.0.73 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/style.css" type="text/css" />
@@ -175,7 +175,8 @@ because daily time saving changes.</p>
 </p></li>
 <li><p><strong>time_index</strong> (<em>bool</em>) – Shows human-readable index in the dataframe. Set to False shows numeric index. default is True.</p></li>
 <li><p><strong>closed</strong> (<em>bool</em>) – The last candle is a closed one in the moment of the creation, instead of a running candle not closed yet.</p></li>
-<li><p><strong>from_redis</strong> (<em>bool</em>) – If enabled, BinPan will look for a secret file with the redis ip, port and any other parameter in a map.
+<li><p><strong>from_redis</strong> (<em>bool</em><em> or </em><em>StrictRedis</em>) – If enabled, BinPan will look for a secret file with the redis ip, port and any other parameter in a map.
+But can be passed a StrictRedis client object previously configured.
 secret.py file map example: redis_conf = {‘host’:’192.168.1.5’,’port’: 6379,’db’: 0,’decode_responses’: True}</p></li>
 <li><p><strong>display_columns</strong> (<em>int</em>) – Number of columns in the dataframe display. Convenient to adjust in jupyter notebooks.</p></li>
 <li><p><strong>display_rows</strong> (<em>int</em>) – Number of rows in the dataframe display. Convenient to adjust in jupyter notebooks.</p></li>

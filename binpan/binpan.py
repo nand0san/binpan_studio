@@ -8,6 +8,7 @@ This is the main classes file.
 import pandas as pd
 import numpy as np
 
+from redis import StrictRedis
 
 import handlers.logs
 import handlers.starters
@@ -147,7 +148,8 @@ class Symbol(object):
     :param bool time_index:  Shows human-readable index in the dataframe. Set to False shows numeric index. default is True.
 
     :param bool closed:      The last candle is a closed one in the moment of the creation, instead of a running candle not closed yet.
-    :param bool from_redis: If enabled, BinPan will look for a secret file with the redis ip, port and any other parameter in a map.
+    :param bool or StrictRedis from_redis: If enabled, BinPan will look for a secret file with the redis ip, port and any other parameter in a map.
+       But can be passed a StrictRedis client object previously configured.
        secret.py file map example: redis_conf = {'host':'192.168.1.5','port': 6379,'db': 0,'decode_responses': True}
 
     :param int display_columns:     Number of columns in the dataframe display. Convenient to adjust in jupyter notebooks.
@@ -228,7 +230,7 @@ class Symbol(object):
                  time_zone: str = 'UTC',
                  time_index: bool = True,
                  closed: bool = True,
-                 from_redis: bool = False,
+                 from_redis: bool or StrictRedis = False,
                  display_columns=25,
                  display_rows=10,
                  display_min_rows=25,
@@ -270,10 +272,13 @@ class Symbol(object):
         self.closed = closed
 
         if from_redis:
-            try:
-                self.from_redis = redis_client(**redis_conf)
-            except Exception as exc:
-                binpan_logger.warning(f"BinPan error: Redis parameters misconfiguration in secret.py -> {exc}")
+            if type(from_redis) == bool:
+                try:
+                    self.from_redis = redis_client(**redis_conf)
+                except Exception as exc:
+                    binpan_logger.warning(f"BinPan error: Redis parameters misconfiguration in secret.py -> {exc}")
+            else:
+                self.from_redis = from_redis
         else:
             self.from_redis = from_redis
 
@@ -2703,15 +2708,15 @@ class Wallet(object):
             return 0
 
 
-def redis_client(ip: str = None,
-                 port: int = None,
-                 db: int = None,
-                 decode_responses: bool = None,
+def redis_client(ip: str = '127.0.0.1',
+                 port: int = 6379,
+                 db: int = 0,
+                 decode_responses: bool = True,
                  **kwargs):
     """
     A redis consumer client creator for the Redis module.
 
-    :param str ip: Redis host ip. DEfault is 127.0.0.1
+    :param str ip: Redis host ip. Default is localhost.
     :param int port: Default is 6379
     :param int db: Default is 0.
     :param bool decode_responses: It decodes responses from redis, avoiding bytes objects to be returned. Default is True.
@@ -2723,16 +2728,6 @@ def redis_client(ip: str = None,
     if kwargs:
         return StrictRedis(**kwargs)
     else:
-        # noinspection PyTypeChecker
-        if not ip:
-            ip = '127.0.0.1'
-        if not port:
-            port = 6379
-        if not db:
-            db = 0
-        if not decode_responses:
-            decode_responses = True
-
         # noinspection PyTypeChecker
         return StrictRedis(host=ip,
                            port=port,
