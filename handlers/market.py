@@ -67,7 +67,8 @@ def get_candles_by_time_stamps(symbol: str,
     """
     Calls API for candles list buy one or two timestamps, starting and ending.
 
-    In case the limit is exceeded, the start_time prevails over the end_time, start_time must come in milliseconds from epoch.
+    In case the limit is passed and exceeded by requested time intervals, the start_time prevails over the end_time,
+    start_time must come in milliseconds from epoch.
 
     In case of two timeStamps as arguments, limit is ignored.
 

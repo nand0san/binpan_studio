@@ -584,16 +584,6 @@ def execute_pipeline(pipeline: StrictRedis.pipeline):
     return pipeline.execute()
 
 
-# def get_pipeline_buffer(pipeline: StrictRedis.pipeline) -> StrictRedis.pipeline:
-#     """
-#     Gets pipeline buffered commands.
-#
-#     :param redisClient pipeline: A redis client pipeline.
-#     :return: Redis response.
-#     """
-#     return pipeline.
-
-
 def flush_pipeline(pipeline: StrictRedis.pipeline) -> StrictRedis.pipeline:
     """
     Flush pipeline buffered commands.
@@ -636,6 +626,26 @@ def pipe_buffer_ordered_set(pipeline: StrictRedis,
     """
     pipeline.zadd(name=key, mapping=mapping, lt=LT, xx=XX, nx=NX, gt=GT, ch=CH, incr=INCR)
     return pipeline
+
+
+def pipe_zset_range(pipeline: StrictRedis.pipeline,
+                    key: str,
+                    start_index=0,
+                    end_index=-1,
+                    with_scores=False) -> StrictRedis.pipeline:
+    """
+    Pipe a request for an ordered set by index for a redis existing key.
+
+    :param StrictRedis.pipeline pipeline: Pipeline object.
+    :param str key: Key to pipe wanted data.
+    :param int start_index: Starting index of data. If ordered by scoring timestamps, starting values are older than ending values.
+        Default 0
+    :param int end_index: Ending index of data. If ordered by scoring timestamps, starting values are older than ending values.
+        Default -1
+    :param bool with_scores: Pipes for a list of tuples with data and score.
+    :return StrictRedis.pipeline: Pipeline object.
+    """
+    return pipeline.zrange(name=key, start=start_index, end=end_index, withscores=with_scores)
 
 
 def pipe_zset_timestamps(pipeline: StrictRedis.pipeline,
