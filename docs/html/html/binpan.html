@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BinPan Module &mdash; BinPan 0.0.73 documentation</title>
+  <title>BinPan Module &mdash; BinPan 0.0.75 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/style.css" type="text/css" />
@@ -470,20 +470,24 @@ in the object remains.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="binpan.binpan.Symbol.insert_indicator">
-<span class="sig-name descname"><span class="pre">insert_indicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_fills</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.binpan.Symbol.insert_indicator" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">insert_indicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_fills</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#binpan.binpan.Symbol.insert_indicator" title="Permalink to this definition"></a></dt>
 <dd><p>Adds indicator to dataframe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>source_data</strong> (<em>pd.Series</em><em> or </em><em>pd.DataFrame</em><em> or </em><em>np.ndarray</em>) – Source data from pandas_ta or any other. Expected named series.</p></li>
-<li><p><strong>rows</strong> – Rows position for autoplot each serie. 1 is overlap, ANY OTHER INTEGER will calculate row position.</p></li>
-<li><p><strong>colors</strong> – Colors list for each serie indicator. Default is random colors.</p></li>
-<li><p><strong>color_fills</strong> – Colors to fill indicator til y-axis or False to avoid. Example for transparent green ‘rgba(26,150,65,0.5)’.
-Default is all False.</p></li>
+<li><p><strong>source_data</strong> (<em>pd.Series</em><em> or </em><em>pd.DataFrame</em><em> or </em><em>np.ndarray</em><em> or </em><em>list</em>) – Source data from pandas_ta or any other. Expected named series
+or list of names, or at least a suffix. If nothing passed, name will be autogenerated.</p></li>
+<li><p><strong>rows</strong> (<em>list</em>) – mandatory. Rows position for autoplot each serie. 1 is overlap, ANY OTHER INTEGER will calculate row position.
+Passing list of source data will put different row for each indicator added, ignoring same number in the list. Finally you can
+change assigned row with <code class="docutils literal notranslate"><span class="pre">my_symbol.set_plot_row('New_column',</span> <span class="pre">2)</span></code></p></li>
+<li><p><strong>colors</strong> (<em>list</em>) – Colors list for each serie indicator. Default is random colors.</p></li>
+<li><p><strong>color_fills</strong> (<em>list</em>) – Colors to fill indicator til y-axis or False to avoid. Example for transparent green
+<code class="docutils literal notranslate"><span class="pre">'rgba(26,150,65,0.5)'</span></code>. Default is all False.</p></li>
+<li><p><strong>names</strong> (<em>list</em>) – A list for the columns when inserted.</p></li>
 <li><p><strong>suffix</strong> (<em>str</em>) – A suffix for the new column name/s. If numpy array or nameless pandas series, suffix is the whole name.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return pd.DataFrame</dt>
+<dt class="field-even">Return pd.DataFrame or None</dt>
 <dd class="field-even"><p>Instance candles dataframe.</p>
 </dd>
 </dl>
