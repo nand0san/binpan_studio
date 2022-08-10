@@ -49,6 +49,7 @@ quest_logger = Logs(filename='./logs/quest.log', name='quest', info_level='INFO'
 
 cipher_object = AesCipher()
 
+
 # rate limits
 api_rate_limits = get_exchange_limits()
 
@@ -61,12 +62,15 @@ endpoint_headers = {}  # read temp file
 
 aplicable_limits = {'X-SAPI-USED-IP-WEIGHT-1M': api_rate_limits['REQUEST_1M'],
                     'x-mbx-used-weight': api_rate_limits['REQUEST_5M'],
-                    'x-mbx-used-weight-1m': api_rate_limits['REQUEST_1M']}
+                    'x-mbx-used-weight-1m': api_rate_limits['REQUEST_1M'],
+                    'x-mbx-order-count-10s': api_rate_limits['ORDERS_10S'],
+                    'x-mbx-order-count-1d': api_rate_limits['ORDERS_1D']}
 
 api_limits_weight_decrease_per_seconds = {'X-SAPI-USED-IP-WEIGHT-1M': api_rate_limits['REQUEST_1M'] // 60,
                                           'x-mbx-used-weight-1m': api_rate_limits['REQUEST_1M'] // 60,
-                                          'x-mbx-used-weight': api_rate_limits['REQUEST_5M'] // (60 * 5)}  # is the five minutes api limit?
-
+                                          'x-mbx-used-weight': api_rate_limits['REQUEST_5M'] // (60 * 5),
+                                          'x-mbx-order-count-10s': api_rate_limits['ORDERS_10S'] // 10,
+                                          'x-mbx-order-count-1d': api_rate_limits['ORDERS_1D'] // (24 * 60 * 60)}  # is the five minutes api limit?
 
 # TODO: identify headers for order endpoints
 
