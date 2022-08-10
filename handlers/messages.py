@@ -1,10 +1,12 @@
 from .starters import AesCipher
-import requests
 from .logs import Logs
 from .time_helper import convert_milliseconds_to_str
 # from .time_helper import convert_utc_ms_column_to_time_zone
-from .wallet import get_spot_trades_list, get_spot_balances_df, get_spot_balances_total_value
+from .wallet import get_spot_trades_list, get_spot_balances_df, get_spot_balances_total_value, get_spot_trades_list
+
 from pandas import DataFrame
+import requests
+from time import sleep
 
 msg_logger = Logs(filename='./logs/msg_logger.log', name='msg_logger', info_level='INFO')
 
@@ -187,7 +189,13 @@ def get_fills_price(original_order_dict: dict) -> float:
                 qty = float(fill['qty'])
                 n += price * qty
                 m += qty
-            return n / m
+            if m:
+                return n / m
+            else:
+                sleep(3)
+                last_trades = get_spot_trades_list(symbol=symbol)
+                last_buy = [i for i in last_trades if i['isBuyer']][-1]
+                return float(last_buy['price'])
         else:
             raise Exception(f"BinPan Error: Error en parseo de orden ejecutada.\n{ordered}")
     else:
