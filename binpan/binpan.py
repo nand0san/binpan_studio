@@ -31,7 +31,7 @@ binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', 
 tick_seconds = handlers.time_helper.tick_seconds
 
 
-__version__ = "0.0.76"
+__version__ = "0.0.77"
 
 
 try:
