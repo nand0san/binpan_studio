@@ -112,19 +112,19 @@ def telegram_parse_dict(msg_data: dict, timezone='UTC'):
             fv2 = fv1
         if 'pct' in k:
             fv2 = fv2 * 100
-            row = f"*{k}* : `{fv2:.2f}`\n"
+            row = f"*{k}* : `{fv2:.2f}` \n"
         elif type(fv2) == float:
-            row = f"*{k}* : `{fv2:.8f}`\n"
+            row = f"*{k}* : `{fv2:.8f}` \n"
         elif type(fv2) == int:
-            row = f"*{k}* : `{fv2}`\n"
+            row = f"*{k}* : `{fv2}` \n"
         else:
-            if 'time' in k:
+            if 'time' in k and k != 'timeInForce':
                 date = convert_milliseconds_to_str(ms=fv2, timezoned=timezone)
-                row = f"*{k}* : {date}\n"
+                row = f"*{k}* : {date} \n"
             else:
-                row = f"*{k}* : {fv2}\n"
+                row = f"*{k}* : {fv2} \n"
         parsed_msg += row
-    return parsed_msg
+    return parsed_msg.replace('_', ' ')
 
 
 # futuro bot #

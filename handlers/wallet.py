@@ -368,3 +368,119 @@ def get_spot_balances_total_value(balances_df: pd.DataFrame = None,
         total += float(locked)
 
     return total
+
+
+#################
+# MARGIN WALLET #
+#################
+
+
+def get_margin_account_details() -> dict:
+    """
+    Query Cross Margin Account Details (USER_DATA)
+    GET /sapi/v1/margin/account (HMAC SHA256)
+
+    Weight(IP): 10
+
+    Parameters:
+
+    Name	Type	Mandatory	Description
+    recvWindow	LONG	NO	The value cannot be greater than 60000
+    timestamp	LONG	YES
+
+    Response:
+
+    {
+          "borrowEnabled": true,
+          "marginLevel": "11.64405625",
+          "totalAssetOfBtc": "6.82728457",
+          "totalLiabilityOfBtc": "0.58633215",
+          "totalNetAssetOfBtc": "6.24095242",
+          "tradeEnabled": true,
+          "transferEnabled": true,
+          "userAssets": [
+              {
+                  "asset": "BTC",
+                  "borrowed": "0.00000000",
+                  "free": "0.00499500",
+                  "interest": "0.00000000",
+                  "locked": "0.00000000",
+                  "netAsset": "0.00499500"
+              },
+              {
+                  "asset": "BNB",
+                  "borrowed": "201.66666672",
+                  "free": "2346.50000000",
+                  "interest": "0.00000000",
+                  "locked": "0.00000000",
+                  "netAsset": "2144.83333328"
+              },
+              {
+                  "asset": "ETH",
+                  "borrowed": "0.00000000",
+                  "free": "0.00000000",
+                  "interest": "0.00000000",
+                  "locked": "0.00000000",
+                  "netAsset": "0.00000000"
+              },
+              {
+                  "asset": "USDT",
+                  "borrowed": "0.00000000",
+                  "free": "0.00000000",
+                  "interest": "0.00000000",
+                  "locked": "0.00000000",
+                  "netAsset": "0.00000000"
+              }
+          ]
+    }
+
+    """
+    margin_endpoint='/sapi/v1/margin/account'
+    ret = api_raw_signed_get(endpoint=margin_endpoint,
+                             params={},
+                             weight=10)
+    return ret
+
+
+def get_margin_balances():
+    """Balances en la cuenta margin no nulos"""
+    margin_status = get_margin_account_details()
+    ret = {}
+    for asset in margin_status['userAssets']:
+        entry = {}
+        for k, v in asset.items():
+            if k != 'asset':
+                entry[k] = float(v)
+        if sum(entry.values()) != 0:
+            ret[asset['asset']] = entry
+    return ret
+
+
+def get_margin_free_balances(balances: dict = None):
+    if not balances:
+        balances = get_margin_balances()
+    return {k: v['free'] for k, v in balances.items() if v['free']}
+
+
+def get_margin_locked_balances(balances: dict = None):
+    if not balances:
+        balances = get_margin_balances()
+    return {k: v['locked'] for k, v in balances.items() if v['locked']}
+
+
+def get_margin_borrowed_balances(balances: dict = None):
+    if not balances:
+        balances = get_margin_balances()
+    return {k: v['borrowed'] for k, v in balances.items() if v['borrowed']}
+
+
+def get_margin_interest_balances(balances: dict = None):
+    if not balances:
+        balances = get_margin_balances()
+    return {k: v['interest'] for k, v in balances.items() if v['interest']}
+
+
+def get_margin_netAsset_balances(balances: dict = None):
+    if not balances:
+        balances = get_margin_balances()
+    return {k: v['netAsset'] for k, v in balances.items() if v['netAsset']}
