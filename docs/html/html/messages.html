@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Messages Module &mdash; BinPan 0.0.75 documentation</title>
+  <title>Messages Module &mdash; BinPan 0.0.77 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/style.css" type="text/css" />
@@ -88,128 +88,14 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">handlers</span> <span class="kn">import</span> <span class="n">messages</span>
 </pre></div>
 </div>
-<span class="target" id="module-handlers.messages"></span><section id="telegram-messages">
+<section id="telegram-messages">
 <h2>Telegram Messages<a class="headerlink" href="#telegram-messages" title="Permalink to this heading"></a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="handlers.messages.telegram_bot_send_text">
-<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">telegram_bot_send_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parse_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Markdown&amp;text'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_notification</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alt_enc_bot_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alt_chat_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.messages.telegram_bot_send_text" title="Permalink to this definition"></a></dt>
-<dd><p>Sends a telegram message.</p>
-<p>It takes bot key and chat id from secret encrypted file. It is required to create previously the bot and chat keys with the
-variable names <em>encoded_chat_id</em>, <em>encoded_telegram_bot_id</em>.</p>
-<p>Example adding bot key and chat id:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">binpan</span> <span class="kn">import</span> <span class="n">handlers</span>
-
-<span class="c1"># from @BotFather, get the bot api key</span>
-<span class="n">handlers</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">add_any_key</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;xxxxxxxxxx&quot;</span><span class="p">,</span> <span class="n">key_name</span><span class="o">=</span><span class="s2">&quot;encoded_telegram_bot_id&quot;</span><span class="p">)</span>
-
-<span class="c1"># write to your bot and then get your chat id from https://api.telegram.org/bot&lt;YourBOTToken&gt;/getUpdates</span>
-<span class="n">handlers</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">add_any_key</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;xxxxxxxxxx&quot;</span><span class="p">,</span> <span class="n">key_name</span><span class="o">=</span><span class="s2">&quot;encoded_chat_id&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>msg</strong> (<em>str</em>) – A message</p></li>
-<li><p><strong>parse_mode</strong> (<em>str</em>) – Parsing telegram message. Default is ‘Markdown&amp;text’.</p></li>
-<li><p><strong>disable_notification</strong> – Avoids getting notified by the telegram message. Only working in group chats.
-<a class="reference external" href="https://stackoverflow.com/questions/64360221/disable-notification-in-python-telegram-bot">https://stackoverflow.com/questions/64360221/disable-notification-in-python-telegram-bot</a></p></li>
-<li><p><strong>alt_enc_bot_id</strong> (<em>str</em>) – Optional alternative bot api key.</p></li>
-<li><p><strong>alt_chat_id</strong> (<em>str</em>) – Optional alternative chat id.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Telegrams API response.</p>
-</dd>
-</dl>
-</dd></dl>
-
 </section>
 <section id="parsers">
 <h2>Parsers<a class="headerlink" href="#parsers" title="Permalink to this heading"></a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="handlers.messages.telegram_parse_dict">
-<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">telegram_parse_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'UTC'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.messages.telegram_parse_dict" title="Permalink to this definition"></a></dt>
-<dd><p>Parses a dict and downcast types.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>msg_data</strong> (<em>dict</em>) – Dict to parse as message.</p></li>
-<li><p><strong>timezone</strong> (<em>str</em>) – A time zone to parse more human readable any field containing “time” in the name.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return str</dt>
-<dd class="field-even"><p>A markdown v1 parsed telegram string.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="handlers.messages.telegram_parse_dataframe_markdown">
-<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">telegram_parse_dataframe_markdown</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indentation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Balances'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.messages.telegram_parse_dataframe_markdown" title="Permalink to this definition"></a></dt>
-<dd><p>Parses a Dataframe in telegrams message format.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>DataFrame</em>) – A dataframe</p></li>
-<li><p><strong>indentation</strong> (<em>int</em>) – Spaces to insert each tabulation.</p></li>
-<li><p><strong>title</strong> (<em>str</em>) – a header or title to the result.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return str</dt>
-<dd class="field-even"><p>String parsed with tabulations.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="handlers.messages.telegram_parse_order_markdown">
-<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">telegram_parse_order_markdown</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezoned</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Europe/Madrid'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.messages.telegram_parse_order_markdown" title="Permalink to this definition"></a></dt>
-<dd><p>Parses API order response to telegram string.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>original_order</strong> (<em>dict</em>) – API order response.</p></li>
-<li><p><strong>timezoned</strong> (<em>str</em>) – a time zone like ‘Europe/Madrid’ for human readable timestamps.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return str</dt>
-<dd class="field-even"><p>Parsed telegram style  string.</p>
-</dd>
-</dl>
-</dd></dl>
-
 </section>
 <section id="utils">
 <h2>Utils<a class="headerlink" href="#utils" title="Permalink to this heading"></a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="handlers.messages.get_fills_price">
-<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">get_fills_price</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_order_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.messages.get_fills_price" title="Permalink to this definition"></a></dt>
-<dd><p>Obtain averaged price from order API response.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>original_order_dict</strong> (<em>dict</em>) – API order dict response.</p>
-</dd>
-<dt class="field-even">Return float</dt>
-<dd class="field-even"><p>Price averaged.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="handlers.messages.send_balances">
-<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">send_balances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">convert_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BUSD'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.messages.send_balances" title="Permalink to this definition"></a></dt>
-<dd><p>Sends telegram message with total value of spot wallet in selected coin.</p>
-<p>It returns free and locked assets value added.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>convert_to</strong> (<em>str</em>) – A Binance coin.</p>
-</dd>
-<dt class="field-even">Return float</dt>
-<dd class="field-even"><p>total value of wallet.</p>
-</dd>
-</dl>
-</dd></dl>
-
 </section>
 </section>
 
