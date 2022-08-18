@@ -88,14 +88,262 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">handlers</span> <span class="kn">import</span> <span class="n">messages</span>
 </pre></div>
 </div>
-<section id="telegram-messages">
+<span class="target" id="module-handlers.messages"></span><section id="telegram-messages">
 <h2>Telegram Messages<a class="headerlink" href="#telegram-messages" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.messages.telegram_bot_send_text">
+<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">telegram_bot_send_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parse_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Markdown&amp;text'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_notification</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alt_enc_bot_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alt_chat_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.messages.telegram_bot_send_text" title="Permalink to this definition"></a></dt>
+<dd><p>Sends a telegram message.</p>
+<p>It takes bot key and chat id from secret encrypted file. It is required to create previously the bot and chat keys with the
+variable names <em>encoded_chat_id</em>, <em>encoded_telegram_bot_id</em>.</p>
+<p>Example adding bot key and chat id:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">binpan</span> <span class="kn">import</span> <span class="n">handlers</span>
+
+<span class="c1"># from @BotFather, get the bot api key</span>
+<span class="n">handlers</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">add_any_key</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;xxxxxxxxxx&quot;</span><span class="p">,</span> <span class="n">key_name</span><span class="o">=</span><span class="s2">&quot;encoded_telegram_bot_id&quot;</span><span class="p">)</span>
+
+<span class="c1"># write to your bot and then get your chat id from https://api.telegram.org/bot&lt;YourBOTToken&gt;/getUpdates</span>
+<span class="n">handlers</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">add_any_key</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;xxxxxxxxxx&quot;</span><span class="p">,</span> <span class="n">key_name</span><span class="o">=</span><span class="s2">&quot;encoded_chat_id&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>msg</strong> (<em>str</em>) – A message</p></li>
+<li><p><strong>parse_mode</strong> (<em>str</em>) – Parsing telegram message. Default is ‘Markdown&amp;text’.</p></li>
+<li><p><strong>disable_notification</strong> – Avoids getting notified by the telegram message. Only working in group chats.
+<a class="reference external" href="https://stackoverflow.com/questions/64360221/disable-notification-in-python-telegram-bot">https://stackoverflow.com/questions/64360221/disable-notification-in-python-telegram-bot</a></p></li>
+<li><p><strong>alt_enc_bot_id</strong> (<em>str</em>) – Optional alternative bot api key.</p></li>
+<li><p><strong>alt_chat_id</strong> (<em>str</em>) – Optional alternative chat id.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Telegrams API response.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="parsers">
 <h2>Parsers<a class="headerlink" href="#parsers" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.messages.telegram_parse_dict">
+<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">telegram_parse_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'UTC'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.messages.telegram_parse_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Parses a dict and downcast types.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>msg_data</strong> (<em>dict</em>) – Dict to parse as message.</p></li>
+<li><p><strong>timezone</strong> (<em>str</em>) – A time zone to parse more human readable any field containing “time” in the name.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return str</dt>
+<dd class="field-even"><p>A markdown v1 parsed telegram string.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.messages.telegram_parse_dataframe_markdown">
+<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">telegram_parse_dataframe_markdown</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indentation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Balances'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.messages.telegram_parse_dataframe_markdown" title="Permalink to this definition"></a></dt>
+<dd><p>Parses a Dataframe in telegrams message format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>DataFrame</em>) – A dataframe</p></li>
+<li><p><strong>indentation</strong> (<em>int</em>) – Spaces to insert each tabulation.</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – a header or title to the result.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return str</dt>
+<dd class="field-even"><p>String parsed with tabulations.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.messages.telegram_parse_order_markdown">
+<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">telegram_parse_order_markdown</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isBuyer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezoned</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Europe/Madrid'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.messages.telegram_parse_order_markdown" title="Permalink to this definition"></a></dt>
+<dd><p>Parses API order response to telegram string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>original_order</strong> (<em>dict</em>) – API order response.</p></li>
+<li><p><strong>isBuyer</strong> (<em>bool</em>) – Sets if was a buyer order to filter for wanted order.</p></li>
+<li><p><strong>margin</strong> (<em>bool</em>) – Sets margin order if it is to claim.</p></li>
+<li><p><strong>test_mode</strong> (<em>bool</em>) – Set if test mode is on.</p></li>
+<li><p><strong>timezoned</strong> (<em>str</em>) – a time zone like ‘Europe/Madrid’ for human readable timestamps.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return str</dt>
+<dd class="field-even"><p>Parsed telegram style  string.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="utils">
 <h2>Utils<a class="headerlink" href="#utils" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.messages.get_fills_price">
+<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">get_fills_price</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_order_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isBuyer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.messages.get_fills_price" title="Permalink to this definition"></a></dt>
+<dd><p>Obtain averaged price from order API response or claims last trade.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>original_order_dict</strong> (<em>dict</em>) – API order dict response.</p></li>
+<li><p><strong>isBuyer</strong> (<em>bool</em>) – Sets if was a buyer order to filter for wanted order.</p></li>
+<li><p><strong>margin</strong> (<em>bool</em>) – Sets margin order if it is to claim.</p></li>
+<li><p><strong>test_mode</strong> (<em>bool</em>) – Set if test mode is on.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return float</dt>
+<dd class="field-even"><p>Price averaged.</p>
+</dd>
+</dl>
+<p>Example of not totally done order:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;symbol&#39;</span><span class="p">:</span> <span class="s1">&#39;ACMBUSD&#39;</span><span class="p">,</span>
+<span class="s1">&#39;orderId&#39;</span><span class="p">:</span> <span class="mi">53255492</span><span class="p">,</span>
+<span class="s1">&#39;orderListId&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+<span class="s1">&#39;clientOrderId&#39;</span><span class="p">:</span> <span class="s1">&#39;DUHlcCqIX2OO298XoAbvEB&#39;</span><span class="p">,</span>
+<span class="s1">&#39;transactTime&#39;</span><span class="p">:</span> <span class="mi">1660332903950</span><span class="p">,</span>
+<span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="mf">4.158</span><span class="p">,</span>
+<span class="s1">&#39;origQty&#39;</span><span class="p">:</span> <span class="mf">21.1</span><span class="p">,</span>
+<span class="s1">&#39;executedQty&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+<span class="s1">&#39;cummulativeQuoteQty&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+<span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;NEW&#39;</span><span class="p">,</span>
+<span class="s1">&#39;timeInForce&#39;</span><span class="p">:</span> <span class="s1">&#39;GTC&#39;</span><span class="p">,</span>
+<span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;LIMIT&#39;</span><span class="p">,</span>
+<span class="s1">&#39;side&#39;</span><span class="p">:</span> <span class="s1">&#39;BUY&#39;</span><span class="p">,</span>
+<span class="s1">&#39;fills&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+</pre></div>
+</div>
+<p>Example of full SPOT response:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;symbol&quot;</span><span class="p">:</span> <span class="s2">&quot;BTCUSDT&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;orderId&quot;</span><span class="p">:</span> <span class="mi">28</span><span class="p">,</span>
+  <span class="s2">&quot;orderListId&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">//</span><span class="n">Unless</span> <span class="n">OCO</span><span class="p">,</span> <span class="n">value</span> <span class="n">will</span> <span class="n">be</span> <span class="o">-</span><span class="mi">1</span>
+  <span class="s2">&quot;clientOrderId&quot;</span><span class="p">:</span> <span class="s2">&quot;6gCrw2kRUAF9CvJDGP16IP&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;transactTime&quot;</span><span class="p">:</span> <span class="mi">1507725176595</span><span class="p">,</span>
+  <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;origQty&quot;</span><span class="p">:</span> <span class="s2">&quot;10.00000000&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;executedQty&quot;</span><span class="p">:</span> <span class="s2">&quot;10.00000000&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;cummulativeQuoteQty&quot;</span><span class="p">:</span> <span class="s2">&quot;10.00000000&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;FILLED&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;timeInForce&quot;</span><span class="p">:</span> <span class="s2">&quot;GTC&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;MARKET&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;side&quot;</span><span class="p">:</span> <span class="s2">&quot;SELL&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;strategyId&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>               <span class="o">//</span> <span class="n">This</span> <span class="ow">is</span> <span class="n">only</span> <span class="n">visible</span> <span class="k">if</span> <span class="n">the</span> <span class="n">field</span> <span class="n">was</span> <span class="n">populated</span> <span class="n">on</span> <span class="n">order</span> <span class="n">placement</span><span class="o">.</span>
+  <span class="s2">&quot;strategyType&quot;</span><span class="p">:</span> <span class="mi">1000000</span>        <span class="o">//</span> <span class="n">This</span> <span class="ow">is</span> <span class="n">only</span> <span class="n">visible</span> <span class="k">if</span> <span class="n">the</span> <span class="n">field</span> <span class="n">was</span> <span class="n">populated</span> <span class="n">on</span> <span class="n">order</span> <span class="n">placement</span><span class="o">.</span>
+  <span class="s2">&quot;fills&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;4000.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;1.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;4.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;tradeId&quot;</span><span class="p">:</span> <span class="mi">56</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;3999.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;5.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;19.99500000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;tradeId&quot;</span><span class="p">:</span> <span class="mi">57</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;3998.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;2.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;7.99600000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;tradeId&quot;</span><span class="p">:</span> <span class="mi">58</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;3997.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;1.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;3.99700000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;tradeId&quot;</span><span class="p">:</span> <span class="mi">59</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;3995.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;1.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;3.99500000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;tradeId&quot;</span><span class="p">:</span> <span class="mi">60</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Example of FULL MARGIN RESPONSE:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;symbol&quot;</span><span class="p">:</span> <span class="s2">&quot;BTCUSDT&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;orderId&quot;</span><span class="p">:</span> <span class="mi">28</span><span class="p">,</span>
+  <span class="s2">&quot;clientOrderId&quot;</span><span class="p">:</span> <span class="s2">&quot;6gCrw2kRUAF9CvJDGP16IP&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;transactTime&quot;</span><span class="p">:</span> <span class="mi">1507725176595</span><span class="p">,</span>
+  <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;1.00000000&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;origQty&quot;</span><span class="p">:</span> <span class="s2">&quot;10.00000000&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;executedQty&quot;</span><span class="p">:</span> <span class="s2">&quot;10.00000000&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;cummulativeQuoteQty&quot;</span><span class="p">:</span> <span class="s2">&quot;10.00000000&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;FILLED&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;timeInForce&quot;</span><span class="p">:</span> <span class="s2">&quot;GTC&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;MARKET&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;side&quot;</span><span class="p">:</span> <span class="s2">&quot;SELL&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;marginBuyBorrowAmount&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>       <span class="o">//</span> <span class="n">will</span> <span class="ow">not</span> <span class="k">return</span> <span class="k">if</span> <span class="n">no</span> <span class="n">margin</span> <span class="n">trade</span> <span class="n">happens</span>
+  <span class="s2">&quot;marginBuyBorrowAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;BTC&quot;</span><span class="p">,</span>    <span class="o">//</span> <span class="n">will</span> <span class="ow">not</span> <span class="k">return</span> <span class="k">if</span> <span class="n">no</span> <span class="n">margin</span> <span class="n">trade</span> <span class="n">happens</span>
+  <span class="s2">&quot;isIsolated&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>       <span class="o">//</span> <span class="k">if</span> <span class="n">isolated</span> <span class="n">margin</span>
+  <span class="s2">&quot;fills&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;4000.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;1.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;4.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;3999.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;5.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;19.99500000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;3998.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;2.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;7.99600000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;3997.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;1.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;3.99700000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;3995.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;1.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;3.99500000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.messages.send_balances">
+<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">send_balances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">convert_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BUSD'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.messages.send_balances" title="Permalink to this definition"></a></dt>
+<dd><p>Sends telegram message with total value of spot wallet in selected coin.</p>
+<p>It returns free and locked assets value added.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>convert_to</strong> (<em>str</em>) – A Binance coin.</p>
+</dd>
+<dt class="field-even">Return float</dt>
+<dd class="field-even"><p>total value of wallet.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 </section>
 

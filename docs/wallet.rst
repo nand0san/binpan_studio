@@ -23,8 +23,11 @@ Trades
 
 .. autofunction:: get_spot_trades_list
 
-Balances
---------
+.. autofunction:: get_margin_trades_list
+
+
+Spot Balances
+-------------
 
 .. autofunction:: get_spot_account_info
 
@@ -37,6 +40,24 @@ Balances
 .. autofunction:: get_spot_balances_df
 
 .. autofunction:: get_spot_balances_total_value
+
+
+Margin Balances
+---------------
+
+.. autofunction:: get_margin_account_details
+
+.. autofunction:: get_margin_balances
+
+.. autofunction:: get_margin_free_balances
+
+.. autofunction:: get_margin_borrowed_balances
+
+.. autofunction:: get_margin_interest_balances
+
+.. autofunction:: get_margin_netAsset_balances
+
+.. autofunction:: get_margin_balances_total_value
 
 
 Helper

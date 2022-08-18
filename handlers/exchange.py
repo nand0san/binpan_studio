@@ -159,6 +159,19 @@ def filter_margin(info_dic: dict) -> dict:
     return {k: v for k, v in info_dic.items() if 'MARGIN' in v['permissions'] or 'margin' in v['permissions']}
 
 
+def filter_not_margin(symbols: list = None,
+                      info_dic: dict = None) -> list:
+    if not info_dic:
+        info_dic = get_info_dic()
+
+    permissions_dic = {k: v['permissions'] for k, v in info_dic.items()}
+    
+    if symbols:
+        return [s for s, p in permissions_dic.items() if 'MARGIN' in p and s in symbols]
+    else:
+        return [s for s, p in permissions_dic.items() if 'MARGIN' in p]
+
+
 def filter_leveraged_tokens(info_dic: dict) -> dict:
     return {k: v for k, v in info_dic.items() if all(lev not in k for lev in ['UP', 'DOWN', 'BULL', 'BEAR'])}
 

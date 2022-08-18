@@ -201,6 +201,68 @@ def get_spot_trades_list(symbol: str,
                               weight=10)
 
 
+def get_margin_trades_list(symbol: str,
+                           isIsolated: bool = False,
+                           limit: int = 1000,
+                           orderId: int = None,
+                           startTime: int = None,
+                           endTime: int = None,
+                           fromId: int = None,
+                           recvWindow: int = 10000) -> list:
+    """
+    Get margin trades for a specific account and symbol.
+
+    If fromId is set, it will get trades >= that fromId. Otherwise most recent trades are returned.
+
+    Weight(IP): 10
+
+    :param str symbol: Symbol's trades.
+    :param bool isIsolated: Sets for getting isolated or not isolated trades. Default is false.
+    :param int limit: Default 500; max 1000.
+    :param fromId: TradeId to fetch from. Default gets most recent trades. If fromId is set, it will get id >= that fromId. Otherwise,
+       most recent trades are returned.
+    :param int endTime: Optional.
+    :param int startTime: Optional.
+    :param int orderId: This can only be used in combination with symbol.
+    :param int recvWindow: The value cannot be greater than 60000
+    :return list: A list.
+
+    Example:
+
+           .. code-block::
+
+                     [
+                        {
+                            "commission": "0.00006000",
+                            "commissionAsset": "BTC",
+                            "id": 34,
+                            "isBestMatch": true,
+                            "isBuyer": false,
+                            "isMaker": false,
+                            "orderId": 39324,
+                            "price": "0.02000000",
+                            "qty": "3.00000000",
+                            "symbol": "BNBBTC",
+                            "isIsolated": false,
+                            "time": 1561973357171
+                        }
+                    ]
+    """
+
+    endpoint = '/sapi/v1/margin/myTrades'
+
+    return api_raw_signed_get(endpoint=endpoint,
+                              params={'limit': limit,
+                                      'isIsolated': isIsolated,
+                                      'symbol': symbol,
+                                      'orderId': orderId,
+                                      'startTime': startTime,
+                                      'endTime': endTime,
+                                      'fromId': fromId,
+                                      'recvWindow': recvWindow},
+                              weight=10)
+
+
 ############
 # balances #
 ############
@@ -378,72 +440,93 @@ def get_spot_balances_total_value(balances_df: pd.DataFrame = None,
 def get_margin_account_details() -> dict:
     """
     Query Cross Margin Account Details (USER_DATA)
+
     GET /sapi/v1/margin/account (HMAC SHA256)
 
     Weight(IP): 10
 
-    Parameters:
-
-    Name	Type	Mandatory	Description
-    recvWindow	LONG	NO	The value cannot be greater than 60000
-    timestamp	LONG	YES
-
     Response:
 
-    {
-          "borrowEnabled": true,
-          "marginLevel": "11.64405625",
-          "totalAssetOfBtc": "6.82728457",
-          "totalLiabilityOfBtc": "0.58633215",
-          "totalNetAssetOfBtc": "6.24095242",
-          "tradeEnabled": true,
-          "transferEnabled": true,
-          "userAssets": [
-              {
-                  "asset": "BTC",
-                  "borrowed": "0.00000000",
-                  "free": "0.00499500",
-                  "interest": "0.00000000",
-                  "locked": "0.00000000",
-                  "netAsset": "0.00499500"
-              },
-              {
-                  "asset": "BNB",
-                  "borrowed": "201.66666672",
-                  "free": "2346.50000000",
-                  "interest": "0.00000000",
-                  "locked": "0.00000000",
-                  "netAsset": "2144.83333328"
-              },
-              {
-                  "asset": "ETH",
-                  "borrowed": "0.00000000",
-                  "free": "0.00000000",
-                  "interest": "0.00000000",
-                  "locked": "0.00000000",
-                  "netAsset": "0.00000000"
-              },
-              {
-                  "asset": "USDT",
-                  "borrowed": "0.00000000",
-                  "free": "0.00000000",
-                  "interest": "0.00000000",
-                  "locked": "0.00000000",
-                  "netAsset": "0.00000000"
-              }
-          ]
-    }
+    .. code-block::
+
+       {
+              "borrowEnabled": true,
+              "marginLevel": "11.64405625",
+              "totalAssetOfBtc": "6.82728457",
+              "totalLiabilityOfBtc": "0.58633215",
+              "totalNetAssetOfBtc": "6.24095242",
+              "tradeEnabled": true,
+              "transferEnabled": true,
+              "userAssets": [
+                  {
+                      "asset": "BTC",
+                      "borrowed": "0.00000000",
+                      "free": "0.00499500",
+                      "interest": "0.00000000",
+                      "locked": "0.00000000",
+                      "netAsset": "0.00499500"
+                  },
+                  {
+                      "asset": "BNB",
+                      "borrowed": "201.66666672",
+                      "free": "2346.50000000",
+                      "interest": "0.00000000",
+                      "locked": "0.00000000",
+                      "netAsset": "2144.83333328"
+                  },
+                  {
+                      "asset": "ETH",
+                      "borrowed": "0.00000000",
+                      "free": "0.00000000",
+                      "interest": "0.00000000",
+                      "locked": "0.00000000",
+                      "netAsset": "0.00000000"
+                  },
+                  {
+                      "asset": "USDT",
+                      "borrowed": "0.00000000",
+                      "free": "0.00000000",
+                      "interest": "0.00000000",
+                      "locked": "0.00000000",
+                      "netAsset": "0.00000000"
+                  }
+              ]
+        }
 
     """
-    margin_endpoint='/sapi/v1/margin/account'
+    margin_endpoint = '/sapi/v1/margin/account'
     ret = api_raw_signed_get(endpoint=margin_endpoint,
                              params={},
                              weight=10)
     return ret
 
 
-def get_margin_balances():
-    """Balances en la cuenta margin no nulos"""
+###################
+# margin balances #
+###################
+
+def get_margin_balances() -> dict:
+    """
+    Collects balances in the margin account that are not null.
+
+    :return dict: A dictionary with coins with balances.
+
+    Example:
+
+    .. code-block::
+
+       {'BNB': {'free': 0.06,
+          'locked': 0.0,
+          'borrowed': 0.0,
+          'interest': 0.0,
+          'netAsset': 0.06},
+         'BUSD': {'free': 50.0,
+          'locked': 0.0,
+          'borrowed': 0.0,
+          'interest': 0.0,
+          'netAsset': 50.0}}
+
+    """
     margin_status = get_margin_account_details()
     ret = {}
     for asset in margin_status['userAssets']:
@@ -456,31 +539,125 @@ def get_margin_balances():
     return ret
 
 
-def get_margin_free_balances(balances: dict = None):
+def get_margin_free_balances(balances: dict = None) -> dict:
+    """
+    Just returns free existing balances. It is optional to avoid an API call.
+
+    :param dict balances: Returns dict with assets as keys and a float value for not null quantities.
+    :return dict: A dict with float values.
+
+    """
     if not balances:
         balances = get_margin_balances()
     return {k: v['free'] for k, v in balances.items() if v['free']}
 
 
-def get_margin_locked_balances(balances: dict = None):
+def get_margin_locked_balances(balances: dict = None) -> dict:
+    """
+    Just returns locked existing balances. It is optional to avoid an API call.
+
+    :param dict balances: Returns dict with assets as keys and a float value for not null quantities.
+    :return dict: A dict with float values.
+
+    """
     if not balances:
         balances = get_margin_balances()
     return {k: v['locked'] for k, v in balances.items() if v['locked']}
 
 
-def get_margin_borrowed_balances(balances: dict = None):
+def get_margin_borrowed_balances(balances: dict = None) -> dict:
+    """
+    Just returns borrowed existing balances. It is optional to avoid an API call.
+
+    :param dict balances: Returns dict with assets as keys and a float value for not null quantities.
+    :return dict: A dict with float values.
+
+    """
     if not balances:
         balances = get_margin_balances()
     return {k: v['borrowed'] for k, v in balances.items() if v['borrowed']}
 
 
-def get_margin_interest_balances(balances: dict = None):
+def get_margin_interest_balances(balances: dict = None) -> dict:
+    """
+    Just returns interest existing balances. It is optional to avoid an API call.
+
+    :param dict balances: Returns dict with assets as keys and a float value for not null quantities.
+    :return dict: A dict with float values.
+
+    """
     if not balances:
         balances = get_margin_balances()
     return {k: v['interest'] for k, v in balances.items() if v['interest']}
 
 
 def get_margin_netAsset_balances(balances: dict = None):
+    """
+    Just returns netAsset existing balances. It is optional to avoid an API call.
+
+    :param dict balances: Returns dict with assets as keys and a float value for not null quantities.
+    :return dict: A dict with float values.
+
+    """
     if not balances:
         balances = get_margin_balances()
     return {k: v['netAsset'] for k, v in balances.items() if v['netAsset']}
+
+
+def get_margin_balances_total_value(balances: dict = None,
+                                    convert_to: str = 'BUSD') -> float:
+    """
+    Returns total value expressed in a quote coin. Counts free, locked, borrowed and interest assets.
+
+    :param dict balances: A BinPan balances dict. It is optional to avoid an API call.
+    :param str convert_to: A Binance coin.
+    :return float: Total quantity expressed in quote.
+    """
+
+    prices = get_prices_dic()
+
+    if not balances:
+        balances = get_margin_balances()
+
+    assets = list(balances.keys())
+
+    free_values = get_margin_free_balances(balances=balances)
+    locked_values = get_margin_locked_balances(balances=balances)
+    borrowed_values = get_margin_borrowed_balances(balances=balances)
+
+    # TODO: saber si el interest tiene signo negativo
+    interest_values = get_margin_interest_balances(balances=balances)
+
+    total = 0
+
+    for i in range(len(assets)):
+        coin = assets[i]
+
+        if coin in free_values.keys():
+            free = free_values[coin]
+        else:
+            free = 0
+        if coin in locked_values.keys():
+            locked = locked_values[coin]
+        else:
+            locked = 0
+        if coin in borrowed_values.keys():
+            borrowed = locked_values[coin]
+        else:
+            borrowed = 0
+        if coin in interest_values.keys():
+            interest = interest_values[coin]
+        else:
+            interest = 0
+
+        # TODO: saber si el interest tiene signo negativo
+        total_coins = free + locked + borrowed - interest
+
+        converted_value = convert_coin(coin=coin,
+                                       prices=prices,
+                                       convert_to=convert_to,
+                                       coin_qty=total_coins)
+
+        total += float(converted_value)
+
+    return total

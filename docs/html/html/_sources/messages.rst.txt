@@ -26,7 +26,6 @@ Parsers
 
 .. autofunction:: telegram_parse_dataframe_markdown
 
-
 .. autofunction:: telegram_parse_order_markdown
 
 
