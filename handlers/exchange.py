@@ -189,6 +189,40 @@ def flatten_filter(filters: list) -> dict:
 
 
 def get_symbols_filters(info_dic: dict = None) -> dict:
+    """
+    Example:
+
+    .. code-block:: Python
+
+       exchange.get_filters('TLMBUSD', info_dic=info_dic)
+
+       {'TLMBUSD': {'PRICE_FILTER_minPrice': '0.00001000',
+          'PRICE_FILTER_maxPrice': '1000.00000000',
+          'PRICE_FILTER_tickSize': '0.00001000',
+          'PERCENT_PRICE_multiplierUp': '5',
+          'PERCENT_PRICE_multiplierDown': '0.2',
+          'PERCENT_PRICE_avgPriceMins': 5,
+          'LOT_SIZE_minQty': '1.00000000',
+          'LOT_SIZE_maxQty': '900000.00000000',
+          'LOT_SIZE_stepSize': '1.00000000',
+          'MIN_NOTIONAL_minNotional': '10.00000000',
+          'MIN_NOTIONAL_applyToMarket': True,
+          'MIN_NOTIONAL_avgPriceMins': 5,
+          'ICEBERG_PARTS_limit': 10,
+          'MARKET_LOT_SIZE_minQty': '0.00000000',
+          'MARKET_LOT_SIZE_maxQty': '1181959.38584316',
+          'MARKET_LOT_SIZE_stepSize': '0.00000000',
+          'TRAILING_DELTA_minTrailingAboveDelta': 10,
+          'TRAILING_DELTA_maxTrailingAboveDelta': 2000,
+          'TRAILING_DELTA_minTrailingBelowDelta': 10,
+          'TRAILING_DELTA_maxTrailingBelowDelta': 2000,
+          'MAX_NUM_ORDERS_maxNumOrders': 200,
+          'MAX_NUM_ALGO_ORDERS_maxNumAlgoOrders': 5}}
+
+    :param dict info_dic: A BinPan exchange info dictionary
+
+    :return dict: A dict with all flatten values.
+    """
     if not info_dic:
         info_dic = get_info_dic()
     return {k: flatten_filter(v['filters']) for k, v in info_dic.items()}
