@@ -28,6 +28,59 @@ def get_exchange_info() -> dict:
 
     :return dict: dict_keys(['timezone', 'serverTime', 'rateLimits', 'exchangeFilters', 'symbols'])
 
+    Example:
+
+       ..code-block::
+
+            {
+              "timezone": "UTC",
+              "serverTime": 1565246363776,
+              "rateLimits": [
+                {
+                  //These are defined in the `ENUM definitions` section under `Rate Limiters (rateLimitType)`.
+                  //All limits are optional
+                }
+              ],
+              "exchangeFilters": [
+                //These are the defined filters in the `Filters` section.
+                //All filters are optional.
+              ],
+              "symbols": [
+                {
+                  "symbol": "ETHBTC",
+                  "status": "TRADING",
+                  "baseAsset": "ETH",
+                  "baseAssetPrecision": 8,
+                  "quoteAsset": "BTC",
+                  "quotePrecision": 8,
+                  "quoteAssetPrecision": 8,
+                  "orderTypes": [
+                    "LIMIT",
+                    "LIMIT_MAKER",
+                    "MARKET",
+                    "STOP_LOSS",
+                    "STOP_LOSS_LIMIT",
+                    "TAKE_PROFIT",
+                    "TAKE_PROFIT_LIMIT"
+                  ],
+                  "icebergAllowed": true,
+                  "ocoAllowed": true,
+                  "quoteOrderQtyMarketAllowed": true,
+                  "allowTrailingStop": false,
+                  "cancelReplaceAllowed": false,
+                  "isSpotTradingAllowed": true,
+                  "isMarginTradingAllowed": true,
+                  "filters": [
+                    //These are defined in the Filters section.
+                    //All filters are optional
+                  ],
+                  "permissions": [
+                     "SPOT",
+                     "MARGIN"
+                  ]
+                }
+              ]
+            }
     """
     endpoint = '/api/v3/exchangeInfo'
     return api_raw_get(endpoint=endpoint,
@@ -165,7 +218,7 @@ def filter_not_margin(symbols: list = None,
         info_dic = get_info_dic()
 
     permissions_dic = {k: v['permissions'] for k, v in info_dic.items()}
-    
+
     if symbols:
         return [s for s, p in permissions_dic.items() if 'MARGIN' in p and s in symbols]
     else:
@@ -235,8 +288,8 @@ def get_system_status():
 
     Weight(IP): 1
 
-    :return dict: 
-        { 
+    :return dict:
+        {
            "status": 0,              // 0: normal，1：system maintenance
             "msg": "normal"           // "normal", "system_maintenance"
         }
@@ -384,18 +437,6 @@ def get_leveraged_symbols(info_dic: dict = None, leveraged_coins: list = None) -
 # Exchange Statistics #
 #######################
 
-# TODO: traido de cache, posible borrado
-# def get_exchange_info() -> dict:
-#     """Returns dict_keys(['timezone', 'serverTime', 'rateLimits', 'exchangeFilters', 'symbols'])"""
-#     check_weight(10)
-#     endpoint = '/api/v3/exchangeInfo'
-#     return api_raw_get(url=endpoint)
-#
-#
-# def get_info_dic() -> dict:
-#     """Obtiene el diccionario de cada symbol con su información del exchange"""
-#     return {k['symbol']: k for k in get_exchange_info()['symbols']}
-
 
 def get_quotes_dic(info_dic: dict = None) -> dict:
     if not info_dic:
@@ -407,23 +448,6 @@ def get_bases_dic(info_dic: dict = None) -> dict:
     if not info_dic:
         info_dic = get_info_dic()
     return {k: v['baseAsset'] for k, v in info_dic.items()}
-
-
-# TODO: traido de cache, posible borrado
-# def get_exchange_dicts() -> tuple:
-#     """Obtiene los diccionarios básicos de símbolos del exchange para operar."""
-#     info_dict = get_info_dic()
-#     quotes_dic = get_quotes_dic(info_dic=info_dict)
-#     bases_dic = get_bases_dic(info_dic=info_dict)
-#     symbols_filters = get_filters(info_dict)
-#     return info_dict, quotes_dic, bases_dic, symbols_filters
-
-#
-# def get_prices_dic() -> dict:
-#     check_weight(2)
-#     endpoint = '/api/v3/ticker/price'
-#     ret = get_response(url=endpoint)
-#     return {d['symbol']: float(d['price']) for d in ret}
 
 
 def exchange_status(tradeable=True,
