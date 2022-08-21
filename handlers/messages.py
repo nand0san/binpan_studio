@@ -341,7 +341,7 @@ def get_fills_price(original_order_dict: dict,
 
     # any other case
     msg_logger.info(f"Get fills from API trades!... wait 3 seconds for trade to appear")
-    sleep(3)
+    sleep(12)
     symbol = ordered['symbol']
 
     if not margin:

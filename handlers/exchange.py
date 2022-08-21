@@ -92,6 +92,67 @@ def get_info_dic() -> dict:
     Get the dictionary of each symbol with its information from the exchange.
 
     :return dict: Returns info for each symbol as keys in the dict.
+
+    Example:
+
+    .. code-block::
+
+       from handlers import exchange
+
+       info_dic = exchange.get_info_dic()
+
+       info_dic['ETHUSDT']
+
+        {'symbol': 'ETHUSDT',
+         'status': 'TRADING',
+         'baseAsset': 'ETH',
+         'baseAssetPrecision': 8,
+         'quoteAsset': 'USDT',
+         'quotePrecision': 8,
+         'quoteAssetPrecision': 8,
+         'baseCommissionPrecision': 8,
+         'quoteCommissionPrecision': 8,
+         'orderTypes': ['LIMIT',
+          'LIMIT_MAKER',
+          'MARKET',
+          'STOP_LOSS_LIMIT',
+          'TAKE_PROFIT_LIMIT'],
+         'icebergAllowed': True,
+         'ocoAllowed': True,
+         'quoteOrderQtyMarketAllowed': True,
+         'allowTrailingStop': True,
+         'cancelReplaceAllowed': True,
+         'isSpotTradingAllowed': True,
+         'isMarginTradingAllowed': True,
+         'filters': [{'filterType': 'PRICE_FILTER',
+           'minPrice': '0.01000000',
+           'maxPrice': '1000000.00000000',
+           'tickSize': '0.01000000'},
+          {'filterType': 'PERCENT_PRICE',
+           'multiplierUp': '5',
+           'multiplierDown': '0.2',
+           'avgPriceMins': 5},
+          {'filterType': 'LOT_SIZE',
+           'minQty': '0.00010000',
+           'maxQty': '9000.00000000',
+           'stepSize': '0.00010000'},
+          {'filterType': 'MIN_NOTIONAL',
+           'minNotional': '10.00000000',
+           'applyToMarket': True,
+           'avgPriceMins': 5},
+          {'filterType': 'ICEBERG_PARTS', 'limit': 10},
+          {'filterType': 'MARKET_LOT_SIZE',
+           'minQty': '0.00000000',
+           'maxQty': '6175.01628506',
+           'stepSize': '0.00000000'},
+          {'filterType': 'TRAILING_DELTA',
+           'minTrailingAboveDelta': 10,
+           'maxTrailingAboveDelta': 2000,
+           'minTrailingBelowDelta': 10,
+           'maxTrailingBelowDelta': 2000},
+          {'filterType': 'MAX_NUM_ORDERS', 'maxNumOrders': 200},
+          {'filterType': 'MAX_NUM_ALGO_ORDERS', 'maxNumAlgoOrders': 5}],
+         'permissions': ['SPOT', 'MARGIN', 'TRD_GRP_004']}
     """
     return {k['symbol']: k for k in get_exchange_info()['symbols']}
 
@@ -108,7 +169,7 @@ def get_account_status() -> dict:
     For Machine Learning limits, restrictions will be applied to account. If a user has been restricted by the ML system, they may
     check the reason and the duration by using the [/sapi/v1/account/status] endpoint
 
-    :return dict: Example { "data": "Normal" }
+    :return dict: Example: `{ "data": "Normal" }`
 
     """
     endpoint = '/sapi/v1/account/status'
@@ -132,12 +193,14 @@ def get_exchange_limits(info_dict: dict = None) -> dict:
     - X-SAPI-USED-IP-WEIGHT-1M: For sapi endpoint requests.
 
     Example response:
-
-        {'X-SAPI-USED-IP-WEIGHT-1M': 1200,
-         'x-mbx-order-count-10s': 50,
-         'x-mbx-order-count-1d': 160000,
-         'x-mbx-used-weight': 6100,
-         'x-mbx-used-weight-1m': 1200}
+    
+       .. code-block::
+       
+            {'X-SAPI-USED-IP-WEIGHT-1M': 1200,
+             'x-mbx-order-count-10s': 50,
+             'x-mbx-order-count-1d': 160000,
+             'x-mbx-used-weight': 6100,
+             'x-mbx-used-weight-1m': 1200}
 
     :return dict:
     """
@@ -228,26 +291,101 @@ def get_symbols_filters(info_dic: dict = None) -> dict:
     return {k: flatten_filter(v['filters']) for k, v in info_dic.items()}
 
 
-def get_filters(symbol: str, info_dic: dict = None) -> dict:
+def get_filters(symbol: str, 
+                info_dic: dict = None) -> dict:
+    """
+    For a symbol, get exchange filter conditions.
+    
+    :param str symbol: A Binance symbol. 
+    :param dict info_dic: BinPan exchange info dictionary. It's optional to avoid an API call. It's optional to avoid an API call.
+    :return a dict: A dictionary with exclusively data for a symbol.
+
+    Example:
+
+    .. code-block::
+
+        from handlers import exchange
+
+        filters = exchange.get_filters('ETHBTC')
+
+        filters
+
+         {'ETHBTC': {'PRICE_FILTER_minPrice': '0.00000100',
+          'PRICE_FILTER_maxPrice': '922327.00000000',
+          'PRICE_FILTER_tickSize': '0.00000100',
+          'PERCENT_PRICE_multiplierUp': '5',
+          'PERCENT_PRICE_multiplierDown': '0.2',
+          'PERCENT_PRICE_avgPriceMins': 5,
+          'LOT_SIZE_minQty': '0.00010000',
+          'LOT_SIZE_maxQty': '100000.00000000',
+          'LOT_SIZE_stepSize': '0.00010000',
+          'MIN_NOTIONAL_minNotional': '0.00010000',
+          'MIN_NOTIONAL_applyToMarket': True,
+          'MIN_NOTIONAL_avgPriceMins': 5,
+          'ICEBERG_PARTS_limit': 10,
+          'MARKET_LOT_SIZE_minQty': '0.00000000',
+          'MARKET_LOT_SIZE_maxQty': '1135.26522780',
+          'MARKET_LOT_SIZE_stepSize': '0.00000000',
+          'TRAILING_DELTA_minTrailingAboveDelta': 10,
+          'TRAILING_DELTA_maxTrailingAboveDelta': 2000,
+          'TRAILING_DELTA_minTrailingBelowDelta': 10,
+          'TRAILING_DELTA_maxTrailingBelowDelta': 2000,
+          'MAX_NUM_ORDERS_maxNumOrders': 200,
+          'MAX_NUM_ALGO_ORDERS_maxNumAlgoOrders': 5}}
+    """
     if not info_dic:
         info_dic = get_info_dic()
     return {k: flatten_filter(v['filters']) for k, v in info_dic.items() if k == symbol}
 
 
+####################################
+# symbol characteristics filtering #
+####################################
+
+
 def filter_tradeable(info_dic: dict) -> dict:
+    """
+    Returns, from BinPan exchange info dictionary currently trading symbols.
+     
+    :param dict info_dic: BinPan exchange info dictionary. It's optional to avoid an API call.
+    :return dict: BinPan exchange info dictionary, but, just with currently trading symbols.
+    
+    """
     return {k: v for k, v in info_dic.items() if v['status'].upper() == 'TRADING'}
 
 
 def filter_spot(info_dic: dict) -> dict:
+    """
+    Returns, from BinPan exchange info dictionary currently SPOT symbols.
+
+    :param dict info_dic: BinPan exchange info dictionary. It's optional to avoid an API call.
+    :return dict: BinPan exchange info dictionary, but, just with currently SPOT symbols.
+
+    """
     return {k: v for k, v in info_dic.items() if 'SPOT' in v['permissions'] or 'spot' in v['permissions']}
 
 
 def filter_margin(info_dic: dict) -> dict:
+    """
+    Returns, from BinPan exchange info dictionary currently MARGIN symbols.
+
+    :param dict info_dic: BinPan exchange info dictionary. It's optional to avoid an API call.
+    :return dict: BinPan exchange info dictionary, but, just with currently MARGIN symbols.
+
+    """
     return {k: v for k, v in info_dic.items() if 'MARGIN' in v['permissions'] or 'margin' in v['permissions']}
 
 
 def filter_not_margin(symbols: list = None,
                       info_dic: dict = None) -> list:
+    """
+    Returns, from BinPan exchange info dictionary currently NOT MARGIN symbols.
+
+    :param list symbols: A list of symbols to apply filter. Optional. 
+    :param dict info_dic: BinPan exchange info dictionary. It's optional to avoid an API call.
+    :return list: BinPan exchange info dictionary, but, just with currently NOT MARGIN symbols.
+
+    """
     if not info_dic:
         info_dic = get_info_dic()
 
@@ -260,11 +398,31 @@ def filter_not_margin(symbols: list = None,
 
 
 def filter_leveraged_tokens(info_dic: dict) -> dict:
+    """
+    Returns, from BinPan exchange info dictionary currently NOT LEVERAGED symbols.
+
+    :param dict info_dic: BinPan exchange info dictionary. It's optional to avoid an API call.
+    :return dict: BinPan exchange info dictionary, but, just with currently NOT LEVERAGED symbols.
+
+    """
     return {k: v for k, v in info_dic.items() if all(lev not in k for lev in ['UP', 'DOWN', 'BULL', 'BEAR'])}
 
 
-def filter_not_legal(legal: list, info: dict, bases: dict, quotes: dict) -> dict:
-    return {k: v for k, v in info.items() if (not bases[k] in legal) and (not quotes[k] in legal)}
+def filter_legal(legal: list,
+                 info_dic: dict,
+                 bases: dict,
+                 quotes: dict) -> dict:
+    """
+    Returns, from BinPan exchange info dictionary currently trading symbols not using legal Fiat money.
+
+    :param list legal: List of legal coins, Fiat coins. 
+    :param dict info_dic: BinPan exchange info dictionary. It's optional to avoid an API call.
+    :param dict quotes: A dict with symbols in keys and its quote in values. 
+    :param dict bases: A dict with symbols in keys and its base in values.
+    :return dict: BinPan exchange info dictionary, but, without fiat legal symbols.
+
+    """
+    return {k: v for k, v in info_dic.items() if (not bases[k] in legal) and (not quotes[k] in legal)}
 
 
 #################
@@ -273,6 +431,11 @@ def filter_not_legal(legal: list, info: dict, bases: dict, quotes: dict) -> dict
 
 
 def get_precision(info_dic: dict = None) -> dict:
+    """
+    Gets a dictionary with decimal positions each symbol.
+    :param dict info_dic: BinPan exchange info dictionary. It's optional to avoid an API call.
+    :return dict: dictionary with decimal positions each symbol.
+    """
     if not info_dic:
         info_dic = get_info_dic()
     return {k: {'baseAssetPrecision': v['baseAssetPrecision'],
@@ -283,6 +446,11 @@ def get_precision(info_dic: dict = None) -> dict:
 
 
 def get_orderTypes_and_permissions(info_dic: dict = None) -> dict:
+    """
+    Gets a dictionary with a list of order types suppoerted each symbol.
+    :param dict info_dic: BinPan exchange info dictionary. It's optional to avoid an API call.
+    :return dict: dictionary with a list of order types suppoerted each symbol.
+    """
     if not info_dic:
         info_dic = get_info_dic()
     return {k: {'orderTypes': v['orderTypes'], 'permissions': v['permissions']} for k, v in info_dic.items()}
@@ -290,7 +458,7 @@ def get_orderTypes_and_permissions(info_dic: dict = None) -> dict:
 
 def get_fees_dict(symbol: str = None) -> dict:
     """
-    Returns fees for a symbol or for every symbol if not passed.
+    Returns fees for a symbol or for every symbol if not passed a symbol.
 
     :param str symbol: Optional to request just one symbol instead of all.
     :return dict: A dict with maker and taker fees.
@@ -322,11 +490,17 @@ def get_system_status():
 
     Weight(IP): 1
 
-    :return dict:
+    :return dict: As shown in example.
+
+    Example:
+
+    .. code-block::
+
         {
            "status": 0,              // 0: normal，1：system maintenance
             "msg": "normal"           // "normal", "system_maintenance"
         }
+
     """
     return api_raw_get(endpoint='/sapi/v1/system/status',
                        weight=1)['msg']
@@ -473,12 +647,26 @@ def get_leveraged_symbols(info_dic: dict = None, leveraged_coins: list = None) -
 
 
 def get_quotes_dic(info_dic: dict = None) -> dict:
+    """
+    Get quote coin each symbol.
+
+    :param dict info_dic: BinPan exchange info dictionary. It's optional to avoid an API call.
+    :return dictionary: It gets symbols as keys and quote coin as values.
+    """
     if not info_dic:
         info_dic = get_info_dic()
     return {k: v['quoteAsset'] for k, v in info_dic.items()}
 
 
 def get_bases_dic(info_dic: dict = None) -> dict:
+    """
+    Get base coin each symbol.
+
+    :param dict info_dic: BinPan exchange info dictionary. It's optional to avoid an API call.
+    :return dictionary: It gets symbols as keys and base coin as values.
+    :param info_dic:
+    :return:
+    """
     if not info_dic:
         info_dic = get_info_dic()
     return {k: v['baseAsset'] for k, v in info_dic.items()}
@@ -491,6 +679,18 @@ def exchange_status(tradeable=True,
                     filter_leveraged=True,
                     info_dic: dict = None,
                     symbol_filters: dict = None) -> tuple:
+    """
+    It returns a lot of results: bases_dic, quotes_dic, legal_coins, not_legal_pairs, symbol_filters, filtered_pairs
+
+    :param bool tradeable: Require or not just currently trading symbols.
+    :param bool spot_required: Requires just SPOT currently trading symbols.
+    :param bool margin_required: Requires just MARGIN currently trading symbols.
+    :param bool drop_legal: Drops symbols with legal coins.
+    :param bool filter_leveraged: Drops symbols with leveraged coins.
+    :param dict info_dic: BinPan exchange info dictionary. It's optional to avoid an API call.
+    :param dict symbol_filters: A BinPan symbols filters dict.
+    :return tuple: bases_dic, quotes_dic, legal_coins, not_legal_pairs, symbol_filters, filtered_pairs
+    """
     # get symbols dict from server with some operational_filters
     if not info_dic:
         info_dic = get_info_dic()
@@ -510,9 +710,9 @@ def exchange_status(tradeable=True,
         filtered_info = filter_margin(filtered_info)
 
     legal_coins = get_legal_coins()
-    not_legal_pairs = filter_not_legal(legal_coins, info_dic, bases_dic, quotes_dic)
+    not_legal_pairs = filter_legal(legal_coins, info_dic, bases_dic, quotes_dic)
     if drop_legal:
-        filtered_info = filter_not_legal(legal_coins, filtered_info, bases_dic, quotes_dic)
+        filtered_info = filter_legal(legal_coins, filtered_info, bases_dic, quotes_dic)
 
     if not symbol_filters:
         symbol_filters = get_symbols_filters(info_dic=info_dic)
@@ -521,7 +721,56 @@ def exchange_status(tradeable=True,
     return bases_dic, quotes_dic, legal_coins, not_legal_pairs, symbol_filters, filtered_pairs
 
 
-def get_24h_statistics(symbol=None) -> dict:  # 24h rolling window
+def get_24h_statistics(symbol: str = None) -> dict:  # 24h rolling window
+    """
+    GET /api/v3/ticker/24hr
+
+    24 hour rolling window price change statistics. Careful when accessing this with no symbol.
+
+    Weight(IP):
+
+    Symbols requested weight:
+
+
+    1-20:	        1
+
+    21-100:	    20
+
+    101 or more:	40
+
+    If symbols parameter is omitted	40
+
+    :param str symbol: Optional symbol.
+    :return dict: As example shown.
+
+    Example:
+
+    .. code-block::
+
+       {
+          "symbol": "BNBBTC",
+          "priceChange": "-94.99999800",
+          "priceChangePercent": "-95.960",
+          "weightedAvgPrice": "0.29628482",
+          "prevClosePrice": "0.10002000",
+          "lastPrice": "4.00000200",
+          "lastQty": "200.00000000",
+          "bidPrice": "4.00000000",
+          "bidQty": "100.00000000",
+          "askPrice": "4.00000200",
+          "askQty": "100.00000000",
+          "openPrice": "99.00000000",
+          "highPrice": "100.00000000",
+          "lowPrice": "0.10000000",
+          "volume": "8913.30000000",
+          "quoteVolume": "15.30000000",
+          "openTime": 1499783499040,
+          "closeTime": 1499869899040,
+          "firstId": 28385,   // First tradeId
+          "lastId": 28460,    // Last tradeId
+          "count": 76         // Trade count
+        }
+    """
     endpoint = '/api/v3/ticker/24hr?'
     if symbol:
         check_weight(endpoint=endpoint, weight=1)
@@ -531,10 +780,19 @@ def get_24h_statistics(symbol=None) -> dict:  # 24h rolling window
         return api_raw_get(endpoint=endpoint, weight=40)
 
 
-def not_iterative_coin_conversion(coin: str = 'ADA',
+def not_iterative_coin_conversion(coin: str,
                                   prices: dict = None,
                                   try_coin: str = 'BTC',
                                   coin_qty: float = 1) -> float or None:
+    """
+    Converts any coin quantity value to a reference coin.
+
+    :param str coin: A coin to convert to other coin value.
+    :param dict prices: Current prices of all symbols.
+    :param str try_coin: Reference coin to convert value to.
+    :param float coin_qty: A quantity to use in calculation.
+    :return float: Converted value result.
+    """
     if not prices:
         prices = get_prices_dic()
     if coin + try_coin in prices.keys():
@@ -552,9 +810,19 @@ def not_iterative_coin_conversion(coin: str = 'ADA',
         return None
 
 
-def convert_to_other_coin(coin: str = 'BTC', convert_to: str = 'USDT', coin_qty: float = 1,
+def convert_to_other_coin(coin: str = 'BTC',
+                          convert_to: str = 'USDT',
+                          coin_qty: float = 1,
                           prices: dict = None) -> float:
-    """Valora en la moneda indicada en convert la moneda pasada por su cantidad. S"""
+    """
+    Convert value of a quantity of coins to value in other coin.
+
+    :param str coin: Your coin.
+    :param str convert_to: A Binance existing coin.
+    :param float coin_qty: A quantity.
+    :param dict prices: A dict with all current prices.
+    :return float: Value expressed in the converted coin.
+    """
     coin = coin.upper()
     convert_to = convert_to.upper()
 
@@ -604,6 +872,17 @@ def convert_symbol_base_to_other_coin(symbol_to_convert_base: str = 'ETHBTC',
                                       convert_to: str = 'USDT',
                                       prices: dict = None,
                                       info_dic: dict = None) -> float:
+    """
+        Convert value of a quantity of coins to value in other coin.
+
+
+    :param str symbol_to_convert_base: A symbol to get it's base to convert to other coin value.
+    :param float base_qty: A quantity.
+    :param str convert_to: A Binance existing coin.
+    :param dict prices: A dict with all current prices.
+    :param dict info_dic: BinPan exchange info dictionary. It's optional to avoid an API call.
+    :return float: Value expressed in the converted coin.
+    """
     if not info_dic:
         info_dic = get_info_dic()
     bases_dic = {k: v['baseAsset'] for k, v in info_dic.items()}
@@ -631,10 +910,23 @@ def statistics_24h(tradeable=True,
                    info_dic=None,
                    stablecoin_value='BUSD',
                    sort_by: str = 'priceChangePercent') -> pd.DataFrame:
-    """Genera un dataframe con los filtros a aplicar con las estadísticas de las últimas 24 horas. Opcionalmente,
-    se puede generar la columna de convertir el volumen a USDT
+    """
+    Generates a dataframe with the filters to apply with the statistics of the last 24 hours. Optionally, you can generate the column to
+    convert the volume to USDT.
 
-    TODO: INCORPORAR ESTO A LA MATRIZ PRINCIPAL
+    :param bool tradeable: Require or not just currently trading symbols.
+    :param bool spot_required: Requires just SPOT currently trading symbols.
+    :param bool margin_required: Requires just MARGIN currently trading symbols.
+    :param bool drop_legal: Drops symbols with legal coins.
+    :param bool filter_leveraged: Drops symbols with leveraged coins.
+    :param dict info_dic: BinPan exchange info dictionary. It's optional to avoid an API call.
+    :param stablecoin_value: StableCoin reference for value.
+    :param str sort_by: A column to sort by. Default is 'priceChangePercent'.
+    :return pd.DataFrame: Picture result.
+
+    .. image:: images/exchange_statistics_24h.png
+       :width: 1000
+       :alt: exchange_statistics_24h.png
 
     """
 
@@ -700,7 +992,40 @@ def get_top_gainers(info_dic: dict = None,
                     sort_by_column: str = 'priceChangePercent',  # priceChangePercent
                     ) -> pd.DataFrame:
     """
-    TODO: INCORPORAR ESTO A LA MATRIZ PRINCIPAL
+    Generates a dataframe with the filters to apply with the statistics of the last 24 hours. Optionally, you can generate the column to
+    convert the volume to USDT.
+
+    :param bool tradeable: Require or not just currently trading symbols.
+    :param bool spot_required: Requires just SPOT currently trading symbols.
+    :param bool margin_required: Requires just MARGIN currently trading symbols.
+    :param bool drop_legal: Drops symbols with legal coins.
+    :param bool filter_leveraged: Drops symbols with leveraged coins.
+    :param dict info_dic: BinPan exchange info dictionary. It's optional to avoid an API call.
+    :param top_gainers_qty:
+    :param str my_quote: A quote coin to reference values.
+    :param bool drop_stable_pairs: It drop stablecoin to stablecoin symbols.
+    :param str sort_by_column: A column to sort by. Default is 'priceChangePercent'.
+    :return pd.DataFrame: A dataframe as in the example .
+
+    Example:
+
+    .. code-block::
+
+    	priceChangePercent	volume
+        symbol
+        SSVBUSD	    62.693	1.860517e+06
+        SANTOSBUSD	28.914	2.218403e+06
+        LDOBUSD	    19.774	5.933290e+06
+        EOSBUSD	    17.525	6.134061e+06
+        LAZIOBUSD	14.952	9.952292e+05
+        ...	...	...
+        WINGBUSD	-6.363	6.913284e+05
+        NKNBUSD	    -7.632	7.375257e+07
+        BONDBUSD	-7.872	9.194983e+05
+        BTCSTBUSD	-15.242	5.525540e+05
+        STGBUSD	    -15.663	1.879494e+07
+        300 rows × 2 columns
+
 
     """
     if not info_dic:

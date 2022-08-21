@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Index &mdash; BinPan 0.0.77 documentation</title>
+  <title>Index &mdash; BinPan 0.0.78 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/style.css" type="text/css" />
@@ -40,6 +40,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="binpan.html">BinPan Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exchange.html">Exchange Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="files.html">Files Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="messages.html">Messages Module</a></li>
@@ -160,13 +161,17 @@
 </li>
       <li><a href="binpan.html#binpan.binpan.Symbol.closed">closed() (binpan.binpan.Symbol method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="binpan.html#binpan.binpan.Exchange.coin">coin() (binpan.binpan.Exchange method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="market.html#handlers.market.convert_coin">convert_coin() (in module handlers.market)</a>
 </li>
       <li><a href="wallet.html#handlers.wallet.convert_str_date_to_ms">convert_str_date_to_ms() (in module handlers.wallet)</a>
+</li>
+      <li><a href="exchange.html#handlers.exchange.convert_symbol_base_to_other_coin">convert_symbol_base_to_other_coin() (in module handlers.exchange)</a>
+</li>
+      <li><a href="exchange.html#handlers.exchange.convert_to_other_coin">convert_to_other_coin() (in module handlers.exchange)</a>
 </li>
       <li><a href="files.html#handlers.files.create_dir">create_dir() (in module handlers.files)</a>
 </li>
@@ -196,11 +201,13 @@
 </li>
       <li><a href="binpan.html#binpan.binpan.Symbol.end_time">end_time() (binpan.binpan.Symbol method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="binpan.html#binpan.binpan.Symbol.eom">eom() (binpan.binpan.Symbol method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="binpan.html#binpan.binpan.Exchange">Exchange (class in binpan.binpan)</a>
+</li>
+      <li><a href="exchange.html#handlers.exchange.exchange_status">exchange_status() (in module handlers.exchange)</a>
 </li>
       <li><a href="redis_fetch.html#handlers.redis_fetch.execute_pipeline">execute_pipeline() (in module handlers.redis_fetch)</a>
 </li>
@@ -222,15 +229,27 @@
 </li>
       <li><a href="redis_fetch.html#handlers.redis_fetch.fetch_list_filter_query">fetch_list_filter_query() (in module handlers.redis_fetch)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="redis_fetch.html#handlers.redis_fetch.fetch_set_and_parse">fetch_set_and_parse() (in module handlers.redis_fetch)</a>
 </li>
       <li><a href="redis_fetch.html#handlers.redis_fetch.fetch_zset_range">fetch_zset_range() (in module handlers.redis_fetch)</a>
 </li>
       <li><a href="redis_fetch.html#handlers.redis_fetch.fetch_zset_timestamps">fetch_zset_timestamps() (in module handlers.redis_fetch)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="binpan.html#binpan.binpan.Exchange.filter">filter() (binpan.binpan.Exchange method)</a>
+</li>
+      <li><a href="exchange.html#handlers.exchange.filter_legal">filter_legal() (in module handlers.exchange)</a>
+</li>
+      <li><a href="exchange.html#handlers.exchange.filter_leveraged_tokens">filter_leveraged_tokens() (in module handlers.exchange)</a>
+</li>
+      <li><a href="exchange.html#handlers.exchange.filter_margin">filter_margin() (in module handlers.exchange)</a>
+</li>
+      <li><a href="exchange.html#handlers.exchange.filter_not_margin">filter_not_margin() (in module handlers.exchange)</a>
+</li>
+      <li><a href="exchange.html#handlers.exchange.filter_spot">filter_spot() (in module handlers.exchange)</a>
+</li>
+      <li><a href="exchange.html#handlers.exchange.filter_tradeable">filter_tradeable() (in module handlers.exchange)</a>
 </li>
       <li><a href="files.html#handlers.files.find_csvs_in_path">find_csvs_in_path() (in module handlers.files)</a>
 </li>
@@ -244,24 +263,58 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="exchange.html#handlers.exchange.get_24h_statistics">get_24h_statistics() (in module handlers.exchange)</a>
+</li>
+      <li><a href="exchange.html#handlers.exchange.get_account_status">get_account_status() (in module handlers.exchange)</a>
+</li>
       <li><a href="market.html#handlers.market.get_agg_trades">get_agg_trades() (in module handlers.market)</a>
 </li>
+      <li><a href="exchange.html#handlers.exchange.get_bases_dic">get_bases_dic() (in module handlers.exchange)</a>
+</li>
       <li><a href="market.html#handlers.market.get_candles_by_time_stamps">get_candles_by_time_stamps() (in module handlers.market)</a>
+</li>
+      <li><a href="exchange.html#handlers.exchange.get_coins_and_networks_info">get_coins_and_networks_info() (in module handlers.exchange)</a>
+</li>
+      <li><a href="exchange.html#handlers.exchange.get_coins_info_dic">get_coins_info_dic() (in module handlers.exchange)</a>
+</li>
+      <li><a href="exchange.html#handlers.exchange.get_coins_info_list">get_coins_info_list() (in module handlers.exchange)</a>
 </li>
       <li><a href="wallet.html#handlers.wallet.get_coins_with_balance">get_coins_with_balance() (in module handlers.wallet)</a>
 </li>
       <li><a href="binpan.html#binpan.binpan.Exchange.get_df">get_df() (binpan.binpan.Exchange method)</a>
 </li>
+      <li><a href="exchange.html#handlers.exchange.get_exchange_info">get_exchange_info() (in module handlers.exchange)</a>
+</li>
+      <li><a href="exchange.html#handlers.exchange.get_exchange_limits">get_exchange_limits() (in module handlers.exchange)</a>
+</li>
       <li><a href="binpan.html#binpan.binpan.Symbol.get_fees">get_fees() (binpan.binpan.Symbol method)</a>
+
+      <ul>
+        <li><a href="exchange.html#handlers.exchange.get_fees">(in module handlers.exchange)</a>
+</li>
+      </ul></li>
+      <li><a href="exchange.html#handlers.exchange.get_fees_dict">get_fees_dict() (in module handlers.exchange)</a>
 </li>
       <li><a href="messages.html#handlers.messages.get_fills_price">get_fills_price() (in module handlers.messages)</a>
 </li>
+      <li><a href="exchange.html#handlers.exchange.get_filters">get_filters() (in module handlers.exchange)</a>
+</li>
       <li><a href="market.html#handlers.market.get_historical_aggregated_trades">get_historical_aggregated_trades() (in module handlers.market)</a>
+</li>
+      <li><a href="exchange.html#handlers.exchange.get_info_dic">get_info_dic() (in module handlers.exchange)</a>
+</li>
+      <li><a href="exchange.html#handlers.exchange.get_legal_coins">get_legal_coins() (in module handlers.exchange)</a>
+</li>
+      <li><a href="exchange.html#handlers.exchange.get_leveraged_coins">get_leveraged_coins() (in module handlers.exchange)</a>
+</li>
+      <li><a href="exchange.html#handlers.exchange.get_leveraged_symbols">get_leveraged_symbols() (in module handlers.exchange)</a>
 </li>
       <li><a href="wallet.html#handlers.wallet.get_margin_account_details">get_margin_account_details() (in module handlers.wallet)</a>
 </li>
       <li><a href="wallet.html#handlers.wallet.get_margin_balances">get_margin_balances() (in module handlers.wallet)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="wallet.html#handlers.wallet.get_margin_balances_total_value">get_margin_balances_total_value() (in module handlers.wallet)</a>
 </li>
       <li><a href="wallet.html#handlers.wallet.get_margin_borrowed_balances">get_margin_borrowed_balances() (in module handlers.wallet)</a>
@@ -272,8 +325,6 @@
 </li>
       <li><a href="wallet.html#handlers.wallet.get_margin_netAsset_balances">get_margin_netAsset_balances() (in module handlers.wallet)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="wallet.html#handlers.wallet.get_margin_trades_list">get_margin_trades_list() (in module handlers.wallet)</a>
 </li>
       <li><a href="binpan.html#binpan.binpan.Symbol.get_order_filters">get_order_filters() (binpan.binpan.Symbol method)</a>
@@ -286,9 +337,17 @@
       </ul></li>
       <li><a href="binpan.html#binpan.binpan.Symbol.get_orderbook">get_orderbook() (binpan.binpan.Symbol method)</a>
 </li>
+      <li><a href="exchange.html#handlers.exchange.get_orderTypes_and_permissions">get_orderTypes_and_permissions() (in module handlers.exchange)</a>
+</li>
       <li><a href="binpan.html#binpan.binpan.Symbol.get_permissions">get_permissions() (binpan.binpan.Symbol method)</a>
 </li>
       <li><a href="binpan.html#binpan.binpan.Symbol.get_precision">get_precision() (binpan.binpan.Symbol method)</a>
+
+      <ul>
+        <li><a href="exchange.html#handlers.exchange.get_precision">(in module handlers.exchange)</a>
+</li>
+      </ul></li>
+      <li><a href="exchange.html#handlers.exchange.get_quotes_dic">get_quotes_dic() (in module handlers.exchange)</a>
 </li>
       <li><a href="wallet.html#handlers.wallet.get_spot_account_info">get_spot_account_info() (in module handlers.wallet)</a>
 </li>
@@ -301,6 +360,12 @@
       <li><a href="binpan.html#binpan.binpan.Symbol.get_status">get_status() (binpan.binpan.Symbol method)</a>
 </li>
       <li><a href="binpan.html#binpan.binpan.Exchange.get_symbols">get_symbols() (binpan.binpan.Exchange method)</a>
+</li>
+      <li><a href="exchange.html#handlers.exchange.get_symbols_filters">get_symbols_filters() (in module handlers.exchange)</a>
+</li>
+      <li><a href="exchange.html#handlers.exchange.get_system_status">get_system_status() (in module handlers.exchange)</a>
+</li>
+      <li><a href="exchange.html#handlers.exchange.get_top_gainers">get_top_gainers() (in module handlers.exchange)</a>
 </li>
       <li><a href="binpan.html#binpan.binpan.Symbol.get_trades">get_trades() (binpan.binpan.Symbol method)</a>
 </li>
@@ -315,6 +380,13 @@
 
       <ul>
         <li><a href="exceptions.html#module-handlers.exceptions">module</a>
+</li>
+      </ul></li>
+      <li>
+    handlers.exchange
+
+      <ul>
+        <li><a href="exchange.html#module-handlers.exchange">module</a>
 </li>
       </ul></li>
       <li>
@@ -428,6 +500,8 @@
 </li>
         <li><a href="exceptions.html#module-handlers.exceptions">handlers.exceptions</a>
 </li>
+        <li><a href="exchange.html#module-handlers.exchange">handlers.exchange</a>
+</li>
         <li><a href="files.html#module-handlers.files">handlers.files</a>
 </li>
         <li><a href="market.html#module-handlers.market">handlers.market</a>
@@ -454,6 +528,10 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="binpan.html#binpan.binpan.Exchange.network">network() (binpan.binpan.Exchange method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="exchange.html#handlers.exchange.not_iterative_coin_conversion">not_iterative_coin_conversion() (in module handlers.exchange)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -576,6 +654,8 @@
       <li><a href="binpan.html#binpan.binpan.Wallet.spot_wallet_performance">spot_wallet_performance() (binpan.binpan.Wallet method)</a>
 </li>
       <li><a href="binpan.html#binpan.binpan.Symbol.start_time">start_time() (binpan.binpan.Symbol method)</a>
+</li>
+      <li><a href="exchange.html#handlers.exchange.statistics_24h">statistics_24h() (in module handlers.exchange)</a>
 </li>
       <li><a href="binpan.html#binpan.binpan.Symbol.stoch">stoch() (binpan.binpan.Symbol method)</a>
 </li>

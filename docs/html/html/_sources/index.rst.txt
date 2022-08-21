@@ -102,6 +102,7 @@ Hope you find it useful breaking the market!!!
 
    binpan.rst
    exceptions.rst
+   exchange.rst
    files.rst
    market.rst
    messages.rst
