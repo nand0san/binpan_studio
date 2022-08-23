@@ -395,10 +395,10 @@ def get_spot_balances_total_value(balances_df: pd.DataFrame = None,
                                   convert_to: str = 'BUSD') -> float:
     """
     Returns total value expressed in a quote coin. Counts free and locked assets.
-    
-    :param pd.DataFrame balances_df: A BinPan balances dataframe. 
-    :param str convert_to: A Binance coin. 
-    :return float: Total quantity expressed in quote. 
+
+    :param pd.DataFrame balances_df: A BinPan balances dataframe.
+    :param str convert_to: A Binance coin.
+    :return float: Total quantity expressed in quote.
     """
     if type(balances_df) != pd.DataFrame:
         balances_df = get_spot_balances_df()
@@ -549,7 +549,7 @@ def get_margin_free_balances(balances: dict = None) -> dict:
     """
     if not balances:
         balances = get_margin_balances()
-    return {k: v['free'] for k, v in balances.items() if v['free']}
+    return {k: float(v['free']) for k, v in balances.items() if v['free']}
 
 
 def get_margin_locked_balances(balances: dict = None) -> dict:
