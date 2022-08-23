@@ -20,7 +20,7 @@ except Exception as exc:
 Not found telegram bot key or chat key for the telegram message module.
 
 Example adding bot key and chat id:
-    
+
     from binpan import handlers
 
     # from @BotFather, get the bot api key
@@ -170,7 +170,8 @@ def telegram_parse_dataframe_markdown(data: DataFrame,
 def get_fills_price(original_order_dict: dict,
                     isBuyer: bool,
                     margin: bool,
-                    test_mode: bool) -> float:
+                    test_mode: bool,
+                    operation_time: int) -> float:
     """
     Obtain averaged price from order API response or claims last trade.
 
@@ -178,6 +179,7 @@ def get_fills_price(original_order_dict: dict,
     :param bool isBuyer: Sets if was a buyer order to filter for wanted order.
     :param bool margin: Sets margin order if it is to claim.
     :param bool test_mode: Set if test mode is on.
+    :param int operation_time: Time limit of operation to analyze.
     :return float: Price averaged.
 
     Example of not totally done order:
@@ -313,11 +315,42 @@ def get_fills_price(original_order_dict: dict,
           ]
         }
 
+    STOP LIMIT EXAMPLE requesting orders:
+
+     {'symbol': 'CHZBUSD',
+      'orderId': 212320642,
+      'orderListId': 72689217,
+      'clientOrderId': 'FLc7AHuuZCpChiH99eHtZh',
+      'price': 0.2139,
+      'origQty': 224.0,
+      'executedQty': 224.0,
+      'cummulativeQuoteQty': 47.9584,
+      'status': 'FILLED',
+      'timeInForce': 'GTC',
+      'type': 'STOP_LOSS_LIMIT',
+      'side': 'SELL',
+      'stopPrice': 0.2141,
+      'icebergQty': '0.00000000',
+      'time': 1661203865507,
+      'updateTime': 1661203966780,
+      'isWorking': True,
+      'origQuoteOrderQty': 0.0},
+
     """
     ordered = original_order_dict.copy()
+
+    if test_mode and 'STOP_LOSS' in ordered['type']:
+        return float(ordered['stopPrice'])
+
+    if test_mode and 'price' in ordered.keys() and ordered['price']:
+        # MUST RETURN FOR TEST ORDERS
+        return float(ordered['price'])
+
     if 'fills' in ordered.keys():
         if type(ordered['fills']) == dict:
-            return float(ordered['fills']['price'])
+            if ordered['fills']['price']:
+                return float(ordered['fills']['price'])
+
         elif type(ordered['fills']) == list:
             n = 0
             m = 0
@@ -330,26 +363,28 @@ def get_fills_price(original_order_dict: dict,
                 return n / m
         else:
             raise Exception(f"BinPan Error: Error en parseo de orden ejecutada.\n{ordered}")
-    else:
-        # if it was a buy market order, it has no price, price = 0.0, then get from API trades
-        price_ret = float(ordered['price'])
-        if price_ret != 0:
-            return float(price_ret)
 
-        if test_mode:
-            raise Exception(f"Omega Bot error: Parsing fills in test mode.")
-
-    # any other case
-    msg_logger.info(f"Get fills from API trades!... wait 3 seconds for trade to appear")
-    sleep(12)
+    # any other case wait 3 times for order to appear
+    fills_price = None
+    tour = 0
     symbol = ordered['symbol']
 
-    if not margin:
-        last_trades = get_spot_trades_list(symbol=symbol)
-    else:
-        last_trades = get_margin_trades_list(symbol=symbol)
-    last_trade = [i for i in last_trades if i['isBuyer'] == isBuyer][-1]
-    return float(last_trade['price'])
+    while not fills_price and tour < 5:
+        msg_logger.info(f"Get fills from API trades!... wait 5 seconds for trade to appear. Round:{tour}")
+
+        if not margin:
+            last_trades = get_spot_trades_list(symbol=symbol)
+        else:
+            last_trades = get_margin_trades_list(symbol=symbol)
+
+        try:
+            # trades return time field with a timestamp
+            fills_price = [i for i in last_trades if i['isBuyer'] == isBuyer and int(i['time']) >= operation_time][-1]
+            tour += 1
+        except IndexError:
+            sleep(5)
+
+    return float(fills_price)
 
 
 def telegram_parse_order_markdown(original_order: dict,
@@ -375,7 +410,8 @@ def telegram_parse_order_markdown(original_order: dict,
         order_['fills'] = get_fills_price(original_order_dict=order_,
                                           isBuyer=isBuyer,
                                           margin=margin,
-                                          test_mode=test_mode)
+                                          test_mode=test_mode,
+                                          operation_time=int(original_order['transactTime']))
         order_['price'] = order_['fills']
     try:
         order_.pop('clientOrderId', None)
