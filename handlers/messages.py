@@ -406,53 +406,69 @@ def telegram_parse_order_markdown(original_order: dict,
     order_ = original_order.copy()
     parsed = ""
 
-    if 'fills' in order_.keys():
-        order_['fills'] = get_fills_price(original_order_dict=order_,
-                                          isBuyer=isBuyer,
-                                          margin=margin,
-                                          test_mode=test_mode,
-                                          operation_time=int(original_order['transactTime']))
-        order_['price'] = order_['fills']
-    try:
-        order_.pop('clientOrderId', None)
-    except Exception as exc:
-        msg_logger.debug(f"Error popping key clientOrderId {exc}")
-    try:
-        order_.pop('orderListId', None)
-    except Exception as exc:
-        msg_logger.debug(f"Error popping key orderListId {exc}")
+    if 'orderReports' in order_.keys():
+        p_stop = telegram_parse_order_markdown(order_['orderReports'][0], isBuyer=False, margin=False, test_mode=test_mode)
+        p_limit = telegram_parse_order_markdown(order_['orderReports'][1], isBuyer=False, margin=False, test_mode=test_mode)
+        stop_parsed = f"\n{p_stop}\n"
+        limit_parsed = f"\n{p_limit}\n"
 
-    order_['symbol'] = f"*{order_['symbol']}* \n------------------------------------------------"
+    # if 'fills' in order_.keys():
+    #     order_['fills'] = get_fills_price(original_order_dict=order_,
+    #                                       isBuyer=isBuyer,
+    #                                       margin=margin,
+    #                                       test_mode=test_mode,
+    #                                       operation_time=int(original_order['transactTime']))
+    #     order_['price'] = order_['fills']
+    # try:
+    #     order_.pop('clientOrderId', None)
+    # except Exception as exc:
+    #     msg_logger.debug(f"Error popping key clientOrderId {exc}")
+    # try:
+    #     order_.pop('orderListId', None)
+    # except Exception as exc:
+    #     msg_logger.debug(f"Error popping key orderListId {exc}")
+    #
+    # order_['symbol'] = f"*{order_['symbol']}* \n------------------------------------------------"
+
 
     if 'time' in order_.keys():
         date = convert_milliseconds_to_str(int(order_['time']), timezoned=timezoned)
         order_.update({'time': date})
+
+    if 'transactTime' in order_.keys():
+        date = convert_milliseconds_to_str(int(order_['transactTime']), timezoned=timezoned)
+        order_.update({'transactTime': date})
 
     if 'updateTime' in order_.keys():
         date = convert_milliseconds_to_str(int(order_['updateTime']), timezoned=timezoned)
         order_.update({'updateTime': date})
 
     if 'quantity' in order_.keys():
-        order_.update({'quantity': f"`{order_['quantity']}`"})
+        order_.update({'quantity': f"{order_['quantity']}"})
 
     if 'price' in order_.keys():
-        order_.update({'price': f"`{order_['price']}`"})
+        order_.update({'price': f"{order_['price']}"})
 
     if 'origQty' in order_.keys():
-        order_.update({'origQty': f"`{order_['origQty']}`"})
+        order_.update({'origQty': f"{order_['origQty']}"})
 
     if 'executedQty' in order_.keys():
-        order_.update({'executedQty': f"`{order_['executedQty']}`"})
+        order_.update({'executedQty': f"{order_['executedQty']}"})
 
     if 'stopPrice' in order_.keys():
-        order_.update({'stopPrice': f"`{order_['stopPrice']}`"})
+        order_.update({'stopPrice': f"{order_['stopPrice']}"})
 
     if 'fills' in order_.keys():
-        order_.update({'fills': f"`{order_['fills']}`"})
+        order_.update({'fills': f"{order_['fills']}"})
 
     for key, val in order_.items():
-        if val:
-            line = rf"*{key}*: {val}" + "\n"
+        if key == 'orderReports':
+            line = stop_parsed
+            parsed += line
+            line = limit_parsed
+            parsed += line
+        elif val:
+            line = rf"*{key}* : `{val}` " + "\n"
             parsed += line
 
     return parsed
