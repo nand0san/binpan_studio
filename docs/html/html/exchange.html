@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Exchange Module &mdash; BinPan 0.0.78 documentation</title>
+  <title>Exchange Module &mdash; BinPan 0.0.79 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/style.css" type="text/css" />
@@ -260,11 +260,12 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 - X-SAPI-USED-IP-WEIGHT-1M: For sapi endpoint requests.</p>
 <p>Example response:</p>
 <blockquote>
-<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;X-SAPI-USED-IP-WEIGHT-1M&#39;</span><span class="p">:</span> <span class="mi">1200</span><span class="p">,</span>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;x-mbx-used-weight-1m&#39;</span><span class="p">:</span> <span class="mi">1200</span><span class="p">,</span>
+ <span class="s1">&#39;X-SAPI-USED-IP-WEIGHT-1M&#39;</span><span class="p">:</span> <span class="mi">1200</span><span class="p">,</span>
+ <span class="s1">&#39;X-SAPI-USED-UID-WEIGHT-1M&#39;</span><span class="p">:</span> <span class="mi">1200</span><span class="p">,</span>
  <span class="s1">&#39;x-mbx-order-count-10s&#39;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
  <span class="s1">&#39;x-mbx-order-count-1d&#39;</span><span class="p">:</span> <span class="mi">160000</span><span class="p">,</span>
- <span class="s1">&#39;x-mbx-used-weight&#39;</span><span class="p">:</span> <span class="mi">6100</span><span class="p">,</span>
- <span class="s1">&#39;x-mbx-used-weight-1m&#39;</span><span class="p">:</span> <span class="mi">1200</span><span class="p">}</span>
+ <span class="s1">&#39;x-mbx-used-weight&#39;</span><span class="p">:</span> <span class="mi">6100</span><span class="p">}</span>
 </pre></div>
 </div>
 </div></blockquote>

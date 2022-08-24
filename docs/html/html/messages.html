@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Messages Module &mdash; BinPan 0.0.78 documentation</title>
+  <title>Messages Module &mdash; BinPan 0.0.79 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/style.css" type="text/css" />
@@ -43,6 +43,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="binpan.html">BinPan Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exchange.html">Exchange Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="files.html">Files Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Messages Module</a><ul>
@@ -186,7 +187,7 @@ variable names <em>encoded_chat_id</em>, <em>encoded_telegram_bot_id</em>.</p>
 <h2>Utils<a class="headerlink" href="#utils" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.messages.get_fills_price">
-<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">get_fills_price</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_order_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isBuyer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.messages.get_fills_price" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">get_fills_price</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_order_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isBuyer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operation_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.messages.get_fills_price" title="Permalink to this definition"></a></dt>
 <dd><p>Obtain averaged price from order API response or claims last trade.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -195,6 +196,7 @@ variable names <em>encoded_chat_id</em>, <em>encoded_telegram_bot_id</em>.</p>
 <li><p><strong>isBuyer</strong> (<em>bool</em>) – Sets if was a buyer order to filter for wanted order.</p></li>
 <li><p><strong>margin</strong> (<em>bool</em>) – Sets margin order if it is to claim.</p></li>
 <li><p><strong>test_mode</strong> (<em>bool</em>) – Set if test mode is on.</p></li>
+<li><p><strong>operation_time</strong> (<em>int</em>) – Time limit of operation to analyze.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return float</dt>
@@ -327,6 +329,29 @@ variable names <em>encoded_chat_id</em>, <em>encoded_telegram_bot_id</em>.</p>
 <span class="p">}</span>
 </pre></div>
 </div>
+<p>STOP LIMIT EXAMPLE requesting orders:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>{‘symbol’: ‘CHZBUSD’,</dt><dd><p>‘orderId’: 212320642,
+‘orderListId’: 72689217,
+‘clientOrderId’: ‘FLc7AHuuZCpChiH99eHtZh’,
+‘price’: 0.2139,
+‘origQty’: 224.0,
+‘executedQty’: 224.0,
+‘cummulativeQuoteQty’: 47.9584,
+‘status’: ‘FILLED’,
+‘timeInForce’: ‘GTC’,
+‘type’: ‘STOP_LOSS_LIMIT’,
+‘side’: ‘SELL’,
+‘stopPrice’: 0.2141,
+‘icebergQty’: ‘0.00000000’,
+‘time’: 1661203865507,
+‘updateTime’: 1661203966780,
+‘isWorking’: True,
+‘origQuoteOrderQty’: 0.0},</p>
+</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <dl class="py function">

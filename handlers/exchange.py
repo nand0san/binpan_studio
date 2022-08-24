@@ -193,14 +193,15 @@ def get_exchange_limits(info_dict: dict = None) -> dict:
     - X-SAPI-USED-IP-WEIGHT-1M: For sapi endpoint requests.
 
     Example response:
-    
+
        .. code-block::
-       
-            {'X-SAPI-USED-IP-WEIGHT-1M': 1200,
+
+            {'x-mbx-used-weight-1m': 1200,
+             'X-SAPI-USED-IP-WEIGHT-1M': 1200,
+             'X-SAPI-USED-UID-WEIGHT-1M': 1200,
              'x-mbx-order-count-10s': 50,
              'x-mbx-order-count-1d': 160000,
-             'x-mbx-used-weight': 6100,
-             'x-mbx-used-weight-1m': 1200}
+             'x-mbx-used-weight': 6100}
 
     :return dict:
     """
@@ -213,6 +214,7 @@ def get_exchange_limits(info_dict: dict = None) -> dict:
     limits_dict = {}
 
     for i in limits:
+        k3 = None
         if i['rateLimitType'].upper() == 'ORDERS':
             k1 = f"x-mbx-order-count-{i['intervalNum']}{i['interval'][0].lower()}"
             k2 = f"x-mbx-order-count-{i['intervalNum']}{i['interval'][0].lower()}"
@@ -220,6 +222,7 @@ def get_exchange_limits(info_dict: dict = None) -> dict:
         elif i['rateLimitType'].upper() == 'REQUEST_WEIGHT':
             k1 = f"x-mbx-used-weight-{i['intervalNum']}{i['interval'][0].lower()}"
             k2 = f"X-SAPI-USED-IP-WEIGHT-{i['intervalNum']}{i['interval'][0].upper()}"
+            k3 = f"X-SAPI-USED-UID-WEIGHT-{i['intervalNum']}{i['interval'][0].upper()}"
 
         elif i['rateLimitType'].upper() == 'RAW_REQUESTS':
             k1 = "x-mbx-used-weight"
@@ -231,6 +234,8 @@ def get_exchange_limits(info_dict: dict = None) -> dict:
 
         limits_dict[k1] = v
         limits_dict[k2] = v
+        if k3:
+            limits_dict[k3] = v
 
     return limits_dict
 
@@ -291,12 +296,12 @@ def get_symbols_filters(info_dic: dict = None) -> dict:
     return {k: flatten_filter(v['filters']) for k, v in info_dic.items()}
 
 
-def get_filters(symbol: str, 
+def get_filters(symbol: str,
                 info_dic: dict = None) -> dict:
     """
     For a symbol, get exchange filter conditions.
-    
-    :param str symbol: A Binance symbol. 
+
+    :param str symbol: A Binance symbol.
     :param dict info_dic: BinPan exchange info dictionary. It's optional to avoid an API call. It's optional to avoid an API call.
     :return a dict: A dictionary with exclusively data for a symbol.
 
@@ -346,10 +351,10 @@ def get_filters(symbol: str,
 def filter_tradeable(info_dic: dict) -> dict:
     """
     Returns, from BinPan exchange info dictionary currently trading symbols.
-     
+
     :param dict info_dic: BinPan exchange info dictionary. It's optional to avoid an API call.
     :return dict: BinPan exchange info dictionary, but, just with currently trading symbols.
-    
+
     """
     return {k: v for k, v in info_dic.items() if v['status'].upper() == 'TRADING'}
 

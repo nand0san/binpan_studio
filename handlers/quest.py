@@ -53,20 +53,18 @@ cipher_object = AesCipher()
 # rate limits
 api_rate_limits = get_exchange_limits()
 
-# current_weight = {'X-SAPI-USED-IP-WEIGHT-1M': 0,
-#                   'x-mbx-used-weight': 0,
-#                   'x-mbx-used-weight-1m': 0}
-
 current_weight = {}
 endpoint_headers = {}  # read temp file
 
 aplicable_limits = {'X-SAPI-USED-IP-WEIGHT-1M': api_rate_limits['REQUEST_1M'],
+                    'X-SAPI-USED-UID-WEIGHT-1M': api_rate_limits['REQUEST_1M'],
                     'x-mbx-used-weight': api_rate_limits['REQUEST_5M'],
                     'x-mbx-used-weight-1m': api_rate_limits['REQUEST_1M'],
                     'x-mbx-order-count-10s': api_rate_limits['ORDERS_10S'],
                     'x-mbx-order-count-1d': api_rate_limits['ORDERS_1D']}
 
 api_limits_weight_decrease_per_seconds = {'X-SAPI-USED-IP-WEIGHT-1M': api_rate_limits['REQUEST_1M'] // 60,
+                                          'X-SAPI-USED-UID-WEIGHT-1M': api_rate_limits['REQUEST_1M'] // 60,
                                           'x-mbx-used-weight-1m': api_rate_limits['REQUEST_1M'] // 60,
                                           'x-mbx-used-weight': api_rate_limits['REQUEST_5M'] // (60 * 5),
                                           'x-mbx-order-count-10s': api_rate_limits['ORDERS_10S'] // 10,
@@ -313,7 +311,7 @@ def delete_signed_request(url: str, params: dict = None, recvWindow: int = 10000
     """
     params_tuples, headers = sign_request(params=params, recvWindow=recvWindow)
     ret = delete_response(url, params=params_tuples, headers=headers)
-    quest_logger.debug("delete_signed_request: params_tuples: " + str(params_tuples))
+    quest_logger.info("delete_signed_request: params_tuples: " + str(params_tuples))
     quest_logger.debug("get_semi_signed_request: headers: " + str(headers.keys()))
     return convert_response_type(ret)
 
