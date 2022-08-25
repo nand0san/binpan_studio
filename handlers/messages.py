@@ -379,7 +379,7 @@ def get_fills_price(original_order_dict: dict,
 
         try:
             # trades return time field with a timestamp
-            fills_price = [i for i in last_trades if i['isBuyer'] == isBuyer and int(i['time']) >= operation_time][-1]
+            fills_price = [i for i in last_trades if i['isBuyer'] == isBuyer and int(i['time']) >= operation_time][-1]['price']
             tour += 1
         except IndexError:
             sleep(5)
