@@ -177,6 +177,28 @@ def get_account_status() -> dict:
                               weight=1)
 
 
+def get_margin_bnb_interest_status() -> dict:
+    """
+    Get BNB Burn Status (USER_DATA)
+
+    GET /sapi/v1/bnbBurn (HMAC SHA256)
+
+    Weight(IP): 1
+
+    :return dict: Example
+
+    .. code-block::
+
+           {
+               "spotBNBBurn":true,
+               "interestBNBBurn": false
+            }
+
+    """
+    endpoint = '/sapi/v1/bnbBurn'
+    return api_raw_signed_get(endpoint=endpoint,
+                              weight=1)
+
 #################
 # weight limits #
 #################
@@ -1016,7 +1038,7 @@ def get_top_gainers(info_dic: dict = None,
 
     .. code-block::
 
-    	priceChangePercent	volume
+        priceChangePercent	volume
         symbol
         SSVBUSD	    62.693	1.860517e+06
         SANTOSBUSD	28.914	2.218403e+06
