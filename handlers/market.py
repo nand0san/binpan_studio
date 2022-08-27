@@ -167,7 +167,7 @@ def get_candles_by_time_stamps(symbol: str,
     return raw_candles
 
 
-def get_prices_dic(decimal_mode=False) -> dict:
+def get_prices_dic(decimal_mode: bool) -> dict:
     """
     Gets all symbols current prices into a dictionary.
     :decimal_mode bool: It flags to work in decimal mode.
@@ -390,20 +390,22 @@ def get_order_book(symbol='BTCUSDT', limit=5000) -> dict:
 
 
 def intermediate_conversion(coin: str,
+                            decimal_mode: bool,
                             prices: dict = None,
                             try_coin: str = 'BTC',
                             coin_qty: float = 1) -> float or None:
     """
     Uses an intermediate symbol for conversion.
 
-    :param str coin:
-    :param dict prices:
+    :param str coin: A binance coin.
+    :param bool decimal_mode: It flags to work in decimal mode.
+    :param dict prices: BinPan prices dict
     :param str try_coin:
     :param float coin_qty:
     :return float: converted value.
     """
     if not prices:
-        prices = get_prices_dic()
+        prices = get_prices_dic(decimal_mode=decimal_mode)
 
     if coin + try_coin in prices.keys():
         price = prices[coin + try_coin]
@@ -422,14 +424,16 @@ def intermediate_conversion(coin: str,
         return None
 
 
-def convert_coin(coin: str = 'BTC',
-                 convert_to: str = 'USDT',
+def convert_coin(coin: str,
+                 decimal_mode: bool,
+                 convert_to: str = 'BUSD',
                  coin_qty: float = 1,
                  prices: dict = None) -> float or None:
     """
     Calculates a coin quantity value converted to other coin with current exchange prices.
 
     :param str coin: An existing coin string.
+    :param bool decimal_mode: It flags to work in decimal mode.
     :param str convert_to: An existing coin string.
     :param float coin_qty: How many coins to convert to.
     :param dict prices: A dictionary with symbols and prices.
@@ -442,7 +446,7 @@ def convert_coin(coin: str = 'BTC',
         return coin_qty
 
     if not prices:
-        prices = get_prices_dic()
+        prices = get_prices_dic(decimal_mode=decimal_mode)
 
     symbol_a = coin + convert_to
     symbol_b = convert_to + coin
@@ -453,22 +457,22 @@ def convert_coin(coin: str = 'BTC',
     elif symbol_b in prices.keys():
         return coin_qty * (1 / prices[symbol_b])
     else:
-        ret1 = intermediate_conversion(coin=coin, prices=prices, try_coin='BTC', coin_qty=coin_qty)
+        ret1 = intermediate_conversion(coin=coin, prices=prices, try_coin='BTC', coin_qty=coin_qty, decimal_mode=decimal_mode)
         if ret1:
             return ret1
-        ret2 = intermediate_conversion(coin=coin, prices=prices, try_coin='BUSD', coin_qty=coin_qty)
+        ret2 = intermediate_conversion(coin=coin, prices=prices, try_coin='BUSD', coin_qty=coin_qty, decimal_mode=decimal_mode)
         if ret2:
             return ret2
-        ret3 = intermediate_conversion(coin=coin, prices=prices, try_coin='BNB', coin_qty=coin_qty)
+        ret3 = intermediate_conversion(coin=coin, prices=prices, try_coin='BNB', coin_qty=coin_qty, decimal_mode=decimal_mode)
         if ret3:
             return ret3
-        ret4 = intermediate_conversion(coin=coin, prices=prices, try_coin='ETH', coin_qty=coin_qty)
+        ret4 = intermediate_conversion(coin=coin, prices=prices, try_coin='ETH', coin_qty=coin_qty, decimal_mode=decimal_mode)
         if ret4:
             return ret4
-        ret5 = intermediate_conversion(coin=coin, prices=prices, try_coin='TUSD', coin_qty=coin_qty)
+        ret5 = intermediate_conversion(coin=coin, prices=prices, try_coin='TUSD', coin_qty=coin_qty, decimal_mode=decimal_mode)
         if ret5:
             return ret5
-        ret6 = intermediate_conversion(coin=coin, prices=prices, try_coin='USDC', coin_qty=coin_qty)
+        ret6 = intermediate_conversion(coin=coin, prices=prices, try_coin='USDC', coin_qty=coin_qty, decimal_mode=decimal_mode)
         if ret6:
             return ret6
         else:

@@ -490,6 +490,7 @@ def get_fees_dict(symbol: str = None,
     Returns fees for a symbol or for every symbol if not passed a symbol.
 
     :param str symbol: Optional to request just one symbol instead of all.
+    :param bool decimal_mode: Fixes Decimal return type.
     :return dict: A dict with maker and taker fees.
     """
     endpoint = '/sapi/v1/asset/tradeFee'
@@ -814,12 +815,14 @@ def get_24h_statistics(symbol: str = None) -> dict:  # 24h rolling window
 
 
 def not_iterative_coin_conversion(coin: str,
+                                  decimal_mode: bool,
                                   prices: dict = None,
                                   try_coin: str = 'BTC',
                                   coin_qty: float = 1) -> float or None:
     """
     Converts any coin quantity value to a reference coin.
 
+    :param bool decimal_mode: Fixes Decimal return type and operative.
     :param str coin: A coin to convert to other coin value.
     :param dict prices: Current prices of all symbols.
     :param str try_coin: Reference coin to convert value to.
@@ -827,7 +830,7 @@ def not_iterative_coin_conversion(coin: str,
     :return float: Converted value result.
     """
     if not prices:
-        prices = get_prices_dic()
+        prices = get_prices_dic(decimal_mode=decimal_mode)
     if coin + try_coin in prices.keys():
         price = prices[coin + try_coin]
         try_symbol = f"{try_coin}USDT"
@@ -843,13 +846,15 @@ def not_iterative_coin_conversion(coin: str,
         return None
 
 
-def convert_to_other_coin(coin: str = 'BTC',
+def convert_to_other_coin(coin: str,
+                          decimal_mode: bool,
                           convert_to: str = 'USDT',
                           coin_qty: float = 1,
                           prices: dict = None) -> float:
     """
     Convert value of a quantity of coins to value in other coin.
 
+    :param bool decimal_mode: Fixes Decimal return type and operative.
     :param str coin: Your coin.
     :param str convert_to: A Binance existing coin.
     :param float coin_qty: A quantity.
@@ -863,7 +868,7 @@ def convert_to_other_coin(coin: str = 'BTC',
         return coin_qty
 
     if not prices:
-        prices = get_prices_dic()
+        prices = get_prices_dic(decimal_mode=decimal_mode)
 
     symbol_a = coin + convert_to
     symbol_b = convert_to + coin
@@ -878,29 +883,30 @@ def convert_to_other_coin(coin: str = 'BTC',
     else:
         # try using btc
         # try:
-        ret1 = not_iterative_coin_conversion(coin=coin, prices=prices, try_coin='BTC', coin_qty=coin_qty)
+        ret1 = not_iterative_coin_conversion(coin=coin, prices=prices, try_coin='BTC', coin_qty=coin_qty, decimal_mode=decimal_mode)
         if ret1:
             return ret1
-        ret2 = not_iterative_coin_conversion(coin=coin, prices=prices, try_coin='BUSD', coin_qty=coin_qty)
+        ret2 = not_iterative_coin_conversion(coin=coin, prices=prices, try_coin='BUSD', coin_qty=coin_qty, decimal_mode=decimal_mode)
         if ret2:
             return ret2
-        ret3 = not_iterative_coin_conversion(coin=coin, prices=prices, try_coin='BNB', coin_qty=coin_qty)
+        ret3 = not_iterative_coin_conversion(coin=coin, prices=prices, try_coin='BNB', coin_qty=coin_qty, decimal_mode=decimal_mode)
         if ret3:
             return ret3
-        ret4 = not_iterative_coin_conversion(coin=coin, prices=prices, try_coin='ETH', coin_qty=coin_qty)
+        ret4 = not_iterative_coin_conversion(coin=coin, prices=prices, try_coin='ETH', coin_qty=coin_qty, decimal_mode=decimal_mode)
         if ret4:
             return ret4
-        ret5 = not_iterative_coin_conversion(coin=coin, prices=prices, try_coin='TUSD', coin_qty=coin_qty)
+        ret5 = not_iterative_coin_conversion(coin=coin, prices=prices, try_coin='TUSD', coin_qty=coin_qty, decimal_mode=decimal_mode)
         if ret5:
             return ret5
-        ret6 = not_iterative_coin_conversion(coin=coin, prices=prices, try_coin='USDC', coin_qty=coin_qty)
+        ret6 = not_iterative_coin_conversion(coin=coin, prices=prices, try_coin='USDC', coin_qty=coin_qty, decimal_mode=decimal_mode)
         if ret6:
             return ret6
         else:
             return np.nan
 
 
-def convert_symbol_base_to_other_coin(symbol_to_convert_base: str = 'ETHBTC',
+def convert_symbol_base_to_other_coin(decimal_mode: bool,
+                                      symbol_to_convert_base: str = 'ETHBTC',
                                       base_qty: float = 1,
                                       convert_to: str = 'USDT',
                                       prices: dict = None,
@@ -908,7 +914,7 @@ def convert_symbol_base_to_other_coin(symbol_to_convert_base: str = 'ETHBTC',
     """
         Convert value of a quantity of coins to value in other coin.
 
-
+    :param bool decimal_mode: Fixes Decimal return type and operative.
     :param str symbol_to_convert_base: A symbol to get it's base to convert to other coin value.
     :param float base_qty: A quantity.
     :param str convert_to: A Binance existing coin.
@@ -922,8 +928,8 @@ def convert_symbol_base_to_other_coin(symbol_to_convert_base: str = 'ETHBTC',
 
     base = bases_dic[symbol_to_convert_base]
     if not prices:
-        prices = get_prices_dic()
-    ret = convert_to_other_coin(coin=base, convert_to=convert_to, coin_qty=base_qty, prices=prices)
+        prices = get_prices_dic(decimal_mode=decimal_mode)
+    ret = convert_to_other_coin(coin=base, convert_to=convert_to, coin_qty=base_qty, prices=prices, decimal_mode=decimal_mode)
     if type(ret) == int or type(ret) == float:
         return ret
     else:
@@ -935,7 +941,8 @@ def convert_utc_milliseconds(ms) -> str:
     return str(datetime.utcfromtimestamp(seconds).strftime('%Y-%m-%d %H:%M:%S.%f'))
 
 
-def statistics_24h(tradeable=True,
+def statistics_24h(decimal_mode: bool,
+                   tradeable=True,
                    spot_required=True,
                    margin_required=False,
                    drop_legal=True,
@@ -947,6 +954,7 @@ def statistics_24h(tradeable=True,
     Generates a dataframe with the filters to apply with the statistics of the last 24 hours. Optionally, you can generate the column to
     convert the volume to USDT.
 
+    :param bool decimal_mode: Fixes Decimal return type and operative.
     :param bool tradeable: Require or not just currently trading symbols.
     :param bool spot_required: Requires just SPOT currently trading symbols.
     :param bool margin_required: Requires just MARGIN currently trading symbols.
@@ -993,7 +1001,7 @@ def statistics_24h(tradeable=True,
     df['quote'] = df['symbol'].apply(lambda x: quotes_dic[x])
 
     if stablecoin_value:
-        prices = get_prices_dic()
+        prices = get_prices_dic(decimal_mode=decimal_mode)
         # info_dic = {k['symbol']: k for k in market.get_exchange_info()['symbols']}
         # bases_dic = market.get_bases_dic(info_dic=info_dic)
         # quotes_dic = market.get_quotes_dic(info_dic=info_dic)
@@ -1005,7 +1013,8 @@ def statistics_24h(tradeable=True,
                                                          base_qty=1,
                                                          convert_to=stablecoin_value,
                                                          prices=prices,
-                                                         info_dic=info_dic)
+                                                         info_dic=info_dic,
+                                                         decimal_mode=decimal_mode)
             df.loc[df['symbol'] == pair, stable_coin_value_name] = usdt_val
         stable_coin_volumen_name = f"{stablecoin_value}_volume"
         df[stable_coin_volumen_name] = df[stable_coin_value_name] * df['volume']
@@ -1013,7 +1022,8 @@ def statistics_24h(tradeable=True,
     return df.sort_values(sort_by, ascending=False)
 
 
-def get_top_gainers(info_dic: dict = None,
+def get_top_gainers(decimal_mode: bool,
+                    info_dic: dict = None,
                     tradeable=True,
                     spot_required=True,
                     margin_required=False,
@@ -1028,6 +1038,7 @@ def get_top_gainers(info_dic: dict = None,
     Generates a dataframe with the filters to apply with the statistics of the last 24 hours. Optionally, you can generate the column to
     convert the volume to USDT.
 
+    :param bool decimal_mode: Fixes Decimal return type and operative.
     :param bool tradeable: Require or not just currently trading symbols.
     :param bool spot_required: Requires just SPOT currently trading symbols.
     :param bool margin_required: Requires just MARGIN currently trading symbols.
@@ -1064,7 +1075,8 @@ def get_top_gainers(info_dic: dict = None,
     if not info_dic:
         info_dic = get_info_dic()
 
-    top_gainers = statistics_24h(tradeable=tradeable,
+    top_gainers = statistics_24h(decimal_mode=decimal_mode,
+                                 tradeable=tradeable,
                                  spot_required=spot_required,
                                  margin_required=margin_required,
                                  drop_legal=drop_legal,

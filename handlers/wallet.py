@@ -306,13 +306,14 @@ def get_spot_account_info(recvWindow: int = 10000) -> dict:
                               weight=10)
 
 
-def spot_free_balances_parsed(data_dic: dict = None,
-                              decimal_mode: bool = False) -> dict:
+def spot_free_balances_parsed(decimal_mode: bool,
+                              data_dic: dict = None
+                              ) -> dict:
     """
     Parses available balances from account info.
 
     :param dict data_dic: If available, account info can be passed as data_dic parameter to avoid API calling.
-    :param bool decimal_mode: Fixes Decimal return type.
+    :param bool decimal_mode: Fixes Decimal return type and operative.
     :return dict: Free balances.
     """
     ret = {}
@@ -351,14 +352,14 @@ def spot_locked_balances_parsed(data_dic: dict = None) -> dict:
     return ret
 
 
-def get_coins_with_balance() -> list:
+def get_coins_with_balance(decimal_mode: bool) -> list:
     """
     Get the non-zero balances of an account, free or locked ones. Useful getting wallet value.
 
     :return list:
     """
     data_dic = get_spot_account_info()
-    free = spot_free_balances_parsed(data_dic=data_dic)
+    free = spot_free_balances_parsed(data_dic=data_dic, decimal_mode=decimal_mode)
     locked = spot_locked_balances_parsed(data_dic=data_dic)
     free = [symbol for symbol, balance in free.items() if float(balance) > 0]
     locked = [symbol for symbol, balance in locked.items() if float(balance) > 0]
@@ -400,11 +401,13 @@ def get_spot_balances_df(filter_empty: bool = True) -> pd.DataFrame:
         return df_
 
 
-def get_spot_balances_total_value(balances_df: pd.DataFrame = None,
+def get_spot_balances_total_value(decimal_mode: bool,
+                                  balances_df: pd.DataFrame = None, 
                                   convert_to: str = 'BUSD') -> float:
     """
     Returns total value expressed in a quote coin. Counts free and locked assets.
 
+    :param bool decimal_mode: Fixes Decimal return type and operative.
     :param pd.DataFrame balances_df: A BinPan balances dataframe.
     :param str convert_to: A Binance coin.
     :return float: Total quantity expressed in quote.
@@ -412,7 +415,7 @@ def get_spot_balances_total_value(balances_df: pd.DataFrame = None,
     if type(balances_df) != pd.DataFrame:
         balances_df = get_spot_balances_df()
 
-    prices = get_prices_dic()
+    prices = get_prices_dic(decimal_mode=decimal_mode)
 
     symbols = list(balances_df.index)
     free_values = balances_df['free'].tolist()
@@ -428,13 +431,15 @@ def get_spot_balances_total_value(balances_df: pd.DataFrame = None,
             free = convert_coin(coin=coin,
                                 prices=prices,
                                 convert_to=convert_to,
-                                coin_qty=free)
+                                coin_qty=free, 
+                                decimal_mode=decimal_mode)
 
         if locked:
             locked = convert_coin(coin=coin,
                                   prices=prices,
                                   convert_to=convert_to,
-                                  coin_qty=locked)
+                                  coin_qty=locked, 
+                                  decimal_mode=decimal_mode)
         total += float(free)
         total += float(locked)
 
@@ -514,7 +519,7 @@ def get_margin_account_details() -> dict:
 # margin balances #
 ###################
 
-def get_margin_balances() -> dict:
+def get_margin_balances(decimal_mode: bool) -> dict:
     """
     Collects balances in the margin account that are not null.
 
@@ -542,14 +547,18 @@ def get_margin_balances() -> dict:
         entry = {}
         for k, v in asset.items():
             if k != 'asset':
-                entry[k] = float(v)
+                if decimal_mode:
+                    entry[k] = dd(v)
+                else:
+                    entry[k] = float(v)
         if sum(entry.values()) != 0:
             ret[asset['asset']] = entry
     return ret
 
 
-def get_margin_free_balances(balances: dict = None,
-                             decimal_mode: bool = False) -> dict:
+def get_margin_free_balances(decimal_mode: bool,
+                             balances: dict = None
+                             ) -> dict:
     """
     Just returns free existing balances. It is optional to avoid an API call.
 
@@ -559,90 +568,99 @@ def get_margin_free_balances(balances: dict = None,
 
     """
     if not balances:
-        balances = get_margin_balances()
+        balances = get_margin_balances(decimal_mode=decimal_mode)
     if decimal_mode:
         return {k: dd(v['free']) for k, v in balances.items() if v['free']}
     else:
         return {k: float(v['free']) for k, v in balances.items() if v['free']}
 
 
-def get_margin_locked_balances(balances: dict = None) -> dict:
+def get_margin_locked_balances(decimal_mode: bool, balances: dict = None) -> dict:
     """
     Just returns locked existing balances. It is optional to avoid an API call.
 
+    :param bool decimal_mode: Fixes Decimal return type.
     :param dict balances: Returns dict with assets as keys and a float value for not null quantities.
     :return dict: A dict with float values.
 
     """
     if not balances:
-        balances = get_margin_balances()
+        balances = get_margin_balances(decimal_mode=decimal_mode)
     return {k: v['locked'] for k, v in balances.items() if v['locked']}
 
 
-def get_margin_borrowed_balances(balances: dict = None) -> dict:
+def get_margin_borrowed_balances(decimal_mode: bool, balances: dict = None) -> dict:
     """
     Just returns borrowed existing balances. It is optional to avoid an API call.
 
+    :param bool decimal_mode: Fixes Decimal return type.
     :param dict balances: Returns dict with assets as keys and a float value for not null quantities.
     :return dict: A dict with float values.
 
     """
     if not balances:
-        balances = get_margin_balances()
+        balances = get_margin_balances(decimal_mode=decimal_mode)
     return {k: v['borrowed'] for k, v in balances.items() if v['borrowed']}
 
 
-def get_margin_interest_balances(balances: dict = None) -> dict:
+def get_margin_interest_balances(decimal_mode: bool,
+                                 balances: dict = None) -> dict:
     """
     Just returns interest existing balances. It is optional to avoid an API call.
 
+    :param bool decimal_mode: Fixes Decimal return type.
     :param dict balances: Returns dict with assets as keys and a float value for not null quantities.
     :return dict: A dict with float values.
 
     """
     if not balances:
-        balances = get_margin_balances()
-    return {k: v['interest'] for k, v in balances.items() if v['interest']}
+        balances = get_margin_balances(decimal_mode=decimal_mode)
+    if decimal_mode:
+        return {k: dd(v['interest']) for k, v in balances.items() if v['interest']}
+    else:
+        return {k: float(v['interest']) for k, v in balances.items() if v['interest']}
 
 
-def get_margin_netAsset_balances(balances: dict = None):
+def get_margin_netAsset_balances(decimal_mode: bool, balances: dict = None):
     """
     Just returns netAsset existing balances. It is optional to avoid an API call.
 
+    :param bool decimal_mode: Fixes Decimal return type.
     :param dict balances: Returns dict with assets as keys and a float value for not null quantities.
     :return dict: A dict with float values.
 
     """
     if not balances:
-        balances = get_margin_balances()
+        balances = get_margin_balances(decimal_mode=decimal_mode)
     return {k: v['netAsset'] for k, v in balances.items() if v['netAsset']}
 
 
-def get_margin_balances_total_value(balances: dict = None,
-                                    convert_to: str = 'BUSD',
-                                    decimal_mode=False) -> float or dd:
+def get_margin_balances_total_value(decimal_mode: bool,
+                                    balances: dict = None,
+                                    convert_to: str = 'BUSD'
+                                    ) -> float or dd:
     """
     Returns total value expressed in a quote coin. Counts free, locked, borrowed and interest assets.
 
     :param dict balances: A BinPan balances dict. It is optional to avoid an API call.
     :param str convert_to: A Binance coin.
-    :param decimal.Decimal decimal_mode: Fixes Decimal return type.
+    :param bool decimal_mode: Fixes Decimal return type.
     :return float: Total quantity expressed in quote.
     """
 
-    prices = get_prices_dic()
+    prices = get_prices_dic(decimal_mode=decimal_mode)
 
     if not balances:
-        balances = get_margin_balances()
+        balances = get_margin_balances(decimal_mode=decimal_mode)
 
     assets = list(balances.keys())
 
-    free_values = get_margin_free_balances(balances=balances)
-    locked_values = get_margin_locked_balances(balances=balances)
-    borrowed_values = get_margin_borrowed_balances(balances=balances)
+    free_values = get_margin_free_balances(balances=balances, decimal_mode=decimal_mode)
+    locked_values = get_margin_locked_balances(balances=balances, decimal_mode=decimal_mode)
+    borrowed_values = get_margin_borrowed_balances(balances=balances, decimal_mode=decimal_mode)
 
     # TODO: saber si el interest tiene signo negativo
-    interest_values = get_margin_interest_balances(balances=balances)
+    interest_values = get_margin_interest_balances(balances=balances, decimal_mode=decimal_mode)
 
     total = 0
 
@@ -672,7 +690,8 @@ def get_margin_balances_total_value(balances: dict = None,
         converted_value = convert_coin(coin=coin,
                                        prices=prices,
                                        convert_to=convert_to,
-                                       coin_qty=total_coins)
+                                       coin_qty=total_coins, 
+                                       decimal_mode=decimal_mode)
 
         total += float(converted_value)
     if decimal_mode:

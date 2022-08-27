@@ -1,4 +1,3 @@
-
 """
 
 This is the main classes file.
@@ -30,9 +29,7 @@ from random import choice
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
 
-
 __version__ = "0.0.80"
-
 
 try:
     from secret import redis_conf
@@ -60,9 +57,7 @@ API keys will be added to a file called secret.py in an encrypted way. API keys 
 """
     binpan_logger.warning(msg)
 
-
 plotly_colors = handlers.plotting.plotly_colors
-
 
 pd.set_option('display.max_columns', 20)
 pd.set_option('display.width', 250)
@@ -687,7 +682,7 @@ class Symbol(object):
                     try:
                         current_name = new_element.name
                     except Exception:
-                        current_name = f"Indicator_{len(self.df)+element_idx}{suffix}"
+                        current_name = f"Indicator_{len(self.df) + element_idx}{suffix}"
                 else:
                     current_name = names[element_idx]
 
@@ -2489,7 +2484,7 @@ class Exchange(object):
     - **my_exchange_instance.quotes**: A dictionary with all quotes for all symbols.
     - **my_exchange_instance.leveraged**: A list with all leveraged coins.
     - **my_exchange_instance.leveraged_symbols**: A list with all leveraged symbols.
-    - **my_exchange_instance.fees**: dataframe qith fees applied to the user requesting for every symbol.
+    - **my_exchange_instance.fees**: dataframe with fees applied to the user requesting for every symbol.
     - **my_exchange_instance.filters**: A dictionary with all trading filters detailed with all symbols.
     - **my_exchange_instance.status**: API status can be normal o under maintenance.
     - **my_exchange_instance.coins**: A dataframe with all the coin's data.
@@ -2709,13 +2704,14 @@ class Wallet(object):
         return self.margin
 
     def spot_wallet_performance(self,
+                                decimal_mode: bool,
                                 startTime=None,
                                 endTime=None,
                                 days: int = 30,
                                 convert_to: str = 'BUSD'):
         """
         Calculate difference between current wallet not locked values and days before.
-
+        :param bool decimal_mode: Fixes Decimal return type and operative.
         :param int or str startTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
         :param int or str endTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
         :param int days: Days to compare balances.
@@ -2742,18 +2738,19 @@ class Wallet(object):
             else:
                 return handlers.market.convert_coin(coin='BTC',
                                                     convert_to=convert_to,
-                                                    coin_qty=performance)
+                                                    coin_qty=performance, decimal_mode=decimal_mode)
         else:
             return 0
 
     def margin_wallet_performance(self,
+                                  decimal_mode: bool,
                                   startTime=None,
                                   endTime=None,
                                   days: int = 30,
                                   convert_to: str = 'BUSD'):
         """
         Calculate difference between current wallet not locked values and days before.
-
+        :param bool decimal_mode: Fixes Decimal return type and operative.
         :param int or str startTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
         :param int or str endTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
         :param int days: Days to compare balances.
@@ -2780,7 +2777,8 @@ class Wallet(object):
             else:
                 return handlers.market.convert_coin(coin='BTC',
                                                     convert_to=convert_to,
-                                                    coin_qty=performance)
+                                                    coin_qty=performance,
+                                                    decimal_mode=decimal_mode)
         else:
             return 0
 

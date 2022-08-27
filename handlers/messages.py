@@ -210,7 +210,7 @@ def get_fills_price(original_order_dict: dict,
           "symbol": "BTCUSDT",
           "orderId": 28,
           "orderListId": -1, //Unless OCO, value will be -1
-          "clientOrderId": "6gCrw2kRUAF9CvJDGP16IP",
+          "clientOrderId": "6gCrw2kRUFF9CvJDWP16IP",
           "transactTime": 1507725176595,
           "price": "0.00000000",
           "origQty": "10.00000000",
@@ -268,7 +268,7 @@ def get_fills_price(original_order_dict: dict,
         {
           "symbol": "BTCUSDT",
           "orderId": 28,
-          "clientOrderId": "6gCrw2kRUAF9CvJDGP16IP",
+          "clientOrderId": "6gCrw2kRUFF9CvJDWP16IP",
           "transactTime": 1507725176595,
           "price": "1.00000000",
           "origQty": "10.00000000",
@@ -407,29 +407,13 @@ def telegram_parse_order_markdown(original_order: dict,
     parsed = ""
 
     if 'orderReports' in order_.keys():
-        p_stop = telegram_parse_order_markdown(order_['orderReports'][0], isBuyer=False, margin=False, test_mode=test_mode)
-        p_limit = telegram_parse_order_markdown(order_['orderReports'][1], isBuyer=False, margin=False, test_mode=test_mode)
+        p_stop = telegram_parse_order_markdown(order_['orderReports'][0], isBuyer=isBuyer, margin=margin, test_mode=test_mode)
+        p_limit = telegram_parse_order_markdown(order_['orderReports'][1], isBuyer=isBuyer, margin=margin, test_mode=test_mode)
         stop_parsed = f"\n{p_stop}\n"
         limit_parsed = f"\n{p_limit}\n"
-
-    # if 'fills' in order_.keys():
-    #     order_['fills'] = get_fills_price(original_order_dict=order_,
-    #                                       isBuyer=isBuyer,
-    #                                       margin=margin,
-    #                                       test_mode=test_mode,
-    #                                       operation_time=int(original_order['transactTime']))
-    #     order_['price'] = order_['fills']
-    # try:
-    #     order_.pop('clientOrderId', None)
-    # except Exception as exc:
-    #     msg_logger.debug(f"Error popping key clientOrderId {exc}")
-    # try:
-    #     order_.pop('orderListId', None)
-    # except Exception as exc:
-    #     msg_logger.debug(f"Error popping key orderListId {exc}")
-    #
-    # order_['symbol'] = f"*{order_['symbol']}* \n------------------------------------------------"
-
+    else:
+        stop_parsed = 'Possible error with stop_parsed and orderReports'
+        limit_parsed = 'Possible error with and limit_parsed orderReports'
 
     if 'time' in order_.keys():
         date = convert_milliseconds_to_str(int(order_['time']), timezoned=timezoned)
@@ -474,12 +458,12 @@ def telegram_parse_order_markdown(original_order: dict,
     return parsed
 
 
-def send_balances(convert_to: str = 'BUSD') -> float:
+def send_balances(decimal_mode: bool, convert_to: str = 'BUSD') -> float:
     """
     Sends telegram message with total value of spot wallet in selected coin.
 
     It returns free and locked assets value added.
-
+    :param bool decimal_mode: Fixes Decimal return type and operative.
     :param str convert_to: A Binance coin.
     :return float: total value of wallet.
 
@@ -489,7 +473,8 @@ def send_balances(convert_to: str = 'BUSD') -> float:
 
     # add total value in usdt
     total_value = get_spot_balances_total_value(balances_df=balances_df,
-                                                convert_to=convert_to)
+                                                convert_to=convert_to,
+                                                decimal_mode=decimal_mode)
 
     parsed_balances += f"\n*Total value*: `{total_value}` \n*Quote*: `{convert_to}`"
     telegram_bot_send_text(parsed_balances)

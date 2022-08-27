@@ -4,7 +4,6 @@ from . import files
 from . import logs
 from . import market
 from . import messages
-from . import orders
 from . import plotting
 from . import quest
 from . import redis_fetch
