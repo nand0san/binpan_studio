@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from datetime import datetime
+from decimal import Decimal as dd
 
 from .market import get_prices_dic
 from .quest import api_raw_get, api_raw_signed_get, check_weight
