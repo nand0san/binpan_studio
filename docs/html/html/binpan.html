@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BinPan Module &mdash; BinPan 0.0.79 documentation</title>
+  <title>BinPan Module &mdash; BinPan 0.0.80 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/style.css" type="text/css" />
@@ -1331,7 +1331,7 @@ It can be any color from plotly library or a number in the list of those. Defaul
 <li><p><strong>my_exchange_instance.quotes</strong>: A dictionary with all quotes for all symbols.</p></li>
 <li><p><strong>my_exchange_instance.leveraged</strong>: A list with all leveraged coins.</p></li>
 <li><p><strong>my_exchange_instance.leveraged_symbols</strong>: A list with all leveraged symbols.</p></li>
-<li><p><strong>my_exchange_instance.fees</strong>: dataframe qith fees applied to the user requesting for every symbol.</p></li>
+<li><p><strong>my_exchange_instance.fees</strong>: dataframe with fees applied to the user requesting for every symbol.</p></li>
 <li><p><strong>my_exchange_instance.filters</strong>: A dictionary with all trading filters detailed with all symbols.</p></li>
 <li><p><strong>my_exchange_instance.status</strong>: API status can be normal o under maintenance.</p></li>
 <li><p><strong>my_exchange_instance.coins</strong>: A dataframe with all the coin’s data.</p></li>
@@ -1495,40 +1495,26 @@ performance analysis.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="binpan.binpan.Wallet.spot_wallet_performance">
-<span class="sig-name descname"><span class="pre">spot_wallet_performance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">days</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BUSD'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.binpan.Wallet.spot_wallet_performance" title="Permalink to this definition"></a></dt>
-<dd><p>Calculate difference between current wallet not locked values and days before.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>startTime</strong> (<em>int</em><em> or </em><em>str</em>) – Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42</p></li>
-<li><p><strong>endTime</strong> (<em>int</em><em> or </em><em>str</em>) – Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42</p></li>
-<li><p><strong>days</strong> (<em>int</em>) – Days to compare balances.</p></li>
-<li><p><strong>convert_to</strong> (<em>str</em>) – Converts balances to a coin.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return float</dt>
-<dd class="field-even"><p>Value increase or decrease with current value of convert_to coin.</p>
-</dd>
-</dl>
+<span class="sig-name descname"><span class="pre">spot_wallet_performance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">days</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BUSD'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.binpan.Wallet.spot_wallet_performance" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate difference between current wallet not locked values and days before.
+:param bool decimal_mode: Fixes Decimal return type and operative.
+:param int or str startTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
+:param int or str endTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
+:param int days: Days to compare balances.
+:param str convert_to: Converts balances to a coin.
+:return float: Value increase or decrease with current value of convert_to coin.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="binpan.binpan.Wallet.margin_wallet_performance">
-<span class="sig-name descname"><span class="pre">margin_wallet_performance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">days</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BUSD'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.binpan.Wallet.margin_wallet_performance" title="Permalink to this definition"></a></dt>
-<dd><p>Calculate difference between current wallet not locked values and days before.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>startTime</strong> (<em>int</em><em> or </em><em>str</em>) – Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42</p></li>
-<li><p><strong>endTime</strong> (<em>int</em><em> or </em><em>str</em>) – Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42</p></li>
-<li><p><strong>days</strong> (<em>int</em>) – Days to compare balances.</p></li>
-<li><p><strong>convert_to</strong> (<em>str</em>) – Converts balances to a coin.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return float</dt>
-<dd class="field-even"><p>Value increase or decrease with current value of convert_to coin.</p>
-</dd>
-</dl>
+<span class="sig-name descname"><span class="pre">margin_wallet_performance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">days</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BUSD'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.binpan.Wallet.margin_wallet_performance" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate difference between current wallet not locked values and days before.
+:param bool decimal_mode: Fixes Decimal return type and operative.
+:param int or str startTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
+:param int or str endTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
+:param int days: Days to compare balances.
+:param str convert_to: Converts balances to a coin.
+:return float: Value increase or decrease with current value of convert_to coin.</p>
 </dd></dl>
 
 </dd></dl>

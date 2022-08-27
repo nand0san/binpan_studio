@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Messages Module &mdash; BinPan 0.0.79 documentation</title>
+  <title>Messages Module &mdash; BinPan 0.0.80 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/style.css" type="text/css" />
@@ -225,7 +225,7 @@ variable names <em>encoded_chat_id</em>, <em>encoded_telegram_bot_id</em>.</p>
   <span class="s2">&quot;symbol&quot;</span><span class="p">:</span> <span class="s2">&quot;BTCUSDT&quot;</span><span class="p">,</span>
   <span class="s2">&quot;orderId&quot;</span><span class="p">:</span> <span class="mi">28</span><span class="p">,</span>
   <span class="s2">&quot;orderListId&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">//</span><span class="n">Unless</span> <span class="n">OCO</span><span class="p">,</span> <span class="n">value</span> <span class="n">will</span> <span class="n">be</span> <span class="o">-</span><span class="mi">1</span>
-  <span class="s2">&quot;clientOrderId&quot;</span><span class="p">:</span> <span class="s2">&quot;6gCrw2kRUAF9CvJDGP16IP&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;clientOrderId&quot;</span><span class="p">:</span> <span class="s2">&quot;6gCrw2kRUFF9CvJDWP16IP&quot;</span><span class="p">,</span>
   <span class="s2">&quot;transactTime&quot;</span><span class="p">:</span> <span class="mi">1507725176595</span><span class="p">,</span>
   <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span><span class="p">,</span>
   <span class="s2">&quot;origQty&quot;</span><span class="p">:</span> <span class="s2">&quot;10.00000000&quot;</span><span class="p">,</span>
@@ -281,7 +281,7 @@ variable names <em>encoded_chat_id</em>, <em>encoded_telegram_bot_id</em>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="s2">&quot;symbol&quot;</span><span class="p">:</span> <span class="s2">&quot;BTCUSDT&quot;</span><span class="p">,</span>
   <span class="s2">&quot;orderId&quot;</span><span class="p">:</span> <span class="mi">28</span><span class="p">,</span>
-  <span class="s2">&quot;clientOrderId&quot;</span><span class="p">:</span> <span class="s2">&quot;6gCrw2kRUAF9CvJDGP16IP&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;clientOrderId&quot;</span><span class="p">:</span> <span class="s2">&quot;6gCrw2kRUFF9CvJDWP16IP&quot;</span><span class="p">,</span>
   <span class="s2">&quot;transactTime&quot;</span><span class="p">:</span> <span class="mi">1507725176595</span><span class="p">,</span>
   <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;1.00000000&quot;</span><span class="p">,</span>
   <span class="s2">&quot;origQty&quot;</span><span class="p">:</span> <span class="s2">&quot;10.00000000&quot;</span><span class="p">,</span>
@@ -356,17 +356,12 @@ variable names <em>encoded_chat_id</em>, <em>encoded_telegram_bot_id</em>.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.messages.send_balances">
-<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">send_balances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">convert_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BUSD'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.messages.send_balances" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">send_balances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BUSD'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.messages.send_balances" title="Permalink to this definition"></a></dt>
 <dd><p>Sends telegram message with total value of spot wallet in selected coin.</p>
-<p>It returns free and locked assets value added.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>convert_to</strong> (<em>str</em>) – A Binance coin.</p>
-</dd>
-<dt class="field-even">Return float</dt>
-<dd class="field-even"><p>total value of wallet.</p>
-</dd>
-</dl>
+<p>It returns free and locked assets value added.
+:param bool decimal_mode: Fixes Decimal return type and operative.
+:param str convert_to: A Binance coin.
+:return float: total value of wallet.</p>
 </dd></dl>
 
 </section>
