@@ -306,21 +306,29 @@ def get_spot_account_info(recvWindow: int = 10000) -> dict:
                               weight=10)
 
 
-def spot_free_balances_parsed(data_dic: dict = None) -> dict:
+def spot_free_balances_parsed(data_dic: dict = None,
+                              decimal_mode: bool = False) -> dict:
     """
     Parses available balances from account info.
 
     :param dict data_dic: If available, account info can be passed as data_dic parameter to avoid API calling.
+    :param bool decimal_mode: Fixes Decimal return type.
     :return dict: Free balances.
     """
     ret = {}
     if not data_dic:
         data_dic = get_spot_account_info()
     wallet_logger.debug(f"spot_free_balances_parsed len(get_spot_account_info()):{len(data_dic)}")
-    for asset in data_dic['balances']:
-        qty = float(asset['free'])
-        if qty:
-            ret.update({asset['asset']: qty})
+    if decimal_mode:
+        for asset in data_dic['balances']:
+            qty = dd(asset['free'])
+            if qty:
+                ret.update({asset['asset']: qty})
+    else:
+        for asset in data_dic['balances']:
+            qty = float(asset['free'])
+            if qty:
+                ret.update({asset['asset']: qty})
     return ret
 
 
@@ -540,17 +548,22 @@ def get_margin_balances() -> dict:
     return ret
 
 
-def get_margin_free_balances(balances: dict = None) -> dict:
+def get_margin_free_balances(balances: dict = None,
+                             decimal_mode: bool = False) -> dict:
     """
     Just returns free existing balances. It is optional to avoid an API call.
 
     :param dict balances: Returns dict with assets as keys and a float value for not null quantities.
+    :param bool decimal_mode: Fixes Decimal return type.
     :return dict: A dict with float values.
 
     """
     if not balances:
         balances = get_margin_balances()
-    return {k: float(v['free']) for k, v in balances.items() if v['free']}
+    if decimal_mode:
+        return {k: dd(v['free']) for k, v in balances.items() if v['free']}
+    else:
+        return {k: float(v['free']) for k, v in balances.items() if v['free']}
 
 
 def get_margin_locked_balances(balances: dict = None) -> dict:
@@ -607,12 +620,13 @@ def get_margin_netAsset_balances(balances: dict = None):
 
 def get_margin_balances_total_value(balances: dict = None,
                                     convert_to: str = 'BUSD',
-                                    decimal_mode=False) -> float:
+                                    decimal_mode=False) -> float or dd:
     """
     Returns total value expressed in a quote coin. Counts free, locked, borrowed and interest assets.
 
     :param dict balances: A BinPan balances dict. It is optional to avoid an API call.
     :param str convert_to: A Binance coin.
+    :param decimal.Decimal decimal_mode: Fixes Decimal return type.
     :return float: Total quantity expressed in quote.
     """
 
