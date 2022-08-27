@@ -703,7 +703,7 @@ def get_spot_balances_df(filter_empty: bool = True) -> pd.DataFrame:
 
 
 def get_spot_balances_total_value(decimal_mode: bool,
-                                  balances_df: pd.DataFrame = None, 
+                                  balances_df: pd.DataFrame = None,
                                   convert_to: str = 'BUSD') -> float:
     """
     Returns total value expressed in a quote coin. Counts free and locked assets.
@@ -713,6 +713,11 @@ def get_spot_balances_total_value(decimal_mode: bool,
     :param str convert_to: A Binance coin.
     :return float: Total quantity expressed in quote.
     """
+    if decimal_mode:
+        my_type = dd
+    else:
+        my_type = float
+
     if type(balances_df) != pd.DataFrame:
         balances_df = get_spot_balances_df()
 
@@ -725,24 +730,24 @@ def get_spot_balances_total_value(decimal_mode: bool,
 
     for i in range(len(symbols)):
         coin = symbols[i]
-        free = float(free_values[i])
-        locked = float(locked_values[i])
+        free = my_type(free_values[i])
+        locked = my_type(locked_values[i])
 
         if free:
             free = convert_coin(coin=coin,
                                 prices=prices,
                                 convert_to=convert_to,
-                                coin_qty=free, 
+                                coin_qty=free,
                                 decimal_mode=decimal_mode)
 
         if locked:
             locked = convert_coin(coin=coin,
                                   prices=prices,
                                   convert_to=convert_to,
-                                  coin_qty=locked, 
+                                  coin_qty=locked,
                                   decimal_mode=decimal_mode)
-        total += float(free)
-        total += float(locked)
+        total += my_type(free)
+        total += my_type(locked)
 
     return total
 
@@ -948,7 +953,10 @@ def get_margin_balances_total_value(decimal_mode: bool,
     :param bool decimal_mode: Fixes Decimal return type.
     :return float: Total quantity expressed in quote.
     """
-
+    if decimal_mode:
+        my_type = dd
+    else:
+        my_type = float
     prices = get_prices_dic(decimal_mode=decimal_mode)
 
     if not balances:
@@ -991,11 +999,8 @@ def get_margin_balances_total_value(decimal_mode: bool,
         converted_value = convert_coin(coin=coin,
                                        prices=prices,
                                        convert_to=convert_to,
-                                       coin_qty=total_coins, 
+                                       coin_qty=total_coins,
                                        decimal_mode=decimal_mode)
 
-        total += float(converted_value)
-    if decimal_mode:
-        return dd(total)
-    else:
-        return total
+        total += my_type(converted_value)
+    return my_type(total)

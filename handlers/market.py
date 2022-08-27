@@ -427,7 +427,7 @@ def intermediate_conversion(coin: str,
 def convert_coin(coin: str,
                  decimal_mode: bool,
                  convert_to: str = 'BUSD',
-                 coin_qty: float = 1,
+                 coin_qty: float or dd = 1,
                  prices: dict = None) -> float or None:
     """
     Calculates a coin quantity value converted to other coin with current exchange prices.
