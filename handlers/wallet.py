@@ -34,7 +34,8 @@ def convert_str_date_to_ms(date: str or int,
 ##########
 
 
-def daily_account_snapshot(account_type: str = 'SPOT',
+def daily_account_snapshot(account_type: str,
+                           decimal_mode: bool,
                            startTime: int or str = None,
                            endTime: int = None,
                            limit=30,
@@ -47,6 +48,7 @@ def daily_account_snapshot(account_type: str = 'SPOT',
     Weight(IP): 2400
 
     :param str account_type: SPOT or MARGIN (cross)
+    :param bool decimal_mode: Fixes Decimal return type and operative.
     :param int limit: Days limit. Default 30.
     :param int or str startTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
     :param int or str endTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
@@ -72,7 +74,7 @@ def daily_account_snapshot(account_type: str = 'SPOT',
                                      'startTime': startTime,
                                      'endTime': endTime,
                                      'limit': limit},
-                             weight=2400)
+                             weight=2400, decimal_mode=decimal_mode)
     rows = []
     for update in ret['snapshotVos']:
         updateTime = update['updateTime']
@@ -108,7 +110,7 @@ def daily_account_snapshot(account_type: str = 'SPOT',
     return ret
 
 
-def assets_convertible_dust() -> dict:
+def assets_convertible_dust(decimal_mode: bool) -> dict:
     """
     Assets dust that can be converted to BNB.
     Weight(IP): 1
@@ -137,7 +139,7 @@ def assets_convertible_dust() -> dict:
     """
     yn = input(f"This command may change or convert assets from your wallet!!! are you sure? (y/n)")
     if yn.upper().startswith('Y'):
-        return api_raw_signed_post(endpoint='/sapi/v1/asset/dust-btc', weight=1)
+        return api_raw_signed_post(endpoint='/sapi/v1/asset/dust-btc', weight=1, decimal_mode=decimal_mode)
     else:
         wallet_logger.warning("Canceled!")
 
@@ -362,9 +364,9 @@ def get_fills_price(original_order_dict: dict,
         wallet_logger.info(f"Get fills from API trades!... wait 5 seconds for trade to appear. Round:{tour}")
 
         if not margin:
-            last_trades = get_spot_trades_list(symbol=symbol)
+            last_trades = get_spot_trades_list(symbol=symbol, decimal_mode=decimal_mode)
         else:
-            last_trades = get_margin_trades_list(symbol=symbol)
+            last_trades = get_margin_trades_list(symbol=symbol, decimal_mode=decimal_mode)
 
         try:
             # trades return time field with a timestamp
@@ -432,9 +434,9 @@ def get_fills_qty(original_order_dict: dict,
                 wallet_logger.info(f"Get fills qty from API trades!... wait 5 seconds for trade to appear. Round:{tour}")
 
                 if not margin:
-                    last_trades = get_spot_trades_list(symbol=symbol)
+                    last_trades = get_spot_trades_list(symbol=symbol, decimal_mode=decimal_mode)
                 else:
-                    last_trades = get_margin_trades_list(symbol=symbol)
+                    last_trades = get_margin_trades_list(symbol=symbol, decimal_mode=decimal_mode)
 
                 try:
                     # trades return time field with a timestamp
@@ -448,6 +450,7 @@ def get_fills_qty(original_order_dict: dict,
 
 
 def get_spot_trades_list(symbol: str,
+                         decimal_mode: bool,
                          limit: int = 1000,
                          orderId: int = None,
                          startTime: int = None,
@@ -460,6 +463,7 @@ def get_spot_trades_list(symbol: str,
     Weight(IP): 10
 
     :param str symbol: Symbol's trades.
+    :param bool decimal_mode: Fixes Decimal return type and operative.
     :param int limit: Default 500; max 1000.
     :param fromId: TradeId to fetch from. Default gets most recent trades. If fromId is set, it will get id >= that fromId. Otherwise,
        most recent trades are returned.
@@ -500,10 +504,11 @@ def get_spot_trades_list(symbol: str,
                                       'endTime': endTime,
                                       'fromId': fromId,
                                       'recvWindow': recvWindow},
-                              weight=10)
+                              weight=10, decimal_mode=decimal_mode)
 
 
 def get_margin_trades_list(symbol: str,
+                           decimal_mode: bool,
                            isIsolated: bool = False,
                            limit: int = 1000,
                            orderId: int = None,
@@ -519,6 +524,7 @@ def get_margin_trades_list(symbol: str,
     Weight(IP): 10
 
     :param str symbol: Symbol's trades.
+    :param bool decimal_mode: Fixes Decimal return type and operative.
     :param bool isIsolated: Sets for getting isolated or not isolated trades. Default is false.
     :param int limit: Default 500; max 1000.
     :param fromId: TradeId to fetch from. Default gets most recent trades. If fromId is set, it will get id >= that fromId. Otherwise,
@@ -562,7 +568,7 @@ def get_margin_trades_list(symbol: str,
                                       'endTime': endTime,
                                       'fromId': fromId,
                                       'recvWindow': recvWindow},
-                              weight=10)
+                              weight=10, decimal_mode=decimal_mode)
 
 
 ############
@@ -570,12 +576,13 @@ def get_margin_trades_list(symbol: str,
 ############
 
 
-def get_spot_account_info(recvWindow: int = 10000) -> dict:
+def get_spot_account_info(decimal_mode: bool, recvWindow: int = 10000) -> dict:
     """
     Get current account information.
 
     Weight(IP): 10
 
+    :param bool decimal_mode: Fixes Decimal return type and operative.
     :param int recvWindow: The value cannot be greater than 60000
     :return dict: A dictionary with data.
 
@@ -604,7 +611,8 @@ def get_spot_account_info(recvWindow: int = 10000) -> dict:
     endpoint = '/api/v3/account'
     return api_raw_signed_get(endpoint=endpoint,
                               params={'recvWindow': recvWindow},
-                              weight=10)
+                              weight=10,
+                              decimal_mode=decimal_mode)
 
 
 def spot_free_balances_parsed(decimal_mode: bool,
@@ -619,7 +627,7 @@ def spot_free_balances_parsed(decimal_mode: bool,
     """
     ret = {}
     if not data_dic:
-        data_dic = get_spot_account_info()
+        data_dic = get_spot_account_info(decimal_mode=decimal_mode)
     wallet_logger.debug(f"spot_free_balances_parsed len(get_spot_account_info()):{len(data_dic)}")
     if decimal_mode:
         for asset in data_dic['balances']:
@@ -634,16 +642,17 @@ def spot_free_balances_parsed(decimal_mode: bool,
     return ret
 
 
-def spot_locked_balances_parsed(data_dic: dict = None) -> dict:
+def spot_locked_balances_parsed(decimal_mode: bool, data_dic: dict = None) -> dict:
     """
     Parses locked in order balances from account info.
 
+    :param bool decimal_mode: Fixes Decimal return type and operative.
     :param dict data_dic: If available, account info can be passed as data_dic parameter to avoid API calling.
     :return dict: Locked balances.
     """
     ret = {}
     if not data_dic:
-        data_dic = get_spot_account_info()
+        data_dic = get_spot_account_info(decimal_mode=decimal_mode)
     wallet_logger.debug(f"spot_locked_balances_parsed get_spot_account_info: {len(data_dic)}")
 
     for asset in data_dic['balances']:
@@ -657,18 +666,19 @@ def get_coins_with_balance(decimal_mode: bool) -> list:
     """
     Get the non-zero balances of an account, free or locked ones. Useful getting wallet value.
 
+    :param bool decimal_mode: Fixes Decimal return type and operative.
     :return list:
     """
-    data_dic = get_spot_account_info()
+    data_dic = get_spot_account_info(decimal_mode=decimal_mode)
     free = spot_free_balances_parsed(data_dic=data_dic, decimal_mode=decimal_mode)
-    locked = spot_locked_balances_parsed(data_dic=data_dic)
+    locked = spot_locked_balances_parsed(data_dic=data_dic, decimal_mode=decimal_mode)
     free = [symbol for symbol, balance in free.items() if float(balance) > 0]
     locked = [symbol for symbol, balance in locked.items() if float(balance) > 0]
     symbols = free + locked
     return list(set(symbols))
 
 
-def get_spot_balances_df(filter_empty: bool = True) -> pd.DataFrame:
+def get_spot_balances_df(decimal_mode: bool, filter_empty: bool = True) -> pd.DataFrame:
     """
     Create a dataframe with the free or blocked amounts of the spot wallet. The index is the assets list.
 
@@ -687,11 +697,11 @@ def get_spot_balances_df(filter_empty: bool = True) -> pd.DataFrame:
             BNB    0.128359     0.0
             BUSD   0.000001     0.0
 
-
+    :param bool decimal_mode: Fixes Decimal return type and operative.
     :param bool filter_empty: Discards empty quantities.
     :return pd.DataFrame: A dataframe with assets locked or free.
     """
-    balances = get_spot_account_info()['balances']
+    balances = get_spot_account_info(decimal_mode=decimal_mode)['balances']
     df_ = pd.DataFrame(balances)
     df_['free'] = df_['free'].apply(pd.to_numeric)
     df_['locked'] = df_['locked'].apply(pd.to_numeric)
@@ -719,7 +729,7 @@ def get_spot_balances_total_value(decimal_mode: bool,
         my_type = float
 
     if type(balances_df) != pd.DataFrame:
-        balances_df = get_spot_balances_df()
+        balances_df = get_spot_balances_df(decimal_mode=decimal_mode)
 
     prices = get_prices_dic(decimal_mode=decimal_mode)
 
@@ -757,7 +767,7 @@ def get_spot_balances_total_value(decimal_mode: bool,
 #################
 
 
-def get_margin_account_details() -> dict:
+def get_margin_account_details(decimal_mode: bool) -> dict:
     """
     Query Cross Margin Account Details (USER_DATA)
 
@@ -817,7 +827,7 @@ def get_margin_account_details() -> dict:
     margin_endpoint = '/sapi/v1/margin/account'
     ret = api_raw_signed_get(endpoint=margin_endpoint,
                              params={},
-                             weight=10)
+                             weight=10, decimal_mode=decimal_mode)
     return ret
 
 
@@ -847,7 +857,7 @@ def get_margin_balances(decimal_mode: bool) -> dict:
           'netAsset': 50.0}}
 
     """
-    margin_status = get_margin_account_details()
+    margin_status = get_margin_account_details(decimal_mode=decimal_mode)
     ret = {}
     for asset in margin_status['userAssets']:
         entry = {}

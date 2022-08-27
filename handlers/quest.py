@@ -12,7 +12,6 @@ import hashlib
 import copy
 from time import sleep
 
-
 try:
     global api_secret, api_key
     # noinspection PyUnresolvedReferences
@@ -49,7 +48,6 @@ quest_logger = Logs(filename='./logs/quest.log', name='quest', info_level='INFO'
 
 cipher_object = AesCipher()
 
-
 # rate limits
 api_rate_limits = get_exchange_limits()
 
@@ -68,7 +66,9 @@ api_limits_weight_decrease_per_seconds = {'X-SAPI-USED-IP-WEIGHT-1M': api_rate_l
                                           'x-mbx-used-weight-1m': api_rate_limits['REQUEST_1M'] // 60,
                                           'x-mbx-used-weight': api_rate_limits['REQUEST_5M'] // (60 * 5),
                                           'x-mbx-order-count-10s': api_rate_limits['ORDERS_10S'] // 10,
-                                          'x-mbx-order-count-1d': api_rate_limits['ORDERS_1D'] // (24 * 60 * 60)}  # is the five minutes api limit?
+                                          'x-mbx-order-count-1d': api_rate_limits['ORDERS_1D'] // (
+                                                      24 * 60 * 60)}  # is the five minutes api limit?
+
 
 # TODO: identify headers for order endpoints
 
@@ -144,7 +144,8 @@ def check_weight(weight: int,
         if future_weight >= curr_limit:
             excess = ((future_weight - curr_limit) // api_limits_weight_decrease_per_seconds[aplicable_head]) + 2
 
-            weight_logger.warning(f"{aplicable_head}={future_weight} > {aplicable_limits[aplicable_head]} Current value: {current_weight[aplicable_head]}")
+            weight_logger.warning(
+                f"{aplicable_head}={future_weight} > {aplicable_limits[aplicable_head]} Current value: {current_weight[aplicable_head]}")
             weight_logger.warning(f"Waiting {excess} seconds for {aplicable_head} to decrease rate.")
             sleep(excess)
 
@@ -160,8 +161,12 @@ def get_server_time():
 ##################
 
 
-def convert_response_type(response_data: dict or list) -> dict or list:
+def convert_response_type(response_data: dict or list,
+                          decimal_mode: bool) -> dict or list:
     """Cambia el tipo de respuestas de la api"""
+    if decimal_mode:
+        return response_data
+
     if type(response_data) == dict:
         response = response_data.copy()
         for k, v in response.items():
@@ -170,11 +175,11 @@ def convert_response_type(response_data: dict or list) -> dict or list:
             elif k in int_api_items:
                 response[k] = int(v)
             elif type(v) == dict:
-                response[k] = convert_response_type(v)
+                response[k] = convert_response_type(v, decimal_mode=decimal_mode)
             elif type(v) == list:
-                response[k] = [convert_response_type(ii) for ii in v]
+                response[k] = [convert_response_type(ii, decimal_mode=decimal_mode) for ii in v]
     elif type(response_data) == list:
-        response = [convert_response_type(iii) for iii in response_data]
+        response = [convert_response_type(iii, decimal_mode=decimal_mode) for iii in response_data]
     else:
         response = response_data
     return response
@@ -271,6 +276,7 @@ def sign_request(params: dict, recvWindow: int) -> (list, dict):
 
 
 def get_signed_request(url: str,
+                       decimal_mode: bool,
                        params: dict or tuple = None,
                        recvWindow: int = 10000):
     """
@@ -283,18 +289,23 @@ def get_signed_request(url: str,
     ret = get_response(url, params=params_tuples, headers=headers)
     quest_logger.debug("get_signed_request: params_tuples: " + str(params_tuples))
     quest_logger.debug("get_signed_request: headers: " + str(headers.keys()))
-    return convert_response_type(ret)
+    return convert_response_type(ret, decimal_mode=decimal_mode)
 
 
-def get_semi_signed_request(url, params=None):
+def get_semi_signed_request(url: str,
+                            decimal_mode: bool,
+                            params: dict = None):
     """Requests get with api key header and params"""
     headers = {"X-MBX-APIKEY": cipher_object.decrypt(api_key)}
     ret = get_response(url=url, params=params, headers=headers)
     quest_logger.debug("get_semi_signed_request: headers: " + str(headers.keys()))
-    return convert_response_type(ret)
+    return convert_response_type(ret, decimal_mode=decimal_mode)
 
 
-def post_signed_request(url: str, params: dict = None, recvWindow: int = 10000):
+def post_signed_request(url: str,
+                        decimal_mode: bool,
+                        params: dict = None,
+                        recvWindow: int = 10000):
     """
     Hace un POST firmado a una url junto con un diccionario de parámetros
     """
@@ -302,10 +313,13 @@ def post_signed_request(url: str, params: dict = None, recvWindow: int = 10000):
     ret = post_response(url, params=params_tuples, headers=headers)
     quest_logger.debug("post_signed_request: params_tuples: " + str(params_tuples))
     quest_logger.debug("get_semi_signed_request: headers: " + str(headers.keys()))
-    return convert_response_type(ret)
+    return convert_response_type(ret, decimal_mode=decimal_mode)
 
 
-def delete_signed_request(url: str, params: dict = None, recvWindow: int = 10000):
+def delete_signed_request(url: str,
+                          decimal_mode: bool,
+                          params: dict = None,
+                          recvWindow: int = 10000):
     """
     Hace un DELETE firmado a una url junto con un diccionario de parámetros
     """
@@ -313,7 +327,7 @@ def delete_signed_request(url: str, params: dict = None, recvWindow: int = 10000
     ret = delete_response(url, params=params_tuples, headers=headers)
     quest_logger.info("delete_signed_request: params_tuples: " + str(params_tuples))
     quest_logger.debug("get_semi_signed_request: headers: " + str(headers.keys()))
-    return convert_response_type(ret)
+    return convert_response_type(ret, decimal_mode=decimal_mode)
 
 
 # def check_tick_interval(tick_interval):
@@ -338,18 +352,20 @@ def api_raw_get(endpoint: str,
 
 
 def api_raw_signed_get(endpoint: str,
+                       decimal_mode: bool,
                        base_url: str = '',
                        params: dict = None,
                        weight: int = 1):
     check_weight(weight, endpoint=base_url + endpoint)
     return get_signed_request(url=base_url + endpoint,
-                              params=params)
+                              params=params, decimal_mode=decimal_mode)
 
 
 def api_raw_signed_post(endpoint: str,
+                        decimal_mode: bool,
                         base_url: str = '',
                         params: dict = None,
                         weight: int = 1):
     check_weight(weight, endpoint=base_url + endpoint)
     return post_signed_request(url=base_url + endpoint,
-                               params=params)
+                               params=params, decimal_mode=decimal_mode)

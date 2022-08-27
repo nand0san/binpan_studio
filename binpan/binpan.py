@@ -29,7 +29,7 @@ from random import choice
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 try:
     from secret import redis_conf
@@ -1350,7 +1350,7 @@ class Symbol(object):
             if not symbol:
                 symbol = self.symbol
             # return handlers.wallet.get_fees(symbol=symbol)
-            return handlers.exchange.get_fees(symbol=symbol)
+            return handlers.exchange.get_fees(symbol=symbol, decimal_mode=False)
 
         except NameError:
             binpan_logger.warning("Fees cannot be requested without api key added. Add it with"
@@ -2498,16 +2498,17 @@ class Exchange(object):
 
     def __init__(self):
         self.info_dic = handlers.exchange.get_info_dic()
-        self.coins_dic = handlers.exchange.get_coins_info_dic()
+        self.coins_dic = handlers.exchange.get_coins_info_dic(decimal_mode=False)
         self.bases = handlers.exchange.get_bases_dic(info_dic=self.info_dic)
         self.quotes = handlers.exchange.get_quotes_dic(info_dic=self.info_dic)
-        self.leveraged = handlers.exchange.get_leveraged_coins(coins_dic=self.coins_dic)
-        self.leveraged_symbols = handlers.exchange.get_leveraged_symbols(info_dic=self.info_dic, leveraged_coins=self.leveraged)
+        self.leveraged = handlers.exchange.get_leveraged_coins(coins_dic=self.coins_dic, decimal_mode=False)
+        self.leveraged_symbols = handlers.exchange.get_leveraged_symbols(info_dic=self.info_dic, leveraged_coins=self.leveraged,
+                                                                         decimal_mode=False)
 
-        self.fees = handlers.exchange.get_fees()
+        self.fees = handlers.exchange.get_fees(decimal_mode=False)
         self.filters = handlers.exchange.get_symbols_filters(info_dic=self.info_dic)
         self.status = handlers.exchange.get_system_status()
-        self.coins, self.networks = handlers.exchange.get_coins_and_networks_info()
+        self.coins, self.networks = handlers.exchange.get_coins_and_networks_info(decimal_mode=False)
         self.coins_list = list(self.coins.index)
 
         self.symbols = self.get_symbols()
@@ -2564,9 +2565,9 @@ class Exchange(object):
         self.filters = handlers.exchange.get_symbols_filters(info_dic=self.info_dic)
         self.bases = handlers.exchange.get_bases_dic(info_dic=self.info_dic)
         self.quotes = handlers.exchange.get_quotes_dic(info_dic=self.info_dic)
-        self.fees = handlers.exchange.get_fees()
+        self.fees = handlers.exchange.get_fees(decimal_mode=False)
         self.status = handlers.exchange.get_system_status()
-        self.coins, self.networks = handlers.exchange.get_coins_and_networks_info()
+        self.coins, self.networks = handlers.exchange.get_coins_and_networks_info(decimal_mode=False)
         self.symbols = self.get_symbols()
         self.df = self.get_df()
         self.order_types = self.get_order_types()
@@ -2630,7 +2631,8 @@ class Wallet(object):
 
         self.spot = handlers.wallet.daily_account_snapshot(account_type='SPOT',
                                                            limit=snapshot_days,
-                                                           time_zone=self.time_zone)
+                                                           time_zone=self.time_zone,
+                                                           decimal_mode=False)
 
         # self.margin = handlers.wallet.daily_account_snapshot(account_type='MARGIN',
         #                                                      limit=snapshot_days,
@@ -2667,7 +2669,8 @@ class Wallet(object):
                                                            endTime=handlers.wallet.convert_str_date_to_ms(date=endTime,
                                                                                                           time_zone=self.time_zone),
                                                            limit=snapshot_days,
-                                                           time_zone=self.time_zone)
+                                                           time_zone=self.time_zone,
+                                                           decimal_mode=False)
         self.spot_startTime = startTime
         self.spot_endTime = endTime
         self.spot_requested_days = snapshot_days
@@ -2697,7 +2700,7 @@ class Wallet(object):
                                                            endTime=handlers.wallet.convert_str_date_to_ms(date=endTime,
                                                                                                           time_zone=self.time_zone),
                                                            limit=snapshot_days,
-                                                           time_zone=self.time_zone)
+                                                           time_zone=self.time_zone, decimal_mode=False)
         self.margin_startTime = startTime
         self.margin_endTime = endTime
         self.margin_requested_days = snapshot_days
@@ -2725,7 +2728,8 @@ class Wallet(object):
                                                                endTime=handlers.wallet.convert_str_date_to_ms(date=endTime,
                                                                                                               time_zone=self.time_zone),
                                                                limit=days,
-                                                               time_zone=self.time_zone)
+                                                               time_zone=self.time_zone,
+                                                               decimal_mode=False)
             self.spot_startTime = startTime
             self.spot_endTime = endTime
             self.spot_requested_days = days
@@ -2764,7 +2768,7 @@ class Wallet(object):
                                                                  endTime=handlers.wallet.convert_str_date_to_ms(date=endTime,
                                                                                                                 time_zone=self.time_zone),
                                                                  limit=days,
-                                                                 time_zone=self.time_zone)
+                                                                 time_zone=self.time_zone, decimal_mode=False)
             self.margin_startTime = startTime
             self.margin_endTime = endTime
             self.margin_requested_days = days

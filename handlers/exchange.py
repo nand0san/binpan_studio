@@ -163,7 +163,7 @@ def get_info_dic() -> dict:
 ###########
 
 
-def get_account_status() -> dict:
+def get_account_status(decimal_mode: bool) -> dict:
     """
     Fetch account status detail.
 
@@ -175,10 +175,10 @@ def get_account_status() -> dict:
     """
     endpoint = '/sapi/v1/account/status'
     return api_raw_signed_get(endpoint=endpoint,
-                              weight=1)
+                              weight=1, decimal_mode=decimal_mode)
 
 
-def get_margin_bnb_interest_status() -> dict:
+def get_margin_bnb_interest_status(decimal_mode: bool) -> dict:
     """
     Get BNB Burn Status (USER_DATA)
 
@@ -198,7 +198,8 @@ def get_margin_bnb_interest_status() -> dict:
     """
     endpoint = '/sapi/v1/bnbBurn'
     return api_raw_signed_get(endpoint=endpoint,
-                              weight=1)
+                              weight=1,
+                              decimal_mode=decimal_mode)
 
 #################
 # weight limits #
@@ -484,8 +485,9 @@ def get_orderTypes_and_permissions(info_dic: dict = None) -> dict:
     return {k: {'orderTypes': v['orderTypes'], 'permissions': v['permissions']} for k, v in info_dic.items()}
 
 
-def get_fees_dict(symbol: str = None,
-                  decimal_mode=False) -> dict:
+def get_fees_dict(decimal_mode: bool,
+                  symbol: str = None
+                  ) -> dict:
     """
     Returns fees for a symbol or for every symbol if not passed a symbol.
 
@@ -498,7 +500,8 @@ def get_fees_dict(symbol: str = None,
         symbol = symbol.upper()
     ret = api_raw_signed_get(endpoint,
                              params={'symbol': symbol},
-                             weight=1)
+                             weight=1,
+                             decimal_mode=decimal_mode)
     if decimal_mode:
         return {i['symbol']: {'makerCommission': dd(i['makerCommission']),
                               'takerCommission': dd(i['takerCommission'])} for i in ret}
@@ -507,14 +510,15 @@ def get_fees_dict(symbol: str = None,
                               'takerCommission': float(i['takerCommission'])} for i in ret}
 
 
-def get_fees(symbol: str = None) -> pd.DataFrame:
+def get_fees(decimal_mode: bool,
+             symbol: str = None) -> pd.DataFrame:
     """
     Returns fees for a symbol or for every symbol if not passed.
 
     :param str symbol: Optional to request just one symbol instead of all.
     :return pd.DataFrame: A pandas dataframe with all the fees applied each symbol.
     """
-    ret = get_fees_dict(symbol=symbol)
+    ret = get_fees_dict(symbol=symbol, decimal_mode=decimal_mode)
     return pd.DataFrame(ret).transpose()
 
 
@@ -540,7 +544,7 @@ def get_system_status():
                        weight=1)['msg']
 
 
-def get_coins_and_networks_info() -> tuple:
+def get_coins_and_networks_info(decimal_mode: bool) -> tuple:
     """
     Get information of coins (available for deposit and withdraw) for user.
 
@@ -552,7 +556,7 @@ def get_coins_and_networks_info() -> tuple:
     """
 
     ret = api_raw_signed_get(endpoint='/sapi/v1/capital/config/getall',
-                             weight=10)
+                             weight=10, decimal_mode=decimal_mode)
     networks = []
     coins = []
 
@@ -574,7 +578,7 @@ def get_coins_and_networks_info() -> tuple:
     return coins_df.sort_index(), networks_df.sort_index()
 
 
-def get_coins_info_list(coin: str = None) -> list:
+def get_coins_info_list(decimal_mode: bool, coin: str = None) -> list:
     """
     Bring all coins exchange info in a list if no one is specified.
 
@@ -586,25 +590,25 @@ def get_coins_info_list(coin: str = None) -> list:
 
     endpoint = '/sapi/v1/capital/config/getall'
     check_weight(weight=10, endpoint=endpoint)
-    ret = api_raw_signed_get(endpoint=endpoint)
+    ret = api_raw_signed_get(endpoint=endpoint, decimal_mode=decimal_mode)
     if not coin:
         return ret
     else:
         return [c for c in ret if c['coin'].upper() == coin.upper()]
 
 
-def get_coins_info_dic(coin: str = None) -> dict:
+def get_coins_info_dic(decimal_mode: bool, coin: str = None) -> dict:
     """
     Useful managing coins info in a big dictionary with coins as keys.
 
     :param str coin: Limit response to a coin.
     :return list: A dictionary with each coin data as value.
     """
-    coins_data_list = get_coins_info_list(coin=coin)
+    coins_data_list = get_coins_info_list(coin=coin, decimal_mode=decimal_mode)
     return {c['coin']: c for c in coins_data_list}
 
 
-def get_legal_coins(coins_dic: dict = None) -> list:
+def get_legal_coins(decimal_mode: bool, coins_dic: dict = None) -> list:
     """
     Fetch coins containing isLegalMoney=true
 
@@ -612,11 +616,11 @@ def get_legal_coins(coins_dic: dict = None) -> list:
     :return list: A list with coins names.
     """
     if not coins_dic:
-        coins_dic = get_coins_info_dic()
+        coins_dic = get_coins_info_dic(decimal_mode=decimal_mode)
     return [coin for coin, data in coins_dic.items() if data['isLegalMoney'] is True]
 
 
-def get_leveraged_coins(coins_dic: dict = None) -> list:
+def get_leveraged_coins(decimal_mode: bool, coins_dic: dict = None) -> list:
     """
     Search for Binance leveraged coins by searching UP or DOWN before an existing coin, examples:
 
@@ -628,7 +632,7 @@ def get_leveraged_coins(coins_dic: dict = None) -> list:
     :return list: A list with leveraged coins names.
     """
     if not coins_dic:
-        coins_dic = get_coins_info_dic()
+        coins_dic = get_coins_info_dic(decimal_mode=decimal_mode)
 
     leveraged = []
 
@@ -643,7 +647,7 @@ def get_leveraged_coins(coins_dic: dict = None) -> list:
     return leveraged
 
 
-def get_leveraged_symbols(info_dic: dict = None, leveraged_coins: list = None) -> list:
+def get_leveraged_symbols(decimal_mode: bool, info_dic: dict = None, leveraged_coins: list = None) -> list:
     """
     Search for Binance symbols based on leveraged coins by searching UP or DOWN before an existing coin in symbol,
     leveraged coins examples are:
@@ -662,7 +666,7 @@ def get_leveraged_symbols(info_dic: dict = None, leveraged_coins: list = None) -
     if not info_dic:
         info_dic = get_info_dic()
     if not leveraged_coins:
-        leveraged_coins = get_leveraged_coins()
+        leveraged_coins = get_leveraged_coins(decimal_mode=decimal_mode)
 
     bases = get_bases_dic(info_dic=info_dic)
     quotes = get_quotes_dic(info_dic=info_dic)
@@ -706,7 +710,8 @@ def get_bases_dic(info_dic: dict = None) -> dict:
     return {k: v['baseAsset'] for k, v in info_dic.items()}
 
 
-def exchange_status(tradeable=True,
+def exchange_status(decimal_mode: bool,
+                    tradeable=True,
                     spot_required=True,
                     margin_required=True,
                     drop_legal=True,
@@ -743,7 +748,7 @@ def exchange_status(tradeable=True,
     if margin_required:
         filtered_info = filter_margin(filtered_info)
 
-    legal_coins = get_legal_coins()
+    legal_coins = get_legal_coins(decimal_mode=decimal_mode)
     not_legal_pairs = filter_legal(legal_coins, info_dic, bases_dic, quotes_dic)
     if drop_legal:
         filtered_info = filter_legal(legal_coins, filtered_info, bases_dic, quotes_dic)
@@ -979,7 +984,8 @@ def statistics_24h(decimal_mode: bool,
                                                                                    margin_required=margin_required,
                                                                                    drop_legal=drop_legal,
                                                                                    filter_leveraged=filter_leveraged,
-                                                                                   info_dic=info_dic)
+                                                                                   info_dic=info_dic,
+                                                                                   decimal_mode=decimal_mode)
     stats = get_24h_statistics()
 
     df = pd.DataFrame(stats)

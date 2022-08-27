@@ -247,7 +247,7 @@ def send_balances(decimal_mode: bool, convert_to: str = 'BUSD') -> float:
     :return float: total value of wallet.
 
     """
-    balances_df = get_spot_balances_df()
+    balances_df = get_spot_balances_df(decimal_mode=decimal_mode)
     parsed_balances = telegram_parse_dataframe_markdown(balances_df)
 
     # add total value in usdt
