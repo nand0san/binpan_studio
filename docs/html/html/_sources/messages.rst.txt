@@ -32,6 +32,4 @@ Parsers
 Utils
 -----
 
-.. autofunction:: get_fills_price
-
 .. autofunction:: send_balances

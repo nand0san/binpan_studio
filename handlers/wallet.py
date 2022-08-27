@@ -1,5 +1,6 @@
 import pandas as pd
 from decimal import Decimal as dd
+from time import sleep
 
 from .logs import Logs
 from .quest import api_raw_signed_get, api_raw_signed_post
@@ -144,6 +145,306 @@ def assets_convertible_dust() -> dict:
 ##########
 # trades #
 ##########
+
+
+def get_fills_price(original_order_dict: dict,
+                    isBuyer: bool,
+                    margin: bool,
+                    test_mode: bool,
+                    operation_time: int,
+                    decimal_mode: bool) -> float:
+    """
+    Obtain averaged price from order API response or claims last trade.
+
+    :param dict original_order_dict: API order dict response.
+    :param bool isBuyer: Sets if was a buyer order to filter for wanted order.
+    :param bool margin: Sets margin order if it is to claim.
+    :param bool test_mode: Set if test mode is on.
+    :param int operation_time: Time limit of operation to analyze.
+    :param bool decimal_mode: Fixes Decimal return type and operative.
+    :return float: Price averaged.
+
+    Example of not totally done order:
+
+    .. code-block::
+
+        {'symbol': 'ACMBUSD',
+        'orderId': 53255492,
+        'orderListId': -1,
+        'clientOrderId': 'DUHlcCqIX2OO298XoAbvEB',
+        'transactTime': 1660332903950,
+        'price': 4.158,
+        'origQty': 21.1,
+        'executedQty': 0.0,
+        'cummulativeQuoteQty': 0.0,
+        'status': 'NEW',
+        'timeInForce': 'GTC',
+        'type': 'LIMIT',
+        'side': 'BUY',
+        'fills': []}
+
+
+    Example of full SPOT response:
+
+    .. code-block::
+
+        {
+          "symbol": "BTCUSDT",
+          "orderId": 28,
+          "orderListId": -1, //Unless OCO, value will be -1
+          "clientOrderId": "6gCrw2kRUFF9CvJDWP16IP",
+          "transactTime": 1507725176595,
+          "price": "0.00000000",
+          "origQty": "10.00000000",
+          "executedQty": "10.00000000",
+          "cummulativeQuoteQty": "10.00000000",
+          "status": "FILLED",
+          "timeInForce": "GTC",
+          "type": "MARKET",
+          "side": "SELL",
+          "strategyId": 1,               // This is only visible if the field was populated on order placement.
+          "strategyType": 1000000        // This is only visible if the field was populated on order placement.
+          "fills": [
+            {
+              "price": "4000.00000000",
+              "qty": "1.00000000",
+              "commission": "4.00000000",
+              "commissionAsset": "USDT",
+              "tradeId": 56
+            },
+            {
+              "price": "3999.00000000",
+              "qty": "5.00000000",
+              "commission": "19.99500000",
+              "commissionAsset": "USDT",
+              "tradeId": 57
+            },
+            {
+              "price": "3998.00000000",
+              "qty": "2.00000000",
+              "commission": "7.99600000",
+              "commissionAsset": "USDT",
+              "tradeId": 58
+            },
+            {
+              "price": "3997.00000000",
+              "qty": "1.00000000",
+              "commission": "3.99700000",
+              "commissionAsset": "USDT",
+              "tradeId": 59
+            },
+            {
+              "price": "3995.00000000",
+              "qty": "1.00000000",
+              "commission": "3.99500000",
+              "commissionAsset": "USDT",
+              "tradeId": 60
+            }
+          ]
+        }
+
+    Example of FULL MARGIN RESPONSE:
+
+    .. code-block::
+
+        {
+          "symbol": "BTCUSDT",
+          "orderId": 28,
+          "clientOrderId": "6gCrw2kRUFF9CvJDWP16IP",
+          "transactTime": 1507725176595,
+          "price": "1.00000000",
+          "origQty": "10.00000000",
+          "executedQty": "10.00000000",
+          "cummulativeQuoteQty": "10.00000000",
+          "status": "FILLED",
+          "timeInForce": "GTC",
+          "type": "MARKET",
+          "side": "SELL",
+          "marginBuyBorrowAmount": 5,       // will not return if no margin trade happens
+          "marginBuyBorrowAsset": "BTC",    // will not return if no margin trade happens
+          "isIsolated": true,       // if isolated margin
+          "fills": [
+            {
+              "price": "4000.00000000",
+              "qty": "1.00000000",
+              "commission": "4.00000000",
+              "commissionAsset": "USDT"
+            },
+            {
+              "price": "3999.00000000",
+              "qty": "5.00000000",
+              "commission": "19.99500000",
+              "commissionAsset": "USDT"
+            },
+            {
+              "price": "3998.00000000",
+              "qty": "2.00000000",
+              "commission": "7.99600000",
+              "commissionAsset": "USDT"
+            },
+            {
+              "price": "3997.00000000",
+              "qty": "1.00000000",
+              "commission": "3.99700000",
+              "commissionAsset": "USDT"
+            },
+            {
+              "price": "3995.00000000",
+              "qty": "1.00000000",
+              "commission": "3.99500000",
+              "commissionAsset": "USDT"
+            }
+          ]
+        }
+
+    STOP LIMIT EXAMPLE requested order response:
+
+    .. code-block::
+
+         {'symbol': 'CHZBUSD',
+          'orderId': 212320642,
+          'orderListId': 72689217,
+          'clientOrderId': 'FLc7AHuuZCpChiH99eHtZh',
+          'price': 0.2139,
+          'origQty': 224.0,
+          'executedQty': 224.0,
+          'cummulativeQuoteQty': 47.9584,
+          'status': 'FILLED',
+          'timeInForce': 'GTC',
+          'type': 'STOP_LOSS_LIMIT',
+          'side': 'SELL',
+          'stopPrice': 0.2141,
+          'icebergQty': '0.00000000',
+          'time': 1661203865507,
+          'updateTime': 1661203966780,
+          'isWorking': True,
+          'origQuoteOrderQty': 0.0},
+
+    """
+    ordered = original_order_dict.copy()
+
+    if decimal_mode:
+        my_type = dd
+    else:
+        my_type = float
+
+    if test_mode and 'STOP_LOSS' in ordered['type']:
+        return my_type(ordered['stopPrice'])
+
+    if test_mode and 'price' in ordered.keys() and ordered['price']:
+        # MUST RETURN FOR TEST ORDERS
+        return my_type(ordered['price'])
+
+    if 'fills' in ordered.keys():
+        if type(ordered['fills']) == dict:
+            if ordered['fills']['price']:
+                return my_type(ordered['fills']['price'])
+
+        elif type(ordered['fills']) == list:
+            n = 0
+            m = 0
+            for fill in ordered['fills']:
+                price = my_type(fill['price'])
+                qty = my_type(fill['qty'])
+                n += price * qty
+                m += qty
+            if m:
+                return n / m
+        else:
+            raise Exception(f"BinPan Error: Error en parseo de orden ejecutada.\n{ordered}")
+
+    # any other case wait 3 times for order to appear
+    fills_price = None
+    tour = 0
+    symbol = ordered['symbol']
+
+    while not fills_price and tour < 5:
+        wallet_logger.info(f"Get fills from API trades!... wait 5 seconds for trade to appear. Round:{tour}")
+
+        if not margin:
+            last_trades = get_spot_trades_list(symbol=symbol)
+        else:
+            last_trades = get_margin_trades_list(symbol=symbol)
+
+        try:
+            # trades return time field with a timestamp
+            fills_price = [i for i in last_trades if i['isBuyer'] == isBuyer and int(i['time']) >= operation_time][-1]['price']
+            tour += 1
+        except IndexError:
+            sleep(5)
+
+    return my_type(fills_price)
+
+
+def get_fills_qty(original_order_dict: dict,
+                  margin: bool,
+                  isBuyer: bool,
+                  operation_time: int,
+                  decimal_mode: bool) -> float or dd:
+    """
+    Extracts order quantity from an order response or checks a trade from API.
+
+    :param dict original_order_dict: A putting order response from API dict.
+    :param bool margin: Checks if margin or not.
+    :param bool isBuyer: Sets if buy or sell side.
+    :param int operation_time: A limit old timestamp to verify existence of order.
+    :param bool decimal_mode: Sets Decimal operating mode.
+    :return float or decimal.Decimal: Returns the needed value.
+    """
+    ordered = original_order_dict.copy()
+    wallet_logger.debug(f"fills_qty: {ordered}")
+
+    ret = None
+    if decimal_mode:
+        my_type = dd
+    else:
+        my_type = float
+
+    if 'fills' in ordered.keys():
+
+        if type(ordered['fills']) == dict:
+            return my_type(ordered['fills']['qty'])
+
+        elif type(ordered['fills']) == list:
+            m = 0
+            for fill in ordered['fills']:
+                qty = my_type(fill['qty'])
+                m += qty
+            return m
+        else:
+            raise Exception(f"BinPan Error: Error parsing order.\n{ordered}")
+
+    else:
+        # si fue una orden de compra a precio de mercado no tiene precio, price = 0.0, cantidad ?????
+        if 'test_quantity' in ordered.keys():
+            ret = ordered['test_quantity']
+        elif 'executedQty' in ordered.keys():
+            qty_ret = my_type(ordered['executedQty'])
+            if qty_ret != 0:
+                return qty_ret
+        else:
+            fills_qty = None
+            tour = 0
+            symbol = ordered['symbol']
+
+            while not fills_qty and tour < 5:
+
+                wallet_logger.info(f"Get fills qty from API trades!... wait 5 seconds for trade to appear. Round:{tour}")
+
+                if not margin:
+                    last_trades = get_spot_trades_list(symbol=symbol)
+                else:
+                    last_trades = get_margin_trades_list(symbol=symbol)
+
+                try:
+                    # trades return time field with a timestamp
+                    fills_qty = [i for i in last_trades if i['isBuyer'] == isBuyer and int(i['time']) >= operation_time][-1]['qty']
+                    tour += 1
+                except IndexError:
+                    sleep(5)
+            ret = fills_qty
+
+    return my_type(ret)
 
 
 def get_spot_trades_list(symbol: str,

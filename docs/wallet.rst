@@ -21,6 +21,10 @@ Wallet snapshots
 Trades
 ------
 
+.. autofunction:: get_fills_price
+
+.. autofunction:: get_fills_qty
+
 .. autofunction:: get_spot_trades_list
 
 .. autofunction:: get_margin_trades_list

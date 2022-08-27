@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wallet Module &mdash; BinPan 0.0.80 documentation</title>
+  <title>Wallet Module &mdash; BinPan 0.1.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/style.css" type="text/css" />
@@ -148,6 +148,194 @@ Weight(IP): 1</p>
 </section>
 <section id="trades">
 <h2>Trades<a class="headerlink" href="#trades" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.wallet.get_fills_price">
+<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_fills_price</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_order_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isBuyer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operation_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.wallet.get_fills_price" title="Permalink to this definition"></a></dt>
+<dd><p>Obtain averaged price from order API response or claims last trade.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>original_order_dict</strong> (<em>dict</em>) – API order dict response.</p></li>
+<li><p><strong>isBuyer</strong> (<em>bool</em>) – Sets if was a buyer order to filter for wanted order.</p></li>
+<li><p><strong>margin</strong> (<em>bool</em>) – Sets margin order if it is to claim.</p></li>
+<li><p><strong>test_mode</strong> (<em>bool</em>) – Set if test mode is on.</p></li>
+<li><p><strong>operation_time</strong> (<em>int</em>) – Time limit of operation to analyze.</p></li>
+<li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type and operative.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return float</dt>
+<dd class="field-even"><p>Price averaged.</p>
+</dd>
+</dl>
+<p>Example of not totally done order:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;symbol&#39;</span><span class="p">:</span> <span class="s1">&#39;ACMBUSD&#39;</span><span class="p">,</span>
+<span class="s1">&#39;orderId&#39;</span><span class="p">:</span> <span class="mi">53255492</span><span class="p">,</span>
+<span class="s1">&#39;orderListId&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+<span class="s1">&#39;clientOrderId&#39;</span><span class="p">:</span> <span class="s1">&#39;DUHlcCqIX2OO298XoAbvEB&#39;</span><span class="p">,</span>
+<span class="s1">&#39;transactTime&#39;</span><span class="p">:</span> <span class="mi">1660332903950</span><span class="p">,</span>
+<span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="mf">4.158</span><span class="p">,</span>
+<span class="s1">&#39;origQty&#39;</span><span class="p">:</span> <span class="mf">21.1</span><span class="p">,</span>
+<span class="s1">&#39;executedQty&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+<span class="s1">&#39;cummulativeQuoteQty&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+<span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;NEW&#39;</span><span class="p">,</span>
+<span class="s1">&#39;timeInForce&#39;</span><span class="p">:</span> <span class="s1">&#39;GTC&#39;</span><span class="p">,</span>
+<span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;LIMIT&#39;</span><span class="p">,</span>
+<span class="s1">&#39;side&#39;</span><span class="p">:</span> <span class="s1">&#39;BUY&#39;</span><span class="p">,</span>
+<span class="s1">&#39;fills&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+</pre></div>
+</div>
+<p>Example of full SPOT response:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;symbol&quot;</span><span class="p">:</span> <span class="s2">&quot;BTCUSDT&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;orderId&quot;</span><span class="p">:</span> <span class="mi">28</span><span class="p">,</span>
+  <span class="s2">&quot;orderListId&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">//</span><span class="n">Unless</span> <span class="n">OCO</span><span class="p">,</span> <span class="n">value</span> <span class="n">will</span> <span class="n">be</span> <span class="o">-</span><span class="mi">1</span>
+  <span class="s2">&quot;clientOrderId&quot;</span><span class="p">:</span> <span class="s2">&quot;6gCrw2kRUFF9CvJDWP16IP&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;transactTime&quot;</span><span class="p">:</span> <span class="mi">1507725176595</span><span class="p">,</span>
+  <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;origQty&quot;</span><span class="p">:</span> <span class="s2">&quot;10.00000000&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;executedQty&quot;</span><span class="p">:</span> <span class="s2">&quot;10.00000000&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;cummulativeQuoteQty&quot;</span><span class="p">:</span> <span class="s2">&quot;10.00000000&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;FILLED&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;timeInForce&quot;</span><span class="p">:</span> <span class="s2">&quot;GTC&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;MARKET&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;side&quot;</span><span class="p">:</span> <span class="s2">&quot;SELL&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;strategyId&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>               <span class="o">//</span> <span class="n">This</span> <span class="ow">is</span> <span class="n">only</span> <span class="n">visible</span> <span class="k">if</span> <span class="n">the</span> <span class="n">field</span> <span class="n">was</span> <span class="n">populated</span> <span class="n">on</span> <span class="n">order</span> <span class="n">placement</span><span class="o">.</span>
+  <span class="s2">&quot;strategyType&quot;</span><span class="p">:</span> <span class="mi">1000000</span>        <span class="o">//</span> <span class="n">This</span> <span class="ow">is</span> <span class="n">only</span> <span class="n">visible</span> <span class="k">if</span> <span class="n">the</span> <span class="n">field</span> <span class="n">was</span> <span class="n">populated</span> <span class="n">on</span> <span class="n">order</span> <span class="n">placement</span><span class="o">.</span>
+  <span class="s2">&quot;fills&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;4000.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;1.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;4.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;tradeId&quot;</span><span class="p">:</span> <span class="mi">56</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;3999.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;5.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;19.99500000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;tradeId&quot;</span><span class="p">:</span> <span class="mi">57</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;3998.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;2.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;7.99600000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;tradeId&quot;</span><span class="p">:</span> <span class="mi">58</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;3997.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;1.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;3.99700000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;tradeId&quot;</span><span class="p">:</span> <span class="mi">59</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;3995.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;1.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;3.99500000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;tradeId&quot;</span><span class="p">:</span> <span class="mi">60</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Example of FULL MARGIN RESPONSE:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;symbol&quot;</span><span class="p">:</span> <span class="s2">&quot;BTCUSDT&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;orderId&quot;</span><span class="p">:</span> <span class="mi">28</span><span class="p">,</span>
+  <span class="s2">&quot;clientOrderId&quot;</span><span class="p">:</span> <span class="s2">&quot;6gCrw2kRUFF9CvJDWP16IP&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;transactTime&quot;</span><span class="p">:</span> <span class="mi">1507725176595</span><span class="p">,</span>
+  <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;1.00000000&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;origQty&quot;</span><span class="p">:</span> <span class="s2">&quot;10.00000000&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;executedQty&quot;</span><span class="p">:</span> <span class="s2">&quot;10.00000000&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;cummulativeQuoteQty&quot;</span><span class="p">:</span> <span class="s2">&quot;10.00000000&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;FILLED&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;timeInForce&quot;</span><span class="p">:</span> <span class="s2">&quot;GTC&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;MARKET&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;side&quot;</span><span class="p">:</span> <span class="s2">&quot;SELL&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;marginBuyBorrowAmount&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>       <span class="o">//</span> <span class="n">will</span> <span class="ow">not</span> <span class="k">return</span> <span class="k">if</span> <span class="n">no</span> <span class="n">margin</span> <span class="n">trade</span> <span class="n">happens</span>
+  <span class="s2">&quot;marginBuyBorrowAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;BTC&quot;</span><span class="p">,</span>    <span class="o">//</span> <span class="n">will</span> <span class="ow">not</span> <span class="k">return</span> <span class="k">if</span> <span class="n">no</span> <span class="n">margin</span> <span class="n">trade</span> <span class="n">happens</span>
+  <span class="s2">&quot;isIsolated&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>       <span class="o">//</span> <span class="k">if</span> <span class="n">isolated</span> <span class="n">margin</span>
+  <span class="s2">&quot;fills&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;4000.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;1.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;4.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;3999.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;5.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;19.99500000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;3998.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;2.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;7.99600000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;3997.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;1.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;3.99700000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;3995.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;1.00000000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;3.99500000&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>STOP LIMIT EXAMPLE requested order response:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;symbol&#39;</span><span class="p">:</span> <span class="s1">&#39;CHZBUSD&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;orderId&#39;</span><span class="p">:</span> <span class="mi">212320642</span><span class="p">,</span>
+ <span class="s1">&#39;orderListId&#39;</span><span class="p">:</span> <span class="mi">72689217</span><span class="p">,</span>
+ <span class="s1">&#39;clientOrderId&#39;</span><span class="p">:</span> <span class="s1">&#39;FLc7AHuuZCpChiH99eHtZh&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="mf">0.2139</span><span class="p">,</span>
+ <span class="s1">&#39;origQty&#39;</span><span class="p">:</span> <span class="mf">224.0</span><span class="p">,</span>
+ <span class="s1">&#39;executedQty&#39;</span><span class="p">:</span> <span class="mf">224.0</span><span class="p">,</span>
+ <span class="s1">&#39;cummulativeQuoteQty&#39;</span><span class="p">:</span> <span class="mf">47.9584</span><span class="p">,</span>
+ <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;FILLED&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;timeInForce&#39;</span><span class="p">:</span> <span class="s1">&#39;GTC&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;STOP_LOSS_LIMIT&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;side&#39;</span><span class="p">:</span> <span class="s1">&#39;SELL&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;stopPrice&#39;</span><span class="p">:</span> <span class="mf">0.2141</span><span class="p">,</span>
+ <span class="s1">&#39;icebergQty&#39;</span><span class="p">:</span> <span class="s1">&#39;0.00000000&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="mi">1661203865507</span><span class="p">,</span>
+ <span class="s1">&#39;updateTime&#39;</span><span class="p">:</span> <span class="mi">1661203966780</span><span class="p">,</span>
+ <span class="s1">&#39;isWorking&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+ <span class="s1">&#39;origQuoteOrderQty&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.wallet.get_fills_qty">
+<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_fills_qty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_order_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isBuyer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operation_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.wallet.get_fills_qty" title="Permalink to this definition"></a></dt>
+<dd><p>Extracts order quantity from an order response or checks a trade from API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>original_order_dict</strong> (<em>dict</em>) – A putting order response from API dict.</p></li>
+<li><p><strong>margin</strong> (<em>bool</em>) – Checks if margin or not.</p></li>
+<li><p><strong>isBuyer</strong> (<em>bool</em>) – Sets if buy or sell side.</p></li>
+<li><p><strong>operation_time</strong> (<em>int</em>) – A limit old timestamp to verify existence of order.</p></li>
+<li><p><strong>decimal_mode</strong> (<em>bool</em>) – Sets Decimal operating mode.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return float or decimal.Decimal</dt>
+<dd class="field-even"><p>Returns the needed value.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.wallet.get_spot_trades_list">
 <span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_spot_trades_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orderId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fromId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recvWindow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.wallet.get_spot_trades_list" title="Permalink to this definition"></a></dt>
