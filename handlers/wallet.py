@@ -906,7 +906,12 @@ def get_margin_borrowed_balances(decimal_mode: bool, balances: dict = None) -> d
     """
     if not balances:
         balances = get_margin_balances(decimal_mode=decimal_mode)
-    return {k: v['borrowed'] for k, v in balances.items() if v['borrowed']}
+    ret = {}
+    for k, v in balances.items():
+        if 'borrowed' in v.keys():
+            if v['borrowed']:
+                ret[k] = v['borrowed']
+    return ret
 
 
 def get_margin_interest_balances(decimal_mode: bool,
@@ -921,10 +926,14 @@ def get_margin_interest_balances(decimal_mode: bool,
     """
     if not balances:
         balances = get_margin_balances(decimal_mode=decimal_mode)
-    if decimal_mode:
-        return {k: dd(v['interest']) for k, v in balances.items() if v['interest']}
-    else:
-        return {k: float(v['interest']) for k, v in balances.items() if v['interest']}
+    if not balances:
+        balances = get_margin_balances(decimal_mode=decimal_mode)
+    ret = {}
+    for k, v in balances.items():
+        if 'interest' in v.keys():
+            if v['interest']:
+                ret[k] = v['interest']
+    return ret
 
 
 def get_margin_netAsset_balances(decimal_mode: bool, balances: dict = None):
