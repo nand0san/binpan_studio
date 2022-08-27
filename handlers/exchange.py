@@ -483,7 +483,8 @@ def get_orderTypes_and_permissions(info_dic: dict = None) -> dict:
     return {k: {'orderTypes': v['orderTypes'], 'permissions': v['permissions']} for k, v in info_dic.items()}
 
 
-def get_fees_dict(symbol: str = None) -> dict:
+def get_fees_dict(symbol: str = None,
+                  decimal_mode=False) -> dict:
     """
     Returns fees for a symbol or for every symbol if not passed a symbol.
 
@@ -496,8 +497,12 @@ def get_fees_dict(symbol: str = None) -> dict:
     ret = api_raw_signed_get(endpoint,
                              params={'symbol': symbol},
                              weight=1)
-    return {i['symbol']: {'makerCommission': float(i['makerCommission']),
-                          'takerCommission': float(i['takerCommission'])} for i in ret}
+    if decimal_mode:
+        return {i['symbol']: {'makerCommission': dd(i['makerCommission']),
+                              'takerCommission': dd(i['takerCommission'])} for i in ret}
+    else:
+        return {i['symbol']: {'makerCommission': float(i['makerCommission']),
+                              'takerCommission': float(i['takerCommission'])} for i in ret}
 
 
 def get_fees(symbol: str = None) -> pd.DataFrame:

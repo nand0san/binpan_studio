@@ -2,6 +2,7 @@ from tqdm import tqdm
 from time import time
 import pandas as pd
 import json
+from decimal import Decimal as dd
 
 import handlers.time_helper
 from .logs import Logs
@@ -166,16 +167,19 @@ def get_candles_by_time_stamps(symbol: str,
     return raw_candles
 
 
-def get_prices_dic() -> dict:
+def get_prices_dic(decimal_mode=False) -> dict:
     """
     Gets all symbols current prices into a dictionary.
-
+    :decimal_mode bool: It flags to work in decimal mode.
     :return dict:
     """
     endpoint = '/api/v3/ticker/price'
     check_weight(2, endpoint=endpoint)
     ret = get_response(url=endpoint)
-    return {d['symbol']: float(d['price']) for d in ret}
+    if decimal_mode:
+        return {d['symbol']: dd(d['price']) for d in ret}
+    else:
+        return {d['symbol']: float(d['price']) for d in ret}
 
 
 def parse_candles_to_dataframe(raw_response: list,

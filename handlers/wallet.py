@@ -1,4 +1,5 @@
 import pandas as pd
+from decimal import Decimal as dd
 
 from .logs import Logs
 from .quest import api_raw_signed_get, api_raw_signed_post
@@ -605,7 +606,8 @@ def get_margin_netAsset_balances(balances: dict = None):
 
 
 def get_margin_balances_total_value(balances: dict = None,
-                                    convert_to: str = 'BUSD') -> float:
+                                    convert_to: str = 'BUSD',
+                                    decimal_mode=False) -> float:
     """
     Returns total value expressed in a quote coin. Counts free, locked, borrowed and interest assets.
 
@@ -659,5 +661,7 @@ def get_margin_balances_total_value(balances: dict = None,
                                        coin_qty=total_coins)
 
         total += float(converted_value)
-
-    return total
+    if decimal_mode:
+        return dd(total)
+    else:
+        return total
