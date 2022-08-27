@@ -875,10 +875,12 @@ def get_margin_free_balances(decimal_mode: bool,
     """
     if not balances:
         balances = get_margin_balances(decimal_mode=decimal_mode)
-    if decimal_mode:
-        return {k: dd(v['free']) for k, v in balances.items() if v['free']}
-    else:
-        return {k: float(v['free']) for k, v in balances.items() if v['free']}
+    ret = {}
+    for k, v in balances.items():
+        if 'free' in v.keys():
+            if v['free']:
+                ret[k] = v['free']
+    return ret
 
 
 def get_margin_locked_balances(decimal_mode: bool, balances: dict = None) -> dict:
@@ -892,7 +894,12 @@ def get_margin_locked_balances(decimal_mode: bool, balances: dict = None) -> dic
     """
     if not balances:
         balances = get_margin_balances(decimal_mode=decimal_mode)
-    return {k: v['locked'] for k, v in balances.items() if v['locked']}
+    ret = {}
+    for k, v in balances.items():
+        if 'locked' in v.keys():
+            if v['locked']:
+                ret[k] = v['locked']
+    return ret
 
 
 def get_margin_borrowed_balances(decimal_mode: bool, balances: dict = None) -> dict:
