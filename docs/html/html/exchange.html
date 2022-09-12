@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Exchange Module &mdash; BinPan 0.1.1 documentation</title>
+  <title>Exchange Module &mdash; BinPan 0.1.3 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/style.css" type="text/css" />
@@ -444,15 +444,13 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.exchange.filter_legal">
-<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">filter_legal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">legal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bases</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quotes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.exchange.filter_legal" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">filter_legal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">legal_coins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.exchange.filter_legal" title="Permalink to this definition"></a></dt>
 <dd><p>Returns, from BinPan exchange info dictionary currently trading symbols not using legal Fiat money.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>legal</strong> (<em>list</em>) – List of legal coins, Fiat coins.</p></li>
+<li><p><strong>legal_coins</strong> (<em>list</em>) – List of legal coins, Fiat coins.</p></li>
 <li><p><strong>info_dic</strong> (<em>dict</em>) – BinPan exchange info dictionary. It’s optional to avoid an API call.</p></li>
-<li><p><strong>quotes</strong> (<em>dict</em>) – A dict with symbols in keys and its quote in values.</p></li>
-<li><p><strong>bases</strong> (<em>dict</em>) – A dict with symbols in keys and its base in values.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return dict</dt>
@@ -503,7 +501,10 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 <dd><p>Returns fees for a symbol or for every symbol if not passed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>symbol</strong> (<em>str</em>) – Optional to request just one symbol instead of all.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type and operative.</p></li>
+<li><p><strong>symbol</strong> (<em>str</em>) – Optional to request just one symbol instead of all.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return pd.DataFrame</dt>
 <dd class="field-even"><p>A pandas dataframe with all the fees applied each symbol.</p>
@@ -549,7 +550,10 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 <p>Returns a list of dictionaries, one for each currency.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>coin</strong> (<em>str</em>) – Limit response to a coin.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type and operative.</p></li>
+<li><p><strong>coin</strong> (<em>str</em>) – Limit response to a coin.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return list</dt>
 <dd class="field-even"><p>A list of dictionaries each coin.</p>
@@ -563,7 +567,11 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 <dd><p>Useful managing coins info in a big dictionary with coins as keys.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>coin</strong> (<em>str</em>) – Limit response to a coin.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type and operative.</p></li>
+<li><p><strong>decimal_mode</strong> – Fixes Decimal return type and operative.</p></li>
+<li><p><strong>coin</strong> (<em>str</em>) – Limit response to a coin.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return list</dt>
 <dd class="field-even"><p>A dictionary with each coin data as value.</p>
@@ -577,7 +585,10 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 <dd><p>Fetch coins containing isLegalMoney=true</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>coins_dic</strong> (<em>dict</em>) – Avoid fetching the API by passing a dict with coins data.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type and operative.</p></li>
+<li><p><strong>coins_dic</strong> (<em>dict</em>) – Avoid fetching the API by passing a dict with coins data.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return list</dt>
 <dd class="field-even"><p>A list with coins names.</p>
@@ -596,7 +607,10 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 </div></blockquote>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>coins_dic</strong> (<em>dict</em>) – Avoid fetching the API by passing a dict with coins data.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type and operative.</p></li>
+<li><p><strong>coins_dic</strong> (<em>dict</em>) – Avoid fetching the API by passing a dict with coins data.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return list</dt>
 <dd class="field-even"><p>A list with leveraged coins names.</p>
@@ -620,6 +634,7 @@ leveraged coins examples are:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type and operative.</p></li>
 <li><p><strong>info_dic</strong> (<em>dict</em>) – Avoid fetching the API by passing a dict with symbols data.</p></li>
 <li><p><strong>leveraged_coins</strong> (<em>list</em>) – Avoid fetching the API for getting coins by passing a list with coins data.</p></li>
 </ul>
@@ -671,6 +686,7 @@ leveraged coins examples are:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type and operative.</p></li>
 <li><p><strong>tradeable</strong> (<em>bool</em>) – Require or not just currently trading symbols.</p></li>
 <li><p><strong>spot_required</strong> (<em>bool</em>) – Requires just SPOT currently trading symbols.</p></li>
 <li><p><strong>margin_required</strong> (<em>bool</em>) – Requires just MARGIN currently trading symbols.</p></li>

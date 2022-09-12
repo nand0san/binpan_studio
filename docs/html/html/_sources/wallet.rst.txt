@@ -35,9 +35,9 @@ Spot Balances
 
 .. autofunction:: get_spot_account_info
 
-.. autofunction:: spot_free_balances_parsed
+.. autofunction:: get_spot_free_balances
 
-.. autofunction:: spot_locked_balances_parsed
+.. autofunction:: get_spot_locked_balances
 
 .. autofunction:: get_coins_with_balance
 

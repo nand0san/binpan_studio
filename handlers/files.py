@@ -16,15 +16,15 @@ cipher_object = AesCipher()
 # Files manage #
 ################
 
-def create_dir(path):
+def create_dir(my_path: str):
     """
     Create a folder at the designated path if it doesn't exist. No error if it already exists
 
-    :param str path: Path for the new directory.
+    :param str my_path: Path for the new directory.
 
     """
-    if not path.exists(path):
-        makedirs(path)
+    if not path.exists(my_path):
+        makedirs(my_path)
 
 
 def save_dataframe_to_csv(filename, data: pd.DataFrame, col_sep=',', index=False, timestamp=True) -> None:

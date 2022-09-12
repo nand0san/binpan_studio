@@ -615,9 +615,9 @@ def get_spot_account_info(decimal_mode: bool, recvWindow: int = 10000) -> dict:
                               decimal_mode=decimal_mode)
 
 
-def spot_free_balances_parsed(decimal_mode: bool,
-                              data_dic: dict = None
-                              ) -> dict:
+def get_spot_free_balances(decimal_mode: bool,
+                           data_dic: dict = None
+                           ) -> dict:
     """
     Parses available balances from account info.
 
@@ -642,7 +642,8 @@ def spot_free_balances_parsed(decimal_mode: bool,
     return ret
 
 
-def spot_locked_balances_parsed(decimal_mode: bool, data_dic: dict = None) -> dict:
+def get_spot_locked_balances(decimal_mode: bool,
+                             data_dic: dict = None) -> dict:
     """
     Parses locked in order balances from account info.
 
@@ -670,8 +671,8 @@ def get_coins_with_balance(decimal_mode: bool) -> list:
     :return list:
     """
     data_dic = get_spot_account_info(decimal_mode=decimal_mode)
-    free = spot_free_balances_parsed(data_dic=data_dic, decimal_mode=decimal_mode)
-    locked = spot_locked_balances_parsed(data_dic=data_dic, decimal_mode=decimal_mode)
+    free = get_spot_free_balances(data_dic=data_dic, decimal_mode=decimal_mode)
+    locked = get_spot_locked_balances(data_dic=data_dic, decimal_mode=decimal_mode)
     free = [symbol for symbol, balance in free.items() if float(balance) > 0]
     locked = [symbol for symbol, balance in locked.items() if float(balance) > 0]
     symbols = free + locked

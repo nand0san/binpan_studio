@@ -410,7 +410,7 @@ def filter_not_margin(symbols: list = None,
     """
     Returns, from BinPan exchange info dictionary currently NOT MARGIN symbols.
 
-    :param list symbols: A list of symbols to apply filter. Optional. 
+    :param list symbols: A list of symbols to apply filter. Optional.
     :param dict info_dic: BinPan exchange info dictionary. It's optional to avoid an API call.
     :return list: BinPan exchange info dictionary, but, just with currently NOT MARGIN symbols.
 
@@ -437,21 +437,19 @@ def filter_leveraged_tokens(info_dic: dict) -> dict:
     return {k: v for k, v in info_dic.items() if all(lev not in k for lev in ['UP', 'DOWN', 'BULL', 'BEAR'])}
 
 
-def filter_legal(legal: list,
-                 info_dic: dict,
-                 bases: dict,
-                 quotes: dict) -> dict:
+def filter_legal(legal_coins: list,
+                 info_dic: dict) -> dict:
     """
     Returns, from BinPan exchange info dictionary currently trading symbols not using legal Fiat money.
 
-    :param list legal: List of legal coins, Fiat coins. 
+    :param list legal_coins: List of legal coins, Fiat coins. 
     :param dict info_dic: BinPan exchange info dictionary. It's optional to avoid an API call.
-    :param dict quotes: A dict with symbols in keys and its quote in values. 
-    :param dict bases: A dict with symbols in keys and its base in values.
     :return dict: BinPan exchange info dictionary, but, without fiat legal symbols.
 
     """
-    return {k: v for k, v in info_dic.items() if (not bases[k] in legal) and (not quotes[k] in legal)}
+    bases = get_bases_dic(info_dic=info_dic)
+    quotes = get_quotes_dic(info_dic=info_dic)
+    return {k: v for k, v in info_dic.items() if (not bases[k] in legal_coins) and (not quotes[k] in legal_coins)}
 
 
 #################
@@ -515,6 +513,7 @@ def get_fees(decimal_mode: bool,
     """
     Returns fees for a symbol or for every symbol if not passed.
 
+    :param bool decimal_mode: Fixes Decimal return type and operative.
     :param str symbol: Optional to request just one symbol instead of all.
     :return pd.DataFrame: A pandas dataframe with all the fees applied each symbol.
     """
@@ -584,6 +583,7 @@ def get_coins_info_list(decimal_mode: bool, coin: str = None) -> list:
 
     Returns a list of dictionaries, one for each currency.
 
+    :param bool decimal_mode: Fixes Decimal return type and operative.
     :param str coin: Limit response to a coin.
     :return list: A list of dictionaries each coin.
     """
@@ -601,6 +601,8 @@ def get_coins_info_dic(decimal_mode: bool, coin: str = None) -> dict:
     """
     Useful managing coins info in a big dictionary with coins as keys.
 
+    :param bool decimal_mode: Fixes Decimal return type and operative.
+    :param bool decimal_mode: Fixes Decimal return type and operative.
     :param str coin: Limit response to a coin.
     :return list: A dictionary with each coin data as value.
     """
@@ -612,6 +614,7 @@ def get_legal_coins(decimal_mode: bool, coins_dic: dict = None) -> list:
     """
     Fetch coins containing isLegalMoney=true
 
+    :param bool decimal_mode: Fixes Decimal return type and operative.
     :param dict coins_dic: Avoid fetching the API by passing a dict with coins data.
     :return list: A list with coins names.
     """
@@ -628,6 +631,7 @@ def get_leveraged_coins(decimal_mode: bool, coins_dic: dict = None) -> list:
 
             ['1INCHDOWN', '1INCHUP', 'AAVEDOWN', 'AAVEUP', 'ADADOWN', ... ]
 
+    :param bool decimal_mode: Fixes Decimal return type and operative.
     :param dict coins_dic: Avoid fetching the API by passing a dict with coins data.
     :return list: A list with leveraged coins names.
     """
@@ -659,6 +663,7 @@ def get_leveraged_symbols(decimal_mode: bool, info_dic: dict = None, leveraged_c
 
             # leveraged symbols
 
+    :param bool decimal_mode: Fixes Decimal return type and operative.
     :param dict info_dic: Avoid fetching the API by passing a dict with symbols data.
     :param list leveraged_coins: Avoid fetching the API for getting coins by passing a list with coins data.
     :return list: A list with leveraged coins names.
@@ -721,6 +726,7 @@ def exchange_status(decimal_mode: bool,
     """
     It returns a lot of results: bases_dic, quotes_dic, legal_coins, not_legal_pairs, symbol_filters, filtered_pairs
 
+    :param bool decimal_mode: Fixes Decimal return type and operative.
     :param bool tradeable: Require or not just currently trading symbols.
     :param bool spot_required: Requires just SPOT currently trading symbols.
     :param bool margin_required: Requires just MARGIN currently trading symbols.
@@ -749,9 +755,9 @@ def exchange_status(decimal_mode: bool,
         filtered_info = filter_margin(filtered_info)
 
     legal_coins = get_legal_coins(decimal_mode=decimal_mode)
-    not_legal_pairs = filter_legal(legal_coins, info_dic, bases_dic, quotes_dic)
+    not_legal_pairs = filter_legal(legal_coins=legal_coins, info_dic=info_dic)
     if drop_legal:
-        filtered_info = filter_legal(legal_coins, filtered_info, bases_dic, quotes_dic)
+        filtered_info = filter_legal(legal_coins=legal_coins, info_dic=filtered_info)
 
     if not symbol_filters:
         symbol_filters = get_symbols_filters(info_dic=info_dic)
