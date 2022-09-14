@@ -29,7 +29,7 @@ from random import choice
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
 
-__version__ = "0.1.3"
+__version__ = "0.1.4"
 
 try:
     from secret import redis_conf

@@ -123,7 +123,8 @@ def telegram_parse_dict(msg_data: dict, timezone='UTC'):
             else:
                 row = f"*{k}* : {fv2} \n"
         parsed_msg += row
-    return parsed_msg.replace('_', ' ')
+    return parsed_msg.replace('_', ' ').replace("Decimal('", "`").replace("')", "`")
+
 
 
 # futuro bot #
