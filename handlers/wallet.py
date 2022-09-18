@@ -1012,7 +1012,7 @@ def get_margin_balances_total_value(decimal_mode: bool,
         else:
             locked = 0
         if coin in borrowed_values.keys():
-            borrowed = locked_values[coin]
+            borrowed = borrowed_values[coin]
         else:
             borrowed = 0
         if coin in interest_values.keys():
