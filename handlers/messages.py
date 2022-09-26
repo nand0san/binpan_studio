@@ -6,6 +6,7 @@ from .wallet import get_spot_balances_df, get_spot_balances_total_value
 from pandas import DataFrame
 import requests
 
+
 msg_logger = Logs(filename='./logs/msg_logger.log', name='msg_logger', info_level='INFO')
 
 cipher_object = AesCipher()
@@ -118,13 +119,17 @@ def telegram_parse_dict(msg_data: dict, timezone='UTC'):
         elif type(fv2) == dict:
             row = f"*{k}* : \n{telegram_parse_dict(msg_data=fv2, timezone=timezone)} \n"
         else:
-            if 'time' in k and k != 'timeInForce':
+            if 'time' in k and k != 'timeInForce' and k != 'time_zone':
                 date = convert_milliseconds_to_str(ms=fv2, timezoned=timezone)
                 row = f"*{k}* : {date} \n"
             else:
                 row = f"*{k}* : {fv2} \n"
         parsed_msg += row
     return parsed_msg.replace('_', ' ').replace("Decimal('", "`").replace("')", "`")
+
+
+
+# futuro bot #
 
 
 def tab_str(text: str, indentation=8) -> str:
