@@ -29,7 +29,7 @@ from random import choice
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
 
-__version__ = "0.1.4"
+__version__ = "0.1.5"
 
 try:
     from secret import redis_conf
@@ -2514,6 +2514,10 @@ class Exchange(object):
         self.symbols = self.get_symbols()
         self.df = self.get_df()
         self.order_types = self.get_order_types()
+        try:
+            from secret import api_key, api_secret
+        except ImportError:
+            print(f"Binance Api key or Api Secret not found.")
 
     def __repr__(self):
         return str(self.df)
