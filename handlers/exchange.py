@@ -921,7 +921,7 @@ def convert_symbol_base_to_other_coin(decimal_mode: bool,
                                       base_qty: float = 1,
                                       convert_to: str = 'USDT',
                                       prices: dict = None,
-                                      info_dic: dict = None) -> float:
+                                      info_dic: dict = None) -> float or dd:
     """
         Convert value of a quantity of coins to value in other coin.
 
@@ -933,16 +933,26 @@ def convert_symbol_base_to_other_coin(decimal_mode: bool,
     :param dict info_dic: BinPan exchange info dictionary. It's optional to avoid an API call.
     :return float: Value expressed in the converted coin.
     """
+    if decimal_mode:
+        my_type = dd
+    else:
+        my_type = float
+
     if not info_dic:
         info_dic = get_info_dic()
-    bases_dic = {k: v['baseAsset'] for k, v in info_dic.items()}
 
-    base = bases_dic[symbol_to_convert_base]
+    # bases_dic = {k: v['baseAsset'] for k, v in info_dic.items()}
+    bases_dic = get_bases_dic(info_dic=info_dic)
+    try:
+        base = bases_dic[symbol_to_convert_base]
+    except KeyError:
+        return 0
+
     if not prices:
         prices = get_prices_dic(decimal_mode=decimal_mode)
     ret = convert_to_other_coin(coin=base, convert_to=convert_to, coin_qty=base_qty, prices=prices, decimal_mode=decimal_mode)
-    if type(ret) == int or type(ret) == float:
-        return ret
+    if type(ret) == int or type(ret) == float or type(ret) == dd:
+        return my_type(ret)
     else:
         raise Exception('BinPan Error: convert_symbol_base_to_other_coin breakpoint')
 
@@ -1027,10 +1037,14 @@ def statistics_24h(decimal_mode: bool,
                                                          prices=prices,
                                                          info_dic=info_dic,
                                                          decimal_mode=decimal_mode)
-            df.loc[df['symbol'] == pair, stable_coin_value_name] = usdt_val
+
+            df.loc[df['symbol'] == pair, stable_coin_value_name] = float(usdt_val)  # float for pandas
+
         stable_coin_volumen_name = f"{stablecoin_value}_volume"
         df[stable_coin_volumen_name] = df[stable_coin_value_name] * df['volume']
+
         return df.sort_values(stable_coin_volumen_name, ascending=False)
+
     return df.sort_values(sort_by, ascending=False)
 
 
@@ -1044,11 +1058,12 @@ def get_top_gainers(decimal_mode: bool,
                     top_gainers_qty: int = None,
                     my_quote: str = 'BUSD',
                     drop_stable_pairs: bool = True,
-                    sort_by_column: str = 'priceChangePercent',  # priceChangePercent
+                    sort_by_column: str = 'priceChangePercent',
+                    full_return: bool = False
                     ) -> pd.DataFrame:
     """
-    Generates a dataframe with the filters to apply with the statistics of the last 24 hours. Optionally, you can generate the column to
-    convert the volume to USDT.
+    Generates a dataframe for symbols against a quote with the filters to apply with the statistics of the last 24 hours.
+    Optionally, you can generate the column to convert the volume to USDT.
 
     :param bool decimal_mode: Fixes Decimal return type and operative.
     :param bool tradeable: Require or not just currently trading symbols.
@@ -1057,10 +1072,11 @@ def get_top_gainers(decimal_mode: bool,
     :param bool drop_legal: Drops symbols with legal coins.
     :param bool filter_leveraged: Drops symbols with leveraged coins.
     :param dict info_dic: BinPan exchange info dictionary. It's optional to avoid an API call.
-    :param top_gainers_qty:
+    :param top_gainers_qty: Limit result top lines.
     :param str my_quote: A quote coin to reference values.
     :param bool drop_stable_pairs: It drop stablecoin to stablecoin symbols.
     :param str sort_by_column: A column to sort by. Default is 'priceChangePercent'.
+    :param full_return: Activate return full columns data from exchange, else, returns just a few basic columns.
     :return pd.DataFrame: A dataframe as in the example .
 
     Example:
@@ -1095,8 +1111,8 @@ def get_top_gainers(decimal_mode: bool,
                                  info_dic=info_dic,
                                  filter_leveraged=filter_leveraged,
                                  stablecoin_value=my_quote)
-
-    top_gainers = top_gainers.loc[top_gainers['quote'] == my_quote]
+    # # filter quote
+    # top_gainers = top_gainers.loc[top_gainers['quote'] == my_quote]
 
     if drop_stable_pairs:
         stable_pairs = [f"{s}{my_quote}" for s in stablecoins]
@@ -1104,7 +1120,8 @@ def get_top_gainers(decimal_mode: bool,
 
         top_gainers = top_gainers.loc[~top_gainers['symbol'].isin(stable_pairs)]
 
-    top_gainers = top_gainers[['priceChangePercent', 'volume']]
+    if not full_return:
+        top_gainers = top_gainers[['priceChangePercent', 'volume', f'{my_quote}_value', f'{my_quote}_volume']]
 
     if top_gainers_qty:
         return top_gainers.sort_values(sort_by_column, ascending=False).head(top_gainers_qty)

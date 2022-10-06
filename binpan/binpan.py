@@ -1415,74 +1415,6 @@ class Symbol(object):
         base = 0
         return base, quote
 
-    # @staticmethod
-    # def parse_candles_to_dataframe(response: list,
-    #                                columns: list,
-    #                                symbol: str,
-    #                                tick_interval: str,
-    #                                time_cols: list,
-    #                                time_zone: str = None,
-    #                                time_index=False) -> pd.DataFrame:
-    #     """
-    #     Format a list of lists by changing the indicated time fields to string format.
-    #
-    #     Passing a time_zone, for example 'Europe/Madrid', will change the time from utc to the indicated zone.
-    #
-    #     It will automatically sort the DataFrame using the first column of the time_cols list.
-    #
-    #     The index of the DataFrame will be numeric correlative.
-    #
-    #     :param list(lists) response:        API klines response. List of lists.
-    #     :param list columns:         Column names.
-    #     :param str symbol:          Symbol requested
-    #     :param str tick_interval:   Tick interval between candles.
-    #     :param list time_cols:       Columns to take dates from.
-    #     :param str time_zone:       Time zone to convert dates.
-    #     :param bool time_index:      True gets dates index, False just numeric index.
-    #     :return:                Pandas DataFrame
-    #
-    #     """
-    #     # check if redis columns
-    #     if type(response[0]) == list:
-    #         df = pd.DataFrame(response, columns=columns)
-    #     else:
-    #         response_keys = list(response[0].keys())
-    #         response_keys.sort()
-    #         sort_columns = columns
-    #         sort_columns.sort()
-    #
-    #         if response_keys != sort_columns:  # json keys from redis different
-    #             columns = list(klines_columns.keys())
-    #             df = pd.DataFrame(response, columns=columns)
-    #             df.rename(columns=klines_columns, inplace=True)
-    #         else:
-    #             df = pd.DataFrame(response, columns=columns)
-    #
-    #     for col in df.columns:
-    #         df[col] = pd.to_numeric(arg=df[col], downcast='integer')
-    #
-    #     df.loc[:, 'Open timestamp'] = df['Open time']
-    #     df.loc[:, 'Close timestamp'] = df['Close time']
-    #
-    #     if time_zone != 'UTC':  # converts to time zone the time columns
-    #         for col in time_cols:
-    #             df.loc[:, col] = handlers.time_helper.convert_utc_ms_column_to_time_zone(df, col, time_zone=time_zone)
-    #             df.loc[:, col] = df[col].apply(lambda x: handlers.time_helper.convert_datetime_to_string(x))
-    #     else:
-    #         for col in time_cols:
-    #             df.loc[:, col] = df[col].apply(lambda x: handlers.time_helper.convert_milliseconds_to_utc_string(x))
-    #
-    #     if time_index:
-    #         date_index = df['Open timestamp'].apply(handlers.time_helper.convert_milliseconds_to_time_zone_datetime, timezoned=time_zone)
-    #         df.set_index(date_index, inplace=True)
-    #
-    #     index_name = f"{symbol} {tick_interval} {time_zone}"
-    #     df.index.name = index_name
-    #
-    #     # if came from a loop there are duplicated values in step connections to be removed.
-    #     df.drop_duplicates(inplace=True)
-    #     return df
-
     @staticmethod
     def parse_agg_trades_to_dataframe(response: list,
                                       columns: dict,
@@ -2176,6 +2108,60 @@ class Symbol(object):
                 self.set_plot_row(indicator_column=column_name, row_position=self.row_counter)
                 self.df.loc[:, column_name] = col
         return stoch_df
+
+    def ichimoku(self,
+                 tenkan: int = 9,
+                 kijun: int = 26,
+                 chikou_span: int = 26,
+                 senkou_cloud_base: int = 52,
+                 inplace: bool = True,
+                 suffix: str = '',
+                 colors: list = ['red', 'orange', 'green'],
+                 **kwargs):
+        """
+        The Ichimoku Cloud is a collection of technical indicators that show support and resistance levels, as well as momentum and trend
+        direction. It does this by taking multiple averages and plotting them on a chart. It also uses these figures to compute a “cloud”
+        that attempts to forecast where the price may find support or resistance in the future.
+
+            https://school.stockcharts.com/doku.php?id=technical_indicators:ichimoku_cloud
+
+            https://www.youtube.com/watch?v=mCri-FFvZjo&list=PLv-cA-4O3y97HAd9OCvVKSfvQ8kkAGKlf&index=7
+
+        :param int tenkan: The short period. It's the half sum of max and min price in the window. Default: 9
+        :param int kijun: The long period. It's the half sum of max and min price in the window. Default: 26
+        :param int chikou_span: Close of the next 26 bars. Util when spoting what happened with other ichimoku lines and what happened
+           before Default: 26.
+        :param senkou_cloud_base: Period to obtain kumo cloud base line. Default is 52.
+        :param bool inplace: Make it permanent in the instance or not.
+        :param str suffix: A decorative suffix for the name of the column created.
+        :param list colors: A list of colors for the indicator dataframe columns. Is the color to show when plotting.
+            It can be any color from plotly library or a number in the list of those. Default colors defined.
+            https://community.plotly.com/t/plotly-colours-list/11730
+
+        :param kwargs: Optional from https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/volatility/bbands.py
+        :return: pd.Series
+
+        """
+        ichimoku_data_df, kumo_cloud_df = self.df.ta.ichimoku(high=self.df['High'],
+                                                              low=self.df['Low'],
+                                                              close=self.df['Close'],
+                                                              tenkan=tenkan,
+                                                              kijun=kijun,
+                                                              senkou=senkou_cloud_base,
+                                                              suffix=suffix,
+                                                              **kwargs)
+        if inplace and self.is_new(ichimoku_data):
+            binpan_logger.debug(ichimoku_data.columns)
+            for i, c in enumerate(ichimoku_data.columns):
+                col = ichimoku_data[c]
+                column_name = str(col.name)
+                self.df.loc[:, column_name] = col
+                if c.startswith('BBB') or c.startswith('BBP'):
+                    continue
+                self.set_plot_color(indicator_column=column_name, color=colors[i])
+                self.set_plot_color_fill(indicator_column=column_name, color_fill=False)
+                self.set_plot_row(indicator_column=str(column_name), row_position=1)
+        return ichimoku_data
 
     @staticmethod
     def pandas_ta_indicator(name: str,
