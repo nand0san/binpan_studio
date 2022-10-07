@@ -11,3 +11,4 @@ from . import starters
 from . import strategies
 from . import time_helper
 from . import wallet
+from . import indicators

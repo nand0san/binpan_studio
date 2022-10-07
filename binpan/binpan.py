@@ -22,6 +22,7 @@ import handlers.strategies
 import handlers.exchange
 import handlers.redis_fetch
 import handlers.messages
+import handlers.indicators
 
 import pandas_ta as ta
 from random import choice
@@ -2116,8 +2117,7 @@ class Symbol(object):
                  senkou_cloud_base: int = 52,
                  inplace: bool = True,
                  suffix: str = '',
-                 colors: list = ['red', 'orange', 'green'],
-                 **kwargs):
+                 colors: list = ['orange', 'skyblue', 'grey', 'red', 'green']):
         """
         The Ichimoku Cloud is a collection of technical indicators that show support and resistance levels, as well as momentum and trend
         direction. It does this by taking multiple averages and plotting them on a chart. It also uses these figures to compute a “cloud”
@@ -2138,26 +2138,21 @@ class Symbol(object):
             It can be any color from plotly library or a number in the list of those. Default colors defined.
             https://community.plotly.com/t/plotly-colours-list/11730
 
-        :param kwargs: Optional from https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/volatility/bbands.py
         :return: pd.Series
 
         """
-        ichimoku_data_df, kumo_cloud_df = self.df.ta.ichimoku(high=self.df['High'],
-                                                              low=self.df['Low'],
-                                                              close=self.df['Close'],
-                                                              tenkan=tenkan,
-                                                              kijun=kijun,
-                                                              senkou=senkou_cloud_base,
-                                                              suffix=suffix,
-                                                              **kwargs)
+
+        ichimoku_data = handlers.indicators.ichimoku(df=self.df,
+                                                     tenkan=tenkan,
+                                                     kijun=kijun,
+                                                     chikou_span=chikou_span,
+                                                     senkou_cloud_base=senkou_cloud_base,
+                                                     suffix=suffix)
         if inplace and self.is_new(ichimoku_data):
             binpan_logger.debug(ichimoku_data.columns)
-            for i, c in enumerate(ichimoku_data.columns):
-                col = ichimoku_data[c]
-                column_name = str(col.name)
+            for i, column_name in enumerate(ichimoku_data.columns):
+                col = ichimoku_data[column_name]
                 self.df.loc[:, column_name] = col
-                if c.startswith('BBB') or c.startswith('BBP'):
-                    continue
                 self.set_plot_color(indicator_column=column_name, color=colors[i])
                 self.set_plot_color_fill(indicator_column=column_name, color_fill=False)
                 self.set_plot_row(indicator_column=str(column_name), row_position=1)
@@ -2176,6 +2171,51 @@ class Symbol(object):
         :param str name: A function name. In example: 'massi' for Mass Index or 'rsi' for RSI indicator.
         :param kwargs: Arguments for the requested indicator. Review pandas_ta info: https://github.com/twopirllc/pandas-ta#features
         :return: Whatever returns pandas_ta
+
+        Example:
+
+           ..code-block:: python
+
+              sym = binpan.Symbol(symbol='LUNCBUSD', tick_interval='1m')
+
+              sym.pandas_ta_indicator(name='ichimoku', **{
+                                                        'high': sym.df['High'],
+                                                        'low': sym.df['Low'],
+                                                        'close': sym.df['Close'],
+                                                        'tenkan': 9,
+                                                        'kijun ': 26,
+                                                        'senkou ': 52})
+
+
+                    (                              ISA_9    ISB_26     ITS_9    IKS_26    ICS_26
+                     LUNCBUSD 1m UTC
+                     2022-10-06 23:27:00+00:00       NaN       NaN       NaN       NaN  0.000285
+                     2022-10-06 23:28:00+00:00       NaN       NaN       NaN       NaN  0.000285
+                     2022-10-06 23:29:00+00:00       NaN       NaN       NaN       NaN  0.000285
+                     2022-10-06 23:30:00+00:00       NaN       NaN       NaN       NaN  0.000285
+                     2022-10-06 23:31:00+00:00       NaN       NaN       NaN       NaN  0.000285
+                     ...                             ...       ...       ...       ...       ...
+                     2022-10-07 16:01:00+00:00  0.000292  0.000293  0.000291  0.000291       NaN
+                     2022-10-07 16:02:00+00:00  0.000292  0.000293  0.000292  0.000291       NaN
+                     2022-10-07 16:03:00+00:00  0.000292  0.000293  0.000292  0.000291       NaN
+                     2022-10-07 16:04:00+00:00  0.000292  0.000293  0.000292  0.000291       NaN
+                     2022-10-07 16:05:00+00:00  0.000292  0.000293  0.000292  0.000291       NaN
+
+                     [999 rows x 5 columns],
+                                                   ISA_9    ISB_26
+                     2022-10-10 16:05:00+00:00  0.000292  0.000293
+                     2022-10-11 16:05:00+00:00  0.000292  0.000293
+                     2022-10-12 16:05:00+00:00  0.000292  0.000293
+                     2022-10-13 16:05:00+00:00  0.000292  0.000293
+                     2022-10-14 16:05:00+00:00  0.000292  0.000293
+                     ...                             ...       ...
+                     2022-11-08 16:05:00+00:00  0.000291  0.000292
+                     2022-11-09 16:05:00+00:00  0.000291  0.000292
+                     2022-11-10 16:05:00+00:00  0.000292  0.000292
+                     2022-11-11 16:05:00+00:00  0.000292  0.000292
+                     2022-11-14 16:05:00+00:00  0.000292  0.000292
+
+                     [26 rows x 2 columns])
         """
         # TODO: add to autoplot
         if name == "ebsw":
