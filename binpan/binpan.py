@@ -30,7 +30,7 @@ from random import choice
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
 
-__version__ = "0.1.5"
+__version__ = "0.1.6"
 
 try:
     from secret import redis_conf
@@ -2129,7 +2129,7 @@ class Symbol(object):
 
         :param int tenkan: The short period. It's the half sum of max and min price in the window. Default: 9
         :param int kijun: The long period. It's the half sum of max and min price in the window. Default: 26
-        :param int chikou_span: Close of the next 26 bars. Util when spoting what happened with other ichimoku lines and what happened
+        :param int chikou_span: Close of the next 26 bars. Util for spotting what happened with other ichimoku lines and what happened
            before Default: 26.
         :param senkou_cloud_base: Period to obtain kumo cloud base line. Default is 52.
         :param bool inplace: Make it permanent in the instance or not.

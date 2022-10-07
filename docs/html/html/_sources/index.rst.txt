@@ -104,6 +104,7 @@ Hope you find it useful breaking the market!!!
    exceptions.rst
    exchange.rst
    files.rst
+   indicators.rst
    market.rst
    messages.rst
    plotting.rst

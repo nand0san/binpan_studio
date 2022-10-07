@@ -14,9 +14,9 @@ def ichimoku(df: pd.DataFrame,
     direction. It does this by taking multiple averages and plotting them on a chart. It also uses these figures to compute a “cloud”
     that attempts to forecast where the price may find support or resistance in the future.
 
-       https://school.stockcharts.com/doku.php?id=technical_indicators:ichimoku_cloud
+    https://school.stockcharts.com/doku.php?id=technical_indicators:ichimoku_cloud
 
-       https://www.youtube.com/watch?v=mCri-FFvZjo&list=PLv-cA-4O3y97HAd9OCvVKSfvQ8kkAGKlf&index=7
+    https://www.youtube.com/watch?v=mCri-FFvZjo&list=PLv-cA-4O3y97HAd9OCvVKSfvQ8kkAGKlf&index=7
 
     :param pd.DataFrame df: A BinPan Symbol dataframe.
     :param int tenkan: The short period. It's the half sum of max and min price in the window. Default: 9
@@ -26,6 +26,19 @@ def ichimoku(df: pd.DataFrame,
     :param senkou_cloud_base: Period to obtain kumo cloud base line. Default is 52.
     :param str suffix: A decorative suffix for the name of the column created.
     :return pd.DataFrame: A pandas dataframe with columns as indicator lines.
+
+       .. code-block:: python
+
+            from binpan import binpan
+
+            sym = binpan.Symbol(symbol='LUNCBUSD', tick_interval='1m', limit=500)
+            sym.ichimoku()
+            sym.plot()
+
+       .. image:: images/indicators/ichimoku.png
+        :width: 1000
+        :alt: Candles with some indicators
+
     """
 
     high = df['High']
