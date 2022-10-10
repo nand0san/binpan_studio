@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 
-def ichimoku(df: pd.DataFrame,
+def ichimoku(data: pd.DataFrame,
              tenkan: int = 9,
              kijun: int = 26,
              chikou_span: int = 26,
@@ -18,7 +18,7 @@ def ichimoku(df: pd.DataFrame,
 
     https://www.youtube.com/watch?v=mCri-FFvZjo&list=PLv-cA-4O3y97HAd9OCvVKSfvQ8kkAGKlf&index=7
 
-    :param pd.DataFrame df: A BinPan Symbol dataframe.
+    :param pd.DataFrame data: A BinPan Symbol dataframe.
     :param int tenkan: The short period. It's the half sum of max and min price in the window. Default: 9
     :param int kijun: The long period. It's the half sum of max and min price in the window. Default: 26
     :param int chikou_span: Close of the next 26 bars. Util when spoting what happened with other ichimoku lines and what happened
@@ -40,6 +40,7 @@ def ichimoku(df: pd.DataFrame,
         :alt: Candles with some indicators
 
     """
+    df = data.copy(deep=True)
 
     high = df['High']
     low = df['Low']
@@ -50,7 +51,7 @@ def ichimoku(df: pd.DataFrame,
 
     chikou_span_serie = close.shift(-chikou_span)
 
-    senkou_span_a = (tenkan_sen + kijun_sen) / 2
+    senkou_span_a_arr = ((tenkan_sen + kijun_sen) / 2).to_numpy()
     senkou_span_b_arr = ((high.rolling(window=senkou_cloud_base).max() + low.rolling(window=senkou_cloud_base).max()) / 2).to_numpy()
 
     # desplazamiento de 26 barras, la corriente es la 0
@@ -59,10 +60,13 @@ def ichimoku(df: pd.DataFrame,
     kumo_index_ahead = df.index.shift(chikou_span, freq=freq)
     kumo_index = np.concatenate([df.index[:chikou_span], kumo_index_ahead], axis=None)
 
+    senkou_span_a = pd.Series(data=np.concatenate([span, senkou_span_a_arr]), index=kumo_index)
     senkou_span_b = pd.Series(data=np.concatenate([span, senkou_span_b_arr]), index=kumo_index)
 
     # just one possible step value 1m, or 5m or any step but one step
-    # assert len(senkou_span_b.index.to_series().diff().value_counts()) == 1
+    assert len(senkou_span_a.index.to_series().diff().value_counts()) == 1
+    assert len(senkou_span_b.index.to_series().diff().value_counts()) == 1
+    # assert (senkou_span_b == senkou_span_a).value_counts() != 1
 
     ret = pd.DataFrame([tenkan_sen, kijun_sen, chikou_span_serie, senkou_span_a, senkou_span_b]).T
 

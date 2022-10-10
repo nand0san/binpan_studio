@@ -205,6 +205,8 @@ class Symbol(object):
     - **mysymbol.color_control**: dictionary with data about plotting control. Represents each dataframe colum color in the plots.
     - **mysymbol.color_fill_control**: dictionary with data about plotting control. Represents each dataframe colum with color filled to
       zero line in the plots.
+    - **mysymbol.indicators_filled_mode**: dictionary with filling mode for each line. Values can be None, tonexty, tozeroy.
+    - **mysymbol.axis_group**: dictionary with axis group each line. Values can be None or y, y2, etc.
     - **mysymbol.row_counter**: counter for the indicator rows in a plot.
     - **mysymbol.len**: length of the dataframe
     - **mysymbol.raw**: api klines raw response when instantiated.
@@ -287,6 +289,9 @@ class Symbol(object):
         self.row_control = dict()
         self.color_control = dict()
         self.color_fill_control = dict()
+        self.indicators_filled_mode = dict()
+        self.axis_groups = dict()
+
         self.row_counter = 1
 
         self.set_display_columns()
@@ -584,6 +589,10 @@ class Symbol(object):
 
                 self.color_control = {c: self.color_control[c] for c in conserve_columns}
                 self.color_fill_control = {c: self.color_fill_control[c] for c in conserve_columns}
+
+                # revisar esto cuando el fill to next y esté hecho
+                self.indicators_filled_mode = {c: self.indicators_filled_mode[c] for c in conserve_columns}
+                self.axis_groups = {c: self.axis_groups[c] for c in conserve_columns}
 
                 self.df.drop(columns_to_drop, axis=1, inplace=True)
 
@@ -905,6 +914,46 @@ class Symbol(object):
             self.color_fill_control.update({indicator_column: False})
         return self.color_fill_control
 
+    def set_filled_mode(self, indicator_column: str = None, fill_mode: str = None) -> dict:
+        """
+        Internal control formatting plots. Can be used to change plot filling mode for pairs of indicators when.
+
+        :param str indicator_column: column name
+        :param fill_mode: Fill mode for indicator. Color can be forced to fill to zero line with "tozeroy" or between two indicators in same
+           axis group with "tonexty".
+        :return dict: columns with its assigned fill mode.
+
+        """
+        if fill_mode:
+            try:
+                assert fill_mode == 'tonexty' or fill_mode == 'tozeroy'
+            except Exception:
+                print(f"Fill mode need to be 'tonexty' or 'tozeroy'")
+                return self.indicators_filled_mode
+        if indicator_column and fill_mode:
+            self.indicators_filled_mode.update({indicator_column: fill_mode})
+        return self.indicators_filled_mode
+
+    def set_axis_group(self, indicator_column: str = None, my_axis_group: str = None) -> dict:
+        """
+        Internal control formatting plots. Can be used to change plot filling mode for pairs of indicators when.
+
+        :param str indicator_column: column name
+        :param my_axis_group: Fill mode for indicator. Color can be forced to fill to zero line with "tozeroy" or between two indicators in same
+           axis group with "tonexty".
+        :return dict: columns with its assigned fill mode.
+
+        """
+        if my_axis_group:
+            try:
+                assert my_axis_group[0] == 'y' and my_axis_group[1:].isnumeric()
+            except Exception:
+                print(f"Axis group name need to be y, y2, y3, etc")
+                return self.indicators_filled_mode
+        if indicator_column and my_axis_group:
+            self.axis_groups.update({indicator_column: my_axis_group})
+        return self.axis_groups
+
     def plot(self,
              width=1800,
              height=1000,
@@ -973,6 +1022,8 @@ class Symbol(object):
                                          indicator_names=indicator_names,
                                          indicator_colors=indicators_colors,
                                          fill_control=self.color_fill_control,
+                                         indicators_filled_mode=self.indicators_filled_mode,
+                                         axis_groups=self.axis_groups,
                                          rows_pos=rows_pos,
                                          labels=labels,
                                          plot_bgcolor=background_color,
@@ -2142,14 +2193,19 @@ class Symbol(object):
 
         """
 
-        ichimoku_data = handlers.indicators.ichimoku(df=self.df,
+        ichimoku_data = handlers.indicators.ichimoku(data=self.df,
                                                      tenkan=tenkan,
                                                      kijun=kijun,
                                                      chikou_span=chikou_span,
                                                      senkou_cloud_base=senkou_cloud_base,
                                                      suffix=suffix)
+
         if inplace and self.is_new(ichimoku_data):
+            missing_index = set(ichimoku_data.index) - set(self.df.index)
+            self.df = self.df.reindex(self.df.index.union(missing_index))
+
             binpan_logger.debug(ichimoku_data.columns)
+
             for i, column_name in enumerate(ichimoku_data.columns):
                 col = ichimoku_data[column_name]
                 self.df.loc[:, column_name] = col
