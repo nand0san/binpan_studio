@@ -41,34 +41,43 @@ def ichimoku(data: pd.DataFrame,
 
     """
     df = data.copy(deep=True)
+    # freq = pd.infer_freq(df.index)
+    print(df)
 
     high = df['High']
     low = df['Low']
     close = df['Close']
+    # freq = pd.infer_freq(df.index)
 
-    tenkan_sen = (high.rolling(window=tenkan).max() + low.rolling(window=tenkan).max()) / 2
-    kijun_sen = (high.rolling(window=kijun).max() + low.rolling(window=kijun).max()) / 2
+    tenkan_sen = (high.rolling(window=tenkan).max() + low.rolling(window=tenkan).min()) / 2
+    kijun_sen = (high.rolling(window=kijun).max() + low.rolling(window=kijun).min()) / 2
 
-    chikou_span_serie = close.shift(-chikou_span)
+    chikou_span_serie = close.shift(periods=-chikou_span, freq='infer')
 
-    senkou_span_a_arr = ((tenkan_sen + kijun_sen) / 2).to_numpy()
-    senkou_span_b_arr = ((high.rolling(window=senkou_cloud_base).max() + low.rolling(window=senkou_cloud_base).max()) / 2).to_numpy()
+    arr_a = (tenkan_sen + kijun_sen) / 2
+    senkou_span_a = arr_a.shift(periods=chikou_span, freq='infer')
 
-    # desplazamiento de 26 barras, la corriente es la 0
-    span = np.array([np.nan] * chikou_span)
-    freq = pd.infer_freq(df.index)
-    kumo_index_ahead = df.index.shift(chikou_span, freq=freq)
-    kumo_index = np.concatenate([df.index[:chikou_span], kumo_index_ahead], axis=None)
+    arr_b = (high.rolling(window=senkou_cloud_base).max() + low.rolling(window=senkou_cloud_base).min()) / 2
+    senkou_span_b = arr_b.shift(periods=chikou_span, freq='infer')
 
-    senkou_span_a = pd.Series(data=np.concatenate([span, senkou_span_a_arr]), index=kumo_index)
-    senkou_span_b = pd.Series(data=np.concatenate([span, senkou_span_b_arr]), index=kumo_index)
+    # senkou_span_a_arr = ((tenkan_sen + kijun_sen) / 2).to_numpy()
+    # senkou_span_b_arr = ((high.rolling(window=senkou_cloud_base).max() + low.rolling(window=senkou_cloud_base).max()) / 2).to_numpy()
+    #
+    # # desplazamiento de 26 barras, la corriente es la 0
+    # span = np.array([np.nan] * chikou_span)
+    # kumo_index_ahead = df.index.shift(chikou_span, freq=freq)
+    # kumo_index = np.concatenate([df.index[:chikou_span], kumo_index_ahead], axis=None)
+    #
+    # senkou_span_a = pd.Series(data=np.concatenate([span, senkou_span_a_arr]), index=kumo_index)
+    # senkou_span_b = pd.Series(data=np.concatenate([span, senkou_span_b_arr]), index=kumo_index)
 
     # just one possible step value 1m, or 5m or any step but one step
-    assert len(senkou_span_a.index.to_series().diff().value_counts()) == 1
-    assert len(senkou_span_b.index.to_series().diff().value_counts()) == 1
+    # assert len(senkou_span_a.index.to_series().diff().value_counts()) == 1
+    # assert len(senkou_span_b.index.to_series().diff().value_counts()) == 1
     # assert (senkou_span_b == senkou_span_a).value_counts() != 1
 
     ret = pd.DataFrame([tenkan_sen, kijun_sen, chikou_span_serie, senkou_span_a, senkou_span_b]).T
+    print(ret)
 
     if suffix:
         suffix = '_' + suffix

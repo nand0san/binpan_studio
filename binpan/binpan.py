@@ -291,6 +291,7 @@ class Symbol(object):
         self.color_fill_control = dict()
         self.indicators_filled_mode = dict()
         self.axis_groups = dict()
+        self.global_axis_group = 99
 
         self.row_counter = 1
 
@@ -1592,6 +1593,7 @@ class Symbol(object):
             self.set_plot_color(indicator_column=column_name, color=color)
             self.set_plot_color_fill(indicator_column=column_name, color_fill=None)
             self.set_plot_row(indicator_column=str(column_name), row_position=1)  # overlaps are one
+
             self.df.loc[:, column_name] = ma
 
         return ma
@@ -2111,7 +2113,10 @@ class Symbol(object):
                                    ddof=ddof,
                                    suffix=suffix,
                                    **kwargs)
+
         if inplace and self.is_new(bbands):
+            self.global_axis_group -= 1
+            axis_identifier = f"y{self.global_axis_group}"
             binpan_logger.debug(bbands.columns)
             for i, c in enumerate(bbands.columns):
 
@@ -2121,7 +2126,16 @@ class Symbol(object):
                 if c.startswith('BBB') or c.startswith('BBP'):
                     continue
                 self.set_plot_color(indicator_column=column_name, color=colors[i])
-                self.set_plot_color_fill(indicator_column=column_name, color_fill=False)
+
+                if c.startswith('BBM'):
+                    self.set_plot_color_fill(indicator_column=column_name, color_fill='rgba(185,217,218,0.2)')
+                    self.set_axis_group(indicator_column=column_name, my_axis_group=axis_identifier)
+                    self.set_filled_mode(indicator_column=column_name, fill_mode='tonexty')
+
+                if c.startswith('BBU'):
+                    self.set_plot_color_fill(indicator_column=column_name, color_fill='rgba(185,217,218,0.2)')
+                    self.set_axis_group(indicator_column=column_name, my_axis_group=axis_identifier)
+                    self.set_filled_mode(indicator_column=column_name, fill_mode='tonexty')
                 self.set_plot_row(indicator_column=str(column_name), row_position=1)
         return bbands
 
@@ -2205,6 +2219,9 @@ class Symbol(object):
                                                      suffix=suffix)
 
         if inplace and self.is_new(ichimoku_data):
+            self.global_axis_group -= 1
+            axis_identifier = f"y{self.global_axis_group}"
+
             missing_index = set(ichimoku_data.index) - set(self.df.index)
             self.df = self.df.reindex(self.df.index.union(missing_index))
 
@@ -2216,6 +2233,11 @@ class Symbol(object):
                 self.set_plot_color(indicator_column=column_name, color=colors[i])
                 self.set_plot_color_fill(indicator_column=column_name, color_fill=False)
                 self.set_plot_row(indicator_column=str(column_name), row_position=1)
+
+                if column_name.startswith('Ichimoku_cloud_52'):
+                    self.set_plot_color_fill(indicator_column=column_name, color_fill='rgba(185,217,218,0.2)')
+                    self.set_axis_group(indicator_column=column_name, my_axis_group=axis_identifier)
+                    self.set_filled_mode(indicator_column=column_name, fill_mode='tonexty')
         return ichimoku_data
 
     @staticmethod
