@@ -390,25 +390,44 @@ def candles_ta(data: pd.DataFrame,
     # technical analysis indicators
     tas = []
 
-    # TODO: quitar nombres de axis a pincho de aquí
+    # TODO: ejes a pincho excepto si aparecen en un grupo de ejes
     y_axis_idx = [f"y{i}" for i in rows]
 
     plot_logger.debug(f"indicators_colors: {indicators_colors}")
     plot_logger.debug(f"indicators_color_filled: {indicators_color_filled}")
     plot_logger.debug(f"indicators_filled_mode: {indicators_filled_mode}")
+    plot_logger.debug(f"rows: {rows}")
+    plot_logger.debug(f"indicators_series: {len(indicators_series)}")
     plot_logger.debug(f"y_axis_idx: {y_axis_idx}")
+    plot_logger.debug(f"axis_groups: {axis_groups}")
 
     # first get tas with cloud colors "tonexty"
 
     for i, indicator in enumerate(indicators_series):
+
+        if indicator.name in indicators_filled_mode.keys():
+            my_fill_mode = indicators_filled_mode[indicator.name]
+        else:
+            my_fill_mode = None
+
+        if indicator.name in indicators_color_filled.keys():
+            my_fill_color = indicators_color_filled[indicator.name]
+        else:
+            my_fill_color = None
+
+        if indicator.name in axis_groups.keys():
+            my_axis = axis_groups[indicator.name]
+        else:
+            my_axis = y_axis_idx[i]
+
         tas.append(set_ta_line(df=df_plot,
                                serie=indicator,
                                color=indicators_colors[i],
                                name=indicator_names[i],
                                width=1,
-                               fill_mode=list(indicators_filled_mode.values())[i],
-                               fill_color=list(indicators_color_filled.values())[i],
-                               yaxis=y_axis_idx[i]))
+                               fill_mode=my_fill_mode,
+                               fill_color=my_fill_color,
+                               yaxis=my_axis))
         axes += 1
 
     cols = cols + [1 for _ in range(len(tas))]

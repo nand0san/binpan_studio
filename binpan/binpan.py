@@ -909,9 +909,9 @@ class Symbol(object):
             elif color_fill in plotly_colors or color_fill.startswith('rgba'):
                 self.color_fill_control.update({indicator_column: color_fill})
             else:
-                self.color_fill_control.update({indicator_column: False})
+                self.color_fill_control.update({indicator_column: None})
         elif indicator_column:
-            self.color_fill_control.update({indicator_column: False})
+            self.color_fill_control.update({indicator_column: None})
         return self.color_fill_control
 
     def set_filled_mode(self, indicator_column: str = None, fill_mode: str = None) -> dict:
@@ -1699,6 +1699,7 @@ class Symbol(object):
                                slow=slow,
                                signal=smooth,
                                **kwargs)
+
         if inplace and self.is_new(macd):
             self.row_counter += 1
             for i, c in enumerate(macd.columns):
@@ -1707,8 +1708,11 @@ class Symbol(object):
                 self.set_plot_color(indicator_column=column_name, color=colors[i])
                 if c.startswith('MACDh_'):
                     self.set_plot_color_fill(indicator_column=column_name, color_fill='rgba(26,150,65,0.5)')
+                    self.set_filled_mode(indicator_column=column_name, fill_mode='tozeroy')
                 else:
-                    self.set_plot_color_fill(indicator_column=column_name, color_fill=False)
+                    self.set_plot_color_fill(indicator_column=column_name, color_fill=None)
+                    self.set_filled_mode(indicator_column=column_name, fill_mode=None)
+
                 self.set_plot_row(indicator_column=column_name, row_position=self.row_counter)
                 self.df.loc[:, column_name] = col
         return macd
