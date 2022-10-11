@@ -2822,6 +2822,11 @@ class Wallet(object):
                  snapshot_days: int = 30):
         self.time_zone = time_zone
 
+        try:
+            from secret import api_key, api_secret
+        except ImportError:
+            print(f"Binance Api key or Api Secret not found.")
+
         self.spot = handlers.wallet.daily_account_snapshot(account_type='SPOT',
                                                            limit=snapshot_days,
                                                            time_zone=self.time_zone,
