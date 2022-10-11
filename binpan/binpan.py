@@ -27,6 +27,10 @@ import handlers.indicators
 
 import pandas_ta as ta
 from random import choice
+from sys import path
+from os import getcwd
+
+path.append(getcwd())
 
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
@@ -2772,6 +2776,7 @@ class Exchange(object):
         self.symbols = self.get_symbols()
         self.df = self.get_df()
         self.order_types = self.get_order_types()
+
         try:
             from secret import api_key, api_secret
         except ImportError:
@@ -2904,6 +2909,7 @@ class Wallet(object):
         # self.margin = handlers.wallet.daily_account_snapshot(account_type='MARGIN',
         #                                                      limit=snapshot_days,
         #                                                      time_zone=self.time_zone)
+
         self.spot_startTime = None
         self.spot_endTime = None
         self.spot_requested_days = snapshot_days
