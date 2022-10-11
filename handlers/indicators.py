@@ -121,3 +121,29 @@ def split_serie_by_position(serie: pd.Series,
         return empty_df.fillna(0)
     else:
         return empty_df
+
+
+def df_splitter(data: pd.DataFrame, up_column: str, down_column: str) -> list:
+    """
+    Splits a dataframe y sub dataframes to plot by colored areas.
+
+    Based on: https://stackoverflow.com/questions/64741015/plotly-how-to-color-the-fill-between-two-lines-based-on-a-condition
+
+    :param pd.DataFrame data: Indicator Dataframe
+    :param str up_column: Name of the column to plot green when up side.
+    :param str down_column: Name of the column to plot green when down side.
+    :return list: A list with splitted dataframes to plot for.
+    """
+
+    df = data.copy(deep=True)
+
+    # split data into chunks where series cross each other
+    df['label'] = np.where(df[up_column].gt(df[down_column]), 1, 0)
+    df['group'] = df['label'].ne(df['label'].shift()).cumsum()
+    df = df.groupby('group')
+    dfs = []
+
+    for name, data in df:
+        dfs.append(data)
+    return dfs
+

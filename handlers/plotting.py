@@ -100,7 +100,8 @@ def set_ta_line(df_index: pd.DataFrame.index,
                 width=0.5,
                 fill_color: str or bool = None,
                 fill_mode: str = 'none',
-                yaxis: str = 'y'):
+                yaxis: str = 'y',
+                show_legend=True):
     my_locals = {k: v for k, v in locals().items() if k != 'df_index' and k != 'serie'}
     plot_logger.debug(f"set_ta_line: {my_locals}")
 
@@ -116,7 +117,8 @@ def set_ta_line(df_index: pd.DataFrame.index,
                       mode='lines',
                       fill=fill_mode,
                       fillcolor=fillcolor,
-                      yaxis=yaxis)
+                      yaxis=yaxis,
+                      showlegend=show_legend)
 
 
 def fill_missing(ll: list, length: int):
@@ -433,12 +435,15 @@ def candles_ta(data: pd.DataFrame,
         else:
             my_axis = y_axis_idx[pre_i]
 
-        my_axis_from_cache_100 = f"y1{my_axis[1:]}"
+        # my_axis_from_cache_100 = f"y1{my_axis[1:]}"
 
         if indicator_names[i] in plot_splitted_serie_couple.keys():
             plot_logger.debug(f"indicator splitted: {indicator_names[i]}")
-            serie_up, split_up, serie_down, split_down, color_up, color_down = plot_splitted_serie_couple[indicator_names[i]]
-            plot_logger.debug(f"serie_up, split_up, serie_down, split_down, color_up, color_down = {serie_up, split_up, serie_down, split_down, color_up, color_down}")
+            # serie_up, split_up, serie_down, split_down, color_up, color_down = plot_splitted_serie_couple[indicator_names[i]]
+            # plot_logger.debug(f"serie_up, split_up, serie_down, split_down, color_up, color_down = {serie_up, split_up, serie_down, split_down, color_up, color_down}")
+            indicator_column_up, indicator_column_down, splitted_dfs, color_up, color_down = plot_splitted_serie_couple[indicator_names[i]]
+            plot_logger.debug(f"indicator_column_up, indicator_column_down, splitted_dfs,color_up, color_down = "
+                              f"{indicator_column_up, indicator_column_down, splitted_dfs,color_up, color_down}")
 
             tas.append(set_ta_line(df_index=df_plot.index,  # linea para delimitación
                                    serie=indicator,
@@ -448,49 +453,65 @@ def candles_ta(data: pd.DataFrame,
                                    fill_mode='none',
                                    fill_color=None,
                                    yaxis=my_axis))
+            # cambio de función
 
-            tas.append(set_ta_line(df_index=df_plot.index,
-                                   serie=aux_df[serie_up],
-                                   color=indicators_colors[i],
-                                   name=serie_up,
-                                   width=0.01,
-                                   fill_mode='none',
-                                   fill_color=color_up,
-                                   yaxis=my_axis))
+            def fill_area(label,
+                          up_color='rgba(35, 152, 33, 0.5)',
+                          down_color='rgba(245, 63, 39, 0.5)'):
+                if label >= 1:
+                    return up_color
+                else:
+                    return down_color
 
-            tas.append(set_ta_line(df_index=df_plot.index,
-                                   serie=aux_df[split_up],
-                                   color=indicators_colors[i],
-                                   name=split_up,
-                                   width=0.01,
-                                   fill_mode='tonexty',
-                                   fill_color=color_up,
-                                   yaxis=my_axis))
+            for splitted_df in splitted_dfs:
 
-            tas.append(set_ta_line(df_index=df_plot.index,
-                                   serie=aux_df[split_down],
-                                   color=indicators_colors[i],
-                                   name=serie_down,
-                                   width=0.01,
-                                   fill_mode='none',
-                                   fill_color=color_down,
-                                   yaxis=my_axis_from_cache_100))
+                tas.append(set_ta_line(df_index=splitted_df.index,
+                                       serie=splitted_df[indicator_column_up],
+                                       color=indicators_colors[i],
+                                       name=indicator_column_up,
+                                       width=0.01,
+                                       fill_mode='none',
+                                       fill_color=None,
+                                       yaxis=my_axis,
+                                       show_legend=False))
 
-            tas.append(set_ta_line(df_index=df_plot.index,
-                                   serie=aux_df[serie_down],
-                                   color=indicators_colors[i],
-                                   name=split_down,
-                                   width=0.01,
-                                   fill_mode='tonexty',
-                                   fill_color=color_down,
-                                   yaxis=my_axis_from_cache_100))
+                tas.append(set_ta_line(df_index=splitted_df.index,
+                                       serie=splitted_df[indicator_column_down],
+                                       color=indicators_colors[i],
+                                       name=indicator_column_down,
+                                       width=0.01,
+                                       fill_mode='tonexty',
+                                       fill_color=fill_area(splitted_df['label'].iloc[0]),
+                                       yaxis=my_axis,
+                                       show_legend=False))
 
-            rows = rows[:pre_i] + [rows[pre_i], rows[pre_i], rows[pre_i], rows[pre_i]] + rows[pre_i:]
+                rows = rows[:pre_i] + [rows[pre_i], rows[pre_i]] + rows[pre_i:]
+                pre_cached += 2
+                y_axis_idx = y_axis_idx[:pre_i] + [my_axis, my_axis] + y_axis_idx[pre_i:]
+
+            #
+            # tas.append(set_ta_line(df_index=df_plot.index,
+            #                        serie=aux_df[split_down],
+            #                        color=indicators_colors[i],
+            #                        name=serie_down,
+            #                        width=0.01,
+            #                        fill_mode='none',
+            #                        fill_color=color_down,
+            #                        yaxis=my_axis_from_cache_100))
+            #
+            # tas.append(set_ta_line(df_index=df_plot.index,
+            #                        serie=aux_df[serie_down],
+            #                        color=indicators_colors[i],
+            #                        name=split_down,
+            #                        width=0.01,
+            #                        fill_mode='tonexty',
+            #                        fill_color=color_down,
+            #                        yaxis=my_axis_from_cache_100))
+
+            # rows = rows[:pre_i] + [rows[pre_i], rows[pre_i], rows[pre_i], rows[pre_i]] + rows[pre_i:]
 
             plot_logger.debug(f"rows_updated_by_split: {rows} len: {len(rows)}")
-            y_axis_idx = y_axis_idx[:pre_i] + [my_axis, my_axis, my_axis_from_cache_100, my_axis_from_cache_100] + y_axis_idx[pre_i:]
             plot_logger.debug(f"y_axis_idx_updated_by_split: {y_axis_idx} len: {len(y_axis_idx)}")
-            pre_cached += 4
         else:
             plot_logger.debug(f"indicator_name: {indicator_names[i]}: row: {rows[pre_i]} axis: {my_axis}")
 
