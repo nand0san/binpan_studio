@@ -8,7 +8,7 @@ from random import choice
 from .logs import Logs
 from .exceptions import BinPanException
 
-plot_logger = Logs(filename='./logs/plotting.log', name='plotting', info_level='DEBUG')
+plot_logger = Logs(filename='./logs/plotting.log', name='plotting', info_level='INFO')
 
 plotly_colors = ["aliceblue", "antiquewhite", "aqua", "aquamarine", "azure", "beige", "bisque", "black",
                  "blanchedalmond", "blue", "blueviolet", "brown", "burlywood", "cadetblue", "chartreuse", "chocolate",
@@ -270,6 +270,10 @@ def candles_ta(data: pd.DataFrame,
     :param list or dict indicators_color_filled: Color can be forced to fill to zero line. Is a list of Nones for each indicator in
         indicator list or a fillcolor. For transparent colors use rgba string code to define color. Example for transparent green
         'rgba(26,150,65,0.5)' or transparent red 'rgba(204,0,0,0.5)'. It can be a dictionary with each indicator column name and fill color.
+    :param dict indicators_filled_mode: A dict with filled areas for plotting.
+    :param dict axis_groups: A dict with named groups for indicators, useful for plotting filled areas using tonexty fill mode.
+    :param dict plot_splitted_serie_couple: A dict with splitted data for multiple colours when filling areas using tonexty.
+    :param pd.DataFrame aux_df: An auxiliar dataframe with data to plot things with colored areas.
     :param int width: Plot sizing
     :param int height: Plot sizing
     :param bool range_slider: For the volume plot.
@@ -395,7 +399,6 @@ def candles_ta(data: pd.DataFrame,
     # technical analysis indicators
     tas = []
 
-    # TODO: ejes a pincho excepto si aparecen en un grupo de ejes
     y_axis_idx = [f"y{i}" for i in rows]
 
     plot_logger.debug(f"----------------------------------------------------------------------")
@@ -428,7 +431,7 @@ def candles_ta(data: pd.DataFrame,
             my_axis = axis_groups[indicator.name]
         else:
             my_axis = y_axis_idx[pre_i]
-            my_axis_from_cache_100 = f"y10{y_axis_idx[pre_i][1:]}"
+            # my_axis_from_cache_100 = f"y10{y_axis_idx[pre_i][1:]}"
 
         if indicator_names[i] in plot_splitted_serie_couple.keys():
             plot_logger.debug(f"indicator splitted: {indicator_names[i]}")
@@ -443,6 +446,7 @@ def candles_ta(data: pd.DataFrame,
                                    fill_mode='none',
                                    fill_color=None,
                                    yaxis=my_axis))
+
             tas.append(set_ta_line(df_index=df_plot.index,
                                    serie=aux_df[serie_up],
                                    color=indicators_colors[i],
@@ -451,6 +455,7 @@ def candles_ta(data: pd.DataFrame,
                                    fill_mode='none',
                                    fill_color=color_up,
                                    yaxis=my_axis))
+
             tas.append(set_ta_line(df_index=df_plot.index,
                                    serie=aux_df[split_up],
                                    color=indicators_colors[i],
@@ -459,6 +464,7 @@ def candles_ta(data: pd.DataFrame,
                                    fill_mode='tonexty',
                                    fill_color=color_up,
                                    yaxis=my_axis))
+
             tas.append(set_ta_line(df_index=df_plot.index,
                                    serie=aux_df[split_down],
                                    color=indicators_colors[i],
@@ -467,6 +473,7 @@ def candles_ta(data: pd.DataFrame,
                                    fill_mode='none',
                                    fill_color=color_down,
                                    yaxis=my_axis))
+
             tas.append(set_ta_line(df_index=df_plot.index,
                                    serie=aux_df[serie_down],
                                    color=indicators_colors[i],
@@ -587,6 +594,10 @@ def candles_tagged(data: pd.DataFrame,
          https://community.plotly.com/t/plotly-colours-list/11730
     :param dict or list fill_control: A dictionary with color to fill or False bool for each indicator. Is the color to the zero line for
         the indicator plot. If a list passed, it iterates to assign each item in the list with the same index item in the indicators list.
+    :param dict indicators_filled_mode: A dict with filled areas for plotting.
+    :param dict axis_groups: A dict with named groups for indicators, useful for plotting filled areas using tonexty fill mode.
+    :param dict plot_splitted_serie_couple: A dict with splitted data for multiple colours when filling areas using tonexty.
+    :param pd.DataFrame aux_df: An auxiliar dataframe with data to plot things with colored areas.
     :param list rows_pos: 1 means over the candles. Other numbers mean subsequent subplots under the candles.
     :param plot_bgcolor: Set background color.
     :param actions_col: A column name of the column with string tags like buy, sell, etc. This is for plotting annotation marks

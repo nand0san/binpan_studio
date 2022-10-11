@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BinPan Module &mdash; BinPan 0.1.5 documentation</title>
+  <title>BinPan Module &mdash; BinPan 0.1.6 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/style.css" type="text/css" />
@@ -50,6 +50,7 @@
 <li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exchange.html">Exchange Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="files.html">Files Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="indicators.html">Indicators Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="messages.html">Messages Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
@@ -235,6 +236,8 @@ ETHBUSD 5m UTC
 <li><p><strong>mysymbol.color_control</strong>: dictionary with data about plotting control. Represents each dataframe colum color in the plots.</p></li>
 <li><p><strong>mysymbol.color_fill_control</strong>: dictionary with data about plotting control. Represents each dataframe colum with color filled to
 zero line in the plots.</p></li>
+<li><p><strong>mysymbol.indicators_filled_mode</strong>: dictionary with filling mode for each line. Values can be None, tonexty, tozeroy.</p></li>
+<li><p><strong>mysymbol.axis_group</strong>: dictionary with axis group each line. Values can be None or y, y2, etc.</p></li>
 <li><p><strong>mysymbol.row_counter</strong>: counter for the indicator rows in a plot.</p></li>
 <li><p><strong>mysymbol.len</strong>: length of the dataframe</p></li>
 <li><p><strong>mysymbol.raw</strong>: api klines raw response when instantiated.</p></li>
@@ -249,6 +252,16 @@ exchange.</p></li>
 <dt class="sig sig-object py" id="binpan.binpan.Symbol.df">
 <span class="sig-name descname"><span class="pre">df</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#binpan.binpan.Symbol.df" title="Permalink to this definition"></a></dt>
 <dd><p>Returns candles dataframe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return pd.DataFrame</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.binpan.Symbol.aux_df">
+<span class="sig-name descname"><span class="pre">aux_df</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#binpan.binpan.Symbol.aux_df" title="Permalink to this definition"></a></dt>
+<dd><p>Returns auxiliar dataframe with splitted data for plotting colored areas.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return pd.DataFrame</dt>
 <dd class="field-odd"><p></p></dd>
@@ -621,6 +634,63 @@ Example for transparent green ‘rgba(26,150,65,0.5)’ or transparent red ‘rg
 </dd>
 <dt class="field-even">Return dict</dt>
 <dd class="field-even"><p>columns with its assigned colors when plotting.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.binpan.Symbol.set_plot_filled_mode">
+<span class="sig-name descname"><span class="pre">set_plot_filled_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indicator_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#binpan.binpan.Symbol.set_plot_filled_mode" title="Permalink to this definition"></a></dt>
+<dd><p>Internal control formatting plots. Can be used to change plot filling mode for pairs of indicators when.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>indicator_column</strong> (<em>str</em>) – column name</p></li>
+<li><p><strong>fill_mode</strong> – Fill mode for indicator. Color can be forced to fill to zero line with “tozeroy” or between two indicators in same
+axis group with “tonexty”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return dict</dt>
+<dd class="field-even"><p>columns with its assigned fill mode.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.binpan.Symbol.set_plot_axis_group">
+<span class="sig-name descname"><span class="pre">set_plot_axis_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indicator_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">my_axis_group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#binpan.binpan.Symbol.set_plot_axis_group" title="Permalink to this definition"></a></dt>
+<dd><p>Internal control formatting plots. Can be used to change plot filling mode for pairs of indicators when.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>indicator_column</strong> (<em>str</em>) – column name</p></li>
+<li><p><strong>my_axis_group</strong> – Fill mode for indicator. Color can be forced to fill to zero line with “tozeroy” or between two indicators in same
+axis group with “tonexty”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return dict</dt>
+<dd class="field-even"><p>columns with its assigned fill mode.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.binpan.Symbol.set_plot_splitted_serie_couple">
+<span class="sig-name descname"><span class="pre">set_plot_splitted_serie_couple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indicator_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">couple_up</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Series</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Series</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">couple_down</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Series</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Series</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_up</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'rgba(35,</span> <span class="pre">152,</span> <span class="pre">33,</span> <span class="pre">0.5)'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_down</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'rgba(245,</span> <span class="pre">63,</span> <span class="pre">39,</span> <span class="pre">0.5)'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#binpan.binpan.Symbol.set_plot_splitted_serie_couple" title="Permalink to this definition"></a></dt>
+<dd><p>Modify the control for splitted series in plots with colored area in two colors by relative position.</p>
+<p>If no params passed, then returns dict actual contents.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>indicator_column</strong> (<em>str</em>) – An existing column from a BinPan Symbol’s class dataframe.</p></li>
+<li><p><strong>couple_up</strong> (<em>tuple</em>) – A couple of series with same index. This inter Y axis area will be colored with color up parameter.</p></li>
+<li><p><strong>couple_down</strong> (<em>tuple</em>) – A couple of series with same index. This inter Y axis area will be colored with color down parameter.</p></li>
+<li><p><strong>color_up</strong> – An rgba formatted color: <a class="reference external" href="https://rgbacolorpicker.com/">https://rgbacolorpicker.com/</a></p></li>
+<li><p><strong>color_down</strong> – An rgba formatted color: <a class="reference external" href="https://rgbacolorpicker.com/">https://rgbacolorpicker.com/</a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Return dict</dt>
+<dd class="field-even"><p>A dictionary with auxiliar data about plot areas with two colours by relative position.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1295,7 +1365,7 @@ It can be any color from plotly library or a number in the list of those. Defaul
 
 <dl class="py method">
 <dt class="sig sig-object py" id="binpan.binpan.Symbol.ichimoku">
-<span class="sig-name descname"><span class="pre">ichimoku</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tenkan</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kijun</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">26</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chikou_span</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">26</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">senkou_cloud_base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">52</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['orange',</span> <span class="pre">'skyblue',</span> <span class="pre">'grey',</span> <span class="pre">'red',</span> <span class="pre">'green']</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.binpan.Symbol.ichimoku" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">ichimoku</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tenkan</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kijun</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">26</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chikou_span</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">26</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">senkou_cloud_base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">52</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['orange',</span> <span class="pre">'skyblue',</span> <span class="pre">'grey',</span> <span class="pre">'green',</span> <span class="pre">'red']</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.binpan.Symbol.ichimoku" title="Permalink to this definition"></a></dt>
 <dd><p>The Ichimoku Cloud is a collection of technical indicators that show support and resistance levels, as well as momentum and trend
 direction. It does this by taking multiple averages and plotting them on a chart. It also uses these figures to compute a “cloud”
 that attempts to forecast where the price may find support or resistance in the future.</p>
@@ -1308,7 +1378,7 @@ that attempts to forecast where the price may find support or resistance in the 
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>tenkan</strong> (<em>int</em>) – The short period. It’s the half sum of max and min price in the window. Default: 9</p></li>
 <li><p><strong>kijun</strong> (<em>int</em>) – The long period. It’s the half sum of max and min price in the window. Default: 26</p></li>
-<li><p><strong>chikou_span</strong> (<em>int</em>) – Close of the next 26 bars. Util when spoting what happened with other ichimoku lines and what happened
+<li><p><strong>chikou_span</strong> (<em>int</em>) – Close of the next 26 bars. Util for spotting what happened with other ichimoku lines and what happened
 before Default: 26.</p></li>
 <li><p><strong>senkou_cloud_base</strong> – Period to obtain kumo cloud base line. Default is 52.</p></li>
 <li><p><strong>inplace</strong> (<em>bool</em>) – Make it permanent in the instance or not.</p></li>

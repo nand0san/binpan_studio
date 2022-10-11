@@ -353,7 +353,7 @@ class Symbol(object):
                                                                time_index=self.time_index)
         self.df = dataframe
         self.aux_df = pd.DataFrame(index=self.df.index)
-        self.plot_splitted_serie_couple = {}
+        self.plot_splitted_serie_couples = {}
         self.len = len(self.df)
 
         # exchange data
@@ -598,6 +598,20 @@ class Symbol(object):
                 # reacondicionar rows de lo que ha quedado
                 unique_rows_index = {v: i + 2 for i, v in enumerate(extra_rows)}
                 self.row_control = {c: unique_rows_index[self.row_control[c]] for c in conserve_columns}
+
+                # clean plotting areas info
+                self.plot_splitted_serie_couples = {c: self.plot_splitted_serie_couples[c] for c in conserve_columns}
+
+                # clean aux_df
+                aux_conserve_cols = []
+                for conserve_col in conserve_columns:
+                    for aux_col in aux_conserve_cols:
+                        if aux_col.startswith(conserve_col):
+                            aux_conserve_cols.append(aux_col)
+                del_aux_cols = set(self.aux_df.columns) - set(aux_conserve_cols)
+                self.aux_df = self.aux_df.drop(del_aux_cols, axis=1, inplace=True)
+
+                # self.aux_df = pd.DataFrame(index=self.df.index)
 
                 self.color_control = {c: self.color_control[c] for c in conserve_columns}
                 self.color_fill_control = {c: self.color_fill_control[c] for c in conserve_columns}
@@ -980,19 +994,19 @@ class Symbol(object):
         :param str indicator_column: An existing column from a BinPan Symbol's class dataframe.
         :param tuple couple_up: A couple of series with same index. This inter Y axis area will be colored with color up parameter.
         :param tuple couple_down: A couple of series with same index. This inter Y axis area will be colored with color down parameter.
-        :param color_up: An rgba formated color: https://rgbacolorpicker.com/
-        :param color_down: An rgba formated color: https://rgbacolorpicker.com/
+        :param color_up: An rgba formatted color: https://rgbacolorpicker.com/
+        :param color_down: An rgba formatted color: https://rgbacolorpicker.com/
         :return dict: A dictionary with auxiliar data about plot areas with two colours by relative position.
 
         """
         if indicator_column and couple_up and couple_down:
-            self.plot_splitted_serie_couple.update({indicator_column: [couple_up[0].name,
-                                                                       couple_up[1].name,
-                                                                       couple_down[0].name,
-                                                                       couple_down[1].name,
-                                                                       color_up,
-                                                                       color_down]})
-        return self.plot_splitted_serie_couple
+            self.plot_splitted_serie_couples.update({indicator_column: [couple_up[0].name,
+                                                                        couple_up[1].name,
+                                                                        couple_down[0].name,
+                                                                        couple_down[1].name,
+                                                                        color_up,
+                                                                        color_down]})
+        return self.plot_splitted_serie_couples
 
     def plot(self,
              width=1800,
@@ -1034,6 +1048,7 @@ class Symbol(object):
         :param str background_color: Sets background color. Select a valid plotly color name.
 
         """
+
         if not title:
             title = self.df.index.name
 
@@ -1064,7 +1079,7 @@ class Symbol(object):
                                          fill_control=self.color_fill_control,
                                          indicators_filled_mode=self.indicators_filled_mode,
                                          axis_groups=self.axis_groups,
-                                         plot_splitted_serie_couple=self.plot_splitted_serie_couple,
+                                         plot_splitted_serie_couple=self.plot_splitted_serie_couples,
                                          aux_df=self.aux_df,
                                          rows_pos=rows_pos,
                                          labels=labels,
@@ -2363,6 +2378,7 @@ class Symbol(object):
                      2022-11-14 16:05:00+00:00  0.000292  0.000292
 
                      [26 rows x 2 columns])
+
         """
         # TODO: add to autoplot
         if name == "ebsw":
@@ -2643,7 +2659,6 @@ class Symbol(object):
             return ta.pvt(**kwargs)
         elif name == "vp":
             return ta.vp(**kwargs)
-
 
 
 class Exchange(object):
