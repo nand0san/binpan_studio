@@ -8,8 +8,7 @@ from random import choice
 from .logs import Logs
 from .exceptions import BinPanException
 
-
-plot_logger = Logs(filename='./logs/plotting.log', name='plotting', info_level='INFO')
+plot_logger = Logs(filename='./logs/plotting.log', name='plotting', info_level='DEBUG')
 
 plotly_colors = ["aliceblue", "antiquewhite", "aqua", "aquamarine", "azure", "beige", "bisque", "black",
                  "blanchedalmond", "blue", "blueviolet", "brown", "burlywood", "cadetblue", "chartreuse", "chocolate",
@@ -46,20 +45,20 @@ def set_subplots(extra_rows, candles_ta_height_ratio=0.8, vertical_spacing=0.2):
     specs = [[{"secondary_y": False}] for _ in range(extra_rows + 1)]
     rows = 1 + extra_rows
 
-    plot_logger.debug(rows_heights)
-    plot_logger.debug(sum(rows_heights))
-    plot_logger.debug(rows)
-    plot_logger.debug(vertical_spacing)
-    plot_logger.debug(specs)
+    plot_logger.debug(f"rows_heights: {rows_heights}")
+    plot_logger.debug(f"sum(rows_heights): {sum(rows_heights)}")
+    plot_logger.debug(f"rows: {rows}")
+    plot_logger.debug(f"vertical_spacing: {vertical_spacing}")
+    plot_logger.debug(f"specs: {specs}")
 
     return make_subplots(rows=rows, cols=1, shared_xaxes=True, row_heights=rows_heights,
                          vertical_spacing=vertical_spacing, specs=specs)
 
 
 def set_candles(df: pd.DataFrame) -> tuple:
-    c = go.Candlestick(x=df.index, open=df['Open'], high=df['High'], low=df['Low'], close=df['Close'], name='Candles')
+    candles_plot = go.Candlestick(x=df.index, open=df['Open'], high=df['High'], low=df['Low'], close=df['Close'], name='Candles')
     ax = 1
-    return c, ax
+    return candles_plot, ax
 
 
 # noinspection PyTypeChecker
@@ -78,20 +77,46 @@ def set_volume_series(df: pd.DataFrame, win: int = 21) -> tuple:
     return volume_g, volume_r, volume_ma, 3
 
 
-def set_ta_scatter(df: pd.DataFrame, serie: pd.Series, annotations: list = None, color='blue',
-                   name='Indicator', text_position="bottom center"):
-    return go.Scatter(x=df.index, y=serie, line=dict(color=color, width=0.1), name=name, mode="markers+text",
-                      text=annotations, textposition=text_position)
+def set_ta_scatter(df: pd.DataFrame,
+                   serie: pd.Series,
+                   annotations: list = None,
+                   color='blue',
+                   name='Indicator',
+                   text_position="bottom center"):
+
+    return go.Scatter(x=df.index,
+                      y=serie,
+                      line=dict(color=color, width=0.1),
+                      name=name,
+                      mode="markers+text",
+                      text=annotations,
+                      textposition=text_position)
 
 
-def set_ta_line(df, serie, color='blue', name='Indicator', width=0.5, fill_color: str or bool = None):
-    if fill_color:
-        fill = 'tozeroy'
+def set_ta_line(df_index: pd.DataFrame.index,
+                serie: pd.Series,
+                color='blue',
+                name='Indicator',
+                width=0.5,
+                fill_color: str or bool = None,
+                fill_mode: str = 'none',
+                yaxis: str = 'y'):
+    my_locals = {k: v for k, v in locals().items() if k != 'df_index' and k != 'serie'}
+    plot_logger.debug(f"set_ta_line: {my_locals}")
+
+    if fill_mode:
         fillcolor = fill_color
     else:
-        fill = None
         fillcolor = None
-    return go.Scatter(x=df.index, y=serie, line=dict(color=color, width=width), name=name, mode='lines', fill=fill, fillcolor=fillcolor)
+
+    return go.Scatter(x=df_index,
+                      y=serie,
+                      line=dict(color=color, width=width),
+                      name=name,
+                      mode='lines',
+                      fill=fill_mode,
+                      fillcolor=fillcolor,
+                      yaxis=yaxis)
 
 
 def fill_missing(ll: list, length: int):
@@ -132,7 +157,12 @@ def add_traces(fig, list_of_plots: list, rows: list, cols: list):
     return fig
 
 
-def set_layout_format(fig, axis_q, title, yaxis_title, width, height, range_slider):
+def set_layout_format(fig, axis_q: int,
+                      title: str,
+                      yaxis_title: str,
+                      width: int,
+                      height: int,
+                      range_slider: bool):
     layout_kwargs = dict(title=title,
                          yaxis_title=yaxis_title,
                          autosize=False,
@@ -141,9 +171,10 @@ def set_layout_format(fig, axis_q, title, yaxis_title, width, height, range_slid
                          margin=dict(l=1, r=1, b=20, t=100),
                          xaxis_rangeslider_visible=range_slider,
                          xaxis_showticklabels=True)
+    # renaming axis names
     for i in range(axis_q):
         axis_name = 'yaxis' + str(i + 1) * (i > 0)
-        layout_kwargs[axis_name] = dict(autorange=True, fixedrange=False)
+        layout_kwargs[axis_name] = dict(autorange=True, fixedrange=False)  # los subplots pintan bien los datos aunque se expanda el index
 
     fig = fig.update_layout(layout_kwargs)
     return fig
@@ -198,6 +229,10 @@ def candles_ta(data: pd.DataFrame,
                indicator_names: list = [],
                indicators_colors: list = [],
                indicators_color_filled: dict = None,
+               indicators_filled_mode: dict = None,
+               axis_groups: dict = None,
+               plot_splitted_serie_couple: dict = None,
+               aux_df: pd.DataFrame = None,
                width=1800,
                height=1000,
                range_slider: bool = False,
@@ -235,6 +270,10 @@ def candles_ta(data: pd.DataFrame,
     :param list or dict indicators_color_filled: Color can be forced to fill to zero line. Is a list of Nones for each indicator in
         indicator list or a fillcolor. For transparent colors use rgba string code to define color. Example for transparent green
         'rgba(26,150,65,0.5)' or transparent red 'rgba(204,0,0,0.5)'. It can be a dictionary with each indicator column name and fill color.
+    :param dict indicators_filled_mode: A dict with filled areas for plotting.
+    :param dict axis_groups: A dict with named groups for indicators, useful for plotting filled areas using tonexty fill mode.
+    :param dict plot_splitted_serie_couple: A dict with splitted data for multiple colours when filling areas using tonexty.
+    :param pd.DataFrame aux_df: An auxiliar dataframe with data to plot things with colored areas.
     :param int width: Plot sizing
     :param int height: Plot sizing
     :param bool range_slider: For the volume plot.
@@ -304,11 +343,16 @@ def candles_ta(data: pd.DataFrame,
 
     """
     if not indicators_color_filled:
-        indicators_color_filled = {i.name: False for i in indicators_series}
+        indicators_color_filled = {i.name: None for i in indicators_series}
     elif type(indicators_color_filled) == list:
         indicators_color_filled = {s.name: indicators_color_filled[i] for i, s in enumerate(indicators_series)}
-
     plot_logger.debug(f"candles_ta indicators_color_filled: {indicators_color_filled}")
+
+    if not indicators_filled_mode:
+        indicators_filled_mode = {i.name: None for i in indicators_series}
+    elif type(indicators_filled_mode) == list:
+        indicators_filled_mode = {s.name: indicators_filled_mode[i] for i, s in enumerate(indicators_series)}
+    plot_logger.debug(f"candles_ta indicators_filled_mode: {indicators_filled_mode}")
 
     df_plot = data.copy(deep=True)
 
@@ -323,9 +367,6 @@ def candles_ta(data: pd.DataFrame,
             indicator_names = [i.name for i in indicators_series]
         except Exception:
             indicator_names = [f'Indicator {i}' for i in range(len(indicators_series))]
-
-    if not indicators_color_filled:
-        indicators_color_filled = [False for _ in indicators_series]
 
     if plot_volume:
         extra_rows = len(set(rows_pos)) + 1
@@ -344,27 +385,126 @@ def candles_ta(data: pd.DataFrame,
         volume_g, volume_r, volume_ma, ax = set_volume_series(df_plot)
         axes += ax
         rows = [1, 2, 2, 2]
+        pre_rows = 4
         rows_pos = [i + 1 if i != 1 else i for i in rows_pos]
         traces = [candles_plot, volume_g, volume_r, volume_ma]
     else:
         traces = [candles_plot]
         rows = [1]
+        pre_rows = 1
 
+    rows = rows + [i for i in rows_pos]
     cols = [1 for _ in range(len(rows))]
 
     # technical analysis indicators
     tas = []
 
-    plot_logger.debug(f"{indicators_colors}")
-    plot_logger.debug(f"{indicators_color_filled}")
+    y_axis_idx = [f"y{i}" for i in rows]
 
+    plot_logger.debug(f"----------------------------------------------------------------------")
+    plot_logger.debug(f"indicators_colors: {indicators_colors} len: {len(indicators_colors)}")
+    plot_logger.debug(f"indicators_color_filled: {indicators_color_filled} len: {len(indicators_color_filled)}")
+    plot_logger.debug(f"indicators_filled_mode: {indicators_filled_mode} len: {len(indicators_filled_mode)}")
+    plot_logger.debug(f"rows: {rows} len: {len(rows)}")
+    plot_logger.debug(f"indicators_series: {len(indicators_series)} len: {len(indicators_series)}")
+    plot_logger.debug(f"y_axis_idx: {y_axis_idx} len: {len(y_axis_idx)}")
+    plot_logger.debug(f"axis_groups: {axis_groups} len: {len(axis_groups)}")
+    plot_logger.debug(f"plot_splitted_serie_couple: {plot_splitted_serie_couple} len: {len(plot_splitted_serie_couple)}")
+    plot_logger.debug(f"----------------------------------------------------------------------")
+
+    # first get tas with cloud colors "tonexty"
+    pre_cached = 0
     for i, indicator in enumerate(indicators_series):
-        tas.append(set_ta_line(df=df_plot, serie=indicator, color=indicators_colors[i], name=indicator_names[i],
-                               width=1, fill_color=list(indicators_color_filled.values())[i]))
+        plot_logger.debug(f"Loop plotting: indicator.name={indicator.name}")
+        pre_i = i + pre_rows + pre_cached
+
+        if indicator.name in indicators_filled_mode.keys():
+            my_fill_mode = indicators_filled_mode[indicator.name]
+        else:
+            my_fill_mode = None
+
+        if indicator.name in indicators_color_filled.keys():
+            my_fill_color = indicators_color_filled[indicator.name]
+        else:
+            my_fill_color = None
+
+        if indicator.name in axis_groups.keys():
+            my_axis = axis_groups[indicator.name]
+        else:
+            my_axis = y_axis_idx[pre_i]
+
+        my_axis_from_cache_100 = f"y1{my_axis[1:]}"
+
+        if indicator_names[i] in plot_splitted_serie_couple.keys():
+            plot_logger.debug(f"indicator splitted: {indicator_names[i]}")
+            serie_up, split_up, serie_down, split_down, color_up, color_down = plot_splitted_serie_couple[indicator_names[i]]
+            plot_logger.debug(f"serie_up, split_up, serie_down, split_down, color_up, color_down = {serie_up, split_up, serie_down, split_down, color_up, color_down}")
+
+            tas.append(set_ta_line(df_index=df_plot.index,  # linea para delimitación
+                                   serie=indicator,
+                                   color=indicators_colors[i],
+                                   name=indicator_names[i],
+                                   width=1,
+                                   fill_mode='none',
+                                   fill_color=None,
+                                   yaxis=my_axis))
+
+            tas.append(set_ta_line(df_index=df_plot.index,
+                                   serie=aux_df[serie_up],
+                                   color=indicators_colors[i],
+                                   name=serie_up,
+                                   width=0.01,
+                                   fill_mode='none',
+                                   fill_color=color_up,
+                                   yaxis=my_axis))
+
+            tas.append(set_ta_line(df_index=df_plot.index,
+                                   serie=aux_df[split_up],
+                                   color=indicators_colors[i],
+                                   name=split_up,
+                                   width=0.01,
+                                   fill_mode='tonexty',
+                                   fill_color=color_up,
+                                   yaxis=my_axis))
+
+            tas.append(set_ta_line(df_index=df_plot.index,
+                                   serie=aux_df[split_down],
+                                   color=indicators_colors[i],
+                                   name=serie_down,
+                                   width=0.01,
+                                   fill_mode='none',
+                                   fill_color=color_down,
+                                   yaxis=my_axis_from_cache_100))
+
+            tas.append(set_ta_line(df_index=df_plot.index,
+                                   serie=aux_df[serie_down],
+                                   color=indicators_colors[i],
+                                   name=split_down,
+                                   width=0.01,
+                                   fill_mode='tonexty',
+                                   fill_color=color_down,
+                                   yaxis=my_axis_from_cache_100))
+
+            rows = rows[:pre_i] + [rows[pre_i], rows[pre_i], rows[pre_i], rows[pre_i]] + rows[pre_i:]
+
+            plot_logger.debug(f"rows_updated_by_split: {rows} len: {len(rows)}")
+            y_axis_idx = y_axis_idx[:pre_i] + [my_axis, my_axis, my_axis_from_cache_100, my_axis_from_cache_100] + y_axis_idx[pre_i:]
+            plot_logger.debug(f"y_axis_idx_updated_by_split: {y_axis_idx} len: {len(y_axis_idx)}")
+            pre_cached += 4
+        else:
+            plot_logger.debug(f"indicator_name: {indicator_names[i]}: row: {rows[pre_i]} axis: {my_axis}")
+
+            tas.append(set_ta_line(df_index=df_plot.index,
+                                   serie=indicator,
+                                   color=indicators_colors[i],
+                                   name=indicator_names[i],
+                                   width=1,
+                                   fill_mode=my_fill_mode,
+                                   fill_color=my_fill_color,
+                                   yaxis=my_axis))
         axes += 1
 
     cols = cols + [1 for _ in range(len(tas))]
-    rows = rows + [i for i in rows_pos]
     traces = traces + tas
 
     # anotaciones, siempre van en la primera fila, la de las velas
@@ -375,8 +515,19 @@ def candles_ta(data: pd.DataFrame,
         cols += [1 for _ in range(len(annotation_values))]
         traces += annotations_traces
 
-    fig = add_traces(fig, traces, rows=rows, cols=cols)
-    fig = set_layout_format(fig, axes, title, yaxis_title, width, height, range_slider)
+    # use different traces for cloud indicators
+    fig = add_traces(fig=fig,
+                     list_of_plots=traces,
+                     rows=rows,
+                     cols=cols)
+
+    fig = set_layout_format(fig=fig,
+                            axis_q=axes,
+                            title=title,
+                            yaxis_title=yaxis_title,
+                            width=width,
+                            height=height,
+                            range_slider=range_slider)
 
     if plot_bgcolor:
         fig.update_layout(plot_bgcolor=plot_bgcolor)
@@ -396,6 +547,10 @@ def candles_tagged(data: pd.DataFrame,
                    indicator_names: list = [],
                    indicator_colors: list = [],
                    fill_control: dict or list = None,
+                   indicators_filled_mode: dict or list = None,
+                   axis_groups: dict or list = None,
+                   plot_splitted_serie_couple: dict or list = None,
+                   aux_df: pd.DataFrame = None,
                    rows_pos: list = [],
                    plot_bgcolor=None,
                    actions_col: str = None,
@@ -442,6 +597,10 @@ def candles_tagged(data: pd.DataFrame,
          https://community.plotly.com/t/plotly-colours-list/11730
     :param dict or list fill_control: A dictionary with color to fill or False bool for each indicator. Is the color to the zero line for
         the indicator plot. If a list passed, it iterates to assign each item in the list with the same index item in the indicators list.
+    :param dict indicators_filled_mode: A dict with filled areas for plotting.
+    :param dict axis_groups: A dict with named groups for indicators, useful for plotting filled areas using tonexty fill mode.
+    :param dict plot_splitted_serie_couple: A dict with splitted data for multiple colours when filling areas using tonexty.
+    :param pd.DataFrame aux_df: An auxiliar dataframe with data to plot things with colored areas.
     :param list rows_pos: 1 means over the candles. Other numbers mean subsequent subplots under the candles.
     :param plot_bgcolor: Set background color.
     :param actions_col: A column name of the column with string tags like buy, sell, etc. This is for plotting annotation marks
@@ -592,6 +751,9 @@ def candles_tagged(data: pd.DataFrame,
     if type(fill_control) == list:
         fill_control = {s.name: fill_control[i] for i, s in enumerate(indicator_series)}
 
+    if type(indicators_filled_mode) == list:
+        indicators_filled_mode = {s.name: indicators_filled_mode[i] for i, s in enumerate(indicator_series)}
+
     if actions_col:  # this trigger all annotation and markers thing
 
         # check type
@@ -616,16 +778,6 @@ def candles_tagged(data: pd.DataFrame,
         actions = list(data_string_actions_col.value_counts().index)
         for action in actions:
             annotations_values.append(data_[data_[actions_col] == action][priced_actions_col])
-
-        # action_values_serie = pd.Series()
-        # for idx, action in data[actions_col].dropna().iteritems():
-
-        # else:
-        #     annotations_values = [data[data[actions_col] == 'buy'][priced_actions_col],
-        #                           data[data[actions_col] == 'sell'][priced_actions_col]]
-        # else:
-        #     annotations_values = [data[data[actions_col] == 'buy'][priced_actions_col],
-        #                           data[data[actions_col] == 'sell'][priced_actions_col]]
 
         # verify annotations, colors, labels and names
         try:
@@ -682,6 +834,10 @@ def candles_tagged(data: pd.DataFrame,
                indicator_names=indicator_names,
                indicators_colors=indicator_colors,
                indicators_color_filled=fill_control,
+               indicators_filled_mode=indicators_filled_mode,
+               axis_groups=axis_groups,
+               plot_splitted_serie_couple=plot_splitted_serie_couple,
+               aux_df=aux_df,
                plot_bgcolor=plot_bgcolor)
 
 
@@ -1060,7 +1216,7 @@ def dist_plot(df: pd.DataFrame,
     fig = ff.create_distplot([filtered_df["Price"].tolist()],
                              group_labels=["Price"],
                              show_hist=False,
-                             ).add_traces(
+                             ).add_my_traces(
         px.histogram(filtered_df, x=x_col, nbins=bins, color=color, histnorm=histnorm)
         .update_traces(yaxis="y3", name=x_col)
         .data)
