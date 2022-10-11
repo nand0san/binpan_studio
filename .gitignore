@@ -154,3 +154,5 @@ driver*
 # redis*.ipynb
 pruebas*
 *backup.py
+
+handlers/*backup.py
