@@ -2,6 +2,10 @@ import numpy as np
 import pandas as pd
 
 
+##############
+# INDICATORS #
+##############
+
 def ichimoku(data: pd.DataFrame,
              tenkan: int = 9,
              kijun: int = 26,
@@ -60,22 +64,6 @@ def ichimoku(data: pd.DataFrame,
     arr_b = (high.rolling(window=senkou_cloud_base).max() + low.rolling(window=senkou_cloud_base).min()) / 2
     senkou_span_b = arr_b.shift(periods=chikou_span, freq='infer')
 
-    # senkou_span_a_arr = ((tenkan_sen + kijun_sen) / 2).to_numpy()
-    # senkou_span_b_arr = ((high.rolling(window=senkou_cloud_base).max() + low.rolling(window=senkou_cloud_base).max()) / 2).to_numpy()
-    #
-    # # desplazamiento de 26 barras, la corriente es la 0
-    # span = np.array([np.nan] * chikou_span)
-    # kumo_index_ahead = df.index.shift(chikou_span, freq=freq)
-    # kumo_index = np.concatenate([df.index[:chikou_span], kumo_index_ahead], axis=None)
-    #
-    # senkou_span_a = pd.Series(data=np.concatenate([span, senkou_span_a_arr]), index=kumo_index)
-    # senkou_span_b = pd.Series(data=np.concatenate([span, senkou_span_b_arr]), index=kumo_index)
-
-    # just one possible step value 1m, or 5m or any step but one step
-    # assert len(senkou_span_a.index.to_series().diff().value_counts()) == 1
-    # assert len(senkou_span_b.index.to_series().diff().value_counts()) == 1
-    # assert (senkou_span_b == senkou_span_a).value_counts() != 1
-
     ret = pd.DataFrame([tenkan_sen, kijun_sen, chikou_span_serie, senkou_span_a, senkou_span_b]).T
     print(ret)
 
@@ -88,3 +76,39 @@ def ichimoku(data: pd.DataFrame,
                    f"Ichimoku_cloud_{tenkan}_{kijun}"+suffix,
                    f"Ichimoku_cloud_{senkou_cloud_base}"+suffix]
     return ret
+
+
+####################
+# INDICATORS UTILS #
+####################
+
+def split_serie_by_position(serie: pd.Series,
+                            splitter_serie: pd.Series,
+                            fill_with_zeros: bool = True) -> pd.DataFrame:
+    """
+    Splits a serie by other serie values in four series for plotting purposes.
+
+    :param pd.Series serie: A serie to classify in reference to other serie.
+    :param pd.Series splitter_serie: A serie to split in two couple of series classified by position reference.
+    :param bool fill_with_zeros: Fill nans with zeros for splitted lines like MACD to avoid artifacts in plots.
+    :return tuple: A tuple with four series classified by upper position or lower position.
+    """
+    serie_up = serie.loc[serie.ge(splitter_serie)]
+    splitter_up = splitter_serie.loc[serie_up.index]
+
+    serie_down = serie.loc[serie.lt(splitter_serie)]
+    splitter_down = splitter_serie.loc[serie_down.index]
+
+    serie_up.name = serie_up.name + '_up'
+    serie_down.name = serie_down.name + '_down'
+    splitter_up.name = splitter_up.name + '_split_up'
+    splitter_down.name = splitter_down.name + '_split_down'
+
+    # return serie_up, serie_splitter_up, serie_down, serie_splitter_down
+    # return serie_up, serie_down
+
+    ret = pd.DataFrame([serie_up, splitter_up, serie_down, splitter_down]).T
+    if fill_with_zeros:
+        return ret.fillna(0)
+    else:
+        return ret

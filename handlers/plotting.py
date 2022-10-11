@@ -45,11 +45,11 @@ def set_subplots(extra_rows, candles_ta_height_ratio=0.8, vertical_spacing=0.2):
     specs = [[{"secondary_y": False}] for _ in range(extra_rows + 1)]
     rows = 1 + extra_rows
 
-    plot_logger.debug(rows_heights)
-    plot_logger.debug(sum(rows_heights))
-    plot_logger.debug(rows)
-    plot_logger.debug(vertical_spacing)
-    plot_logger.debug(specs)
+    plot_logger.debug(f"rows_heights: {rows_heights}")
+    plot_logger.debug(f"sum(rows_heights): {sum(rows_heights)}")
+    plot_logger.debug(f"rows: {rows}")
+    plot_logger.debug(f"vertical_spacing: {vertical_spacing}")
+    plot_logger.debug(f"specs: {specs}")
 
     return make_subplots(rows=rows, cols=1, shared_xaxes=True, row_heights=rows_heights,
                          vertical_spacing=vertical_spacing, specs=specs)
@@ -83,6 +83,7 @@ def set_ta_scatter(df: pd.DataFrame,
                    color='blue',
                    name='Indicator',
                    text_position="bottom center"):
+
     return go.Scatter(x=df.index,
                       y=serie,
                       line=dict(color=color, width=0.1),
@@ -92,7 +93,7 @@ def set_ta_scatter(df: pd.DataFrame,
                       textposition=text_position)
 
 
-def set_ta_line(df: pd.DataFrame,
+def set_ta_line(df_index: pd.DataFrame.index,
                 serie: pd.Series,
                 color='blue',
                 name='Indicator',
@@ -100,7 +101,7 @@ def set_ta_line(df: pd.DataFrame,
                 fill_color: str or bool = None,
                 fill_mode: str = 'none',
                 yaxis: str = 'y'):
-    my_locals = {k: v for k, v in locals().items() if k != 'df' and k != 'serie'}
+    my_locals = {k: v for k, v in locals().items() if k != 'df_index' and k != 'serie'}
     plot_logger.debug(f"set_ta_line: {my_locals}")
 
     if fill_mode:
@@ -108,7 +109,7 @@ def set_ta_line(df: pd.DataFrame,
     else:
         fillcolor = None
 
-    return go.Scatter(x=df.index,
+    return go.Scatter(x=df_index,
                       y=serie,
                       line=dict(color=color, width=width),
                       name=name,
@@ -230,6 +231,8 @@ def candles_ta(data: pd.DataFrame,
                indicators_color_filled: dict = None,
                indicators_filled_mode: dict = None,
                axis_groups: dict = None,
+               plot_splitted_serie_couple: dict = None,
+               aux_df: pd.DataFrame = None,
                width=1800,
                height=1000,
                range_slider: bool = False,
@@ -378,11 +381,13 @@ def candles_ta(data: pd.DataFrame,
         volume_g, volume_r, volume_ma, ax = set_volume_series(df_plot)
         axes += ax
         rows = [1, 2, 2, 2]
+        pre_rows = 4
         rows_pos = [i + 1 if i != 1 else i for i in rows_pos]
         traces = [candles_plot, volume_g, volume_r, volume_ma]
     else:
         traces = [candles_plot]
         rows = [1]
+        pre_rows = 1
 
     rows = rows + [i for i in rows_pos]
     cols = [1 for _ in range(len(rows))]
@@ -393,6 +398,7 @@ def candles_ta(data: pd.DataFrame,
     # TODO: ejes a pincho excepto si aparecen en un grupo de ejes
     y_axis_idx = [f"y{i}" for i in rows]
 
+    plot_logger.debug(f"----------------------------------------------------------------------")
     plot_logger.debug(f"indicators_colors: {indicators_colors}")
     plot_logger.debug(f"indicators_color_filled: {indicators_color_filled}")
     plot_logger.debug(f"indicators_filled_mode: {indicators_filled_mode}")
@@ -400,10 +406,13 @@ def candles_ta(data: pd.DataFrame,
     plot_logger.debug(f"indicators_series: {len(indicators_series)}")
     plot_logger.debug(f"y_axis_idx: {y_axis_idx}")
     plot_logger.debug(f"axis_groups: {axis_groups}")
+    plot_logger.debug(f"plot_splitted_serie_couple: {plot_splitted_serie_couple}")
+    plot_logger.debug(f"----------------------------------------------------------------------")
 
     # first get tas with cloud colors "tonexty"
 
     for i, indicator in enumerate(indicators_series):
+        pre_i = i + pre_rows
 
         if indicator.name in indicators_filled_mode.keys():
             my_fill_mode = indicators_filled_mode[indicator.name]
@@ -418,16 +427,71 @@ def candles_ta(data: pd.DataFrame,
         if indicator.name in axis_groups.keys():
             my_axis = axis_groups[indicator.name]
         else:
-            my_axis = y_axis_idx[i]
+            my_axis = y_axis_idx[pre_i]
+            my_axis_from_cache_100 = f"y10{y_axis_idx[pre_i][1:]}"
 
-        tas.append(set_ta_line(df=df_plot,
-                               serie=indicator,
-                               color=indicators_colors[i],
-                               name=indicator_names[i],
-                               width=1,
-                               fill_mode=my_fill_mode,
-                               fill_color=my_fill_color,
-                               yaxis=my_axis))
+        if indicator_names[i] in plot_splitted_serie_couple.keys():
+            plot_logger.debug(f"indicator splitted: {indicator_names[i]}")
+            serie_up, split_up, serie_down, split_down, color_up, color_down = plot_splitted_serie_couple[indicator_names[i]]
+            plot_logger.debug(f"serie_up, split_up, serie_down, split_down, color_up, color_down = {serie_up, split_up, serie_down, split_down, color_up, color_down}")
+
+            tas.append(set_ta_line(df_index=df_plot.index,  # linea para delimitación
+                                   serie=indicator,
+                                   color=indicators_colors[i],
+                                   name=indicator_names[i],
+                                   width=1,
+                                   fill_mode='none',
+                                   fill_color=None,
+                                   yaxis=my_axis))
+            tas.append(set_ta_line(df_index=df_plot.index,
+                                   serie=aux_df[serie_up],
+                                   color=indicators_colors[i],
+                                   name=serie_up,
+                                   width=0.01,
+                                   fill_mode='none',
+                                   fill_color=color_up,
+                                   yaxis=my_axis))
+            tas.append(set_ta_line(df_index=df_plot.index,
+                                   serie=aux_df[split_up],
+                                   color=indicators_colors[i],
+                                   name=split_up,
+                                   width=0.01,
+                                   fill_mode='tonexty',
+                                   fill_color=color_up,
+                                   yaxis=my_axis))
+            tas.append(set_ta_line(df_index=df_plot.index,
+                                   serie=aux_df[split_down],
+                                   color=indicators_colors[i],
+                                   name=serie_down,
+                                   width=0.01,
+                                   fill_mode='none',
+                                   fill_color=color_down,
+                                   yaxis=my_axis))
+            tas.append(set_ta_line(df_index=df_plot.index,
+                                   serie=aux_df[serie_down],
+                                   color=indicators_colors[i],
+                                   name=split_down,
+                                   width=0.01,
+                                   fill_mode='tonexty',
+                                   fill_color=color_down,
+                                   yaxis=my_axis))
+
+            rows = rows[:pre_i] + [rows[pre_i], rows[pre_i], rows[pre_i], rows[pre_i]] + rows[pre_i:]
+            plot_logger.debug(f"rows_updated_by_split: {rows}")
+            y_axis_idx = y_axis_idx[:pre_i] + [my_axis, my_axis, my_axis, my_axis] + y_axis_idx[pre_i:]
+            plot_logger.debug(f"y_axis_idx_updated_by_split: {y_axis_idx}")
+
+        else:
+            plot_logger.debug(f"{indicator_names[i]}: {rows[pre_i]} {my_axis}")
+
+            tas.append(set_ta_line(df_index=df_plot.index,
+                                   serie=indicator,
+                                   color=indicators_colors[i],
+                                   name=indicator_names[i],
+                                   width=1,
+                                   fill_mode=my_fill_mode,
+                                   fill_color=my_fill_color,
+                                   yaxis=my_axis))
         axes += 1
 
     cols = cols + [1 for _ in range(len(tas))]
@@ -475,6 +539,8 @@ def candles_tagged(data: pd.DataFrame,
                    fill_control: dict or list = None,
                    indicators_filled_mode: dict or list = None,
                    axis_groups: dict or list = None,
+                   plot_splitted_serie_couple: dict or list = None,
+                   aux_df: pd.DataFrame = None,
                    rows_pos: list = [],
                    plot_bgcolor=None,
                    actions_col: str = None,
@@ -756,6 +822,8 @@ def candles_tagged(data: pd.DataFrame,
                indicators_color_filled=fill_control,
                indicators_filled_mode=indicators_filled_mode,
                axis_groups=axis_groups,
+               plot_splitted_serie_couple=plot_splitted_serie_couple,
+               aux_df=aux_df,
                plot_bgcolor=plot_bgcolor)
 
 

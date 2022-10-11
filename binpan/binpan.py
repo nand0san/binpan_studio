@@ -8,6 +8,7 @@ import pandas as pd
 import numpy as np
 
 from redis import StrictRedis
+from typing import Tuple
 
 import handlers.logs
 import handlers.starters
@@ -351,6 +352,8 @@ class Symbol(object):
                                                                time_zone=self.time_zone,
                                                                time_index=self.time_index)
         self.df = dataframe
+        self.aux_df = pd.DataFrame(index=self.df.index)
+        self.plot_splitted_serie_couple = {}
         self.len = len(self.df)
 
         # exchange data
@@ -374,6 +377,14 @@ class Symbol(object):
         :return pd.DataFrame:
         """
         return self.df
+
+    def aux_df(self):
+        """
+        Returns auxiliar dataframe with splitted data for plotting colored areas.
+
+        :return pd.DataFrame:
+        """
+        return self.aux_df
 
     def trades(self):
         """
@@ -915,7 +926,7 @@ class Symbol(object):
             self.color_fill_control.update({indicator_column: None})
         return self.color_fill_control
 
-    def set_filled_mode(self, indicator_column: str = None, fill_mode: str = None) -> dict:
+    def set_plot_filled_mode(self, indicator_column: str = None, fill_mode: str = None) -> dict:
         """
         Internal control formatting plots. Can be used to change plot filling mode for pairs of indicators when.
 
@@ -935,7 +946,7 @@ class Symbol(object):
             self.indicators_filled_mode.update({indicator_column: fill_mode})
         return self.indicators_filled_mode
 
-    def set_axis_group(self, indicator_column: str = None, my_axis_group: str = None) -> dict:
+    def set_plot_axis_group(self, indicator_column: str = None, my_axis_group: str = None) -> dict:
         """
         Internal control formatting plots. Can be used to change plot filling mode for pairs of indicators when.
 
@@ -954,6 +965,34 @@ class Symbol(object):
         if indicator_column and my_axis_group:
             self.axis_groups.update({indicator_column: my_axis_group})
         return self.axis_groups
+
+    def set_plot_splitted_serie_couple(self,
+                                       indicator_column: str = None,
+                                       couple_up: Tuple[pd.Series, pd.Series] = None,
+                                       couple_down: Tuple[pd.Series, pd.Series] = None,
+                                       color_up: str = 'rgba(35, 152, 33, 0.5)',
+                                       color_down: str = 'rgba(245, 63, 39, 0.5)') -> dict:
+        """
+        Modify the control for splitted series in plots with colored area in two colors by relative position.
+
+        If no params passed, then returns dict actual contents.
+
+        :param str indicator_column: An existing column from a BinPan Symbol's class dataframe.
+        :param tuple couple_up: A couple of series with same index. This inter Y axis area will be colored with color up parameter.
+        :param tuple couple_down: A couple of series with same index. This inter Y axis area will be colored with color down parameter.
+        :param color_up: An rgba formated color: https://rgbacolorpicker.com/
+        :param color_down: An rgba formated color: https://rgbacolorpicker.com/
+        :return dict: A dictionary with auxiliar data about plot areas with two colours by relative position.
+
+        """
+        if indicator_column and couple_up and couple_down:
+            self.plot_splitted_serie_couple.update({indicator_column: [couple_up[0].name,
+                                                                       couple_up[1].name,
+                                                                       couple_down[0].name,
+                                                                       couple_down[1].name,
+                                                                       color_up,
+                                                                       color_down]})
+        return self.plot_splitted_serie_couple
 
     def plot(self,
              width=1800,
@@ -1025,6 +1064,8 @@ class Symbol(object):
                                          fill_control=self.color_fill_control,
                                          indicators_filled_mode=self.indicators_filled_mode,
                                          axis_groups=self.axis_groups,
+                                         plot_splitted_serie_couple=self.plot_splitted_serie_couple,
+                                         aux_df=self.aux_df,
                                          rows_pos=rows_pos,
                                          labels=labels,
                                          plot_bgcolor=background_color,
@@ -1704,19 +1745,43 @@ class Symbol(object):
 
         if inplace and self.is_new(macd):
             self.row_counter += 1
+
+            self.global_axis_group -= 1
+            axis_identifier = f"y{self.global_axis_group}"
+
             for i, c in enumerate(macd.columns):
                 col = macd[c]
                 column_name = str(col.name) + suffix
                 self.set_plot_color(indicator_column=column_name, color=colors[i])
                 if c.startswith('MACDh_'):
                     self.set_plot_color_fill(indicator_column=column_name, color_fill='rgba(26,150,65,0.5)')
-                    self.set_filled_mode(indicator_column=column_name, fill_mode='tozeroy')
+                    self.set_plot_filled_mode(indicator_column=column_name, fill_mode='tozeroy')
+                    zeros = col.copy()
+                    zeros.loc[:] = 0
+
+                    temp_df = handlers.indicators.split_serie_by_position(serie=col, splitter_serie=zeros, fill_with_zeros=True)
+                    serie_up = temp_df.iloc[:, 0]
+                    splitter_up = temp_df.iloc[:, 1]
+                    serie_down = temp_df.iloc[:, 2]
+                    splitter_down = temp_df.iloc[:, 3]
+
+                    self.aux_df = pd.concat([self.aux_df, temp_df], axis=1, ignore_index=False)
+                    self.set_plot_splitted_serie_couple(indicator_column=column_name,
+                                                        couple_up=(serie_up, splitter_up,),
+                                                        couple_down=(serie_down, splitter_down,),
+                                                        color_up='rgba(35, 152, 33, 0.5)',
+                                                        color_down='rgba(245, 63, 39, 0.5)')
+
+                    self.set_plot_axis_group(indicator_column=column_name, my_axis_group=axis_identifier)
+                    self.set_plot_filled_mode(indicator_column=column_name, fill_mode='tonexty')
+
                 else:
                     self.set_plot_color_fill(indicator_column=column_name, color_fill=None)
-                    self.set_filled_mode(indicator_column=column_name, fill_mode=None)
+                    self.set_plot_filled_mode(indicator_column=column_name, fill_mode=None)
 
                 self.set_plot_row(indicator_column=column_name, row_position=self.row_counter)
                 self.df.loc[:, column_name] = col
+
         return macd
 
     def rsi(self,
@@ -2129,13 +2194,13 @@ class Symbol(object):
 
                 if c.startswith('BBM'):
                     self.set_plot_color_fill(indicator_column=column_name, color_fill='rgba(185,217,218,0.2)')
-                    self.set_axis_group(indicator_column=column_name, my_axis_group=axis_identifier)
-                    self.set_filled_mode(indicator_column=column_name, fill_mode='tonexty')
+                    self.set_plot_axis_group(indicator_column=column_name, my_axis_group=axis_identifier)
+                    self.set_plot_filled_mode(indicator_column=column_name, fill_mode='tonexty')
 
                 if c.startswith('BBU'):
                     self.set_plot_color_fill(indicator_column=column_name, color_fill='rgba(185,217,218,0.2)')
-                    self.set_axis_group(indicator_column=column_name, my_axis_group=axis_identifier)
-                    self.set_filled_mode(indicator_column=column_name, fill_mode='tonexty')
+                    self.set_plot_axis_group(indicator_column=column_name, my_axis_group=axis_identifier)
+                    self.set_plot_filled_mode(indicator_column=column_name, fill_mode='tonexty')
                 self.set_plot_row(indicator_column=str(column_name), row_position=1)
         return bbands
 
@@ -2186,7 +2251,7 @@ class Symbol(object):
                  senkou_cloud_base: int = 52,
                  inplace: bool = True,
                  suffix: str = '',
-                 colors: list = ['orange', 'skyblue', 'grey', 'red', 'green']):
+                 colors: list = ['orange', 'skyblue', 'grey', 'green', 'red']):
         """
         The Ichimoku Cloud is a collection of technical indicators that show support and resistance levels, as well as momentum and trend
         direction. It does this by taking multiple averages and plotting them on a chart. It also uses these figures to compute a “cloud”
@@ -2236,8 +2301,8 @@ class Symbol(object):
 
                 if column_name.startswith('Ichimoku_cloud_52'):
                     self.set_plot_color_fill(indicator_column=column_name, color_fill='rgba(185,217,218,0.2)')
-                    self.set_axis_group(indicator_column=column_name, my_axis_group=axis_identifier)
-                    self.set_filled_mode(indicator_column=column_name, fill_mode='tonexty')
+                    self.set_plot_axis_group(indicator_column=column_name, my_axis_group=axis_identifier)
+                    self.set_plot_filled_mode(indicator_column=column_name, fill_mode='tonexty')
         return ichimoku_data
 
     @staticmethod
@@ -2578,6 +2643,7 @@ class Symbol(object):
             return ta.pvt(**kwargs)
         elif name == "vp":
             return ta.vp(**kwargs)
+
 
 
 class Exchange(object):
