@@ -35,7 +35,7 @@ path.append(getcwd())
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
 
-__version__ = "0.1.7"
+__version__ = "0.1.8"
 
 try:
     from secret import redis_conf
