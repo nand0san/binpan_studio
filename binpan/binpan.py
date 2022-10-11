@@ -239,6 +239,11 @@ class Symbol(object):
                  display_min_rows=25,
                  display_width=320):
 
+        try:
+            from secret import api_key, api_secret
+        except ImportError:
+            print(f"Binance Api key or Api Secret not found.")
+
         if not symbol.isalnum():
             binpan_logger.error(f"BinPan error: Ilegal characters in symbol.")
 
@@ -595,13 +600,15 @@ class Symbol(object):
                 self.row_control = {c: unique_rows_index[self.row_control[c]] for c in conserve_columns}
 
                 # clean plotting areas info
-                self.plot_splitted_serie_couples = {c: self.plot_splitted_serie_couples[c] for c in conserve_columns if c in self.plot_splitted_serie_couples.keys()}
+                self.plot_splitted_serie_couples = {c: self.plot_splitted_serie_couples[c] for c in conserve_columns if
+                                                    c in self.plot_splitted_serie_couples.keys()}
 
                 self.color_control = {c: self.color_control[c] for c in conserve_columns}
                 self.color_fill_control = {c: self.color_fill_control[c] for c in conserve_columns}
 
                 # revisar esto cuando el fill to next y esté hecho
-                self.indicators_filled_mode = {c: self.indicators_filled_mode[c] for c in conserve_columns if c in self.indicators_filled_mode.keys()}
+                self.indicators_filled_mode = {c: self.indicators_filled_mode[c] for c in conserve_columns if
+                                               c in self.indicators_filled_mode.keys()}
                 self.axis_groups = {c: self.axis_groups[c] for c in conserve_columns if c in self.axis_groups.keys()}
 
                 self.df.drop(columns_to_drop, axis=1, inplace=True)
@@ -2374,7 +2381,6 @@ class Symbol(object):
                 self.set_plot_row(indicator_column=str(column_name), row_position=1)
 
                 if column_name.startswith(f'Ichimoku_cloud_{senkou_cloud_base}'):
-
                     self.set_plot_axis_group(indicator_column=column_name, my_axis_group=axis_identifier)
 
                     other_cloud_columns = [c for c in ichimoku_data.columns if c.startswith('Ichimoku_cloud_')]
@@ -2901,23 +2907,21 @@ class Wallet(object):
         except ImportError:
             print(f"Binance Api key or Api Secret not found.")
 
-        self.spot = handlers.wallet.daily_account_snapshot(account_type='SPOT',
-                                                           limit=snapshot_days,
-                                                           time_zone=self.time_zone,
-                                                           decimal_mode=False)
-
-        # self.margin = handlers.wallet.daily_account_snapshot(account_type='MARGIN',
-        #                                                      limit=snapshot_days,
-        #                                                      time_zone=self.time_zone)
-
+        self.spot = self.update_spot()
+        self.spot_snapshot = None
         self.spot_startTime = None
         self.spot_endTime = None
         self.spot_requested_days = snapshot_days
 
-        self.margin = pd.DataFrame()
+        self.margin = self.update_margin()
+        self.margin_snapshot = None
         self.margin_startTime = None
         self.margin_endTime = None
         self.margin_requested_days = None
+
+    def update_spot(self, decimal_mode=False):
+        self.spot = handlers.wallet.get_spot_balances_df(decimal_mode=decimal_mode)
+        return self.spot
 
     def spot_snapshot(self,
                       startTime: int or str = None,
@@ -2936,19 +2940,25 @@ class Wallet(object):
         if time_zone:
             self.time_zone = time_zone
 
-        self.spot = handlers.wallet.daily_account_snapshot(account_type='SPOT',
-                                                           startTime=handlers.wallet.convert_str_date_to_ms(date=startTime,
-                                                                                                            time_zone=self.time_zone),
-                                                           endTime=handlers.wallet.convert_str_date_to_ms(date=endTime,
-                                                                                                          time_zone=self.time_zone),
-                                                           limit=snapshot_days,
-                                                           time_zone=self.time_zone,
-                                                           decimal_mode=False)
+        self.spot_snapshot = handlers.wallet.daily_account_snapshot(account_type='SPOT',
+                                                                    startTime=handlers.wallet.convert_str_date_to_ms(date=startTime,
+                                                                                                                     time_zone=self.time_zone),
+                                                                    endTime=handlers.wallet.convert_str_date_to_ms(date=endTime,
+                                                                                                                   time_zone=self.time_zone),
+                                                                    limit=snapshot_days,
+                                                                    time_zone=self.time_zone,
+                                                                    decimal_mode=False)
         self.spot_startTime = startTime
         self.spot_endTime = endTime
         self.spot_requested_days = snapshot_days
 
         return self.spot
+
+    def update_margin(self, decimal_mode=False):
+        my_margin = handlers.wallet.get_margin_balances(decimal_mode=decimal_mode)
+        self.margin = pd.DataFrame(my_margin).T
+        self.margin.index.name = 'asset'
+        return self.margin
 
     def margin_snapshot(self,
                         startTime: int or str = None,
