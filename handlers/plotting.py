@@ -8,7 +8,7 @@ from random import choice
 from .logs import Logs
 from .exceptions import BinPanException
 
-plot_logger = Logs(filename='./logs/plotting.log', name='plotting', info_level='DEBUG')
+plot_logger = Logs(filename='./logs/plotting.log', name='plotting', info_level='INFO')
 
 plotly_colors = ["aliceblue", "antiquewhite", "aqua", "aquamarine", "azure", "beige", "bisque", "black",
                  "blanchedalmond", "blue", "blueviolet", "brown", "burlywood", "cadetblue", "chartreuse", "chocolate",
@@ -234,7 +234,6 @@ def candles_ta(data: pd.DataFrame,
                indicators_filled_mode: dict = None,
                axis_groups: dict = None,
                plot_splitted_serie_couple: dict = None,
-               aux_df: pd.DataFrame = None,
                width=1800,
                height=1000,
                range_slider: bool = False,
@@ -275,7 +274,6 @@ def candles_ta(data: pd.DataFrame,
     :param dict indicators_filled_mode: A dict with filled areas for plotting.
     :param dict axis_groups: A dict with named groups for indicators, useful for plotting filled areas using tonexty fill mode.
     :param dict plot_splitted_serie_couple: A dict with splitted data for multiple colours when filling areas using tonexty.
-    :param pd.DataFrame aux_df: An auxiliar dataframe with data to plot things with colored areas.
     :param int width: Plot sizing
     :param int height: Plot sizing
     :param bool range_slider: For the volume plot.
@@ -489,27 +487,6 @@ def candles_ta(data: pd.DataFrame,
                 pre_cached += 2
                 y_axis_idx = y_axis_idx[:pre_i] + [my_axis, my_axis] + y_axis_idx[pre_i:]
 
-            #
-            # tas.append(set_ta_line(df_index=df_plot.index,
-            #                        serie=aux_df[split_down],
-            #                        color=indicators_colors[i],
-            #                        name=serie_down,
-            #                        width=0.01,
-            #                        fill_mode='none',
-            #                        fill_color=color_down,
-            #                        yaxis=my_axis_from_cache_100))
-            #
-            # tas.append(set_ta_line(df_index=df_plot.index,
-            #                        serie=aux_df[serie_down],
-            #                        color=indicators_colors[i],
-            #                        name=split_down,
-            #                        width=0.01,
-            #                        fill_mode='tonexty',
-            #                        fill_color=color_down,
-            #                        yaxis=my_axis_from_cache_100))
-
-            # rows = rows[:pre_i] + [rows[pre_i], rows[pre_i], rows[pre_i], rows[pre_i]] + rows[pre_i:]
-
             plot_logger.debug(f"rows_updated_by_split: {rows} len: {len(rows)}")
             plot_logger.debug(f"y_axis_idx_updated_by_split: {y_axis_idx} len: {len(y_axis_idx)}")
         else:
@@ -571,7 +548,6 @@ def candles_tagged(data: pd.DataFrame,
                    indicators_filled_mode: dict or list = None,
                    axis_groups: dict or list = None,
                    plot_splitted_serie_couple: dict or list = None,
-                   aux_df: pd.DataFrame = None,
                    rows_pos: list = [],
                    plot_bgcolor=None,
                    actions_col: str = None,
@@ -621,7 +597,6 @@ def candles_tagged(data: pd.DataFrame,
     :param dict indicators_filled_mode: A dict with filled areas for plotting.
     :param dict axis_groups: A dict with named groups for indicators, useful for plotting filled areas using tonexty fill mode.
     :param dict plot_splitted_serie_couple: A dict with splitted data for multiple colours when filling areas using tonexty.
-    :param pd.DataFrame aux_df: An auxiliar dataframe with data to plot things with colored areas.
     :param list rows_pos: 1 means over the candles. Other numbers mean subsequent subplots under the candles.
     :param plot_bgcolor: Set background color.
     :param actions_col: A column name of the column with string tags like buy, sell, etc. This is for plotting annotation marks
@@ -858,7 +833,6 @@ def candles_tagged(data: pd.DataFrame,
                indicators_filled_mode=indicators_filled_mode,
                axis_groups=axis_groups,
                plot_splitted_serie_couple=plot_splitted_serie_couple,
-               aux_df=aux_df,
                plot_bgcolor=plot_bgcolor)
 
 

@@ -64,7 +64,6 @@ def ichimoku(data: pd.DataFrame,
     senkou_span_b = arr_b.shift(periods=chikou_span, freq='infer')
 
     ret = pd.DataFrame([tenkan_sen, kijun_sen, chikou_span_serie, senkou_span_a, senkou_span_b]).T
-    print(ret)
 
     if suffix:
         suffix = '_' + suffix

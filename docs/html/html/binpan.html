@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BinPan Module &mdash; BinPan 0.1.6 documentation</title>
+  <title>BinPan Module &mdash; BinPan 0.1.7 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/style.css" type="text/css" />
@@ -252,16 +252,6 @@ exchange.</p></li>
 <dt class="sig sig-object py" id="binpan.binpan.Symbol.df">
 <span class="sig-name descname"><span class="pre">df</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#binpan.binpan.Symbol.df" title="Permalink to this definition"></a></dt>
 <dd><p>Returns candles dataframe.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return pd.DataFrame</dt>
-<dd class="field-odd"><p></p></dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="binpan.binpan.Symbol.aux_df">
-<span class="sig-name descname"><span class="pre">aux_df</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#binpan.binpan.Symbol.aux_df" title="Permalink to this definition"></a></dt>
-<dd><p>Returns auxiliar dataframe with splitted data for plotting colored areas.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return pd.DataFrame</dt>
 <dd class="field-odd"><p></p></dd>
@@ -676,15 +666,15 @@ axis group with “tonexty”.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="binpan.binpan.Symbol.set_plot_splitted_serie_couple">
-<span class="sig-name descname"><span class="pre">set_plot_splitted_serie_couple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indicator_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">couple_up</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Series</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Series</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">couple_down</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Series</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Series</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_up</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'rgba(35,</span> <span class="pre">152,</span> <span class="pre">33,</span> <span class="pre">0.5)'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_down</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'rgba(245,</span> <span class="pre">63,</span> <span class="pre">39,</span> <span class="pre">0.5)'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#binpan.binpan.Symbol.set_plot_splitted_serie_couple" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">set_plot_splitted_serie_couple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indicator_column_up</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indicator_column_down</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">splitted_dfs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_up</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'rgba(35,</span> <span class="pre">152,</span> <span class="pre">33,</span> <span class="pre">0.5)'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_down</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'rgba(245,</span> <span class="pre">63,</span> <span class="pre">39,</span> <span class="pre">0.5)'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#binpan.binpan.Symbol.set_plot_splitted_serie_couple" title="Permalink to this definition"></a></dt>
 <dd><p>Modify the control for splitted series in plots with colored area in two colors by relative position.</p>
 <p>If no params passed, then returns dict actual contents.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>indicator_column</strong> (<em>str</em>) – An existing column from a BinPan Symbol’s class dataframe.</p></li>
-<li><p><strong>couple_up</strong> (<em>tuple</em>) – A couple of series with same index. This inter Y axis area will be colored with color up parameter.</p></li>
-<li><p><strong>couple_down</strong> (<em>tuple</em>) – A couple of series with same index. This inter Y axis area will be colored with color down parameter.</p></li>
+<li><p><strong>indicator_column_up</strong> (<em>str</em>) – An existing column from a BinPan Symbol’s class dataframe to plot as up serie (green color).</p></li>
+<li><p><strong>indicator_column_down</strong> (<em>str</em>) – An existing column from a BinPan Symbol’s class dataframe to plot as down serie (red clor).</p></li>
+<li><p><strong>splitted_dfs</strong> (<em>tuple</em>) – A list of pairs of a splitted dataframe by two columns.</p></li>
 <li><p><strong>color_up</strong> – An rgba formatted color: <a class="reference external" href="https://rgbacolorpicker.com/">https://rgbacolorpicker.com/</a></p></li>
 <li><p><strong>color_down</strong> – An rgba formatted color: <a class="reference external" href="https://rgbacolorpicker.com/">https://rgbacolorpicker.com/</a></p></li>
 </ul>
@@ -1010,6 +1000,7 @@ actions_col parameter by column name or a pandas series, if not, Closed price co
 <dd class="field-even"><p>pd.Series</p>
 </dd>
 </dl>
+<a class="reference internal image-reference" href="_images/sma.png"><img alt="Candles with some indicators" src="_images/sma.png" style="width: 1000px;" /></a>
 </dd></dl>
 
 <dl class="py method">
@@ -1032,6 +1023,7 @@ actions_col parameter by column name or a pandas series, if not, Closed price co
 <dd class="field-even"><p>pd.Series</p>
 </dd>
 </dl>
+<a class="reference internal image-reference" href="_images/ema.png"><img alt="Candles with some indicators" src="_images/ema.png" style="width: 1000px;" /></a>
 </dd></dl>
 
 <dl class="py method">
@@ -1053,11 +1045,12 @@ actions_col parameter by column name or a pandas series, if not, Closed price co
 <dd class="field-even"><p>pd.DataFrame</p>
 </dd>
 </dl>
+<a class="reference internal image-reference" href="_images/supertrend.png"><img alt="Candles with some indicators" src="_images/supertrend.png" style="width: 1000px;" /></a>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="binpan.binpan.Symbol.macd">
-<span class="sig-name descname"><span class="pre">macd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fast</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">26</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['orange',</span> <span class="pre">'green',</span> <span class="pre">'blue']</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.binpan.Symbol.macd" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">macd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fast</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">26</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['black',</span> <span class="pre">'orange',</span> <span class="pre">'green',</span> <span class="pre">'blue']</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.binpan.Symbol.macd" title="Permalink to this definition"></a></dt>
 <dd><p>Generate technical indicator Moving Average, Convergence/Divergence (MACD).</p>
 <blockquote>
 <div><p><a class="reference external" href="https://www.investopedia.com/terms/m/macd.asp">https://www.investopedia.com/terms/m/macd.asp</a></p>
@@ -1081,6 +1074,7 @@ It can be any color from plotly library or a number in the list of those. Defaul
 <dd class="field-even"><p>pd.Series</p>
 </dd>
 </dl>
+<a class="reference internal image-reference" href="_images/macd.png"><img alt="Candles with some indicators" src="_images/macd.png" style="width: 1000px;" /></a>
 </dd></dl>
 
 <dl class="py method">
@@ -1104,6 +1098,7 @@ It can be any color from plotly library or a number in the list of those. Defaul
 <dd class="field-even"><p>A Pandas Series</p>
 </dd>
 </dl>
+<a class="reference internal image-reference" href="_images/rsi.png"><img alt="Candles with some indicators" src="_images/rsi.png" style="width: 1000px;" /></a>
 </dd></dl>
 
 <dl class="py method">
@@ -1129,6 +1124,7 @@ It can be any color from plotly library or a number in the list of those. Defaul
 <dd class="field-even"><p>A Pandas DataFrame</p>
 </dd>
 </dl>
+<a class="reference internal image-reference" href="_images/stochrsi.png"><img alt="Candles with some indicators" src="_images/stochrsi.png" style="width: 1000px;" /></a>
 </dd></dl>
 
 <dl class="py method">
@@ -1151,6 +1147,7 @@ It can be any color from plotly library or a number in the list of those. Defaul
 <dd class="field-even"><p>A Pandas Series</p>
 </dd>
 </dl>
+<a class="reference internal image-reference" href="_images/on_balance.png"><img alt="Candles with some indicators" src="_images/on_balance.png" style="width: 1000px;" /></a>
 </dd></dl>
 
 <dl class="py method">
@@ -1173,6 +1170,7 @@ It can be any color from plotly library or a number in the list of those. Defaul
 <dd class="field-even"><p>A Pandas Series</p>
 </dd>
 </dl>
+<a class="reference internal image-reference" href="_images/ad.png"><img alt="Candles with some indicators" src="_images/ad.png" style="width: 1000px;" /></a>
 </dd></dl>
 
 <dl class="py method">
@@ -1198,6 +1196,7 @@ Default: “D”, that means calendar day frequency.</p></li>
 <dd class="field-even"><p>A Pandas Series</p>
 </dd>
 </dl>
+<a class="reference internal image-reference" href="_images/vwap.png"><img alt="Candles with some indicators" src="_images/vwap.png" style="width: 1000px;" /></a>
 </dd></dl>
 
 <dl class="py method">
@@ -1221,6 +1220,7 @@ Default: “D”, that means calendar day frequency.</p></li>
 <dd class="field-even"><p>A Pandas Series</p>
 </dd>
 </dl>
+<a class="reference internal image-reference" href="_images/atr.png"><img alt="Candles with some indicators" src="_images/atr.png" style="width: 1000px;" /></a>
 </dd></dl>
 
 <dl class="py method">
@@ -1252,6 +1252,7 @@ overbought. Likewise, securities can continue moving lower after the indicator b
 <dd class="field-even"><p>A Pandas Series</p>
 </dd>
 </dl>
+<a class="reference internal image-reference" href="_images/cci.png"><img alt="Candles with some indicators" src="_images/cci.png" style="width: 1000px;" /></a>
 </dd></dl>
 
 <dl class="py method">
@@ -1280,6 +1281,7 @@ with other indicators in chart analysis.</p>
 <dd class="field-even"><p>A Pandas Series</p>
 </dd>
 </dl>
+<a class="reference internal image-reference" href="_images/eom.png"><img alt="Candles with some indicators" src="_images/eom.png" style="width: 1000px;" /></a>
 </dd></dl>
 
 <dl class="py method">
@@ -1305,11 +1307,12 @@ and the price “n” day’s ago. The indicator fluctuates around the zero line
 <dd class="field-even"><p>A Pandas Series</p>
 </dd>
 </dl>
+<a class="reference internal image-reference" href="_images/roc.png"><img alt="Candles with some indicators" src="_images/roc.png" style="width: 1000px;" /></a>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="binpan.binpan.Symbol.bbands">
-<span class="sig-name descname"><span class="pre">bbands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ddof</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['red',</span> <span class="pre">'orange',</span> <span class="pre">'green']</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.binpan.Symbol.bbands" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">bbands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ddof</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['red',</span> <span class="pre">'orange',</span> <span class="pre">'green']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">my_fill_color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'rgba(47,</span> <span class="pre">48,</span> <span class="pre">56,</span> <span class="pre">0.2)'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.binpan.Symbol.bbands" title="Permalink to this definition"></a></dt>
 <dd><p>These bands consist of an upper Bollinger band and a lower Bollinger band and are placed two standard deviations
 above and below a moving average.
 Bollinger bands expand and contract based on the volatility. During a period of rising volatility, the bands widen,
@@ -1329,6 +1332,7 @@ the upper band and relatively low when they go below the lower band.</p>
 <li><p><strong>colors</strong> (<em>list</em>) – A list of colors for the indicator dataframe columns. Is the color to show when plotting.
 It can be any color from plotly library or a number in the list of those. Default colors defined.
 <a class="reference external" href="https://community.plotly.com/t/plotly-colours-list/11730">https://community.plotly.com/t/plotly-colours-list/11730</a></p></li>
+<li><p><strong>my_fill_color</strong> (<em>str</em>) – An rgba color code to fill between bands area. <a class="reference external" href="https://rgbacolorpicker.com/">https://rgbacolorpicker.com/</a></p></li>
 <li><p><strong>kwargs</strong> – Optional from <a class="reference external" href="https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/volatility/bbands.py">https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/volatility/bbands.py</a></p></li>
 </ul>
 </dd>
@@ -1336,6 +1340,7 @@ It can be any color from plotly library or a number in the list of those. Defaul
 <dd class="field-even"><p>pd.Series</p>
 </dd>
 </dl>
+<a class="reference internal image-reference" href="_images/bbands.png"><img alt="Candles with some indicators" src="_images/bbands.png" style="width: 1000px;" /></a>
 </dd></dl>
 
 <dl class="py method">
@@ -1361,6 +1366,7 @@ It can be any color from plotly library or a number in the list of those. Defaul
 <dd class="field-even"><p>A Pandas DataFrame</p>
 </dd>
 </dl>
+<a class="reference internal image-reference" href="_images/stoch_oscillator.png"><img alt="Candles with some indicators" src="_images/stoch_oscillator.png" style="width: 1000px;" /></a>
 </dd></dl>
 
 <dl class="py method">
@@ -1392,6 +1398,7 @@ It can be any color from plotly library or a number in the list of those. Defaul
 <dd class="field-even"><p>pd.Series</p>
 </dd>
 </dl>
+<a class="reference internal image-reference" href="_images/ichimoku.png"><img alt="Candles with some indicators" src="_images/ichimoku.png" style="width: 1000px;" /></a>
 </dd></dl>
 
 <dl class="py method">
@@ -1412,54 +1419,48 @@ It can be any color from plotly library or a number in the list of those. Defaul
 </dd>
 </dl>
 <p>Example:</p>
-<blockquote>
-<div><p>..code-block:: python</p>
-<blockquote>
-<div><p>sym = binpan.Symbol(symbol=’LUNCBUSD’, tick_interval=’1m’)</p>
-<dl>
-<dt>sym.pandas_ta_indicator(name=’ichimoku’, <a href="#id1"><span class="problematic" id="id2">**</span></a>{</dt><dd><blockquote>
-<div><p>‘high’: sym.df[‘High’],
-‘low’: sym.df[‘Low’],
-‘close’: sym.df[‘Close’],
-‘tenkan’: 9,
-‘kijun ‘: 26,
-‘senkou ‘: 52})</p>
-</div></blockquote>
-<dl>
-<dt>(                              ISA_9    ISB_26     ITS_9    IKS_26    ICS_26</dt><dd><p>LUNCBUSD 1m UTC
-2022-10-06 23:27:00+00:00       NaN       NaN       NaN       NaN  0.000285
-2022-10-06 23:28:00+00:00       NaN       NaN       NaN       NaN  0.000285
-2022-10-06 23:29:00+00:00       NaN       NaN       NaN       NaN  0.000285
-2022-10-06 23:30:00+00:00       NaN       NaN       NaN       NaN  0.000285
-2022-10-06 23:31:00+00:00       NaN       NaN       NaN       NaN  0.000285
-…                             …       …       …       …       …
-2022-10-07 16:01:00+00:00  0.000292  0.000293  0.000291  0.000291       NaN
-2022-10-07 16:02:00+00:00  0.000292  0.000293  0.000292  0.000291       NaN
-2022-10-07 16:03:00+00:00  0.000292  0.000293  0.000292  0.000291       NaN
-2022-10-07 16:04:00+00:00  0.000292  0.000293  0.000292  0.000291       NaN
-2022-10-07 16:05:00+00:00  0.000292  0.000293  0.000292  0.000291       NaN</p>
-<dl class="simple">
-<dt>[999 rows x 5 columns],</dt><dd><p>ISA_9    ISB_26</p>
-</dd>
-</dl>
-<p>2022-10-10 16:05:00+00:00  0.000292  0.000293
-2022-10-11 16:05:00+00:00  0.000292  0.000293
-2022-10-12 16:05:00+00:00  0.000292  0.000293
-2022-10-13 16:05:00+00:00  0.000292  0.000293
-2022-10-14 16:05:00+00:00  0.000292  0.000293
-…                             …       …
-2022-11-08 16:05:00+00:00  0.000291  0.000292
-2022-11-09 16:05:00+00:00  0.000291  0.000292
-2022-11-10 16:05:00+00:00  0.000292  0.000292
-2022-11-11 16:05:00+00:00  0.000292  0.000292
-2022-11-14 16:05:00+00:00  0.000292  0.000292</p>
-<p>[26 rows x 2 columns])</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</div></blockquote>
-</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sym</span> <span class="o">=</span> <span class="n">binpan</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;LUNCBUSD&#39;</span><span class="p">,</span> <span class="n">tick_interval</span><span class="o">=</span><span class="s1">&#39;1m&#39;</span><span class="p">)</span>
+
+<span class="n">sym</span><span class="o">.</span><span class="n">pandas_ta_indicator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;ichimoku&#39;</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span>
+                                          <span class="s1">&#39;high&#39;</span><span class="p">:</span> <span class="n">sym</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;High&#39;</span><span class="p">],</span>
+                                          <span class="s1">&#39;low&#39;</span><span class="p">:</span> <span class="n">sym</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Low&#39;</span><span class="p">],</span>
+                                          <span class="s1">&#39;close&#39;</span><span class="p">:</span> <span class="n">sym</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Close&#39;</span><span class="p">],</span>
+                                          <span class="s1">&#39;tenkan&#39;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>
+                                          <span class="s1">&#39;kijun &#39;</span><span class="p">:</span> <span class="mi">26</span><span class="p">,</span>
+                                          <span class="s1">&#39;senkou &#39;</span><span class="p">:</span> <span class="mi">52</span><span class="p">})</span>
+
+
+      <span class="p">(</span>                              <span class="n">ISA_9</span>    <span class="n">ISB_26</span>     <span class="n">ITS_9</span>    <span class="n">IKS_26</span>    <span class="n">ICS_26</span>
+       <span class="n">LUNCBUSD</span> <span class="mi">1</span><span class="n">m</span> <span class="n">UTC</span>
+       <span class="mi">2022</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">06</span> <span class="mi">23</span><span class="p">:</span><span class="mi">27</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>       <span class="n">NaN</span>       <span class="n">NaN</span>       <span class="n">NaN</span>       <span class="n">NaN</span>  <span class="mf">0.000285</span>
+       <span class="mi">2022</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">06</span> <span class="mi">23</span><span class="p">:</span><span class="mi">28</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>       <span class="n">NaN</span>       <span class="n">NaN</span>       <span class="n">NaN</span>       <span class="n">NaN</span>  <span class="mf">0.000285</span>
+       <span class="mi">2022</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">06</span> <span class="mi">23</span><span class="p">:</span><span class="mi">29</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>       <span class="n">NaN</span>       <span class="n">NaN</span>       <span class="n">NaN</span>       <span class="n">NaN</span>  <span class="mf">0.000285</span>
+       <span class="mi">2022</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">06</span> <span class="mi">23</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>       <span class="n">NaN</span>       <span class="n">NaN</span>       <span class="n">NaN</span>       <span class="n">NaN</span>  <span class="mf">0.000285</span>
+       <span class="mi">2022</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">06</span> <span class="mi">23</span><span class="p">:</span><span class="mi">31</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>       <span class="n">NaN</span>       <span class="n">NaN</span>       <span class="n">NaN</span>       <span class="n">NaN</span>  <span class="mf">0.000285</span>
+       <span class="o">...</span>                             <span class="o">...</span>       <span class="o">...</span>       <span class="o">...</span>       <span class="o">...</span>       <span class="o">...</span>
+       <span class="mi">2022</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">07</span> <span class="mi">16</span><span class="p">:</span><span class="mi">01</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">0.000292</span>  <span class="mf">0.000293</span>  <span class="mf">0.000291</span>  <span class="mf">0.000291</span>       <span class="n">NaN</span>
+       <span class="mi">2022</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">07</span> <span class="mi">16</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">0.000292</span>  <span class="mf">0.000293</span>  <span class="mf">0.000292</span>  <span class="mf">0.000291</span>       <span class="n">NaN</span>
+       <span class="mi">2022</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">07</span> <span class="mi">16</span><span class="p">:</span><span class="mi">03</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">0.000292</span>  <span class="mf">0.000293</span>  <span class="mf">0.000292</span>  <span class="mf">0.000291</span>       <span class="n">NaN</span>
+       <span class="mi">2022</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">07</span> <span class="mi">16</span><span class="p">:</span><span class="mi">04</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">0.000292</span>  <span class="mf">0.000293</span>  <span class="mf">0.000292</span>  <span class="mf">0.000291</span>       <span class="n">NaN</span>
+       <span class="mi">2022</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">07</span> <span class="mi">16</span><span class="p">:</span><span class="mi">05</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">0.000292</span>  <span class="mf">0.000293</span>  <span class="mf">0.000292</span>  <span class="mf">0.000291</span>       <span class="n">NaN</span>
+
+       <span class="p">[</span><span class="mi">999</span> <span class="n">rows</span> <span class="n">x</span> <span class="mi">5</span> <span class="n">columns</span><span class="p">],</span>
+                                     <span class="n">ISA_9</span>    <span class="n">ISB_26</span>
+       <span class="mi">2022</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">10</span> <span class="mi">16</span><span class="p">:</span><span class="mi">05</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">0.000292</span>  <span class="mf">0.000293</span>
+       <span class="mi">2022</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">11</span> <span class="mi">16</span><span class="p">:</span><span class="mi">05</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">0.000292</span>  <span class="mf">0.000293</span>
+       <span class="mi">2022</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">12</span> <span class="mi">16</span><span class="p">:</span><span class="mi">05</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">0.000292</span>  <span class="mf">0.000293</span>
+       <span class="mi">2022</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">13</span> <span class="mi">16</span><span class="p">:</span><span class="mi">05</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">0.000292</span>  <span class="mf">0.000293</span>
+       <span class="mi">2022</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">14</span> <span class="mi">16</span><span class="p">:</span><span class="mi">05</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">0.000292</span>  <span class="mf">0.000293</span>
+       <span class="o">...</span>                             <span class="o">...</span>       <span class="o">...</span>
+       <span class="mi">2022</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">08</span> <span class="mi">16</span><span class="p">:</span><span class="mi">05</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">0.000291</span>  <span class="mf">0.000292</span>
+       <span class="mi">2022</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">09</span> <span class="mi">16</span><span class="p">:</span><span class="mi">05</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">0.000291</span>  <span class="mf">0.000292</span>
+       <span class="mi">2022</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">10</span> <span class="mi">16</span><span class="p">:</span><span class="mi">05</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">0.000292</span>  <span class="mf">0.000292</span>
+       <span class="mi">2022</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">11</span> <span class="mi">16</span><span class="p">:</span><span class="mi">05</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">0.000292</span>  <span class="mf">0.000292</span>
+       <span class="mi">2022</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">14</span> <span class="mi">16</span><span class="p">:</span><span class="mi">05</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">0.000292</span>  <span class="mf">0.000292</span>
+
+       <span class="p">[</span><span class="mi">26</span> <span class="n">rows</span> <span class="n">x</span> <span class="mi">2</span> <span class="n">columns</span><span class="p">])</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </dd></dl>

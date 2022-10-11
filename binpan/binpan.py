@@ -31,7 +31,7 @@ from random import choice
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
 
-__version__ = "0.1.6"
+__version__ = "0.1.7"
 
 try:
     from secret import redis_conf
@@ -352,7 +352,6 @@ class Symbol(object):
                                                                time_zone=self.time_zone,
                                                                time_index=self.time_index)
         self.df = dataframe
-        self.aux_df = pd.DataFrame(index=self.df.index)
         self.plot_splitted_serie_couples = {}
         self.len = len(self.df)
 
@@ -377,14 +376,6 @@ class Symbol(object):
         :return pd.DataFrame:
         """
         return self.df
-
-    def aux_df(self):
-        """
-        Returns auxiliar dataframe with splitted data for plotting colored areas.
-
-        :return pd.DataFrame:
-        """
-        return self.aux_df
 
     def trades(self):
         """
@@ -600,25 +591,14 @@ class Symbol(object):
                 self.row_control = {c: unique_rows_index[self.row_control[c]] for c in conserve_columns}
 
                 # clean plotting areas info
-                self.plot_splitted_serie_couples = {c: self.plot_splitted_serie_couples[c] for c in conserve_columns}
-
-                # clean aux_df
-                aux_conserve_cols = []
-                for conserve_col in conserve_columns:
-                    for aux_col in aux_conserve_cols:
-                        if aux_col.startswith(conserve_col):
-                            aux_conserve_cols.append(aux_col)
-                del_aux_cols = set(self.aux_df.columns) - set(aux_conserve_cols)
-                self.aux_df = self.aux_df.drop(del_aux_cols, axis=1, inplace=True)
-
-                # self.aux_df = pd.DataFrame(index=self.df.index)
+                self.plot_splitted_serie_couples = {c: self.plot_splitted_serie_couples[c] for c in conserve_columns if c in self.plot_splitted_serie_couples.keys()}
 
                 self.color_control = {c: self.color_control[c] for c in conserve_columns}
                 self.color_fill_control = {c: self.color_fill_control[c] for c in conserve_columns}
 
                 # revisar esto cuando el fill to next y esté hecho
-                self.indicators_filled_mode = {c: self.indicators_filled_mode[c] for c in conserve_columns}
-                self.axis_groups = {c: self.axis_groups[c] for c in conserve_columns}
+                self.indicators_filled_mode = {c: self.indicators_filled_mode[c] for c in conserve_columns if c in self.indicators_filled_mode.keys()}
+                self.axis_groups = {c: self.axis_groups[c] for c in conserve_columns if c in self.axis_groups.keys()}
 
                 self.df.drop(columns_to_drop, axis=1, inplace=True)
 
@@ -1079,7 +1059,6 @@ class Symbol(object):
                                          indicators_filled_mode=self.indicators_filled_mode,
                                          axis_groups=self.axis_groups,
                                          plot_splitted_serie_couple=self.plot_splitted_serie_couples,
-                                         aux_df=self.aux_df,
                                          rows_pos=rows_pos,
                                          labels=labels,
                                          plot_bgcolor=background_color,
@@ -1666,6 +1645,10 @@ class Symbol(object):
         :param kwargs: Optional plotly args from https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/overlap/sma.py
         :return: pd.Series
 
+        .. image:: images/indicators/sma.png
+           :width: 1000
+           :alt: Candles with some indicators
+
         """
         return self.ma(ma_name='sma', column_source=column, inplace=inplace, length=window, suffix=suffix, color=color, **kwargs)
 
@@ -1681,6 +1664,11 @@ class Symbol(object):
             <https://community.plotly.com/t/plotly-colours-list/11730>
         :param kwargs: Optional plotly args from https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/overlap/ema.py
         :return: pd.Series
+
+        .. image:: images/indicators/ema.png
+           :width: 1000
+           :alt: Candles with some indicators
+
         """
         return self.ma(ma_name='ema', column_source=column, inplace=inplace, length=window, suffix=suffix, color=color, **kwargs)
 
@@ -1695,6 +1683,10 @@ class Symbol(object):
         :param list colors: DDefaults to red and green.
         :param kwargs: Optional plotly args from https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/overlap/supertrend.py.
         :return: pd.DataFrame
+
+        .. image:: images/indicators/supertrend.png
+           :width: 1000
+           :alt: Candles with some indicators
 
         """
         if suffix:
@@ -1750,6 +1742,10 @@ class Symbol(object):
 
         :param kwargs: Optional from https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/momentum/macd.py
         :return: pd.Series
+
+        .. image:: images/indicators/macd.png
+           :width: 1000
+           :alt: Candles with some indicators
 
         """
         macd = self.df.ta.macd(fast=fast,
@@ -1811,6 +1807,11 @@ class Symbol(object):
         :param str or int color: Is the color to show when plotting from plotly list or index of color in that list.
         :param kwargs: Optional from https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/momentum/rsi.py
         :return: A Pandas Series
+
+        .. image:: images/indicators/rsi.png
+           :width: 1000
+           :alt: Candles with some indicators
+
         """
 
         rsi = ta.rsi(close=self.df['Close'],
@@ -1849,6 +1850,11 @@ class Symbol(object):
         :param list colors: Is the color to show when plotting.
         :param kwargs: Optional from https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/momentum/stochrsi.py
         :return: A Pandas DataFrame
+
+        .. image:: images/indicators/stochrsi.png
+           :width: 1000
+           :alt: Candles with some indicators
+
         """
         stoch_df = ta.stochrsi(close=self.df['Close'],
                                length=rsi_length,
@@ -1882,6 +1888,11 @@ class Symbol(object):
         :param str or int color: Is the color to show when plotting.
         :param kwargs: Optional from https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/volume/obv.py
         :return: A Pandas Series
+
+        .. image:: images/indicators/on_balance.png
+           :width: 1000
+           :alt: Candles with some indicators
+
         """
 
         on_balance = ta.obv(close=self.df['Close'],
@@ -1918,6 +1929,11 @@ class Symbol(object):
         :param str or int color: Is the color to show when plotting or index in that list.
         :param kwargs: Optional from https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/volume/ad.py
         :return: A Pandas Series
+
+        .. image:: images/indicators/ad.png
+           :width: 1000
+           :alt: Candles with some indicators
+
         """
 
         ad = ta.ad(high=self.df['High'],
@@ -1959,6 +1975,11 @@ class Symbol(object):
         :param str or int color: Is the color to show when plotting or index in that list.
         :param kwargs: Optional from https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/overlap/vwap.py
         :return: A Pandas Series
+
+        .. image:: images/indicators/vwap.png
+           :width: 1000
+           :alt: Candles with some indicators
+
         """
 
         vwap = ta.vwap(high=self.df['High'],
@@ -1997,6 +2018,11 @@ class Symbol(object):
         :param str or int color: Is the color to show when plotting or index in that list.
         :param kwargs: Optional from https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/volatility/atr.py
         :return: A Pandas Series
+
+        .. image:: images/indicators/atr.png
+           :width: 1000
+           :alt: Candles with some indicators
+
         """
 
         atr = ta.atr(high=self.df['High'],
@@ -2044,6 +2070,11 @@ class Symbol(object):
         :param str or int color: Is the color to show when plotting or index in that list.
         :param kwargs: Optional from https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/momentum/cci.py
         :return: A Pandas Series
+
+        .. image:: images/indicators/cci.png
+           :width: 1000
+           :alt: Candles with some indicators
+
         """
 
         cci = ta.cci(high=self.df['High'],
@@ -2090,6 +2121,11 @@ class Symbol(object):
         :param str or int color: Is the color to show when plotting or index in that list.
         :param kwargs: Optional from https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/volume/eom.py
         :return: A Pandas Series
+
+        .. image:: images/indicators/eom.png
+           :width: 1000
+           :alt: Candles with some indicators
+
         """
 
         eom = ta.eom(high=self.df['High'],
@@ -2133,6 +2169,11 @@ class Symbol(object):
         :param str or int color: Is the color to show when plotting or index in that list.
         :param kwargs: Optional from https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/momentum/roc.py
         :return: A Pandas Series
+
+        .. image:: images/indicators/roc.png
+           :width: 1000
+           :alt: Candles with some indicators
+
         """
 
         roc = ta.roc(close=self.df['Close'],
@@ -2181,6 +2222,10 @@ class Symbol(object):
         :param str my_fill_color: An rgba color code to fill between bands area. https://rgbacolorpicker.com/
         :param kwargs: Optional from https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/volatility/bbands.py
         :return: pd.Series
+
+        .. image:: images/indicators/bbands.png
+           :width: 1000
+           :alt: Candles with some indicators
 
         """
         bbands = self.df.ta.bbands(close=self.df['Close'],
@@ -2237,6 +2282,11 @@ class Symbol(object):
         :param list colors: Is the color to show when plotting.
         :param kwargs: Optional from https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/momentum/stoch.py
         :return: A Pandas DataFrame
+
+        .. image:: images/indicators/stoch_oscillator.png
+           :width: 1000
+           :alt: Candles with some indicators
+
         """
         stoch_df = ta.stoch(high=self.df['High'],
                             low=self.df['Low'],
@@ -2285,6 +2335,10 @@ class Symbol(object):
             https://community.plotly.com/t/plotly-colours-list/11730
 
         :return: pd.Series
+
+        .. image:: images/indicators/ichimoku.png
+           :width: 1000
+           :alt: Candles with some indicators
 
         """
 
@@ -2351,48 +2405,48 @@ class Symbol(object):
 
         Example:
 
-           ..code-block:: python
+        .. code-block::
 
-              sym = binpan.Symbol(symbol='LUNCBUSD', tick_interval='1m')
+          sym = binpan.Symbol(symbol='LUNCBUSD', tick_interval='1m')
 
-              sym.pandas_ta_indicator(name='ichimoku', **{
-                                                        'high': sym.df['High'],
-                                                        'low': sym.df['Low'],
-                                                        'close': sym.df['Close'],
-                                                        'tenkan': 9,
-                                                        'kijun ': 26,
-                                                        'senkou ': 52})
+          sym.pandas_ta_indicator(name='ichimoku', **{
+                                                    'high': sym.df['High'],
+                                                    'low': sym.df['Low'],
+                                                    'close': sym.df['Close'],
+                                                    'tenkan': 9,
+                                                    'kijun ': 26,
+                                                    'senkou ': 52})
 
 
-                    (                              ISA_9    ISB_26     ITS_9    IKS_26    ICS_26
-                     LUNCBUSD 1m UTC
-                     2022-10-06 23:27:00+00:00       NaN       NaN       NaN       NaN  0.000285
-                     2022-10-06 23:28:00+00:00       NaN       NaN       NaN       NaN  0.000285
-                     2022-10-06 23:29:00+00:00       NaN       NaN       NaN       NaN  0.000285
-                     2022-10-06 23:30:00+00:00       NaN       NaN       NaN       NaN  0.000285
-                     2022-10-06 23:31:00+00:00       NaN       NaN       NaN       NaN  0.000285
-                     ...                             ...       ...       ...       ...       ...
-                     2022-10-07 16:01:00+00:00  0.000292  0.000293  0.000291  0.000291       NaN
-                     2022-10-07 16:02:00+00:00  0.000292  0.000293  0.000292  0.000291       NaN
-                     2022-10-07 16:03:00+00:00  0.000292  0.000293  0.000292  0.000291       NaN
-                     2022-10-07 16:04:00+00:00  0.000292  0.000293  0.000292  0.000291       NaN
-                     2022-10-07 16:05:00+00:00  0.000292  0.000293  0.000292  0.000291       NaN
+                (                              ISA_9    ISB_26     ITS_9    IKS_26    ICS_26
+                 LUNCBUSD 1m UTC
+                 2022-10-06 23:27:00+00:00       NaN       NaN       NaN       NaN  0.000285
+                 2022-10-06 23:28:00+00:00       NaN       NaN       NaN       NaN  0.000285
+                 2022-10-06 23:29:00+00:00       NaN       NaN       NaN       NaN  0.000285
+                 2022-10-06 23:30:00+00:00       NaN       NaN       NaN       NaN  0.000285
+                 2022-10-06 23:31:00+00:00       NaN       NaN       NaN       NaN  0.000285
+                 ...                             ...       ...       ...       ...       ...
+                 2022-10-07 16:01:00+00:00  0.000292  0.000293  0.000291  0.000291       NaN
+                 2022-10-07 16:02:00+00:00  0.000292  0.000293  0.000292  0.000291       NaN
+                 2022-10-07 16:03:00+00:00  0.000292  0.000293  0.000292  0.000291       NaN
+                 2022-10-07 16:04:00+00:00  0.000292  0.000293  0.000292  0.000291       NaN
+                 2022-10-07 16:05:00+00:00  0.000292  0.000293  0.000292  0.000291       NaN
 
-                     [999 rows x 5 columns],
-                                                   ISA_9    ISB_26
-                     2022-10-10 16:05:00+00:00  0.000292  0.000293
-                     2022-10-11 16:05:00+00:00  0.000292  0.000293
-                     2022-10-12 16:05:00+00:00  0.000292  0.000293
-                     2022-10-13 16:05:00+00:00  0.000292  0.000293
-                     2022-10-14 16:05:00+00:00  0.000292  0.000293
-                     ...                             ...       ...
-                     2022-11-08 16:05:00+00:00  0.000291  0.000292
-                     2022-11-09 16:05:00+00:00  0.000291  0.000292
-                     2022-11-10 16:05:00+00:00  0.000292  0.000292
-                     2022-11-11 16:05:00+00:00  0.000292  0.000292
-                     2022-11-14 16:05:00+00:00  0.000292  0.000292
+                 [999 rows x 5 columns],
+                                               ISA_9    ISB_26
+                 2022-10-10 16:05:00+00:00  0.000292  0.000293
+                 2022-10-11 16:05:00+00:00  0.000292  0.000293
+                 2022-10-12 16:05:00+00:00  0.000292  0.000293
+                 2022-10-13 16:05:00+00:00  0.000292  0.000293
+                 2022-10-14 16:05:00+00:00  0.000292  0.000293
+                 ...                             ...       ...
+                 2022-11-08 16:05:00+00:00  0.000291  0.000292
+                 2022-11-09 16:05:00+00:00  0.000291  0.000292
+                 2022-11-10 16:05:00+00:00  0.000292  0.000292
+                 2022-11-11 16:05:00+00:00  0.000292  0.000292
+                 2022-11-14 16:05:00+00:00  0.000292  0.000292
 
-                     [26 rows x 2 columns])
+                 [26 rows x 2 columns])
 
         """
         # TODO: add to autoplot
