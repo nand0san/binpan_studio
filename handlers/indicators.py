@@ -46,7 +46,6 @@ def ichimoku(data: pd.DataFrame,
     """
     df = data.copy(deep=True)
     # freq = pd.infer_freq(df.index)
-    print(df)
 
     high = df['High']
     low = df['Low']
@@ -94,10 +93,12 @@ def split_serie_by_position(serie: pd.Series,
     :return tuple: A tuple with four series classified by upper position or lower position.
     """
     serie_up = serie.loc[serie.ge(splitter_serie)]
-    splitter_up = splitter_serie.loc[serie_up.index]
+    # splitter_up = splitter_serie.loc[serie_up.index]
+    splitter_up = splitter_serie.loc[serie.ge(splitter_serie)]
 
     serie_down = serie.loc[serie.lt(splitter_serie)]
-    splitter_down = splitter_serie.loc[serie_down.index]
+    # splitter_down = splitter_serie.loc[serie_down.index]
+    splitter_down = splitter_serie.loc[serie.lt(splitter_serie)]
 
     serie_up.name = serie_up.name + '_up'
     serie_down.name = serie_down.name + '_down'
@@ -106,9 +107,17 @@ def split_serie_by_position(serie: pd.Series,
 
     # return serie_up, serie_splitter_up, serie_down, serie_splitter_down
     # return serie_up, serie_down
+    empty_df = pd.DataFrame(index=serie.index)
 
-    ret = pd.DataFrame([serie_up, splitter_up, serie_down, splitter_down]).T
+    empty_df.loc[serie_up.index, serie_up.name] = serie_up
+    empty_df.loc[splitter_up.index, splitter_up.name] = splitter_up
+
+    empty_df.loc[serie_down.index, serie_down.name] = serie_down
+    empty_df.loc[splitter_down.index, splitter_down.name] = splitter_down
+
+    # ret = pd.DataFrame([serie_up, splitter_up, serie_down, splitter_down]).T
+
     if fill_with_zeros:
-        return ret.fillna(0)
+        return empty_df.fillna(0)
     else:
-        return ret
+        return empty_df

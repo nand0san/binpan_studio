@@ -1769,8 +1769,9 @@ class Symbol(object):
                 column_name = str(col.name) + suffix
                 self.set_plot_color(indicator_column=column_name, color=colors[i])
                 if c.startswith('MACDh_'):
-                    self.set_plot_color_fill(indicator_column=column_name, color_fill='rgba(26,150,65,0.5)')
-                    self.set_plot_filled_mode(indicator_column=column_name, fill_mode='tozeroy')
+                    # self.set_plot_color_fill(indicator_column=column_name, color_fill='rgba(26,150,65,0.5)')
+                    # self.set_plot_filled_mode(indicator_column=column_name, fill_mode='tozeroy')
+
                     zeros = col.copy()
                     zeros.loc[:] = 0
 
@@ -2302,22 +2303,52 @@ class Symbol(object):
             self.global_axis_group -= 1
             axis_identifier = f"y{self.global_axis_group}"
 
+            # expand index
             missing_index = set(ichimoku_data.index) - set(self.df.index)
             self.df = self.df.reindex(self.df.index.union(missing_index))
 
             binpan_logger.debug(ichimoku_data.columns)
 
             for i, column_name in enumerate(ichimoku_data.columns):
-                col = ichimoku_data[column_name]
-                self.df.loc[:, column_name] = col
+                column_name = str(column_name) + suffix
+
+                col_data = ichimoku_data[column_name]
+                self.df.loc[:, column_name] = col_data
+
                 self.set_plot_color(indicator_column=column_name, color=colors[i])
                 self.set_plot_color_fill(indicator_column=column_name, color_fill=False)
                 self.set_plot_row(indicator_column=str(column_name), row_position=1)
 
-                if column_name.startswith('Ichimoku_cloud_52'):
-                    self.set_plot_color_fill(indicator_column=column_name, color_fill='rgba(185,217,218,0.2)')
+                if column_name.startswith(f'Ichimoku_cloud_{senkou_cloud_base}'):
+
                     self.set_plot_axis_group(indicator_column=column_name, my_axis_group=axis_identifier)
-                    self.set_plot_filled_mode(indicator_column=column_name, fill_mode='tonexty')
+                    # self.set_plot_filled_mode(indicator_column=column_name, fill_mode='tonexty')
+
+                    # self.set_plot_color_fill(indicator_column=column_name, color_fill='rgba(185,217,218,0.2)')
+                    # self.set_plot_axis_group(indicator_column=column_name, my_axis_group=axis_identifier)
+                    # self.set_plot_filled_mode(indicator_column=column_name, fill_mode='tonexty')
+
+                    other_cloud_columns = [c for c in ichimoku_data.columns if c.startswith('Ichimoku_cloud_')]
+                    col_idx = other_cloud_columns.index(column_name) - 1
+                    pre_col_name = other_cloud_columns[col_idx]
+
+                    temp_df = handlers.indicators.split_serie_by_position(serie=ichimoku_data[pre_col_name],
+                                                                          splitter_serie=col_data,
+                                                                          fill_with_zeros=False)
+
+                    serie_up = temp_df.loc[:, temp_df.columns[0]]
+                    splitter_up = temp_df.loc[:, temp_df.columns[1]]
+                    serie_down = temp_df.loc[:, temp_df.columns[2]]
+                    splitter_down = temp_df.loc[:, temp_df.columns[3]]
+
+                    self.aux_df = pd.concat([self.aux_df, temp_df], axis=1, ignore_index=False)
+
+                    self.set_plot_splitted_serie_couple(indicator_column=column_name,
+                                                        couple_up=(serie_up, splitter_up,),
+                                                        couple_down=(serie_down, splitter_down,),
+                                                        color_up='rgba(35, 152, 33, 0.5)',
+                                                        color_down='rgba(245, 63, 39, 0.5)')
+
         return ichimoku_data
 
     @staticmethod

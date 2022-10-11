@@ -8,7 +8,7 @@ from random import choice
 from .logs import Logs
 from .exceptions import BinPanException
 
-plot_logger = Logs(filename='./logs/plotting.log', name='plotting', info_level='INFO')
+plot_logger = Logs(filename='./logs/plotting.log', name='plotting', info_level='DEBUG')
 
 plotly_colors = ["aliceblue", "antiquewhite", "aqua", "aquamarine", "azure", "beige", "bisque", "black",
                  "blanchedalmond", "blue", "blueviolet", "brown", "burlywood", "cadetblue", "chartreuse", "chocolate",
@@ -402,20 +402,21 @@ def candles_ta(data: pd.DataFrame,
     y_axis_idx = [f"y{i}" for i in rows]
 
     plot_logger.debug(f"----------------------------------------------------------------------")
-    plot_logger.debug(f"indicators_colors: {indicators_colors}")
-    plot_logger.debug(f"indicators_color_filled: {indicators_color_filled}")
-    plot_logger.debug(f"indicators_filled_mode: {indicators_filled_mode}")
-    plot_logger.debug(f"rows: {rows}")
-    plot_logger.debug(f"indicators_series: {len(indicators_series)}")
-    plot_logger.debug(f"y_axis_idx: {y_axis_idx}")
-    plot_logger.debug(f"axis_groups: {axis_groups}")
-    plot_logger.debug(f"plot_splitted_serie_couple: {plot_splitted_serie_couple}")
+    plot_logger.debug(f"indicators_colors: {indicators_colors} len: {len(indicators_colors)}")
+    plot_logger.debug(f"indicators_color_filled: {indicators_color_filled} len: {len(indicators_color_filled)}")
+    plot_logger.debug(f"indicators_filled_mode: {indicators_filled_mode} len: {len(indicators_filled_mode)}")
+    plot_logger.debug(f"rows: {rows} len: {len(rows)}")
+    plot_logger.debug(f"indicators_series: {len(indicators_series)} len: {len(indicators_series)}")
+    plot_logger.debug(f"y_axis_idx: {y_axis_idx} len: {len(y_axis_idx)}")
+    plot_logger.debug(f"axis_groups: {axis_groups} len: {len(axis_groups)}")
+    plot_logger.debug(f"plot_splitted_serie_couple: {plot_splitted_serie_couple} len: {len(plot_splitted_serie_couple)}")
     plot_logger.debug(f"----------------------------------------------------------------------")
 
     # first get tas with cloud colors "tonexty"
-
+    pre_cached = 0
     for i, indicator in enumerate(indicators_series):
-        pre_i = i + pre_rows
+        plot_logger.debug(f"Loop plotting: indicator.name={indicator.name}")
+        pre_i = i + pre_rows + pre_cached
 
         if indicator.name in indicators_filled_mode.keys():
             my_fill_mode = indicators_filled_mode[indicator.name]
@@ -431,7 +432,8 @@ def candles_ta(data: pd.DataFrame,
             my_axis = axis_groups[indicator.name]
         else:
             my_axis = y_axis_idx[pre_i]
-            # my_axis_from_cache_100 = f"y10{y_axis_idx[pre_i][1:]}"
+
+        my_axis_from_cache_100 = f"y1{my_axis[1:]}"
 
         if indicator_names[i] in plot_splitted_serie_couple.keys():
             plot_logger.debug(f"indicator splitted: {indicator_names[i]}")
@@ -472,7 +474,7 @@ def candles_ta(data: pd.DataFrame,
                                    width=0.01,
                                    fill_mode='none',
                                    fill_color=color_down,
-                                   yaxis=my_axis))
+                                   yaxis=my_axis_from_cache_100))
 
             tas.append(set_ta_line(df_index=df_plot.index,
                                    serie=aux_df[serie_down],
@@ -481,15 +483,16 @@ def candles_ta(data: pd.DataFrame,
                                    width=0.01,
                                    fill_mode='tonexty',
                                    fill_color=color_down,
-                                   yaxis=my_axis))
+                                   yaxis=my_axis_from_cache_100))
 
             rows = rows[:pre_i] + [rows[pre_i], rows[pre_i], rows[pre_i], rows[pre_i]] + rows[pre_i:]
-            plot_logger.debug(f"rows_updated_by_split: {rows}")
-            y_axis_idx = y_axis_idx[:pre_i] + [my_axis, my_axis, my_axis, my_axis] + y_axis_idx[pre_i:]
-            plot_logger.debug(f"y_axis_idx_updated_by_split: {y_axis_idx}")
 
+            plot_logger.debug(f"rows_updated_by_split: {rows} len: {len(rows)}")
+            y_axis_idx = y_axis_idx[:pre_i] + [my_axis, my_axis, my_axis_from_cache_100, my_axis_from_cache_100] + y_axis_idx[pre_i:]
+            plot_logger.debug(f"y_axis_idx_updated_by_split: {y_axis_idx} len: {len(y_axis_idx)}")
+            pre_cached += 4
         else:
-            plot_logger.debug(f"{indicator_names[i]}: {rows[pre_i]} {my_axis}")
+            plot_logger.debug(f"indicator_name: {indicator_names[i]}: row: {rows[pre_i]} axis: {my_axis}")
 
             tas.append(set_ta_line(df_index=df_plot.index,
                                    serie=indicator,
