@@ -2209,12 +2209,12 @@ class Symbol(object):
                 self.set_plot_color(indicator_column=column_name, color=colors[i])
 
                 if c.startswith('BBM'):
-                    self.set_plot_color_fill(indicator_column=column_name, color_fill='rgba(185,217,218,0.2)')
+                    self.set_plot_color_fill(indicator_column=column_name, color_fill='rgba(47, 48, 56, 0.2)')
                     self.set_plot_axis_group(indicator_column=column_name, my_axis_group=axis_identifier)
                     self.set_plot_filled_mode(indicator_column=column_name, fill_mode='tonexty')
 
                 if c.startswith('BBU'):
-                    self.set_plot_color_fill(indicator_column=column_name, color_fill='rgba(185,217,218,0.2)')
+                    self.set_plot_color_fill(indicator_column=column_name, color_fill='rgba(47, 48, 56, 0.2)')
                     self.set_plot_axis_group(indicator_column=column_name, my_axis_group=axis_identifier)
                     self.set_plot_filled_mode(indicator_column=column_name, fill_mode='tonexty')
                 self.set_plot_row(indicator_column=str(column_name), row_position=1)
