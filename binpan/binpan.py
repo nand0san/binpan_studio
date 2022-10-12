@@ -2776,7 +2776,7 @@ class Exchange(object):
             self.api_key = secret_module.api_key
             self.api_secret = secret_module.api_secret
         except ImportError or KeyError:
-            raise Exception(f"Binance Api key or Api Secret not found and needed for this module.")
+            print(f"Binance Api key or Api Secret not found and needed for this module.")
 
         self.info_dic = handlers.exchange.get_info_dic()
         self.coins_dic = handlers.exchange.get_coins_info_dic(decimal_mode=False, api_key=self.api_key, api_secret=self.api_secret)
@@ -2918,7 +2918,7 @@ class Wallet(object):
             self.api_key = secret_module.api_key
             self.api_secret = secret_module.api_secret
         except ImportError or KeyError:
-            raise Exception(f"Binance Api key or Api Secret not found and needed for this module.")
+            print(f"Binance Api key or Api Secret not found and needed for this module.")
 
         self.time_zone = time_zone
         self.spot = self.update_spot()
