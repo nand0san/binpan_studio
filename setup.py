@@ -19,7 +19,7 @@ read_required.close()
 
 config = configparser.RawConfigParser()
 config.read("docs/version.env")
-my_version = config.get("VERSION", "BINPAN_VERSION")
+my_version = config.get("version", "BINPAN_VERSION")
 
 
 setup(name='binpan',
