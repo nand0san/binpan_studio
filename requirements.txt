@@ -7,7 +7,7 @@ tqdm==4.64.1
 plotly==5.10.0
 py-cpuinfo==8.0.0
 pandas-ta==0.3.14b0
-scipy~=1.7.3
+scipy==1.7.3
 python-dotenv~=0.21.0
 requests~=2.28.1
 setuptools==65.4.1
