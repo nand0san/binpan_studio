@@ -28,26 +28,11 @@ import handlers.indicators
 import pandas_ta as ta
 from random import choice
 
-from dotenv import dotenv_values, find_dotenv
-
-
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
 
 
-try:
-    libpath = __file__
-    mod_env = os.path.join(libpath, "version.env")
-    env_path = find_dotenv(filename=mod_env, raise_error_if_not_found=True, usecwd=True)
-    config = dotenv_values(env_path)
-    __version__ = config["BINPAN_VERSION"]
-
-except Exception as _:
-    libpath = __file__
-    mod_env = os.path.join(libpath, "docs/version.env")
-    env_path = find_dotenv(filename=mod_env, raise_error_if_not_found=False, usecwd=True)
-    config = dotenv_values(env_path)
-    __version__ = config["BINPAN_VERSION"]
+__version__ = "0.2.13"
 
 try:
     from secret import redis_conf
@@ -58,7 +43,8 @@ except:
 
 try:
     from secret import api_key, api_secret
-except ImportError(api_key, api_secret):
+except ImportError:
+    api_key, api_secret = "PLEASE ADD API KEY", "PLEASE ADD API SECRET"
     msg = """BINANCE:
 No API Key or API Secret
 
