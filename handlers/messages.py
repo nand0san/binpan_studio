@@ -14,7 +14,9 @@ try:
     from secret import encoded_chat_id, encoded_telegram_bot_id
 
 except Exception as exc:
-    msg = """
+    msg = """\n\n-------------------------------------------------------------
+WARNING: No API Key or API Secret
+    
 Not found telegram bot key or chat key for the telegram message module.
 
 Example adding bot key and chat id:
@@ -26,6 +28,8 @@ Example adding bot key and chat id:
 
     # write to your bot and then get your chat id from https://api.telegram.org/bot<YourBOTToken>/getUpdates
     handlers.files.add_any_key(key="xxxxxxxxxx", key_name="encoded_chat_id")
+    
+    
 """
     msg_logger.warning(msg)
     encoded_telegram_bot_id = ''
