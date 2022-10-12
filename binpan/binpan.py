@@ -30,12 +30,10 @@ from random import choice
 import importlib
 import sys
 
-
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
 
-
-__version__ = "0.2.20"
+__version__ = "0.2.21"
 
 try:
     from secret import redis_conf
@@ -2782,13 +2780,9 @@ class Exchange(object):
             self.api_key = secret_module.api_key
             self.api_secret = secret_module.api_secret
         except ImportError:
-            print(f"Binance Api key or Api Secret not found.")
-            self.api_key = "INSERT API KEY"
-            self.api_secret = "INSERT API KEY"
+            raise Exception(f"Binance Api key or Api Secret not found.")
         except KeyError:
-            print(f"Binance Api key or Api Secret not found.")
-            self.api_key = "INSERT API KEY"
-            self.api_secret = "INSERT API KEY"
+            raise Exception(f"Binance Api key or Api Secret not found.")
 
         self.info_dic = handlers.exchange.get_info_dic()
         self.coins_dic = handlers.exchange.get_coins_info_dic(decimal_mode=False, api_key=self.api_key, api_secret=self.api_secret)
@@ -2797,7 +2791,8 @@ class Exchange(object):
         self.leveraged = handlers.exchange.get_leveraged_coins(coins_dic=self.coins_dic, decimal_mode=False, api_key=self.api_key,
                                                                api_secret=self.api_secret)
         self.leveraged_symbols = handlers.exchange.get_leveraged_symbols(info_dic=self.info_dic, leveraged_coins=self.leveraged,
-                                                                         decimal_mode=False, api_key=self.api_key, api_secret=self.api_secret)
+                                                                         decimal_mode=False, api_key=self.api_key,
+                                                                         api_secret=self.api_secret)
 
         self.fees = handlers.exchange.get_fees(decimal_mode=False, api_key=self.api_key, api_secret=self.api_secret)
         self.filters = handlers.exchange.get_symbols_filters(info_dic=self.info_dic)
@@ -2809,7 +2804,6 @@ class Exchange(object):
         self.symbols = self.get_symbols()
         self.df = self.get_df()
         self.order_types = self.get_order_types()
-
 
     def __repr__(self):
         return str(self.df)
@@ -2930,13 +2924,9 @@ class Wallet(object):
             self.api_key = secret_module.api_key
             self.api_secret = secret_module.api_secret
         except ImportError:
-            print(f"Binance Api key or Api Secret not found.")
-            self.api_key = "INSERT API KEY"
-            self.api_secret = "INSERT API KEY"
+            raise Exception(f"Binance Api key or Api Secret not found.")
         except KeyError:
-            print(f"Binance Api key or Api Secret not found.")
-            self.api_key = "INSERT API KEY"
-            self.api_secret = "INSERT API KEY"
+            raise Exception(f"Binance Api key or Api Secret not found.")
 
         self.time_zone = time_zone
         self.spot = self.update_spot()
