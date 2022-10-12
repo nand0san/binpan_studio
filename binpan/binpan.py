@@ -33,7 +33,7 @@ import sys
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
 
-__version__ = "0.2.23"
+__version__ = "0.2.24"
 
 try:
     from secret import redis_conf
@@ -241,7 +241,7 @@ class Symbol(object):
                  display_width=320):
 
         try:
-            secret_module = sys.modules["secret"]
+            secret_module = importlib.import_module('secret')
             importlib.reload(secret_module)
             self.api_key = secret_module.api_key
             self.api_secret = secret_module.api_secret
@@ -2775,7 +2775,7 @@ class Exchange(object):
 
     def __init__(self):
         try:
-            secret_module = sys.modules["secret"]
+            secret_module = importlib.import_module('secret')
             importlib.reload(secret_module)
             self.api_key = secret_module.api_key
             self.api_secret = secret_module.api_secret
@@ -2919,7 +2919,7 @@ class Wallet(object):
                  time_zone='UTC',
                  snapshot_days: int = 30):
         try:
-            secret_module = sys.modules["secret"]
+            secret_module = importlib.import_module('secret')
             importlib.reload(secret_module)
             self.api_key = secret_module.api_key
             self.api_secret = secret_module.api_secret
