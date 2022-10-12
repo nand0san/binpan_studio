@@ -14,8 +14,6 @@ import os
 import sys
 from dotenv import dotenv_values
 
-# sys.path.insert(0, os.path.abspath('../binpan'))
-# sys.path.insert(0, os.path.abspath('../handlers'))
 sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
@@ -25,8 +23,9 @@ copyright = '2022, Fernando Alfonso'
 author = 'Fernando Alfonso'
 
 # The full version, including alpha/beta/rc tags
+sys.path.append(os.getcwd())
 
-config = dotenv_values("../.env")
+config = dotenv_values(".env")
 release = config["BINPAN_VERSION"]
 
 # -- General configuration ---------------------------------------------------

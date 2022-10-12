@@ -16,7 +16,7 @@ read_required = open('requirements.txt', 'r')
 REQUIRED = read_required.read()
 read_required.close()
 
-config = dotenv_values(".env")
+config = dotenv_values("docs/.env")
 my_version = config["BINPAN_VERSION"]
 
 

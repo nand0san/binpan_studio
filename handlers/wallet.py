@@ -36,6 +36,8 @@ def convert_str_date_to_ms(date: str or int,
 
 def daily_account_snapshot(account_type: str,
                            decimal_mode: bool,
+                           api_key: str,
+                           api_secret: str,
                            startTime: int or str = None,
                            endTime: int = None,
                            limit=30,
@@ -49,6 +51,8 @@ def daily_account_snapshot(account_type: str,
 
     :param str account_type: SPOT or MARGIN (cross)
     :param bool decimal_mode: Fixes Decimal return type and operative.
+    :param str api_key: A BinPan encrypted in BinPan's way api key. Do not use unencrypted api values, import it from  secret.py file.
+    :param str api_secret: A BinPan encrypted in BinPan's way api secret. Do not use unencrypted api values, import it from  secret.py file.
     :param int limit: Days limit. Default 30.
     :param int or str startTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
     :param int or str endTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
@@ -74,7 +78,7 @@ def daily_account_snapshot(account_type: str,
                                      'startTime': startTime,
                                      'endTime': endTime,
                                      'limit': limit},
-                             weight=2400, decimal_mode=decimal_mode)
+                             weight=2400, decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
     rows = []
     for update in ret['snapshotVos']:
         updateTime = update['updateTime']
@@ -110,11 +114,16 @@ def daily_account_snapshot(account_type: str,
     return ret
 
 
-def assets_convertible_dust(decimal_mode: bool) -> dict:
+def assets_convertible_dust(decimal_mode: bool,
+                            api_key: str,
+                            api_secret: str) -> dict:
     """
     Assets dust that can be converted to BNB.
     Weight(IP): 1
 
+    :param bool decimal_mode: It flags to work in decimal mode.
+    :param str api_key: A BinPan encrypted in BinPan's way api key. Do not use unencrypted api values, import it from  secret.py file.
+    :param str api_secret: A BinPan encrypted in BinPan's way api secret. Do not use unencrypted api values, import it from  secret.py file.
     :return dict: A dictionary.
 
     .. code-block::
@@ -139,7 +148,11 @@ def assets_convertible_dust(decimal_mode: bool) -> dict:
     """
     yn = input(f"This command may change or convert assets from your wallet!!! are you sure? (y/n)")
     if yn.upper().startswith('Y'):
-        return api_raw_signed_post(endpoint='/sapi/v1/asset/dust-btc', weight=1, decimal_mode=decimal_mode)
+        return api_raw_signed_post(endpoint='/sapi/v1/asset/dust-btc',
+                                   weight=1,
+                                   decimal_mode=decimal_mode,
+                                   api_key=api_key,
+                                   api_secret=api_secret)
     else:
         wallet_logger.warning("Canceled!")
 
@@ -154,7 +167,9 @@ def get_fills_price(original_order_dict: dict,
                     margin: bool,
                     test_mode: bool,
                     operation_time: int,
-                    decimal_mode: bool) -> float:
+                    decimal_mode: bool,
+                    api_key: str,
+                    api_secret: str) -> float:
     """
     Obtain averaged price from order API response or claims last trade.
 
@@ -164,6 +179,8 @@ def get_fills_price(original_order_dict: dict,
     :param bool test_mode: Set if test mode is on.
     :param int operation_time: Time limit of operation to analyze.
     :param bool decimal_mode: Fixes Decimal return type and operative.
+    :param str api_key: A BinPan encrypted in BinPan's way api key. Do not use unencrypted api values, import it from  secret.py file.
+    :param str api_secret: A BinPan encrypted in BinPan's way api secret. Do not use unencrypted api values, import it from  secret.py file.
     :return float: Price averaged.
 
     Example of not totally done order:
@@ -364,9 +381,9 @@ def get_fills_price(original_order_dict: dict,
         wallet_logger.info(f"Get fills from API trades!... wait 5 seconds for trade to appear. Round:{tour}")
 
         if not margin:
-            last_trades = get_spot_trades_list(symbol=symbol, decimal_mode=decimal_mode)
+            last_trades = get_spot_trades_list(symbol=symbol, decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
         else:
-            last_trades = get_margin_trades_list(symbol=symbol, decimal_mode=decimal_mode)
+            last_trades = get_margin_trades_list(symbol=symbol, decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
 
         try:
             # trades return time field with a timestamp
@@ -379,6 +396,8 @@ def get_fills_price(original_order_dict: dict,
 
 
 def get_fills_qty(original_order_dict: dict,
+                  api_key: str,
+                  api_secret: str,
                   margin: bool,
                   isBuyer: bool,
                   operation_time: int,
@@ -387,6 +406,8 @@ def get_fills_qty(original_order_dict: dict,
     Extracts order quantity from an order response or checks a trade from API.
 
     :param dict original_order_dict: A putting order response from API dict.
+    :param str api_key: A BinPan encrypted in BinPan's way api key. Do not use unencrypted api values, import it from  secret.py file.
+    :param str api_secret: A BinPan encrypted in BinPan's way api secret. Do not use unencrypted api values, import it from  secret.py file.
     :param bool margin: Checks if margin or not.
     :param bool isBuyer: Sets if buy or sell side.
     :param int operation_time: A limit old timestamp to verify existence of order.
@@ -434,9 +455,9 @@ def get_fills_qty(original_order_dict: dict,
                 wallet_logger.info(f"Get fills qty from API trades!... wait 5 seconds for trade to appear. Round:{tour}")
 
                 if not margin:
-                    last_trades = get_spot_trades_list(symbol=symbol, decimal_mode=decimal_mode)
+                    last_trades = get_spot_trades_list(symbol=symbol, decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
                 else:
-                    last_trades = get_margin_trades_list(symbol=symbol, decimal_mode=decimal_mode)
+                    last_trades = get_margin_trades_list(symbol=symbol, decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
 
                 try:
                     # trades return time field with a timestamp
@@ -451,6 +472,8 @@ def get_fills_qty(original_order_dict: dict,
 
 def get_spot_trades_list(symbol: str,
                          decimal_mode: bool,
+                         api_key: str,
+                         api_secret: str,
                          limit: int = 1000,
                          orderId: int = None,
                          startTime: int = None,
@@ -464,6 +487,8 @@ def get_spot_trades_list(symbol: str,
 
     :param str symbol: Symbol's trades.
     :param bool decimal_mode: Fixes Decimal return type and operative.
+    :param str api_key: A BinPan encrypted in BinPan's way api key. Do not use unencrypted api values, import it from  secret.py file.
+    :param str api_secret: A BinPan encrypted in BinPan's way api secret. Do not use unencrypted api values, import it from  secret.py file.
     :param int limit: Default 500; max 1000.
     :param fromId: TradeId to fetch from. Default gets most recent trades. If fromId is set, it will get id >= that fromId. Otherwise,
        most recent trades are returned.
@@ -504,11 +529,13 @@ def get_spot_trades_list(symbol: str,
                                       'endTime': endTime,
                                       'fromId': fromId,
                                       'recvWindow': recvWindow},
-                              weight=10, decimal_mode=decimal_mode)
+                              weight=10, decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
 
 
 def get_margin_trades_list(symbol: str,
                            decimal_mode: bool,
+                           api_key: str,
+                           api_secret: str,
                            isIsolated: bool = False,
                            limit: int = 1000,
                            orderId: int = None,
@@ -525,6 +552,8 @@ def get_margin_trades_list(symbol: str,
 
     :param str symbol: Symbol's trades.
     :param bool decimal_mode: Fixes Decimal return type and operative.
+    :param str api_key: A BinPan encrypted in BinPan's way api key. Do not use unencrypted api values, import it from  secret.py file.
+    :param str api_secret: A BinPan encrypted in BinPan's way api secret. Do not use unencrypted api values, import it from  secret.py file.
     :param bool isIsolated: Sets for getting isolated or not isolated trades. Default is false.
     :param int limit: Default 500; max 1000.
     :param fromId: TradeId to fetch from. Default gets most recent trades. If fromId is set, it will get id >= that fromId. Otherwise,
@@ -568,7 +597,7 @@ def get_margin_trades_list(symbol: str,
                                       'endTime': endTime,
                                       'fromId': fromId,
                                       'recvWindow': recvWindow},
-                              weight=10, decimal_mode=decimal_mode)
+                              weight=10, decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
 
 
 ############
@@ -576,13 +605,18 @@ def get_margin_trades_list(symbol: str,
 ############
 
 
-def get_spot_account_info(decimal_mode: bool, recvWindow: int = 10000) -> dict:
+def get_spot_account_info(decimal_mode: bool,
+                          api_key: str,
+                          api_secret: str,
+                          recvWindow: int = 10000) -> dict:
     """
     Get current account information.
 
     Weight(IP): 10
 
     :param bool decimal_mode: Fixes Decimal return type and operative.
+    :param str api_key: A BinPan encrypted in BinPan's way api key. Do not use unencrypted api values, import it from  secret.py file.
+    :param str api_secret: A BinPan encrypted in BinPan's way api secret. Do not use unencrypted api values, import it from  secret.py file.
     :param int recvWindow: The value cannot be greater than 60000
     :return dict: A dictionary with data.
 
@@ -612,10 +646,12 @@ def get_spot_account_info(decimal_mode: bool, recvWindow: int = 10000) -> dict:
     return api_raw_signed_get(endpoint=endpoint,
                               params={'recvWindow': recvWindow},
                               weight=10,
-                              decimal_mode=decimal_mode)
+                              decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
 
 
 def get_spot_free_balances(decimal_mode: bool,
+                           api_key: str,
+                           api_secret: str,
                            data_dic: dict = None
                            ) -> dict:
     """
@@ -623,11 +659,13 @@ def get_spot_free_balances(decimal_mode: bool,
 
     :param dict data_dic: If available, account info can be passed as data_dic parameter to avoid API calling.
     :param bool decimal_mode: Fixes Decimal return type and operative.
+    :param str api_key: A BinPan encrypted in BinPan's way api key. Do not use unencrypted api values, import it from  secret.py file.
+    :param str api_secret: A BinPan encrypted in BinPan's way api secret. Do not use unencrypted api values, import it from  secret.py file.
     :return dict: Free balances.
     """
     ret = {}
     if not data_dic:
-        data_dic = get_spot_account_info(decimal_mode=decimal_mode)
+        data_dic = get_spot_account_info(decimal_mode=decimal_mode, api_secret=api_secret, api_key=api_key)
     wallet_logger.debug(f"spot_free_balances_parsed len(get_spot_account_info()):{len(data_dic)}")
     if decimal_mode:
         for asset in data_dic['balances']:
@@ -643,17 +681,21 @@ def get_spot_free_balances(decimal_mode: bool,
 
 
 def get_spot_locked_balances(decimal_mode: bool,
+                             api_key: str,
+                             api_secret: str,
                              data_dic: dict = None) -> dict:
     """
     Parses locked in order balances from account info.
 
     :param bool decimal_mode: Fixes Decimal return type and operative.
+    :param str api_key: A BinPan encrypted in BinPan's way api key. Do not use unencrypted api values, import it from  secret.py file.
+    :param str api_secret: A BinPan encrypted in BinPan's way api secret. Do not use unencrypted api values, import it from  secret.py file.
     :param dict data_dic: If available, account info can be passed as data_dic parameter to avoid API calling.
     :return dict: Locked balances.
     """
     ret = {}
     if not data_dic:
-        data_dic = get_spot_account_info(decimal_mode=decimal_mode)
+        data_dic = get_spot_account_info(decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
     wallet_logger.debug(f"spot_locked_balances_parsed get_spot_account_info: {len(data_dic)}")
 
     for asset in data_dic['balances']:
@@ -663,23 +705,28 @@ def get_spot_locked_balances(decimal_mode: bool,
     return ret
 
 
-def get_coins_with_balance(decimal_mode: bool) -> list:
+def get_coins_with_balance(decimal_mode: bool, api_key: str, api_secret: str) -> list:
     """
     Get the non-zero balances of an account, free or locked ones. Useful getting wallet value.
 
     :param bool decimal_mode: Fixes Decimal return type and operative.
+    :param str api_key: A BinPan encrypted in BinPan's way api key. Do not use unencrypted api values, import it from  secret.py file.
+    :param str api_secret: A BinPan encrypted in BinPan's way api secret. Do not use unencrypted api values, import it from  secret.py file.
     :return list:
     """
-    data_dic = get_spot_account_info(decimal_mode=decimal_mode)
-    free = get_spot_free_balances(data_dic=data_dic, decimal_mode=decimal_mode)
-    locked = get_spot_locked_balances(data_dic=data_dic, decimal_mode=decimal_mode)
+    data_dic = get_spot_account_info(decimal_mode=decimal_mode, api_secret=api_secret, api_key=api_key)
+    free = get_spot_free_balances(data_dic=data_dic, decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
+    locked = get_spot_locked_balances(data_dic=data_dic, decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
     free = [symbol for symbol, balance in free.items() if float(balance) > 0]
     locked = [symbol for symbol, balance in locked.items() if float(balance) > 0]
     symbols = free + locked
     return list(set(symbols))
 
 
-def get_spot_balances_df(decimal_mode: bool, filter_empty: bool = True) -> pd.DataFrame:
+def get_spot_balances_df(decimal_mode: bool,
+                         api_key: str,
+                         api_secret: str,
+                         filter_empty: bool = True) -> pd.DataFrame:
     """
     Create a dataframe with the free or blocked amounts of the spot wallet. The index is the assets list.
 
@@ -699,10 +746,14 @@ def get_spot_balances_df(decimal_mode: bool, filter_empty: bool = True) -> pd.Da
             BUSD   0.000001     0.0
 
     :param bool decimal_mode: Fixes Decimal return type and operative.
+    :param str api_key: A BinPan encrypted in BinPan's way api key. Do not use unencrypted api values, import it from  secret.py file.
+    :param str api_secret: A BinPan encrypted in BinPan's way api secret. Do not use unencrypted api values, import it from  secret.py file.
     :param bool filter_empty: Discards empty quantities.
     :return pd.DataFrame: A dataframe with assets locked or free.
     """
-    balances = get_spot_account_info(decimal_mode=decimal_mode)['balances']
+    balances = get_spot_account_info(decimal_mode=decimal_mode,
+                                     api_secret=api_secret,
+                                     api_key=api_key)['balances']
     df_ = pd.DataFrame(balances)
     df_['free'] = df_['free'].apply(pd.to_numeric)
     df_['locked'] = df_['locked'].apply(pd.to_numeric)
@@ -714,12 +765,16 @@ def get_spot_balances_df(decimal_mode: bool, filter_empty: bool = True) -> pd.Da
 
 
 def get_spot_balances_total_value(decimal_mode: bool,
+                                  api_key: str,
+                                  api_secret: str,
                                   balances_df: pd.DataFrame = None,
                                   convert_to: str = 'BUSD') -> float:
     """
     Returns total value expressed in a quote coin. Counts free and locked assets.
 
     :param bool decimal_mode: Fixes Decimal return type and operative.
+    :param str api_key: A BinPan encrypted in BinPan's way api key. Do not use unencrypted api values, import it from  secret.py file.
+    :param str api_secret: A BinPan encrypted in BinPan's way api secret. Do not use unencrypted api values, import it from  secret.py file.
     :param pd.DataFrame balances_df: A BinPan balances dataframe.
     :param str convert_to: A Binance coin.
     :return float: Total quantity expressed in quote.
@@ -730,7 +785,7 @@ def get_spot_balances_total_value(decimal_mode: bool,
         my_type = float
 
     if type(balances_df) != pd.DataFrame:
-        balances_df = get_spot_balances_df(decimal_mode=decimal_mode)
+        balances_df = get_spot_balances_df(decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
 
     prices = get_prices_dic(decimal_mode=decimal_mode)
 
@@ -768,13 +823,17 @@ def get_spot_balances_total_value(decimal_mode: bool,
 #################
 
 
-def get_margin_account_details(decimal_mode: bool) -> dict:
+def get_margin_account_details(decimal_mode: bool, api_key: str, api_secret: str) -> dict:
     """
     Query Cross Margin Account Details (USER_DATA)
 
     GET /sapi/v1/margin/account (HMAC SHA256)
 
     Weight(IP): 10
+
+    :param bool decimal_mode: Fixes Decimal return type and operative.
+    :param str api_key: A BinPan encrypted in BinPan's way api key. Do not use unencrypted api values, import it from  secret.py file.
+    :param str api_secret: A BinPan encrypted in BinPan's way api secret. Do not use unencrypted api values, import it from  secret.py file.
 
     Response:
 
@@ -828,7 +887,7 @@ def get_margin_account_details(decimal_mode: bool) -> dict:
     margin_endpoint = '/sapi/v1/margin/account'
     ret = api_raw_signed_get(endpoint=margin_endpoint,
                              params={},
-                             weight=10, decimal_mode=decimal_mode)
+                             weight=10, decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
     return ret
 
 
@@ -836,10 +895,13 @@ def get_margin_account_details(decimal_mode: bool) -> dict:
 # margin balances #
 ###################
 
-def get_margin_balances(decimal_mode: bool) -> dict:
+def get_margin_balances(decimal_mode: bool, api_key: str, api_secret: str) -> dict:
     """
     Collects balances in the margin account that are not null.
 
+    :param bool decimal_mode: Fixes Decimal return type and operative.
+    :param str api_key: A BinPan encrypted in BinPan's way api key. Do not use unencrypted api values, import it from  secret.py file.
+    :param str api_secret: A BinPan encrypted in BinPan's way api secret. Do not use unencrypted api values, import it from  secret.py file.
     :return dict: A dictionary with coins with balances.
 
     Example:
@@ -858,7 +920,7 @@ def get_margin_balances(decimal_mode: bool) -> dict:
           'netAsset': 50.0}}
 
     """
-    margin_status = get_margin_account_details(decimal_mode=decimal_mode)
+    margin_status = get_margin_account_details(decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
     ret = {}
     for asset in margin_status['userAssets']:
         entry = {}
@@ -874,18 +936,22 @@ def get_margin_balances(decimal_mode: bool) -> dict:
 
 
 def get_margin_free_balances(decimal_mode: bool,
+                             api_key: str,
+                             api_secret: str,
                              balances: dict = None
                              ) -> dict:
     """
     Just returns free existing balances. It is optional to avoid an API call.
 
     :param dict balances: Returns dict with assets as keys and a float value for not null quantities.
+    :param str api_key: A BinPan encrypted in BinPan's way api key. Do not use unencrypted api values, import it from  secret.py file.
+    :param str api_secret: A BinPan encrypted in BinPan's way api secret. Do not use unencrypted api values, import it from  secret.py file.
     :param bool decimal_mode: Fixes Decimal return type.
     :return dict: A dict with float values.
 
     """
     if not balances:
-        balances = get_margin_balances(decimal_mode=decimal_mode)
+        balances = get_margin_balances(decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
     ret = {}
     for k, v in balances.items():
         if 'free' in v.keys():
@@ -894,17 +960,22 @@ def get_margin_free_balances(decimal_mode: bool,
     return ret
 
 
-def get_margin_locked_balances(decimal_mode: bool, balances: dict = None) -> dict:
+def get_margin_locked_balances(decimal_mode: bool,
+                               api_key: str,
+                               api_secret: str,
+                               balances: dict = None) -> dict:
     """
     Just returns locked existing balances. It is optional to avoid an API call.
 
     :param bool decimal_mode: Fixes Decimal return type.
+    :param str api_key: A BinPan encrypted in BinPan's way api key. Do not use unencrypted api values, import it from  secret.py file.
+    :param str api_secret: A BinPan encrypted in BinPan's way api secret. Do not use unencrypted api values, import it from  secret.py file.
     :param dict balances: Returns dict with assets as keys and a float value for not null quantities.
     :return dict: A dict with float values.
 
     """
     if not balances:
-        balances = get_margin_balances(decimal_mode=decimal_mode)
+        balances = get_margin_balances(decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
     ret = {}
     for k, v in balances.items():
         if 'locked' in v.keys():
@@ -913,17 +984,22 @@ def get_margin_locked_balances(decimal_mode: bool, balances: dict = None) -> dic
     return ret
 
 
-def get_margin_borrowed_balances(decimal_mode: bool, balances: dict = None) -> dict:
+def get_margin_borrowed_balances(decimal_mode: bool,
+                                 api_key: str,
+                                 api_secret: str,
+                                 balances: dict = None) -> dict:
     """
     Just returns borrowed existing balances. It is optional to avoid an API call.
 
     :param bool decimal_mode: Fixes Decimal return type.
+    :param str api_key: A BinPan encrypted in BinPan's way api key. Do not use unencrypted api values, import it from  secret.py file.
+    :param str api_secret: A BinPan encrypted in BinPan's way api secret. Do not use unencrypted api values, import it from  secret.py file.
     :param dict balances: Returns dict with assets as keys and a float value for not null quantities.
     :return dict: A dict with float values.
 
     """
     if not balances:
-        balances = get_margin_balances(decimal_mode=decimal_mode)
+        balances = get_margin_balances(decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
     ret = {}
     for k, v in balances.items():
         if 'borrowed' in v.keys():
@@ -933,19 +1009,23 @@ def get_margin_borrowed_balances(decimal_mode: bool, balances: dict = None) -> d
 
 
 def get_margin_interest_balances(decimal_mode: bool,
+                                 api_key: str,
+                                 api_secret: str,
                                  balances: dict = None) -> dict:
     """
     Just returns interest existing balances. It is optional to avoid an API call.
 
     :param bool decimal_mode: Fixes Decimal return type.
+    :param str api_key: A BinPan encrypted in BinPan's way api key. Do not use unencrypted api values, import it from  secret.py file.
+    :param str api_secret: A BinPan encrypted in BinPan's way api secret. Do not use unencrypted api values, import it from  secret.py file.
     :param dict balances: Returns dict with assets as keys and a float value for not null quantities.
     :return dict: A dict with float values.
 
     """
     if not balances:
-        balances = get_margin_balances(decimal_mode=decimal_mode)
+        balances = get_margin_balances(decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
     if not balances:
-        balances = get_margin_balances(decimal_mode=decimal_mode)
+        balances = get_margin_balances(decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
     ret = {}
     for k, v in balances.items():
         if 'interest' in v.keys():
@@ -954,21 +1034,28 @@ def get_margin_interest_balances(decimal_mode: bool,
     return ret
 
 
-def get_margin_netAsset_balances(decimal_mode: bool, balances: dict = None):
+def get_margin_netAsset_balances(decimal_mode: bool,
+                                 api_key: str,
+                                 api_secret: str,
+                                 balances: dict = None):
     """
     Just returns netAsset existing balances. It is optional to avoid an API call.
 
     :param bool decimal_mode: Fixes Decimal return type.
+    :param str api_key: A BinPan encrypted in BinPan's way api key. Do not use unencrypted api values, import it from  secret.py file.
+    :param str api_secret: A BinPan encrypted in BinPan's way api secret. Do not use unencrypted api values, import it from  secret.py file.
     :param dict balances: Returns dict with assets as keys and a float value for not null quantities.
     :return dict: A dict with float values.
 
     """
     if not balances:
-        balances = get_margin_balances(decimal_mode=decimal_mode)
+        balances = get_margin_balances(decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
     return {k: v['netAsset'] for k, v in balances.items() if v['netAsset']}
 
 
 def get_margin_balances_total_value(decimal_mode: bool,
+                                    api_key: str,
+                                    api_secret: str,
                                     balances: dict = None,
                                     convert_to: str = 'BUSD'
                                     ) -> float or dd:
@@ -976,6 +1063,8 @@ def get_margin_balances_total_value(decimal_mode: bool,
     Returns total value expressed in a quote coin. Counts free, locked, borrowed and interest assets.
 
     :param dict balances: A BinPan balances dict. It is optional to avoid an API call.
+    :param str api_key: A BinPan encrypted in BinPan's way api key. Do not use unencrypted api values, import it from  secret.py file.
+    :param str api_secret: A BinPan encrypted in BinPan's way api secret. Do not use unencrypted api values, import it from  secret.py file.
     :param str convert_to: A Binance coin.
     :param bool decimal_mode: Fixes Decimal return type.
     :return float: Total quantity expressed in quote.
@@ -987,16 +1076,16 @@ def get_margin_balances_total_value(decimal_mode: bool,
     prices = get_prices_dic(decimal_mode=decimal_mode)
 
     if not balances:
-        balances = get_margin_balances(decimal_mode=decimal_mode)
+        balances = get_margin_balances(decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
 
     assets = list(balances.keys())
 
-    free_values = get_margin_free_balances(balances=balances, decimal_mode=decimal_mode)
-    locked_values = get_margin_locked_balances(balances=balances, decimal_mode=decimal_mode)
-    borrowed_values = get_margin_borrowed_balances(balances=balances, decimal_mode=decimal_mode)
+    free_values = get_margin_free_balances(balances=balances, decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
+    locked_values = get_margin_locked_balances(balances=balances, decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
+    borrowed_values = get_margin_borrowed_balances(balances=balances, decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
 
     # TODO: saber si el interest tiene signo negativo
-    interest_values = get_margin_interest_balances(balances=balances, decimal_mode=decimal_mode)
+    interest_values = get_margin_interest_balances(balances=balances, decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
 
     total = 0
 

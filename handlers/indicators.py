@@ -25,7 +25,7 @@ def ichimoku(data: pd.DataFrame,
     :param pd.DataFrame data: A BinPan Symbol dataframe.
     :param int tenkan: The short period. It's the half sum of max and min price in the window. Default: 9
     :param int kijun: The long period. It's the half sum of max and min price in the window. Default: 26
-    :param int chikou_span: Close of the next 26 bars. Util when spoting what happened with other ichimoku lines and what happened
+    :param int chikou_span: Close of the next 26 bars. Util when spotting what happened with other ichimoku lines and what happened
       before Default: 26.
     :param senkou_cloud_base: Period to obtain kumo cloud base line. Default is 52.
     :param str suffix: A decorative suffix for the name of the column created.
@@ -145,4 +145,3 @@ def df_splitter(data: pd.DataFrame, up_column: str, down_column: str) -> list:
     for name, data in df:
         dfs.append(data)
     return dfs
-

@@ -49,6 +49,10 @@ Please install in google colab with: :code:`!pip install binpan`, then push rest
 
 Recommended Python version: **3.7**
 
+BinPan current version: |release|
+
+Google Colab can throw some errors when pip installing BinPan, but a reset to the runtime should fix it.
+
 GitHub repo
 -----------
 https://github.com/nand0san/binpan_studio

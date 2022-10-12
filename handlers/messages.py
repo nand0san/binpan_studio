@@ -6,7 +6,6 @@ from .wallet import get_spot_balances_df, get_spot_balances_total_value
 from pandas import DataFrame
 import requests
 
-
 msg_logger = Logs(filename='./logs/msg_logger.log', name='msg_logger', info_level='INFO')
 
 cipher_object = AesCipher()
@@ -128,8 +127,7 @@ def telegram_parse_dict(msg_data: dict, timezone='UTC'):
     return parsed_msg.replace('_', ' ').replace("Decimal('", "`").replace("')", "`")
 
 
-
-# futuro bot #
+# future bot #
 
 
 def tab_str(text: str, indentation=8) -> str:
@@ -240,23 +238,30 @@ def telegram_parse_order_markdown(original_order: dict,
     return parsed
 
 
-def send_balances(decimal_mode: bool, convert_to: str = 'BUSD') -> float:
+def send_balances(decimal_mode: bool,
+                  api_key: str,
+                  api_secret: str,
+                  convert_to: str = 'BUSD') -> float:
     """
     Sends telegram message with total value of spot wallet in selected coin.
 
     It returns free and locked assets value added.
     :param bool decimal_mode: Fixes Decimal return type and operative.
+    :param str api_key: A BinPan encrypted in BinPan's way api key. Do not use unencrypted api values, import it from  secret.py file.
+    :param str api_secret: A BinPan encrypted in BinPan's way api secret. Do not use unencrypted api values, import it from  secret.py file.
     :param str convert_to: A Binance coin.
     :return float: total value of wallet.
 
     """
-    balances_df = get_spot_balances_df(decimal_mode=decimal_mode)
+    balances_df = get_spot_balances_df(decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
     parsed_balances = telegram_parse_dataframe_markdown(balances_df)
 
     # add total value in usdt
     total_value = get_spot_balances_total_value(balances_df=balances_df,
                                                 convert_to=convert_to,
-                                                decimal_mode=decimal_mode)
+                                                decimal_mode=decimal_mode,
+                                                api_key=api_key,
+                                                api_secret=api_secret)
 
     parsed_balances += f"\n*Total value*: `{total_value}` \n*Quote*: `{convert_to}`"
     telegram_bot_send_text(parsed_balances)

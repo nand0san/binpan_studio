@@ -3,6 +3,7 @@ from handlers.logs import Logs
 
 exceptions_logger = Logs(filename='./logs/exceptions.log', name='exceptions', info_level='INFO')
 
+
 ############################
 # Exceptions
 ############################
@@ -50,6 +51,7 @@ class BinanceOrderException(Exception):
     Orders exceptions from API.
 
     """
+
     def __init__(self, code, message):
         self.code = code
         self.message = message
@@ -63,6 +65,7 @@ class BinanceOrderMinAmountException(BinanceOrderException):
     Symbol filter exceptions: Minimum Amount
 
     """
+
     def __init__(self, value):
         message = "Amount must be a multiple of %s" % value
         super().__init__(-1013, message)
@@ -73,6 +76,7 @@ class BinanceOrderMinPriceException(BinanceOrderException):
     Symbol filter exceptions: Minimum Price
 
     """
+
     def __init__(self, value):
         message = "Price must be at least %s" % value
         super().__init__(-1013, message)
@@ -83,6 +87,7 @@ class BinanceOrderMinTotalException(BinanceOrderException):
     Symbol filter exceptions: Minimum Total
 
     """
+
     def __init__(self, value):
         message = "Total must be at least %s" % value
         super().__init__(-1013, message)
@@ -93,6 +98,7 @@ class BinanceOrderUnknownSymbolException(BinanceOrderException):
     Unknown symbol.
 
     """
+
     def __init__(self, value):
         message = "Unknown symbol %s" % value
         super().__init__(-1013, message)
@@ -103,6 +109,7 @@ class BinanceOrderInactiveSymbolException(BinanceOrderException):
     Order interactive exception.
 
     """
+
     def __init__(self, value):
         message = "Attempting to trade an inactive symbol %s" % value
         super().__init__(-1013, message)
@@ -113,6 +120,7 @@ class NotImplementedException(Exception):
     Not implemented.
 
     """
+
     def __init__(self, value):
         message = f'Not implemented: {value}'
         super().__init__(message)
@@ -129,6 +137,5 @@ class BinPanException(Exception):
         self.message = message
 
     def __str__(self):
-
         msg = f'BinPan Exception: {self.exception_class} {self.doc} {self.message}'
         exceptions_logger.error(msg)

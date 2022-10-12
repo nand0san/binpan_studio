@@ -163,7 +163,9 @@ def get_info_dic() -> dict:
 ###########
 
 
-def get_account_status(decimal_mode: bool) -> dict:
+def get_account_status(decimal_mode: bool,
+                       api_key: str,
+                       api_secret: str) -> dict:
     """
     Fetch account status detail.
 
@@ -175,10 +177,15 @@ def get_account_status(decimal_mode: bool) -> dict:
     """
     endpoint = '/sapi/v1/account/status'
     return api_raw_signed_get(endpoint=endpoint,
-                              weight=1, decimal_mode=decimal_mode)
+                              weight=1,
+                              decimal_mode=decimal_mode,
+                              api_key=api_key,
+                              api_secret=api_secret)
 
 
-def get_margin_bnb_interest_status(decimal_mode: bool) -> dict:
+def get_margin_bnb_interest_status(decimal_mode: bool,
+                                   api_key: str,
+                                   api_secret: str) -> dict:
     """
     Get BNB Burn Status (USER_DATA)
 
@@ -199,7 +206,10 @@ def get_margin_bnb_interest_status(decimal_mode: bool) -> dict:
     endpoint = '/sapi/v1/bnbBurn'
     return api_raw_signed_get(endpoint=endpoint,
                               weight=1,
-                              decimal_mode=decimal_mode)
+                              decimal_mode=decimal_mode,
+                              api_key=api_key,
+                              api_secret=api_secret)
+
 
 #################
 # weight limits #
@@ -484,12 +494,16 @@ def get_orderTypes_and_permissions(info_dic: dict = None) -> dict:
 
 
 def get_fees_dict(decimal_mode: bool,
+                  api_key: str,
+                  api_secret: str,
                   symbol: str = None
                   ) -> dict:
     """
     Returns fees for a symbol or for every symbol if not passed a symbol.
 
     :param str symbol: Optional to request just one symbol instead of all.
+    :param str api_key: A BinPan encrypted in BinPan's way api key. Do not use unencrypted api values, import it from  secret.py file.
+    :param str api_secret: A BinPan encrypted in BinPan's way api secret. Do not use unencrypted api values, import it from  secret.py file.
     :param bool decimal_mode: Fixes Decimal return type.
     :return dict: A dict with maker and taker fees.
     """
@@ -499,7 +513,9 @@ def get_fees_dict(decimal_mode: bool,
     ret = api_raw_signed_get(endpoint,
                              params={'symbol': symbol},
                              weight=1,
-                             decimal_mode=decimal_mode)
+                             decimal_mode=decimal_mode,
+                             api_key=api_key,
+                             api_secret=api_secret)
     if decimal_mode:
         return {i['symbol']: {'makerCommission': dd(i['makerCommission']),
                               'takerCommission': dd(i['takerCommission'])} for i in ret}
@@ -509,15 +525,19 @@ def get_fees_dict(decimal_mode: bool,
 
 
 def get_fees(decimal_mode: bool,
+             api_key: str,
+             api_secret: str,
              symbol: str = None) -> pd.DataFrame:
     """
     Returns fees for a symbol or for every symbol if not passed.
 
     :param bool decimal_mode: Fixes Decimal return type and operative.
+    :param str api_key: A BinPan encrypted in BinPan's way api key. Do not use unencrypted api values, import it from  secret.py file.
+    :param str api_secret: A BinPan encrypted in BinPan's way api secret. Do not use unencrypted api values, import it from  secret.py file.
     :param str symbol: Optional to request just one symbol instead of all.
     :return pd.DataFrame: A pandas dataframe with all the fees applied each symbol.
     """
-    ret = get_fees_dict(symbol=symbol, decimal_mode=decimal_mode)
+    ret = get_fees_dict(symbol=symbol, decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
     return pd.DataFrame(ret).transpose()
 
 
@@ -543,7 +563,9 @@ def get_system_status():
                        weight=1)['msg']
 
 
-def get_coins_and_networks_info(decimal_mode: bool) -> tuple:
+def get_coins_and_networks_info(decimal_mode: bool,
+                                api_key: str,
+                                api_secret: str) -> tuple:
     """
     Get information of coins (available for deposit and withdraw) for user.
 
@@ -555,7 +577,9 @@ def get_coins_and_networks_info(decimal_mode: bool) -> tuple:
     """
 
     ret = api_raw_signed_get(endpoint='/sapi/v1/capital/config/getall',
-                             weight=10, decimal_mode=decimal_mode)
+                             weight=10, decimal_mode=decimal_mode,
+                             api_key=api_key,
+                             api_secret=api_secret)
     networks = []
     coins = []
 
@@ -577,53 +601,78 @@ def get_coins_and_networks_info(decimal_mode: bool) -> tuple:
     return coins_df.sort_index(), networks_df.sort_index()
 
 
-def get_coins_info_list(decimal_mode: bool, coin: str = None) -> list:
+def get_coins_info_list(decimal_mode: bool,
+                        api_key: str,
+                        api_secret: str,
+                        coin: str = None) -> list:
     """
     Bring all coins exchange info in a list if no one is specified.
 
     Returns a list of dictionaries, one for each currency.
 
     :param bool decimal_mode: Fixes Decimal return type and operative.
+    :param str api_key: A BinPan encrypted in BinPan's way api key. Do not use unencrypted api values, import it from  secret.py file.
+    :param str api_secret: A BinPan encrypted in BinPan's way api secret. Do not use unencrypted api values, import it from  secret.py file.
     :param str coin: Limit response to a coin.
     :return list: A list of dictionaries each coin.
     """
 
     endpoint = '/sapi/v1/capital/config/getall'
     check_weight(weight=10, endpoint=endpoint)
-    ret = api_raw_signed_get(endpoint=endpoint, decimal_mode=decimal_mode)
+    ret = api_raw_signed_get(endpoint=endpoint,
+                             decimal_mode=decimal_mode,
+                             api_key=api_key,
+                             api_secret=api_secret)
     if not coin:
         return ret
     else:
         return [c for c in ret if c['coin'].upper() == coin.upper()]
 
 
-def get_coins_info_dic(decimal_mode: bool, coin: str = None) -> dict:
+def get_coins_info_dic(decimal_mode: bool,
+                       api_key: str,
+                       api_secret: str,
+                       coin: str = None) -> dict:
     """
     Useful managing coins info in a big dictionary with coins as keys.
 
     :param bool decimal_mode: Fixes Decimal return type and operative.
-    :param bool decimal_mode: Fixes Decimal return type and operative.
+    :param str api_key: A BinPan encrypted in BinPan's way api key. Do not use unencrypted api values, import it from  secret.py file.
+    :param str api_secret: A BinPan encrypted in BinPan's way api secret. Do not use unencrypted api values, import it from  secret.py file.
     :param str coin: Limit response to a coin.
     :return list: A dictionary with each coin data as value.
     """
-    coins_data_list = get_coins_info_list(coin=coin, decimal_mode=decimal_mode)
+    coins_data_list = get_coins_info_list(coin=coin,
+                                          decimal_mode=decimal_mode,
+                                          api_key=api_key,
+                                          api_secret=api_secret)
     return {c['coin']: c for c in coins_data_list}
 
 
-def get_legal_coins(decimal_mode: bool, coins_dic: dict = None) -> list:
+def get_legal_coins(decimal_mode: bool,
+                    api_key: str,
+                    api_secret: str,
+                    coins_dic: dict = None) -> list:
     """
     Fetch coins containing isLegalMoney=true
 
     :param bool decimal_mode: Fixes Decimal return type and operative.
+    :param str api_key: A BinPan encrypted in BinPan's way api key. Do not use unencrypted api values, import it from  secret.py file.
+    :param str api_secret: A BinPan encrypted in BinPan's way api secret. Do not use unencrypted api values, import it from  secret.py file.
     :param dict coins_dic: Avoid fetching the API by passing a dict with coins data.
     :return list: A list with coins names.
     """
     if not coins_dic:
-        coins_dic = get_coins_info_dic(decimal_mode=decimal_mode)
+        coins_dic = get_coins_info_dic(decimal_mode=decimal_mode,
+                                       api_key=api_key,
+                                       api_secret=api_secret)
     return [coin for coin, data in coins_dic.items() if data['isLegalMoney'] is True]
 
 
-def get_leveraged_coins(decimal_mode: bool, coins_dic: dict = None) -> list:
+def get_leveraged_coins(decimal_mode: bool,
+                        api_key: str,
+                        api_secret: str,
+                        coins_dic: dict = None) -> list:
     """
     Search for Binance leveraged coins by searching UP or DOWN before an existing coin, examples:
 
@@ -632,11 +681,15 @@ def get_leveraged_coins(decimal_mode: bool, coins_dic: dict = None) -> list:
             ['1INCHDOWN', '1INCHUP', 'AAVEDOWN', 'AAVEUP', 'ADADOWN', ... ]
 
     :param bool decimal_mode: Fixes Decimal return type and operative.
+    :param str api_key: A BinPan encrypted in BinPan's way api key. Do not use unencrypted api values, import it from  secret.py file.
+    :param str api_secret: A BinPan encrypted in BinPan's way api secret. Do not use unencrypted api values, import it from  secret.py file.
     :param dict coins_dic: Avoid fetching the API by passing a dict with coins data.
     :return list: A list with leveraged coins names.
     """
     if not coins_dic:
-        coins_dic = get_coins_info_dic(decimal_mode=decimal_mode)
+        coins_dic = get_coins_info_dic(decimal_mode=decimal_mode,
+                                       api_key=api_key,
+                                       api_secret=api_secret)
 
     leveraged = []
 
@@ -651,7 +704,10 @@ def get_leveraged_coins(decimal_mode: bool, coins_dic: dict = None) -> list:
     return leveraged
 
 
-def get_leveraged_symbols(decimal_mode: bool, info_dic: dict = None, leveraged_coins: list = None) -> list:
+def get_leveraged_symbols(decimal_mode: bool,
+                          api_key: str,
+                          api_secret: str,
+                          info_dic: dict = None, leveraged_coins: list = None) -> list:
     """
     Search for Binance symbols based on leveraged coins by searching UP or DOWN before an existing coin in symbol,
     leveraged coins examples are:
@@ -664,6 +720,8 @@ def get_leveraged_symbols(decimal_mode: bool, info_dic: dict = None, leveraged_c
             # leveraged symbols
 
     :param bool decimal_mode: Fixes Decimal return type and operative.
+    :param str api_key: A BinPan encrypted in BinPan's way api key. Do not use unencrypted api values, import it from  secret.py file.
+    :param str api_secret: A BinPan encrypted in BinPan's way api secret. Do not use unencrypted api values, import it from  secret.py file.
     :param dict info_dic: Avoid fetching the API by passing a dict with symbols data.
     :param list leveraged_coins: Avoid fetching the API for getting coins by passing a list with coins data.
     :return list: A list with leveraged coins names.
@@ -671,7 +729,7 @@ def get_leveraged_symbols(decimal_mode: bool, info_dic: dict = None, leveraged_c
     if not info_dic:
         info_dic = get_info_dic()
     if not leveraged_coins:
-        leveraged_coins = get_leveraged_coins(decimal_mode=decimal_mode)
+        leveraged_coins = get_leveraged_coins(decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
 
     bases = get_bases_dic(info_dic=info_dic)
     quotes = get_quotes_dic(info_dic=info_dic)
@@ -716,6 +774,8 @@ def get_bases_dic(info_dic: dict = None) -> dict:
 
 
 def exchange_status(decimal_mode: bool,
+                    api_key: str,
+                    api_secret: str,
                     tradeable=True,
                     spot_required=True,
                     margin_required=True,
@@ -727,6 +787,8 @@ def exchange_status(decimal_mode: bool,
     It returns a lot of results: bases_dic, quotes_dic, legal_coins, not_legal_pairs, symbol_filters, filtered_pairs
 
     :param bool decimal_mode: Fixes Decimal return type and operative.
+    :param str api_key: A BinPan encrypted in BinPan's way api key. Do not use unencrypted api values, import it from  secret.py file.
+    :param str api_secret: A BinPan encrypted in BinPan's way api secret. Do not use unencrypted api values, import it from  secret.py file.
     :param bool tradeable: Require or not just currently trading symbols.
     :param bool spot_required: Requires just SPOT currently trading symbols.
     :param bool margin_required: Requires just MARGIN currently trading symbols.
@@ -754,7 +816,7 @@ def exchange_status(decimal_mode: bool,
     if margin_required:
         filtered_info = filter_margin(filtered_info)
 
-    legal_coins = get_legal_coins(decimal_mode=decimal_mode)
+    legal_coins = get_legal_coins(decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
     not_legal_pairs = filter_legal(legal_coins=legal_coins, info_dic=info_dic)
     if drop_legal:
         filtered_info = filter_legal(legal_coins=legal_coins, info_dic=filtered_info)
@@ -963,6 +1025,8 @@ def convert_utc_milliseconds(ms) -> str:
 
 
 def statistics_24h(decimal_mode: bool,
+                   api_key: str,
+                   api_secret: str,
                    tradeable=True,
                    spot_required=True,
                    margin_required=False,
@@ -976,6 +1040,8 @@ def statistics_24h(decimal_mode: bool,
     convert the volume to USDT.
 
     :param bool decimal_mode: Fixes Decimal return type and operative.
+    :param str api_key: A BinPan encrypted in BinPan's way api key. Do not use unencrypted api values, import it from  secret.py file.
+    :param str api_secret: A BinPan encrypted in BinPan's way api secret. Do not use unencrypted api values, import it from  secret.py file.
     :param bool tradeable: Require or not just currently trading symbols.
     :param bool spot_required: Requires just SPOT currently trading symbols.
     :param bool margin_required: Requires just MARGIN currently trading symbols.
@@ -1001,7 +1067,9 @@ def statistics_24h(decimal_mode: bool,
                                                                                    drop_legal=drop_legal,
                                                                                    filter_leveraged=filter_leveraged,
                                                                                    info_dic=info_dic,
-                                                                                   decimal_mode=decimal_mode)
+                                                                                   decimal_mode=decimal_mode,
+                                                                                   api_key=api_key,
+                                                                                   api_secret=api_secret)
     stats = get_24h_statistics()
 
     df = pd.DataFrame(stats)
@@ -1049,6 +1117,8 @@ def statistics_24h(decimal_mode: bool,
 
 
 def get_top_gainers(decimal_mode: bool,
+                    api_key: str,
+                    api_secret: str,
                     info_dic: dict = None,
                     tradeable=True,
                     spot_required=True,
@@ -1066,6 +1136,8 @@ def get_top_gainers(decimal_mode: bool,
     Optionally, you can generate the column to convert the volume to USDT.
 
     :param bool decimal_mode: Fixes Decimal return type and operative.
+    :param str api_key: A BinPan encrypted in BinPan's way api key. Do not use unencrypted api values, import it from  secret.py file.
+    :param str api_secret: A BinPan encrypted in BinPan's way api secret. Do not use unencrypted api values, import it from  secret.py file.
     :param bool tradeable: Require or not just currently trading symbols.
     :param bool spot_required: Requires just SPOT currently trading symbols.
     :param bool margin_required: Requires just MARGIN currently trading symbols.
@@ -1104,6 +1176,8 @@ def get_top_gainers(decimal_mode: bool,
         info_dic = get_info_dic()
 
     top_gainers = statistics_24h(decimal_mode=decimal_mode,
+                                 api_key=api_key,
+                                 api_secret=api_secret,
                                  tradeable=tradeable,
                                  spot_required=spot_required,
                                  margin_required=margin_required,

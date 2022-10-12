@@ -36,7 +36,6 @@ path.append(getcwd())
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
 
-# __version__ = "0.1.8"
 config = dotenv_values(".env")
 __version__ = config["BINPAN_VERSION"]
 
@@ -49,7 +48,7 @@ except:
 
 try:
     from secret import api_key, api_secret
-except ImportError:
+except ImportError(api_key, api_secret):
     msg = """BINANCE:
 No API Key or API Secret
 
@@ -1451,7 +1450,7 @@ class Symbol(object):
             if not symbol:
                 symbol = self.symbol
             # return handlers.wallet.get_fees(symbol=symbol)
-            return handlers.exchange.get_fees(symbol=symbol, decimal_mode=False)
+            return handlers.exchange.get_fees(symbol=symbol, decimal_mode=False, api_key=api_key, api_secret=api_secret)
 
         except NameError:
             binpan_logger.warning("Fees cannot be requested without api key added. Add it with"
@@ -2768,18 +2767,24 @@ class Exchange(object):
     """
 
     def __init__(self):
+
+        try:
+            from secret import api_key, api_secret
+        except ImportError:
+            raise Exception(f"Binance Api key or Api Secret not found.")
+
         self.info_dic = handlers.exchange.get_info_dic()
-        self.coins_dic = handlers.exchange.get_coins_info_dic(decimal_mode=False)
+        self.coins_dic = handlers.exchange.get_coins_info_dic(decimal_mode=False, api_key=api_key, api_secret=api_secret)
         self.bases = handlers.exchange.get_bases_dic(info_dic=self.info_dic)
         self.quotes = handlers.exchange.get_quotes_dic(info_dic=self.info_dic)
-        self.leveraged = handlers.exchange.get_leveraged_coins(coins_dic=self.coins_dic, decimal_mode=False)
+        self.leveraged = handlers.exchange.get_leveraged_coins(coins_dic=self.coins_dic, decimal_mode=False, api_key=api_key, api_secret=api_secret)
         self.leveraged_symbols = handlers.exchange.get_leveraged_symbols(info_dic=self.info_dic, leveraged_coins=self.leveraged,
-                                                                         decimal_mode=False)
+                                                                         decimal_mode=False, api_key=api_key, api_secret=api_secret)
 
-        self.fees = handlers.exchange.get_fees(decimal_mode=False)
+        self.fees = handlers.exchange.get_fees(decimal_mode=False, api_key=api_key, api_secret=api_secret)
         self.filters = handlers.exchange.get_symbols_filters(info_dic=self.info_dic)
         self.status = handlers.exchange.get_system_status()
-        self.coins, self.networks = handlers.exchange.get_coins_and_networks_info(decimal_mode=False)
+        self.coins, self.networks = handlers.exchange.get_coins_and_networks_info(decimal_mode=False, api_key=api_key, api_secret=api_secret)
         self.coins_list = list(self.coins.index)
 
         self.symbols = self.get_symbols()
@@ -2841,9 +2846,9 @@ class Exchange(object):
         self.filters = handlers.exchange.get_symbols_filters(info_dic=self.info_dic)
         self.bases = handlers.exchange.get_bases_dic(info_dic=self.info_dic)
         self.quotes = handlers.exchange.get_quotes_dic(info_dic=self.info_dic)
-        self.fees = handlers.exchange.get_fees(decimal_mode=False)
+        self.fees = handlers.exchange.get_fees(decimal_mode=False, api_key=api_key, api_secret=api_secret)
         self.status = handlers.exchange.get_system_status()
-        self.coins, self.networks = handlers.exchange.get_coins_and_networks_info(decimal_mode=False)
+        self.coins, self.networks = handlers.exchange.get_coins_and_networks_info(decimal_mode=False, api_key=api_key, api_secret=api_secret)
         self.symbols = self.get_symbols()
         self.df = self.get_df()
         self.order_types = self.get_order_types()
@@ -2907,7 +2912,7 @@ class Wallet(object):
         try:
             from secret import api_key, api_secret
         except ImportError:
-            print(f"Binance Api key or Api Secret not found.")
+            raise Exception(f"Binance Api key or Api Secret not found.")
 
         self.time_zone = time_zone
         self.spot = self.update_spot()
@@ -2923,7 +2928,7 @@ class Wallet(object):
         self.margin_requested_days = snapshot_days
 
     def update_spot(self, decimal_mode=False):
-        self.spot = handlers.wallet.get_spot_balances_df(decimal_mode=decimal_mode)
+        self.spot = handlers.wallet.get_spot_balances_df(decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
         return self.spot
 
     def spot_snapshot(self,
@@ -2950,7 +2955,7 @@ class Wallet(object):
                                                                                                                    time_zone=self.time_zone),
                                                                     limit=snapshot_days,
                                                                     time_zone=self.time_zone,
-                                                                    decimal_mode=False)
+                                                                    decimal_mode=False, api_key=api_key, api_secret=api_secret)
         self.spot_startTime = startTime
         self.spot_endTime = endTime
         self.spot_requested_days = snapshot_days
@@ -2958,7 +2963,7 @@ class Wallet(object):
         return self.spot
 
     def update_margin(self, decimal_mode=False):
-        my_margin = handlers.wallet.get_margin_balances(decimal_mode=decimal_mode)
+        my_margin = handlers.wallet.get_margin_balances(decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
         self.margin = pd.DataFrame(my_margin).T
         self.margin.index.name = 'asset'
         return self.margin
@@ -2986,7 +2991,10 @@ class Wallet(object):
                                                            endTime=handlers.wallet.convert_str_date_to_ms(date=endTime,
                                                                                                           time_zone=self.time_zone),
                                                            limit=snapshot_days,
-                                                           time_zone=self.time_zone, decimal_mode=False)
+                                                           time_zone=self.time_zone,
+                                                           decimal_mode=False,
+                                                           api_key=api_key,
+                                                           api_secret=api_secret)
         self.margin_startTime = startTime
         self.margin_endTime = endTime
         self.margin_requested_days = snapshot_days
@@ -3015,7 +3023,7 @@ class Wallet(object):
                                                                                                               time_zone=self.time_zone),
                                                                limit=days,
                                                                time_zone=self.time_zone,
-                                                               decimal_mode=False)
+                                                               decimal_mode=False, api_key=api_key, api_secret=api_secret)
             self.spot_startTime = startTime
             self.spot_endTime = endTime
             self.spot_requested_days = days
@@ -3054,7 +3062,10 @@ class Wallet(object):
                                                                  endTime=handlers.wallet.convert_str_date_to_ms(date=endTime,
                                                                                                                 time_zone=self.time_zone),
                                                                  limit=days,
-                                                                 time_zone=self.time_zone, decimal_mode=False)
+                                                                 time_zone=self.time_zone,
+                                                                 decimal_mode=False,
+                                                                 api_key=api_key,
+                                                                 api_secret=api_secret)
             self.margin_startTime = startTime
             self.margin_endTime = endTime
             self.margin_requested_days = days

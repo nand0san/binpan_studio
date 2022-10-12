@@ -11,29 +11,29 @@ import hmac
 import hashlib
 import copy
 from time import sleep
-from sys import path
-from os import getcwd
-
-path.append(getcwd())
-
-try:
-    global api_secret, api_key
-    # noinspection PyUnresolvedReferences
-    from secret import api_key, api_secret
-
-except ImportError:
-    print("""
-No API Key or API Secret
-
-API key would be needed for personal API calls. Any other calls will work.
-
-Adding:
-
-binpan.handlers.files.add_api_key("xxxx")
-binpan.handlers.files.add_api_secret("xxxx")
-
-API keys will be added to a file called secret.py in an encrypted way. API keys in memory stay encrypted except in the API call instant.
-""")
+# from sys import path
+# from os import getcwd
+#
+# path.append(getcwd())
+#
+# try:
+#     global api_secret, api_key
+#     # noinspection PyUnresolvedReferences
+#     from secret import api_key, api_secret
+#
+# except ImportError:
+#     print("""
+# No API Key or API Secret
+#
+# API key would be needed for personal API calls. Any other calls will work.
+#
+# Adding:
+#
+# binpan.handlers.files.add_api_key("xxxx")
+# binpan.handlers.files.add_api_secret("xxxx")
+#
+# API keys will be added to a file called secret.py in an encrypted way. API keys in memory stay encrypted except in the API call instant.
+# """)
 
 float_api_items = ['price', 'origQty', 'executedQty', 'cummulativeQuoteQty', 'stopLimitPrice', 'stopPrice', 'commission', 'qty',
                    'origQuoteOrderQty', 'makerCommission', 'takerCommission']
@@ -238,19 +238,17 @@ def handle_api_response(response) -> dict or list:
         raise BinanceRequestException(f'Invalid Response: {response.text}')
 
 
-def hashed_signature(url_params):  # los params para la signatura son los params de la timestamp
+def hashed_signature(url_params: str,
+                     api_secret: str):  # los params (no se el type bien) para la signatura son los params de la timestamp
     return hmac.new(cipher_object.decrypt(api_secret).encode('utf-8'), url_params.encode('utf-8'),
                     hashlib.sha256).hexdigest()
 
 
-# def float_to_string(num: float, d_max=20) -> str:
-#     ctx = decimal.Context()
-#     ctx.prec = d_max
-#     num_str = ctx.create_decimal(repr(num))
-#     return format(num_str, 'f')
-
-
-def sign_request(params: dict, recvWindow: int) -> (list, dict):
+def sign_request(params: dict,
+                 recvWindow: int,
+                 api_key: str,
+                 api_secret: str
+                 ) -> (list, dict):
     quest_logger.debug(f"parse_request: {params}")
 
     if params is None:
@@ -273,7 +271,7 @@ def sign_request(params: dict, recvWindow: int) -> (list, dict):
 
     server_time_int = get_server_time()
     params_tuples.append(("timestamp", server_time_int,))  # añado el timestamp como parámetro
-    signature = hashed_signature(urlencode(params_tuples))
+    signature = hashed_signature(urlencode(params_tuples), api_secret=api_secret)
     params_tuples.append(("signature", signature,))  # y la añado como parámetro
 
     return params_tuples, headers
@@ -281,6 +279,8 @@ def sign_request(params: dict, recvWindow: int) -> (list, dict):
 
 def get_signed_request(url: str,
                        decimal_mode: bool,
+                       api_key: str,
+                       api_secret: str,
                        params: dict or tuple = None,
                        recvWindow: int = 10000):
     """
@@ -289,7 +289,7 @@ def get_signed_request(url: str,
         https://dev.binance.vision/t/faq-signature-for-this-request-is-not-valid/176/4
 
     """
-    params_tuples, headers = sign_request(params=params, recvWindow=recvWindow)
+    params_tuples, headers = sign_request(params=params, recvWindow=recvWindow, api_key=api_key, api_secret=api_secret)
     ret = get_response(url, params=params_tuples, headers=headers)
     quest_logger.debug("get_signed_request: params_tuples: " + str(params_tuples))
     quest_logger.debug("get_signed_request: headers: " + str(headers.keys()))
@@ -298,6 +298,7 @@ def get_signed_request(url: str,
 
 def get_semi_signed_request(url: str,
                             decimal_mode: bool,
+                            api_key: str,
                             params: dict = None):
     """Requests get with api key header and params"""
     headers = {"X-MBX-APIKEY": cipher_object.decrypt(api_key)}
@@ -308,12 +309,14 @@ def get_semi_signed_request(url: str,
 
 def post_signed_request(url: str,
                         decimal_mode: bool,
+                        api_key: str,
+                        api_secret: str,
                         params: dict = None,
                         recvWindow: int = 10000):
     """
     Hace un POST firmado a una url junto con un diccionario de parámetros
     """
-    params_tuples, headers = sign_request(params=params, recvWindow=recvWindow)
+    params_tuples, headers = sign_request(params=params, recvWindow=recvWindow, api_key=api_key, api_secret=api_secret)
     ret = post_response(url, params=params_tuples, headers=headers)
     quest_logger.debug("post_signed_request: params_tuples: " + str(params_tuples))
     quest_logger.debug("get_semi_signed_request: headers: " + str(headers.keys()))
@@ -322,22 +325,19 @@ def post_signed_request(url: str,
 
 def delete_signed_request(url: str,
                           decimal_mode: bool,
+                          api_key: str,
+                          api_secret: str,
                           params: dict = None,
                           recvWindow: int = 10000):
     """
     Hace un DELETE firmado a una url junto con un diccionario de parámetros
     """
-    params_tuples, headers = sign_request(params=params, recvWindow=recvWindow)
+    params_tuples, headers = sign_request(params=params, recvWindow=recvWindow, api_key=api_key, api_secret=api_secret)
     ret = delete_response(url, params=params_tuples, headers=headers)
     quest_logger.info("delete_signed_request: params_tuples: " + str(params_tuples))
     quest_logger.debug("get_semi_signed_request: headers: " + str(headers.keys()))
     return convert_response_type(ret, decimal_mode=decimal_mode)
 
-
-# def check_tick_interval(tick_interval):
-#     if not (tick_interval in tick_interval_values):
-#         raise Exception(f"BinPan Error on tick_interval: {tick_interval} not in "
-#                         f"expected API intervals.\n{tick_interval_values}")
 
 ####################
 # Generic Requests #
@@ -357,19 +357,23 @@ def api_raw_get(endpoint: str,
 
 def api_raw_signed_get(endpoint: str,
                        decimal_mode: bool,
+                       api_key: str,
+                       api_secret: str,
                        base_url: str = '',
                        params: dict = None,
                        weight: int = 1):
     check_weight(weight, endpoint=base_url + endpoint)
     return get_signed_request(url=base_url + endpoint,
-                              params=params, decimal_mode=decimal_mode)
+                              params=params, decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
 
 
 def api_raw_signed_post(endpoint: str,
                         decimal_mode: bool,
+                        api_key: str,
+                        api_secret: str,
                         base_url: str = '',
                         params: dict = None,
                         weight: int = 1):
     check_weight(weight, endpoint=base_url + endpoint)
     return post_signed_request(url=base_url + endpoint,
-                               params=params, decimal_mode=decimal_mode)
+                               params=params, decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
