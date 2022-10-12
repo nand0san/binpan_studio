@@ -28,13 +28,14 @@ import handlers.indicators
 import pandas_ta as ta
 from random import choice
 import importlib
+import sys
 
 
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
 
 
-__version__ = "0.2.15"
+__version__ = "0.2.16"
 
 try:
     from secret import redis_conf
@@ -240,9 +241,10 @@ class Symbol(object):
                  display_width=320):
 
         try:
-            importlib.reload(secret)
-            self.api_key = secret.api_key
-            self.api_secret = secret.api_secret
+            secret_module = sys.modules["secret"]
+            importlib.reload(secret_module)
+            self.api_key = secret_module.api_key
+            self.api_secret = secret_module.api_secret
         except ImportError:
             raise Exception(f"Binance Api key or Api Secret not found.")
 
@@ -2768,9 +2770,10 @@ class Exchange(object):
 
     def __init__(self):
         try:
-            importlib.reload(secret)
-            self.api_key = secret.api_key
-            self.api_secret = secret.api_secret
+            secret_module = sys.modules["secret"]
+            importlib.reload(secret_module)
+            self.api_key = secret_module.api_key
+            self.api_secret = secret_module.api_secret
         except ImportError:
             raise Exception(f"Binance Api key or Api Secret not found.")
 
@@ -2909,9 +2912,10 @@ class Wallet(object):
                  time_zone='UTC',
                  snapshot_days: int = 30):
         try:
-            importlib.reload(secret)
-            self.api_key = secret.api_key
-            self.api_secret = secret.api_secret
+            secret_module = sys.modules["secret"]
+            importlib.reload(secret_module)
+            self.api_key = secret_module.api_key
+            self.api_secret = secret_module.api_secret
         except ImportError:
             raise Exception(f"Binance Api key or Api Secret not found.")
 
