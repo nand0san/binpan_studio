@@ -1,6 +1,7 @@
 from setuptools import setup
 import pathlib
-from dotenv import dotenv_values
+# from dotenv import dotenv_values
+import configparser
 
 # The directory containing this file
 HERE = pathlib.Path(__file__).parent
@@ -16,8 +17,9 @@ read_required = open('requirements.txt', 'r')
 REQUIRED = read_required.read()
 read_required.close()
 
-config = dotenv_values("docs/version.env")
-my_version = config["BINPAN_VERSION"]
+config = configparser.RawConfigParser()
+config.read("docs/version.env")
+my_version = config.get("VERSION", "BINPAN_VERSION")
 
 
 setup(name='binpan',
