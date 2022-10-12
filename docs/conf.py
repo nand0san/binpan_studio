@@ -23,9 +23,13 @@ copyright = '2022, Fernando Alfonso'
 author = 'Fernando Alfonso'
 
 # The full version, including alpha/beta/rc tags
-sys.path.append(os.getcwd())
+# current_path = os.getcwd()
+# sys.path.append(current_path)
+# parent = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
+# sys.path.append(parent)
 
-config = dotenv_values(".env")
+config = dotenv_values("version.env")
+
 release = config["BINPAN_VERSION"]
 
 # -- General configuration ---------------------------------------------------

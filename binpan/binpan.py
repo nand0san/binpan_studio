@@ -27,16 +27,20 @@ import handlers.indicators
 
 import pandas_ta as ta
 from random import choice
-from sys import path
-from os import getcwd
-from dotenv import dotenv_values
 
-path.append(getcwd())
+from dotenv import dotenv_values, find_dotenv
+
 
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
 
-config = dotenv_values(".env")
+try:
+    env_path = find_dotenv(filename='version.env', raise_error_if_not_found=True, usecwd=True)
+except Exception as _:
+    env_path = find_dotenv(filename='docs/version.env', raise_error_if_not_found=True, usecwd=True)
+
+config = dotenv_values(env_path)
+
 __version__ = config["BINPAN_VERSION"]
 
 try:

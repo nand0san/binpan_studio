@@ -232,8 +232,8 @@ def candles_ta(data: pd.DataFrame,
                indicators_colors: list = [],
                indicators_color_filled: dict = None,
                indicators_filled_mode: dict = None,
-               axis_groups: dict = None,
-               plot_splitted_serie_couple: dict = None,
+               axis_groups: dict = {},
+               plot_splitted_serie_couple: dict = {},
                width=1800,
                height=1000,
                range_slider: bool = False,
@@ -546,8 +546,8 @@ def candles_tagged(data: pd.DataFrame,
                    indicator_colors: list = [],
                    fill_control: dict or list = None,
                    indicators_filled_mode: dict or list = None,
-                   axis_groups: dict or list = None,
-                   plot_splitted_serie_couple: dict or list = None,
+                   axis_groups: dict or list = {},
+                   plot_splitted_serie_couple: dict or list = {},
                    rows_pos: list = [],
                    plot_bgcolor=None,
                    actions_col: str = None,
@@ -1208,10 +1208,10 @@ def dist_plot(df: pd.DataFrame,
     """
     filtered_df = df.copy()
 
-    fig = ff.create_distplot([filtered_df["Price"].tolist()],
+    fig = ff.create_distplot(hist_data=[filtered_df["Price"].tolist()],
                              group_labels=["Price"],
                              show_hist=False,
-                             ).add_my_traces(
+                             ).add_traces(
         px.histogram(filtered_df, x=x_col, nbins=bins, color=color, histnorm=histnorm)
         .update_traces(yaxis="y3", name=x_col)
         .data)
