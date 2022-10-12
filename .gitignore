@@ -109,7 +109,7 @@ celerybeat.pid
 
 # Environments
 #docs/version.env
-.venv
+#.venv
 env/
 venv/
 venv37/
