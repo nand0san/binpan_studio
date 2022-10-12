@@ -53,6 +53,9 @@ BinPan current version: |release|
 
 Google Colab can throw some errors when pip installing BinPan, but a reset to the runtime should fix it.
 
+.. image:: images/colab.png
+   :width: 1000
+
 GitHub repo
 -----------
 https://github.com/nand0san/binpan_studio

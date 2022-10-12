@@ -50,6 +50,8 @@ Recommended Python version: ```3.7```
 
 Google Colab can throw some errors when pip installing BinPan, but a reset to the runtime should fix it.
 
+![](https://raw.githubusercontent.com/nand0san/binpan_studio/main/docs/images/colab.png)
+
 GitHub repo
 -----------
 

@@ -30,18 +30,18 @@ from random import choice
 
 from dotenv import dotenv_values, find_dotenv
 
-
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
 
 try:
     env_path = find_dotenv(filename='version.env', raise_error_if_not_found=True, usecwd=True)
+    config = dotenv_values(env_path)
+    __version__ = config["BINPAN_VERSION"]
+
 except Exception as _:
-    env_path = find_dotenv(filename='docs/version.env', raise_error_if_not_found=True, usecwd=True)
-
-config = dotenv_values(env_path)
-
-__version__ = config["BINPAN_VERSION"]
+    env_path = find_dotenv(filename='docs/version.env', raise_error_if_not_found=False, usecwd=True)
+    config = dotenv_values(env_path)
+    __version__ = config["BINPAN_VERSION"]
 
 try:
     from secret import redis_conf
@@ -2771,7 +2771,6 @@ class Exchange(object):
     """
 
     def __init__(self):
-
         try:
             from secret import api_key, api_secret
         except ImportError:
@@ -2781,14 +2780,16 @@ class Exchange(object):
         self.coins_dic = handlers.exchange.get_coins_info_dic(decimal_mode=False, api_key=api_key, api_secret=api_secret)
         self.bases = handlers.exchange.get_bases_dic(info_dic=self.info_dic)
         self.quotes = handlers.exchange.get_quotes_dic(info_dic=self.info_dic)
-        self.leveraged = handlers.exchange.get_leveraged_coins(coins_dic=self.coins_dic, decimal_mode=False, api_key=api_key, api_secret=api_secret)
+        self.leveraged = handlers.exchange.get_leveraged_coins(coins_dic=self.coins_dic, decimal_mode=False, api_key=api_key,
+                                                               api_secret=api_secret)
         self.leveraged_symbols = handlers.exchange.get_leveraged_symbols(info_dic=self.info_dic, leveraged_coins=self.leveraged,
                                                                          decimal_mode=False, api_key=api_key, api_secret=api_secret)
 
         self.fees = handlers.exchange.get_fees(decimal_mode=False, api_key=api_key, api_secret=api_secret)
         self.filters = handlers.exchange.get_symbols_filters(info_dic=self.info_dic)
         self.status = handlers.exchange.get_system_status()
-        self.coins, self.networks = handlers.exchange.get_coins_and_networks_info(decimal_mode=False, api_key=api_key, api_secret=api_secret)
+        self.coins, self.networks = handlers.exchange.get_coins_and_networks_info(decimal_mode=False, api_key=api_key,
+                                                                                  api_secret=api_secret)
         self.coins_list = list(self.coins.index)
 
         self.symbols = self.get_symbols()
@@ -2852,7 +2853,8 @@ class Exchange(object):
         self.quotes = handlers.exchange.get_quotes_dic(info_dic=self.info_dic)
         self.fees = handlers.exchange.get_fees(decimal_mode=False, api_key=api_key, api_secret=api_secret)
         self.status = handlers.exchange.get_system_status()
-        self.coins, self.networks = handlers.exchange.get_coins_and_networks_info(decimal_mode=False, api_key=api_key, api_secret=api_secret)
+        self.coins, self.networks = handlers.exchange.get_coins_and_networks_info(decimal_mode=False, api_key=api_key,
+                                                                                  api_secret=api_secret)
         self.symbols = self.get_symbols()
         self.df = self.get_df()
         self.order_types = self.get_order_types()
@@ -2912,7 +2914,6 @@ class Wallet(object):
     def __init__(self,
                  time_zone='UTC',
                  snapshot_days: int = 30):
-
         try:
             from secret import api_key, api_secret
         except ImportError:
