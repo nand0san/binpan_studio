@@ -35,7 +35,7 @@ binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', 
 tick_seconds = handlers.time_helper.tick_seconds
 
 
-__version__ = "0.2.16"
+__version__ = "0.2.17"
 
 try:
     from secret import redis_conf
@@ -48,8 +48,7 @@ try:
     from secret import api_key, api_secret
 except ImportError:
     api_key, api_secret = "PLEASE ADD API KEY", "PLEASE ADD API SECRET"
-    msg = """BINANCE:
-No API Key or API Secret
+    msg = """BINANCE: No API Key or API Secret
 
 API key would be needed for personal API calls. Any other calls will work.
 
@@ -61,8 +60,10 @@ handlers.files.add_api_key("xxxx")
 handlers.files.add_api_secret("xxxx")
 
 API keys will be added to a file called secret.py in an encrypted way. API keys in memory stay encrypted except in the API call instant.
+
+Create API keys: https://www.binance.com/en/support/faq/360002502072
 """
-    binpan_logger.warning(msg)
+    print(msg)
 
 plotly_colors = handlers.plotting.plotly_colors
 
@@ -245,8 +246,8 @@ class Symbol(object):
             importlib.reload(secret_module)
             self.api_key = secret_module.api_key
             self.api_secret = secret_module.api_secret
-        except ImportError:
-            raise Exception(f"Binance Api key or Api Secret not found.")
+        except ImportError or KeyError:
+            print(f"Binance Api key or Api Secret not found.")
 
         if not symbol.isalnum():
             binpan_logger.error(f"BinPan error: Ilegal characters in symbol.")
@@ -2774,8 +2775,8 @@ class Exchange(object):
             importlib.reload(secret_module)
             self.api_key = secret_module.api_key
             self.api_secret = secret_module.api_secret
-        except ImportError:
-            raise Exception(f"Binance Api key or Api Secret not found.")
+        except ImportError or KeyError:
+            raise Exception(f"Binance Api key or Api Secret not found and needed for this module.")
 
         self.info_dic = handlers.exchange.get_info_dic()
         self.coins_dic = handlers.exchange.get_coins_info_dic(decimal_mode=False, api_key=self.api_key, api_secret=self.api_secret)
@@ -2916,8 +2917,8 @@ class Wallet(object):
             importlib.reload(secret_module)
             self.api_key = secret_module.api_key
             self.api_secret = secret_module.api_secret
-        except ImportError:
-            raise Exception(f"Binance Api key or Api Secret not found.")
+        except ImportError or KeyError:
+            raise Exception(f"Binance Api key or Api Secret not found and needed for this module.")
 
         self.time_zone = time_zone
         self.spot = self.update_spot()
