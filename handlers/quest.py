@@ -11,6 +11,10 @@ import hmac
 import hashlib
 import copy
 from time import sleep
+from sys import path
+from os import getcwd
+
+path.append(getcwd())
 
 try:
     global api_secret, api_key

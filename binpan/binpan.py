@@ -29,13 +29,16 @@ import pandas_ta as ta
 from random import choice
 from sys import path
 from os import getcwd
+from dotenv import dotenv_values
 
 path.append(getcwd())
 
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
 
-__version__ = "0.1.8"
+# __version__ = "0.1.8"
+config = dotenv_values(".env")
+__version__ = config["BINPAN_VERSION"]
 
 try:
     from secret import redis_conf
@@ -2900,13 +2903,13 @@ class Wallet(object):
     def __init__(self,
                  time_zone='UTC',
                  snapshot_days: int = 30):
-        self.time_zone = time_zone
 
         try:
             from secret import api_key, api_secret
         except ImportError:
             print(f"Binance Api key or Api Secret not found.")
 
+        self.time_zone = time_zone
         self.spot = self.update_spot()
         self.spot_snapshot = None
         self.spot_startTime = None
@@ -2917,7 +2920,7 @@ class Wallet(object):
         self.margin_snapshot = None
         self.margin_startTime = None
         self.margin_endTime = None
-        self.margin_requested_days = None
+        self.margin_requested_days = snapshot_days
 
     def update_spot(self, decimal_mode=False):
         self.spot = handlers.wallet.get_spot_balances_df(decimal_mode=decimal_mode)

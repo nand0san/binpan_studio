@@ -12,6 +12,7 @@
 #
 import os
 import sys
+from dotenv import dotenv_values
 
 # sys.path.insert(0, os.path.abspath('../binpan'))
 # sys.path.insert(0, os.path.abspath('../handlers'))
@@ -25,8 +26,8 @@ author = 'Fernando Alfonso'
 
 # The full version, including alpha/beta/rc tags
 
-
-release = "0.1.8"
+config = dotenv_values("../.env")
+release = config["BINPAN_VERSION"]
 
 # -- General configuration ---------------------------------------------------
 
