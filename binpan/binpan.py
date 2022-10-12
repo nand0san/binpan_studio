@@ -33,7 +33,7 @@ import sys
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
 
-__version__ = "0.2.21"
+__version__ = "0.2.22"
 
 try:
     from secret import redis_conf
@@ -2780,9 +2780,9 @@ class Exchange(object):
             self.api_key = secret_module.api_key
             self.api_secret = secret_module.api_secret
         except ImportError:
-            raise Exception(f"Binance Api key or Api Secret not found.")
+            raise handlers.exceptions.MissingApiData(f"Binance Api key or Api Secret not found.")
         except KeyError:
-            raise Exception(f"Binance Api key or Api Secret not found.")
+            raise handlers.exceptions.MissingApiData(f"Binance Api key or Api Secret not found.")
 
         self.info_dic = handlers.exchange.get_info_dic()
         self.coins_dic = handlers.exchange.get_coins_info_dic(decimal_mode=False, api_key=self.api_key, api_secret=self.api_secret)
@@ -2924,9 +2924,9 @@ class Wallet(object):
             self.api_key = secret_module.api_key
             self.api_secret = secret_module.api_secret
         except ImportError:
-            raise Exception(f"Binance Api key or Api Secret not found.")
+            raise handlers.exceptions.MissingApiData(f"Binance Api key or Api Secret not found.")
         except KeyError:
-            raise Exception(f"Binance Api key or Api Secret not found.")
+            raise handlers.exceptions.MissingApiData(f"Binance Api key or Api Secret not found.")
 
         self.time_zone = time_zone
         self.spot = self.update_spot()
