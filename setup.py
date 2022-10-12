@@ -1,6 +1,5 @@
 from setuptools import setup
 import pathlib
-# from dotenv import dotenv_values
 import configparser
 
 # The directory containing this file
@@ -17,10 +16,7 @@ read_required = open('requirements.txt', 'r')
 REQUIRED = read_required.read()
 read_required.close()
 
-config = configparser.RawConfigParser()
-config.read("docs/version.env")
-my_version = config.get("version", "BINPAN_VERSION")
-
+my_version = "0.2.7"
 
 setup(name='binpan',
       version=my_version,
