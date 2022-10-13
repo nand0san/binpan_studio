@@ -191,7 +191,12 @@ def update_names(fig, names):
     return fig
 
 
-def deploy_traces(annotations, colors, markers, text_positions, mark_names, tags) -> list:
+def deploy_traces(annotations: list,
+                  colors: list,
+                  markers: list,
+                  text_positions: list,
+                  mark_names: list,
+                  tags: list) -> list:
     length = len(annotations)
     if not colors:
         colors = fill_missing(['#636EFA', '#EF553B', '#00CC96', '#AB63FA', '#FFA15A', '#19D3F3', '#FF6692', '#B6E880',
@@ -206,17 +211,27 @@ def deploy_traces(annotations, colors, markers, text_positions, mark_names, tags
     annotations_traces = []  # lista de series con anotaciones
     if tags:
         for idx, an in enumerate(annotations):
-            annotations_traces.append(set_arrows(annotations=an, textposition=text_positions[idx], mode="markers+text",
-                                                 marker_symbol=markers[idx], marker_color=colors[idx],
+            annotations_traces.append(set_arrows(annotations=an,
+                                                 textposition=text_positions[idx],
+                                                 mode="markers+text",
+                                                 marker_symbol=markers[idx],
+                                                 marker_color=colors[idx],
                                                  name=mark_names[idx],
-                                                 marker_line_color='black', marker_line_width=0.5, marker_size=15,
+                                                 marker_line_color='black',
+                                                 marker_line_width=0.5,
+                                                 marker_size=15,
                                                  tag=tags[idx]))
     else:
         for idx, an in enumerate(annotations):
-            annotations_traces.append(set_arrows(annotations=an, textposition=text_positions[idx], mode="markers+text",
-                                                 marker_symbol=markers[idx], marker_color=colors[idx],
+            annotations_traces.append(set_arrows(annotations=an,
+                                                 textposition=text_positions[idx],
+                                                 mode="markers+text",
+                                                 marker_symbol=markers[idx],
+                                                 marker_color=colors[idx],
                                                  name=mark_names[idx],
-                                                 marker_line_color='black', marker_line_width=0.5, marker_size=15))
+                                                 marker_line_color='black',
+                                                 marker_line_width=0.5,
+                                                 marker_size=15))
 
     return annotations_traces
 
