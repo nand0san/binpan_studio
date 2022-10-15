@@ -398,7 +398,7 @@ class Symbol(object):
 
     def trades(self):
         """
-        Returns candles dataframe.
+        Returns trades dataframe.
 
         :return pd.DataFrame:
         """
@@ -422,7 +422,7 @@ class Symbol(object):
 
     def fees(self):
         """
-        Returns fees for symbol.
+        Returns fees for symbol. API keys required.
 
         :return dict:
         """
