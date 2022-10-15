@@ -32,7 +32,7 @@ import importlib
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
 
-__version__ = "0.2.28"
+__version__ = "0.2.29"
 
 try:
     from secret import redis_conf
@@ -1468,7 +1468,8 @@ class Symbol(object):
                                               label_buy=label_buy,
                                               label_sell=label_sell,
                                               priced_actions_col=priced_actions_col,
-                                              action_candles_lag=action_candles_lag)
+                                              action_candles_lag=action_candles_lag,
+                                              suffix=suffix)
 
         if inplace and self.is_new(wallet_df):
             column_names = wallet_df.columns
