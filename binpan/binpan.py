@@ -2872,14 +2872,17 @@ class Symbol(object):
 
            from binpan import binpan
 
-           sym = binpan.Symbol('btcbusd', '1m')
-           sym.ema(window=200, color='darkgrey')
+           sym = binpan.Symbol(symbol='ethbusd', tick_interval='1m', limit=300, time_zone='Europe/Madrid')
+           sym.ema(window=10, color='darkgrey')
 
-           # comparing close price (default) greater or equal, than exponential moving average of 200 ticks window previously added.
-           sym.tag(reference='EMA_200', relation='ge')
-           sym.plot()
+           sym.cross(shield='Close', spear='EMA_10')
 
-        .. image:: images/relations/tag.png
+           sym.plot(actions_col='Cross_EMA_10_Close', priced_actions_col='EMA_10',
+                            labels=['over', 'below'],
+                            markers=['arrow-bar-left', 'arrow-bar-right'],
+                            marker_colors=['orange', 'blue'])
+
+        .. image:: images/relations/cross.png
            :width: 1000
 
         """

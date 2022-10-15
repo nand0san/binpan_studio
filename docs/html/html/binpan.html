@@ -392,8 +392,8 @@ exchange.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="binpan.binpan.Symbol.set_display_rows">
-<span class="sig-name descname"><span class="pre">set_display_rows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">display_rows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.binpan.Symbol.set_display_rows" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="binpan.binpan.Symbol.set_display_min_rows">
+<span class="sig-name descname"><span class="pre">set_display_min_rows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">display_rows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.binpan.Symbol.set_display_min_rows" title="Permalink to this definition"></a></dt>
 <dd><p>Change the number of minimum rows shown in the display of the dataframe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -403,12 +403,12 @@ exchange.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="binpan.binpan.Symbol.set_display_min_rows">
-<span class="sig-name descname"><span class="pre">set_display_min_rows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">display_min_rows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.binpan.Symbol.set_display_min_rows" title="Permalink to this definition"></a></dt>
-<dd><p>Change the number of minimum rows shown in the display of the dataframe.</p>
+<dt class="sig sig-object py" id="binpan.binpan.Symbol.set_display_max_rows">
+<span class="sig-name descname"><span class="pre">set_display_max_rows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">display_max_rows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.binpan.Symbol.set_display_max_rows" title="Permalink to this definition"></a></dt>
+<dd><p>Change the number of maximum rows shown in the display of the dataframe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>display_min_rows</strong> (<em>int</em>) – Integer</p>
+<dd class="field-odd"><p><strong>display_max_rows</strong> (<em>int</em>) – Integer</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1479,7 +1479,7 @@ le (equivalent to &lt;=) — less than or equals to
 lt (equivalent to &lt;) — less than
 ge (equivalent to &gt;=) — greater than or equals to
 gt (equivalent to &gt;) — greater than</p></li>
-<li><p><strong>column</strong> (<em>pd.Series</em><em> or </em><em>str</em>) – A numeric serie or column name. Default is Close price.</p></li>
+<li><p><strong>column</strong> (<em>pd.Series</em><em> or </em><em>str</em>) – A numeric serie or column name or column index. Default is Close price.</p></li>
 <li><p><strong>match_tag</strong> (<em>int</em><em> or </em><em>str</em>) – Value or string to tag matched relation.</p></li>
 <li><p><strong>mismatch_tag</strong> (<em>int</em><em> or </em><em>str</em>) – Value or string to tag mismatched relation.</p></li>
 <li><p><strong>inplace</strong> (<em>bool</em>) – Permanent or not. Default is false, because of some testing required sometimes.</p></li>
@@ -1502,6 +1502,43 @@ gt (equivalent to &gt;) — greater than</p></li>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/tag.png"><img alt="_images/tag.png" src="_images/tag.png" style="width: 1000px;" /></a>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.binpan.Symbol.cross">
+<span class="sig-name descname"><span class="pre">cross</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spear</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shield</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Close'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_over_tag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_below_tag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">echo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'green'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="headerlink" href="#binpan.binpan.Symbol.cross" title="Permalink to this definition"></a></dt>
+<dd><p>It tags crossing values from a column/serie (spear) over a serie or value (shield).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spear</strong> (<em>pd.Series</em><em> or </em><em>str</em><em> or </em><em>int</em><em> or </em><em>float</em>) – A number or numeric serie or column name.</p></li>
+<li><p><strong>shield</strong> (<em>pd.Series</em><em> or </em><em>str</em>) – A numeric serie or column name or column index. Default is Close price.</p></li>
+<li><p><strong>cross_over_tag</strong> (<em>int</em><em> or </em><em>str</em>) – Value or string to tag matched crossing spear over shield.</p></li>
+<li><p><strong>cross_below_tag</strong> (<em>int</em><em> or </em><em>str</em>) – Value or string to tag crossing shield over spear.</p></li>
+<li><p><strong>echo</strong> (<em>int</em>) – It tags a fixed amount of candles forward the crossed point not including cross candle.</p></li>
+<li><p><strong>inplace</strong> (<em>bool</em>) – Permanent or not. Default is false, because of some testing required sometimes.</p></li>
+<li><p><strong>suffix</strong> (<em>str</em>) – A string to decorate resulting Pandas series name.</p></li>
+<li><p><strong>color</strong> (<em>str</em><em> or </em><em>int</em>) – A color from plotly list of colors or its index in that list.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.Series</dt>
+<dd class="field-even"><p>A serie with tags as values.</p>
+</dd>
+</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">binpan</span> <span class="kn">import</span> <span class="n">binpan</span>
+
+<span class="n">sym</span> <span class="o">=</span> <span class="n">binpan</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;ethbusd&#39;</span><span class="p">,</span> <span class="n">tick_interval</span><span class="o">=</span><span class="s1">&#39;1m&#39;</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">time_zone</span><span class="o">=</span><span class="s1">&#39;Europe/Madrid&#39;</span><span class="p">)</span>
+<span class="n">sym</span><span class="o">.</span><span class="n">ema</span><span class="p">(</span><span class="n">window</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;darkgrey&#39;</span><span class="p">)</span>
+
+<span class="n">sym</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">shield</span><span class="o">=</span><span class="s1">&#39;Close&#39;</span><span class="p">,</span> <span class="n">spear</span><span class="o">=</span><span class="s1">&#39;EMA_10&#39;</span><span class="p">)</span>
+
+<span class="n">sym</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">actions_col</span><span class="o">=</span><span class="s1">&#39;Cross_EMA_10_Close&#39;</span><span class="p">,</span> <span class="n">priced_actions_col</span><span class="o">=</span><span class="s1">&#39;EMA_10&#39;</span><span class="p">,</span>
+                 <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;over&#39;</span><span class="p">,</span> <span class="s1">&#39;below&#39;</span><span class="p">],</span>
+                 <span class="n">markers</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;arrow-bar-left&#39;</span><span class="p">,</span> <span class="s1">&#39;arrow-bar-right&#39;</span><span class="p">],</span>
+                 <span class="n">marker_colors</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;orange&#39;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/cross.png"><img alt="_images/cross.png" src="_images/cross.png" style="width: 1000px;" /></a>
 </dd></dl>
 
 </dd></dl>
