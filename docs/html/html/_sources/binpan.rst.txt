@@ -20,7 +20,8 @@ Also include technical indicators, make plots, and get some exchange data.
 There is a tutorial in a Jupyter Notebook file in https://github.com/nand0san/binpan_studio
 
 .. autoclass:: Symbol
-    :members:
+   :members:
+
 
 Exchange Class
 --------------
@@ -30,7 +31,8 @@ This class is oriented in managing data from exchange, like Symbols status, coin
 There is a tutorial in a Jupyter Notebook file in https://github.com/nand0san/binpan_studio
 
 .. autoclass:: Exchange
-    :members:
+   :members:
+
 
 Wallet Class
 ------------
@@ -39,6 +41,6 @@ This class can show wallet data for you. Free assets, locked assets or wallet sn
 performance analysis.
 
 .. autoclass:: Wallet
-    :members:
+   :members:
 
 

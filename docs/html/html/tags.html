@@ -54,6 +54,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Tags Module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#tags">Tags</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#cross">Cross</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#backtesting">Backtesting</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Module</a></li>
@@ -162,6 +163,79 @@
 </dd>
 <dt class="field-even">Return pd.Series</dt>
 <dd class="field-even"><p>A serie with tags as values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="backtesting">
+<h2>Backtesting<a class="headerlink" href="#backtesting" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.tags.buy_base_backtesting">
+<span class="sig-prename descclassname"><span class="pre">handlers.tags.</span></span><span class="sig-name descname"><span class="pre">buy_base_backtesting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">price</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quote</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fee</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#handlers.tags.buy_base_backtesting" title="Permalink to this definition"></a></dt>
+<dd><p>A simple backtesting buy function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>row</strong> (<em>pd.Series</em>) – A row of a BinPan DataFrame with prices.</p></li>
+<li><p><strong>price</strong> (<em>float</em>) – Price of the action.</p></li>
+<li><p><strong>base</strong> (<em>float</em>) – Inverted base.</p></li>
+<li><p><strong>quote</strong> (<em>float</em>) – Inverted quote.</p></li>
+<li><p><strong>fee</strong> (<em>float</em>) – Fee applied to the operation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return tuple</dt>
+<dd class="field-even"><p>A tuple with resulting base and quote after operation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.tags.sell_base_backtesting">
+<span class="sig-prename descclassname"><span class="pre">handlers.tags.</span></span><span class="sig-name descname"><span class="pre">sell_base_backtesting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">price</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quote</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fee</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#handlers.tags.sell_base_backtesting" title="Permalink to this definition"></a></dt>
+<dd><p>A simple backtesting sell function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>row</strong> (<em>pd.Series</em>) – A row of a BinPan DataFrame with prices.</p></li>
+<li><p><strong>price</strong> (<em>float</em>) – Price of the action.</p></li>
+<li><p><strong>base</strong> (<em>float</em>) – Inverted base.</p></li>
+<li><p><strong>quote</strong> (<em>float</em>) – Inverted quote.</p></li>
+<li><p><strong>fee</strong> (<em>float</em>) – Fee applied to the operation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return tuple</dt>
+<dd class="field-even"><p>A tuple with resulting base and quote after operation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.tags.backtesting">
+<span class="sig-prename descclassname"><span class="pre">handlers.tags.</span></span><span class="sig-name descname"><span class="pre">backtesting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Series</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quote</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priced_actions_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Open'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fee</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_buy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'buy'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_sell</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sell'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action_candles_lag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.tags.backtesting" title="Permalink to this definition"></a></dt>
+<dd><p>Returns two pandas series as base wallet and quote wallet over time. Its expected a serie with strings like ‘buy’ or ‘sell’.
+That serie is called the “actions”. If it is available a column with the exact price of the actions, can be passed in
+actions_col parameter by column name or a pandas series, if not, Closed price column can be a good approximation.</p>
+<p>All actions will be considered to buy all base as possible or to sell all base as posible.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – A BinPan dataframe.</p></li>
+<li><p><strong>actions</strong> (<em>pd.Series</em>) – A pandas series with buy or sell strings for simulate actions.</p></li>
+<li><p><strong>base</strong> (<em>float</em>) – A starting quantity of symbol’s base.</p></li>
+<li><p><strong>quote</strong> (<em>float</em>) – A starting quantity of symbol’s quote.</p></li>
+<li><p><strong>priced_actions_col</strong> (<em>pd.Series</em><em> or </em><em>str</em>) – Column with the prices for the action emulation.</p></li>
+<li><p><strong>fee</strong> (<em>float</em>) – Binance applicable fee for trading. DEfault is 0.001.</p></li>
+<li><p><strong>label_buy</strong> (<em>str</em><em> or </em><em>int</em>) – A label consider as trade in trigger.</p></li>
+<li><p><strong>label_sell</strong> (<em>str</em><em> or </em><em>int</em>) – A label consider as trade out trigger.</p></li>
+<li><p><strong>action_candles_lag</strong> (<em>int</em>) – Candles needed to confirm an action from action tag. Usually one candle. Example,
+when an action like a cross of two EMA lines occur, it’s needed to close that candle of the cross to confirm,
+then, nex candle can buy at open.</p></li>
+<li><p><strong>suffix</strong> (<em>str</em>) – A suffix for the names of the columns.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return tuple</dt>
+<dd class="field-even"><p>Two series with the base wallet and quote wallet funds in time.</p>
 </dd>
 </dl>
 </dd></dl>

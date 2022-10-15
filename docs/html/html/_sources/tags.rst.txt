@@ -23,6 +23,14 @@ Cross
 
 .. autofunction:: tag_cross
 
+Backtesting
+-----------
+
+.. autofunction:: buy_base_backtesting
+
+.. autofunction:: sell_base_backtesting
+
+.. autofunction:: backtesting
 
 
 

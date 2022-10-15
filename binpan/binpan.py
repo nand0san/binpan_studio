@@ -28,7 +28,6 @@ import handlers.indicators
 import pandas_ta as ta
 from random import choice
 import importlib
-import sys
 
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
@@ -311,6 +310,7 @@ class Symbol(object):
         self.color_fill_control = dict()
         self.indicators_filled_mode = dict()
         self.axis_groups = dict()
+        self.action_labels = dict()
         self.global_axis_group = 99
 
         self.row_counter = 1
@@ -493,6 +493,10 @@ class Symbol(object):
         """
         return self.info_dic
 
+    ##################
+    # pandas display #
+    ##################
+
     def set_display_columns(self, display_columns=None):
         """
         Change the number of maximum columns shown in the display of the dataframe.
@@ -554,6 +558,9 @@ class Symbol(object):
         arg = f'%.{display_decimals}f'
         pd.set_option('display.float_format', lambda x: arg % x)
 
+    ###########
+    # methods #
+    ###########
     def basic(self,
               exceptions: list = None,
               actions_col='actions',
@@ -777,7 +784,8 @@ class Symbol(object):
         heikin_ashi_df['High'] = heikin_ashi_df.loc[:, ['Open', 'Close']].join(df_['High']).max(axis=1)
         heikin_ashi_df['Low'] = heikin_ashi_df.loc[:, ['Open', 'Close']].join(df_['Low']).min(axis=1)
         df_[cols] = heikin_ashi_df[cols]
-        df_.index.name = df_.index.name + ' HK'
+        df_.index.name += ' HK'
+
         if inplace:
             self.df = df_
             return self.df
@@ -1338,6 +1346,26 @@ class Symbol(object):
                                     title=title,
                                     **update_layout_kwargs)
 
+    ####################
+    # backtesting data #
+    ####################
+
+    def set_action_labels(self,
+                          indicator_column: str = None,
+                          label_buy: str = 'buy',
+                          label_sell: str = 'sell') -> dict:
+        """
+        Sets labels to use whe backtesting over a column of actions.
+
+        :param str indicator_column: A column name of a BinPan dataframe colum.
+        :param str label_buy: A label to register a sell point.
+        :param str label_sell: A label to register a buy point.
+        :return dict: Dictionary with action columns labels.
+        """
+        if indicator_column and label_buy and label_sell:
+            self.action_labels.update({indicator_column: {'label_buy': label_buy, 'label_sell': label_sell}})
+        return self.action_labels
+
     #################
     # Exchange data #
     #################
@@ -1387,64 +1415,75 @@ class Symbol(object):
     ###############
     # Backtesting #
     ###############
-
     def backtesting(self,
-                    actions: pd.Series = None,
+                    actions_col: str or int,
                     base: float = 0,
                     quote: float = 1000,
-                    priced_actions_col: str = 'Close',
+                    priced_actions_col: str = 'Open',
+                    label_buy='buy',
+                    label_sell='sell',
                     fee: float = 0.001,
-                    actions_col: str or pd.Series = 'actions') -> (pd.Series, pd.Series):
-        # TODO: tener en cuenta el polvo en el backtesting
+                    action_candles_lag=1,
+                    inplace=True,
+                    suffix: str = None,
+                    colors: list = ['cornflowerblue', 'blue']) -> pd.DataFrame or pd.Series:
+
         """
-        Returns two pandas series as base wallet and quote wallet over time. Its expected a serie with strings like 'buy' or 'sell'.
-        That serie is called the "actions". If it is available a column with the exact price of the actions, can be passed in
-        actions_col parameter by column name or a pandas series, if not, Closed price column can be a good approximation.
+        Simulates buys and sells using labels in a tagged column with actions.
 
-        All actions will be considered to buy all base as possible or to sell all base as posible.
+        :param str or int actions_col: A column name or index.
+        :param float base: Base inverted quantity.
+        :param float quote: Quote inverted quantity.
+        :param str or int priced_actions_col: Columna name or index with prices to use when action label in a row.
+        :param str or int label_buy: A label consider as trade in trigger.
+        :param str or int label_sell: A label consider as trade out trigger.
+        :param float fee: Fees applied to the simulation.
+        :param int action_candles_lag: Candles needed to confirm an action from action tag. Usually one candle. Example,
+         when an action like a cross of two EMA lines occur, it's needed to close that candle of the cross to confirm,
+         then, nex candle can buy at open.
+        :param bool inplace: Make it permanent in the instance or not.
+        :param str suffix: A decorative suffix for the name of the column created.
+        :param list colors: Defaults to red and green.
+        :return pd.DataFrame or pd.Series:
 
-        :param pd.Series actions: A pandas series with buy or sell strings for simulate actions.
-        :param float base: A starting quantity of symbol's base.
-        :param float quote: A starting quantity of symbol's quote.
-        :param pd.Series or str priced_actions_col: Column with the prices for the action emulation.
-        :param float fee: Binance applicable fee for trading. DEfault is 0.001.
-        :param str or pd.Series actions_col:
-        :return tuple: Two series with the base wallet and quote wallet funds in time.
         """
 
-        df_ = self.df.copy(deep=True)
+        if self.symbol in self.action_labels.keys():
+            label_buy = self.action_labels[self.symbol]['label_buy']
+            label_sell = self.action_labels[self.symbol]['label_sell']
 
-        if type(actions) == str:
-            actions_ = df_[actions_col].copy(deep=True)
+        if type(actions_col) == int:
+            actions = self.df.iloc[:, actions_col]
         else:
-            actions_ = actions.copy(deep=True)
+            actions = self.df[actions_col]
 
-        base_wallet, quote_wallet = [], []
+        if suffix:
+            suffix = '_' + suffix
 
-        last_action = 0
+        wallet_df = handlers.tags.backtesting(df=self.df,
+                                              actions=actions,
+                                              base=base,
+                                              quote=quote,
+                                              fee=fee,
+                                              label_buy=label_buy,
+                                              label_sell=label_sell,
+                                              priced_actions_col=priced_actions_col,
+                                              action_candles_lag=action_candles_lag)
 
-        for index, row in df_.iterrows():
+        if inplace and self.is_new(wallet_df):
+            column_names = wallet_df.columns
+            self.row_counter += 1
+            if not colors:
+                colors = ['blue', 'blue']
+            for i, col in enumerate(column_names):
+                self.set_plot_color(indicator_column=col, color=colors[i])
+                self.set_plot_color_fill(indicator_column=col, color_fill=False)
+                self.set_plot_row(indicator_column=col, row_position=self.row_counter + i)
 
-            curr_action = str(actions_[index])
-
-            if curr_action == 'buy' and last_action != 'buy':
-
-                price = df_.loc[index, priced_actions_col]
-
-                base, quote = self.buy_base_backtesting(row=row, price=price, base=base, quote=quote, fee=fee)
-                last_action = 'buy'
-
-            elif curr_action == 'sell' and last_action != 'sell':
-
-                price = df_.loc[index, priced_actions_col]
-
-                base, quote = self.sell_base_backtesting(row=row, price=price, base=base, quote=quote, fee=fee)
-                last_action = 'sell'
-
-            base_wallet.append(base)
-            quote_wallet.append(quote)
-
-        return pd.Series(base_wallet), pd.Series(quote_wallet)
+            # second row added in loop, need to sync row counter with las added row
+            self.row_counter += 1
+            self.df = pd.concat([self.df, wallet_df], axis=1)
+        return wallet_df
 
     #################
     # Exchange Data #
@@ -1491,42 +1530,6 @@ class Symbol(object):
     ##################
     # Static Methods #
     ##################
-
-    @staticmethod
-    def buy_base_backtesting(row: pd.Series, price: float, base: float, quote: float, fee=0.001) -> tuple:
-        high_value = row['High']
-        low_value = row['Low']
-
-        if low_value <= price <= high_value:
-            ordered_price = price
-
-        elif price > high_value:
-            ordered_price = high_value
-
-        else:
-            return base, quote
-
-        base += (quote / ordered_price) * (1 - fee)
-        quote = 0
-        return base, quote
-
-    @staticmethod
-    def sell_base_backtesting(row: pd.Series, price: float, base: float, quote: float, fee=0.001) -> tuple:
-        high_value = row['High']
-        low_value = row['Low']
-
-        if low_value <= price <= high_value:
-            ordered_price = price
-
-        elif price < low_value:
-            ordered_price = low_value
-
-        else:
-            return base, quote
-
-        quote += base * ordered_price * (1 - fee)
-        base = 0
-        return base, quote
 
     @staticmethod
     def parse_agg_trades_to_dataframe(response: list,
@@ -1698,7 +1701,13 @@ class Symbol(object):
         """
         return self.ma(ma_name='ema', column_source=column, inplace=inplace, length=window, suffix=suffix, color=color, **kwargs)
 
-    def supertrend(self, length: int = 10, multiplier: int = 3, inplace=True, suffix: str = None, colors: list = None, **kwargs):
+    def supertrend(self,
+                   length: int = 10,
+                   multiplier: int = 3,
+                   inplace=True,
+                   suffix: str = None,
+                   colors: list = None,
+                   **kwargs):
         """
         Generate technical indicator Supertrend.
 
@@ -1706,7 +1715,7 @@ class Symbol(object):
         :param int multiplier: Indicator multiplier applied.
         :param bool inplace: Make it permanent in the instance or not.
         :param str suffix: A decorative suffix for the name of the column created.
-        :param list colors: DDefaults to red and green.
+        :param list colors: Defaults to red and green.
         :param kwargs: Optional plotly args from https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/overlap/supertrend.py.
         :return: pd.DataFrame
 
@@ -2816,7 +2825,7 @@ class Symbol(object):
 
         if type(reference) == str:
             data_b = self.df[reference]
-        elif type(reference) == int or type(reference) == float or type(reference) == dd:
+        elif type(reference) == int or type(reference) == float:
             data_b = pd.Series(data=reference, index=data_a.index)
         else:
             data_b = reference.copy(deep=True)
@@ -2841,7 +2850,8 @@ class Symbol(object):
 
             self.set_plot_color(indicator_column=column_name, color=color)
             self.set_plot_color_fill(indicator_column=column_name, color_fill=None)
-            self.set_plot_row(indicator_column=str(column_name), row_position=self.row_counter)  # overlaps are one
+            self.set_plot_row(indicator_column=column_name, row_position=self.row_counter)  # overlaps are one
+            self.set_action_labels(indicator_column=column_name, label_buy='buy', label_sell='sell')
             self.df.loc[:, column_name] = compared
 
         return compared
@@ -2897,7 +2907,7 @@ class Symbol(object):
 
         if type(spear) == str:
             data_b = self.df[spear]
-        elif type(spear) == int or type(spear) == float or type(spear) == dd:
+        elif type(spear) == int or type(spear) == float:
             data_b = pd.Series(data=spear, index=data_a.index)
         else:
             data_b = spear.copy(deep=True)
@@ -3095,6 +3105,12 @@ class Exchange(object):
 
 
 class Wallet(object):
+    """
+    Wallet is a BinPan Class that can give information about balances, in Spot or Margin trading.
+
+    Also can show snapshots of the account status days ago, or using timestamps.
+
+    """
 
     def __init__(self,
                  time_zone='UTC',
@@ -3123,6 +3139,11 @@ class Wallet(object):
         self.margin_requested_days = snapshot_days
 
     def update_spot(self, decimal_mode=False):
+        """
+        Updates balances in the class object.
+        :param bool decimal_mode: Use of decimal objects instead of float.
+        :return dict: Wallet dictionary
+        """
         self.spot = handlers.wallet.get_spot_balances_df(decimal_mode=decimal_mode, api_key=self.api_key, api_secret=self.api_secret)
         return self.spot
 
@@ -3158,6 +3179,12 @@ class Wallet(object):
         return self.spot
 
     def update_margin(self, decimal_mode=False):
+        """
+        Updates balances in the wallet class object.
+
+        :param bool decimal_mode: Use of decimal objects instead of float.
+        :return dict: Wallet dictionary
+        """
         my_margin = handlers.wallet.get_margin_balances(decimal_mode=decimal_mode, api_key=self.api_key, api_secret=self.api_secret)
         self.margin = pd.DataFrame(my_margin).T
         self.margin.index.name = 'asset'

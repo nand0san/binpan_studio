@@ -249,6 +249,222 @@ exchange.</p></li>
 <li><p><strong>mysymbol.permissions</strong>: list of possible trading ways, like SPOT or MARGIN.</p></li>
 <li><p><strong>mysymbol.precision</strong>: decimals quantity applied for base and quote assets.</p></li>
 </ul>
+<p><strong>Methods:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.df" title="binpan.binpan.Symbol.df"><code class="xref py py-obj docutils literal notranslate"><span class="pre">df</span></code></a>()</p></td>
+<td><p>Returns candles dataframe.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.trades" title="binpan.binpan.Symbol.trades"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trades</span></code></a>()</p></td>
+<td><p>Returns candles dataframe.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.symbol" title="binpan.binpan.Symbol.symbol"><code class="xref py py-obj docutils literal notranslate"><span class="pre">symbol</span></code></a>()</p></td>
+<td><p>Returns symbol.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.version" title="binpan.binpan.Symbol.version"><code class="xref py py-obj docutils literal notranslate"><span class="pre">version</span></code></a>()</p></td>
+<td><p>Returns version on BinPan.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.fees" title="binpan.binpan.Symbol.fees"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fees</span></code></a>()</p></td>
+<td><p>Returns fees for symbol.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.tick_interval" title="binpan.binpan.Symbol.tick_interval"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tick_interval</span></code></a>()</p></td>
+<td><p>Returns tick_interval for symbol.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.start_time" title="binpan.binpan.Symbol.start_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">start_time</span></code></a>()</p></td>
+<td><p>Returns start_time on instance.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.end_time" title="binpan.binpan.Symbol.end_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">end_time</span></code></a>()</p></td>
+<td><p>Returns end_time on instance.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.limit" title="binpan.binpan.Symbol.limit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">limit</span></code></a>()</p></td>
+<td><p>Returns limit on instance.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.time_zone" title="binpan.binpan.Symbol.time_zone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time_zone</span></code></a>()</p></td>
+<td><p>Returns time_zone for symbol.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.time_index" title="binpan.binpan.Symbol.time_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time_index</span></code></a>()</p></td>
+<td><p>Returns if time_index.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.closed" title="binpan.binpan.Symbol.closed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">closed</span></code></a>()</p></td>
+<td><p>Returns if not closed candles were dropped when instantiated.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.info_dic" title="binpan.binpan.Symbol.info_dic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">info_dic</span></code></a>()</p></td>
+<td><p>Returns exchangeInfo data when instantiated.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_display_columns" title="binpan.binpan.Symbol.set_display_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_display_columns</span></code></a>([display_columns])</p></td>
+<td><p>Change the number of maximum columns shown in the display of the dataframe.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_display_min_rows" title="binpan.binpan.Symbol.set_display_min_rows"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_display_min_rows</span></code></a>([display_rows])</p></td>
+<td><p>Change the number of minimum rows shown in the display of the dataframe.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_display_max_rows" title="binpan.binpan.Symbol.set_display_max_rows"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_display_max_rows</span></code></a>([display_max_rows])</p></td>
+<td><p>Change the number of maximum rows shown in the display of the dataframe.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_display_width" title="binpan.binpan.Symbol.set_display_width"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_display_width</span></code></a>([display_width])</p></td>
+<td><p>Change the shown width shown in the display of the dataframe.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_display_decimals" title="binpan.binpan.Symbol.set_display_decimals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_display_decimals</span></code></a>(display_decimals)</p></td>
+<td><p>Change the decimals shown in the dataframe.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.basic" title="binpan.binpan.Symbol.basic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">basic</span></code></a>([exceptions, actions_col, inplace])</p></td>
+<td><p>Shows just a basic selection of columns data in the dataframe.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.drop" title="binpan.binpan.Symbol.drop"><code class="xref py py-obj docutils literal notranslate"><span class="pre">drop</span></code></a>([columns_to_drop, inplace])</p></td>
+<td><p>It drops some columns from the dataframe.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.insert_indicator" title="binpan.binpan.Symbol.insert_indicator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert_indicator</span></code></a>(source_data, rows[, ...])</p></td>
+<td><p>Adds indicator to dataframe.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.hk" title="binpan.binpan.Symbol.hk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hk</span></code></a>([inplace])</p></td>
+<td><p>It computes Heikin Ashi candles.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.timestamps" title="binpan.binpan.Symbol.timestamps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">timestamps</span></code></a>()</p></td>
+<td><p>Get the first Open timestamp and the last Close timestamp.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.get_trades" title="binpan.binpan.Symbol.get_trades"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_trades</span></code></a>()</p></td>
+<td><p>Calls the API and creates another dataframe included in the object with the aggregated trades from API for the period of the created object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.is_new" title="binpan.binpan.Symbol.is_new"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_new</span></code></a>(source_data[, suffix])</p></td>
+<td><p>Verify if indicator columns are previously created to avoid allocating new rows and colors etc.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_plot_row" title="binpan.binpan.Symbol.set_plot_row"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_row</span></code></a>([indicator_column, row_position])</p></td>
+<td><p>Internal control formatting plots.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_plot_color" title="binpan.binpan.Symbol.set_plot_color"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_color</span></code></a>([indicator_column, color])</p></td>
+<td><p>Internal control formatting plots.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_plot_color_fill" title="binpan.binpan.Symbol.set_plot_color_fill"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_color_fill</span></code></a>([indicator_column, ...])</p></td>
+<td><p>Internal control formatting plots.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_plot_filled_mode" title="binpan.binpan.Symbol.set_plot_filled_mode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_filled_mode</span></code></a>([indicator_column, ...])</p></td>
+<td><p>Internal control formatting plots.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_plot_axis_group" title="binpan.binpan.Symbol.set_plot_axis_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_axis_group</span></code></a>([indicator_column, ...])</p></td>
+<td><p>Internal control formatting plots.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_plot_splitted_serie_couple" title="binpan.binpan.Symbol.set_plot_splitted_serie_couple"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_splitted_serie_couple</span></code></a>([...])</p></td>
+<td><p>Modify the control for splitted series in plots with colored area in two colors by relative position.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.plot" title="binpan.binpan.Symbol.plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code></a>([width, height, ...])</p></td>
+<td><p>Plots a candles figure for the object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.plot_trades_size" title="binpan.binpan.Symbol.plot_trades_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_trades_size</span></code></a>([max_size, height, ...])</p></td>
+<td><p>It plots a time series graph plotting trades sized by quantity and color if taker or maker buyer.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.plot_trades_pie" title="binpan.binpan.Symbol.plot_trades_pie"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_trades_pie</span></code></a>([categories, logarithmic, title])</p></td>
+<td><p>Plots a pie chart.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.plot_makers_vs_takers" title="binpan.binpan.Symbol.plot_makers_vs_takers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_makers_vs_takers</span></code></a>([bins, hist_funct, ...])</p></td>
+<td><p>Binance fees can be cheaper for maker orders, many times when big traders, like whales, are operating.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.plot_trades_scatter" title="binpan.binpan.Symbol.plot_trades_scatter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_trades_scatter</span></code></a>([x, y, dot_symbol, ...])</p></td>
+<td><p>A scatter plot showing each price level volume or trades.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.plot_orderbook" title="binpan.binpan.Symbol.plot_orderbook"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_orderbook</span></code></a>([accumulated, title, height, ...])</p></td>
+<td><p>Plots orderbook depth.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.plot_orderbook_density" title="binpan.binpan.Symbol.plot_orderbook_density"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_orderbook_density</span></code></a>([x_col, color, bins, ...])</p></td>
+<td><p>Plot a distribution plot for a dataframe column.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_action_labels" title="binpan.binpan.Symbol.set_action_labels"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_action_labels</span></code></a>([indicator_column, ...])</p></td>
+<td><p>Sets labels to use whe backtesting over a column of actions.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.get_order_filters" title="binpan.binpan.Symbol.get_order_filters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_order_filters</span></code></a>()</p></td>
+<td><p>Get exchange info about the symbol for order filters.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.get_order_types" title="binpan.binpan.Symbol.get_order_types"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_order_types</span></code></a>()</p></td>
+<td><p>Get exchange info about the symbol for order types.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.get_permissions" title="binpan.binpan.Symbol.get_permissions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_permissions</span></code></a>()</p></td>
+<td><p>Get exchange info about the symbol for trading permissions.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.get_precision" title="binpan.binpan.Symbol.get_precision"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_precision</span></code></a>()</p></td>
+<td><p>Get exchange info about the symbol for assets precision.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.get_status" title="binpan.binpan.Symbol.get_status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_status</span></code></a>()</p></td>
+<td><p>Return the symbol status, TRADING, BREAK, etc.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.backtesting" title="binpan.binpan.Symbol.backtesting"><code class="xref py py-obj docutils literal notranslate"><span class="pre">backtesting</span></code></a>(actions_col[, base, quote, ...])</p></td>
+<td><p>Simulates buys and sells using labels in a tagged column with actions.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.get_fees" title="binpan.binpan.Symbol.get_fees"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_fees</span></code></a>([symbol])</p></td>
+<td><p>Shows applied fees for the symbol of the object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.get_orderbook" title="binpan.binpan.Symbol.get_orderbook"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_orderbook</span></code></a>([limit])</p></td>
+<td><p>Gets orderbook.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.parse_agg_trades_to_dataframe" title="binpan.binpan.Symbol.parse_agg_trades_to_dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_agg_trades_to_dataframe</span></code></a>(response, ...)</p></td>
+<td><p>Parses the API response into a pandas dataframe.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.basic_dataframe" title="binpan.binpan.Symbol.basic_dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">basic_dataframe</span></code></a>(data[, exceptions, actions_col])</p></td>
+<td><p>Delete all columns except: Open, High, Low, Close, Volume, actions.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.ma" title="binpan.binpan.Symbol.ma"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ma</span></code></a>([ma_name, column_source, inplace, ...])</p></td>
+<td><p>Generic moving average method.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.sma" title="binpan.binpan.Symbol.sma"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sma</span></code></a>([window, column, inplace, suffix, color])</p></td>
+<td><p>Generate technical indicator Simple Moving Average.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.ema" title="binpan.binpan.Symbol.ema"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ema</span></code></a>([window, column, inplace, suffix, color])</p></td>
+<td><p>Generate technical indicator Exponential Moving Average.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.supertrend" title="binpan.binpan.Symbol.supertrend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">supertrend</span></code></a>([length, multiplier, inplace, ...])</p></td>
+<td><p>Generate technical indicator Supertrend.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.macd" title="binpan.binpan.Symbol.macd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">macd</span></code></a>([fast, slow, smooth, inplace, suffix, ...])</p></td>
+<td><p>Generate technical indicator Moving Average, Convergence/Divergence (MACD).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.rsi" title="binpan.binpan.Symbol.rsi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rsi</span></code></a>([length, inplace, suffix, color])</p></td>
+<td><p>Relative Strength Index (RSI).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.stoch_rsi" title="binpan.binpan.Symbol.stoch_rsi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stoch_rsi</span></code></a>([rsi_length, k_smooth, d_smooth, ...])</p></td>
+<td><p>Stochastic Relative Strength Index (RSI) with a fast and slow exponential moving averages.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.on_balance_volume" title="binpan.binpan.Symbol.on_balance_volume"><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_balance_volume</span></code></a>([inplace, suffix, color])</p></td>
+<td><p>On balance indicator.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.accumulation_distribution" title="binpan.binpan.Symbol.accumulation_distribution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">accumulation_distribution</span></code></a>([inplace, suffix, ...])</p></td>
+<td><p>Accumulation/Distribution indicator.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.vwap" title="binpan.binpan.Symbol.vwap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vwap</span></code></a>([anchor, inplace, suffix, color])</p></td>
+<td><p>Volume Weighted Average Price.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.atr" title="binpan.binpan.Symbol.atr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atr</span></code></a>([length, inplace, suffix, color])</p></td>
+<td><p>Average True Range.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.cci" title="binpan.binpan.Symbol.cci"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cci</span></code></a>([length, scaling, inplace, suffix, color])</p></td>
+<td><p>Compute the Commodity Channel Index (CCI) for NIFTY based on the 14-day moving average.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.eom" title="binpan.binpan.Symbol.eom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eom</span></code></a>([length, divisor, drift, inplace, ...])</p></td>
+<td><p>Ease of Movement (EMV) can be used to confirm a bullish or a bearish trend.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.roc" title="binpan.binpan.Symbol.roc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">roc</span></code></a>([length, escalar, inplace, suffix, color])</p></td>
+<td><p>The Rate of Change (ROC) is a technical indicator that measures the percentage change between the most recent price and the price &quot;n&quot; day’s ago.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.bbands" title="binpan.binpan.Symbol.bbands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bbands</span></code></a>([length, std, ddof, inplace, suffix, ...])</p></td>
+<td><p>These bands consist of an upper Bollinger band and a lower Bollinger band and are placed two standard deviations above and below a moving average.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.stoch" title="binpan.binpan.Symbol.stoch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stoch</span></code></a>([k_length, stoch_d, k_smooth, ...])</p></td>
+<td><p>Stochastic Oscillator with a fast and slow exponential moving averages.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.ichimoku" title="binpan.binpan.Symbol.ichimoku"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ichimoku</span></code></a>([tenkan, kijun, chikou_span, ...])</p></td>
+<td><p>The Ichimoku Cloud is a collection of technical indicators that show support and resistance levels, as well as momentum and trend direction.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.pandas_ta_indicator" title="binpan.binpan.Symbol.pandas_ta_indicator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas_ta_indicator</span></code></a>(name, **kwargs)</p></td>
+<td><p>Calls any indicator in pandas_ta library with function name as first argument and any kwargs the function will use.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.tag" title="binpan.binpan.Symbol.tag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tag</span></code></a>(reference[, column, relation, ...])</p></td>
+<td><p>It tags values of a column/serie compared to other serie or value by methods gt,ge,eq,le,lt as condition.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.cross" title="binpan.binpan.Symbol.cross"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cross</span></code></a>(spear[, shield, cross_over_tag, ...])</p></td>
+<td><p>It tags crossing values from a column/serie (spear) over a serie or value (shield).</p></td>
+</tr>
+</tbody>
+</table>
 <dl class="py method">
 <dt class="sig sig-object py" id="binpan.binpan.Symbol.df">
 <span class="sig-name descname"><span class="pre">df</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#binpan.binpan.Symbol.df" title="Permalink to this definition"></a></dt>
@@ -824,6 +1040,24 @@ makers.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="binpan.binpan.Symbol.set_action_labels">
+<span class="sig-name descname"><span class="pre">set_action_labels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indicator_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_buy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'buy'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_sell</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'sell'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#binpan.binpan.Symbol.set_action_labels" title="Permalink to this definition"></a></dt>
+<dd><p>Sets labels to use whe backtesting over a column of actions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>indicator_column</strong> (<em>str</em>) – A column name of a BinPan dataframe colum.</p></li>
+<li><p><strong>label_buy</strong> (<em>str</em>) – A label to register a sell point.</p></li>
+<li><p><strong>label_sell</strong> (<em>str</em>) – A label to register a buy point.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return dict</dt>
+<dd class="field-even"><p>Dictionary with action columns labels.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="binpan.binpan.Symbol.get_order_filters">
 <span class="sig-name descname"><span class="pre">get_order_filters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#binpan.binpan.Symbol.get_order_filters" title="Permalink to this definition"></a></dt>
 <dd><p>Get exchange info about the symbol for order filters.
@@ -859,25 +1093,28 @@ makers.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="binpan.binpan.Symbol.backtesting">
-<span class="sig-name descname"><span class="pre">backtesting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">actions:</span> <span class="pre">~typing.Optional[~pandas.core.series.Series]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quote:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priced_actions_col:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'Close'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fee:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actions_col:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'actions')</span> <span class="pre">-&gt;</span> <span class="pre">(&lt;class</span> <span class="pre">'pandas.core.series.Series'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'pandas.core.series.Series'&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.binpan.Symbol.backtesting" title="Permalink to this definition"></a></dt>
-<dd><p>Returns two pandas series as base wallet and quote wallet over time. Its expected a serie with strings like ‘buy’ or ‘sell’.
-That serie is called the “actions”. If it is available a column with the exact price of the actions, can be passed in
-actions_col parameter by column name or a pandas series, if not, Closed price column can be a good approximation.</p>
-<p>All actions will be considered to buy all base as possible or to sell all base as posible.</p>
+<span class="sig-name descname"><span class="pre">backtesting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">actions_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quote</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priced_actions_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Open'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_buy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'buy'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_sell</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sell'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fee</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action_candles_lag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['cornflowerblue',</span> <span class="pre">'blue']</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#binpan.binpan.Symbol.backtesting" title="Permalink to this definition"></a></dt>
+<dd><p>Simulates buys and sells using labels in a tagged column with actions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>actions</strong> (<em>pd.Series</em>) – A pandas series with buy or sell strings for simulate actions.</p></li>
-<li><p><strong>base</strong> (<em>float</em>) – A starting quantity of symbol’s base.</p></li>
-<li><p><strong>quote</strong> (<em>float</em>) – A starting quantity of symbol’s quote.</p></li>
-<li><p><strong>priced_actions_col</strong> (<em>pd.Series</em><em> or </em><em>str</em>) – Column with the prices for the action emulation.</p></li>
-<li><p><strong>fee</strong> (<em>float</em>) – Binance applicable fee for trading. DEfault is 0.001.</p></li>
-<li><p><strong>actions_col</strong> (<em>str</em><em> or </em><em>pd.Series</em>) – </p></li>
+<li><p><strong>actions_col</strong> (<em>str</em><em> or </em><em>int</em>) – A column name or index.</p></li>
+<li><p><strong>base</strong> (<em>float</em>) – Base inverted quantity.</p></li>
+<li><p><strong>quote</strong> (<em>float</em>) – Quote inverted quantity.</p></li>
+<li><p><strong>priced_actions_col</strong> (<em>str</em><em> or </em><em>int</em>) – Columna name or index with prices to use when action label in a row.</p></li>
+<li><p><strong>label_buy</strong> (<em>str</em><em> or </em><em>int</em>) – A label consider as trade in trigger.</p></li>
+<li><p><strong>label_sell</strong> (<em>str</em><em> or </em><em>int</em>) – A label consider as trade out trigger.</p></li>
+<li><p><strong>fee</strong> (<em>float</em>) – Fees applied to the simulation.</p></li>
+<li><p><strong>action_candles_lag</strong> (<em>int</em>) – Candles needed to confirm an action from action tag. Usually one candle. Example,
+when an action like a cross of two EMA lines occur, it’s needed to close that candle of the cross to confirm,
+then, nex candle can buy at open.</p></li>
+<li><p><strong>inplace</strong> (<em>bool</em>) – Make it permanent in the instance or not.</p></li>
+<li><p><strong>suffix</strong> (<em>str</em>) – A decorative suffix for the name of the column created.</p></li>
+<li><p><strong>colors</strong> (<em>list</em>) – Defaults to red and green.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return tuple</dt>
-<dd class="field-even"><p>Two series with the base wallet and quote wallet funds in time.</p>
-</dd>
+<dt class="field-even">Return pd.DataFrame or pd.Series</dt>
+<dd class="field-even"><p></p></dd>
 </dl>
 </dd></dl>
 
@@ -1038,7 +1275,7 @@ actions_col parameter by column name or a pandas series, if not, Closed price co
 <li><p><strong>multiplier</strong> (<em>int</em>) – Indicator multiplier applied.</p></li>
 <li><p><strong>inplace</strong> (<em>bool</em>) – Make it permanent in the instance or not.</p></li>
 <li><p><strong>suffix</strong> (<em>str</em>) – A decorative suffix for the name of the column created.</p></li>
-<li><p><strong>colors</strong> (<em>list</em>) – DDefaults to red and green.</p></li>
+<li><p><strong>colors</strong> (<em>list</em>) – Defaults to red and green.</p></li>
 <li><p><strong>kwargs</strong> – Optional plotly args from <a class="reference external" href="https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/overlap/supertrend.py">https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/overlap/supertrend.py</a>.</p></li>
 </ul>
 </dd>
@@ -1570,6 +1807,39 @@ gt (equivalent to &gt;) — greater than</p></li>
 <li><p><strong>my_exchange_instance.df</strong>: A dataframe with all the symbols info.</p></li>
 <li><p><strong>my_exchange_instance.order_types</strong>: Dataframe with each symbol order types.</p></li>
 </ul>
+<p><strong>Methods:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Exchange.filter" title="binpan.binpan.Exchange.filter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter</span></code></a>(symbol)</p></td>
+<td><p>Returns exchange filters applied for orders with the selected symbol.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Exchange.fee" title="binpan.binpan.Exchange.fee"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fee</span></code></a>(symbol)</p></td>
+<td><p>Returns exchange fees applied for orders with the selected symbol.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Exchange.coin" title="binpan.binpan.Exchange.coin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coin</span></code></a>(coin)</p></td>
+<td><p>Returns coin exchange info in a pandas serie.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Exchange.network" title="binpan.binpan.Exchange.network"><code class="xref py py-obj docutils literal notranslate"><span class="pre">network</span></code></a>(coin)</p></td>
+<td><p>Returns a dataframe with all exchange networks of one specified coin or every coin.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Exchange.update_info" title="binpan.binpan.Exchange.update_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_info</span></code></a>([symbol])</p></td>
+<td><p>Updates from API and returns a dict with all merged exchange info about a symbol.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Exchange.get_symbols" title="binpan.binpan.Exchange.get_symbols"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_symbols</span></code></a>([coin, base, quote])</p></td>
+<td><p>Return list of symbols for a coin.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Exchange.get_df" title="binpan.binpan.Exchange.get_df"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_df</span></code></a>()</p></td>
+<td><p>Extended symbols dataframe with exchange info about trading permissions, trading or blocked symbol, order types, margin allowed, etc</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Exchange.get_order_types" title="binpan.binpan.Exchange.get_order_types"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_order_types</span></code></a>()</p></td>
+<td><p>Returns a dataframe with order types for symbol.</p></td>
+</tr>
+</tbody>
+</table>
 <dl class="py method">
 <dt class="sig sig-object py" id="binpan.binpan.Exchange.filter">
 <span class="sig-name descname"><span class="pre">filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.binpan.Exchange.filter" title="Permalink to this definition"></a></dt>
@@ -1684,7 +1954,44 @@ performance analysis.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="binpan.binpan.Wallet">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">binpan.binpan.</span></span><span class="sig-name descname"><span class="pre">Wallet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'UTC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snapshot_days</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">30</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.binpan.Wallet" title="Permalink to this definition"></a></dt>
-<dd><dl class="py method">
+<dd><p>Wallet is a BinPan Class that can give information about balances, in Spot or Margin trading.</p>
+<p>Also can show snapshots of the account status days ago, or using timestamps.</p>
+<p><strong>Methods:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Wallet.update_spot" title="binpan.binpan.Wallet.update_spot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_spot</span></code></a>([decimal_mode])</p></td>
+<td><p>Updates balances in the class object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Wallet.spot_snapshot" title="binpan.binpan.Wallet.spot_snapshot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spot_snapshot</span></code></a>([startTime, endTime, ...])</p></td>
+<td><p>Updates spot wallet snapshot.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Wallet.update_margin" title="binpan.binpan.Wallet.update_margin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_margin</span></code></a>([decimal_mode])</p></td>
+<td><p>Updates balances in the wallet class object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Wallet.margin_snapshot" title="binpan.binpan.Wallet.margin_snapshot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">margin_snapshot</span></code></a>([startTime, endTime, ...])</p></td>
+<td><p>Updates margin wallet snapshot.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Wallet.spot_wallet_performance" title="binpan.binpan.Wallet.spot_wallet_performance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spot_wallet_performance</span></code></a>(decimal_mode[, ...])</p></td>
+<td><p>Calculate difference between current wallet not locked values and days before.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Wallet.margin_wallet_performance" title="binpan.binpan.Wallet.margin_wallet_performance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">margin_wallet_performance</span></code></a>(decimal_mode[, ...])</p></td>
+<td><p>Calculate difference between current wallet not locked values and days before.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.binpan.Wallet.update_spot">
+<span class="sig-name descname"><span class="pre">update_spot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.binpan.Wallet.update_spot" title="Permalink to this definition"></a></dt>
+<dd><p>Updates balances in the class object.
+:param bool decimal_mode: Use of decimal objects instead of float.
+:return dict: Wallet dictionary</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="binpan.binpan.Wallet.spot_snapshot">
 <span class="sig-name descname"><span class="pre">spot_snapshot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snapshot_days</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.binpan.Wallet.spot_snapshot" title="Permalink to this definition"></a></dt>
 <dd><p>Updates spot wallet snapshot.</p>
@@ -1699,6 +2006,20 @@ performance analysis.</p>
 </dd>
 <dt class="field-even">Return pd.DataFrame</dt>
 <dd class="field-even"><p>Spot wallet snapshot for the time period requested.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.binpan.Wallet.update_margin">
+<span class="sig-name descname"><span class="pre">update_margin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.binpan.Wallet.update_margin" title="Permalink to this definition"></a></dt>
+<dd><p>Updates balances in the wallet class object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>decimal_mode</strong> (<em>bool</em>) – Use of decimal objects instead of float.</p>
+</dd>
+<dt class="field-even">Return dict</dt>
+<dd class="field-even"><p>Wallet dictionary</p>
 </dd>
 </dl>
 </dd></dl>
