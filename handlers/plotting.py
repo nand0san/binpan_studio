@@ -570,7 +570,7 @@ def candles_tagged(data: pd.DataFrame,
                    labels: list = [],
                    markers: list = None,
                    marker_colors: list = None,
-                   marker_legend_name: list = None):
+                   marker_legend_names: list = None):
     """
 
     This is a shortcut from candles_ta. It defaults many inputs to better Jupyter Notebook usage.
@@ -753,7 +753,7 @@ def candles_tagged(data: pd.DataFrame,
                     'arrow-bar-right', 152, '152', 'arrow-bar-right-open']
 
     :param list marker_colors: Colors of the annotations.
-    :param list marker_legend_name: A list with the names to print as tags over the annotations.
+    :param list marker_legend_names: A list with the names to print as tags over the annotations.
 
     """
     data_ = data.copy(deep=True)
@@ -766,12 +766,16 @@ def candles_tagged(data: pd.DataFrame,
         indicators_filled_mode = {s.name: indicators_filled_mode[i] for i, s in enumerate(indicator_series)}
 
     if actions_col:  # this trigger all annotation and markers thing
-
+        actions_data = data[data_[actions_col] != 0][actions_col]
+        actions = list(actions_data.dropna().value_counts().index)
         # check type
-        data_string_actions_col = data_[actions_col].astype('string')
+        # data_string_actions_col = data_[actions_col].astype('string')
+        # if data_string_actions_col.str.isnumeric().eq(True).all():
+        #     actions_data = data_[data_[actions_col] != 0].dropna()
+        #     data_string_actions_col = actions_data.astype('string')
 
         if not labels:
-            labels = list(data_string_actions_col.value_counts().index)
+            labels = [str(i) for i in actions]
 
         if not markers:
             # markers = ["arrow-bar-up", "arrow-bar-down"]
@@ -780,13 +784,15 @@ def candles_tagged(data: pd.DataFrame,
         if not marker_colors:
             marker_colors = [choice(plotly_colors) for _ in range(len(labels))]
 
-        if not marker_legend_name:
-            try:
-                marker_legend_name = [i[0].upper() + i[1:] for i in labels]
-            except Exception as exc:
-                raise BinPanException(exc.__class__, "Actions are not subscriptable.", "Check actions column is a strings column.")
+        if not marker_legend_names:
+            marker_legend_names = [str(i)[0].upper() + str(i)[1:].lower() for i in labels]
 
-        actions = list(data_string_actions_col.value_counts().index)
+        # if not marker_legend_name:
+        #     try:
+        #         marker_legend_name = [i[0].upper() + i[1:] for i in labels]
+        #     except Exception as exc:
+        #         raise BinPanException(exc.__class__, "Actions are not subscriptable.", "Check actions column is a strings column.")
+
         for action in actions:
             annotations_values.append(data_[data_[actions_col] == action][priced_actions_col])
 
@@ -794,7 +800,7 @@ def candles_tagged(data: pd.DataFrame,
         try:
             assert len(labels) == len(markers)
             assert len(labels) == len(marker_colors)
-            assert len(labels) == len(marker_legend_name)
+            assert len(labels) == len(marker_legend_names)
             # assert len(annotations_values) == len(data[actions_col].dropna())
 
         except Exception as exc:
@@ -840,7 +846,7 @@ def candles_tagged(data: pd.DataFrame,
                rows_pos=rows_pos_final,
                labels=labels,
                annotation_colors=marker_colors,
-               annotation_legend_names=marker_legend_name,
+               annotation_legend_names=marker_legend_names,
                indicators_series=indicator_series,
                indicator_names=indicator_names,
                indicators_colors=indicator_colors,

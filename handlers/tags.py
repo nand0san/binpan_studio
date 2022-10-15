@@ -28,7 +28,6 @@ def tag_value(serie: pd.Series,
     :param bool to_numeric: If true, if possible, downcast type until the most basic numeric type (integer)
     :return pd.Series: A serie with tags as values.
     """
-    print(locals())
     ret = pd.Series(index=serie.index, dtype=type(match_tag))
 
     if gt:
@@ -43,7 +42,7 @@ def tag_value(serie: pd.Series,
         ret = serie.lt(value)
 
     ret.loc[ret] = match_tag
-    ret.loc[ret==False] = mismatch_tag
+    ret.loc[ret == False] = mismatch_tag
     if to_numeric:
         return pd.to_numeric(arg=ret, downcast='integer')
     else:
@@ -62,7 +61,7 @@ def tag_comparison(serie_a: pd.Series,
                    to_numeric=True
                    ) -> pd.Series:
     """
-    It tags values of a serie compared to other serie by methos gt,ge,eq,le,lt condition.
+    It tags values of a serie compared to other serie by methods gt,ge,eq,le,lt condition.
 
     :param pd.Series serie_a: A numeric serie.
     :param pd.Series serie_b: A numeric serie.
@@ -76,7 +75,6 @@ def tag_comparison(serie_a: pd.Series,
     :param bool to_numeric: If true, if possible, downcast type until the most basic numeric type (integer)
     :return pd.Series: A serie with tags as values.
     """
-    print(locals())
     ret = pd.Series(index=serie_a.index, dtype=type(match_tag))
 
     if gt:
@@ -102,9 +100,8 @@ def tag_comparison(serie_a: pd.Series,
 def tag_cross(serie_a: pd.Series,
               serie_b: pd.Series,
               echo: int = 0,
-              strict_mode: bool = True,
-              match_over_tag='buy',
-              match_below_tag='sell',
+              cross_over_tag='buy',
+              cross_below_tag='sell',
               name='Cross') -> pd.Series:
     """
     It tags points where serie_a crosses over serie_b or optionally below.
@@ -112,31 +109,16 @@ def tag_cross(serie_a: pd.Series,
     :param pd.Series serie_a: A numeric serie.
     :param pd.Series serie_b: A numeric serie.
     :param int echo: It tags a fixed amount of candles forward the crossed point not including cross candle.
-    :param bool strict_mode: Forces strictly greater and strictly lower values comparison.
-    :param int or str match_over_tag: Value to tag over cross.
-    :param int or str match_below_tag: Value to tag below cross.
+    :param int or str cross_over_tag: Value to tag over cross. Default is "buy".
+    :param int or str cross_below_tag: Value to tag below cross. Default is "sell"
     :param str name: Name for the resulting serie.
     :return pd.Series: A serie with tags as values.
     """
-    serie_a_ = serie_a.copy(deep=True)
-    serie_b_ = serie_b.copy(deep=True)
-    serie_a_shift = serie_a_.shift()
-    serie_b_shift = serie_b_.shift()
+    dif = tag_comparison(serie_a=serie_a, serie_b=serie_b, gt=True)
+    ret = dif.diff()
 
-    ret = pd.Series(index=serie_a.index)
-
-    if strict_mode:
-        ret_over = ((serie_a_.gt(serie_b_)) & (serie_a_shift.le(serie_b_shift)))
-        ret_below = ((serie_a_.lt(serie_b_)) & (serie_a_shift.ge(serie_b_shift)))
-
-    else:
-        ret_over = ((serie_a_.ge(serie_b_)) & (serie_a_shift.lt(serie_b_shift)))
-        ret_below = ((serie_a_.le(serie_b_)) & (serie_a_shift.gt(serie_b_shift)))
-
-    ret.loc[ret_over] = match_over_tag
-    ret.loc[ret_below] = match_below_tag
-    ret.name = name
     if echo:
-        return ret.ffill(limit=echo)
-    else:
-        return ret
+        ret = ret.ffill(limit=echo)
+
+    ret.name = name
+    return ret.replace({'1': cross_over_tag, 1: cross_over_tag, '-1': cross_below_tag, -1: cross_below_tag})

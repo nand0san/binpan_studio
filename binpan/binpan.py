@@ -317,8 +317,8 @@ class Symbol(object):
 
         self.set_display_columns()
         self.set_display_width()
-        self.set_display_rows()
         self.set_display_min_rows()
+        self.set_display_max_rows()
 
         binpan_logger.debug(f"New instance of BinPan Symbol {self.version}: {self.symbol}, {self.tick_interval}, limit={self.limit},"
                             f" start={self.start_time}, end={self.end_time}, {self.time_zone}, time_index={self.time_index}"
@@ -505,7 +505,7 @@ class Symbol(object):
         else:
             pd.set_option('display.max_columns', self.display_columns)
 
-    def set_display_rows(self, display_rows=None):
+    def set_display_min_rows(self, display_rows=None):
         """
         Change the number of minimum rows shown in the display of the dataframe.
 
@@ -518,15 +518,15 @@ class Symbol(object):
         else:
             pd.set_option('display.min_rows', self.display_rows)
 
-    def set_display_min_rows(self, display_min_rows=None):
+    def set_display_max_rows(self, display_max_rows=None):
         """
-        Change the number of minimum rows shown in the display of the dataframe.
+        Change the number of maximum rows shown in the display of the dataframe.
 
-        :param int display_min_rows: Integer
+        :param int display_max_rows: Integer
 
         """
-        if display_min_rows:
-            pd.set_option('display.max_rows', display_min_rows)
+        if display_max_rows:
+            pd.set_option('display.max_rows', display_max_rows)
 
         else:
             pd.set_option('display.max_rows', self.display_rows)
@@ -1061,7 +1061,13 @@ class Symbol(object):
 
         rows_pos = [self.row_control[k] for k in self.row_control.keys()]
 
-        # binpan_logger.debug(f"{indicator_names}\n{indicators_colors}\n{rows_pos}")
+        if actions_col:
+            if not labels:
+                labels = ['over', 'below']
+            if not markers:
+                markers = ['arrow-bar-up', 'arrow-bar-down']
+            if not marker_colors:
+                marker_colors = ['green', 'red']
 
         handlers.plotting.candles_tagged(data=self.df,
                                          width=width,
@@ -2753,9 +2759,9 @@ class Symbol(object):
     #############
 
     def tag(self,
-            column: str or int or pd.Series,
             reference: str or int or float or pd.Series,
-            relation: str,
+            column: str or int or pd.Series = 'Close',
+            relation: str = 'gt',
             match_tag: str or int = 1,
             mismatch_tag: str or int = 0,
             inplace=True,
@@ -2764,21 +2770,37 @@ class Symbol(object):
         """
         It tags values of a column/serie compared to other serie or value by methods gt,ge,eq,le,lt as condition.
 
-        :param pd.Series or str column: A numeric serie or column name.
         :param pd.Series or str or int or float reference: A number or numeric serie or column name.
-        :param str relation: The condition to apply comparing column to reference:
+        :param str relation: The condition to apply comparing column to reference (default is greater than):
             eq (equivalent to ==) — equals to
             ne (equivalent to !=) — not equals to
             le (equivalent to <=) — less than or equals to
             lt (equivalent to <) — less than
             ge (equivalent to >=) — greater than or equals to
             gt (equivalent to >) — greater than
+        :param pd.Series or str column: A numeric serie or column name or column index. Default is Close price.
         :param int or str match_tag: Value or string to tag matched relation.
         :param int or str mismatch_tag: Value or string to tag mismatched relation.
         :param bool inplace: Permanent or not. Default is false, because of some testing required sometimes.
         :param str suffix: A string to decorate resulting Pandas series name.
         :param str or int color: A color from plotly list of colors or its index in that list.
         :return pd.Series: A serie with tags as values.
+
+
+        .. code-block::
+
+           from binpan import binpan
+
+           sym = binpan.Symbol('btcbusd', '1m')
+           sym.ema(window=200, color='darkgrey')
+
+           # comparing close price (default) greater or equal, than exponential moving average of 200 ticks window previously added.
+           sym.tag(reference='EMA_200', relation='ge')
+           sym.plot()
+
+        .. image:: images/relations/tag.png
+           :width: 1000
+
         """
 
         if not relation in ['gt', 'ge', 'eq', 'le', 'lt']:
@@ -2793,7 +2815,7 @@ class Symbol(object):
             data_a = column.copy(deep=True)
 
         if type(reference) == str:
-            data_b = self.df[column]
+            data_b = self.df[reference]
         elif type(reference) == int or type(reference) == float or type(reference) == dd:
             data_b = pd.Series(data=reference, index=data_a.index)
         else:
@@ -2806,16 +2828,15 @@ class Symbol(object):
                                                 mismatch_tag=mismatch_tag)
 
         if not data_b.name:
-            data_b.name = ''
+            data_b.name = reference
 
         if suffix:
             suffix = '_' + suffix
 
-        compared.name = f"Tag_{data_a.name}_{relation}_{reference}" + suffix
-        column_name = str(compared.name)
+        column_name = f"Tag_{data_a.name}_{relation}_{data_b.name}" + suffix
+        compared.name = column_name
 
         if inplace and self.is_new(compared):
-
             self.row_counter += 1
 
             self.set_plot_color(indicator_column=column_name, color=color)
@@ -2824,6 +2845,86 @@ class Symbol(object):
             self.df.loc[:, column_name] = compared
 
         return compared
+
+    def cross(self,
+              spear: str or int or float or pd.Series,
+              shield: str or int or pd.Series = 'Close',
+              cross_over_tag: str or int = 1,
+              cross_below_tag: str or int = -1,
+              echo=0,
+              inplace=True,
+              suffix: str = '',
+              color: str or int = 'green') -> pd.Series:
+        """
+        It tags crossing values from a column/serie (spear) over a serie or value (shield).
+
+        :param pd.Series or str or int or float spear: A number or numeric serie or column name.
+        :param pd.Series or str shield: A numeric serie or column name or column index. Default is Close price.
+        :param int or str cross_over_tag: Value or string to tag matched crossing spear over shield.
+        :param int or str cross_below_tag: Value or string to tag crossing shield over spear.
+        :param int echo: It tags a fixed amount of candles forward the crossed point not including cross candle.
+        :param bool inplace: Permanent or not. Default is false, because of some testing required sometimes.
+        :param str suffix: A string to decorate resulting Pandas series name.
+        :param str or int color: A color from plotly list of colors or its index in that list.
+        :return pd.Series: A serie with tags as values.
+
+        .. code-block::
+
+           from binpan import binpan
+
+           sym = binpan.Symbol('btcbusd', '1m')
+           sym.ema(window=200, color='darkgrey')
+
+           # comparing close price (default) greater or equal, than exponential moving average of 200 ticks window previously added.
+           sym.tag(reference='EMA_200', relation='ge')
+           sym.plot()
+
+        .. image:: images/relations/tag.png
+           :width: 1000
+
+        """
+
+        # parse params
+        if type(shield) == str:
+            data_a = self.df[shield]
+        elif type(shield) == int:
+            data_a = self.df.iloc[:, shield]
+        else:
+            data_a = shield.copy(deep=True)
+
+        if type(spear) == str:
+            data_b = self.df[spear]
+        elif type(spear) == int or type(spear) == float or type(spear) == dd:
+            data_b = pd.Series(data=spear, index=data_a.index)
+        else:
+            data_b = spear.copy(deep=True)
+
+        if not data_a.name:
+            data_a.name = shield
+        if not data_b.name:
+            data_b.name = spear
+
+        if suffix:
+            suffix = '_' + suffix
+
+        column_name = f"Cross_{data_b.name}_{data_a.name}" + suffix
+
+        cross = handlers.tags.tag_cross(serie_a=data_a,
+                                        serie_b=data_b,
+                                        echo=echo,
+                                        cross_over_tag=cross_over_tag,
+                                        cross_below_tag=cross_below_tag,
+                                        name=column_name)
+
+        if inplace and self.is_new(cross):
+            self.row_counter += 1
+
+            self.set_plot_color(indicator_column=column_name, color=color)
+            self.set_plot_color_fill(indicator_column=column_name, color_fill=None)
+            self.set_plot_row(indicator_column=str(column_name), row_position=self.row_counter)  # overlaps are one
+            self.df.loc[:, column_name] = cross
+
+        return cross
 
 
 class Exchange(object):
