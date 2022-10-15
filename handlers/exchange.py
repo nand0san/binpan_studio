@@ -172,7 +172,11 @@ def get_account_status(decimal_mode: bool,
     For Machine Learning limits, restrictions will be applied to account. If a user has been restricted by the ML system, they may
     check the reason and the duration by using the [/sapi/v1/account/status] endpoint
 
-    :return dict: Example: `{ "data": "Normal" }`
+    :return dict: Example:
+
+    .. code-block::
+
+        { "data": "Normal" }
 
     """
     endpoint = '/sapi/v1/account/status'
@@ -1155,21 +1159,25 @@ def get_top_gainers(decimal_mode: bool,
 
     .. code-block::
 
-        priceChangePercent	volume
-        symbol
-        SSVBUSD	    62.693	1.860517e+06
-        SANTOSBUSD	28.914	2.218403e+06
-        LDOBUSD	    19.774	5.933290e+06
-        EOSBUSD	    17.525	6.134061e+06
-        LAZIOBUSD	14.952	9.952292e+05
-        ...	...	...
-        WINGBUSD	-6.363	6.913284e+05
-        NKNBUSD	    -7.632	7.375257e+07
-        BONDBUSD	-7.872	9.194983e+05
-        BTCSTBUSD	-15.242	5.525540e+05
-        STGBUSD	    -15.663	1.879494e+07
-        300 rows × 2 columns
+        from binpan import handlers
+        from secret import api_key, api_secret
 
+        handlers.exchange.get_top_gainers(decimal_mode=False, api_key=api_key, api_secret=api_secret)
+
+              priceChangePercent	volume	BUSD_value	BUSD_volume
+        symbol
+        PHABTC	198.477	    9.291796e+07	0.33650	3.126689e+07
+        PHAUSDT	195.961	    6.729636e+08	0.33650	2.264522e+08
+        PHABUSD	195.530	    1.082033e+09	0.33650	3.641039e+08
+        LTOBTC	 61.732	    5.854178e+07	0.11070	6.480575e+06
+        LTOUSDT	 60.637	    2.813419e+08	0.11070	3.114455e+07
+        ...	...	...	...	    ...
+        MDXBTC	 -21.195	4.096356e+07	0.15640	6.406700e+06
+        MDXBUSD	 -22.112	3.444397e+08	0.15640	5.387037e+07
+        MDXUSDT	 -22.123	2.896132e+08	0.15640	4.529550e+07
+        AGIXBTC	 -23.007	1.086561e+08	0.06489	7.050693e+06
+        AGIXBUSD -23.407	2.188445e+08	0.06489	1.420082e+07
+        1194 rows × 4 columns
 
     """
     if not info_dic:
