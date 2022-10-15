@@ -33,7 +33,7 @@ import sys
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
 
-__version__ = "0.2.26"
+__version__ = "0.2.27"
 
 try:
     from secret import redis_conf
@@ -885,7 +885,9 @@ class Symbol(object):
     # Plots
     ################
 
-    def set_plot_row(self, indicator_column: str = None, row_position: int = None):
+    def set_plot_row(self,
+                     indicator_column: str = None,
+                     row_position: int = None):
         """
         Internal control formatting plots. Can be used to change plot subplot row of an indicator.
 
@@ -1060,8 +1062,6 @@ class Symbol(object):
         rows_pos = [self.row_control[k] for k in self.row_control.keys()]
 
         # binpan_logger.debug(f"{indicator_names}\n{indicators_colors}\n{rows_pos}")
-
-        # if priced_actions_col and not actions_col:
 
         handlers.plotting.candles_tagged(data=self.df,
                                          width=width,
@@ -2747,6 +2747,83 @@ class Symbol(object):
             return ta.pvt(**kwargs)
         elif name == "vp":
             return ta.vp(**kwargs)
+
+    #############
+    # Relations #
+    #############
+
+    def tag(self,
+            column: str or int or pd.Series,
+            reference: str or int or float or pd.Series,
+            relation: str,
+            match_tag: str or int = 1,
+            mismatch_tag: str or int = 0,
+            inplace=True,
+            suffix: str = '',
+            color: str or int = 'green') -> pd.Series:
+        """
+        It tags values of a column/serie compared to other serie or value by methods gt,ge,eq,le,lt as condition.
+
+        :param pd.Series or str column: A numeric serie or column name.
+        :param pd.Series or str or int or float reference: A number or numeric serie or column name.
+        :param str relation: The condition to apply comparing column to reference:
+            eq (equivalent to ==) — equals to
+            ne (equivalent to !=) — not equals to
+            le (equivalent to <=) — less than or equals to
+            lt (equivalent to <) — less than
+            ge (equivalent to >=) — greater than or equals to
+            gt (equivalent to >) — greater than
+        :param int or str match_tag: Value or string to tag matched relation.
+        :param int or str mismatch_tag: Value or string to tag mismatched relation.
+        :param bool inplace: Permanent or not. Default is false, because of some testing required sometimes.
+        :param str suffix: A string to decorate resulting Pandas series name.
+        :param str or int color: A color from plotly list of colors or its index in that list.
+        :return pd.Series: A serie with tags as values.
+        """
+
+        if not relation in ['gt', 'ge', 'eq', 'le', 'lt']:
+            raise Exception("BinPan Error: relation must be 'gt','ge','eq','le' or 'lt'")
+
+        # parse params
+        if type(column) == str:
+            data_a = self.df[column]
+        elif type(column) == int:
+            data_a = self.df.iloc[:, column]
+        else:
+            data_a = column.copy(deep=True)
+
+        if type(reference) == str:
+            data_b = self.df[column]
+        elif type(reference) == int or type(reference) == float or type(reference) == dd:
+            data_b = pd.Series(data=reference, index=data_a.index)
+        else:
+            data_b = reference.copy(deep=True)
+
+        compared = handlers.tags.tag_comparison(serie_a=data_a,
+                                                serie_b=data_b,
+                                                **{relation: True},
+                                                match_tag=match_tag,
+                                                mismatch_tag=mismatch_tag)
+
+        if not data_b.name:
+            data_b.name = ''
+
+        if suffix:
+            suffix = '_' + suffix
+
+        compared.name = f"Tag_{data_a.name}_{relation}_{reference}" + suffix
+        column_name = str(compared.name)
+
+        if inplace and self.is_new(compared):
+
+            self.row_counter += 1
+
+            self.set_plot_color(indicator_column=column_name, color=color)
+            self.set_plot_color_fill(indicator_column=column_name, color_fill=None)
+            self.set_plot_row(indicator_column=str(column_name), row_position=self.row_counter)  # overlaps are one
+            self.df.loc[:, column_name] = compared
+
+        return compared
 
 
 class Exchange(object):

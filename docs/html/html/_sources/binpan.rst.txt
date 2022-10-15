@@ -9,6 +9,7 @@ Can be imported this way:
 
 .. automodule:: binpan.binpan
 
+
 Symbol Class
 ------------
 

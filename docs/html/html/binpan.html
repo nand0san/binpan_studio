@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BinPan Module &mdash; BinPan 0.2.26 documentation</title>
+  <title>BinPan Module &mdash; BinPan 0.2.27 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/style.css" type="text/css" />
@@ -56,6 +56,7 @@
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tags.html">Tags Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Module</a></li>
 </ul>
 
@@ -1461,6 +1462,35 @@ It can be any color from plotly library or a number in the list of those. Defaul
        <span class="p">[</span><span class="mi">26</span> <span class="n">rows</span> <span class="n">x</span> <span class="mi">2</span> <span class="n">columns</span><span class="p">])</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.binpan.Symbol.tag">
+<span class="sig-name descname"><span class="pre">tag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_tag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mismatch_tag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'green'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="headerlink" href="#binpan.binpan.Symbol.tag" title="Permalink to this definition"></a></dt>
+<dd><p>It tags values of a column/serie compared to other serie or value by methods gt,ge,eq,le,lt as condition.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>column</strong> (<em>pd.Series</em><em> or </em><em>str</em>) – A numeric serie or column name.</p></li>
+<li><p><strong>reference</strong> (<em>pd.Series</em><em> or </em><em>str</em><em> or </em><em>int</em><em> or </em><em>float</em>) – A number or numeric serie or column name.</p></li>
+<li><p><strong>relation</strong> (<em>str</em>) – The condition to apply comparing column to reference:
+eq (equivalent to ==) — equals to
+ne (equivalent to !=) — not equals to
+le (equivalent to &lt;=) — less than or equals to
+lt (equivalent to &lt;) — less than
+ge (equivalent to &gt;=) — greater than or equals to
+gt (equivalent to &gt;) — greater than</p></li>
+<li><p><strong>match_tag</strong> (<em>int</em><em> or </em><em>str</em>) – Value or string to tag matched relation.</p></li>
+<li><p><strong>mismatch_tag</strong> (<em>int</em><em> or </em><em>str</em>) – Value or string to tag mismatched relation.</p></li>
+<li><p><strong>inplace</strong> (<em>bool</em>) – Permanent or not. Default is false, because of some testing required sometimes.</p></li>
+<li><p><strong>suffix</strong> (<em>str</em>) – A string to decorate resulting Pandas series name.</p></li>
+<li><p><strong>color</strong> (<em>str</em><em> or </em><em>int</em>) – A color from plotly list of colors or its index in that list.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.Series</dt>
+<dd class="field-even"><p>A serie with tags as values.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
