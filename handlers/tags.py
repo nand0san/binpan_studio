@@ -102,7 +102,8 @@ def tag_cross(serie_a: pd.Series,
               echo: int = 0,
               cross_over_tag='buy',
               cross_below_tag='sell',
-              name='Cross') -> pd.Series:
+              name='Cross',
+              non_zeros: bool = True) -> pd.Series:
     """
     It tags points where serie_a crosses over serie_b or optionally below.
 
@@ -112,6 +113,7 @@ def tag_cross(serie_a: pd.Series,
     :param int or str cross_over_tag: Value to tag over cross. Default is "buy".
     :param int or str cross_below_tag: Value to tag below cross. Default is "sell"
     :param str name: Name for the resulting serie.
+    :param bool non_zeros: Substitutes zeros by nans. If echo want to be used, must be used non_zeros.
     :return pd.Series: A serie with tags as values.
     """
     dif = tag_comparison(serie_a=serie_a, serie_b=serie_b, gt=True)
@@ -121,8 +123,14 @@ def tag_cross(serie_a: pd.Series,
         ret = ret.ffill(limit=echo)
 
     ret.name = name
-    return ret.replace({'1': cross_over_tag, 1: cross_over_tag, '-1': cross_below_tag, -1: cross_below_tag})
+    if non_zeros:
+        ret = ret.replace({'1': cross_over_tag, 1: cross_over_tag, '-1': cross_below_tag, -1: cross_below_tag, '0': np.nan, 0: np.nan})
+    else:
+        ret = ret.replace({'1': cross_over_tag, 1: cross_over_tag, '-1': cross_below_tag, -1: cross_below_tag})
 
+    if echo:
+        ret = ret.ffill(limit=echo)
+    return ret
 
 ################
 # BACK TESTING #

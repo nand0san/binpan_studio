@@ -2876,6 +2876,7 @@ class Symbol(object):
               cross_over_tag: str or int = 1,
               cross_below_tag: str or int = -1,
               echo=0,
+              non_zeros: bool = True,
               inplace=True,
               suffix: str = '',
               color: str or int = 'green') -> pd.Series:
@@ -2886,11 +2887,13 @@ class Symbol(object):
         :param pd.Series or str fast: A numeric serie or column name or column index. Default is Close price.
         :param int or str cross_over_tag: Value or string to tag matched crossing fast over slow.
         :param int or str cross_below_tag: Value or string to tag crossing slow over fast.
-        :param int echo: It tags a fixed amount of candles forward the crossed point not including cross candle.
+        :param bool non_zeros: Result will not contain zeros as non tagged values, instead will be nans.
+        :param int echo: It tags a fixed amount of candles forward the crossed point not including cross candle. If echo want to be used,
+         must be used non_zeros.
         :param bool inplace: Permanent or not. Default is false, because of some testing required sometimes.
         :param str suffix: A string to decorate resulting Pandas series name.
         :param str or int color: A color from plotly list of colors or its index in that list.
-        :return pd.Series: A serie with tags as values.
+        :return pd.Series: A serie with tags as values. 1 and -1 for both crosses.
 
         .. code-block::
 
@@ -2941,11 +2944,11 @@ class Symbol(object):
                                         echo=echo,
                                         cross_over_tag=cross_over_tag,
                                         cross_below_tag=cross_below_tag,
-                                        name=column_name)
+                                        name=column_name,
+                                        non_zeros=non_zeros)
 
         if inplace and self.is_new(cross):
             self.row_counter += 1
-
             self.set_plot_color(indicator_column=column_name, color=color)
             self.set_plot_color_fill(indicator_column=column_name, color_fill=None)
             self.set_plot_row(indicator_column=str(column_name), row_position=self.row_counter)  # overlaps are one
@@ -3015,8 +3018,11 @@ class Symbol(object):
         """
         if columns:
             my_columns = columns
+            cross_columns = [c for c in self.df.columns if c.lower().startswith('cross_')]
         else:
-            my_columns = self.df.columns
+            tag_columns = [c for c in self.df.columns if c.lower().startswith('tag_')]
+            cross_columns = [c for c in self.df.columns if c.lower().startswith('cross_')]
+            my_columns = tag_columns + cross_columns
 
         for col in my_columns:
             data_col = self.df[col].dropna()
@@ -3027,10 +3033,8 @@ class Symbol(object):
             except AssertionError:
                 raise Exception(f"BinPan Strategic Exception: Not numerica labels on {col}: {list(data_col.value_counts().index)}")
 
-        tag_columns = [c for c in my_columns if c.lower().startswith('tag_')]
-        cross_columns = [c for c in my_columns if c.lower().startswith('cross_')]
-
-        my_columns = tag_columns + cross_columns
+        # tag_columns = [c for c in my_columns if c.lower().startswith('tag_')]
+        # cross_columns = [c for c in my_columns if c.lower().startswith('cross_')]
 
         temp_df = self.df.copy(deep=True)
         temp_df = temp_df.loc[:, my_columns]
