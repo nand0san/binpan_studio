@@ -408,7 +408,7 @@ def candles_ta(data: pd.DataFrame,
         rows = [1]
         pre_rows = 1
 
-    rows = rows + [i for i in rows_pos]
+    rows += [i for i in rows_pos]
     cols = [1 for _ in range(len(rows))]
 
     # technical analysis indicators
@@ -471,6 +471,7 @@ def candles_ta(data: pd.DataFrame,
             def fill_area(label,
                           up_color='rgba(35, 152, 33, 0.5)',
                           down_color='rgba(245, 63, 39, 0.5)'):
+                """Internal function to assign colors to areas."""
                 if label >= 1:
                     return up_color
                 else:
@@ -517,8 +518,8 @@ def candles_ta(data: pd.DataFrame,
                                    yaxis=my_axis))
         axes += 1
 
-    cols = cols + [1 for _ in range(len(tas))]
-    traces = traces + tas
+    cols += [1 for _ in range(len(tas))]
+    traces += tas
 
     # anotaciones, siempre van en la primera fila, la de las velas
     if annotation_values:
@@ -768,11 +769,6 @@ def candles_tagged(data: pd.DataFrame,
     if actions_col:  # this trigger all annotation and markers thing
         actions_data = data[data_[actions_col] != 0][actions_col]
         actions = list(actions_data.dropna().value_counts().index)
-        # check type
-        # data_string_actions_col = data_[actions_col].astype('string')
-        # if data_string_actions_col.str.isnumeric().eq(True).all():
-        #     actions_data = data_[data_[actions_col] != 0].dropna()
-        #     data_string_actions_col = actions_data.astype('string')
 
         if not labels:
             labels = [str(i) for i in actions]
@@ -786,12 +782,6 @@ def candles_tagged(data: pd.DataFrame,
 
         if not marker_legend_names:
             marker_legend_names = [str(i)[0].upper() + str(i)[1:].lower() for i in labels]
-
-        # if not marker_legend_name:
-        #     try:
-        #         marker_legend_name = [i[0].upper() + i[1:] for i in labels]
-        #     except Exception as exc:
-        #         raise BinPanException(exc.__class__, "Actions are not subscriptable.", "Check actions column is a strings column.")
 
         for action in actions:
             annotations_values.append(data_[data_[actions_col] == action][priced_actions_col])

@@ -1031,7 +1031,9 @@ class Symbol(object):
              labels: list = [],
              markers: list = None,
              marker_colors: list = None,
-             background_color=None):
+             background_color=None,
+             zoom_start_idx=None,
+             zoom_end_idx=None):
         """
         Plots a candles figure for the object.
 
@@ -1056,14 +1058,17 @@ class Symbol(object):
             a color filled one. Check plotly info: https://plotly.com/python/marker-style/
         :param list marker_colors: Colors of the annotations.
         :param str background_color: Sets background color. Select a valid plotly color name.
+        :param int zoom_start_idx: It can zoom to an index interval.
+        :param int zoom_end_idx: It can zoom to an index interval.
 
         """
+        temp_df = self.df.iloc[zoom_start_idx:zoom_end_idx]
 
         if not title:
-            title = self.df.index.name
+            title = temp_df.index.name
 
-        indicators_series = [self.df[k] for k in self.row_control.keys()]
-        indicator_names = [self.df[k].name for k in self.row_control.keys()]
+        indicators_series = [temp_df[k] for k in self.row_control.keys()]
+        indicator_names = [temp_df[k].name for k in self.row_control.keys()]
         indicators_colors = [self.color_control[k] for k in self.row_control.keys()]
         indicators_colors = [c if type(c) == str else plotly_colors[c] for c in indicators_colors]
 
@@ -1077,7 +1082,20 @@ class Symbol(object):
             if not marker_colors:
                 marker_colors = ['green', 'red']
 
-        handlers.plotting.candles_tagged(data=self.df,
+        if zoom_start_idx is not None or zoom_end_idx is not None:
+            try:
+                assert zoom_start_idx < zoom_end_idx < len(self.df)
+            except AssertionError:
+                raise Exception(f"BinPan Plot Error: Zoom index not valid. Not start={zoom_start_idx} < end={zoom_end_idx} < len={len(self.df)}")
+
+            zoomed_plot_splitted_serie_couples = handlers.indicators.zoom_cloud_indicators(self.plot_splitted_serie_couples,
+                                                                                           main_index=list(self.df.index),
+                                                                                           start_idx=zoom_start_idx,
+                                                                                           end_idx=zoom_end_idx)
+        else:
+            zoomed_plot_splitted_serie_couples = self.plot_splitted_serie_couples
+
+        handlers.plotting.candles_tagged(data=temp_df,
                                          width=width,
                                          height=height,
                                          candles_ta_height_ratio=candles_ta_height_ratio,
@@ -1093,7 +1111,7 @@ class Symbol(object):
                                          fill_control=self.color_fill_control,
                                          indicators_filled_mode=self.indicators_filled_mode,
                                          axis_groups=self.axis_groups,
-                                         plot_splitted_serie_couple=self.plot_splitted_serie_couples,
+                                         plot_splitted_serie_couple=zoomed_plot_splitted_serie_couples,
                                          rows_pos=rows_pos,
                                          labels=labels,
                                          plot_bgcolor=background_color,

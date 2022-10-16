@@ -99,10 +99,10 @@ def split_serie_by_position(serie: pd.Series,
     # splitter_down = splitter_serie.loc[serie_down.index]
     splitter_down = splitter_serie.loc[serie.lt(splitter_serie)]
 
-    serie_up.name = serie_up.name + '_up'
-    serie_down.name = serie_down.name + '_down'
-    splitter_up.name = splitter_up.name + '_split_up'
-    splitter_down.name = splitter_down.name + '_split_down'
+    serie_up.name += '_up'
+    serie_down.name += '_down'
+    splitter_up.name += '_split_up'
+    splitter_down.name += '_split_down'
 
     # return serie_up, serie_splitter_up, serie_down, serie_splitter_down
     # return serie_up, serie_down
@@ -145,3 +145,31 @@ def df_splitter(data: pd.DataFrame, up_column: str, down_column: str) -> list:
     for name, data in df:
         dfs.append(data)
     return dfs
+
+
+def zoom_cloud_indicators(plot_splitted_serie_couples: dict,
+                          main_index: list,
+                          start_idx: int,
+                          end_idx: int) -> dict:
+    """
+    It zooms the cloud indicators in an index interval for a plot zoom.
+
+    :param dict plot_splitted_serie_couples: Splitted indicators for cloud colored area plotting.
+    :param list main_index: The BinPan general index for cutting.
+    :param int start_idx: A index to cut.
+    :param int end_idx: A index to cut.
+    :return dict: All indicators cut.
+    """
+    ret = {}
+    my_start = main_index[start_idx]
+    my_end = main_index[end_idx]
+    for k, v in plot_splitted_serie_couples.items():
+        splits = v[2]
+        cut_splits = []
+        for df in splits:
+            result = df.loc[my_start:my_end]
+            if not result.empty:
+                cut_splits.append(result)
+
+        ret[k] = [v[0], v[1], cut_splits, v[3], v[4]]
+    return ret
