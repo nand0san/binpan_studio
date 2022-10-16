@@ -312,7 +312,7 @@ class Symbol(object):
         self.axis_groups = dict()
         self.action_labels = dict()
         self.global_axis_group = 99
-
+        self.strategies = 0
         self.row_counter = 1
 
         self.set_display_columns()
@@ -2961,13 +2961,14 @@ class Symbol(object):
               color: str or int = 'grey'
               ):
         """
+        It shifts a candle ahead by the window argument value (or backwards if negative)
 
-        :param column:
-        :param window:
-        :param inplace:
-        :param suffix:
-        :param color:
-        :return:
+        :param str or int or pd.Series column: Column to shift values.
+        :param int window: Number of candles moved ahead.
+        :param bool inplace: Permanent or not. Default is false, because of some testing required sometimes.
+        :param str suffix: A string to decorate resulting Pandas series name.
+        :param str or int color: A color from plotly list of colors or its index in that list.
+        :return pd.Series: A serie with tags as values.
         """
         if type(column) == str:
             data_a = self.df[column]
@@ -2997,15 +2998,37 @@ class Symbol(object):
             self.df.loc[:, column_name] = shift
         return shift
 
-    def strategy_tag_cross(self):
+    def strategy_tag_cross(self,
+                           columns: list = None,
+                           inplace=True,
+                           suffix: str = '',
+                           color: str or int = 'magenta'):
         """
         Checks where all tags and cross columns get value "1" at the same time. And also gets points where all tags gets value of "0" and
         cross columns get "-1" value.
 
+        :param list columns: A list of Tag and Cross columns with numeric o 1,0 for tags and 1,-1 for cross points.
+        :param bool inplace: Permanent or not. Default is false, because of some testing required sometimes.
+        :param str suffix: A string to decorate resulting Pandas series name.
+        :param str or int color: A color from plotly list of colors or its index in that list.
         :return pd.Series: A serie with "1" value where all columns are ones and "-1" where all columns are minus ones.
         """
-        tag_columns = [c for c in self.df.columns if c.lower().startswith('tag_')]
-        cross_columns = [c for c in self.df.columns if c.lower().startswith('cross_')]
+        if columns:
+            my_columns = columns
+        else:
+            my_columns = self.df.columns
+
+        for col in my_columns:
+            data_col = self.df[col].dropna()
+            try:
+                unique_values = data_col.value_counts().index
+                numeric_Values = [i for i in unique_values if type(i) in [int, float, complex]]
+                assert len(unique_values) == len(numeric_Values)
+            except AssertionError:
+                raise Exception(f"BinPan Strategic Exception: Not numerica labels on {col}: {list(data_col.value_counts().index)}")
+
+        tag_columns = [c for c in my_columns if c.lower().startswith('tag_')]
+        cross_columns = [c for c in my_columns if c.lower().startswith('cross_')]
 
         my_columns = tag_columns + cross_columns
 
@@ -3020,7 +3043,24 @@ class Symbol(object):
 
         ret1 = pd.Series(1, index=bull_serie[bull_serie].index)
         ret2 = pd.Series(-1, index=bear_serie[bear_serie].index)
-        return pd.concat([ret1, ret2]).sort_index()
+
+        ret = pd.concat([ret1, ret2]).sort_index()
+
+        if suffix:
+            suffix = '_' + suffix
+
+        self.strategies += 1
+        column_name = f"Strategy_cross_tag_{self.strategies}" + suffix
+        ret.name = column_name
+
+        if inplace and self.is_new(ret):
+            self.row_counter += 1
+            row_pos = self.row_counter
+            self.set_plot_color(indicator_column=column_name, color=color)
+            self.set_plot_color_fill(indicator_column=column_name, color_fill=None)
+            self.set_plot_row(indicator_column=column_name, row_position=row_pos)
+            self.df.loc[:, column_name] = ret
+        return ret
 
 
 class Exchange(object):
