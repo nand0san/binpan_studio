@@ -1083,11 +1083,6 @@ class Symbol(object):
                 marker_colors = ['green', 'red']
 
         if zoom_start_idx is not None or zoom_end_idx is not None:
-            try:
-                assert zoom_start_idx < zoom_end_idx < len(self.df)
-            except AssertionError:
-                raise Exception(f"BinPan Plot Error: Zoom index not valid. Not start={zoom_start_idx} < end={zoom_end_idx} < len={len(self.df)}")
-
             zoomed_plot_splitted_serie_couples = handlers.indicators.zoom_cloud_indicators(self.plot_splitted_serie_couples,
                                                                                            main_index=list(self.df.index),
                                                                                            start_idx=zoom_start_idx,
@@ -2876,8 +2871,8 @@ class Symbol(object):
         return compared
 
     def cross(self,
-              spear: str or int or float or pd.Series,
-              shield: str or int or pd.Series = 'Close',
+              slow: str or int or float or pd.Series,
+              fast: str or int or pd.Series = 'Close',
               cross_over_tag: str or int = 1,
               cross_below_tag: str or int = -1,
               echo=0,
@@ -2885,12 +2880,12 @@ class Symbol(object):
               suffix: str = '',
               color: str or int = 'green') -> pd.Series:
         """
-        It tags crossing values from a column/serie (spear) over a serie or value (shield).
+        It tags crossing values from a column/serie (fast) over a serie or value (slow).
 
-        :param pd.Series or str or int or float spear: A number or numeric serie or column name.
-        :param pd.Series or str shield: A numeric serie or column name or column index. Default is Close price.
-        :param int or str cross_over_tag: Value or string to tag matched crossing spear over shield.
-        :param int or str cross_below_tag: Value or string to tag crossing shield over spear.
+        :param pd.Series or str or int or float slow: A number or numeric serie or column name.
+        :param pd.Series or str fast: A numeric serie or column name or column index. Default is Close price.
+        :param int or str cross_over_tag: Value or string to tag matched crossing fast over slow.
+        :param int or str cross_below_tag: Value or string to tag crossing slow over fast.
         :param int echo: It tags a fixed amount of candles forward the crossed point not including cross candle.
         :param bool inplace: Permanent or not. Default is false, because of some testing required sometimes.
         :param str suffix: A string to decorate resulting Pandas series name.
@@ -2904,7 +2899,7 @@ class Symbol(object):
            sym = binpan.Symbol(symbol='ethbusd', tick_interval='1m', limit=300, time_zone='Europe/Madrid')
            sym.ema(window=10, color='darkgrey')
 
-           sym.cross(shield='Close', spear='EMA_10')
+           sym.cross(slow='Close', fast='EMA_10')
 
            sym.plot(actions_col='Cross_EMA_10_Close', priced_actions_col='EMA_10',
                             labels=['over', 'below'],
@@ -2917,24 +2912,24 @@ class Symbol(object):
         """
 
         # parse params
-        if type(shield) == str:
-            data_a = self.df[shield]
-        elif type(shield) == int:
-            data_a = self.df.iloc[:, shield]
+        if type(fast) == str:
+            data_a = self.df[fast]
+        elif type(fast) == int:
+            data_a = self.df.iloc[:, fast]
         else:
-            data_a = shield.copy(deep=True)
+            data_a = fast.copy(deep=True)
 
-        if type(spear) == str:
-            data_b = self.df[spear]
-        elif type(spear) == int or type(spear) == float:
-            data_b = pd.Series(data=spear, index=data_a.index)
+        if type(slow) == str:
+            data_b = self.df[slow]
+        elif type(slow) == int or type(slow) == float:
+            data_b = pd.Series(data=slow, index=data_a.index)
         else:
-            data_b = spear.copy(deep=True)
+            data_b = slow.copy(deep=True)
 
         if not data_a.name:
-            data_a.name = shield
+            data_a.name = fast
         if not data_b.name:
-            data_b.name = spear
+            data_b.name = slow
 
         if suffix:
             suffix = '_' + suffix
@@ -2957,6 +2952,75 @@ class Symbol(object):
             self.df.loc[:, column_name] = cross
 
         return cross
+
+    def shift(self,
+              column: str or int or pd.Series,
+              window=1,
+              inplace=True,
+              suffix: str = '',
+              color: str or int = 'grey'
+              ):
+        """
+
+        :param column:
+        :param window:
+        :param inplace:
+        :param suffix:
+        :param color:
+        :return:
+        """
+        if type(column) == str:
+            data_a = self.df[column]
+        elif type(column) == int:
+            data_a = self.df.iloc[:, column]
+        else:
+            data_a = column.copy(deep=True)
+
+        if suffix:
+            suffix = '_' + suffix
+        column_name = f"Shift_{data_a.name}_{window}" + suffix
+        shift = handlers.indicators.shift_indicator(serie=data_a, window=window)
+        shift.name = column_name
+
+        if inplace and self.is_new(shift):
+            if data_a.name in self.row_control.keys():
+                row_pos = self.row_control[data_a.name]
+            elif data_a.name in ['High', 'Low', 'Close', 'Open']:
+                row_pos = 1
+            else:
+                self.row_counter += 1
+                row_pos = self.row_counter
+
+            self.set_plot_color(indicator_column=column_name, color=color)
+            self.set_plot_color_fill(indicator_column=column_name, color_fill=None)
+            self.set_plot_row(indicator_column=column_name, row_position=row_pos)
+            self.df.loc[:, column_name] = shift
+        return shift
+
+    def strategy_tag_cross(self):
+        """
+        Checks where all tags and cross columns get value "1" at the same time. And also gets points where all tags gets value of "0" and
+        cross columns get "-1" value.
+
+        :return pd.Series: A serie with "1" value where all columns are ones and "-1" where all columns are minus ones.
+        """
+        tag_columns = [c for c in self.df.columns if c.lower().startswith('tag_')]
+        cross_columns = [c for c in self.df.columns if c.lower().startswith('cross_')]
+
+        my_columns = tag_columns + cross_columns
+
+        temp_df = self.df.copy(deep=True)
+        temp_df = temp_df.loc[:, my_columns]
+
+        # remove zeros from cross columns
+        temp_df[cross_columns] = temp_df[cross_columns].replace({'0': np.nan, 0: np.nan})
+
+        bull_serie = (temp_df > 0).all(axis=1)
+        bear_serie = (temp_df <= 0).all(axis=1)
+
+        ret1 = pd.Series(1, index=bull_serie[bull_serie].index)
+        ret2 = pd.Series(-1, index=bear_serie[bear_serie].index)
+        return pd.concat([ret1, ret2]).sort_index()
 
 
 class Exchange(object):

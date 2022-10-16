@@ -1,3 +1,8 @@
+"""
+
+BinPan own indicators and utils.
+
+"""
 import numpy as np
 import pandas as pd
 
@@ -160,6 +165,11 @@ def zoom_cloud_indicators(plot_splitted_serie_couples: dict,
     :param int end_idx: A index to cut.
     :return dict: All indicators cut.
     """
+    try:
+        assert start_idx < end_idx <= len(main_index)
+    except AssertionError:
+        raise Exception(f"BinPan Plot Error: Zoom index not valid. Not start={start_idx} < end={end_idx} < len={len(main_index)}")
+
     ret = {}
     my_start = main_index[start_idx]
     my_end = main_index[end_idx]
@@ -173,3 +183,14 @@ def zoom_cloud_indicators(plot_splitted_serie_couples: dict,
 
         ret[k] = [v[0], v[1], cut_splits, v[3], v[4]]
     return ret
+
+
+def shift_indicator(serie: pd.Series, window: int = 1):
+    """
+    It shifts a candle ahead by the window argument value (or backwards if negative)
+
+    :param pd.Series serie: A pandas Series.
+    :param int window: Times values are shifted ahead. Default is 1.
+    :return pd.Series: A series with index adjusted to the new shifted positions of values.
+    """
+    return serie.shift(window, freq='infer')
