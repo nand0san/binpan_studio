@@ -452,8 +452,7 @@ class Symbol(object):
         if column and group:
             self.strategy_groups = handlers.tags.tag_strategy_group(column=column,
                                                                     group=group,
-                                                                    strategy_groups=strategy_groups,
-                                                                    df_columns=list(self.df.columns))
+                                                                    strategy_groups=strategy_groups)
         return self.strategy_groups
 
     def start_time(self):
@@ -2885,8 +2884,7 @@ class Symbol(object):
             if strategy_group:
                 self.strategy_groups = handlers.tags.tag_strategy_group(column=column_name,
                                                                         group=strategy_group,
-                                                                        strategy_groups=self.strategy_groups,
-                                                                        df_columns=list(self.df.columns))
+                                                                        strategy_groups=self.strategy_groups)
             self.row_counter += 1
 
             self.set_plot_color(indicator_column=column_name, color=color)
@@ -2980,8 +2978,7 @@ class Symbol(object):
             if strategy_group:
                 self.strategy_groups = handlers.tags.tag_strategy_group(column=column_name,
                                                                         group=strategy_group,
-                                                                        strategy_groups=self.strategy_groups,
-                                                                        df_columns=list(self.df.columns))
+                                                                        strategy_groups=self.strategy_groups)
             self.row_counter += 1
             self.set_plot_color(indicator_column=column_name, color=color)
             self.set_plot_color_fill(indicator_column=column_name, color_fill=None)
@@ -3026,8 +3023,7 @@ class Symbol(object):
             if strategy_group:
                 self.strategy_groups = handlers.tags.tag_strategy_group(column=column_name,
                                                                         group=strategy_group,
-                                                                        strategy_groups=self.strategy_groups,
-                                                                        df_columns=list(self.df.columns))
+                                                                        strategy_groups=self.strategy_groups)
             if data_a.name in self.row_control.keys():
                 row_pos = self.row_control[data_a.name]
             elif data_a.name in ['High', 'Low', 'Close', 'Open']:
@@ -3042,12 +3038,12 @@ class Symbol(object):
             self.df.loc[:, column_name] = shift
         return shift
 
-    def strategy_tag_cross(self,
-                           columns: list = None,
-                           strategy_group: str = '',
-                           inplace=True,
-                           suffix: str = '',
-                           color: str or int = 'magenta'):
+    def strategy_from_tags_crosses(self,
+                                   columns: list = None,
+                                   strategy_group: str = '',
+                                   inplace=True,
+                                   suffix: str = '',
+                                   color: str or int = 'magenta'):
         """
         Checks where all tags and cross columns get value "1" at the same time. And also gets points where all tags gets value of "0" and
         cross columns get "-1" value.

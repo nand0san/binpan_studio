@@ -135,27 +135,22 @@ def tag_cross(serie_a: pd.Series,
 
 def tag_strategy_group(column: str,
                        group: str,
-                       strategy_groups: dict,
-                       df_columns: list) -> dict:
+                       strategy_groups: dict) -> dict:
     """
     Tags a columns as part of a Strategy group of columns.
 
     :param str column: A column to tag with a strategy group.
     :param str group: Name of the group.
     :param str strategy_groups: The existing strategy groups.
-    :param pd.DataFrame df_columns: Existing columns in BinPan DataFrame.
     :return dict: Updated strategy groups of columns.
 
     """
-    if not column in df_columns:
-        raise Exception(f"BinPan Tags Exception: {column} not in DataFrame columns: {df_columns}")
 
     if not group in strategy_groups.keys():
         strategy_groups.update({group: [column]})
-
     else:
-        group_columns = strategy_groups[column]
-        group_columns.append(group)
+        group_columns = strategy_groups[group]
+        group_columns.append(column)
         strategy_groups.update({group: group_columns})
     return strategy_groups
 
