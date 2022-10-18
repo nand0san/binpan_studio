@@ -1,3 +1,7 @@
+"""
+BinPan Classes Main Module
+"""
+
 import pandas as pd
 import numpy as np
 from datetime import datetime
@@ -284,6 +288,12 @@ def get_exchange_limits(info_dict: dict = None) -> dict:
 
 
 def flatten_filter(filters: list) -> dict:
+    """
+    It flattens a dict to one level dictionary.
+
+    :param list filters: A dict with API filter data.
+    :return dict: A one level flattened dict with keys expanded with original sub-dicts.
+    """
     ret = {}
     for f in filters:
         head = f['filterType']
@@ -1023,7 +1033,13 @@ def convert_symbol_base_to_other_coin(decimal_mode: bool,
         raise Exception('BinPan Error: convert_symbol_base_to_other_coin breakpoint')
 
 
-def convert_utc_milliseconds(ms) -> str:
+def convert_utc_milliseconds(ms: int) -> str:
+    """
+    Converts milliseconds timestamp to formatted string.
+
+    :param int ms: Milliseconds linux timestamp from epoch.
+    :return str: Formatted date.
+    """
     seconds = int(ms) / 1000
     return str(datetime.utcfromtimestamp(seconds).strftime('%Y-%m-%d %H:%M:%S.%f'))
 

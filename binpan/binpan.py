@@ -314,6 +314,7 @@ class Symbol(object):
         self.global_axis_group = 99
         self.strategies = 0
         self.row_counter = 1
+        self.strategy_groups = {}
 
         self.set_display_columns()
         self.set_display_width()
@@ -435,6 +436,25 @@ class Symbol(object):
         :return str:
         """
         return self.tick_interval
+
+    def strategy_groups(self,
+                        column: str,
+                        group: str,
+                        strategy_groups: dict):
+        """
+        Returns strategy_groups for BinPan DataFrame.
+
+        :param str column: A column to tag with a strategy group.
+        :param str group: Name of the group.
+        :param str strategy_groups: The existing strategy groups.
+        :return dict: Updated strategy groups of columns.
+        """
+        if column and group:
+            self.strategy_groups = handlers.tags.tag_strategy_group(column=column,
+                                                                    group=group,
+                                                                    strategy_groups=strategy_groups,
+                                                                    df_columns=list(self.df.columns))
+        return self.strategy_groups
 
     def start_time(self):
         """
@@ -2787,6 +2807,7 @@ class Symbol(object):
             relation: str = 'gt',
             match_tag: str or int = 1,
             mismatch_tag: str or int = 0,
+            strategy_group: str = '',
             inplace=True,
             suffix: str = '',
             color: str or int = 'green') -> pd.Series:
@@ -2804,6 +2825,7 @@ class Symbol(object):
         :param pd.Series or str column: A numeric serie or column name or column index. Default is Close price.
         :param int or str match_tag: Value or string to tag matched relation.
         :param int or str mismatch_tag: Value or string to tag mismatched relation.
+        :param str strategy_group: A name for a group of columns to assign to a strategy.
         :param bool inplace: Permanent or not. Default is false, because of some testing required sometimes.
         :param str suffix: A string to decorate resulting Pandas series name.
         :param str or int color: A color from plotly list of colors or its index in that list.
@@ -2860,6 +2882,11 @@ class Symbol(object):
         compared.name = column_name
 
         if inplace and self.is_new(compared):
+            if strategy_group:
+                self.strategy_groups = handlers.tags.tag_strategy_group(column=column_name,
+                                                                        group=strategy_group,
+                                                                        strategy_groups=self.strategy_groups,
+                                                                        df_columns=list(self.df.columns))
             self.row_counter += 1
 
             self.set_plot_color(indicator_column=column_name, color=color)
@@ -2877,6 +2904,7 @@ class Symbol(object):
               cross_below_tag: str or int = -1,
               echo=0,
               non_zeros: bool = True,
+              strategy_group: str = '',
               inplace=True,
               suffix: str = '',
               color: str or int = 'green') -> pd.Series:
@@ -2890,6 +2918,7 @@ class Symbol(object):
         :param bool non_zeros: Result will not contain zeros as non tagged values, instead will be nans.
         :param int echo: It tags a fixed amount of candles forward the crossed point not including cross candle. If echo want to be used,
          must be used non_zeros.
+        :param str strategy_group: A name for a group of columns to assign to a strategy.
         :param bool inplace: Permanent or not. Default is false, because of some testing required sometimes.
         :param str suffix: A string to decorate resulting Pandas series name.
         :param str or int color: A color from plotly list of colors or its index in that list.
@@ -2948,6 +2977,11 @@ class Symbol(object):
                                         non_zeros=non_zeros)
 
         if inplace and self.is_new(cross):
+            if strategy_group:
+                self.strategy_groups = handlers.tags.tag_strategy_group(column=column_name,
+                                                                        group=strategy_group,
+                                                                        strategy_groups=self.strategy_groups,
+                                                                        df_columns=list(self.df.columns))
             self.row_counter += 1
             self.set_plot_color(indicator_column=column_name, color=color)
             self.set_plot_color_fill(indicator_column=column_name, color_fill=None)
@@ -2959,6 +2993,7 @@ class Symbol(object):
     def shift(self,
               column: str or int or pd.Series,
               window=1,
+              strategy_group: str = '',
               inplace=True,
               suffix: str = '',
               color: str or int = 'grey'
@@ -2968,6 +3003,7 @@ class Symbol(object):
 
         :param str or int or pd.Series column: Column to shift values.
         :param int window: Number of candles moved ahead.
+        :param str strategy_group: A name for a group of columns to assign to a strategy.
         :param bool inplace: Permanent or not. Default is false, because of some testing required sometimes.
         :param str suffix: A string to decorate resulting Pandas series name.
         :param str or int color: A color from plotly list of colors or its index in that list.
@@ -2987,6 +3023,11 @@ class Symbol(object):
         shift.name = column_name
 
         if inplace and self.is_new(shift):
+            if strategy_group:
+                self.strategy_groups = handlers.tags.tag_strategy_group(column=column_name,
+                                                                        group=strategy_group,
+                                                                        strategy_groups=self.strategy_groups,
+                                                                        df_columns=list(self.df.columns))
             if data_a.name in self.row_control.keys():
                 row_pos = self.row_control[data_a.name]
             elif data_a.name in ['High', 'Low', 'Close', 'Open']:
@@ -3003,6 +3044,7 @@ class Symbol(object):
 
     def strategy_tag_cross(self,
                            columns: list = None,
+                           strategy_group: str = '',
                            inplace=True,
                            suffix: str = '',
                            color: str or int = 'magenta'):
@@ -3011,6 +3053,8 @@ class Symbol(object):
         cross columns get "-1" value.
 
         :param list columns: A list of Tag and Cross columns with numeric o 1,0 for tags and 1,-1 for cross points.
+        :param str strategy_group: A name for a group of columns to restrict application of strategy. If both columns and strategy_group
+         passed, a interjection between the two arguments is applied.
         :param bool inplace: Permanent or not. Default is false, because of some testing required sometimes.
         :param str suffix: A string to decorate resulting Pandas series name.
         :param str or int color: A color from plotly list of colors or its index in that list.
@@ -3018,11 +3062,19 @@ class Symbol(object):
         """
         if columns:
             my_columns = columns
-            cross_columns = [c for c in self.df.columns if c.lower().startswith('cross_')]
+            cross_columns = [c for c in self.df.columns if c.lower().startswith('cross_')]  # used to keep out zeros
         else:
             tag_columns = [c for c in self.df.columns if c.lower().startswith('tag_')]
             cross_columns = [c for c in self.df.columns if c.lower().startswith('cross_')]
             my_columns = tag_columns + cross_columns
+
+        if strategy_group:
+            set_my_cols = set(my_columns)
+            set_strategy_group = set(self.strategy_groups[strategy_group])
+            if columns:
+                my_columns = list(set_my_cols.intersection(set_strategy_group))
+            else:
+                my_columns = self.strategy_groups[strategy_group]
 
         for col in my_columns:
             data_col = self.df[col].dropna()
@@ -3064,6 +3116,7 @@ class Symbol(object):
             self.set_plot_color_fill(indicator_column=column_name, color_fill=None)
             self.set_plot_row(indicator_column=column_name, row_position=row_pos)
             self.df.loc[:, column_name] = ret
+
         return ret
 
     def ffill(self,
