@@ -73,7 +73,7 @@ def tag_comparison(serie_a: pd.Series,
     :param int or str match_tag: Value to tag previous logic.
     :param mismatch_tag: Value to tag not matched previous logic.
     :param bool to_numeric: If true, if possible, downcast type until the most basic numeric type (integer)
-    :return pd.Series: A serie with tags as values.
+    :return pd.Series: A serie with tags (argument) as values.
     """
     ret = pd.Series(index=serie_a.index, dtype=type(match_tag))
 
