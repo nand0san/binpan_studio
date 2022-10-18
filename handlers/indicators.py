@@ -194,3 +194,14 @@ def shift_indicator(serie: pd.Series, window: int = 1):
     :return pd.Series: A series with index adjusted to the new shifted positions of values.
     """
     return serie.shift(window, freq='infer')
+
+
+def ffill_indicator(serie: pd.Series, window: int = 1):
+    """
+    It forward fills a value through nans through a window ahead.
+
+    :param pd.Series serie: A pandas Series.
+    :param int window: Times values are shifted ahead. Default is 1.
+    :return pd.Series: A series with index adjusted to the new shifted positions of values.
+    """
+    return serie.ffill(limit=window)

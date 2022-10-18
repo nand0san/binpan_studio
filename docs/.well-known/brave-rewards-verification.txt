@@ -1,0 +1,4 @@
+This is a Brave Rewards publisher verification file.
+
+Domain: nand0san.github.io
+Token: 2b7b72bb279dc0b593e40a85c4fb0efee27bb17091eb46f50fd42887afcc0a3b

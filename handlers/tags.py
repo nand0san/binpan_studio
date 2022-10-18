@@ -124,13 +124,14 @@ def tag_cross(serie_a: pd.Series,
 
     ret.name = name
     if non_zeros:
-        ret = ret.replace({'1': cross_over_tag, 1: cross_over_tag, '-1': cross_below_tag, -1: cross_below_tag, '0': np.nan, 0: np.nan})
+        ret = ret
     else:
         ret = ret.replace({'1': cross_over_tag, 1: cross_over_tag, '-1': cross_below_tag, -1: cross_below_tag})
 
     if echo:
         ret = ret.ffill(limit=echo)
     return ret
+
 
 ################
 # BACK TESTING #

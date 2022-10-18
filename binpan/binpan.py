@@ -32,7 +32,7 @@ import importlib
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
 
-__version__ = "0.2.30"
+__version__ = "0.2.31"
 
 try:
     from secret import redis_conf
@@ -3065,6 +3065,52 @@ class Symbol(object):
             self.set_plot_row(indicator_column=column_name, row_position=row_pos)
             self.df.loc[:, column_name] = ret
         return ret
+
+    def ffill(self,
+              column: str or int or pd.Series,
+              window: int = 1,
+              inplace=True,
+              replace=False,
+              suffix: str = '',
+              color: str or int = 'blue'):
+        """
+        It forward fills a value through nans through a window ahead.
+
+        :param str or int or pd.Series column: A pandas Series.
+        :param int window: Times values are shifted ahead. Default is 1.
+        :param bool replace: Permanent replace for a column with results.
+        :param bool inplace: Permanent or not. Default is false, because of some testing required sometimes.
+        :param str suffix: A string to decorate resulting Pandas series name.
+        :param str or int color: A color from plotly list of colors or its index in that list.
+        :return pd.Series: A series with index adjusted to the new shifted positions of values.
+        """
+        if type(column) == str:
+            serie = self.df[column]
+        elif type(column) == int:
+            serie = self.df.iloc[:, column]
+        else:
+            serie = column.copy(deep=True)
+
+        my_ffill = handlers.indicators.ffill_indicator(serie=serie, window=window)
+
+        if suffix:
+            suffix = '_' + suffix
+
+        self.strategies += 1
+        column_name = f"Ffill_{serie.name}_{self.strategies}" + suffix
+
+        my_ffill.name = column_name
+        if replace:
+            self.df.loc[:, serie.name] = my_ffill
+
+        if inplace and self.is_new(my_ffill):
+            self.row_counter += 1
+            row_pos = self.row_counter
+            self.set_plot_color(indicator_column=column_name, color=color)
+            self.set_plot_color_fill(indicator_column=column_name, color_fill=None)
+            self.set_plot_row(indicator_column=column_name, row_position=row_pos)
+            self.df.loc[:, column_name] = my_ffill
+        return my_ffill
 
 
 class Exchange(object):

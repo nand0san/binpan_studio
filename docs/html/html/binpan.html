@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BinPan Module &mdash; BinPan 0.2.30 documentation</title>
+  <title>BinPan Module &mdash; BinPan 0.2.31 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/style.css" type="text/css" />
@@ -468,6 +468,9 @@ exchange.</p></li>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.strategy_tag_cross" title="binpan.binpan.Symbol.strategy_tag_cross"><code class="xref py py-obj docutils literal notranslate"><span class="pre">strategy_tag_cross</span></code></a>([columns, inplace, ...])</p></td>
 <td><p>Checks where all tags and cross columns get value &quot;1&quot; at the same time.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.ffill" title="binpan.binpan.Symbol.ffill"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ffill</span></code></a>(column[, window, inplace, replace, ...])</p></td>
+<td><p>It forward fills a value through nans through a window ahead.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1824,6 +1827,27 @@ cross columns get “-1” value.</p>
 </dd>
 <dt class="field-even">Return pd.Series</dt>
 <dd class="field-even"><p>A serie with “1” value where all columns are ones and “-1” where all columns are minus ones.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.binpan.Symbol.ffill">
+<span class="sig-name descname"><span class="pre">ffill</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'blue'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.binpan.Symbol.ffill" title="Permalink to this definition"></a></dt>
+<dd><p>It forward fills a value through nans through a window ahead.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>column</strong> (<em>str</em><em> or </em><em>int</em><em> or </em><em>pd.Series</em>) – A pandas Series.</p></li>
+<li><p><strong>window</strong> (<em>int</em>) – Times values are shifted ahead. Default is 1.</p></li>
+<li><p><strong>replace</strong> (<em>bool</em>) – Permanent replace for a column with results.</p></li>
+<li><p><strong>inplace</strong> (<em>bool</em>) – Permanent or not. Default is false, because of some testing required sometimes.</p></li>
+<li><p><strong>suffix</strong> (<em>str</em>) – A string to decorate resulting Pandas series name.</p></li>
+<li><p><strong>color</strong> (<em>str</em><em> or </em><em>int</em>) – A color from plotly list of colors or its index in that list.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.Series</dt>
+<dd class="field-even"><p>A series with index adjusted to the new shifted positions of values.</p>
 </dd>
 </dl>
 </dd></dl>
