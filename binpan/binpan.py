@@ -325,9 +325,15 @@ class Symbol(object):
 
             self.df.index.name = index_name
             self.limit = len(self.df)
-            self.closed = closed
-            if closed:
-                self.df = self.df[self.df['Close timestamp'] <= int(time()*1000)]
+
+            if from_csv:
+                last_timestamp_ind_df = self.df.iloc[-1]['Close timestamp']
+                if last_timestamp_ind_df >= int(time()*1000):
+                    self.closed = False
+                else:
+                    self.closed = True
+            else:
+                self.closed = closed
 
         else:
             self.symbol = symbol.upper()
