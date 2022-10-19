@@ -33,6 +33,7 @@ from time import time
 
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
+pandas_freq_tick_interval = handlers.time_helper.pandas_freq_tick_interval
 
 __version__ = "0.2.32"
 
@@ -294,12 +295,13 @@ class Symbol(object):
                 filename = handlers.files.select_file(path=os.getcwd(), extension='csv')
 
             binpan_logger.info(f"Loading {filename}")
-            # load and nto numeric
-            df = handlers.files.read_csv_to_dataframe(filename=filename)
-            for col in df.columns:
-                df[col] = pd.to_numeric(arg=df[col], downcast='integer', errors='ignore')
-            self.df = df
 
+            # load and to numeric types
+            df_ = handlers.files.read_csv_to_dataframe(filename=filename)
+            for col in df_.columns:
+                df_[col] = pd.to_numeric(arg=df_[col], downcast='integer', errors='ignore')
+
+            # basic metadata
             filename = str(os.path.basename(filename))
             symbol = filename.split()[0]
             self.symbol = symbol
@@ -307,19 +309,22 @@ class Symbol(object):
             self.tick_interval = tick_interval
             start_time = int(filename.split()[3])
             end_time = int(filename.split()[4].split('.')[0])
-            index_name = f"{symbol} {tick_interval} {time_zone}"
             time_zone = filename.split()[2].replace('-', '/')
+            index_name = f"{symbol} {tick_interval} {time_zone}"
             self.time_zone = time_zone
-            self.limit = len(self.df)
 
             if time_index:
-                self.df.sort_values('Open timestamp', inplace=True)
-                new_index = pd.to_datetime(self.df['Open timestamp'], unit='ms').dt.tz_localize(time_zone)
-                self.df.index = new_index
+                df_.sort_values('Open timestamp', inplace=True)
+                idx = pd.DatetimeIndex(pd.to_datetime(df_['Open timestamp'], unit='ms')).tz_localize('UTC').tz_convert('Europe/Madrid')
+                df_.index = idx
+                df_ = df_.asfreq(pandas_freq_tick_interval[tick_interval])  # this adds freq, infer will not work if API blackout period
+                self.df = df_
+                # drops API blackout periods, but throw errors upwards with some indicators because freq=None before drop.
+                # self.df.dropna(how='all', inplace=True)
                 self.time_index = True
 
             self.df.index.name = index_name
-
+            self.limit = len(self.df)
             self.closed = closed
             if closed:
                 self.df = self.df[self.df['Close timestamp'] <= int(time()*1000)]
