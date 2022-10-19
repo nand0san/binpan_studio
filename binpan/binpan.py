@@ -3,6 +3,7 @@
 This is the main classes file.
 
 """
+import os
 
 import pandas as pd
 import numpy as np
@@ -28,6 +29,7 @@ import handlers.indicators
 import pandas_ta as ta
 from random import choice
 import importlib
+from time import time
 
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
@@ -156,6 +158,8 @@ class Symbol(object):
     :param int display_columns:     Number of columns in the dataframe display. Convenient to adjust in jupyter notebooks.
     :param int display_rows:        Number of rows in the dataframe display. Convenient to adjust in jupyter notebooks.
     :param int display_width:       Display width in the dataframe display. Convenient to adjust in jupyter notebooks.
+    :param bool or str from_csv:    If True, gets data from a csv file by selecting interactively from csv files found.
+     Also a string with filename can be used.
 
     Examples:
 
@@ -225,8 +229,8 @@ class Symbol(object):
     """
 
     def __init__(self,
-                 symbol: str,
-                 tick_interval: str,
+                 symbol: str = None,
+                 tick_interval: str = None,
                  start_time: int or str = None,
                  end_time: int or str = None,
                  limit: int = 1000,
@@ -237,7 +241,8 @@ class Symbol(object):
                  display_columns=25,
                  display_rows=10,
                  display_min_rows=25,
-                 display_width=320):
+                 display_width=320,
+                 from_csv: bool or str = False):
 
         try:
             secret_module = importlib.import_module('secret')
@@ -253,11 +258,15 @@ class Symbol(object):
             self.api_key = "INSERT API KEY"
             self.api_secret = "INSERT API KEY"
 
-        if not symbol.isalnum():
+        if not symbol and not from_csv:
+            raise Exception(f"BinPan symbol Error: symbol needed")
+
+        if not from_csv and not symbol.isalnum():
             binpan_logger.error(f"BinPan error: Ilegal characters in symbol.")
 
         # check correct tick interval passed
-        tick_interval = handlers.time_helper.check_tick_interval(tick_interval)
+        if not from_csv:
+            tick_interval = handlers.time_helper.check_tick_interval(tick_interval)
 
         self.original_candles_cols = ['Open time', 'Open', 'High', 'Low', 'Close', 'Volume', 'Close time', 'Quote volume',
                                       'Trades', 'Taker buy base volume', 'Taker buy quote volume', 'Ignore']
@@ -278,15 +287,54 @@ class Symbol(object):
         self.dts_time_cols = ['Open timestamp', 'Close timestamp']
 
         self.version = __version__
-        self.symbol = symbol.upper()
+        if from_csv:
+            if type(from_csv) == str:
+                filename = from_csv
+            else:
+                filename = handlers.files.select_file(path=os.getcwd(), extension='csv')
+
+            binpan_logger.info(f"Loading {filename}")
+            # load and nto numeric
+            df = handlers.files.read_csv_to_dataframe(filename=filename)
+            for col in df.columns:
+                df[col] = pd.to_numeric(arg=df[col], downcast='integer', errors='ignore')
+            self.df = df
+
+            filename = str(os.path.basename(filename))
+            symbol = filename.split()[0]
+            self.symbol = symbol
+            tick_interval = filename.split()[1]
+            self.tick_interval = tick_interval
+            start_time = int(filename.split()[3])
+            end_time = int(filename.split()[4].split('.')[0])
+            index_name = f"{symbol} {tick_interval} {time_zone}"
+            time_zone = filename.split()[2].replace('-', '/')
+            self.time_zone = time_zone
+            self.limit = len(self.df)
+
+            if time_index:
+                self.df.sort_values('Open timestamp', inplace=True)
+                new_index = pd.to_datetime(self.df['Open timestamp'], unit='ms').dt.tz_localize(time_zone)
+                self.df.index = new_index
+                self.time_index = True
+
+            self.df.index.name = index_name
+
+            self.closed = closed
+            if closed:
+                self.df = self.df[self.df['Close timestamp'] <= int(time()*1000)]
+
+        else:
+            self.symbol = symbol.upper()
+            self.tick_interval = tick_interval
+            self.start_time = start_time
+            self.end_time = end_time
+            self.limit = limit
+            self.time_zone = time_zone
+            self.time_index = time_index
+            self.closed = closed
+
         self.fees = self.get_fees(symbol=self.symbol)
-        self.tick_interval = tick_interval
-        self.start_time = start_time
-        self.end_time = end_time
-        self.limit = limit
-        self.time_zone = time_zone
-        self.time_index = time_index
-        self.closed = closed
 
         if from_redis:
             if type(from_redis) == bool:
@@ -356,22 +404,24 @@ class Symbol(object):
         #################
         # query candles #
         #################
+        if not from_csv:
+            self.raw = handlers.market.get_candles_by_time_stamps(symbol=self.symbol,
+                                                                  tick_interval=self.tick_interval,
+                                                                  start_time=self.start_time,
+                                                                  end_time=self.end_time,
+                                                                  limit=self.limit,
+                                                                  redis_client=self.from_redis)
 
-        self.raw = handlers.market.get_candles_by_time_stamps(symbol=self.symbol,
-                                                              tick_interval=self.tick_interval,
-                                                              start_time=self.start_time,
-                                                              end_time=self.end_time,
-                                                              limit=self.limit,
-                                                              redis_client=self.from_redis)
+            dataframe = handlers.market.parse_candles_to_dataframe(raw_response=self.raw,
+                                                                   columns=self.original_candles_cols,
+                                                                   time_cols=self.time_cols,
+                                                                   symbol=self.symbol,
+                                                                   tick_interval=self.tick_interval,
+                                                                   time_zone=self.time_zone,
+                                                                   time_index=self.time_index)
+            self.df = dataframe
 
-        dataframe = handlers.market.parse_candles_to_dataframe(raw_response=self.raw,
-                                                               columns=self.original_candles_cols,
-                                                               time_cols=self.time_cols,
-                                                               symbol=self.symbol,
-                                                               tick_interval=self.tick_interval,
-                                                               time_zone=self.time_zone,
-                                                               time_index=self.time_index)
-        self.df = dataframe
+        self.timestamps = self.get_timestamps()
         self.plot_splitted_serie_couples = {}
         self.len = len(self.df)
 
@@ -511,6 +561,26 @@ class Symbol(object):
         :return dict:
         """
         return self.info_dic
+
+    def save_csv(self,
+                 timestamped: bool = True):
+        """
+        Saves current csv to a csv file.
+
+        :param bool timestamped: Adds start and end timestamps to the name.
+        :return:
+        """
+        df_ = self.df
+        if timestamped:
+            start, end = self.get_timestamps()
+            filename = f"{df_.index.name.replace('/', '-')} {start} {end}.csv"
+        else:
+            filename = f"{df_.index.name.replace('/', '-')}.csv"
+
+        handlers.files.save_dataframe_to_csv(filename=filename,
+                                             data=df_,
+                                             timestamp=not timestamped)
+        binpan_logger.info(f"Saved file {filename}")
 
     ##################
     # pandas display #
@@ -811,7 +881,7 @@ class Symbol(object):
         else:
             return df_
 
-    def timestamps(self):
+    def get_timestamps(self):
         """
         Get the first Open timestamp and the last Close timestamp.
 
