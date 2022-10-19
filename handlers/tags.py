@@ -1,9 +1,14 @@
+"""
+
+Tagging utils.
+
+"""
 import pandas as pd
 import numpy as np
 
 
 def tag_value(serie: pd.Series,
-              value: int or float or dd,
+              value: int or float,
               gt: bool = False,
               ge: bool = False,
               eq: bool = False,
@@ -153,6 +158,20 @@ def tag_strategy_group(column: str,
         group_columns.append(column)
         strategy_groups.update({group: group_columns})
     return strategy_groups
+
+
+def merge_series(predominant: pd.Series,
+                 other: pd.Series) -> pd.Series:
+    """
+    Predominant serie will be filled nans with values, if existing, from the other serie.
+    
+    Same kind of index needed.
+    
+    :param pd.Series predominant: A serie with nans to fill from other serie.
+    :param pd.Series other: A serie to pick values for the nans.
+    :return pd.Series: A merged serie. 
+    """
+    return predominant.combine_first(other=other)
 
 
 ################

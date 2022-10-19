@@ -328,7 +328,7 @@ class Symbol(object):
 
             if from_csv:
                 last_timestamp_ind_df = self.df.iloc[-1]['Close timestamp']
-                if last_timestamp_ind_df >= int(time()*1000):
+                if last_timestamp_ind_df >= int(time() * 1000):
                     self.closed = False
                 else:
                     self.closed = True
@@ -2983,7 +2983,7 @@ class Symbol(object):
               cross_below_tag: str or int = -1,
               echo=0,
               non_zeros: bool = True,
-              strategy_group: str = '',
+              strategy_group: str = None,
               inplace=True,
               suffix: str = '',
               color: str or int = 'green') -> pd.Series:
@@ -3119,12 +3119,76 @@ class Symbol(object):
             self.df.loc[:, column_name] = shift
         return shift
 
+    def merge_columns(self,
+                      main_column: str or int or pd.Series,
+                      other_column: str or int or pd.Series,
+                      strategy_group: str = '',
+                      inplace=True,
+                      suffix: str = '',
+                      color: str or int = 'grey'
+                      ):
+        """
+        Predominant serie will be filled nans with values, if existing, from the other serie.
+
+        Same kind of index needed.
+
+        :param pd.Series main_column: A serie with nans to fill from other serie.
+        :param pd.Series other_column: A serie to pick values for the nans.
+        :param str strategy_group: A name for a group of columns to assign to a strategy.
+        :param bool inplace: Permanent or not. Default is false, because of some testing required sometimes.
+        :param str suffix: A string to decorate resulting Pandas series name.
+        :param str or int color: A color from plotly list of colors or its index in that list.
+        :return pd.Series: A merged serie.
+        """
+        if type(main_column) == str:
+            data_a = self.df[main_column]
+        elif type(main_column) == int:
+            data_a = self.df.iloc[:, main_column]
+        else:
+            data_a = main_column.copy(deep=True)
+
+        if type(other_column) == str:
+            data_b = self.df[other_column]
+        elif type(other_column) == int:
+            data_b = self.df.iloc[:, other_column]
+        else:
+            data_b = other_column.copy(deep=True)
+
+        merged = handlers.tags.merge_series(predominant=data_a,
+                                            other=data_b)
+        if suffix:
+            suffix = '_' + suffix
+        column_name = f"Merged_{data_a.name}_{data_b.name}" + suffix
+        merged.name = column_name
+
+        if inplace and self.is_new(merged):
+            if strategy_group:
+                self.strategy_groups = handlers.tags.tag_strategy_group(column=column_name,
+                                                                        group=strategy_group,
+                                                                        strategy_groups=self.strategy_groups)
+            if data_a.name in self.row_control.keys():
+                row_pos = self.row_control[data_a.name]
+            elif data_a.name in ['High', 'Low', 'Close', 'Open']:
+                row_pos = 1
+            else:
+                self.row_counter += 1
+                row_pos = self.row_counter
+
+            self.set_plot_color(indicator_column=column_name, color=color)
+            self.set_plot_color_fill(indicator_column=column_name, color_fill=None)
+            self.set_plot_row(indicator_column=column_name, row_position=row_pos)
+            self.df.loc[:, column_name] = merged
+
     def strategy_from_tags_crosses(self,
                                    columns: list = None,
                                    strategy_group: str = '',
+                                   tag_reversed_match: bool = False,
+                                   match_tag=1,
+                                   method: str = 'all',
                                    inplace=True,
                                    suffix: str = '',
-                                   color: str or int = 'magenta'):
+                                   color: str or int = 'magenta',
+                                   reversed_match=-1):
         """
         Checks where all tags and cross columns get value "1" at the same time. And also gets points where all tags gets value of "0" and
         cross columns get "-1" value.
@@ -3132,6 +3196,11 @@ class Symbol(object):
         :param list columns: A list of Tag and Cross columns with numeric o 1,0 for tags and 1,-1 for cross points.
         :param str strategy_group: A name for a group of columns to restrict application of strategy. If both columns and strategy_group
          passed, a interjection between the two arguments is applied.
+        :param bool tag_reversed_match: If enabled, all zeros or minus ones tag and cross columns are interpreted as reversed match,
+         this will enable tagging those.
+        :param any reversed_match: A tag for the all not matched strategy rows.
+        :param any match_tag: A tag for the strategy matched rows.
+        :param str method: Can be 'all' or 'any'. It produces a match when all or any columns are ones.
         :param bool inplace: Permanent or not. Default is false, because of some testing required sometimes.
         :param str suffix: A string to decorate resulting Pandas series name.
         :param str or int color: A color from plotly list of colors or its index in that list.
@@ -3152,6 +3221,7 @@ class Symbol(object):
                 my_columns = list(set_my_cols.intersection(set_strategy_group))
             else:
                 my_columns = self.strategy_groups[strategy_group]
+                cross_columns = [c for c in my_columns if c.lower().startswith('cross_')]
 
         for col in my_columns:
             data_col = self.df[col].dropna()
@@ -3162,22 +3232,32 @@ class Symbol(object):
             except AssertionError:
                 raise Exception(f"BinPan Strategic Exception: Not numerica labels on {col}: {list(data_col.value_counts().index)}")
 
-        # tag_columns = [c for c in my_columns if c.lower().startswith('tag_')]
-        # cross_columns = [c for c in my_columns if c.lower().startswith('cross_')]
-
         temp_df = self.df.copy(deep=True)
         temp_df = temp_df.loc[:, my_columns]
 
         # remove zeros from cross columns
         temp_df[cross_columns] = temp_df[cross_columns].replace({'0': np.nan, 0: np.nan})
 
-        bull_serie = (temp_df > 0).all(axis=1)
-        bear_serie = (temp_df <= 0).all(axis=1)
+        # matching magic
+        if method == 'all':
+            bull_serie = (temp_df > 0).all(axis=1)
+        elif method == 'any':
+            bull_serie = (temp_df > 0).any(axis=1)
+        else:
+            raise Exception(f"BinPan Strategy Exception: Method not 'all' or 'any' -> {method}")
 
-        ret1 = pd.Series(1, index=bull_serie[bull_serie].index)
-        ret2 = pd.Series(-1, index=bear_serie[bear_serie].index)
+        ret = pd.Series(match_tag, index=bull_serie[bull_serie].index)
 
-        ret = pd.concat([ret1, ret2]).sort_index()
+        if tag_reversed_match:
+            if method == 'all':
+                bear_serie = (temp_df <= 0).all(axis=1)
+            elif method == 'any':
+                bear_serie = (temp_df <= 0).any(axis=1)
+            else:
+                raise Exception(f"BinPan Strategy Exception: Method not 'all' or 'any' -> {method}")
+
+            ret_reversed = pd.Series(reversed_match, index=bear_serie[bear_serie].index)
+            ret = pd.concat([ret, ret_reversed]).sort_index()
 
         if suffix:
             suffix = '_' + suffix

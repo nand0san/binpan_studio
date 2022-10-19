@@ -5,6 +5,7 @@ BinPan own indicators and utils.
 """
 import numpy as np
 import pandas as pd
+from handlers.time_helper import pandas_freq_tick_interval
 
 
 ##############
@@ -50,7 +51,9 @@ def ichimoku(data: pd.DataFrame,
 
     """
     df = data.copy(deep=True)
-    # freq = pd.infer_freq(df.index)
+
+    tick_interval = df.index.name.split()[1]
+    df = df.asfreq(pandas_freq_tick_interval[tick_interval])
 
     high = df['High']
     low = df['Low']
@@ -78,6 +81,7 @@ def ichimoku(data: pd.DataFrame,
                    f"Ichimoku_chikou_span{chikou_span}"+suffix,
                    f"Ichimoku_cloud_{tenkan}_{kijun}"+suffix,
                    f"Ichimoku_cloud_{senkou_cloud_base}"+suffix]
+    # return ret.dropna(how='all', inplace=True)
     return ret
 
 
