@@ -712,6 +712,18 @@ class Symbol(object):
             if inplace:
                 conserve_columns = [c for c in current_columns if c not in columns_to_drop and c in self.row_control.keys()]
                 # conserve_columns = [c for c in current_columns if c not in columns_to_drop]
+
+                # clean strategy groups
+                clean_strategy_groups = {}
+                for k, v in self.strategy_groups.items():
+                    clean_strategy_groups[k] = []
+                    for col in v:
+                        if col in conserve_columns:
+                            clean_strategy_groups[k].append(col)
+
+                clean_strategy_groups = {k: v for k, v in clean_strategy_groups.items() if v}
+                self.strategy_groups = clean_strategy_groups
+
                 self.row_control = {c: self.row_control[c] for c in conserve_columns}
                 extra_rows = set(self.row_control.values())
                 try:
@@ -742,9 +754,9 @@ class Symbol(object):
             else:
                 return self.df.drop(columns_to_drop, axis=1, inplace=False)
 
-        except KeyError:
+        except KeyError as exc:
             wrong = (set(self.df.columns) | set(columns_to_drop)) - set(self.df.columns)
-            msg = f"BinPan Exception: Wrong column names to drop: {wrong}"
+            msg = f"BinPan Exception: Wrong column names to drop: {wrong} {exc}"
             binpan_logger.error(msg)
             raise Exception(msg)
 
@@ -1476,7 +1488,9 @@ class Symbol(object):
                           label_buy: str = 'buy',
                           label_sell: str = 'sell') -> dict:
         """
-        Sets labels to use whe backtesting over a column of actions.
+        Sets labels to use when backtesting over a column of actions.
+
+        DEPRECATED.
 
         :param str indicator_column: A column name of a BinPan dataframe colum.
         :param str label_buy: A label to register a sell point.
@@ -1550,7 +1564,8 @@ class Symbol(object):
                     colors: list = ['cornflowerblue', 'blue']) -> pd.DataFrame or pd.Series:
 
         """
-        Simulates buys and sells using labels in a tagged column with actions.
+        Simulates buys and sells using labels in a tagged column with actions. Actions are considered before the tag, in the next
+        candle using priced_actions_col price of that candle before.
 
         :param str or int actions_col: A column name or index.
         :param float base: Base inverted quantity.
@@ -2979,7 +2994,7 @@ class Symbol(object):
             self.set_plot_color(indicator_column=column_name, color=color)
             self.set_plot_color_fill(indicator_column=column_name, color_fill=None)
             self.set_plot_row(indicator_column=column_name, row_position=self.row_counter)  # overlaps are one
-            self.set_action_labels(indicator_column=column_name, label_buy='buy', label_sell='sell')
+            # self.set_action_labels(indicator_column=column_name, label_buy='buy', label_sell='sell')
             self.df.loc[:, column_name] = compared
 
         return compared
