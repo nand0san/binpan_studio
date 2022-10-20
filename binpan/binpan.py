@@ -498,10 +498,10 @@ class Symbol(object):
         """
         return self.tick_interval
 
-    def strategy_groups(self,
-                        column: str,
-                        group: str,
-                        strategy_groups: dict):
+    def set_strategy_groups(self,
+                            column: str,
+                            group: str,
+                            strategy_groups: dict):
         """
         Returns strategy_groups for BinPan DataFrame.
 
@@ -515,6 +515,14 @@ class Symbol(object):
                                                                     group=group,
                                                                     strategy_groups=strategy_groups)
         return self.strategy_groups
+
+    def get_strategy_columns(self) -> list:
+        """
+        Returns column names starting with "Strategy".
+        :return dict: Updated strategy groups of columns.
+        """
+
+        return [i for i in self.df.columns if i.lower().startswith('strategy')]
 
     def start_time(self):
         """
@@ -3122,6 +3130,7 @@ class Symbol(object):
     def merge_columns(self,
                       main_column: str or int or pd.Series,
                       other_column: str or int or pd.Series,
+                      sign_other: dict = {1: -1},
                       strategy_group: str = '',
                       inplace=True,
                       suffix: str = '',
@@ -3134,6 +3143,7 @@ class Symbol(object):
 
         :param pd.Series main_column: A serie with nans to fill from other serie.
         :param pd.Series other_column: A serie to pick values for the nans.
+        :param dict sign_other: Replace values by a dict for the "other column". Default is: {1: -1}
         :param str strategy_group: A name for a group of columns to assign to a strategy.
         :param bool inplace: Permanent or not. Default is false, because of some testing required sometimes.
         :param str suffix: A string to decorate resulting Pandas series name.
@@ -3153,6 +3163,9 @@ class Symbol(object):
             data_b = self.df.iloc[:, other_column]
         else:
             data_b = other_column.copy(deep=True)
+
+        if sign_other:
+            data_b = data_b.replace(sign_other)
 
         merged = handlers.tags.merge_series(predominant=data_a,
                                             other=data_b)
@@ -3178,6 +3191,7 @@ class Symbol(object):
             self.set_plot_color_fill(indicator_column=column_name, color_fill=None)
             self.set_plot_row(indicator_column=column_name, row_position=row_pos)
             self.df.loc[:, column_name] = merged
+        return merged
 
     def strategy_from_tags_crosses(self,
                                    columns: list = None,
