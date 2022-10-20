@@ -724,6 +724,8 @@ class Symbol(object):
                 clean_strategy_groups = {k: v for k, v in clean_strategy_groups.items() if v}
                 self.strategy_groups = clean_strategy_groups
 
+                binpan_logger.debug(f"row_control: {self.row_control}")
+
                 self.row_control = {c: self.row_control[c] for c in conserve_columns}
                 extra_rows = set(self.row_control.values())
                 try:
@@ -734,7 +736,16 @@ class Symbol(object):
 
                 # reacondicionar rows de lo que ha quedado
                 unique_rows_index = {v: i + 2 for i, v in enumerate(extra_rows)}
-                self.row_control = {c: unique_rows_index[self.row_control[c]] for c in conserve_columns}
+                binpan_logger.debug(f"conserve_columns: {conserve_columns} unique_rows_index: {unique_rows_index} extra_rows: {extra_rows}")
+
+                new_row_control = {}
+                for c in conserve_columns:
+                    if self.row_control[c] in unique_rows_index.keys():
+                        new_row_control.update({c: unique_rows_index[self.row_control[c]]})
+                    else:
+                        new_row_control.update({c: 1})  # not existing row for a line goes to 1 row
+                self.row_control = new_row_control
+                # self.row_control = {c: unique_rows_index[self.row_control[c]] if c in self.row_control.keys() else 1 for c in conserve_columns}
 
                 # clean plotting areas info
                 self.plot_splitted_serie_couples = {c: self.plot_splitted_serie_couples[c] for c in conserve_columns if
