@@ -160,6 +160,11 @@ def tag_strategy_group(column: str,
     return strategy_groups
 
 
+################
+# merge series #
+################
+
+
 def merge_series(predominant: pd.Series,
                  other: pd.Series) -> pd.Series:
     """
@@ -172,6 +177,39 @@ def merge_series(predominant: pd.Series,
     :return pd.Series: A merged serie. 
     """
     return predominant.combine_first(other=other)
+
+
+def clean_in_out(serie: pd.Series,
+                 df: pd.DataFrame,
+                 in_tag=1,
+                 out_tag=-1) -> pd.Series:
+    """
+    Balance from in tag to first out tag and discards any other tag until next in tag.
+
+    :param pd.Series serie: A serie with in and out tags.
+    :param pd.DataFrame df: BinPan dataframe.
+    :param in_tag: Tag for in tags. Default is 1.
+    :param out_tag: Tag for out tags. Default is -1.
+    :return pd.Series: Clean serie with ech in with next out.
+    """
+
+    ret = pd.Series(index=serie.index)
+
+    last_tag = np.nan
+
+    for idx, value in serie.iteritems():
+
+        if value == out_tag and last_tag != out_tag:
+            ret[idx] = value
+            last_tag = value
+
+        elif value == in_tag and last_tag != in_tag:
+            ret[idx] = value
+
+        if value == in_tag or value == out_tag:
+            last_tag = value
+
+    return ret
 
 
 ################

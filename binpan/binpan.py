@@ -3193,6 +3193,65 @@ class Symbol(object):
             self.df.loc[:, column_name] = merged
         return merged
 
+    def clean_in_out(self,
+                     column: str or int or pd.Series,
+                     in_tag=1,
+                     out_tag=-1,
+                     strategy_group: str = '',
+                     inplace=True,
+                     suffix: str = '',
+                     color: str or int = 'grey'):
+        """
+        Predominant serie will be filled nans with values, if existing, from the other serie.
+
+        Same kind of index needed.
+
+        :param pd.Series column: A column to clean in and out values.
+        :param in_tag: Tag for in tags. Default is 1.
+        :param out_tag: Tag for out tags. Default is -1.
+        :param str strategy_group: A name for a group of columns to assign to a strategy.
+        :param bool inplace: Permanent or not. Default is false, because of some testing required sometimes.
+        :param str suffix: A string to decorate resulting Pandas series name.
+        :param str or int color: A color from plotly list of colors or its index in that list.
+        :return pd.Series: A merged serie.
+        """
+        if type(column) == str:
+            data_a = self.df[column]
+        elif type(column) == int:
+            data_a = self.df.iloc[:, column]
+        else:
+            data_a = column.copy(deep=True)
+
+        clean = handlers.tags.clean_in_out(serie=data_a,
+                                           df=self.df,
+                                           in_tag=in_tag,
+                                           out_tag=out_tag)
+        if suffix:
+            suffix = '_' + suffix
+        column_name = f"Clean_{data_a.name}" + suffix
+
+        clean.name = column_name
+
+        if inplace and self.is_new(clean):
+            if strategy_group:
+                self.strategy_groups = handlers.tags.tag_strategy_group(column=column_name,
+                                                                        group=strategy_group,
+                                                                        strategy_groups=self.strategy_groups)
+            if data_a.name in self.row_control.keys():
+                row_pos = self.row_control[data_a.name]
+            elif data_a.name in ['High', 'Low', 'Close', 'Open']:
+                row_pos = 1
+            else:
+                self.row_counter += 1
+                row_pos = self.row_counter
+
+            self.set_plot_color(indicator_column=column_name, color=color)
+            self.set_plot_color_fill(indicator_column=column_name, color_fill=None)
+            self.set_plot_row(indicator_column=column_name, row_position=row_pos)
+            self.df.loc[:, column_name] = clean
+
+        return clean
+
     def strategy_from_tags_crosses(self,
                                    columns: list = None,
                                    strategy_group: str = '',
