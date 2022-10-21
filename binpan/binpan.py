@@ -876,8 +876,8 @@ class Symbol(object):
 
         if self.is_new(source_data=data, suffix=''):  # suffix is added before this to names
 
-            last_row = self.row_counter
-            rows = [r + last_row - 1 if r != 1 else 1 for r in rows]  # downcast rows to available except 1 (overlap)
+            rows_tags = {row: i+self.row_counter+1 for i, row in enumerate(sorted(list(set(rows))))}
+            rows = [rows_tags[r] if r != 1 else 1 for r in rows]  # downcast rows to available except 1 (overlap)
 
             for i, serie in enumerate(data_series):
                 column_name = str(serie.name)  # suffix is added before this to names
@@ -1205,13 +1205,13 @@ class Symbol(object):
 
         rows_pos = [self.row_control[k] for k in self.row_control.keys()]
 
-        if actions_col:
-            if not labels:
-                labels = ['over', 'below']
-            if not markers:
-                markers = ['arrow-bar-up', 'arrow-bar-down']
-            if not marker_colors:
-                marker_colors = ['green', 'red']
+        # if actions_col:
+        if not labels:
+            labels = ['over', 'below']
+        if not markers:
+            markers = ['arrow-bar-up', 'arrow-bar-down']
+        if not marker_colors:
+            marker_colors = ['green', 'red']
 
         if zoom_start_idx is not None or zoom_end_idx is not None:
             zoomed_plot_splitted_serie_couples = handlers.indicators.zoom_cloud_indicators(self.plot_splitted_serie_couples,

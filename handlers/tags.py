@@ -360,4 +360,5 @@ def backtesting(df: pd.DataFrame,
     base_serie = pd.Series(base_wallet, index=df_.index, name=f"Wallet_base{suffix}")
     quote_serie = pd.Series(quote_wallet, index=df_.index, name=f"Wallet_quote{suffix}")
 
+    # TODO: evalueated progression
     return pd.DataFrame([base_serie, quote_serie]).T

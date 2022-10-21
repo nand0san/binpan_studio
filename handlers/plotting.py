@@ -73,7 +73,7 @@ def set_volume_series(df: pd.DataFrame, win: int = 21) -> tuple:
                       name='Down volume')
     vol_ewma = df['Volume'].ewm(span=win, min_periods=0, adjust=False, ignore_na=False).mean()
     # volume_ma = set_ta_scatter(df_, vol_ewma)
-    volume_ma = go.Scatter(x=df.index, y=vol_ewma, line=dict(color='black', width=0.5), name=f'Volume ewm {win}')
+    volume_ma = go.Scatter(x=df.index, y=vol_ewma, line=dict(color='black', width=0.5), name=f'Volume EMA {win}')
     return volume_g, volume_r, volume_ma, 3
 
 
@@ -521,7 +521,7 @@ def candles_ta(data: pd.DataFrame,
     cols += [1 for _ in range(len(tas))]
     traces += tas
 
-    # anotaciones, siempre van en la primera fila, la de las velas
+    # anotaciones, siempre van en la primera fila, la de las velas, son las flechas etc
     if annotation_values:
         annotations_traces = deploy_traces(annotations=annotation_values, colors=annotation_colors, markers=markers,
                                            text_positions=text_positions, mark_names=annotation_legend_names, tags=labels)
