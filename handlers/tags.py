@@ -281,7 +281,7 @@ def backtesting(df: pd.DataFrame,
                 label_buy='buy',
                 label_sell='sell',
                 suffix: str = '',
-                action_candles_lag=1) -> pd.DataFrame:
+                lag_action=1) -> pd.DataFrame:
     """
     Returns two pandas series as base wallet and quote wallet over time. Its expected a serie with strings like 'buy' or 'sell'.
     That serie is called the "actions". If it is available a column with the exact price of the actions, can be passed in
@@ -297,7 +297,7 @@ def backtesting(df: pd.DataFrame,
     :param float fee: Binance applicable fee for trading. DEfault is 0.001.
     :param str or int label_buy: A label consider as trade in trigger.
     :param str or int label_sell: A label consider as trade out trigger.
-    :param int action_candles_lag: Candles needed to confirm an action from action tag. Usually one candle. Example,
+    :param int lag_action: Candles needed to confirm an action from action tag. Usually one candle. Example,
        when an action like a cross of two EMA lines occur, it's needed to close that candle of the cross to confirm,
        then, nex candle can buy at open.
     :param str suffix: A suffix for the names of the columns.
@@ -325,8 +325,8 @@ def backtesting(df: pd.DataFrame,
 
     base_wallet, quote_wallet = [], []
 
-    last_action = 0
-    lag = action_candles_lag
+    last_action = 2314213  # any random thing
+    lag = lag_action
 
     for index, row in df_.iterrows():
         curr_action = actions_[index]
@@ -334,23 +334,19 @@ def backtesting(df: pd.DataFrame,
 
         if curr_action == label_buy and last_action != 'buy':
             last_action = 'buy'
-            # base, quote = buy_base_backtesting(row=row, price=price, base=base, quote=quote, fee=fee)
-            # last_action = label_buy
 
         elif curr_action == label_sell and last_action != 'sell':
             last_action = 'sell'
-            # base, quote = sell_base_backtesting(row=row, price=price, base=base, quote=quote, fee=fee)
-            # last_action = label_sell
 
         if last_action == 'buy' and lag == 0:
             base, quote = buy_base_backtesting(row=row, price=price, base=base, quote=quote, fee=fee)
             last_action = ''
-            lag = action_candles_lag
+            lag = lag_action
 
         elif last_action == 'sell' and lag == 0:
             base, quote = sell_base_backtesting(row=row, price=price, base=base, quote=quote, fee=fee)
             last_action = ''
-            lag = action_candles_lag
+            lag = lag_action
         elif last_action == 'buy' or last_action == 'sell':
             lag -= 1
 

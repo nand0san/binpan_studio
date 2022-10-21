@@ -1150,16 +1150,16 @@ class Symbol(object):
         return self.plot_splitted_serie_couples
 
     def plot(self,
-             width=1800,
-             height=1000,
+             width: int = 1800,
+             height: int = 1000,
              candles_ta_height_ratio: float = 0.75,
              volume: bool = True,
              title: str = None,
-             yaxis_title='Price',
+             yaxis_title: str = 'Price',
              overlapped_indicators: list = [],
-             priced_actions_col='Close',
+             priced_actions_col: str = 'Close',
              actions_col: str = None,
-             labels: list = [],
+             labels: dict = {'buy': 1, 'sell': -1},
              markers: list = None,
              marker_colors: list = None,
              background_color=None,
@@ -1174,18 +1174,19 @@ class Symbol(object):
            :width: 1000
            :alt: Candles with some indicators
 
-        :param width: Width of the plot.
-        :param height: Height of the plot.
-        :param candles_ta_height_ratio: Proportion between candles and the other indicators. Not considering overlap ones
+        :param int width: Width of the plot.
+        :param int height: Height of the plot.
+        :param float candles_ta_height_ratio: Proportion between candles and the other indicators. Not considering overlap ones
             in the candles plot.
-        :param volume: Plots volume.
-        :param title: A tittle for the plot.
-        :param yaxis_title: A title for the y axis.
-        :param overlapped_indicators: Can declare as overlap in the candles plot some column.
-        :param priced_actions_col: Priced actions to plot annotations over the candles, like buy, sell, etc. Under developing.
-        :param actions_col: A column containing actions like buy or sell. Under developing.
-        :param labels: Names for the annotations instead of the price.
-        :param markers: Plotly marker type. Usually, if referenced by number will be a not filled mark and using string name will be
+        :param bool volume: Plots volume.
+        :param str title: A tittle for the plot.
+        :param str yaxis_title: A title for the y axis.
+        :param list overlapped_indicators: Can declare as overlap in the candles plot some column.
+        :param str priced_actions_col: Priced actions to plot annotations over the candles, like buy, sell, etc. Under developing.
+        :param str actions_col: A column containing actions like buy or sell. Under developing.
+        :param dict labels: Names for the annotations instead of the price. For 'buy' tags and 'sell' tags.
+         Default is {'buy': 1, 'sell': -1}
+        :param list markers: Plotly marker type. Usually, if referenced by number will be a not filled mark and using string name will be
             a color filled one. Check plotly info: https://plotly.com/python/marker-style/
         :param list marker_colors: Colors of the annotations.
         :param str background_color: Sets background color. Select a valid plotly color name.
@@ -1207,11 +1208,11 @@ class Symbol(object):
 
         # if actions_col:
         if not labels:
-            labels = ['over', 'below']
-        if not markers:
-            markers = ['arrow-bar-up', 'arrow-bar-down']
-        if not marker_colors:
-            marker_colors = ['green', 'red']
+            labels = {'buy': 1, 'sell': -1}
+        # if not markers:
+        #     markers = ['arrow-bar-up', 'arrow-bar-down']
+        # if not marker_colors:
+        #     marker_colors = ['green', 'red']
 
         if zoom_start_idx is not None or zoom_end_idx is not None:
             zoomed_plot_splitted_serie_couples = handlers.indicators.zoom_cloud_indicators(self.plot_splitted_serie_couples,
@@ -1615,7 +1616,7 @@ class Symbol(object):
                                               label_buy=label_buy,
                                               label_sell=label_sell,
                                               priced_actions_col=priced_actions_col,
-                                              action_candles_lag=action_candles_lag,
+                                              lag_action=action_candles_lag,
                                               suffix=suffix)
 
         if inplace and self.is_new(wallet_df):
