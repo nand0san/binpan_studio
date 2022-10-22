@@ -404,6 +404,7 @@ def intermediate_conversion(coin: str,
     :param float coin_qty:
     :return float: converted value.
     """
+
     if not prices:
         prices = get_prices_dic(decimal_mode=decimal_mode)
 

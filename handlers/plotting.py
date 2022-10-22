@@ -73,7 +73,7 @@ def set_volume_series(df: pd.DataFrame, win: int = 21) -> tuple:
                       name='Down volume')
     vol_ewma = df['Volume'].ewm(span=win, min_periods=0, adjust=False, ignore_na=False).mean()
     # volume_ma = set_ta_scatter(df_, vol_ewma)
-    volume_ma = go.Scatter(x=df.index, y=vol_ewma, line=dict(color='black', width=0.5), name=f'Volume ewm {win}')
+    volume_ma = go.Scatter(x=df.index, y=vol_ewma, line=dict(color='black', width=0.5), name=f'Volume EMA {win}')
     return volume_g, volume_r, volume_ma, 3
 
 
@@ -83,7 +83,6 @@ def set_ta_scatter(df: pd.DataFrame,
                    color='blue',
                    name='Indicator',
                    text_position="bottom center"):
-
     return go.Scatter(x=df.index,
                       y=serie,
                       line=dict(color=color, width=0.1),
@@ -249,8 +248,8 @@ def candles_ta(data: pd.DataFrame,
                indicators_filled_mode: dict = None,
                axis_groups: dict = {},
                plot_splitted_serie_couple: dict = {},
-               width=1800,
-               height=1000,
+               width: int = 1800,
+               height: int = 1000,
                range_slider: bool = False,
                candles_ta_height_ratio: float = 0.5,
                plot_volume: bool = True,
@@ -262,7 +261,7 @@ def candles_ta(data: pd.DataFrame,
                annotation_colors: list = None,
                annotation_legend_names: list = None,
                labels: list = None,
-               plot_bgcolor=None):
+               plot_bgcolor: str = None):
     """
     Data needs to be a DataFrame that at least contains the columns: Open Close High Low Volume
 
@@ -310,7 +309,7 @@ def candles_ta(data: pd.DataFrame,
         .. code-block:: python
 
            text_positions = ["top center", "middle left", "top center", "bottom center", "top right", "middle left", "bottom right",
-            bottom left", "top right", "top right"]
+            "bottom left", "top right", "top right"]
 
     :param list annotation_colors: Ordered like the annotations list.
         Example from default colors
@@ -352,7 +351,6 @@ def candles_ta(data: pd.DataFrame,
 
     .. image:: images/candles_ta_macd.png
         :width: 1000
-        :alt: Candles with some indicators
 
     :param plot_bgcolor: Set background color.
 
@@ -456,7 +454,7 @@ def candles_ta(data: pd.DataFrame,
             # plot_logger.debug(f"serie_up, split_up, serie_down, split_down, color_up, color_down = {serie_up, split_up, serie_down, split_down, color_up, color_down}")
             indicator_column_up, indicator_column_down, splitted_dfs, color_up, color_down = plot_splitted_serie_couple[indicator_names[i]]
             plot_logger.debug(f"indicator_column_up, indicator_column_down, splitted_dfs,color_up, color_down = "
-                              f"{indicator_column_up, indicator_column_down, splitted_dfs,color_up, color_down}")
+                              f"{indicator_column_up, indicator_column_down, splitted_dfs, color_up, color_down}")
 
             tas.append(set_ta_line(df_index=df_plot.index,  # linea para delimitación
                                    serie=indicator,
@@ -466,6 +464,7 @@ def candles_ta(data: pd.DataFrame,
                                    fill_mode='none',
                                    fill_color=None,
                                    yaxis=my_axis))
+
             # cambio de función
 
             def fill_area(label,
@@ -478,7 +477,6 @@ def candles_ta(data: pd.DataFrame,
                     return down_color
 
             for splitted_df in splitted_dfs:
-
                 tas.append(set_ta_line(df_index=splitted_df.index,
                                        serie=splitted_df[indicator_column_up],
                                        color=indicators_colors[i],
@@ -521,7 +519,7 @@ def candles_ta(data: pd.DataFrame,
     cols += [1 for _ in range(len(tas))]
     traces += tas
 
-    # anotaciones, siempre van en la primera fila, la de las velas
+    # anotaciones, siempre van en la primera fila, la de las velas, son las flechas etc
     if annotation_values:
         annotations_traces = deploy_traces(annotations=annotation_values, colors=annotation_colors, markers=markers,
                                            text_positions=text_positions, mark_names=annotation_legend_names, tags=labels)
@@ -567,11 +565,11 @@ def candles_tagged(data: pd.DataFrame,
                    rows_pos: list = [],
                    plot_bgcolor=None,
                    actions_col: str = None,
-                   priced_actions_col='Close',
-                   labels: list = [],
-                   markers: list = None,
-                   marker_colors: list = None,
-                   marker_legend_names: list = None):
+                   priced_actions_col: str = 'Close',
+                   markers_labels: dict = None,
+                   markers: dict = None,
+                   marker_colors: dict = None,
+                   marker_legend_names: dict = None):
     """
 
     This is a shortcut from candles_ta. It defaults many inputs to better Jupyter Notebook usage.
@@ -591,8 +589,6 @@ def candles_tagged(data: pd.DataFrame,
 
         .. image:: images/plot_tagged.png
             :width: 1000
-            :alt: Candles with some indicators
-
 
     :param pd.DataFrame data: a DataFrame that at least contains the columns: Open Close High Low Volume
     :param int width: Plot sizing
@@ -608,6 +604,7 @@ def candles_tagged(data: pd.DataFrame,
     :param list indicator_colors: Color can be forced to anyone from the plotly colors list:
 
          https://community.plotly.com/t/plotly-colours-list/11730
+
     :param dict or list fill_control: A dictionary with color to fill or False bool for each indicator. Is the color to the zero line for
         the indicator plot. If a list passed, it iterates to assign each item in the list with the same index item in the indicators list.
     :param dict indicators_filled_mode: A dict with filled areas for plotting.
@@ -618,6 +615,7 @@ def candles_tagged(data: pd.DataFrame,
     :param actions_col: A column name of the column with string tags like buy, sell, etc. This is for plotting annotation marks
         overlapped over candles. It is *mandatory* for managing markers, annotations and legend names of annotations.
     :param priced_actions_col: The name of the column containing value of action to position over candles.
+     Used just if actions column passed.
 
         Example:
 
@@ -626,44 +624,51 @@ def candles_tagged(data: pd.DataFrame,
                 from binpan import binpan
                 from handlers.strategies import random_strategy
 
-                btcusdt = binpan.Symbol(symbol='btcusdt',
-                                tick_interval='15m',
-                                time_zone='Europe/Madrid',
-                                end_time='2021-10-31 03:00:00')
+                bt = binpan.Symbol(symbol='btcusdt',
+                                 tick_interval='15m',
+                                 time_zone='Europe/Madrid',
+                                 end_time='2021-10-31 03:00:00')
 
-                btcusdt.sma(21)
+                bt.sma(21)
 
+                df = handlers.strategies.random_strategy(data=bt.df, buys_qty=10, sells_qty=12)
 
-                df = random_strategy(data=btcusdt.df, buys_qty=10, sells_qty=12)
+                print(df['actions'].value_counts())
 
-                df.actions.value_counts()
-
-               sell     10
-               buy      10
-               Name: actions, dtype: int64
+                    -1.0    12
+                     1.0    10
+                    Name: actions, dtype: int64
 
                 binpan.handlers.plotting.candles_tagged(data=df,
-                                                       plot_volume=False,
-                                                       on_candles_indicator=[df.SMA_21],
-                                                       candles_ta_height_ratio=0.8,
-                                                       actions_col='actions',
-                                                       labels=['buy', 'sell'])
+                                                        plot_volume=False,
+                                                        on_candles_indicator=[df.SMA_21],
+                                                        candles_ta_height_ratio=0.8,
+                                                        actions_col='actions',
+                                                        markers_labels={-1: 'sell', 1: 'buy'},
+                                                        marker_colors={-1: 'red', 1: 'green'})
 
-
-            .. image:: images/plot_tagged_example_02.png
+            .. image:: images/plotting/random_strategy_plot.png
                :width: 1000
 
-    :param list labels: Ordered like the annotations list of tags to show overlapped. Position defaults to close price. Example:
+    :param dict markers_labels: Annotations of tags to show overlapped. Keys are the shown tags in the plot and values are the
+     dataframe values to consider what marker and color used. Position of label defaults to close price. This feature is enabled just
+     if actions column passed.
 
-        .. code-block:: python
+        Example:
 
-          labels = ['buy', 'sell']
+           .. code-block:: python
+
+              markers_labels = {1: 'buy', -1: 'sell'}
 
 
-    :param list markers: Plotly marker type. Usually, if referenced by number will be a not filled mark and using string name will be
-        a color filled one. Check plotly info: https://plotly.com/python/marker-style/
+    :param dict markers: Plotly marker type for each label. Usually, if referenced by number will be a not filled mark and using
+      string name will be a color filled one. Used just if actions column passed. Check plotly info: https://plotly.com/python/marker-style/
 
         .. code-block::
+
+            markers = {'1': "arrow-bar-up", '-1': "arrow-bar-down"}
+
+            # for marker integer codes see:
 
             plotly_markers = [0, '0', 'circle', 100, '100', 'circle-open', 200, '200',
                     'circle-dot', 300, '300', 'circle-open-dot', 1, '1',
@@ -753,8 +758,8 @@ def candles_tagged(data: pd.DataFrame,
                     151, '151', 'arrow-bar-left-open', 52, '52',
                     'arrow-bar-right', 152, '152', 'arrow-bar-right-open']
 
-    :param list marker_colors: Colors of the annotations.
-    :param list marker_legend_names: A list with the names to print as tags over the annotations.
+    :param dict marker_colors: Colors of the annotations. Used just if actions column passed.
+    :param dict marker_legend_names: A dict with the names to print as tags over the annotations. Used just if actions column passed.
 
     """
     data_ = data.copy(deep=True)
@@ -767,36 +772,50 @@ def candles_tagged(data: pd.DataFrame,
         indicators_filled_mode = {s.name: indicators_filled_mode[i] for i, s in enumerate(indicator_series)}
 
     if actions_col:  # this trigger all annotation and markers thing
-        actions_data = data[data_[actions_col] != 0][actions_col]
-        actions = list(actions_data.dropna().value_counts().index)
+        actions_data = data_[actions_col].dropna()
+        actions = sorted(list(set(actions_data.value_counts().index)))
 
-        if not labels:
-            labels = [str(i) for i in actions]
+        if not markers_labels:
+            markers_labels = {i: i for i in actions}
+
+        try:
+            assert len(actions) == len(markers_labels)
+        except AssertionError:
+            raise Exception(f"BinPan Plotting Exception: Length missmatch between types of actions and markers_labels -> "
+                            f"{len(set(actions))}!={len(markers_labels)}")
 
         if not markers:
-            # markers = ["arrow-bar-up", "arrow-bar-down"]
-            markers = ["arrow-left" for _ in range(len(labels))]
+            my_markers = ["arrow-bar-down", "arrow-bar-up"]
+            markers = {mark: my_markers[idx % 2] for idx, mark in enumerate(actions)}
 
         if not marker_colors:
-            marker_colors = [choice(plotly_colors) for _ in range(len(labels))]
+            my_marker_colors = ['red', 'green', choice(plotly_colors)]
+            marker_colors = {mark: my_marker_colors[idx % 3] for idx, mark in enumerate(actions)}
+            # marker_colors = {k: choice(plotly_colors) for k, v in markers_labels.items()}
 
         if not marker_legend_names:
-            marker_legend_names = [str(i)[0].upper() + str(i)[1:].lower() for i in labels]
+            marker_legend_names = {k: str(v)[0].upper() + str(v)[1:].lower() for k, v in markers_labels.items()}
 
-        for action in actions:
+        for action in actions:  # lista de dataframes por cada acción
             annotations_values.append(data_[data_[actions_col] == action][priced_actions_col])
 
         # verify annotations, colors, labels and names
         try:
-            assert len(labels) == len(markers)
-            assert len(labels) == len(marker_colors)
-            assert len(labels) == len(marker_legend_names)
-            # assert len(annotations_values) == len(data[actions_col].dropna())
+            assert len(markers_labels) == len(markers)
+            assert len(markers_labels) == len(marker_colors)
+            assert len(markers_labels) == len(marker_legend_names)
 
         except Exception as exc:
             raise BinPanException(exc.__class__,
                                   "Plotting labels, annotation colors or names not consistent with markers list length",
                                   "Function candles_tagged")
+        labels_locator = list(markers_labels.keys())
+    else:
+        markers_labels = dict()
+        markers = dict()
+        marker_colors = dict()
+        marker_legend_names = dict()
+        labels_locator = []
 
     # indicator allocating rows
     rows_pos_final = []
@@ -832,11 +851,11 @@ def candles_tagged(data: pd.DataFrame,
                title=title,
                yaxis_title=yaxis_title,
                annotation_values=annotations_values,
-               markers=markers,
+               markers=[markers[k] for k in labels_locator],
+               labels=[markers_labels[k] for k in labels_locator],
+               annotation_colors=[marker_colors[k] for k in labels_locator],
+               annotation_legend_names=[marker_legend_names[k] for k in labels_locator],
                rows_pos=rows_pos_final,
-               labels=labels,
-               annotation_colors=marker_colors,
-               annotation_legend_names=marker_legend_names,
                indicators_series=indicator_series,
                indicator_names=indicator_names,
                indicators_colors=indicator_colors,
@@ -886,7 +905,6 @@ def plot_trade_size(data: pd.DataFrame,
 
         .. image:: images/plot_trades_size_log.png
            :width: 1000
-           :alt: Trades size
 
     """
     data['Buyer was maker'].replace({True: 'Maker buyer', False: 'Taker buyer'}, inplace=True)
@@ -943,7 +961,7 @@ def plot_pie(serie: pd.Series,
 
         .. image:: images/plot_pie_log.png
            :width: 1000
-           :alt: Trades size
+
     """
     ma_original = serie.max()
     mi_original = serie.min()
@@ -1026,7 +1044,6 @@ def plot_scatter(df: pd.DataFrame,
 
     .. image:: images/scatter_example.png
        :width: 1000
-       :alt: Scatter plot example
 
     """
     if marginal:
@@ -1099,8 +1116,6 @@ def plot_hists_vs(x0: pd.Series,
 
     .. image:: images/hist_vs_dist.png
        :width: 1000
-       :alt: Histogram plot example
-
 
     """
     if not x0_name:
@@ -1175,7 +1190,6 @@ def orderbook_depth(df: pd.DataFrame,
 
     .. image:: images/plot_orderbook.png
        :width: 1000
-       :alt: Plot example
 
     """
     ob = df.copy(deep=True)
@@ -1214,7 +1228,6 @@ def dist_plot(df: pd.DataFrame,
 
     .. image:: images/orderbook_density.png
        :width: 1000
-       :alt: Plot example
 
     """
     filtered_df = df.copy()

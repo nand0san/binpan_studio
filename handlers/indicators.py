@@ -5,6 +5,7 @@ BinPan own indicators and utils.
 """
 import numpy as np
 import pandas as pd
+from handlers.time_helper import pandas_freq_tick_interval
 
 
 ##############
@@ -50,7 +51,9 @@ def ichimoku(data: pd.DataFrame,
 
     """
     df = data.copy(deep=True)
-    # freq = pd.infer_freq(df.index)
+
+    tick_interval = df.index.name.split()[1]
+    df = df.asfreq(pandas_freq_tick_interval[tick_interval])
 
     high = df['High']
     low = df['Low']
@@ -78,7 +81,23 @@ def ichimoku(data: pd.DataFrame,
                    f"Ichimoku_chikou_span{chikou_span}"+suffix,
                    f"Ichimoku_cloud_{tenkan}_{kijun}"+suffix,
                    f"Ichimoku_cloud_{senkou_cloud_base}"+suffix]
+    # return ret.dropna(how='all', inplace=True)
     return ret
+
+
+def ker(close: pd.Series,
+        window: int,
+        ) -> pd.Series:
+    """
+    Kaufman's Efficiency Ratio based in: https://stackoverflow.com/questions/36980238/calculating-kaufmans-efficiency-ratio-in-python-with-pandas
+
+    :param pd.Series close: Close prices serie.
+    :param int window: Window to check indicator.
+    :return pd.Series: Results.
+    """
+    direction = close.diff(window).abs()
+    volatility = pd.rolling_sum(close.diff().abs(), window)
+    return direction / volatility
 
 
 ####################
@@ -89,7 +108,12 @@ def split_serie_by_position(serie: pd.Series,
                             splitter_serie: pd.Series,
                             fill_with_zeros: bool = True) -> pd.DataFrame:
     """
-    Splits a serie by other serie values in four series for plotting purposes.
+    Splits a serie by values of other serie in four series for plotting purposes. It means will get 4 series with different situations:
+
+       - serie is over the splitter serie.
+       - serie is below the splitter serie.
+       - splitter serie is over the serie.
+       - splitter serie is below the serie.
 
     :param pd.Series serie: A serie to classify in reference to other serie.
     :param pd.Series splitter_serie: A serie to split in two couple of series classified by position reference.
@@ -198,7 +222,7 @@ def shift_indicator(serie: pd.Series, window: int = 1):
 
 def ffill_indicator(serie: pd.Series, window: int = 1):
     """
-    It forward fills a value through nans through a window ahead.
+    It forward fills a value through nans while a window of candles ahead.
 
     :param pd.Series serie: A pandas Series.
     :param int window: Times values are shifted ahead. Default is 1.

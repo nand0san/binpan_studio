@@ -18,7 +18,8 @@ wallet_logger = Logs(filename='./logs/wallet_logger.log', name='wallet_logger', 
 def convert_str_date_to_ms(date: str or int,
                            time_zone: str):
     """
-    Converts dates strings formatted as "2022-05-11 06:45:42" to timestamp in milliseconds.
+    Converts dates strings formatted as "2022-05-11 06:45:42" to timestamp in milliseconds. If timestamp passed
+    it returns the timestamp.
 
     :param str or int date: Date to check format.
     :param time_zone: A time zone like 'Europe/Madrid'

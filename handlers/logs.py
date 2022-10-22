@@ -16,11 +16,11 @@ class Logs:
 
         # Create handlers
         self.screen_handler = logging.StreamHandler()
-        # self.file_handler = logging.FileHandler(self.log_file)
-        self.file_handler = RotatingFileHandler(self.log_file,
-                                                mode='a',
-                                                maxBytes=2 * 1024 * 1024,
-                                                backupCount=5)
+        self.file_handler = logging.FileHandler(self.log_file)
+        # self.file_handler = RotatingFileHandler(self.log_file,
+        #                                         mode='a',
+        #                                         maxBytes=2 * 1024 * 1024,
+        #                                         backupCount=5)
 
         # Create formatters and add it to handlers
         # self.line_format = '%(asctime)s, %(module)10s %(funcName)20s, %(lineno)5d, %(levelname)8s, %(message)s'

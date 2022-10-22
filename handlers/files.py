@@ -27,7 +27,11 @@ def create_dir(my_path: str):
         makedirs(my_path)
 
 
-def save_dataframe_to_csv(filename, data: pd.DataFrame, col_sep=',', index=False, timestamp=True) -> None:
+def save_dataframe_to_csv(filename: str,
+                          data: pd.DataFrame,
+                          col_sep=',',
+                          index=False,
+                          timestamp=True) -> None:
     """
     Save a dataframe in a csv with a separator between columns. Each field of each column will be enclosed in double quotes.
 
@@ -100,7 +104,9 @@ def move_old_csvs(files_path: str = '.', extension='csv'):
         replace(file, dst)
 
 
-def read_csv_to_dataframe(filename: str, col_sep: str = ',', index_col: bool = None) -> pd.DataFrame:
+def read_csv_to_dataframe(filename: str,
+                          col_sep: str = ',',
+                          index_col: bool = None) -> pd.DataFrame:
     """
     Creates a csv file from a dataframe.
 
@@ -140,6 +146,24 @@ def save_file(filename: str, data: list, mode='w') -> None:
     with open(filename, mode) as f:
         for line in data:
             f.write(str(line) + '\n')
+
+
+def select_file(path='.',
+                extension='csv') -> str:
+    """
+    Selects from files in the path with the extension passed.
+
+    :param str path: Path to search files.
+    :param str extension: Extension of interesting files to select.
+    :return str: a filename.
+    """
+    files = find_csvs_in_path(files_path=path, extension=extension)
+    files = [i for i in files if i.lower().endswith(extension.lower())]
+    for i, file in enumerate(files):
+        print(f"{i}: {file}")
+    selection = input("Insert file number: ")
+
+    return files[int(selection)]
 
 ###################
 # API AND SECRETS #

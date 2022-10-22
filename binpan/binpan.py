@@ -3,6 +3,7 @@
 This is the main classes file.
 
 """
+import os
 
 import pandas as pd
 import numpy as np
@@ -28,11 +29,13 @@ import handlers.indicators
 import pandas_ta as ta
 from random import choice
 import importlib
+from time import time
 
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
+pandas_freq_tick_interval = handlers.time_helper.pandas_freq_tick_interval
 
-__version__ = "0.2.32"
+__version__ = "0.2.33"
 
 try:
     from secret import redis_conf
@@ -156,6 +159,8 @@ class Symbol(object):
     :param int display_columns:     Number of columns in the dataframe display. Convenient to adjust in jupyter notebooks.
     :param int display_rows:        Number of rows in the dataframe display. Convenient to adjust in jupyter notebooks.
     :param int display_width:       Display width in the dataframe display. Convenient to adjust in jupyter notebooks.
+    :param bool or str from_csv:    If True, gets data from a csv file by selecting interactively from csv files found.
+     Also a string with filename can be used.
 
     Examples:
 
@@ -225,8 +230,8 @@ class Symbol(object):
     """
 
     def __init__(self,
-                 symbol: str,
-                 tick_interval: str,
+                 symbol: str = None,
+                 tick_interval: str = None,
                  start_time: int or str = None,
                  end_time: int or str = None,
                  limit: int = 1000,
@@ -237,7 +242,8 @@ class Symbol(object):
                  display_columns=25,
                  display_rows=10,
                  display_min_rows=25,
-                 display_width=320):
+                 display_width=320,
+                 from_csv: bool or str = False):
 
         try:
             secret_module = importlib.import_module('secret')
@@ -253,11 +259,15 @@ class Symbol(object):
             self.api_key = "INSERT API KEY"
             self.api_secret = "INSERT API KEY"
 
-        if not symbol.isalnum():
+        if not symbol and not from_csv:
+            raise Exception(f"BinPan symbol Error: symbol needed")
+
+        if not from_csv and not symbol.isalnum():
             binpan_logger.error(f"BinPan error: Ilegal characters in symbol.")
 
         # check correct tick interval passed
-        tick_interval = handlers.time_helper.check_tick_interval(tick_interval)
+        if not from_csv:
+            tick_interval = handlers.time_helper.check_tick_interval(tick_interval)
 
         self.original_candles_cols = ['Open time', 'Open', 'High', 'Low', 'Close', 'Volume', 'Close time', 'Quote volume',
                                       'Trades', 'Taker buy base volume', 'Taker buy quote volume', 'Ignore']
@@ -278,15 +288,64 @@ class Symbol(object):
         self.dts_time_cols = ['Open timestamp', 'Close timestamp']
 
         self.version = __version__
-        self.symbol = symbol.upper()
+        if from_csv:
+            if type(from_csv) == str:
+                filename = from_csv
+            else:
+                filename = handlers.files.select_file(path=os.getcwd(), extension='csv')
+
+            binpan_logger.info(f"Loading {filename}")
+
+            # load and to numeric types
+            df_ = handlers.files.read_csv_to_dataframe(filename=filename)
+            for col in df_.columns:
+                df_[col] = pd.to_numeric(arg=df_[col], downcast='integer', errors='ignore')
+
+            # basic metadata
+            filename = str(os.path.basename(filename))
+            symbol = filename.split()[0]
+            self.symbol = symbol
+            tick_interval = filename.split()[1]
+            self.tick_interval = tick_interval
+            start_time = int(filename.split()[3])
+            end_time = int(filename.split()[4].split('.')[0])
+            time_zone = filename.split()[2].replace('-', '/')
+            index_name = f"{symbol} {tick_interval} {time_zone}"
+            self.time_zone = time_zone
+
+            if time_index:
+                df_.sort_values('Open timestamp', inplace=True)
+                idx = pd.DatetimeIndex(pd.to_datetime(df_['Open timestamp'], unit='ms')).tz_localize('UTC').tz_convert('Europe/Madrid')
+                df_.index = idx
+                df_ = df_.asfreq(pandas_freq_tick_interval[tick_interval])  # this adds freq, infer will not work if API blackout period
+                self.df = df_
+                # drops API blackout periods, but throw errors upwards with some indicators because freq=None before drop.
+                # self.df.dropna(how='all', inplace=True)
+                self.time_index = True
+
+            self.df.index.name = index_name
+            self.limit = len(self.df)
+
+            if from_csv:
+                last_timestamp_ind_df = self.df.iloc[-1]['Close timestamp']
+                if last_timestamp_ind_df >= int(time() * 1000):
+                    self.closed = False
+                else:
+                    self.closed = True
+            else:
+                self.closed = closed
+
+        else:
+            self.symbol = symbol.upper()
+            self.tick_interval = tick_interval
+            self.start_time = start_time
+            self.end_time = end_time
+            self.limit = limit
+            self.time_zone = time_zone
+            self.time_index = time_index
+            self.closed = closed
+
         self.fees = self.get_fees(symbol=self.symbol)
-        self.tick_interval = tick_interval
-        self.start_time = start_time
-        self.end_time = end_time
-        self.limit = limit
-        self.time_zone = time_zone
-        self.time_index = time_index
-        self.closed = closed
 
         if from_redis:
             if type(from_redis) == bool:
@@ -310,7 +369,7 @@ class Symbol(object):
         self.color_fill_control = dict()
         self.indicators_filled_mode = dict()
         self.axis_groups = dict()
-        self.action_labels = dict()
+        # self.action_labels = dict()
         self.global_axis_group = 99
         self.strategies = 0
         self.row_counter = 1
@@ -356,22 +415,24 @@ class Symbol(object):
         #################
         # query candles #
         #################
+        if not from_csv:
+            self.raw = handlers.market.get_candles_by_time_stamps(symbol=self.symbol,
+                                                                  tick_interval=self.tick_interval,
+                                                                  start_time=self.start_time,
+                                                                  end_time=self.end_time,
+                                                                  limit=self.limit,
+                                                                  redis_client=self.from_redis)
 
-        self.raw = handlers.market.get_candles_by_time_stamps(symbol=self.symbol,
-                                                              tick_interval=self.tick_interval,
-                                                              start_time=self.start_time,
-                                                              end_time=self.end_time,
-                                                              limit=self.limit,
-                                                              redis_client=self.from_redis)
+            dataframe = handlers.market.parse_candles_to_dataframe(raw_response=self.raw,
+                                                                   columns=self.original_candles_cols,
+                                                                   time_cols=self.time_cols,
+                                                                   symbol=self.symbol,
+                                                                   tick_interval=self.tick_interval,
+                                                                   time_zone=self.time_zone,
+                                                                   time_index=self.time_index)
+            self.df = dataframe
 
-        dataframe = handlers.market.parse_candles_to_dataframe(raw_response=self.raw,
-                                                               columns=self.original_candles_cols,
-                                                               time_cols=self.time_cols,
-                                                               symbol=self.symbol,
-                                                               tick_interval=self.tick_interval,
-                                                               time_zone=self.time_zone,
-                                                               time_index=self.time_index)
-        self.df = dataframe
+        self.timestamps = self.get_timestamps()
         self.plot_splitted_serie_couples = {}
         self.len = len(self.df)
 
@@ -437,10 +498,10 @@ class Symbol(object):
         """
         return self.tick_interval
 
-    def strategy_groups(self,
-                        column: str,
-                        group: str,
-                        strategy_groups: dict):
+    def set_strategy_groups(self,
+                            column: str,
+                            group: str,
+                            strategy_groups: dict):
         """
         Returns strategy_groups for BinPan DataFrame.
 
@@ -454,6 +515,14 @@ class Symbol(object):
                                                                     group=group,
                                                                     strategy_groups=strategy_groups)
         return self.strategy_groups
+
+    def get_strategy_columns(self) -> list:
+        """
+        Returns column names starting with "Strategy".
+        :return dict: Updated strategy groups of columns.
+        """
+
+        return [i for i in self.df.columns if i.lower().startswith('strategy')]
 
     def start_time(self):
         """
@@ -511,6 +580,26 @@ class Symbol(object):
         :return dict:
         """
         return self.info_dic
+
+    def save_csv(self,
+                 timestamped: bool = True):
+        """
+        Saves current csv to a csv file.
+
+        :param bool timestamped: Adds start and end timestamps to the name.
+        :return:
+        """
+        df_ = self.df
+        if timestamped:
+            start, end = self.get_timestamps()
+            filename = f"{df_.index.name.replace('/', '-')} {start} {end}.csv"
+        else:
+            filename = f"{df_.index.name.replace('/', '-')}.csv"
+
+        handlers.files.save_dataframe_to_csv(filename=filename,
+                                             data=df_,
+                                             timestamp=not timestamped)
+        binpan_logger.info(f"Saved file {filename}")
 
     ##################
     # pandas display #
@@ -623,6 +712,20 @@ class Symbol(object):
             if inplace:
                 conserve_columns = [c for c in current_columns if c not in columns_to_drop and c in self.row_control.keys()]
                 # conserve_columns = [c for c in current_columns if c not in columns_to_drop]
+
+                # clean strategy groups
+                clean_strategy_groups = {}
+                for k, v in self.strategy_groups.items():
+                    clean_strategy_groups[k] = []
+                    for col in v:
+                        if col in conserve_columns:
+                            clean_strategy_groups[k].append(col)
+
+                clean_strategy_groups = {k: v for k, v in clean_strategy_groups.items() if v}
+                self.strategy_groups = clean_strategy_groups
+
+                binpan_logger.debug(f"row_control: {self.row_control}")
+
                 self.row_control = {c: self.row_control[c] for c in conserve_columns}
                 extra_rows = set(self.row_control.values())
                 try:
@@ -633,7 +736,16 @@ class Symbol(object):
 
                 # reacondicionar rows de lo que ha quedado
                 unique_rows_index = {v: i + 2 for i, v in enumerate(extra_rows)}
-                self.row_control = {c: unique_rows_index[self.row_control[c]] for c in conserve_columns}
+                binpan_logger.debug(f"conserve_columns: {conserve_columns} unique_rows_index: {unique_rows_index} extra_rows: {extra_rows}")
+
+                new_row_control = {}
+                for c in conserve_columns:
+                    if self.row_control[c] in unique_rows_index.keys():
+                        new_row_control.update({c: unique_rows_index[self.row_control[c]]})
+                    else:
+                        new_row_control.update({c: 1})  # not existing row for a line goes to 1 row
+                self.row_control = new_row_control
+                # self.row_control = {c: unique_rows_index[self.row_control[c]] if c in self.row_control.keys() else 1 for c in conserve_columns}
 
                 # clean plotting areas info
                 self.plot_splitted_serie_couples = {c: self.plot_splitted_serie_couples[c] for c in conserve_columns if
@@ -653,21 +765,22 @@ class Symbol(object):
             else:
                 return self.df.drop(columns_to_drop, axis=1, inplace=False)
 
-        except KeyError:
+        except KeyError as exc:
             wrong = (set(self.df.columns) | set(columns_to_drop)) - set(self.df.columns)
-            msg = f"BinPan Exception: Wrong column names to drop: {wrong}"
+            msg = f"BinPan Exception: Wrong column names to drop: {wrong} {exc}"
             binpan_logger.error(msg)
             raise Exception(msg)
 
     def insert_indicator(self,
                          source_data: pd.Series or pd.DataFrame or np.ndarray or list,
-                         rows: list,
+                         rows: list = None,
                          colors: list = None,
                          color_fills: list = None,
+                         name: str = None,
                          names: list = None,
                          suffix: str = '') -> pd.DataFrame or None:
         """
-        Adds indicator to dataframe.
+        Adds indicator to dataframe. It always do inplace.
 
         :param pd.Series or pd.DataFrame or np.ndarray or list source_data: Source data from pandas_ta or any other. Expected named series
            or list of names, or at least a suffix. If nothing passed, name will be autogenerated.
@@ -677,17 +790,27 @@ class Symbol(object):
         :param list colors: Colors list for each serie indicator. Default is random colors.
         :param list color_fills: Colors to fill indicator til y-axis or False to avoid. Example for transparent green
            ``'rgba(26,150,65,0.5)'``. Default is all False.
+        :param str name: A name for a single inserted object.
         :param list names: A list for the columns when inserted.
         :param str suffix: A suffix for the new column name/s. If numpy array or nameless pandas series, suffix is the whole name.
         :return pd.DataFrame or None: Instance candles dataframe.
 
         """
+        if type(source_data) == list:
+            data_len = len(source_data)
+        elif type(source_data) == pd.DataFrame:
+            data_len = len(source_data.columns)
+        else:
+            data_len = 1
+
+        if not rows:
+            rows = [2 for _ in range(data_len)]
 
         if not colors:
-            colors = [choice(plotly_colors) for _ in range(len(rows))]
+            colors = [choice(plotly_colors) for _ in range(data_len)]
 
         if not color_fills:
-            color_fills = [False for _ in range(len(rows))]
+            color_fills = [False for _ in range(data_len)]
 
         current_df = self.df.copy(deep=True)
 
@@ -695,7 +818,9 @@ class Symbol(object):
         if type(source_data) == pd.Series:
             data = source_data.copy(deep=True)
             data.index = current_df.index
-            if names:
+            if name:
+                col_name = name
+            elif names:
                 col_name = names[0]
             elif not data.name:
                 if suffix:
@@ -733,14 +858,19 @@ class Symbol(object):
 
         elif type(source_data) == list:
             assert len(source_data) == len(rows)
-            if not colors:
-                colors = [choice(plotly_colors) for _ in range(len(rows))]
-            if not color_fills:
-                color_fills = [False for _ in range(len(rows))]
+            # if not colors:
+            #     colors = [choice(plotly_colors) for _ in range(len(rows))]
+            # if not color_fills:
+            #     color_fills = [False for _ in range(len(rows))]
+
+            if name and not names:
+                names = [f"{name}_{i}" for i in range(data_len)]
 
             for element_idx, new_element in enumerate(source_data):
+
                 assert type(new_element) in [pd.Series, np.ndarray]
                 data = new_element.copy(deep=True)
+
                 if not names:
                     try:
                         current_name = new_element.name
@@ -758,14 +888,14 @@ class Symbol(object):
             return self.df
 
         else:
-            msg = f"BinPan Warning: Unexpected data type {type(source_data)}"
+            msg = f"BinPan Warning: Unexpected data type {type(source_data)}, expected pd.Series, np.ndarray, pd.DataFrame or list of them."
             binpan_logger.warning(msg)
             return
 
         if self.is_new(source_data=data, suffix=''):  # suffix is added before this to names
 
-            last_row = self.row_counter
-            rows = [r + last_row - 1 if r != 1 else 1 for r in rows]  # downcast rows to available except 1 (overlap)
+            rows_tags = {row: i + self.row_counter + 1 for i, row in enumerate(sorted(list(set(rows))))}
+            rows = [rows_tags[r] if r != 1 else 1 for r in rows]  # downcast rows to available except 1 (overlap)
 
             for i, serie in enumerate(data_series):
                 column_name = str(serie.name)  # suffix is added before this to names
@@ -811,7 +941,7 @@ class Symbol(object):
         else:
             return df_
 
-    def timestamps(self):
+    def get_timestamps(self):
         """
         Get the first Open timestamp and the last Close timestamp.
 
@@ -1038,16 +1168,16 @@ class Symbol(object):
         return self.plot_splitted_serie_couples
 
     def plot(self,
-             width=1800,
-             height=1000,
+             width: int = 1800,
+             height: int = 1000,
              candles_ta_height_ratio: float = 0.75,
              volume: bool = True,
              title: str = None,
-             yaxis_title='Price',
+             yaxis_title: str = 'Price',
              overlapped_indicators: list = [],
-             priced_actions_col='Close',
+             priced_actions_col: str = 'Close',
              actions_col: str = None,
-             labels: list = [],
+             marker_labels: dict = None,
              markers: list = None,
              marker_colors: list = None,
              background_color=None,
@@ -1062,18 +1192,19 @@ class Symbol(object):
            :width: 1000
            :alt: Candles with some indicators
 
-        :param width: Width of the plot.
-        :param height: Height of the plot.
-        :param candles_ta_height_ratio: Proportion between candles and the other indicators. Not considering overlap ones
+        :param int width: Width of the plot.
+        :param int height: Height of the plot.
+        :param float candles_ta_height_ratio: Proportion between candles and the other indicators. Not considering overlap ones
             in the candles plot.
-        :param volume: Plots volume.
-        :param title: A tittle for the plot.
-        :param yaxis_title: A title for the y axis.
-        :param overlapped_indicators: Can declare as overlap in the candles plot some column.
-        :param priced_actions_col: Priced actions to plot annotations over the candles, like buy, sell, etc. Under developing.
-        :param actions_col: A column containing actions like buy or sell. Under developing.
-        :param labels: Names for the annotations instead of the price.
-        :param markers: Plotly marker type. Usually, if referenced by number will be a not filled mark and using string name will be
+        :param bool volume: Plots volume.
+        :param str title: A tittle for the plot.
+        :param str yaxis_title: A title for the y axis.
+        :param list overlapped_indicators: Can declare as overlap in the candles plot some column.
+        :param str priced_actions_col: Priced actions to plot annotations over the candles, like buy, sell, etc. Under developing.
+        :param str actions_col: A column containing actions like buy or sell. Under developing.
+        :param dict marker_labels: Names for the annotations instead of the price. For 'buy' tags and 'sell' tags.
+         Default is {'buy': 1, 'sell': -1}
+        :param list markers: Plotly marker type. Usually, if referenced by number will be a not filled mark and using string name will be
             a color filled one. Check plotly info: https://plotly.com/python/marker-style/
         :param list marker_colors: Colors of the annotations.
         :param str background_color: Sets background color. Select a valid plotly color name.
@@ -1093,13 +1224,14 @@ class Symbol(object):
 
         rows_pos = [self.row_control[k] for k in self.row_control.keys()]
 
-        if actions_col:
-            if not labels:
-                labels = ['over', 'below']
-            if not markers:
-                markers = ['arrow-bar-up', 'arrow-bar-down']
-            if not marker_colors:
-                marker_colors = ['green', 'red']
+        # if actions_col:
+        # if not marker_labels:
+        #     marker_labels = {'buy': 1, 'sell': -1}
+        # if not markers:
+        #     markers = ['arrow-bar-up', 'arrow-bar-down']
+        # if not marker_colors:
+        #     my_marker_colors = ['red', 'green']
+        #     {mark: my_marker_colors[idx % 2] for idx, mark in enumerate(marker_labels.keys())}
 
         if zoom_start_idx is not None or zoom_end_idx is not None:
             zoomed_plot_splitted_serie_couples = handlers.indicators.zoom_cloud_indicators(self.plot_splitted_serie_couples,
@@ -1127,7 +1259,7 @@ class Symbol(object):
                                          axis_groups=self.axis_groups,
                                          plot_splitted_serie_couple=zoomed_plot_splitted_serie_couples,
                                          rows_pos=rows_pos,
-                                         labels=labels,
+                                         markers_labels=marker_labels,
                                          plot_bgcolor=background_color,
                                          markers=markers,
                                          marker_colors=marker_colors)
@@ -1378,26 +1510,6 @@ class Symbol(object):
                                     title=title,
                                     **update_layout_kwargs)
 
-    ####################
-    # backtesting data #
-    ####################
-
-    def set_action_labels(self,
-                          indicator_column: str = None,
-                          label_buy: str = 'buy',
-                          label_sell: str = 'sell') -> dict:
-        """
-        Sets labels to use whe backtesting over a column of actions.
-
-        :param str indicator_column: A column name of a BinPan dataframe colum.
-        :param str label_buy: A label to register a sell point.
-        :param str label_sell: A label to register a buy point.
-        :return dict: Dictionary with action columns labels.
-        """
-        if indicator_column and label_buy and label_sell:
-            self.action_labels.update({indicator_column: {'label_buy': label_buy, 'label_sell': label_sell}})
-        return self.action_labels
-
     #################
     # Exchange data #
     #################
@@ -1447,32 +1559,53 @@ class Symbol(object):
     ###############
     # Backtesting #
     ###############
+
+    # def set_action_labels(self,
+    #                       indicator_column: str = None,
+    #                       label_in: str = 'buy',
+    #                       label_out: str = 'sell') -> dict:
+    #     """
+    #     Sets labels to use when backtesting over a column of actions. In means you obtain base, out means you obtain quote.
+    #
+    #     DEPRECATED, ACTION LABELS MUST BE -1 OR 1.
+    #
+    #     :param str indicator_column: A column name of a BinPan dataframe colum.
+    #     :param str label_in: A label to register a sell point.
+    #     :param str label_out: A label to register a buy point.
+    #     :return dict: Dictionary with action columns labels.
+    #     """
+    #     if indicator_column and label_in and label_out:
+    #         self.action_labels.update({indicator_column: {'label_in': label_in, 'label_out': label_out}})
+    #     return self.action_labels
+
     def backtesting(self,
                     actions_col: str or int,
                     base: float = 0,
                     quote: float = 1000,
                     priced_actions_col: str = 'Open',
-                    label_buy='buy',
-                    label_sell='sell',
+                    label_in=1,
+                    label_out=-1,
                     fee: float = 0.001,
                     action_candles_lag=1,
+                    evaluating_quote: str = 'BUSD',
                     inplace=True,
                     suffix: str = None,
-                    colors: list = ['cornflowerblue', 'blue']) -> pd.DataFrame or pd.Series:
-
+                    colors: list = ['cornflowerblue', 'blue', 'black']) -> pd.DataFrame or pd.Series:
         """
-        Simulates buys and sells using labels in a tagged column with actions.
+        Simulates buys and sells using labels in a tagged column with actions. Actions are considered before the tag, in the next
+        candle using priced_actions_col price of that candle before.
 
         :param str or int actions_col: A column name or index.
         :param float base: Base inverted quantity.
         :param float quote: Quote inverted quantity.
         :param str or int priced_actions_col: Columna name or index with prices to use when action label in a row.
-        :param str or int label_buy: A label consider as trade in trigger.
-        :param str or int label_sell: A label consider as trade out trigger.
+        :param str or int label_in: A label consider as trade in trigger.
+        :param str or int label_out: A label consider as trade out trigger.
         :param float fee: Fees applied to the simulation.
         :param int action_candles_lag: Candles needed to confirm an action from action tag. Usually one candle. Example,
          when an action like a cross of two EMA lines occur, it's needed to close that candle of the cross to confirm,
          then, nex candle can buy at open.
+        :param str evaluating_quote: A quote used to convert value of the backtesting line for better reference.
         :param bool inplace: Make it permanent in the instance or not.
         :param str suffix: A decorative suffix for the name of the column created.
         :param list colors: Defaults to red and green.
@@ -1480,9 +1613,9 @@ class Symbol(object):
 
         """
 
-        if self.symbol in self.action_labels.keys():
-            label_buy = self.action_labels[self.symbol]['label_buy']
-            label_sell = self.action_labels[self.symbol]['label_sell']
+        # if self.symbol in self.action_labels.keys():
+        #     label_in = self.action_labels[self.symbol]['label_in']
+        #     label_out = self.action_labels[self.symbol]['label_out']
 
         if type(actions_col) == int:
             actions = self.df.iloc[:, actions_col]
@@ -1497,17 +1630,18 @@ class Symbol(object):
                                               base=base,
                                               quote=quote,
                                               fee=fee,
-                                              label_buy=label_buy,
-                                              label_sell=label_sell,
+                                              label_in=label_in,
+                                              label_out=label_out,
                                               priced_actions_col=priced_actions_col,
-                                              action_candles_lag=action_candles_lag,
-                                              suffix=suffix)
+                                              lag_action=action_candles_lag,
+                                              suffix=suffix,
+                                              evaluating_quote=evaluating_quote)
 
         if inplace and self.is_new(wallet_df):
             column_names = wallet_df.columns
             self.row_counter += 1
             if not colors:
-                colors = ['blue', 'blue']
+                colors = ['blue', 'blue', 'blue']
             for i, col in enumerate(column_names):
                 self.set_plot_color(indicator_column=col, color=colors[i])
                 self.set_plot_color_fill(indicator_column=col, color_fill=False)
@@ -1516,6 +1650,7 @@ class Symbol(object):
             # second row added in loop, need to sync row counter with las added row
             self.row_counter += 1
             self.df = pd.concat([self.df, wallet_df], axis=1)
+
         return wallet_df
 
     #################
@@ -2890,7 +3025,6 @@ class Symbol(object):
             self.set_plot_color(indicator_column=column_name, color=color)
             self.set_plot_color_fill(indicator_column=column_name, color_fill=None)
             self.set_plot_row(indicator_column=column_name, row_position=self.row_counter)  # overlaps are one
-            self.set_action_labels(indicator_column=column_name, label_buy='buy', label_sell='sell')
             self.df.loc[:, column_name] = compared
 
         return compared
@@ -2902,7 +3036,7 @@ class Symbol(object):
               cross_below_tag: str or int = -1,
               echo=0,
               non_zeros: bool = True,
-              strategy_group: str = '',
+              strategy_group: str = None,
               inplace=True,
               suffix: str = '',
               color: str or int = 'green') -> pd.Series:
@@ -3038,12 +3172,145 @@ class Symbol(object):
             self.df.loc[:, column_name] = shift
         return shift
 
+    def merge_columns(self,
+                      main_column: str or int or pd.Series,
+                      other_column: str or int or pd.Series,
+                      sign_other: dict = {1: -1},
+                      strategy_group: str = '',
+                      inplace=True,
+                      suffix: str = '',
+                      color: str or int = 'grey'
+                      ):
+        """
+        Predominant serie will be filled nans with values, if existing, from the other serie.
+
+        Same kind of index needed.
+
+        :param pd.Series main_column: A serie with nans to fill from other serie.
+        :param pd.Series other_column: A serie to pick values for the nans.
+        :param dict sign_other: Replace values by a dict for the "other column". Default is: {1: -1}
+        :param str strategy_group: A name for a group of columns to assign to a strategy.
+        :param bool inplace: Permanent or not. Default is false, because of some testing required sometimes.
+        :param str suffix: A string to decorate resulting Pandas series name.
+        :param str or int color: A color from plotly list of colors or its index in that list.
+        :return pd.Series: A merged serie.
+        """
+        if type(main_column) == str:
+            data_a = self.df[main_column]
+        elif type(main_column) == int:
+            data_a = self.df.iloc[:, main_column]
+        else:
+            data_a = main_column.copy(deep=True)
+
+        if type(other_column) == str:
+            data_b = self.df[other_column]
+        elif type(other_column) == int:
+            data_b = self.df.iloc[:, other_column]
+        else:
+            data_b = other_column.copy(deep=True)
+
+        if sign_other:
+            data_b = data_b.replace(sign_other)
+
+        merged = handlers.tags.merge_series(predominant=data_a,
+                                            other=data_b)
+        if suffix:
+            suffix = '_' + suffix
+        column_name = f"Merged_{data_a.name}_{data_b.name}" + suffix
+        merged.name = column_name
+
+        if inplace and self.is_new(merged):
+            if strategy_group:
+                self.strategy_groups = handlers.tags.tag_strategy_group(column=column_name,
+                                                                        group=strategy_group,
+                                                                        strategy_groups=self.strategy_groups)
+            if data_a.name in self.row_control.keys():
+                row_pos = self.row_control[data_a.name]
+            elif data_a.name in ['High', 'Low', 'Close', 'Open']:
+                row_pos = 1
+            else:
+                self.row_counter += 1
+                row_pos = self.row_counter
+
+            self.set_plot_color(indicator_column=column_name, color=color)
+            self.set_plot_color_fill(indicator_column=column_name, color_fill=None)
+            self.set_plot_row(indicator_column=column_name, row_position=row_pos)
+            self.df.loc[:, column_name] = merged
+        return merged
+
+    def clean_in_out(self,
+                     column: str or int or pd.Series,
+                     in_tag=1,
+                     out_tag=-1,
+                     strategy_group: str = '',
+                     inplace=True,
+                     suffix: str = '',
+                     color: str or int = 'grey'):
+        """
+        Predominant serie will be filled nans with values, if existing, from the other serie.
+
+        Same kind of index needed.
+
+        :param pd.Series column: A column to clean in and out values.
+        :param in_tag: Tag for in tags. Default is 1.
+        :param out_tag: Tag for out tags. Default is -1.
+        :param str strategy_group: A name for a group of columns to assign to a strategy.
+        :param bool inplace: Permanent or not. Default is false, because of some testing required sometimes.
+        :param str suffix: A string to decorate resulting Pandas series name.
+        :param str or int color: A color from plotly list of colors or its index in that list.
+        :return pd.Series: A merged serie.
+        """
+        if type(column) == str:
+            data_a = self.df[column]
+        elif type(column) == int:
+            data_a = self.df.iloc[:, column]
+        else:
+            data_a = column.copy(deep=True)
+
+        # if data_a.name in self.action_labels.keys():
+        #     in_tag = self.action_labels[data_a.name]['label_in']
+        #     out_tag = self.action_labels[data_a.name]['label_out']
+
+        clean = handlers.tags.clean_in_out(serie=data_a,
+                                           df=self.df,
+                                           in_tag=in_tag,
+                                           out_tag=out_tag)
+        if suffix:
+            suffix = '_' + suffix
+        column_name = f"Clean_{data_a.name}" + suffix
+
+        clean.name = column_name
+
+        if inplace and self.is_new(clean):
+            if strategy_group:
+                self.strategy_groups = handlers.tags.tag_strategy_group(column=column_name,
+                                                                        group=strategy_group,
+                                                                        strategy_groups=self.strategy_groups)
+            if data_a.name in self.row_control.keys():
+                row_pos = self.row_control[data_a.name]
+            elif data_a.name in ['High', 'Low', 'Close', 'Open']:
+                row_pos = 1
+            else:
+                self.row_counter += 1
+                row_pos = self.row_counter
+
+            self.set_plot_color(indicator_column=column_name, color=color)
+            self.set_plot_color_fill(indicator_column=column_name, color_fill=None)
+            self.set_plot_row(indicator_column=column_name, row_position=row_pos)
+            self.df.loc[:, column_name] = clean
+
+        return clean
+
     def strategy_from_tags_crosses(self,
                                    columns: list = None,
                                    strategy_group: str = '',
+                                   matching_tag=1,
+                                   method: str = 'all',
+                                   tag_reversed_match: bool = False,
                                    inplace=True,
                                    suffix: str = '',
-                                   color: str or int = 'magenta'):
+                                   color: str or int = 'magenta',
+                                   reversed_match=-1):
         """
         Checks where all tags and cross columns get value "1" at the same time. And also gets points where all tags gets value of "0" and
         cross columns get "-1" value.
@@ -3051,6 +3318,11 @@ class Symbol(object):
         :param list columns: A list of Tag and Cross columns with numeric o 1,0 for tags and 1,-1 for cross points.
         :param str strategy_group: A name for a group of columns to restrict application of strategy. If both columns and strategy_group
          passed, a interjection between the two arguments is applied.
+        :param bool tag_reversed_match: If enabled, all zeros or minus ones tag and cross columns are interpreted as reversed match,
+         this will enable tagging those.
+        :param any matching_tag: A tag to search for the strategy where will be revised method for matched rows.
+        :param str method: Can be 'all' or 'any'. It produces a match when all or any columns are matching tags.
+        :param any reversed_match: A tag for the all/any not matched strategy rows.
         :param bool inplace: Permanent or not. Default is false, because of some testing required sometimes.
         :param str suffix: A string to decorate resulting Pandas series name.
         :param str or int color: A color from plotly list of colors or its index in that list.
@@ -3071,6 +3343,7 @@ class Symbol(object):
                 my_columns = list(set_my_cols.intersection(set_strategy_group))
             else:
                 my_columns = self.strategy_groups[strategy_group]
+                cross_columns = [c for c in my_columns if c.lower().startswith('cross_')]
 
         for col in my_columns:
             data_col = self.df[col].dropna()
@@ -3081,22 +3354,32 @@ class Symbol(object):
             except AssertionError:
                 raise Exception(f"BinPan Strategic Exception: Not numerica labels on {col}: {list(data_col.value_counts().index)}")
 
-        # tag_columns = [c for c in my_columns if c.lower().startswith('tag_')]
-        # cross_columns = [c for c in my_columns if c.lower().startswith('cross_')]
-
         temp_df = self.df.copy(deep=True)
         temp_df = temp_df.loc[:, my_columns]
 
         # remove zeros from cross columns
         temp_df[cross_columns] = temp_df[cross_columns].replace({'0': np.nan, 0: np.nan})
 
-        bull_serie = (temp_df > 0).all(axis=1)
-        bear_serie = (temp_df <= 0).all(axis=1)
+        # matching magic
+        if method == 'all':
+            bull_serie = (temp_df > 0).all(axis=1)
+        elif method == 'any':
+            bull_serie = (temp_df > 0).any(axis=1)
+        else:
+            raise Exception(f"BinPan Strategy Exception: Method not 'all' or 'any' -> {method}")
 
-        ret1 = pd.Series(1, index=bull_serie[bull_serie].index)
-        ret2 = pd.Series(-1, index=bear_serie[bear_serie].index)
+        ret = pd.Series(matching_tag, index=bull_serie[bull_serie].index)
 
-        ret = pd.concat([ret1, ret2]).sort_index()
+        if tag_reversed_match:
+            if method == 'all':
+                bear_serie = (temp_df <= 0).all(axis=1)
+            elif method == 'any':
+                bear_serie = (temp_df <= 0).any(axis=1)
+            else:
+                raise Exception(f"BinPan Strategy Exception: Method not 'all' or 'any' -> {method}")
+
+            ret_reversed = pd.Series(reversed_match, index=bear_serie[bear_serie].index)
+            ret = pd.concat([ret, ret_reversed]).sort_index()
 
         if suffix:
             suffix = '_' + suffix
