@@ -303,12 +303,14 @@ def evaluate_wallets(df_: pd.DataFrame,
     evaluating_quote = evaluating_quote.upper()
 
     original_index = df_.index
+
     symbol = original_index.name.split()[0]
     tick_interval = original_index.name.split()[1]
     df_.set_index('Open timestamp', inplace=True, drop=False)
 
     if not info_dic:
         info_dic = get_info_dic()
+
     bases = get_bases_dic(info_dic=info_dic)
     quotes = get_quotes_dic(info_dic=info_dic)
 
@@ -353,14 +355,14 @@ def evaluate_wallets(df_: pd.DataFrame,
         evaluated_quote_serie = evaluated_quote_df['Close']
 
     # apply qty for the price
-    base_value = evaluated_base_serie * base_serie
-    quote_value = evaluated_quote_serie * quote_serie
+    base_value = pd.Series(data=(evaluated_base_serie.values * base_serie.values), index=original_index)
+    quote_value = pd.Series(data=(evaluated_quote_serie.values * quote_serie.values), index=original_index)
 
     # merge data
     merged = base_value + quote_value
 
     merged.name = f"Evaluated_{symbol}_{evaluating_quote}{suffix}"
-    merged.index = original_index
+    # merged.index = original_index
     return pd.DataFrame([base_serie, quote_serie, merged]).T
 
 
