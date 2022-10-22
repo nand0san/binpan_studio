@@ -1591,7 +1591,6 @@ class Symbol(object):
                     inplace=True,
                     suffix: str = None,
                     colors: list = ['cornflowerblue', 'blue', 'black']) -> pd.DataFrame or pd.Series:
-
         """
         Simulates buys and sells using labels in a tagged column with actions. Actions are considered before the tag, in the next
         candle using priced_actions_col price of that candle before.
@@ -1606,7 +1605,7 @@ class Symbol(object):
         :param int action_candles_lag: Candles needed to confirm an action from action tag. Usually one candle. Example,
          when an action like a cross of two EMA lines occur, it's needed to close that candle of the cross to confirm,
          then, nex candle can buy at open.
-        :param evaluating_quote:
+        :param str evaluating_quote: A quote used to convert value of the backtesting line for better reference.
         :param bool inplace: Make it permanent in the instance or not.
         :param str suffix: A decorative suffix for the name of the column created.
         :param list colors: Defaults to red and green.
@@ -1651,6 +1650,7 @@ class Symbol(object):
             # second row added in loop, need to sync row counter with las added row
             self.row_counter += 1
             self.df = pd.concat([self.df, wallet_df], axis=1)
+
         return wallet_df
 
     #################
