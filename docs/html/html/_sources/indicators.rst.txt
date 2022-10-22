@@ -16,3 +16,18 @@ Indicators
 
 .. autofunction:: ichimoku
 
+.. autofunction:: ker
+
+Indicators utils
+----------------
+
+.. autofunction:: split_serie_by_position
+
+.. autofunction:: df_splitter
+
+.. autofunction:: zoom_cloud_indicators
+
+.. autofunction:: shift_indicator
+
+.. autofunction:: ffill_indicator
+

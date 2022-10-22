@@ -85,6 +85,21 @@ def ichimoku(data: pd.DataFrame,
     return ret
 
 
+def ker(close: pd.Series,
+        window: int,
+        ) -> pd.Series:
+    """
+    Kaufman's Efficiency Ratio based in: https://stackoverflow.com/questions/36980238/calculating-kaufmans-efficiency-ratio-in-python-with-pandas
+
+    :param pd.Series close: Close prices serie.
+    :param int window: Window to check indicator.
+    :return pd.Series: Results.
+    """
+    direction = close.diff(window).abs()
+    volatility = pd.rolling_sum(close.diff().abs(), window)
+    return direction / volatility
+
+
 ####################
 # INDICATORS UTILS #
 ####################
@@ -93,7 +108,12 @@ def split_serie_by_position(serie: pd.Series,
                             splitter_serie: pd.Series,
                             fill_with_zeros: bool = True) -> pd.DataFrame:
     """
-    Splits a serie by other serie values in four series for plotting purposes.
+    Splits a serie by values of other serie in four series for plotting purposes. It means will get 4 series with different situations:
+
+       - serie is over the splitter serie.
+       - serie is below the splitter serie.
+       - splitter serie is over the serie.
+       - splitter serie is below the serie.
 
     :param pd.Series serie: A serie to classify in reference to other serie.
     :param pd.Series splitter_serie: A serie to split in two couple of series classified by position reference.
@@ -202,7 +222,7 @@ def shift_indicator(serie: pd.Series, window: int = 1):
 
 def ffill_indicator(serie: pd.Series, window: int = 1):
     """
-    It forward fills a value through nans through a window ahead.
+    It forward fills a value through nans while a window of candles ahead.
 
     :param pd.Series serie: A pandas Series.
     :param int window: Times values are shifted ahead. Default is 1.
