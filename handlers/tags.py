@@ -6,6 +6,9 @@ Tagging utils.
 import pandas as pd
 import numpy as np
 
+from .exchange import get_info_dic, get_bases_dic, get_quotes_dic
+from .market import get_candles_by_time_stamps, parse_candles_to_dataframe
+
 
 def tag_value(serie: pd.Series,
               value: int or float,
@@ -284,10 +287,12 @@ def backtesting(df: pd.DataFrame,
                 quote: float = 1000,
                 priced_actions_col: str = 'Open',
                 fee: float = 0.001,
-                label_buy='buy',
-                label_sell='sell',
+                label_in='buy',
+                label_out='sell',
                 suffix: str = '',
-                lag_action=1) -> pd.DataFrame:
+                lag_action=1,
+                evaluating_quote: str = 'BUSD',
+                info_dic: dict = None) -> pd.DataFrame:
     """
     Returns two pandas series as base wallet and quote wallet over time. Its expected a serie with strings like 'buy' or 'sell'.
     That serie is called the "actions". If it is available a column with the exact price of the actions, can be passed in
@@ -301,11 +306,13 @@ def backtesting(df: pd.DataFrame,
     :param float quote: A starting quantity of symbol's quote.
     :param pd.Series or str priced_actions_col: Column with the prices for the action emulation.
     :param float fee: Binance applicable fee for trading. DEfault is 0.001.
-    :param str or int label_buy: A label consider as trade in trigger.
-    :param str or int label_sell: A label consider as trade out trigger.
+    :param str or int label_in: A label consider as trade in trigger.
+    :param str or int label_out: A label consider as trade out trigger.
     :param int lag_action: Candles needed to confirm an action from action tag. Usually one candle. Example,
        when an action like a cross of two EMA lines occur, it's needed to close that candle of the cross to confirm,
        then, nex candle can buy at open.
+    :param str evaluating_quote: a Binance valid quote to evaluate operations.
+    :param dict info_dic: BinPan exchange info dict to extract information about quotes and bases of symbols.
     :param str suffix: A suffix for the names of the columns.
     :return tuple: Two series with the base wallet and quote wallet funds in time.
     """
@@ -320,12 +327,12 @@ def backtesting(df: pd.DataFrame,
     actions_labels = list(actions_no_zeros.dropna().value_counts().index)
 
     try:
-        assert {label_buy, label_sell} == set(actions_labels)
+        assert set(actions_labels).issubset({label_in, label_out})
     except AssertionError:
         try:
-            assert {1, -1} == set(actions_labels)
-            label_buy = 1
-            label_sell = -1
+            assert set(actions_labels).issubset({1, -1})
+            label_in = 1
+            label_out = -1
         except AssertionError:
             raise Exception(f"BinPan Exception: Backtesting expected labels were not correctly specified: {actions_labels}")
 
@@ -338,10 +345,10 @@ def backtesting(df: pd.DataFrame,
         curr_action = actions_[index]
         price = df_.loc[index, priced_actions_col]
 
-        if curr_action == label_buy and last_action != 'buy':
+        if curr_action == label_in and last_action != 'buy':
             last_action = 'buy'
 
-        elif curr_action == label_sell and last_action != 'sell':
+        elif curr_action == label_out and last_action != 'sell':
             last_action = 'sell'
 
         if last_action == 'buy' and lag == 0:
@@ -362,5 +369,67 @@ def backtesting(df: pd.DataFrame,
     base_serie = pd.Series(base_wallet, index=df_.index, name=f"Wallet_base{suffix}")
     quote_serie = pd.Series(quote_wallet, index=df_.index, name=f"Wallet_quote{suffix}")
 
-    # TODO: evalueated progression
+    # TODO: evaluated progression
+    if evaluating_quote:
+        original_index = df_.index
+        symbol = original_index.name.split()[0]
+        tick_interval = original_index.name.split()[1]
+        df_.set_index('Open timestamp', inplace=True, drop=False)
+
+        if not info_dic:
+            info_dic = get_info_dic()
+        bases = get_bases_dic(info_dic=info_dic)
+        quotes = get_quotes_dic(info_dic=info_dic)
+
+        base = bases[symbol]
+        quote = quotes[symbol]
+
+        if quote == evaluating_quote:
+            evaluated_base_serie = df_['Close']
+            evaluated_quote_serie = pd.Series(1, index=df_.index)
+        else:
+            evaluate_base_symbol = base + evaluating_quote
+            evaluate_quote_symbol = quote + evaluating_quote
+
+            start_timestamp = df_['Open timestamp'].iloc[0]
+            end_timestamp = df_['Close timestamp'].iloc[-1]
+
+            evaluated_base_list = get_candles_by_time_stamps(symbol=evaluate_base_symbol,
+                                                             tick_interval=tick_interval,
+                                                             start_time=start_timestamp,
+                                                             end_time=end_timestamp)
+            evaluated_base_df = parse_candles_to_dataframe(raw_response=evaluated_base_list,
+                                                           symbol=evaluate_base_symbol,
+                                                           tick_interval=tick_interval)
+            evaluated_base_df.set_index('Open timestamp', inplace=True, drop=False)
+
+            evaluated_quote_list = get_candles_by_time_stamps(symbol=evaluate_quote_symbol,
+                                                              tick_interval=tick_interval,
+                                                              start_time=start_timestamp,
+                                                              end_time=end_timestamp)
+            evaluated_quote_df = parse_candles_to_dataframe(raw_response=evaluated_quote_list,
+                                                            symbol=evaluate_quote_symbol,
+                                                            tick_interval=tick_interval)
+
+            evaluated_quote_df.set_index('Open timestamp', inplace=True, drop=False)
+            # try:
+            #     assert df_.index == evaluated_base_df.index
+            #     assert df_.index == evaluated_quote_df.index
+            # except AssertionError:
+            #     raise Exception(f"Index not matching original object index when evaluating quote price.")
+
+            evaluated_base_serie = evaluated_base_df['Close']
+            evaluated_quote_serie = evaluated_quote_df['Close']
+
+        # apply qty for the price
+        base_value = evaluated_base_serie * base_wallet
+        quote_value = evaluated_quote_serie * quote_wallet
+
+        # merge data
+        merged = base_value + quote_value
+
+        merged.name = f"Evaluated_{symbol}_{evaluating_quote}{suffix}"
+        merged.index = original_index
+        return pd.DataFrame([base_serie, quote_serie, merged]).T
+
     return pd.DataFrame([base_serie, quote_serie]).T

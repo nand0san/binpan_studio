@@ -773,14 +773,13 @@ def candles_tagged(data: pd.DataFrame,
 
     if actions_col:  # this trigger all annotation and markers thing
         actions_data = data_[actions_col].dropna()
-        actions = sorted(list(actions_data.value_counts().index))
+        actions = sorted(list(set(actions_data.value_counts().index)))
 
         if not markers_labels:
             markers_labels = {i: i for i in actions}
-            plot_logger.info(markers_labels)
 
         try:
-            assert len(set(actions)) == len(markers_labels)
+            assert len(actions) == len(markers_labels)
         except AssertionError:
             raise Exception(f"BinPan Plotting Exception: Length missmatch between types of actions and markers_labels -> "
                             f"{len(set(actions))}!={len(markers_labels)}")

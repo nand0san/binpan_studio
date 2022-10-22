@@ -369,7 +369,7 @@ class Symbol(object):
         self.color_fill_control = dict()
         self.indicators_filled_mode = dict()
         self.axis_groups = dict()
-        self.action_labels = dict()
+        # self.action_labels = dict()
         self.global_axis_group = 99
         self.strategies = 0
         self.row_counter = 1
@@ -894,7 +894,7 @@ class Symbol(object):
 
         if self.is_new(source_data=data, suffix=''):  # suffix is added before this to names
 
-            rows_tags = {row: i+self.row_counter+1 for i, row in enumerate(sorted(list(set(rows))))}
+            rows_tags = {row: i + self.row_counter + 1 for i, row in enumerate(sorted(list(set(rows))))}
             rows = [rows_tags[r] if r != 1 else 1 for r in rows]  # downcast rows to available except 1 (overlap)
 
             for i, serie in enumerate(data_series):
@@ -1177,7 +1177,7 @@ class Symbol(object):
              overlapped_indicators: list = [],
              priced_actions_col: str = 'Close',
              actions_col: str = None,
-             marker_labels: dict = {-1: 'sell', 1: 'buy'},
+             marker_labels: dict = None,
              markers: list = None,
              marker_colors: list = None,
              background_color=None,
@@ -1510,28 +1510,6 @@ class Symbol(object):
                                     title=title,
                                     **update_layout_kwargs)
 
-    ####################
-    # backtesting data #
-    ####################
-
-    def set_action_labels(self,
-                          indicator_column: str = None,
-                          label_buy: str = 'buy',
-                          label_sell: str = 'sell') -> dict:
-        """
-        Sets labels to use when backtesting over a column of actions.
-
-        DEPRECATED.
-
-        :param str indicator_column: A column name of a BinPan dataframe colum.
-        :param str label_buy: A label to register a sell point.
-        :param str label_sell: A label to register a buy point.
-        :return dict: Dictionary with action columns labels.
-        """
-        if indicator_column and label_buy and label_sell:
-            self.action_labels.update({indicator_column: {'label_buy': label_buy, 'label_sell': label_sell}})
-        return self.action_labels
-
     #################
     # Exchange data #
     #################
@@ -1581,18 +1559,38 @@ class Symbol(object):
     ###############
     # Backtesting #
     ###############
+
+    # def set_action_labels(self,
+    #                       indicator_column: str = None,
+    #                       label_in: str = 'buy',
+    #                       label_out: str = 'sell') -> dict:
+    #     """
+    #     Sets labels to use when backtesting over a column of actions. In means you obtain base, out means you obtain quote.
+    #
+    #     DEPRECATED, ACTION LABELS MUST BE -1 OR 1.
+    #
+    #     :param str indicator_column: A column name of a BinPan dataframe colum.
+    #     :param str label_in: A label to register a sell point.
+    #     :param str label_out: A label to register a buy point.
+    #     :return dict: Dictionary with action columns labels.
+    #     """
+    #     if indicator_column and label_in and label_out:
+    #         self.action_labels.update({indicator_column: {'label_in': label_in, 'label_out': label_out}})
+    #     return self.action_labels
+
     def backtesting(self,
                     actions_col: str or int,
                     base: float = 0,
                     quote: float = 1000,
                     priced_actions_col: str = 'Open',
-                    label_buy='buy',
-                    label_sell='sell',
+                    label_in=1,
+                    label_out=-1,
                     fee: float = 0.001,
                     action_candles_lag=1,
+                    evaluating_quote: str = 'BUSD',
                     inplace=True,
                     suffix: str = None,
-                    colors: list = ['cornflowerblue', 'blue']) -> pd.DataFrame or pd.Series:
+                    colors: list = ['cornflowerblue', 'blue', 'black']) -> pd.DataFrame or pd.Series:
 
         """
         Simulates buys and sells using labels in a tagged column with actions. Actions are considered before the tag, in the next
@@ -1602,12 +1600,13 @@ class Symbol(object):
         :param float base: Base inverted quantity.
         :param float quote: Quote inverted quantity.
         :param str or int priced_actions_col: Columna name or index with prices to use when action label in a row.
-        :param str or int label_buy: A label consider as trade in trigger.
-        :param str or int label_sell: A label consider as trade out trigger.
+        :param str or int label_in: A label consider as trade in trigger.
+        :param str or int label_out: A label consider as trade out trigger.
         :param float fee: Fees applied to the simulation.
         :param int action_candles_lag: Candles needed to confirm an action from action tag. Usually one candle. Example,
          when an action like a cross of two EMA lines occur, it's needed to close that candle of the cross to confirm,
          then, nex candle can buy at open.
+        :param evaluating_quote:
         :param bool inplace: Make it permanent in the instance or not.
         :param str suffix: A decorative suffix for the name of the column created.
         :param list colors: Defaults to red and green.
@@ -1615,9 +1614,9 @@ class Symbol(object):
 
         """
 
-        if self.symbol in self.action_labels.keys():
-            label_buy = self.action_labels[self.symbol]['label_buy']
-            label_sell = self.action_labels[self.symbol]['label_sell']
+        # if self.symbol in self.action_labels.keys():
+        #     label_in = self.action_labels[self.symbol]['label_in']
+        #     label_out = self.action_labels[self.symbol]['label_out']
 
         if type(actions_col) == int:
             actions = self.df.iloc[:, actions_col]
@@ -1632,17 +1631,18 @@ class Symbol(object):
                                               base=base,
                                               quote=quote,
                                               fee=fee,
-                                              label_buy=label_buy,
-                                              label_sell=label_sell,
+                                              label_in=label_in,
+                                              label_out=label_out,
                                               priced_actions_col=priced_actions_col,
                                               lag_action=action_candles_lag,
-                                              suffix=suffix)
+                                              suffix=suffix,
+                                              evaluating_quote=evaluating_quote)
 
         if inplace and self.is_new(wallet_df):
             column_names = wallet_df.columns
             self.row_counter += 1
             if not colors:
-                colors = ['blue', 'blue']
+                colors = ['blue', 'blue', 'blue']
             for i, col in enumerate(column_names):
                 self.set_plot_color(indicator_column=col, color=colors[i])
                 self.set_plot_color_fill(indicator_column=col, color_fill=False)
@@ -3025,7 +3025,6 @@ class Symbol(object):
             self.set_plot_color(indicator_column=column_name, color=color)
             self.set_plot_color_fill(indicator_column=column_name, color_fill=None)
             self.set_plot_row(indicator_column=column_name, row_position=self.row_counter)  # overlaps are one
-            # self.set_action_labels(indicator_column=column_name, label_buy='buy', label_sell='sell')
             self.df.loc[:, column_name] = compared
 
         return compared
@@ -3268,6 +3267,10 @@ class Symbol(object):
         else:
             data_a = column.copy(deep=True)
 
+        # if data_a.name in self.action_labels.keys():
+        #     in_tag = self.action_labels[data_a.name]['label_in']
+        #     out_tag = self.action_labels[data_a.name]['label_out']
+
         clean = handlers.tags.clean_in_out(serie=data_a,
                                            df=self.df,
                                            in_tag=in_tag,
@@ -3301,9 +3304,9 @@ class Symbol(object):
     def strategy_from_tags_crosses(self,
                                    columns: list = None,
                                    strategy_group: str = '',
-                                   tag_reversed_match: bool = False,
-                                   match_tag=1,
+                                   matching_tag=1,
                                    method: str = 'all',
+                                   tag_reversed_match: bool = False,
                                    inplace=True,
                                    suffix: str = '',
                                    color: str or int = 'magenta',
@@ -3317,9 +3320,9 @@ class Symbol(object):
          passed, a interjection between the two arguments is applied.
         :param bool tag_reversed_match: If enabled, all zeros or minus ones tag and cross columns are interpreted as reversed match,
          this will enable tagging those.
-        :param any reversed_match: A tag for the all not matched strategy rows.
-        :param any match_tag: A tag for the strategy matched rows.
-        :param str method: Can be 'all' or 'any'. It produces a match when all or any columns are ones.
+        :param any matching_tag: A tag to search for the strategy where will be revised method for matched rows.
+        :param str method: Can be 'all' or 'any'. It produces a match when all or any columns are matching tags.
+        :param any reversed_match: A tag for the all/any not matched strategy rows.
         :param bool inplace: Permanent or not. Default is false, because of some testing required sometimes.
         :param str suffix: A string to decorate resulting Pandas series name.
         :param str or int color: A color from plotly list of colors or its index in that list.
@@ -3365,7 +3368,7 @@ class Symbol(object):
         else:
             raise Exception(f"BinPan Strategy Exception: Method not 'all' or 'any' -> {method}")
 
-        ret = pd.Series(match_tag, index=bull_serie[bull_serie].index)
+        ret = pd.Series(matching_tag, index=bull_serie[bull_serie].index)
 
         if tag_reversed_match:
             if method == 'all':
