@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BinPan Module &mdash; BinPan 0.2.33 documentation</title>
+  <title>BinPan Module &mdash; BinPan 0.2.34 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/style.css" type="text/css" />
@@ -56,7 +56,7 @@
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tags.html">Tags Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tags.html">Tags &amp; Backtesting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Module</a></li>
 </ul>
 
@@ -398,6 +398,12 @@ exchange.</p></li>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.backtesting" title="binpan.binpan.Symbol.backtesting"><code class="xref py py-obj docutils literal notranslate"><span class="pre">backtesting</span></code></a>(actions_col[, target_column, ...])</p></td>
 <td><p>Simulates buys and sells using labels in a tagged column with actions.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.roi" title="binpan.binpan.Symbol.roi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">roi</span></code></a>(column)</p></td>
+<td><p>It returns win or loos percent for a evaluation column.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.profit_hour" title="binpan.binpan.Symbol.profit_hour"><code class="xref py py-obj docutils literal notranslate"><span class="pre">profit_hour</span></code></a>(column)</p></td>
+<td><p>It returns win or loos quantity per hour.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.get_fees" title="binpan.binpan.Symbol.get_fees"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_fees</span></code></a>([symbol])</p></td>
 <td><p>Shows applied fees for the symbol of the object.</p></td>
@@ -1169,6 +1175,34 @@ candle using priced_actions_col price of that candle before.</p>
 </dd>
 <dt class="field-even">Return pd.DataFrame or pd.Series</dt>
 <dd class="field-even"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.binpan.Symbol.roi">
+<span class="sig-name descname"><span class="pre">roi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#binpan.binpan.Symbol.roi" title="Permalink to this definition"></a></dt>
+<dd><p>It returns win or loos percent for a evaluation column. Just compares first and last value increment by the first price in percent.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>column</strong> (<em>str</em>) – A column in the BinPan’s DataFrame with values to check ROI (return of inversion).</p>
+</dd>
+<dt class="field-even">Return float</dt>
+<dd class="field-even"><p>Resulting return of inversion.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.binpan.Symbol.profit_hour">
+<span class="sig-name descname"><span class="pre">profit_hour</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#binpan.binpan.Symbol.profit_hour" title="Permalink to this definition"></a></dt>
+<dd><p>It returns win or loos quantity per hour. Just compares first and last value. Expected datetime index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>column</strong> (<em>str</em>) – A column in the BinPan’s DataFrame with values to check profit with expected datetime index.</p>
+</dd>
+<dt class="field-even">Return float</dt>
+<dd class="field-even"><p>Resulting return of inversion.</p>
+</dd>
 </dl>
 </dd></dl>
 

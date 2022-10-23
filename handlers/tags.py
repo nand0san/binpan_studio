@@ -364,9 +364,9 @@ def evaluate_wallets(df_: pd.DataFrame,
     merged = base_value + quote_value
 
     if suffix:
-        merged.name = f"Evaluated_{symbol}_{evaluating_quote}{suffix}"
+        merged.name = f"Evaluated_{symbol}_in_{evaluating_quote}{suffix}"
     else:
-        merged.name = f"Evaluated_{symbol}_{evaluating_quote}"
+        merged.name = f"Evaluated_{symbol}_in_{evaluating_quote}"
     # merged.index = original_index
     return base_serie, quote_serie, merged
 

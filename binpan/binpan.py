@@ -35,7 +35,7 @@ binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', 
 tick_seconds = handlers.time_helper.tick_seconds
 pandas_freq_tick_interval = handlers.time_helper.pandas_freq_tick_interval
 
-__version__ = "0.2.33"
+__version__ = "0.2.34"
 
 try:
     from secret import redis_conf
@@ -1672,6 +1672,34 @@ class Symbol(object):
             self.df = pd.concat([self.df, wallet_df], axis=1)
 
         return wallet_df
+
+    def roi(self,
+            column: str) -> float:
+        """
+        It returns win or loos percent for a evaluation column. Just compares first and last value increment by the first price in percent.
+
+        :param str column: A column in the BinPan's DataFrame with values to check ROI (return of inversion).
+        :return float: Resulting return of inversion.
+        """
+        first = self.df.iloc[0, self.df.columns.get_loc(column)]
+        last = self.df.iloc[-1, self.df.columns.get_loc(column)]
+
+        return 100 * (last - first) / first
+
+    def profit_hour(self,
+                    column: str) -> float:
+        """
+        It returns win or loos quantity per hour. Just compares first and last value. Expected datetime index.
+
+        :param str column: A column in the BinPan's DataFrame with values to check profit with expected datetime index.
+        :return float: Resulting return of inversion.
+        """
+        first = self.df.iloc[0, self.df.columns.get_loc(column)]
+        last = self.df.iloc[-1, self.df.columns.get_loc(column)]
+        profit = last - first
+        ms = self.df['Close timestamp'].iloc[-1] - self.df['Open timestamp'].iloc[0]
+        hours = ms / (1000 * 60 * 60)
+        return profit / hours
 
     #################
     # Exchange Data #
