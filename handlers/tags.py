@@ -302,7 +302,8 @@ def evaluate_wallets(df_: pd.DataFrame,
     :param str suffix: A suffix for the names of the columns.
     :return pd.DataFrame: It returns a dataframe with base and quote series plus an evaluated serie in any quote coin of both wallets merged.
     """
-    evaluating_quote = evaluating_quote.upper()
+    if evaluating_quote:
+        evaluating_quote = evaluating_quote.upper()
 
     original_index = df_.index
 
@@ -319,6 +320,9 @@ def evaluate_wallets(df_: pd.DataFrame,
     base = bases[symbol]
     quote = quotes[symbol]
 
+    if not evaluating_quote:
+        evaluating_quote = quote
+
     if quote == evaluating_quote:
         evaluated_base_serie = df_['Close']
         evaluated_quote_serie = pd.Series(1, index=df_.index)
@@ -326,8 +330,8 @@ def evaluate_wallets(df_: pd.DataFrame,
         evaluate_base_symbol = base + evaluating_quote
         evaluate_quote_symbol = quote + evaluating_quote
 
-        start_timestamp = df_['Open timestamp'].iloc[0]
-        end_timestamp = df_['Close timestamp'].iloc[-1]
+        start_timestamp = int(df_['Open timestamp'].dropna().iloc[0])
+        end_timestamp = int(df_['Close timestamp'].dropna().iloc[-1])
 
         evaluated_base_list = get_candles_by_time_stamps(symbol=evaluate_base_symbol,
                                                          tick_interval=tick_interval,
@@ -496,7 +500,7 @@ def backtesting(df: pd.DataFrame,
                 label_in=1,
                 label_out=-1,
                 suffix: str = '',
-                evaluating_quote: str = 'BUSD',
+                evaluating_quote: str = None,
                 info_dic: dict = None) -> pd.DataFrame:
     """
     Returns two pandas series as base wallet and quote wallet over time. Its expected a serie with numbers like 1 for ins and -1 for outs.
@@ -657,14 +661,14 @@ def backtesting(df: pd.DataFrame,
     resulting_actions.name = f"Resulting_actions_{actions_data.name}"
     executed_prices.name = f"Executed_prices_{actions_data.name}"
 
-    if evaluating_quote:
-        base_serie, quote_serie, merged = evaluate_wallets(df_=df_,
-                                                           base_serie=base_serie,
-                                                           quote_serie=quote_serie,
-                                                           evaluating_quote=evaluating_quote,
-                                                           info_dic=info_dic,
-                                                           suffix=suffix)
+    # if evaluating_quote:
+    base_serie, quote_serie, merged = evaluate_wallets(df_=df_,
+                                                       base_serie=base_serie,
+                                                       quote_serie=quote_serie,
+                                                       evaluating_quote=evaluating_quote,
+                                                       info_dic=info_dic,
+                                                       suffix=suffix)
 
-        return pd.DataFrame([base_serie, quote_serie, merged, resulting_actions, executed_prices]).T
+    return pd.DataFrame([base_serie, quote_serie, merged, resulting_actions, executed_prices]).T
 
-    return pd.DataFrame([base_serie, quote_serie, resulting_actions, executed_prices]).T
+    # return pd.DataFrame([base_serie, quote_serie, resulting_actions, executed_prices]).T

@@ -1600,7 +1600,7 @@ class Symbol(object):
                     label_in=1,
                     label_out=-1,
                     fee: float = 0.001,
-                    evaluating_quote: str = 'BUSD',
+                    evaluating_quote: str = None,
                     inplace=True,
                     suffix: str = None,
                     colors: list = None) -> pd.DataFrame or pd.Series:
@@ -1674,31 +1674,51 @@ class Symbol(object):
         return wallet_df
 
     def roi(self,
-            column: str) -> float:
+            column: str= None) -> float:
         """
         It returns win or loos percent for a evaluation column. Just compares first and last value increment by the first price in percent.
+        If not column passed, it will search for an Evaluation column.
 
         :param str column: A column in the BinPan's DataFrame with values to check ROI (return of inversion).
         :return float: Resulting return of inversion.
         """
-        first = self.df.iloc[0, self.df.columns.get_loc(column)]
-        last = self.df.iloc[-1, self.df.columns.get_loc(column)]
+        if not column:
+            column = [i for i in self.df.columns if i.startswith('Eval')][-1]
+            print(f"Auto selected column {column}")
+
+        my_column = self.df[column].copy(deep=True)
+        my_column.dropna(inplace=True)
+
+        first = my_column.iloc[0]
+        last = my_column.iloc[-1]
 
         return 100 * (last - first) / first
 
     def profit_hour(self,
-                    column: str) -> float:
+                    column: str = None) -> float:
         """
-        It returns win or loos quantity per hour. Just compares first and last value. Expected datetime index.
+        It returns win or loos quantity per hour. Just compares first and last value. Expected datetime index. If not column passed, it
+        will search for an Evaluation column.
 
         :param str column: A column in the BinPan's DataFrame with values to check profit with expected datetime index.
         :return float: Resulting return of inversion.
         """
-        first = self.df.iloc[0, self.df.columns.get_loc(column)]
-        last = self.df.iloc[-1, self.df.columns.get_loc(column)]
+        if not column:
+            column = [i for i in self.df.columns if i.startswith('Eval')][-1]
+            print(f"Auto selected column {column}")
+
+        my_column = self.df[column].copy(deep=True)
+        my_column.dropna(inplace=True)
+
+        first = my_column.iloc[0]
+        last = my_column.iloc[-1]
+
         profit = last - first
-        ms = self.df['Close timestamp'].iloc[-1] - self.df['Open timestamp'].iloc[0]
+        ms = self.df['Close timestamp'].dropna().iloc[-1] - self.df['Open timestamp'].dropna().iloc[0]
         hours = ms / (1000 * 60 * 60)
+
+        print(f"Total profit for {column}: {profit}")
+
         return profit / hours
 
     #################
