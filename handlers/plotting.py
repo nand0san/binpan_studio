@@ -782,7 +782,7 @@ def candles_tagged(data: pd.DataFrame,
             assert len(actions) == len(markers_labels)
         except AssertionError:
             raise Exception(f"BinPan Plotting Exception: Length missmatch between types of actions and markers_labels -> "
-                            f"{len(set(actions))}!={len(markers_labels)}")
+                            f"actions={actions} != markers={markers_labels}")
 
         if not markers:
             my_markers = ["arrow-bar-down", "arrow-bar-up"]

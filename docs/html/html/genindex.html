@@ -48,7 +48,7 @@
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tags.html">Tags Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tags.html">Tags &amp; Backtesting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Module</a></li>
 </ul>
 
@@ -167,14 +167,20 @@
 </li>
       <li><a href="binpan.html#binpan.binpan.Symbol.cci">cci() (binpan.binpan.Symbol method)</a>
 </li>
+      <li><a href="tags.html#handlers.tags.check_action_labels_for_backtesting">check_action_labels_for_backtesting() (in module handlers.tags)</a>
+</li>
       <li><a href="binpan.html#binpan.binpan.Symbol.clean_in_out">clean_in_out() (binpan.binpan.Symbol method)</a>
+
+      <ul>
+        <li><a href="tags.html#handlers.tags.clean_in_out">(in module handlers.tags)</a>
 </li>
+      </ul></li>
       <li><a href="binpan.html#binpan.binpan.Symbol.closed">closed() (binpan.binpan.Symbol method)</a>
-</li>
-      <li><a href="binpan.html#binpan.binpan.Exchange.coin">coin() (binpan.binpan.Exchange method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="binpan.html#binpan.binpan.Exchange.coin">coin() (binpan.binpan.Exchange method)</a>
+</li>
       <li><a href="market.html#handlers.market.convert_coin">convert_coin() (in module handlers.market)</a>
 </li>
       <li><a href="wallet.html#handlers.wallet.convert_str_date_to_ms">convert_str_date_to_ms() (in module handlers.wallet)</a>
@@ -219,6 +225,8 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="tags.html#handlers.tags.evaluate_wallets">evaluate_wallets() (in module handlers.tags)</a>
+</li>
       <li><a href="binpan.html#binpan.binpan.Exchange">Exchange (class in binpan.binpan)</a>
 </li>
       <li><a href="exchange.html#handlers.exchange.exchange_status">exchange_status() (in module handlers.exchange)</a>
@@ -496,8 +504,6 @@
         <li><a href="indicators.html#handlers.indicators.ichimoku">(in module handlers.indicators)</a>
 </li>
       </ul></li>
-      <li><a href="binpan.html#binpan.binpan.Symbol.info_dic">info_dic() (binpan.binpan.Symbol method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="binpan.html#binpan.binpan.Symbol.insert_indicator">insert_indicator() (binpan.binpan.Symbol method)</a>
@@ -543,6 +549,8 @@
       <li><a href="binpan.html#binpan.binpan.Wallet.margin_wallet_performance">margin_wallet_performance() (binpan.binpan.Wallet method)</a>
 </li>
       <li><a href="binpan.html#binpan.binpan.Symbol.merge_columns">merge_columns() (binpan.binpan.Symbol method)</a>
+</li>
+      <li><a href="tags.html#handlers.tags.merge_series">merge_series() (in module handlers.tags)</a>
 </li>
       <li>
     module
@@ -705,15 +713,17 @@
 </li>
       <li><a href="binpan.html#binpan.binpan.Symbol.set_plot_row">set_plot_row() (binpan.binpan.Symbol method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="binpan.html#binpan.binpan.Symbol.set_plot_splitted_serie_couple">set_plot_splitted_serie_couple() (binpan.binpan.Symbol method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="binpan.html#binpan.binpan.Symbol.set_strategy_groups">set_strategy_groups() (binpan.binpan.Symbol method)</a>
 </li>
       <li><a href="binpan.html#binpan.binpan.Symbol.shift">shift() (binpan.binpan.Symbol method)</a>
 </li>
       <li><a href="indicators.html#handlers.indicators.shift_indicator">shift_indicator() (in module handlers.indicators)</a>
+</li>
+      <li><a href="tags.html#handlers.tags.simple_backtesting">simple_backtesting() (in module handlers.tags)</a>
 </li>
       <li><a href="binpan.html#binpan.binpan.Symbol.sma">sma() (binpan.binpan.Symbol method)</a>
 </li>
@@ -747,6 +757,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="binpan.html#binpan.binpan.Symbol.tag">tag() (binpan.binpan.Symbol method)</a>
 </li>
+      <li><a href="tags.html#handlers.tags.tag_column_to_strategy_group">tag_column_to_strategy_group() (in module handlers.tags)</a>
+</li>
       <li><a href="tags.html#handlers.tags.tag_comparison">tag_comparison() (in module handlers.tags)</a>
 </li>
       <li><a href="tags.html#handlers.tags.tag_cross">tag_cross() (in module handlers.tags)</a>
@@ -755,10 +767,10 @@
 </li>
       <li><a href="messages.html#handlers.messages.telegram_bot_send_text">telegram_bot_send_text() (in module handlers.messages)</a>
 </li>
-      <li><a href="messages.html#handlers.messages.telegram_parse_dataframe_markdown">telegram_parse_dataframe_markdown() (in module handlers.messages)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="messages.html#handlers.messages.telegram_parse_dataframe_markdown">telegram_parse_dataframe_markdown() (in module handlers.messages)</a>
+</li>
       <li><a href="messages.html#handlers.messages.telegram_parse_dict">telegram_parse_dict() (in module handlers.messages)</a>
 </li>
       <li><a href="messages.html#handlers.messages.telegram_parse_order_markdown">telegram_parse_order_markdown() (in module handlers.messages)</a>
@@ -778,6 +790,8 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="binpan.html#binpan.binpan.Exchange.update_info">update_info() (binpan.binpan.Exchange method)</a>
+</li>
+      <li><a href="binpan.html#binpan.binpan.Symbol.update_info_dic">update_info_dic() (binpan.binpan.Symbol method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>

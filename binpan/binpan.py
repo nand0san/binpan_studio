@@ -511,9 +511,9 @@ class Symbol(object):
         :return dict: Updated strategy groups of columns.
         """
         if column and group:
-            self.strategy_groups = handlers.tags.tag_strategy_group(column=column,
-                                                                    group=group,
-                                                                    strategy_groups=strategy_groups)
+            self.strategy_groups = handlers.tags.tag_column_to_strategy_group(column=column,
+                                                                              group=group,
+                                                                              strategy_groups=strategy_groups)
         return self.strategy_groups
 
     def get_strategy_columns(self) -> list:
@@ -572,13 +572,14 @@ class Symbol(object):
         """
         return self.closed
 
-    def info_dic(self):
+    def update_info_dic(self):
         """
         Returns exchangeInfo data when instantiated. It includes, filters, fees, and many other data for all symbols in the
         exchange.
 
         :return dict:
         """
+        self.info_dic = handlers.exchange.get_info_dic()
         return self.info_dic
 
     def save_csv(self,
@@ -1590,6 +1591,7 @@ class Symbol(object):
                     actions_col: str or int,
                     target_column: str or pd.Series = None,
                     stop_loss_column: str or pd.Series = None,
+                    entry_filter_column: str or pd.Series = None,
                     fixed_target: bool = True,
                     fixed_stop_loss: bool = True,
                     base: float = 0,
@@ -1609,6 +1611,7 @@ class Symbol(object):
         :param str or int actions_col: A column name or index.
         :param target_column: Column with data for operation target values.
         :param stop_loss_column: Column with data for operation stop loss values.
+        :param pd.Series or str entry_filter_column: A serie or colum with ones or zeros to allow or avoid entries.
         :param bool fixed_target: Target for any operation will be calculated and fixed at the beginning of the operation.
         :param bool fixed_stop_loss: Stop loss for any operation will be calculated and fixed at the beginning of the operation.
         :param float base: Base inverted quantity.
@@ -1641,6 +1644,8 @@ class Symbol(object):
                                               actions_column=actions,
                                               target_column=target_column,
                                               stop_loss_column=stop_loss_column,
+                                              entry_filter_column=entry_filter_column,
+                                              priced_actions_col=priced_actions_col,
                                               fixed_target=fixed_target,
                                               fixed_stop_loss=fixed_stop_loss,
                                               base=base,
@@ -1648,9 +1653,9 @@ class Symbol(object):
                                               fee=fee,
                                               label_in=label_in,
                                               label_out=label_out,
-                                              priced_actions_col=priced_actions_col,
                                               suffix=suffix,
-                                              evaluating_quote=evaluating_quote)
+                                              evaluating_quote=evaluating_quote,
+                                              info_dic=self.info_dic)
 
         if inplace and self.is_new(wallet_df):
             column_names = wallet_df.columns
@@ -2951,8 +2956,8 @@ class Symbol(object):
     #############
 
     def tag(self,
+            column: str or int or pd.Series,
             reference: str or int or float or pd.Series,
-            column: str or int or pd.Series = 'Close',
             relation: str = 'gt',
             match_tag: str or int = 1,
             mismatch_tag: str or int = 0,
@@ -2963,6 +2968,7 @@ class Symbol(object):
         """
         It tags values of a column/serie compared to other serie or value by methods gt,ge,eq,le,lt as condition.
 
+        :param pd.Series or str column: A numeric serie or column name or column index. Default is Close price.
         :param pd.Series or str or int or float reference: A number or numeric serie or column name.
         :param str relation: The condition to apply comparing column to reference (default is greater than):
             eq (equivalent to ==) — equals to
@@ -2971,7 +2977,6 @@ class Symbol(object):
             lt (equivalent to <) — less than
             ge (equivalent to >=) — greater than or equals to
             gt (equivalent to >) — greater than
-        :param pd.Series or str column: A numeric serie or column name or column index. Default is Close price.
         :param int or str match_tag: Value or string to tag matched relation.
         :param int or str mismatch_tag: Value or string to tag mismatched relation.
         :param str strategy_group: A name for a group of columns to assign to a strategy.
@@ -3032,9 +3037,9 @@ class Symbol(object):
 
         if inplace and self.is_new(compared):
             if strategy_group:
-                self.strategy_groups = handlers.tags.tag_strategy_group(column=column_name,
-                                                                        group=strategy_group,
-                                                                        strategy_groups=self.strategy_groups)
+                self.strategy_groups = handlers.tags.tag_column_to_strategy_group(column=column_name,
+                                                                                  group=strategy_group,
+                                                                                  strategy_groups=self.strategy_groups)
             self.row_counter += 1
 
             self.set_plot_color(indicator_column=column_name, color=color)
@@ -3125,9 +3130,9 @@ class Symbol(object):
 
         if inplace and self.is_new(cross):
             if strategy_group:
-                self.strategy_groups = handlers.tags.tag_strategy_group(column=column_name,
-                                                                        group=strategy_group,
-                                                                        strategy_groups=self.strategy_groups)
+                self.strategy_groups = handlers.tags.tag_column_to_strategy_group(column=column_name,
+                                                                                  group=strategy_group,
+                                                                                  strategy_groups=self.strategy_groups)
             self.row_counter += 1
             self.set_plot_color(indicator_column=column_name, color=color)
             self.set_plot_color_fill(indicator_column=column_name, color_fill=None)
@@ -3170,9 +3175,9 @@ class Symbol(object):
 
         if inplace and self.is_new(shift):
             if strategy_group:
-                self.strategy_groups = handlers.tags.tag_strategy_group(column=column_name,
-                                                                        group=strategy_group,
-                                                                        strategy_groups=self.strategy_groups)
+                self.strategy_groups = handlers.tags.tag_column_to_strategy_group(column=column_name,
+                                                                                  group=strategy_group,
+                                                                                  strategy_groups=self.strategy_groups)
             if data_a.name in self.row_control.keys():
                 row_pos = self.row_control[data_a.name]
             elif data_a.name in ['High', 'Low', 'Close', 'Open']:
@@ -3236,9 +3241,9 @@ class Symbol(object):
 
         if inplace and self.is_new(merged):
             if strategy_group:
-                self.strategy_groups = handlers.tags.tag_strategy_group(column=column_name,
-                                                                        group=strategy_group,
-                                                                        strategy_groups=self.strategy_groups)
+                self.strategy_groups = handlers.tags.tag_column_to_strategy_group(column=column_name,
+                                                                                  group=strategy_group,
+                                                                                  strategy_groups=self.strategy_groups)
             if data_a.name in self.row_control.keys():
                 row_pos = self.row_control[data_a.name]
             elif data_a.name in ['High', 'Low', 'Close', 'Open']:
@@ -3297,9 +3302,9 @@ class Symbol(object):
 
         if inplace and self.is_new(clean):
             if strategy_group:
-                self.strategy_groups = handlers.tags.tag_strategy_group(column=column_name,
-                                                                        group=strategy_group,
-                                                                        strategy_groups=self.strategy_groups)
+                self.strategy_groups = handlers.tags.tag_column_to_strategy_group(column=column_name,
+                                                                                  group=strategy_group,
+                                                                                  strategy_groups=self.strategy_groups)
             if data_a.name in self.row_control.keys():
                 row_pos = self.row_control[data_a.name]
             elif data_a.name in ['High', 'Low', 'Close', 'Open']:

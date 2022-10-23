@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tags Module &mdash; BinPan 0.2.33 documentation</title>
+  <title>Tags &amp; Backtesting Module &mdash; BinPan 0.2.33 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/style.css" type="text/css" />
@@ -51,9 +51,9 @@
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Tags Module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#tags">Tags</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#cross">Cross</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Tags &amp; Backtesting Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#tags-cross">Tags &amp; Cross</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#merge-series">Merge Series</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#backtesting">Backtesting</a></li>
 </ul>
 </li>
@@ -74,7 +74,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Tags Module</li>
+      <li>Tags &amp; Backtesting Module</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/tags.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -84,16 +84,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="tags-module">
-<h1>Tags Module<a class="headerlink" href="#tags-module" title="Permalink to this heading"></a></h1>
-<p>This module can tag values, compare and extract relations between indicators or any Serie of data.</p>
+  <section id="tags-backtesting-module">
+<h1>Tags &amp; Backtesting Module<a class="headerlink" href="#tags-backtesting-module" title="Permalink to this heading"></a></h1>
+<p>This module can tag values, compare and extract relations between indicators or any Serie of data. Also can backtest
+any strategy.</p>
 <p>To import this module:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">handlers</span> <span class="kn">import</span> <span class="n">tags</span>
 </pre></div>
 </div>
 <span class="target" id="module-handlers.tags"></span><p>Tagging utils.</p>
-<section id="tags">
-<h2>Tags<a class="headerlink" href="#tags" title="Permalink to this heading"></a></h2>
+<section id="tags-cross">
+<h2>Tags &amp; Cross<a class="headerlink" href="#tags-cross" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.tags.tag_value">
 <span class="sig-prename descclassname"><span class="pre">handlers.tags.</span></span><span class="sig-name descname"><span class="pre">tag_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">serie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ge</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">le</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mismatch_tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_numeric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="headerlink" href="#handlers.tags.tag_value" title="Permalink to this definition"></a></dt>
@@ -144,9 +145,6 @@
 </dl>
 </dd></dl>
 
-</section>
-<section id="cross">
-<h2>Cross<a class="headerlink" href="#cross" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.tags.tag_cross">
 <span class="sig-prename descclassname"><span class="pre">handlers.tags.</span></span><span class="sig-name descname"><span class="pre">tag_cross</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">serie_a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serie_b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">echo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_over_tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'buy'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_below_tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sell'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Cross'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">non_zeros</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="headerlink" href="#handlers.tags.tag_cross" title="Permalink to this definition"></a></dt>
@@ -165,6 +163,63 @@
 </dd>
 <dt class="field-even">Return pd.Series</dt>
 <dd class="field-even"><p>A serie with tags as values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.tags.tag_column_to_strategy_group">
+<span class="sig-prename descclassname"><span class="pre">handlers.tags.</span></span><span class="sig-name descname"><span class="pre">tag_column_to_strategy_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strategy_groups</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.tags.tag_column_to_strategy_group" title="Permalink to this definition"></a></dt>
+<dd><p>Tags a columns as part of Strategy group of columns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>column</strong> (<em>str</em>) – A column to tag with a strategy group.</p></li>
+<li><p><strong>group</strong> (<em>str</em>) – Name of the group.</p></li>
+<li><p><strong>strategy_groups</strong> (<em>str</em>) – The existing strategy groups.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return dict</dt>
+<dd class="field-even"><p>Updated strategy groups of columns.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="merge-series">
+<h2>Merge Series<a class="headerlink" href="#merge-series" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.tags.merge_series">
+<span class="sig-prename descclassname"><span class="pre">handlers.tags.</span></span><span class="sig-name descname"><span class="pre">merge_series</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">predominant</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="headerlink" href="#handlers.tags.merge_series" title="Permalink to this definition"></a></dt>
+<dd><p>Predominant serie will be filled nans with values, if existing, from the other serie.</p>
+<p>Same kind of index needed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>predominant</strong> (<em>pd.Series</em>) – A serie with nans to fill from other serie.</p></li>
+<li><p><strong>other</strong> (<em>pd.Series</em>) – A serie to pick values for the nans.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.Series</dt>
+<dd class="field-even"><p>A merged serie.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.tags.clean_in_out">
+<span class="sig-prename descclassname"><span class="pre">handlers.tags.</span></span><span class="sig-name descname"><span class="pre">clean_in_out</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">serie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="headerlink" href="#handlers.tags.clean_in_out" title="Permalink to this definition"></a></dt>
+<dd><p>Balance from in tag to first out tag and discards any other tag until next in tag. This cleans redundant in or out tags.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>serie</strong> (<em>pd.Series</em>) – A serie with in and out tags.</p></li>
+<li><p><strong>in_tag</strong> – Tag for in tags. Default is 1.</p></li>
+<li><p><strong>out_tag</strong> – Tag for out tags. Default is -1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.Series</dt>
+<dd class="field-even"><p>Clean serie with ech in with next out.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -213,12 +268,50 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="handlers.tags.backtesting">
-<<<<<<< HEAD
-<span class="sig-prename descclassname"><span class="pre">handlers.tags.</span></span><span class="sig-name descname"><span class="pre">backtesting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Series</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quote</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priced_actions_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Open'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fee</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_buy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'buy'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_sell</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sell'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lag_action</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.tags.backtesting" title="Permalink to this definition"></a></dt>
-=======
-<span class="sig-prename descclassname"><span class="pre">handlers.tags.</span></span><span class="sig-name descname"><span class="pre">backtesting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quote</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priced_actions_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Open'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fee</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lag_action</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evaluating_quote</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BUSD'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.tags.backtesting" title="Permalink to this definition"></a></dt>
->>>>>>> main
+<dt class="sig sig-object py" id="handlers.tags.evaluate_wallets">
+<span class="sig-prename descclassname"><span class="pre">handlers.tags.</span></span><span class="sig-name descname"><span class="pre">evaluate_wallets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_serie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quote_serie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evaluating_quote</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Series</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Series</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Series</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#handlers.tags.evaluate_wallets" title="Permalink to this definition"></a></dt>
+<dd><p>Obtains total wallet values in a quote value through time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – A BinPan’s dataframe.</p></li>
+<li><p><strong>base_serie</strong> (<em>pd.Series</em>) – A wallet serie for symbol’s base.</p></li>
+<li><p><strong>quote_serie</strong> (<em>pd.Series</em>) – A wallet serie for symbol’s quote.</p></li>
+<li><p><strong>evaluating_quote</strong> (<em>str</em>) – a Binance valid quote to evaluate operations.</p></li>
+<li><p><strong>info_dic</strong> (<em>dict</em>) – BinPan exchange info dict to extract information about quotes and bases of symbols.</p></li>
+<li><p><strong>suffix</strong> (<em>str</em>) – A suffix for the names of the columns.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.DataFrame</dt>
+<dd class="field-even"><p>It returns a dataframe with base and quote series plus an evaluated serie in any quote coin of both wallets merged.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.tags.check_action_labels_for_backtesting">
+<span class="sig-prename descclassname"><span class="pre">handlers.tags.</span></span><span class="sig-name descname"><span class="pre">check_action_labels_for_backtesting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">actions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_in</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_out</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#handlers.tags.check_action_labels_for_backtesting" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>This function verify labels in actions series, if labels for in actions and labels for out actions are or not the specified ones. Also</dt><dd><p>if there are any other label it will throw an exception.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>actions</strong> (<em>pd.Series</em>) – A serie with labels to check if there are just in and out labels or not.</p></li>
+<li><p><strong>label_in</strong> (<em>int</em>) – Usually 1</p></li>
+<li><p><strong>label_out</strong> (<em>int</em>) – Usually -1</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return tuple</dt>
+<dd class="field-even"><p>Returns verified label in and label out.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.tags.simple_backtesting">
+<span class="sig-prename descclassname"><span class="pre">handlers.tags.</span></span><span class="sig-name descname"><span class="pre">simple_backtesting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quote</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priced_actions_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Open'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fee</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evaluating_quote</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BUSD'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.tags.simple_backtesting" title="Permalink to this definition"></a></dt>
 <dd><p>Returns two pandas series as base wallet and quote wallet over time. Its expected a serie with strings like ‘buy’ or ‘sell’.
 That serie is called the “actions”. If it is available a column with the exact price of the actions, can be passed in
 actions_col parameter by column name or a pandas series, if not, Closed price column can be a good approximation.</p>
@@ -232,16 +325,46 @@ actions_col parameter by column name or a pandas series, if not, Closed price co
 <li><p><strong>quote</strong> (<em>float</em>) – A starting quantity of symbol’s quote.</p></li>
 <li><p><strong>priced_actions_col</strong> (<em>pd.Series</em><em> or </em><em>str</em>) – Column with the prices for the action emulation.</p></li>
 <li><p><strong>fee</strong> (<em>float</em>) – Binance applicable fee for trading. DEfault is 0.001.</p></li>
-<<<<<<< HEAD
-<li><p><strong>label_buy</strong> (<em>str</em><em> or </em><em>int</em>) – A label consider as trade in trigger.</p></li>
-<li><p><strong>label_sell</strong> (<em>str</em><em> or </em><em>int</em>) – A label consider as trade out trigger.</p></li>
-=======
 <li><p><strong>label_in</strong> (<em>str</em><em> or </em><em>int</em>) – A label consider as trade in trigger.</p></li>
 <li><p><strong>label_out</strong> (<em>str</em><em> or </em><em>int</em>) – A label consider as trade out trigger.</p></li>
->>>>>>> main
-<li><p><strong>lag_action</strong> (<em>int</em>) – Candles needed to confirm an action from action tag. Usually one candle. Example,
-when an action like a cross of two EMA lines occur, it’s needed to close that candle of the cross to confirm,
-then, nex candle can buy at open.</p></li>
+<li><p><strong>evaluating_quote</strong> (<em>str</em>) – a Binance valid quote to evaluate operations.</p></li>
+<li><p><strong>info_dic</strong> (<em>dict</em>) – BinPan exchange info dict to extract information about quotes and bases of symbols.</p></li>
+<li><p><strong>suffix</strong> (<em>str</em>) – A suffix for the names of the columns.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return tuple</dt>
+<dd class="field-even"><p>Two series with the base wallet and quote wallet funds in time.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.tags.backtesting">
+<span class="sig-prename descclassname"><span class="pre">handlers.tags.</span></span><span class="sig-name descname"><span class="pre">backtesting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actions_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_loss_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entry_filter_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priced_actions_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Open'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixed_target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixed_stop_loss</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quote</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fee</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evaluating_quote</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BUSD'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.tags.backtesting" title="Permalink to this definition"></a></dt>
+<dd><p>Returns two pandas series as base wallet and quote wallet over time. Its expected a serie with numbers like 1 for ins and -1 for outs.
+By ins and out I mean buys or sells, shorts and repays, etc.</p>
+<dl class="simple">
+<dt>If it is available a column with the exact price of the actions, can be passed in actions_col parameter by column name or a pandas</dt><dd><p>series, if not, Open price column can be a good approximation because operations start at the next candle of the tagged one.</p>
+</dd>
+</dl>
+<p>All actions will be considered to buy all base as possible or to sell all base as posible.</p>
+<p>It supports just long positions backtesting yet.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – A BinPan dataframe.</p></li>
+<li><p><strong>actions_column</strong> (<em>pd.Series</em><em> or </em><em>str</em>) – A pandas series with buy or sell strings for simulate actions.</p></li>
+<li><p><strong>target_column</strong> (<em>pd.Series</em><em> or </em><em>str</em>) – Column with data for operation target values.</p></li>
+<li><p><strong>stop_loss_column</strong> (<em>pd.Series</em><em> or </em><em>str</em>) – Column with data for operation stop loss values.</p></li>
+<li><p><strong>entry_filter_column</strong> (<em>pd.Series</em><em> or </em><em>str</em>) – A serie or colum with ones or zeros to allow or avoid entries.</p></li>
+<li><p><strong>priced_actions_col</strong> (<em>pd.Series</em><em> or </em><em>str</em>) – Column with the prices for the action emulation.</p></li>
+<li><p><strong>fixed_target</strong> (<em>bool</em>) – Target for any operation will be calculated and fixed at the beginning of the operation.</p></li>
+<li><p><strong>fixed_stop_loss</strong> (<em>bool</em>) – Stop loss for any operation will be calculated and fixed at the beginning of the operation.</p></li>
+<li><p><strong>base</strong> (<em>float</em>) – A starting quantity of symbol’s base.</p></li>
+<li><p><strong>quote</strong> (<em>float</em>) – A starting quantity of symbol’s quote.</p></li>
+<li><p><strong>fee</strong> (<em>float</em>) – Binance applicable fee for trading. DEfault is 0.001.</p></li>
+<li><p><strong>label_in</strong> (<em>str</em><em> or </em><em>int</em>) – A label consider as trade in trigger.</p></li>
+<li><p><strong>label_out</strong> (<em>str</em><em> or </em><em>int</em>) – A label consider as trade out trigger.</p></li>
 <li><p><strong>evaluating_quote</strong> (<em>str</em>) – a Binance valid quote to evaluate operations.</p></li>
 <li><p><strong>info_dic</strong> (<em>dict</em>) – BinPan exchange info dict to extract information about quotes and bases of symbols.</p></li>
 <li><p><strong>suffix</strong> (<em>str</em>) – A suffix for the names of the columns.</p></li>
