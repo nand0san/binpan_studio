@@ -212,6 +212,8 @@ def parse_candles_to_dataframe(raw_response: list,
         columns = ['Open time', 'Open', 'High', 'Low', 'Close', 'Volume', 'Close time', 'Quote volume',
                    'Trades', 'Taker buy base volume', 'Taker buy quote volume', 'Ignore']
 
+    columns = [col for col in columns if not 'timestamp' in col]
+
     # check if redis columns
     if raw_response:
         if type(raw_response[0]) == list:

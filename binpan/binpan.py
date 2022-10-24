@@ -270,7 +270,8 @@ class Symbol(object):
             tick_interval = handlers.time_helper.check_tick_interval(tick_interval)
 
         self.original_candles_cols = ['Open time', 'Open', 'High', 'Low', 'Close', 'Volume', 'Close time', 'Quote volume',
-                                      'Trades', 'Taker buy base volume', 'Taker buy quote volume', 'Ignore']
+                                      'Trades', 'Taker buy base volume', 'Taker buy quote volume', 'Ignore', 'Open timestamp',
+                                      'Close timestamp']
 
         self.presentation_columns = ['Open', 'High', 'Low', 'Close', 'Volume', 'Quote volume', 'Trades', 'Taker buy base volume',
                                      'Taker buy quote volume']
@@ -1040,7 +1041,7 @@ class Symbol(object):
 
         for gen_col in generated_columns:
             if gen_col in self.df.columns:
-                binpan_logger.info(f"Existing column: {gen_col}")
+                binpan_logger.info(f"Existing column: {gen_col} No data added to instance.")
                 return False
             else:
                 binpan_logger.info(f"New column: {gen_col}")
@@ -1601,6 +1602,7 @@ class Symbol(object):
                     label_out=-1,
                     fee: float = 0.001,
                     evaluating_quote: str = None,
+                    short: bool = False,
                     inplace=True,
                     suffix: str = None,
                     colors: list = None) -> pd.DataFrame or pd.Series:
@@ -1621,6 +1623,7 @@ class Symbol(object):
         :param str or int label_out: A label consider as trade out trigger.
         :param float fee: Fees applied to the simulation.
         :param str evaluating_quote: A quote used to convert value of the backtesting line for better reference.
+        :param bool short: Backtest in short mode, with in as shorts and outs as repays.
         :param bool inplace: Make it permanent in the instance or not.
         :param str suffix: A decorative suffix for the name of the column created.
         :param list colors: Defaults to red and green.
@@ -1640,22 +1643,40 @@ class Symbol(object):
         if suffix:
             suffix = '_' + suffix
 
-        wallet_df = handlers.tags.backtesting(df=self.df,
-                                              actions_column=actions,
-                                              target_column=target_column,
-                                              stop_loss_column=stop_loss_column,
-                                              entry_filter_column=entry_filter_column,
-                                              priced_actions_col=priced_actions_col,
-                                              fixed_target=fixed_target,
-                                              fixed_stop_loss=fixed_stop_loss,
-                                              base=base,
-                                              quote=quote,
-                                              fee=fee,
-                                              label_in=label_in,
-                                              label_out=label_out,
-                                              suffix=suffix,
-                                              evaluating_quote=evaluating_quote,
-                                              info_dic=self.info_dic)
+        if not short:
+            wallet_df = handlers.tags.backtesting(df=self.df,
+                                                  actions_column=actions,
+                                                  target_column=target_column,
+                                                  stop_loss_column=stop_loss_column,
+                                                  entry_filter_column=entry_filter_column,
+                                                  priced_actions_col=priced_actions_col,
+                                                  fixed_target=fixed_target,
+                                                  fixed_stop_loss=fixed_stop_loss,
+                                                  base=base,
+                                                  quote=quote,
+                                                  fee=fee,
+                                                  label_in=label_in,
+                                                  label_out=label_out,
+                                                  suffix=suffix,
+                                                  evaluating_quote=evaluating_quote,
+                                                  info_dic=self.info_dic)
+        else:
+            wallet_df = handlers.tags.backtesting_short(df=self.df,
+                                                        actions_column=actions,
+                                                        target_column=target_column,
+                                                        stop_loss_column=stop_loss_column,
+                                                        entry_filter_column=entry_filter_column,
+                                                        priced_actions_col=priced_actions_col,
+                                                        fixed_target=fixed_target,
+                                                        fixed_stop_loss=fixed_stop_loss,
+                                                        base=base,
+                                                        quote=quote,
+                                                        fee=fee,
+                                                        label_in=label_in,
+                                                        label_out=label_out,
+                                                        suffix=suffix,
+                                                        evaluating_quote=evaluating_quote,
+                                                        info_dic=self.info_dic)
 
         if inplace and self.is_new(wallet_df):
             column_names = wallet_df.columns
@@ -1674,7 +1695,7 @@ class Symbol(object):
         return wallet_df
 
     def roi(self,
-            column: str= None) -> float:
+            column: str = None) -> float:
         """
         It returns win or loos percent for a evaluation column. Just compares first and last value increment by the first price in percent.
         If not column passed, it will search for an Evaluation column.

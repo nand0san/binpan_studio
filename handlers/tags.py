@@ -672,3 +672,188 @@ def backtesting(df: pd.DataFrame,
     return pd.DataFrame([base_serie, quote_serie, merged, resulting_actions, executed_prices]).T
 
     # return pd.DataFrame([base_serie, quote_serie, resulting_actions, executed_prices]).T
+
+
+def backtesting_short(df: pd.DataFrame,
+                      actions_column: pd.Series or str,
+                      target_column: str or pd.Series,
+                      stop_loss_column: str or pd.Series,
+                      entry_filter_column: str or pd.Series = None,
+                      priced_actions_col: str or pd.Series = 'Open',
+                      fixed_target: bool = True,
+                      fixed_stop_loss: bool = True,
+                      base: float = 10,
+                      quote: float = 0,
+                      fee: float = 0.001,
+                      label_in=1,
+                      label_out=-1,
+                      suffix: str = '',
+                      evaluating_quote: str = None,
+                      info_dic: dict = None) -> pd.DataFrame:
+    """
+    Returns two pandas series as base wallet and quote wallet over time. Its expected a serie with numbers like 1 for ins and -1 for outs.
+    By ins and out I mean buys or sells, shorts and repays, etc.
+
+    If it is available a column with the exact price of the actions, can be passed in actions_col parameter by column name or a pandas
+     series, if not, Open price column can be a good approximation because operations start at the next candle of the tagged one.
+
+    All actions will be considered to buy all base as possible or to sell all base as posible.
+
+    It supports just long positions backtesting yet.
+
+    :param pd.DataFrame df: A BinPan dataframe.
+    :param pd.Series or str actions_column: A pandas series with buy or sell strings for simulate actions.
+    :param pd.Series or str target_column: Column with data for operation target values.
+    :param pd.Series or str stop_loss_column: Column with data for operation stop loss values.
+    :param pd.Series or str entry_filter_column: A serie or colum with ones or zeros to allow or avoid entries.
+    :param pd.Series or str priced_actions_col: Column with the prices for the action emulation.
+    :param bool fixed_target: Target for any operation will be calculated and fixed at the beginning of the operation.
+    :param bool fixed_stop_loss: Stop loss for any operation will be calculated and fixed at the beginning of the operation.
+    :param float base: A starting quantity of symbol's base.
+    :param float quote: A starting quantity of symbol's quote.
+    :param float fee: Binance applicable fee for trading. DEfault is 0.001.
+    :param str or int label_in: A label consider as trade in trigger.
+    :param str or int label_out: A label consider as trade out trigger.
+    :param str evaluating_quote: a Binance valid quote to evaluate operations.
+    :param dict info_dic: BinPan exchange info dict to extract information about quotes and bases of symbols.
+    :param str suffix: A suffix for the names of the columns.
+    :return tuple: Two series with the base wallet and quote wallet funds in time.
+    """
+
+    df_ = df.copy(deep=True)
+
+    if type(actions_column) == str:
+        actions_data = df_[actions_column].copy(deep=True)
+    elif type(actions_column) == pd.Series:
+        actions_data = actions_column.copy(deep=True)
+    else:
+        raise Exception(f"BinPan Backtesting Error: Incorrect type for actions_column -> {type(actions_column)}")
+
+    if type(stop_loss_column) == str:
+        stop_loss_data = df_[stop_loss_column].copy(deep=True)
+    elif type(stop_loss_column) == pd.Series:
+        stop_loss_data = stop_loss_column.copy(deep=True)
+    else:
+        stop_loss_data = pd.Series(data=np.nan, index=df_.index)
+
+    if type(target_column) == str:
+        target_data = df_[target_column].copy(deep=True)
+    elif type(target_column) == pd.Series:
+        target_data = target_column.copy(deep=True)
+    else:
+        target_data = pd.Series(data=np.nan, index=df_.index)
+
+    if type(priced_actions_col) == str:
+        priced_actions_data = df_[priced_actions_col].copy(deep=True)
+    elif type(priced_actions_col) == pd.Series:
+        priced_actions_data = priced_actions_col.copy(deep=True)
+    else:
+        priced_actions_data = df_['Open']
+
+    if type(entry_filter_column) == str:
+        entry_filter_data = df_[entry_filter_column].copy(deep=True)
+    elif type(entry_filter_column) == pd.Series:
+        entry_filter_data = entry_filter_column.copy(deep=True)
+    else:
+        entry_filter_data = pd.Series(data=1, index=df_.index)
+
+    # check action labels
+    label_in, label_out = check_action_labels_for_backtesting(actions=actions_data,
+                                                              label_in=label_in,
+                                                              label_out=label_out)
+    base_wallet, quote_wallet = [], []
+
+    last_action = 2314213  # any random thing
+    target = None
+    sl = None
+    prev_target = 0
+    prev_sl = 0
+    state = 'out'
+    label_in_out = 2
+
+    resulting_actions = pd.Series(data=np.nan, index=df_.index)
+    executed_prices = pd.Series(data=np.nan, index=df_.index)
+
+    for idx, row in df_.iterrows():
+
+        curr_action = actions_data.loc[idx]
+        price = priced_actions_data.loc[idx]
+        curr_entry_filter = entry_filter_data.loc[idx]
+
+        curr_stop_loss = stop_loss_data.loc[idx]
+        curr_target = target_data.loc[idx]
+
+        curr_low = df_['Low'].loc[idx]
+        curr_high = df_['High'].loc[idx]
+
+        executed_price = None
+
+        if not fixed_target:
+            target = min(curr_target, prev_target)
+        if not fixed_stop_loss:
+            sl = min(curr_stop_loss, prev_sl)
+
+        # catch actions
+        if last_action == label_in:
+            if curr_entry_filter == 1 and state == 'out':
+                base, quote = sell_base_backtesting(row=row, price=price, base=base, quote=quote, fee=fee)
+                resulting_actions.loc[idx] = label_in
+                executed_prices.loc[idx] = price
+
+                target = curr_target
+                sl = curr_stop_loss
+                executed_price = None
+                state = 'in'
+
+        elif last_action == label_out and state == 'in':  # label outs are processed at the end with sl and targets
+            executed_price = price
+            target = None
+            sl = None
+
+        # check execution if not any previous label
+        if executed_price is None and sl and target and state == 'in':
+            if curr_high >= sl:
+                executed_price = sl
+                target = None
+                sl = None
+            elif curr_low < target:
+                executed_price = target
+                target = None
+                sl = None
+
+        if executed_price and state == 'in':
+            # noinspection PyTypeChecker
+            base, quote = buy_base_backtesting(row=row, price=executed_price, base=base, quote=quote, fee=fee)
+            executed_prices.loc[idx] = executed_price
+            state = 'out'
+            if last_action == label_in:
+                # fast buy and sell
+                resulting_actions.loc[idx] = label_in_out
+            else:
+                resulting_actions.loc[idx] = label_out
+
+        base_wallet.append(base)
+        quote_wallet.append(quote)
+
+        last_action = curr_action
+        prev_target = curr_target
+        prev_sl = curr_stop_loss
+        # prev_idx = idx
+
+    base_serie = pd.Series(base_wallet, index=df_.index, name=f"Wallet_base{suffix}")
+    quote_serie = pd.Series(quote_wallet, index=df_.index, name=f"Wallet_quote{suffix}")
+
+    # resulting_actions = clean_in_out(serie=resulting_actions, in_tag=label_in, out_tag=label_out)
+
+    resulting_actions.name = f"Resulting_actions_{actions_data.name}"
+    executed_prices.name = f"Executed_prices_{actions_data.name}"
+
+    # if evaluating_quote:
+    base_serie, quote_serie, merged = evaluate_wallets(df_=df_,
+                                                       base_serie=base_serie,
+                                                       quote_serie=quote_serie,
+                                                       evaluating_quote=evaluating_quote,
+                                                       info_dic=info_dic,
+                                                       suffix=suffix)
+
+    return pd.DataFrame([base_serie, quote_serie, merged, resulting_actions, executed_prices]).T
