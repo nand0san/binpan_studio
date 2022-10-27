@@ -2680,6 +2680,50 @@ class Symbol(object):
 
         return ichimoku_data
 
+    def fractal_w(self,
+                  period: int = 2,
+                  inplace: bool = True,
+                  suffix: str = '',
+                  colors: list = ['orange', 'skyblue']):
+        """
+        The fractal indicator is based on a simple price pattern that is frequently seen in financial markets. Outside of trading, a fractal
+        is a recurring geometric pattern that is repeated on all time frames. From this concept, the fractal indicator was devised.
+        The indicator isolates potential turning points on a price chart. It then draws arrows to indicate the existence of a pattern.
+
+        https://www.investopedia.com/terms/f/fractal.asp
+
+        From: https://codereview.stackexchange.com/questions/259703/william-fractal-technical-indicator-implementation
+
+        :param int period: Default is 2. Count of neighbour candles to match max or min tags.
+        :return pd.Series: A serie with 1 or -1 for local max or local min to tag.
+        :param bool inplace: Make it permanent in the instance or not.
+        :param str suffix: A decorative suffix for the name of the column created.
+        :param list colors: A list of colors for the indicator dataframe columns. Is the color to show when plotting.
+            It can be any color from plotly library or a number in the list of those. Default colors defined.
+            https://community.plotly.com/t/plotly-colours-list/11730
+
+        """
+
+        fractal = handlers.indicators.fractal_w(data=self.df, period=period, suffix=suffix)
+
+        if inplace and self.is_new(fractal):
+
+            binpan_logger.debug(fractal.columns)
+
+            for i, column_name in enumerate(fractal.columns):
+
+                self.row_counter += 1
+
+                col_data = fractal[column_name]
+
+                self.df.loc[:, column_name] = col_data
+
+                self.set_plot_color(indicator_column=column_name, color=colors[i])
+                self.set_plot_color_fill(indicator_column=column_name, color_fill=False)
+                self.set_plot_row(indicator_column=str(column_name), row_position=self.row_counter)
+
+        return fractal
+
     @staticmethod
     def pandas_ta_indicator(name: str,
                             **kwargs):
@@ -3105,7 +3149,6 @@ class Symbol(object):
         compared.name = column_name
 
         if inplace and self.is_new(compared):
-
             self.row_counter += 1
 
             self.set_plot_color(indicator_column=column_name, color=color)
@@ -3199,7 +3242,6 @@ class Symbol(object):
                                         non_zeros=non_zeros)
 
         if inplace and self.is_new(cross):
-
             self.row_counter += 1
             self.set_plot_color(indicator_column=column_name, color=color)
             self.set_plot_color_fill(indicator_column=column_name, color_fill=None)

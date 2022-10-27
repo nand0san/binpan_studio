@@ -5,6 +5,8 @@ BinPan own indicators and utils.
 """
 import numpy as np
 import pandas as pd
+from typing import Tuple
+
 from handlers.time_helper import pandas_freq_tick_interval
 
 
@@ -99,6 +101,40 @@ def ker(close: pd.Series,
     volatility = pd.rolling_sum(close.diff().abs(), window)
     return direction / volatility
 
+
+def fractal_w(data: pd.DataFrame,
+              period=2,
+              suffix: str = ''
+              ) -> pd.DataFrame:
+    """
+    The fractal indicator is based on a simple price pattern that is frequently seen in financial markets. Outside of trading, a fractal
+    is a recurring geometric pattern that is repeated on all time frames. From this concept, the fractal indicator was devised.
+    The indicator isolates potential turning points on a price chart. It then draws arrows to indicate the existence of a pattern.
+
+    https://www.investopedia.com/terms/f/fractal.asp
+
+    From: https://codereview.stackexchange.com/questions/259703/william-fractal-technical-indicator-implementation
+
+    :param pd.DataFrame data: BinPan dataframe with High prices.
+    :param int period: Default is 2. Count of neighbour candles to match max or min tags.
+    :param str suffix: A decorative suffix for the name of the column created.
+    :return pd.Series: A serie with 1 or -1 for local max or local min to tag.
+    """
+    window = 2 * period + 1  # default 5
+
+    mins = data['low'].rolling(window, center=True).apply(lambda x: x[period] == min(x), raw=True)
+    maxs = data['high'].rolling(window, center=True).apply(lambda x: x[period] == max(x), raw=True)
+
+    # return mins, maxs
+    ret = pd.DataFrame([mins, maxs]).T
+
+    if suffix:
+        suffix = '_' + suffix
+
+    ret.columns = [f"Fractal_W_Min_{period}" + suffix,
+                   f"Fractal_W_Max_{period}" + suffix]
+
+    return ret
 
 ####################
 # INDICATORS UTILS #
