@@ -3105,10 +3105,7 @@ class Symbol(object):
         compared.name = column_name
 
         if inplace and self.is_new(compared):
-            if strategy_group:
-                self.strategy_groups = handlers.tags.tag_column_to_strategy_group(column=column_name,
-                                                                                  group=strategy_group,
-                                                                                  strategy_groups=self.strategy_groups)
+
             self.row_counter += 1
 
             self.set_plot_color(indicator_column=column_name, color=color)
@@ -3116,6 +3113,10 @@ class Symbol(object):
             self.set_plot_row(indicator_column=column_name, row_position=self.row_counter)  # overlaps are one
             self.df.loc[:, column_name] = compared
 
+        if strategy_group:
+            self.strategy_groups = handlers.tags.tag_column_to_strategy_group(column=column_name,
+                                                                              group=strategy_group,
+                                                                              strategy_groups=self.strategy_groups)
         return compared
 
     def cross(self,
@@ -3198,16 +3199,17 @@ class Symbol(object):
                                         non_zeros=non_zeros)
 
         if inplace and self.is_new(cross):
-            if strategy_group:
-                self.strategy_groups = handlers.tags.tag_column_to_strategy_group(column=column_name,
-                                                                                  group=strategy_group,
-                                                                                  strategy_groups=self.strategy_groups)
+
             self.row_counter += 1
             self.set_plot_color(indicator_column=column_name, color=color)
             self.set_plot_color_fill(indicator_column=column_name, color_fill=None)
             self.set_plot_row(indicator_column=str(column_name), row_position=self.row_counter)  # overlaps are one
             self.df.loc[:, column_name] = cross
 
+        if strategy_group:
+            self.strategy_groups = handlers.tags.tag_column_to_strategy_group(column=column_name,
+                                                                              group=strategy_group,
+                                                                              strategy_groups=self.strategy_groups)
         return cross
 
     def shift(self,
@@ -3243,10 +3245,7 @@ class Symbol(object):
         shift.name = column_name
 
         if inplace and self.is_new(shift):
-            if strategy_group:
-                self.strategy_groups = handlers.tags.tag_column_to_strategy_group(column=column_name,
-                                                                                  group=strategy_group,
-                                                                                  strategy_groups=self.strategy_groups)
+
             if data_a.name in self.row_control.keys():
                 row_pos = self.row_control[data_a.name]
             elif data_a.name in ['High', 'Low', 'Close', 'Open']:
@@ -3259,6 +3258,12 @@ class Symbol(object):
             self.set_plot_color_fill(indicator_column=column_name, color_fill=None)
             self.set_plot_row(indicator_column=column_name, row_position=row_pos)
             self.df.loc[:, column_name] = shift
+
+        if strategy_group:
+            self.strategy_groups = handlers.tags.tag_column_to_strategy_group(column=column_name,
+                                                                              group=strategy_group,
+                                                                              strategy_groups=self.strategy_groups)
+
         return shift
 
     def merge_columns(self,
@@ -3309,10 +3314,7 @@ class Symbol(object):
         merged.name = column_name
 
         if inplace and self.is_new(merged):
-            if strategy_group:
-                self.strategy_groups = handlers.tags.tag_column_to_strategy_group(column=column_name,
-                                                                                  group=strategy_group,
-                                                                                  strategy_groups=self.strategy_groups)
+
             if data_a.name in self.row_control.keys():
                 row_pos = self.row_control[data_a.name]
             elif data_a.name in ['High', 'Low', 'Close', 'Open']:
@@ -3325,6 +3327,11 @@ class Symbol(object):
             self.set_plot_color_fill(indicator_column=column_name, color_fill=None)
             self.set_plot_row(indicator_column=column_name, row_position=row_pos)
             self.df.loc[:, column_name] = merged
+
+        if strategy_group:
+            self.strategy_groups = handlers.tags.tag_column_to_strategy_group(column=column_name,
+                                                                              group=strategy_group,
+                                                                              strategy_groups=self.strategy_groups)
         return merged
 
     def clean_in_out(self,
@@ -3370,10 +3377,7 @@ class Symbol(object):
         clean.name = column_name
 
         if inplace and self.is_new(clean):
-            if strategy_group:
-                self.strategy_groups = handlers.tags.tag_column_to_strategy_group(column=column_name,
-                                                                                  group=strategy_group,
-                                                                                  strategy_groups=self.strategy_groups)
+
             if data_a.name in self.row_control.keys():
                 row_pos = self.row_control[data_a.name]
             elif data_a.name in ['High', 'Low', 'Close', 'Open']:
@@ -3387,6 +3391,10 @@ class Symbol(object):
             self.set_plot_row(indicator_column=column_name, row_position=row_pos)
             self.df.loc[:, column_name] = clean
 
+        if strategy_group:
+            self.strategy_groups = handlers.tags.tag_column_to_strategy_group(column=column_name,
+                                                                              group=strategy_group,
+                                                                              strategy_groups=self.strategy_groups)
         return clean
 
     def strategy_from_tags_crosses(self,

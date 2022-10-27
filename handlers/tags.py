@@ -9,6 +9,9 @@ from typing import Tuple
 
 from .exchange import get_info_dic, get_bases_dic, get_quotes_dic
 from .market import get_candles_by_time_stamps, parse_candles_to_dataframe
+import handlers.logs
+
+logger = handlers.logs.Logs(filename='./logs/tags.log', name='tags', info_level='INFO')
 
 
 def tag_value(serie: pd.Series,
@@ -167,6 +170,9 @@ def tag_column_to_strategy_group(column: str,
         group_columns = strategy_groups[group]
         group_columns.append(column)
         strategy_groups.update({group: group_columns})
+
+    logger.info(f"Added to strategy group {group}: {column}")
+
     return strategy_groups
 
 
