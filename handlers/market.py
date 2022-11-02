@@ -55,6 +55,21 @@ def get_last_price(symbol: str = None) -> dict or list:
         return {k['symbol']: float(k['price']) for k in res}
 
 
+def get_prices_dic(decimal_mode: bool) -> dict:
+    """
+    Gets all symbols current prices into a dictionary.
+    :decimal_mode bool: It flags to work in decimal mode.
+    :return dict:
+    """
+    endpoint = '/api/v3/ticker/price'
+    check_weight(2, endpoint=endpoint)
+    ret = get_response(url=endpoint)
+    if decimal_mode:
+        return {d['symbol']: dd(d['price']) for d in ret}
+    else:
+        return {d['symbol']: float(d['price']) for d in ret}
+
+
 ###########
 # Candles #
 ###########
@@ -153,8 +168,6 @@ def get_candles_by_time_stamps(symbol: str,
 
         raw_candles += response
 
-    # TODO: CORRECT INDENTATION?
-
     # descarta sobrantes
     overtime_candle_ts = handlers.time_helper.next_open_by_milliseconds(ms=end_time, tick_interval=tick_interval)
     if raw_candles:
@@ -165,21 +178,6 @@ def get_candles_by_time_stamps(symbol: str,
             raw_candles = [i for i in raw_candles if int(i[open_ts_key]) < overtime_candle_ts]
 
     return raw_candles
-
-
-def get_prices_dic(decimal_mode: bool) -> dict:
-    """
-    Gets all symbols current prices into a dictionary.
-    :decimal_mode bool: It flags to work in decimal mode.
-    :return dict:
-    """
-    endpoint = '/api/v3/ticker/price'
-    check_weight(2, endpoint=endpoint)
-    ret = get_response(url=endpoint)
-    if decimal_mode:
-        return {d['symbol']: dd(d['price']) for d in ret}
-    else:
-        return {d['symbol']: float(d['price']) for d in ret}
 
 
 def parse_candles_to_dataframe(raw_response: list,
@@ -269,7 +267,11 @@ def parse_candles_to_dataframe(raw_response: list,
 ##########
 
 
-def get_agg_trades(fromId: int = None, symbol: str = 'BTCUSDT', limit=None, startTime: int = None, endTime: int = None):
+def get_agg_trades(symbol: str,
+                   fromId: int = None,
+                   limit=None,
+                   startTime: int = None,
+                   endTime: int = None):
     """
     Returns aggregated trades from id to limit or last trades if id not specified. Also is possible to get from starTime utc in
     milliseconds from epoch or until endtime milliseconds from epoch.
@@ -279,8 +281,8 @@ def get_agg_trades(fromId: int = None, symbol: str = 'BTCUSDT', limit=None, star
 
     Limit applied in fromId mode defaults to 500. Maximum is 1000.
 
-    :param int fromId: An aggregated trade id.
     :param str symbol: A binance valid symbol.
+    :param int fromId: An aggregated trade id.
     :param int limit: Count of trades to ask for.
     :param int startTime: A timestamp in milliseconds from epoch.
     :param int endTime: A timestamp in milliseconds from epoch.
@@ -366,17 +368,116 @@ def get_historical_aggregated_trades(symbol: str,
         return trades
 
 
+def get_last_trades(symbol: str,
+                    limit=1000):
+    """
+    Returns recent trades.
+
+    GET /api/v3/trades
+
+    Get recent trades.
+
+    Weight(IP): 1
+
+    :param str symbol: A binance valid symbol.
+    :param int limit: API max limit is 1000.
+    :return list: Returns a list from the Binance API
+
+    Return example:
+
+    .. code-block::
+
+        [
+          {
+            "id": 28457,
+            "price": "4.00000100",
+            "qty": "12.00000000",
+            "quoteQty": "48.000012",
+            "time": 1499865549590,
+            "isBuyerMaker": true,
+            "isBestMatch": true
+          }
+        ]
+
+    """
+
+    endpoint = '/api/v3/trades?'
+    check_weight(1, endpoint=endpoint)
+    query = {'symbol': symbol, 'limit': limit}
+    return get_response(url=endpoint, params=query)
+
+
+def get_trades(symbol: str,
+               fromId: int = None,
+               limit=None):
+    """
+    Returns trades from id to limit or last trades if id not specified.
+
+    Limit applied in fromId mode defaults to 500. Maximum is 1000.
+
+    GET /api/v3/historicalTrades
+
+    Get older market trades.
+
+    Weight(IP): 5
+
+    :param int fromId: Trade id to fetch from. If not passed, gets most recent trades.
+    :param str symbol: A binance valid symbol.
+    :param int limit: Count of trades to ask for.
+    :return list: Returns a list from the Binance API.
+
+    .. code-block::
+
+        [
+          {
+            "id": 28457,
+            "price": "4.00000100",
+            "qty": "12.00000000",
+            "quoteQty": "48.000012",
+            "time": 1499865549590, // Trade executed timestamp, as same as `T` in the stream
+            "isBuyerMaker": true,
+            "isBestMatch": true
+          }
+        ]
+    """
+
+    endpoint = '/api/v3/historicalTrades?'
+    check_weight(5, endpoint=endpoint)
+    query = {'symbol': symbol, 'limit': limit, 'fromId': fromId}
+    return get_response(url=endpoint, params=query)
+
+
 #############
 # Orderbook #
 #############
 
 
-def get_order_book(symbol='BTCUSDT', limit=5000) -> dict:
+def get_order_book(symbol: str, limit=5000) -> dict:
     """
     Returns a dictionary with timestamp, bids and asks. Bids and asks are a list of lists with strings representing price and quantity.
+
     :param str symbol: A Binance valid symbol.
     :param int limit: Max is 5000. Default 5000.
-    :return dict:
+    :return dict: A dict with ask and bids
+
+    .. code-block::
+
+        {
+          "lastUpdateId": 1027024,
+          "bids": [
+            [
+              "4.00000000",     // PRICE
+              "431.00000000"    // QTY
+            ]
+          ],
+          "asks": [
+            [
+              "4.00000200",
+              "12.00000000"
+            ]
+          ]
+        }
+
     """
 
     endpoint = '/api/v3/depth?'
@@ -397,13 +498,13 @@ def intermediate_conversion(coin: str,
                             try_coin: str = 'BTC',
                             coin_qty: float = 1) -> float or None:
     """
-    Uses an intermediate symbol for conversion.
+    Uses an intermediate symbol for conversion. Uses stablecoin USDT versus other "try" coin.
 
     :param str coin: A binance coin.
     :param bool decimal_mode: It flags to work in decimal mode.
-    :param dict prices: BinPan prices dict
-    :param str try_coin:
-    :param float coin_qty:
+    :param dict prices: BinPan prices dict.
+    :param str try_coin: Coin to try as intermediate in case of not existing pair. Default is BTC.
+    :param float coin_qty: Quantity to convert. Default is 1.
     :return float: converted value.
     """
 
@@ -422,7 +523,6 @@ def intermediate_conversion(coin: str,
             return price * coin_qty * prices[try_symbol]
         except KeyError:
             return None
-
     else:
         return None
 
