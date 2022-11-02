@@ -9,14 +9,23 @@ To import this module:
 
    from handlers import market
 
-Klines
+.. automodule:: handlers.market
+
+Prices
 ------
 
-.. automodule:: handlers.market
+.. autofunction:: get_last_price
+
+.. autofunction:: get_prices_dic
+
+
+Klines
+------
 
 .. autofunction:: get_candles_by_time_stamps
 
 .. autofunction:: parse_candles_to_dataframe
+
 
 Trades
 ------
@@ -25,8 +34,20 @@ Trades
 
 .. autofunction:: get_historical_aggregated_trades
 
+.. autofunction:: get_last_trades
+
+.. autofunction:: get_trades
+
+Orderbook
+---------
+
+.. autofunction:: get_order_book
+
+
 Coin Conversion
 ---------------
+
+.. autofunction:: intermediate_conversion
 
 .. autofunction:: convert_coin
 
