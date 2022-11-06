@@ -27,12 +27,22 @@ Klines
 .. autofunction:: parse_candles_to_dataframe
 
 
+Format Data
+-----------
+
+.. autofunction:: basic_dataframe
+
+.. autofunction:: convert_to_numeric
+
+
 Trades
 ------
 
 .. autofunction:: get_agg_trades
 
 .. autofunction:: get_historical_aggregated_trades
+
+.. autofunction:: parse_agg_trades_to_dataframe
 
 .. autofunction:: get_last_trades
 

@@ -1,4 +1,6 @@
 from typing import List
+
+import handlers.market
 from .time_helper import convert_utc_ms_column_to_time_zone, convert_datetime_to_string, convert_milliseconds_to_utc_string, \
     convert_milliseconds_to_time_zone_datetime, convert_milliseconds_to_str, open_from_milliseconds, next_open_by_milliseconds
 from .market import tick_seconds
@@ -52,8 +54,9 @@ def redis_klines_parser(json_list: List[str],
     df = pd.DataFrame(data=dicts_data)
     df.rename(columns=klines_columns, inplace=True)
 
-    for col in df.columns:
-        df[col] = pd.to_numeric(arg=df[col], downcast='integer')
+    df = handlers.market.convert_to_numeric(data=df)
+    # for col in df.columns:
+    #     df[col] = pd.to_numeric(arg=df[col], downcast='integer')
 
     df.loc[:, 'Open time'] = df['Open timestamp']
     df.loc[:, 'Close time'] = df['Close timestamp']

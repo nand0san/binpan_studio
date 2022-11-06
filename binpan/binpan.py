@@ -11,20 +11,20 @@ import numpy as np
 from redis import StrictRedis
 # from typing import Tuple
 
-import handlers.logs
-import handlers.starters
-import handlers.market
-import handlers.quest
 import handlers.exceptions
-import handlers.time_helper
-import handlers.plotting
-import handlers.wallet
-import handlers.files
-import handlers.strategies
 import handlers.exchange
-import handlers.redis_fetch
-import handlers.messages
+import handlers.files
 import handlers.indicators
+import handlers.logs
+import handlers.market
+import handlers.messages
+import handlers.plotting
+import handlers.quest
+import handlers.redis_fetch
+import handlers.starters
+import handlers.strategies
+import handlers.time_helper
+import handlers.wallet
 
 import pandas_ta as ta
 from random import choice
@@ -35,12 +35,13 @@ binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', 
 tick_seconds = handlers.time_helper.tick_seconds
 pandas_freq_tick_interval = handlers.time_helper.pandas_freq_tick_interval
 
-__version__ = "0.2.35"
+__version__ = "0.2.36"
 
 try:
-    from secret import redis_conf
+    from secret import redis_conf, redis_conf_trades
 except:
-    msg = "REDIS: Redis configuration not found in secret.py, if needed, must be passed latter to client."
+    msg = "REDIS: Redis configuration not found in secret.py, if needed, must be passed latter to client. Needed redis server for candles " \
+          "and redis server for trades configuration."
     binpan_logger.info(msg)
     pass
 
@@ -238,7 +239,8 @@ class Symbol(object):
                  time_zone: str = 'UTC',
                  time_index: bool = True,
                  closed: bool = True,
-                 from_redis: bool or StrictRedis = False,
+                 from_redis: bool or StrictRedis = None,
+                 from_redis_trades: bool or StrictRedis = None,
                  display_columns=25,
                  display_rows=10,
                  display_min_rows=25,
@@ -299,8 +301,9 @@ class Symbol(object):
 
             # load and to numeric types
             df_ = handlers.files.read_csv_to_dataframe(filename=filename)
-            for col in df_.columns:
-                df_[col] = pd.to_numeric(arg=df_[col], downcast='integer', errors='ignore')
+            df_ = handlers.market.convert_to_numeric(data=df_)
+            # for col in df_.columns:
+            #     df_[col] = pd.to_numeric(arg=df_[col], downcast='integer', errors='ignore')
 
             # basic metadata
             filename = str(os.path.basename(filename))
@@ -353,17 +356,35 @@ class Symbol(object):
                 try:
                     self.from_redis = redis_client(**redis_conf)
                 except Exception as exc:
-                    binpan_logger.warning(f"BinPan error: Redis parameters misconfiguration in secret.py -> {exc}")
+                    msg = f"BinPan error: Redis parameters misconfiguration in secret.py -> {exc}"
+                    binpan_logger.warning(msg)
+                    raise Exception(msg)
             else:
                 self.from_redis = from_redis
         else:
             self.from_redis = from_redis
 
+        if from_redis_trades:
+            if type(from_redis_trades) == bool:
+                try:
+                    self.from_redis_trades = redis_client(**redis_conf_trades)
+                except Exception as exc:
+                    msg = f"BinPan error: Redis trades parameters misconfiguration in secret.py -> {exc}"
+                    binpan_logger.warning(msg)
+                    raise Exception(msg)
+            else:
+                self.from_redis_trades = from_redis_trades
+        else:
+            self.from_redis_trades = from_redis_trades
+
         self.display_columns = display_columns
         self.display_rows = display_rows
         self.display_min_rows = display_min_rows
         self.display_width = display_width
+
+        self.raw_trades = []
         self.trades = pd.DataFrame(columns=list(self.trades_columns.values()))
+
         self.orderbook = pd.DataFrame(columns=['Price', 'Quantity', 'Side'])
         self.row_control = dict()
         self.color_control = dict()
@@ -465,6 +486,8 @@ class Symbol(object):
 
         :return pd.DataFrame:
         """
+        if self.trades.empty:
+            print("Empty trades, please request using: get_trades() method: Example: my_symbol.get_trades()")
         return self.trades
 
     def symbol(self):
@@ -686,11 +709,11 @@ class Symbol(object):
         :return pd.DataFrame: Pandas DataFrame
         """
         if inplace:
-            new_candles = self.basic_dataframe(data=self.df, exceptions=exceptions, actions_col=actions_col)
+            new_candles = handlers.market.basic_dataframe(data=self.df, exceptions=exceptions, actions_col=actions_col)
             self.df = new_candles
             return self.df
         else:
-            return self.basic_dataframe(data=self.df, exceptions=exceptions, actions_col=actions_col)
+            return handlers.market.basic_dataframe(data=self.df, exceptions=exceptions, actions_col=actions_col)
 
     def drop(self, columns_to_drop=[], inplace=False) -> pd.DataFrame:
         """
@@ -1007,14 +1030,16 @@ class Symbol(object):
         :return: Pandas DataFrame
 
         """
-        trades = handlers.market.get_historical_aggregated_trades(symbol=self.symbol,
-                                                                  startTime=self.start_time,
-                                                                  endTime=self.end_time)
-        self.trades = self.parse_agg_trades_to_dataframe(response=trades,
-                                                         columns=self.trades_columns,
-                                                         symbol=self.symbol,
-                                                         time_zone=self.time_zone,
-                                                         time_index=self.time_index)
+        self.raw_trades = handlers.market.get_historical_aggregated_trades(symbol=self.symbol,
+                                                                           startTime=self.start_time,
+                                                                           endTime=self.end_time,
+                                                                           redis_client_trades=self.from_redis_trades)
+
+        self.trades = handlers.market.parse_agg_trades_to_dataframe(response=self.raw_trades,
+                                                                    columns=self.trades_columns,
+                                                                    symbol=self.symbol,
+                                                                    time_zone=self.time_zone,
+                                                                    time_index=self.time_index)
         return self.trades
 
     def is_new(self,
@@ -1792,92 +1817,6 @@ class Symbol(object):
         ob.index.name = f"{self.symbol} updateId:{orders['lastUpdateId']}"
         self.orderbook = ob
         return self.orderbook
-
-    ##################
-    # Static Methods #
-    ##################
-
-    @staticmethod
-    def parse_agg_trades_to_dataframe(response: list,
-                                      columns: dict,
-                                      symbol: str,
-                                      time_zone: str = None,
-                                      time_index: bool = None):
-        """
-        Parses the API response into a pandas dataframe.
-
-        .. code-block::
-
-             {'M': True,
-              'T': 1656166914571,
-              'a': 1218761712,
-              'f': 1424997754,
-              'l': 1424997754,
-              'm': True,
-              'p': '21185.05000000',
-              'q': '0.03395000'}
-
-        :param list response: API raw response from trades.
-        :param columns: Column names.
-        :param symbol: The used symbol.
-        :param time_zone: Selected time zone.
-        :param time_index: Or integer index.
-        :return: Pandas DataFrame
-
-        """
-        df = pd.DataFrame(response)
-        df.rename(columns=columns, inplace=True)
-        df.loc[:, 'Buyer was maker'] = df['Buyer was maker'].replace({'Maker buyer': 1, 'Taker buyer': 0})
-
-        for col in df.columns:
-            df[col] = pd.to_numeric(arg=df[col], downcast='integer')
-
-        timestamps_serie = df['Timestamp']
-        col = 'Timestamp'
-        if time_zone != 'UTC':  # converts to time zone the time columns
-            df.loc[:, col] = handlers.time_helper.convert_utc_ms_column_to_time_zone(df, col, time_zone=time_zone)
-            df.loc[:, col] = df[col].apply(lambda x: handlers.time_helper.convert_datetime_to_string(x))
-        else:
-            df.loc[:, col] = df[col].apply(lambda x: handlers.time_helper.convert_milliseconds_to_utc_string(x))
-
-        if time_index:
-            date_index = timestamps_serie.apply(handlers.time_helper.convert_milliseconds_to_time_zone_datetime, timezoned=time_zone)
-            df.set_index(date_index, inplace=True)
-
-        index_name = f"{symbol} {time_zone}"
-        df.index.name = index_name
-        df.loc[:, 'Buyer was maker'] = df['Buyer was maker'].astype(bool)
-        return df
-
-    @staticmethod
-    def basic_dataframe(data: pd.DataFrame,
-                        exceptions: list = None,
-                        actions_col='actions'
-                        ) -> pd.DataFrame:
-        """
-        Delete all columns except: Open, High, Low, Close, Volume, actions.
-
-        Some columns can be excepted.
-
-        Useful to drop messed technical indicators columns in one shot.
-
-        :param pd.DataFrame data:        A BinPan DataFrame
-        :param list exceptions:  A list of columns to avoid dropping.
-        :param str actions_col: A column with operative actions.
-        :return pd.DataFrame: Pandas DataFrame
-
-        """
-        df_ = data.copy(deep=True)
-        if actions_col not in df_.columns:
-            if exceptions:
-                return df_[['Open', 'High', 'Low', 'Close', 'Volume'] + exceptions].copy(deep=True)
-            else:
-                return df_[['Open', 'High', 'Low', 'Close', 'Volume']].copy(deep=True)
-        else:
-            if exceptions:
-                return df_[['Open', 'High', 'Low', 'Close', 'Volume', actions_col] + exceptions].copy(deep=True)
-            else:
-                return df_[['Open', 'High', 'Low', 'Close', 'Volume', actions_col]].copy(deep=True)
 
     ##############
     # Indicators #
@@ -2720,7 +2659,6 @@ class Symbol(object):
             binpan_logger.debug(fractal.columns)
 
             for i, column_name in enumerate(fractal.columns):
-
                 self.row_counter += 1
 
                 col_data = fractal[column_name]

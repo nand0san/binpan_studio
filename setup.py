@@ -1,6 +1,6 @@
 from setuptools import setup
 import pathlib
-import configparser
+# import configparser
 
 # The directory containing this file
 HERE = pathlib.Path(__file__).parent
@@ -16,7 +16,7 @@ read_required = open('requirements.txt', 'r')
 REQUIRED = read_required.read()
 read_required.close()
 
-my_version = "0.2.35"
+my_version = "0.2.36"
 
 setup(name='binpan',
       version=my_version,
