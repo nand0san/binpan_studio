@@ -406,12 +406,12 @@ def get_agg_trades(symbol: str,
                                                      withscores=True)
 
             curr_trades = [json.loads(i[0]) for i in curr_trades]
-            market_logger.info(f"Fetched {len(curr_trades)} for {symbol}")
+            market_logger.debug(f"Fetched {len(curr_trades)} aggregate trades for {symbol}")
 
             if curr_trades:
                 timestamps_dict = {k['T']: k['a'] for k in curr_trades}
                 trade_ids = [i for t, i in timestamps_dict.items() if startTime <= t <= endTime]
-                market_logger.info(f"List of trades {len(trade_ids)} for {symbol}")
+                market_logger.debug(f"List of trades {len(trade_ids)} for {symbol}")
 
                 if trade_ids:
                     response = redis_client_trades.zrangebyscore(name=f"{symbol.lower()}@aggTrade",
@@ -422,10 +422,10 @@ def get_agg_trades(symbol: str,
                 else:
                     response = []
 
-                market_logger.info(f"Clean trades {len(response)} for {symbol}")
+                market_logger.info(f"Clean {len(response)} trades found for {symbol}")
 
             if not response:
-                market_logger.info(f"No trade ids found for {symbol} for given interval in server.")
+                market_logger.info(f"No trade IDs found for {symbol} for given interval in server.")
 
         else:
             market_logger.info(f"Request for trades from {symbol} returning ALL trades available in Redis.")
@@ -522,12 +522,12 @@ def get_historical_aggregated_trades(symbol: str,
                                                      withscores=True)
 
             curr_trades = [json.loads(i[0]) for i in curr_trades]
-            market_logger.info(f"Fetched {len(curr_trades)} for {symbol}")
+            market_logger.debug(f"Fetched {len(curr_trades)} aggregate trades for {symbol}")
 
             if curr_trades:
                 timestamps_dict = {k['T']: k['a'] for k in curr_trades}
                 trade_ids = [i for t, i in timestamps_dict.items() if startTime <= t <= endTime]
-                market_logger.info(f"List of trades {len(trade_ids)} for {symbol}")
+                market_logger.debug(f"List of trades {len(trade_ids)} for {symbol}")
 
                 if trade_ids:
                     response = redis_client_trades.zrangebyscore(name=f"{symbol.lower()}@aggTrade",
@@ -538,10 +538,10 @@ def get_historical_aggregated_trades(symbol: str,
                 else:
                     response = []
 
-                market_logger.info(f"Clean trades {len(response)} for {symbol}")
+                market_logger.info(f"Clean {len(response)} trades found for {symbol}")
 
             if not response:
-                market_logger.info(f"No trade ids found for {symbol} for given interval in server.")
+                market_logger.info(f"No trade IDs found for {symbol} for given interval in server.")
         return response
 
 
