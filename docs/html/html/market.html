@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Market Module &mdash; BinPan 0.2.35 documentation</title>
+  <title>Market Module &mdash; BinPan 0.2.36 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/style.css" type="text/css" />
@@ -49,6 +49,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Market Module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#prices">Prices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#klines">Klines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#format-data">Format Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#trades">Trades</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#orderbook">Orderbook</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#coin-conversion">Coin Conversion</a></li>
@@ -93,7 +94,8 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">handlers</span> <span class="kn">import</span> <span class="n">market</span>
 </pre></div>
 </div>
-<span class="target" id="module-handlers.market"></span><section id="prices">
+<span class="target" id="module-handlers.market"></span><p>Market functions</p>
+<section id="prices">
 <h2>Prices<a class="headerlink" href="#prices" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.market.get_last_price">
@@ -121,7 +123,7 @@
 <h2>Klines<a class="headerlink" href="#klines" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.market.get_candles_by_time_stamps">
-<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_candles_by_time_stamps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redis_client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">object</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.market.get_candles_by_time_stamps" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_candles_by_time_stamps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redis_client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Redis</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.market.get_candles_by_time_stamps" title="Permalink to this definition"></a></dt>
 <dd><p>Calls API for candles list buy one or two timestamps, starting and ending.</p>
 <p>In case the limit is passed and exceeded by requested time intervals, the start_time prevails over the end_time,
 start_time must come in milliseconds from epoch.</p>
@@ -193,24 +195,65 @@ is open right in between the endtime timestamp.</p>
 </dd></dl>
 
 </section>
+<section id="format-data">
+<h2>Format Data<a class="headerlink" href="#format-data" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.market.basic_dataframe">
+<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">basic_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exceptions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actions_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'actions'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.market.basic_dataframe" title="Permalink to this definition"></a></dt>
+<dd><p>Delete all columns except: Open, High, Low, Close, Volume, actions.</p>
+<p>Some columns can be excepted.</p>
+<p>Useful to drop messed technical indicators columns in one shot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>pd.DataFrame</em>) – A BinPan DataFrame</p></li>
+<li><p><strong>exceptions</strong> (<em>list</em>) – A list of columns to avoid dropping.</p></li>
+<li><p><strong>actions_col</strong> (<em>str</em>) – A column with operative actions.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.DataFrame</dt>
+<dd class="field-even"><p>Pandas DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.market.convert_to_numeric">
+<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">convert_to_numeric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.market.convert_to_numeric" title="Permalink to this definition"></a></dt>
+<dd><p>Converts to numeric all posible columns for a given Dataframe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>pd.DataFrame</em>) – A dataframe with columns</p>
+</dd>
+<dt class="field-even">Return pd.DataFrame</dt>
+<dd class="field-even"><p>A dataframe with numeric values in each column that can be numeric.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 <section id="trades">
 <h2>Trades<a class="headerlink" href="#trades" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.market.get_agg_trades">
-<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_agg_trades</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fromId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.market.get_agg_trades" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_agg_trades</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fromId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">toId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redis_client_trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Redis</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.market.get_agg_trades" title="Permalink to this definition"></a></dt>
 <dd><p>Returns aggregated trades from id to limit or last trades if id not specified. Also is possible to get from starTime utc in
 milliseconds from epoch or until endtime milliseconds from epoch.</p>
 <p>If it is tested with more than 1 hour of trades, it gives error 1127 and if you adjust it to one hour,
 the maximum limit of 1000 is NOT applied.</p>
+<p>Start time and end time not applied if trade id passed.</p>
 <p>Limit applied in fromId mode defaults to 500. Maximum is 1000.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>symbol</strong> (<em>str</em>) – A binance valid symbol.</p></li>
 <li><p><strong>fromId</strong> (<em>int</em>) – An aggregated trade id.</p></li>
+<li><p><strong>toId</strong> (<em>int</em>) – An aggregated trade id end, used just with redis.</p></li>
 <li><p><strong>limit</strong> (<em>int</em>) – Count of trades to ask for.</p></li>
 <li><p><strong>startTime</strong> (<em>int</em>) – A timestamp in milliseconds from epoch.</p></li>
 <li><p><strong>endTime</strong> (<em>int</em>) – A timestamp in milliseconds from epoch.</p></li>
+<li><p><strong>redis_client_trades</strong> (<em>bool</em>) – A redis instance of a connector. Must be a trades redis connector, usually different configuration
+from candles redis server.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return list</dt>
@@ -235,7 +278,7 @@ the maximum limit of 1000 is NOT applied.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.market.get_historical_aggregated_trades">
-<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_historical_aggregated_trades</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.market.get_historical_aggregated_trades" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_historical_aggregated_trades</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redis_client_trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Redis</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.market.get_historical_aggregated_trades" title="Permalink to this definition"></a></dt>
 <dd><p>Returns aggregated trades between timestamps. It iterates over 1 hour intervals to avoid API one hour limit.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -243,6 +286,8 @@ the maximum limit of 1000 is NOT applied.</p>
 <li><p><strong>startTime</strong> (<em>int</em>) – A timestamp in milliseconds from epoch.</p></li>
 <li><p><strong>endTime</strong> (<em>int</em>) – A timestamp in milliseconds from epoch.</p></li>
 <li><p><strong>symbol</strong> (<em>str</em>) – A binance valid symbol.</p></li>
+<li><p><strong>redis_client_trades</strong> (<em>bool</em>) – A redis instance of a connector. Must be a trades redis connector, usually different configuration
+from candles redis server.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return list</dt>
@@ -263,6 +308,36 @@ the maximum limit of 1000 is NOT applied.</p>
 ]
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.market.parse_agg_trades_to_dataframe">
+<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">parse_agg_trades_to_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.market.parse_agg_trades_to_dataframe" title="Permalink to this definition"></a></dt>
+<dd><p>Parses the API response into a pandas dataframe.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;M&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+ <span class="s1">&#39;T&#39;</span><span class="p">:</span> <span class="mi">1656166914571</span><span class="p">,</span>
+ <span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">1218761712</span><span class="p">,</span>
+ <span class="s1">&#39;f&#39;</span><span class="p">:</span> <span class="mi">1424997754</span><span class="p">,</span>
+ <span class="s1">&#39;l&#39;</span><span class="p">:</span> <span class="mi">1424997754</span><span class="p">,</span>
+ <span class="s1">&#39;m&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+ <span class="s1">&#39;p&#39;</span><span class="p">:</span> <span class="s1">&#39;21185.05000000&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;q&#39;</span><span class="p">:</span> <span class="s1">&#39;0.03395000&#39;</span><span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>response</strong> (<em>list</em>) – API raw response from trades.</p></li>
+<li><p><strong>columns</strong> – Column names.</p></li>
+<li><p><strong>symbol</strong> – The used symbol.</p></li>
+<li><p><strong>time_zone</strong> – Selected time zone.</p></li>
+<li><p><strong>time_index</strong> – Or integer index.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Pandas DataFrame</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
