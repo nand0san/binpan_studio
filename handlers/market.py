@@ -10,6 +10,7 @@ import pandas as pd
 import json
 from decimal import Decimal as dd
 from redis import StrictRedis
+from typing import List
 
 import handlers.time_helper
 from .logs import Logs
@@ -341,7 +342,7 @@ def get_agg_trades(symbol: str,
                    limit=None,
                    startTime: int = None,
                    endTime: int = None,
-                   redis_client_trades: StrictRedis = None) -> list:
+                   redis_client_trades: StrictRedis = None) -> List[dict]:
     """
     Returns aggregated trades from id to limit or last trades if id not specified. Also is possible to get from starTime utc in
     milliseconds from epoch or until endtime milliseconds from epoch.
@@ -361,7 +362,7 @@ def get_agg_trades(symbol: str,
     :param int endTime: A timestamp in milliseconds from epoch.
     :param bool redis_client_trades: A redis instance of a connector. Must be a trades redis connector, usually different configuration
      from candles redis server.
-    :return list: Returns a list from the Binance API
+    :return list: Returns a list from the Binance API in dicts.
 
     .. code-block::
 
@@ -435,7 +436,9 @@ def get_agg_trades(symbol: str,
                                                  end=-1,
                                                  withscores=False)
             response = []
-            for i in tqdm(ret_raw):
+            pbar = tqdm(ret_raw)
+            for i in pbar:
+                pbar.set_description(desc=f"Aggregate Trades for {symbol}", refresh=True)
                 response.append(json.loads(i))
 
     else:
@@ -478,7 +481,7 @@ def get_agg_trades(symbol: str,
 def get_historical_aggregated_trades(symbol: str,
                                      startTime: int,
                                      endTime: int,
-                                     redis_client_trades: StrictRedis = None) -> list:
+                                     redis_client_trades: StrictRedis = None) -> List[dict]:
     """
     Returns aggregated trades between timestamps. It iterates over 1 hour intervals to avoid API one hour limit.
 
@@ -510,7 +513,9 @@ def get_historical_aggregated_trades(symbol: str,
     else:
         response = []
         if not redis_client_trades:
-            for i in tqdm(range(startTime, endTime, hour_ms)):
+            pbar = tqdm(range(startTime, endTime, hour_ms))
+            for i in pbar:
+                pbar.set_description(desc=f"Historical Aggregate Trades for {symbol}", refresh=True)
                 response += get_agg_trades(symbol=symbol, startTime=i, endTime=i + hour_ms, redis_client_trades=redis_client_trades)
         else:
             response = []

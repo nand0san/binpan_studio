@@ -9,6 +9,8 @@ import pandas as pd
 import numpy as np
 
 from redis import StrictRedis
+from typing import Tuple
+
 # from typing import Tuple
 
 import handlers.exceptions
@@ -35,7 +37,7 @@ binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', 
 tick_seconds = handlers.time_helper.tick_seconds
 pandas_freq_tick_interval = handlers.time_helper.pandas_freq_tick_interval
 
-__version__ = "0.2.36"
+__version__ = "0.2.37"
 
 try:
     from secret import redis_conf, redis_conf_trades
@@ -983,7 +985,7 @@ class Symbol(object):
         else:
             return df_
 
-    def get_timestamps(self):
+    def get_timestamps(self) -> Tuple[int, int]:
         """
         Get the first Open timestamp and the last Close timestamp.
 
@@ -993,6 +995,18 @@ class Symbol(object):
         start = self.df.iloc[0]['Open timestamp']
         end = self.df.iloc[-1]['Close timestamp']
         return start, end
+
+    def get_dates(self) -> Tuple[str, str]:
+        """
+        Get the first Open timestamp and the last Close timestamp, and converts to timezoned dates.
+
+        :return tuple(int, int): Start Open date and end close date
+
+        """
+        start, end = self.get_timestamps()
+        ret_start = handlers.time_helper.convert_milliseconds_to_str(ms=start, timezoned=self.time_zone)
+        ret_end = handlers.time_helper.convert_milliseconds_to_str(ms=end, timezoned=self.time_zone)
+        return ret_start, ret_end
 
     def get_trades(self):
         """
