@@ -37,7 +37,7 @@ binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', 
 tick_seconds = handlers.time_helper.tick_seconds
 pandas_freq_tick_interval = handlers.time_helper.pandas_freq_tick_interval
 
-__version__ = "0.2.37"
+__version__ = "0.2.38"
 
 try:
     from secret import redis_conf, redis_conf_trades
@@ -1322,7 +1322,12 @@ class Symbol(object):
                                          markers=markers,
                                          marker_colors=marker_colors)
 
-    def plot_trades_size(self, max_size=60, height=1000, logarithmic=False, title: str = None):
+    def plot_trades_size(self,
+                         max_size: int = 60,
+                         height: int = 1000,
+                         logarithmic: bool = False,
+                         group_big_data: int = None,
+                         title: str = None):
         """
         It plots a time series graph plotting trades sized by quantity and color if taker or maker buyer.
 
@@ -1338,19 +1343,29 @@ class Symbol(object):
         :param int max_size: Max size for the markers. Default is 60. Useful to show whales operating.
         :param int height: Default is 1000.
         :param bool logarithmic: If logarithmic, then "y" axis scale is shown in logarithmic scale.
+        :param int group_big_data: If true, groups data in height bins, this can get faster plotting for big quantity of trades.
         :param title: Graph title
 
         """
         if self.trades.empty:
-            binpan_logger.info("Trades not downloaded. Please add trades data with: my_binpan.get_trades()")
+            binpan_logger.info("Trades not downloaded. Please add trades data with: my_symbol.get_trades()")
             return
         if not title:
             title = f"Size trade categories {self.symbol}"
-        handlers.plotting.plot_trade_size(data=self.trades.copy(deep=True),
-                                          max_size=max_size,
-                                          height=height,
-                                          logarithmic=logarithmic,
-                                          title=title)
+        managed_data = self.trades.copy(deep=True)
+        if not group_big_data:
+            handlers.plotting.plot_trade_size(data=managed_data,
+                                              max_size=max_size,
+                                              height=height,
+                                              logarithmic=logarithmic,
+                                              title=title)
+        else:
+            # TODO: GROUP SLOTS OF TRADES
+            handlers.plotting.plot_trade_size(data=managed_data,
+                                              max_size=max_size,
+                                              height=height,
+                                              logarithmic=logarithmic,
+                                              title=title)
 
     def plot_trades_pie(self, categories: int = 25, logarithmic=True, title: str = None):
         """
@@ -1366,7 +1381,7 @@ class Symbol(object):
 
         """
         if self.trades.empty:
-            binpan_logger.info("Trades not downloaded. Please add trades data with: my_binpan.get_trades()")
+            binpan_logger.info("Trades not downloaded. Please add trades data with: my_symbol.get_trades()")
             return
         if not title:
             title = f"Size trade categories {self.symbol}"
@@ -1375,20 +1390,20 @@ class Symbol(object):
                                    logarithmic=logarithmic,
                                    title=title)
 
-    def plot_makers_vs_takers(self,
-                              bins=50,
-                              hist_funct='sum',
-                              height=900,
-                              from_trades=False,
-                              title: str = None,
-                              total_volume=None,
-                              partial_vol=None,
-                              **kwargs_update_layout):
+    def plot_aggression(self,
+                        bins=50,
+                        hist_funct='sum',
+                        height=900,
+                        from_trades=False,
+                        title: str = None,
+                        total_volume_column: str = None,
+                        partial_vol_column: str = None,
+                        **kwargs_update_layout):
         """
-        Binance fees can be cheaper for maker orders, many times when big traders, like whales, are operating. Showing what are doing
+        Binance fees can be cheaper for maker orders, many times when big traders, like whales, are operating . Showing what are doing
         makers.
 
-        It shows which kind of volume or trades came from, takers or makers.
+        It shows which kind of volume or trades came from, aggressive_sellers or aggressive_byers.
 
         Can be useful finding support and resistance zones.
 
@@ -1402,41 +1417,42 @@ class Symbol(object):
         :param height: Height of the graph.
         :param from_trades: Requieres grabbing trades before.
         :param title: A title.
-        :param total_volume: The column with the total volume. It defaults automatically.
-        :param partial_vol: The column with the partial volume. It defaults automatically. API shows maker or taker separated volumes.
+        :param total_volume_column: The column with the total volume. It defaults automatically.
+        :param partial_vol_column: The column with the partial volume. It defaults automatically. API shows maker or taker separated volumes.
         :param kwargs_update_layout: Optional
 
         """
         if from_trades:
             if self.trades.empty:
-                binpan_logger.info("Trades not downloaded. Please add trades data with: my_binpan.get_trades()")
+                binpan_logger.info("Trades not downloaded. Please add trades data with: my_symbol.get_trades()")
                 return
             else:
                 _df = self.trades.copy(deep=True)
-                if not total_volume:
-                    total_volume = 'Quantity'
-                if not partial_vol:
-                    partial_vol = 'Buyer was maker'
+                if not total_volume_column:
+                    total_volume_column = 'Quantity'
 
-                makers = _df.loc[_df[partial_vol]][total_volume]
-                takers = _df.loc[~_df[partial_vol]][total_volume]
+                if not partial_vol_column:
+                    partial_vol_column = 'Buyer was maker'
+
+                aggressive_sellers = _df.loc[_df[partial_vol_column]][total_volume_column]
+                aggressive_byers = _df.loc[~_df[partial_vol_column]][total_volume_column]
 
         else:
             _df = self.df.copy()
-            if not total_volume:
-                total_volume = 'Volume'
-            if not partial_vol:
-                partial_vol = 'Taker buy base volume'
-            makers = _df[partial_vol]
-            takers = _df[total_volume] - makers
+            if not total_volume_column:
+                total_volume_column = 'Volume'
+            if not partial_vol_column:
+                partial_vol_column = 'Taker buy base volume'
+            aggressive_sellers = _df[partial_vol_column]
+            aggressive_byers = _df[total_volume_column] - aggressive_sellers
 
         if not title:
-            title = f"Histogram for sizes in Makers vs Takers {self.symbol} ({hist_funct})"
-
-        handlers.plotting.plot_hists_vs(x0=makers,
-                                        x1=takers,
-                                        x0_name=f"{total_volume} - {partial_vol}",
-                                        x1_name=partial_vol,
+            title = f"Histogram for sizes in aggressive_sellers vs aggressive_byers {self.symbol} ({hist_funct})"
+        # TODO: check new names for the plot graph in docs
+        handlers.plotting.plot_hists_vs(x0=aggressive_sellers,
+                                        x1=aggressive_byers,
+                                        x0_name="Aggressive sellers",
+                                        x1_name='Aggressive byers',
                                         bins=bins,
                                         hist_funct=hist_funct,
                                         height=height,
@@ -1475,7 +1491,7 @@ class Symbol(object):
 
         """
         if self.trades.empty and from_trades:
-            binpan_logger.info("Trades not downloaded. Please add trades data with: my_binpan.get_trades()")
+            binpan_logger.info("Trades not downloaded. Please add trades data with: my_symbol.get_trades()")
             return
         if not from_trades:
             data = self.df.copy(deep=True)

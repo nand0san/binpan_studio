@@ -1,3 +1,8 @@
+"""
+
+This is the plotting module.
+
+"""
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import plotly.express as px
@@ -33,10 +38,22 @@ plotly_colors = ["aliceblue", "antiquewhite", "aqua", "aquamarine", "azure", "be
 
 
 def set_color():
+    """
+    Choose a random color from plotly colors.
+    :return:
+    """
     return choice(plotly_colors)
 
 
-def set_subplots(extra_rows, candles_ta_height_ratio=0.8, vertical_spacing=0.2):
+def set_subplots(extra_rows: int, candles_ta_height_ratio: float = 0.8, vertical_spacing: float = 0.2):
+    """
+    Define rows and columns for subplots in plotting engine.
+
+    :param int extra_rows:
+    :param float candles_ta_height_ratio:
+    :param float vertical_spacing:
+    :return:
+    """
     # volume is extra row
     ta_rows_heights = [(1 - candles_ta_height_ratio) / extra_rows for _ in range(extra_rows)]
     rows_heights = [candles_ta_height_ratio] + ta_rows_heights
@@ -56,13 +73,26 @@ def set_subplots(extra_rows, candles_ta_height_ratio=0.8, vertical_spacing=0.2):
 
 
 def set_candles(df: pd.DataFrame) -> tuple:
+    """
+    Put candles and axis into a tuple.
+    :param df: Dataframe OHLC type.
+    :return:
+    """
     candles_plot = go.Candlestick(x=df.index, open=df['Open'], high=df['High'], low=df['Low'], close=df['Close'], name='Candles')
     ax = 1
     return candles_plot, ax
 
 
 # noinspection PyTypeChecker
-def set_volume_series(df: pd.DataFrame, win: int = 21) -> tuple:
+def set_volume_series(df: pd.DataFrame,
+                      win: int = 21) -> tuple:
+    """
+    Sets or unsets volume histogram.
+
+    :param df: A binpan's dataframe.
+    :param win: Window for volume average line.
+    :return: A tuple with several figures.
+    """
     # volume
     volume_green = df[df['Open'] <= df['Close']]
     volume_red = df[df['Open'] > df['Close']]
@@ -83,6 +113,17 @@ def set_ta_scatter(df: pd.DataFrame,
                    color='blue',
                    name='Indicator',
                    text_position="bottom center"):
+    """
+    Plot a scatter plot for an indicator.
+
+    :param pd.DataFrame df: A binpan's dataframe just for the index.
+    :param pd.Series serie: data to plot.
+    :param list annotations: Text for annotations over the plotted data.
+    :param str color: A plotly color.
+    :param str name: Name for the plot.
+    :param str text_position: A position from plotly documented annotation positions.
+    :return:
+    """
     return go.Scatter(x=df.index,
                       y=serie,
                       line=dict(color=color, width=0.1),
@@ -96,11 +137,25 @@ def set_ta_line(df_index: pd.DataFrame.index,
                 serie: pd.Series,
                 color='blue',
                 name='Indicator',
-                width=0.5,
+                line_width: float = 0.5,
                 fill_color: str or bool = None,
                 fill_mode: str = 'none',
                 yaxis: str = 'y',
                 show_legend=True):
+    """
+    Plot a line plot for an indicator.
+
+    :param pd.DataFrame.index df_index: A binpan's dataframe just for the index.
+    :param pd.Series serie: data to plot.
+    :param str color: A plotly color.
+    :param str name: Name for the plot.
+    :param float line_width: Line width size.
+    :param str or None fill_color: Color to fill areas in the plot.
+    :param str fill_mode: Mode to fill for, like to x axis or to next plot, etc.
+    :param str yaxis: Axis name for plotting.
+    :param bool show_legend: Shows it or not.
+    :return:
+    """
     my_locals = {k: v for k, v in locals().items() if k != 'df_index' and k != 'serie'}
     plot_logger.debug(f"set_ta_line: {my_locals}")
 
@@ -111,7 +166,7 @@ def set_ta_line(df_index: pd.DataFrame.index,
 
     return go.Scatter(x=df_index,
                       y=serie,
-                      line=dict(color=color, width=width),
+                      line=dict(color=color, width=line_width),
                       name=name,
                       mode='lines',
                       fill=fill_mode,
@@ -120,15 +175,22 @@ def set_ta_line(df_index: pd.DataFrame.index,
                       showlegend=show_legend)
 
 
-def fill_missing(ll: list, length: int):
+def fill_missing(data_list: list, expected_length: int):
+    """
+    Fills until expected length iterating with the existing values.
+
+    :param list data_list:
+    :param int expected_length:
+    :return: Filled list.
+    """
     ret = []
     cycle = 0
-    for i in range(length):
+    for i in range(expected_length):
         try:
-            ret.append(ll[i])
+            ret.append(data_list[i])
         except KeyError:
-            if len(ll) > 0:
-                ret.append(ll[cycle])
+            if len(data_list) > 0:
+                ret.append(data_list[cycle])
                 cycle += 1
             else:
                 ret.append(f'added_{str(i).zfill(2)}')
@@ -136,10 +198,22 @@ def fill_missing(ll: list, length: int):
 
 
 # noinspection PyTypeChecker
-def set_arrows(annotations: pd.Series, name: str = None, tag: str = None, textposition="top center",
-               mode="markers+text", marker_symbol="arrow-bar-down", marker_color='orange', marker_line_color='black',
-               marker_line_width=0.5, marker_size=12):
-    """Style info at https://plotly.com/python/marker-style/"""
+def set_arrows(annotations: pd.Series,
+               name: str = None,
+               tag: str = None,
+               textposition="top center",
+               mode="markers+text",
+               marker_symbol="arrow-bar-down",
+               marker_color='orange',
+               marker_line_color='black',
+               marker_line_width=0.5,
+               marker_size=12):
+    """
+    Sets arrows.
+
+    Style info at https://plotly.com/python/marker-style/
+    """
+
     if not tag:
         return go.Scatter(mode=mode, x=annotations.index, y=annotations.values, text=annotations.values,
                           marker_symbol=marker_symbol, textposition=textposition, marker_line_color=marker_line_color,
@@ -151,19 +225,44 @@ def set_arrows(annotations: pd.Series, name: str = None, tag: str = None, textpo
                           marker_line_width=marker_line_width, marker_size=marker_size, name=name)
 
 
-def add_traces(fig, list_of_plots: list, rows: list, cols: list):
+def add_traces(fig,
+               list_of_plots: list,
+               rows: list,
+               cols: list):
+    """
+    Put traces into the figure.
+
+    :param fig: Figure to set.
+    :param list_of_plots: Plot objects to insert into the figure.
+    :param list rows: A list with row positions each plot.
+    :param list cols: A list with column positions each plot.
+    :return: Set figure.
+    """
     for i, p in enumerate(list_of_plots):
         # fig.add_trace(p, row=rows[i], col=cols[i], secondary_y=secondary_y)
         fig.append_trace(p, row=rows[i], col=cols[i])
     return fig
 
 
-def set_layout_format(fig, axis_q: int,
+def set_layout_format(fig,
+                      axis_q: int,
                       title: str,
                       yaxis_title: str,
                       width: int,
                       height: int,
                       range_slider: bool):
+    """
+    It updates layout of the set plot.
+
+    :param fig: Figure object.
+    :param int axis_q: Y axis count.
+    :param str title: A title for the layout.
+    :param str yaxis_title: Y axis title.
+    :param int width: Layout size.
+    :param int height: Layout height.
+    :param bool range_slider: enabled or not.
+    :return:
+    """
     layout_kwargs = dict(title=title,
                          yaxis_title=yaxis_title,
                          autosize=False,
@@ -181,7 +280,14 @@ def set_layout_format(fig, axis_q: int,
     return fig
 
 
-def update_names(fig, names):
+def update_names(fig, names: dict):
+    """
+    Update legend names.
+
+    :param fig: Figure object.
+    :param names: dict of names.
+    :return: Updated figure.
+    """
     # new_names = {'col1': 'hello', 'col2': 'hi'}
     fig.for_each_trace(lambda t: t.update(name=names[t.name],
                                           legendgroup=names[t.name],
@@ -196,12 +302,22 @@ def deploy_traces(annotations: list,
                   text_positions: list,
                   mark_names: list,
                   tags: list) -> list:
+    """
+
+    :param annotations:
+    :param colors:
+    :param markers:
+    :param text_positions:
+    :param mark_names:
+    :param tags:
+    :return:
+    """
     length = len(annotations)
     if not colors:
         colors = fill_missing(['#636EFA', '#EF553B', '#00CC96', '#AB63FA', '#FFA15A', '#19D3F3', '#FF6692', '#B6E880',
-                               '#FF97FF', '#FECB52'], length=length)
+                               '#FF97FF', '#FECB52'], expected_length=length)
     if not markers:
-        markers = fill_missing(["arrow-bar-down", "arrow-bar-up", "arrow-bar-left", "arrow-bar-right"], length=length)
+        markers = fill_missing(["arrow-bar-down", "arrow-bar-up", "arrow-bar-left", "arrow-bar-right"], expected_length=length)
     if not text_positions:
         text_positions = ["top center" for _ in range(len(annotations))]
     if not mark_names:
@@ -460,7 +576,7 @@ def candles_ta(data: pd.DataFrame,
                                    serie=indicator,
                                    color=indicators_colors[i],
                                    name=indicator_names[i],
-                                   width=1,
+                                   line_width=1,
                                    fill_mode='none',
                                    fill_color=None,
                                    yaxis=my_axis))
@@ -481,7 +597,7 @@ def candles_ta(data: pd.DataFrame,
                                        serie=splitted_df[indicator_column_up],
                                        color=indicators_colors[i],
                                        name=indicator_column_up,
-                                       width=0.01,
+                                       line_width=0.01,
                                        fill_mode='none',
                                        fill_color=None,
                                        yaxis=my_axis,
@@ -491,7 +607,7 @@ def candles_ta(data: pd.DataFrame,
                                        serie=splitted_df[indicator_column_down],
                                        color=indicators_colors[i],
                                        name=indicator_column_down,
-                                       width=0.01,
+                                       line_width=0.01,
                                        fill_mode='tonexty',
                                        fill_color=fill_area(splitted_df['label'].iloc[0]),
                                        yaxis=my_axis,
@@ -510,7 +626,7 @@ def candles_ta(data: pd.DataFrame,
                                    serie=indicator,
                                    color=indicators_colors[i],
                                    name=indicator_names[i],
-                                   width=1,
+                                   line_width=1,
                                    fill_mode=my_fill_mode,
                                    fill_color=my_fill_color,
                                    yaxis=my_axis))
@@ -907,7 +1023,7 @@ def plot_trade_size(data: pd.DataFrame,
            :width: 1000
 
     """
-    data['Buyer was maker'].replace({True: 'Maker buyer', False: 'Taker buyer'}, inplace=True)
+    data['Buyer was maker'].replace({True: 'Taker Seller', False: 'Taker buyer'}, inplace=True)
     fig = px.scatter(x=data.index, y=data['Price'], color=data['Buyer was maker'], size=data['Quantity'],
                      size_max=max_size, log_y=logarithmic)
     if not title:
@@ -921,7 +1037,15 @@ def plot_trade_size(data: pd.DataFrame,
     fig.show()
 
 
-def normalize(max_value, min_value, data: list):
+def normalize(max_value: int or float, min_value: int or float, data: list):
+    """
+    Normalize data from minimum as 0 to maximum as 1.
+
+    :param int or float max_value: A numeric value.
+    :param int or float min_value: A numeric value.
+    :param data: List of numerica data.
+    :return: Normalized numeric data.
+    """
     return [(i / sum(data)) * max_value + min_value for i in data]
 
 
@@ -1242,3 +1366,57 @@ def dist_plot(df: pd.DataFrame,
 
     fig.update_layout(height=height, title=title, yaxis3={"overlaying": "y", "side": "right"}, showlegend=True, **update_layout_kwargs)
     fig.show()
+
+
+##############
+# plot tools #
+##############
+
+def find_step_for_bins(data: pd.DataFrame,
+                       master_column: str,
+                       bins: int = 100,
+                       pip_size=0.000001):
+    """
+    Find precision for getting a target number of bins intervals for values in master column.
+
+    Very expensive function.
+
+    :param pd.DataFrame data: A binpan's dataframe.
+    :param str master_column: Column to groupby.
+    :param int bins: Expected vertical slots.
+    :param pip_size: Size of what will be considered a tiny value.
+    :return float: The step for the bins.
+    """
+    trad_min = data[master_column].min()
+    trad_max = data[master_column].max()
+
+    curr_bins = len(data)
+    curr_pips = pip_size
+
+    while curr_bins > bins:
+
+        cats, bins_result = pd.cut(data[master_column], np.arange(trad_min, trad_max, curr_pips), retbins=True)
+        curr_bins = len(bins_result)
+
+        if curr_bins <= bins:
+            break
+        else:
+            curr_pips += pip_size
+
+    return curr_pips
+
+
+def group_slot(data: pd.DataFrame,
+               master_column: str,
+               bins: int = 100):
+    """
+    Get what vertical slot size results for a number of bins.
+
+    :param pd.DataFrame data: A binpan's dataframe.
+    :param str master_column: Column to groupby.
+    :param int bins: Expected vertical slots.
+    :return: Size of each slot.
+    """
+    p_max = data[master_column].max()
+    p_min = data[master_column].min()
+    return (p_max - p_min) / bins
