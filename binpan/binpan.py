@@ -1390,15 +1390,15 @@ class Symbol(object):
                                    logarithmic=logarithmic,
                                    title=title)
 
-    def plot_aggression(self,
-                        bins=50,
-                        hist_funct='sum',
-                        height=900,
-                        from_trades=False,
-                        title: str = None,
-                        total_volume_column: str = None,
-                        partial_vol_column: str = None,
-                        **kwargs_update_layout):
+    def plot_aggression_sizes(self,
+                              bins=50,
+                              hist_funct='sum',
+                              height=900,
+                              from_trades=False,
+                              title: str = None,
+                              total_volume_column: str = None,
+                              partial_vol_column: str = None,
+                              **kwargs_update_layout):
         """
         Binance fees can be cheaper for maker orders, many times when big traders, like whales, are operating . Showing what are doing
         makers.
@@ -1413,7 +1413,7 @@ class Symbol(object):
 
 
         :param bins: How many bars.
-        :param hist_funct: The way graph data is showed. It can be 'percent', 'probability', 'density', or 'probability density'
+        :param hist_funct: The way graph data is showed. It can be 'mean', 'sum', 'percent', 'probability', 'density', or 'probability density'
         :param height: Height of the graph.
         :param from_trades: Requieres grabbing trades before.
         :param title: A title.
@@ -1422,12 +1422,13 @@ class Symbol(object):
         :param kwargs_update_layout: Optional
 
         """
-        if from_trades:
+        if from_trades or not self.trades.empty:
             if self.trades.empty:
                 binpan_logger.info("Trades not downloaded. Please add trades data with: my_symbol.get_trades()")
                 return
             else:
                 _df = self.trades.copy(deep=True)
+
                 if not total_volume_column:
                     total_volume_column = 'Quantity'
 
@@ -1447,8 +1448,8 @@ class Symbol(object):
             aggressive_byers = _df[total_volume_column] - aggressive_sellers
 
         if not title:
-            title = f"Histogram for sizes in aggressive_sellers vs aggressive_byers {self.symbol} ({hist_funct})"
-        # TODO: check new names for the plot graph in docs
+            title = f"Histogram for sizes in aggressive sellers vs aggressive byers {self.symbol} ({hist_funct})"
+
         handlers.plotting.plot_hists_vs(x0=aggressive_sellers,
                                         x1=aggressive_byers,
                                         x0_name="Aggressive sellers",
@@ -1458,6 +1459,62 @@ class Symbol(object):
                                         height=height,
                                         title=title,
                                         **kwargs_update_layout)
+
+    def plot_market_profile(self,
+                            bins: int = 100,
+                            minutes: int = None,
+                            startTime: int or str = None,
+                            endTime: int or str = None,
+                            height=900,
+                            from_trades=False,
+                            title: str = 'Market Profile',
+                            **kwargs_update_layout):
+
+        """
+        Plots volume histogram by prices segregated aggressive buyers from sellers.
+
+
+        :param int bins: How many bars.
+        :param int minutes: If passed, it use just last passed minutes for the plot.
+        :param int or str startTime: If passed, it use just from the timestamp or date in format
+         (%Y-%m-%d %H:%M:%S: **2022-05-11 06:45:42**)) for the plot.
+        :param int or str endTime: If passed, it use just until the timestamp or date in format
+         (%Y-%m-%d %H:%M:%S: **2022-05-11 06:45:42**)) for the plot.
+        :param height: Height of the graph.
+        :param from_trades: Requieres grabbing trades before.
+        :param title: A title.
+        :param kwargs_update_layout: Optional
+
+        """
+        # TODO: meter temas de fechas y horas
+        if from_trades or not self.trades.empty:
+            if self.trades.empty:
+                binpan_logger.info("Trades not downloaded. Please add trades data with: my_symbol.get_trades()")
+                return
+            else:
+                _df = self.trades.copy(deep=True)
+                handlers.plotting.bar_plot(df=_df,
+                                           x_col_to_bars='Price',
+                                           y_col='Quantity',
+                                           bar_segments='Buyer was maker',
+                                           bins=bins,
+                                           title=title,
+                                           height=height,
+                                           y_axis_title='Aggressive Sells VS Aggressive Buys',
+                                           legend_names={'agg_Quantity_Buyer_was_maker': 'Aggressive Sell',
+                                                         'agg_Quantity_not_Buyer_was_maker': 'Aggressive Buy'},
+                                           **kwargs_update_layout)
+        else:
+            _df = self.df.copy()
+
+            handlers.plotting.bar_plot(df=_df,
+                                       x_col_to_bars='Close',
+                                       y_col='Volume',
+                                       y_axis_title='Volume levels',
+                                       bins=bins,
+                                       title=title,
+                                       height=height,
+                                       **kwargs_update_layout)
 
     def plot_trades_scatter(self,
                             x: str = ['Price', 'Close'],
