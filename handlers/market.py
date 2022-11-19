@@ -426,7 +426,9 @@ def get_agg_trades(symbol: str,
                 market_logger.info(f"Clean {len(response)} trades found for {symbol}")
 
             if not response:
-                market_logger.info(f"No trade IDs found for {symbol} for given interval in server.")
+                start_str = handlers.time_helper.convert_milliseconds_to_utc_string(ms=startTime)
+                end_str = handlers.time_helper.convert_milliseconds_to_utc_string(ms=endTime)
+                market_logger.info(f"No trade IDs found for {symbol} for given interval {start_str} and {end_str} (UTC) in server.")
 
         else:
             market_logger.info(f"Request for trades from {symbol} returning ALL trades available in Redis.")
@@ -546,7 +548,9 @@ def get_historical_aggregated_trades(symbol: str,
                 market_logger.info(f"Clean {len(response)} trades found for {symbol}")
 
             if not response:
-                market_logger.info(f"No trade IDs found for {symbol} for given interval in server.")
+                start_str = handlers.time_helper.convert_milliseconds_to_utc_string(ms=startTime)
+                end_str = handlers.time_helper.convert_milliseconds_to_utc_string(ms=endTime)
+                market_logger.info(f"No trade IDs found for {symbol} for given interval {start_str} and {end_str} (UTC) in server.")
         return response
 
 
