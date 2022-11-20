@@ -1438,7 +1438,7 @@ def bar_plot(df: pd.DataFrame,
 
     grouped_data.loc[:, x_col_to_bars] = grouped_data[x_col_to_bars].astype('str')
 
-    print(grouped_data)
+    # print(grouped_data)
 
     fig = px.bar(data_frame=grouped_data,
                  x=x_col_to_bars,
