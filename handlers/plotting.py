@@ -1023,7 +1023,7 @@ def plot_trade_size(data: pd.DataFrame,
            :width: 1000
 
     """
-    data['Buyer was maker'].replace({True: 'Taker Seller', False: 'Taker buyer'}, inplace=True)
+    data['Buyer was maker'].replace({False: 'Taker buyer', True: 'Taker Seller'}, inplace=True)
     fig = px.scatter(x=data.index, y=data['Price'], color=data['Buyer was maker'], size=data['Quantity'],
                      size_max=max_size, log_y=logarithmic)
     if not title:

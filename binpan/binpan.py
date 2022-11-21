@@ -1063,9 +1063,9 @@ class Symbol(object):
             handlers.wallet.convert_str_date_to_ms(date=endTime,
                                                    time_zone=self.time_zone)
         if hours:
-            startTime = self.end_time - (1000 * 60 * 60 * hours)
+            startTime = int(time()*1000) - (1000 * 60 * 60 * hours)
         elif minutes:
-            startTime = self.end_time - (1000 * 60 * minutes)
+            startTime = int(time()*1000) - (1000 * 60 * minutes)
 
         if startTime:
             curr_startTime = startTime
@@ -1074,8 +1074,10 @@ class Symbol(object):
 
         if endTime:
             curr_endTime = endTime
-        else:
+        elif self.end_time:
             curr_endTime = self.end_time
+        else:
+            curr_endTime = int(time()*1000)
 
         self.raw_trades = handlers.market.get_historical_aggregated_trades(symbol=self.symbol,
                                                                            startTime=curr_startTime,
