@@ -3,6 +3,8 @@ import pandas as pd
 import pytz
 from time import time
 
+from typing import Tuple
+
 from .quest import get_server_time
 from .logs import Logs
 
@@ -138,34 +140,42 @@ def split_time_interval_in_full_days(ts_ini: int, ts_end: int) -> list:
 
 def time_interval(tick_interval: str,
                   limit: int = 1000,
-                  start: int = None,
-                  end: int = None) -> tuple:
+                  start_time: int = None,
+                  end_time: int = None) -> Tuple[int, int]:
     """
     Obtain a timestamp based on ticks intervals from a start or an end timestamp, based on limit.
 
     If no start or end timestamp passed, then use current utc timestamp in milliseconds and limit.
 
     :param str tick_interval: A binance valid tick interval
-
-    :param int start: A timestamp in milliseconds.
-    :param int end: A timestamp in milliseconds.
+    :param int start_time: A timestamp in milliseconds.
+    :param int end_time: A timestamp in milliseconds.
     :param int limit: Ticks limit. Not applied if start and end passed. Default is 1000
-
     :return: A tuple with the start and end timestamps.
+
     """
-    total_interval_ms = tick_seconds[tick_interval] * 1000 * limit
-    if not start and not end:
-        end = utc()
-        start = end - total_interval_ms
-    elif not end and start:
-        end = int(start) + total_interval_ms
-    elif not start and end:
-        start = int(end) - total_interval_ms
-    return int(start), int(end)
+    total_interval_ms = int(tick_seconds[tick_interval] * 1000 * limit)
+    if not start_time and not end_time:
+        # end_time = utc()
+        end_time = int(time()*1000)
+        start_time = end_time - total_interval_ms
+    elif not end_time and start_time:
+        end_time = int(start_time) + total_interval_ms
+    elif not start_time and end_time:
+        start_time = int(end_time) - total_interval_ms
+    return start_time, end_time
 
 
 def ceil_division(a: float, b: float) -> int:
-    # https://stackoverflow.com/questions/14822184/is-there-a-ceiling-equivalent-of-operator-in-python
+    """
+    Better not to use //.
+
+    From: https://stackoverflow.com/questions/14822184/is-there-a-ceiling-equivalent-of-operator-in-python
+
+    :param float a: A value.
+    :param float b: Other value.
+    :return int: Returns integer from ceil division.
+    """
     return int(-(a // -b))
 
 

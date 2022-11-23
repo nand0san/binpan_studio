@@ -990,6 +990,7 @@ def plot_trade_size(data: pd.DataFrame,
                     max_size: int = 60,
                     height: int = 1000,
                     logarithmic: bool = False,
+                    overlap_prices: pd.DataFrame = None,
                     title: str = None,
                     **kwargs_update_layout):
     """
@@ -1002,6 +1003,7 @@ def plot_trade_size(data: pd.DataFrame,
     :param int max_size: Size of the marks for the biggest quantity sized trades.
     :param int height: Plot sizing.
     :param bool logarithmic: Y axis in a logarithmic scale.
+    :param pd.DataFrame overlap_prices: Data to plot overlapping scatter plot.
     :param str title: Title string.
     :param kwargs_update_layout: Update layout plotly options.
 
@@ -1028,6 +1030,22 @@ def plot_trade_size(data: pd.DataFrame,
                      size_max=max_size, log_y=logarithmic)
     if not title:
         title = f"Trades size {data.index.name}"
+
+    if type(overlap_prices) == pd.DataFrame:
+        start = data.iloc[0]['Timestamp']
+        end = data.iloc[-1]['Timestamp']
+        # shift added for more reality viewing trades effect on klines
+        plot_data = overlap_prices[(overlap_prices['Open timestamp'] >= start) & (overlap_prices['Close timestamp'] <= end)].shift()
+
+        fig2 = px.line(plot_data, x=plot_data.index, y="High", log_y=logarithmic)
+        fig2.update_traces(line=dict(color='rgba(0, 0, 0, 0.6)', width=0.5))
+
+        fig3 = px.line(plot_data, x=plot_data.index, y="Low", log_y=logarithmic)
+        fig3.update_traces(line=dict(color='rgba(0, 0, 0, 0.6)', width=0.5))
+
+        fig = go.Figure(data=fig.data + fig2.data + fig3.data)
+        title = f"{title} with High and Low Prices"
+
     fig.update_layout(
         title=title,
         xaxis_title_text=f'{data.index.name}',

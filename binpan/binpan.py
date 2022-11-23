@@ -348,8 +348,8 @@ class Symbol(object):
         else:
             self.symbol = symbol.upper()
             self.tick_interval = tick_interval
-            self.start_time = start_time
-            self.end_time = end_time
+            # self.start_time = start_time
+            # self.end_time = end_time
             self.limit = limit
             self.time_zone = time_zone
             self.time_index = time_index
@@ -409,7 +409,7 @@ class Symbol(object):
         self.set_display_max_rows()
 
         binpan_logger.debug(f"New instance of BinPan Symbol {self.version}: {self.symbol}, {self.tick_interval}, limit={self.limit},"
-                            f" start={self.start_time}, end={self.end_time}, {self.time_zone}, time_index={self.time_index}"
+                            f" start={start_time}, end={end_time}, {self.time_zone}, time_index={self.time_index}"
                             f", closed_candles={self.closed}")
 
         ##############
@@ -418,27 +418,26 @@ class Symbol(object):
 
         start_time = handlers.wallet.convert_str_date_to_ms(date=start_time, time_zone=time_zone)
         end_time = handlers.wallet.convert_str_date_to_ms(date=end_time, time_zone=time_zone)
-        self.start_time = start_time
-        self.end_time = end_time
+        # self.start_time = start_time
+        # self.end_time = end_time
 
         # work with open timestamps
         if start_time:
-            self.start_time = handlers.time_helper.open_from_milliseconds(ms=start_time, tick_interval=self.tick_interval)
+            start_time = handlers.time_helper.open_from_milliseconds(ms=start_time, tick_interval=self.tick_interval)
 
         if end_time:
-            self.end_time = handlers.time_helper.open_from_milliseconds(ms=end_time, tick_interval=self.tick_interval)
+            end_time = handlers.time_helper.open_from_milliseconds(ms=end_time, tick_interval=self.tick_interval)
 
         # fill missing timestamps
         self.start_time, self.end_time = handlers.time_helper.time_interval(tick_interval=self.tick_interval,
                                                                             limit=self.limit,
-                                                                            start=self.start_time,
-                                                                            end=self.end_time)
+                                                                            start_time=start_time,
+                                                                            end_time=end_time)
         # discard not closed
         now = handlers.time_helper.utc()
         current_open = handlers.time_helper.open_from_milliseconds(ms=now, tick_interval=self.tick_interval)
-        if self.closed:
-            if self.end_time >= current_open:
-                self.end_time = current_open - 1000
+        if self.closed and self.end_time >= current_open:
+            self.end_time = current_open - 2000
 
         #################
         # query candles #
@@ -485,6 +484,34 @@ class Symbol(object):
         :return pd.DataFrame:
         """
         return self.df
+
+    # def update_klines(self):
+    #     """
+    #     Update klines from Binance or Redis source.
+    #
+    #     This will automatically rewrite endtime of data.
+    #
+    #     :return:
+    #     """
+    #
+    #     self.end_time = int(time()*1000)
+    #     self.raw = handlers.market.get_candles_by_time_stamps(symbol=self.symbol,
+    #                                                           tick_interval=self.tick_interval,
+    #                                                           start_time=self.start_time,
+    #                                                           end_time=self.end_time,
+    #                                                           limit=self.limit,
+    #                                                           redis_client=self.from_redis)
+    #
+    #     dataframe = handlers.market.parse_candles_to_dataframe(raw_response=self.raw,
+    #                                                            columns=self.original_candles_cols,
+    #                                                            time_cols=self.time_cols,
+    #                                                            symbol=self.symbol,
+    #                                                            tick_interval=self.tick_interval,
+    #                                                            time_zone=self.time_zone,
+    #                                                            time_index=self.time_index)
+    #     self.df = dataframe
+    #
+    #     return self.df
 
     def trades(self):
         """
@@ -1365,6 +1392,7 @@ class Symbol(object):
                          max_size: int = 60,
                          height: int = 1000,
                          logarithmic: bool = False,
+                         overlap_prices: bool = True,
                          group_big_data: int = None,
                          title: str = None):
         """
@@ -1383,6 +1411,7 @@ class Symbol(object):
         :param int height: Default is 1000.
         :param bool logarithmic: If logarithmic, then "y" axis scale is shown in logarithmic scale.
         :param int group_big_data: If true, groups data in height bins, this can get faster plotting for big quantity of trades.
+        :param bool overlap_prices: If True, plots overlap line with High and Low prices.
         :param title: Graph title
 
         """
@@ -1392,11 +1421,16 @@ class Symbol(object):
         if not title:
             title = f"Size trade categories {self.symbol}"
         managed_data = self.trades.copy(deep=True)
+
+        if overlap_prices:
+            overlap_prices = self.df
+
         if not group_big_data:
             handlers.plotting.plot_trade_size(data=managed_data,
                                               max_size=max_size,
                                               height=height,
                                               logarithmic=logarithmic,
+                                              overlap_prices=overlap_prices,
                                               title=title)
         else:
             # TODO: GROUP SLOTS OF TRADES

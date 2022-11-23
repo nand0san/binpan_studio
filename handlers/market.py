@@ -144,6 +144,8 @@ def get_candles_by_time_stamps(symbol: str,
     """
     endpoint = '/api/v3/klines?'
 
+    # fixme: something wrong when passing endtime of not ended kline
+    print("start and end:", start_time, end_time)
     tick_milliseconds = int(tick_seconds[tick_interval] * 1000)
 
     if not start_time and not end_time:
@@ -159,7 +161,9 @@ def get_candles_by_time_stamps(symbol: str,
 
     # prepare iteration for big loops
     tick_milliseconds = int(tick_seconds[tick_interval] * 1000)
-    ranges = [(i, i + (1000 * tick_milliseconds)) for i in range(start_time, end_time, tick_milliseconds * 1000)]
+
+    # ranges = [(i, i + (1000 * tick_milliseconds)) for i in range(start_time, end_time, tick_milliseconds * 1000)]
+    ranges = [(i, i + tick_milliseconds) for i in range(start_time, end_time, tick_milliseconds)]
 
     # loop
     raw_candles = []
@@ -172,6 +176,10 @@ def get_candles_by_time_stamps(symbol: str,
                                              min=start,
                                              max=end,
                                              withscores=False)
+            if not ret:
+                msg = f"BinPan Exception: Requested data for {symbol.lower()}@kline_{tick_interval} between {start} and {end} missing in redis."
+                market_logger.error(msg)
+                raise Exception(msg)
 
             response = [json.loads(i) for i in ret]
         else:
