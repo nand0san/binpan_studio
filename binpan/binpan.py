@@ -4,6 +4,7 @@ This is the main classes file.
 
 """
 import os
+from sys import path
 
 import pandas as pd
 import numpy as np
@@ -37,7 +38,7 @@ binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', 
 tick_seconds = handlers.time_helper.tick_seconds
 pandas_freq_tick_interval = handlers.time_helper.pandas_freq_tick_interval
 
-__version__ = "0.2.38"
+__version__ = "0.2.39"
 
 try:
     from secret import redis_conf, redis_conf_trades
@@ -273,6 +274,9 @@ class Symbol(object):
         if not from_csv:
             tick_interval = handlers.time_helper.check_tick_interval(tick_interval)
 
+        self.cwd = os.getcwd()
+        path.append(self.cwd)
+
         self.original_candles_cols = ['Open time', 'Open', 'High', 'Low', 'Close', 'Volume', 'Close time', 'Quote volume',
                                       'Trades', 'Taker buy base volume', 'Taker buy quote volume', 'Ignore', 'Open timestamp',
                                       'Close timestamp']
@@ -297,7 +301,7 @@ class Symbol(object):
             if type(from_csv) == str:
                 filename = from_csv
             else:
-                filename = handlers.files.select_file(path=os.getcwd(), extension='csv')
+                filename = handlers.files.select_file(path=self.cwd, extension='csv')
 
             binpan_logger.info(f"Loading {filename}")
 
