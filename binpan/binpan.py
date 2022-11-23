@@ -4,6 +4,7 @@ This is the main classes file.
 
 """
 import os
+from sys import path
 
 import pandas as pd
 import numpy as np
@@ -37,7 +38,7 @@ binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', 
 tick_seconds = handlers.time_helper.tick_seconds
 pandas_freq_tick_interval = handlers.time_helper.pandas_freq_tick_interval
 
-__version__ = "0.2.38"
+__version__ = "0.2.39"
 
 try:
     from secret import redis_conf, redis_conf_trades
@@ -273,6 +274,9 @@ class Symbol(object):
         if not from_csv:
             tick_interval = handlers.time_helper.check_tick_interval(tick_interval)
 
+        self.cwd = os.getcwd()
+        path.append(self.cwd)
+
         self.original_candles_cols = ['Open time', 'Open', 'High', 'Low', 'Close', 'Volume', 'Close time', 'Quote volume',
                                       'Trades', 'Taker buy base volume', 'Taker buy quote volume', 'Ignore', 'Open timestamp',
                                       'Close timestamp']
@@ -297,7 +301,7 @@ class Symbol(object):
             if type(from_csv) == str:
                 filename = from_csv
             else:
-                filename = handlers.files.select_file(path=os.getcwd(), extension='csv')
+                filename = handlers.files.select_file(path=self.cwd, extension='csv')
 
             binpan_logger.info(f"Loading {filename}")
 
@@ -1008,45 +1012,80 @@ class Symbol(object):
         ret_end = handlers.time_helper.convert_milliseconds_to_str(ms=end, timezoned=self.time_zone)
         return ret_start, ret_end
 
-    def get_trades(self):
+    def get_trades(self,
+                   hours: int = None,
+                   minutes: int = None,
+                   startTime: int or str = None,
+                   endTime: int or str = None,
+                   time_zone: str = None):
         """
         Calls the API and creates another dataframe included in the object with the aggregated trades from API for the period of the
         created object.
-
 
         .. note::
 
            If the object covers a long time interval, this action can take a relative long time. The BinPan library take care of the
            API weight and can take a sleep to wait until API weight returns to a low value.
 
+        :param int hours: If passed, it use just last passed hours for the plot.
+        :param int minutes: If passed, it use just last passed minutes for the plot.
+        :param int or str startTime: If passed, it use just from the timestamp or date in format
+         (%Y-%m-%d %H:%M:%S: **2022-05-11 06:45:42**)) for the plot.
+        :param int or str endTime: If passed, it use just until the timestamp or date in format
+         (%Y-%m-%d %H:%M:%S: **2022-05-11 06:45:42**)) for the plot.
+        :param str time_zone: A time zone for time index conversion.
 
         Example:
 
             .. code-block::
 
-                Aggregate tradeId	Price	Quantity	First tradeId	Last tradeId	Timestamp	Buyer was maker	Best price match
-
-                LUNCBUSD Europe/Madrid
-
-                2022-07-03 04:51:45.633000+02:00	12076196	0.000125	9.314130e+04	17097916	17097916	2022-07-03 04:51:45	False	True
-                2022-07-03 04:51:45.811000+02:00	12076197	0.000125	7.510097e+04	17097917	17097917	2022-07-03 04:51:45	False	True
-                2022-07-03 04:51:45.811000+02:00	12076198	0.000125	2.204286e+06	17097918	17097918	2022-07-03 04:51:45	False	True
-                2022-07-03 04:51:46.079000+02:00	12076199	0.000125	8.826475e+04	17097919	17097919	2022-07-03 04:51:46	True	True
-                2022-07-03 04:51:46.811000+02:00	12076200	0.000125	5.362675e+06	17097920	17097920	2022-07-03 04:51:46	True	True
-                ...	...	...	...	...	...	...	...	...
-                2022-07-03 13:11:49.507000+02:00	12141092	0.000125	1.363961e+07	17183830	17183831	2022-07-03 13:11:49	False	True
-                2022-07-03 13:11:49.507000+02:00	12141093	0.000125	2.000000e+06	17183832	17183832	2022-07-03 13:11:49	False	True
-                2022-07-03 13:11:49.507000+02:00	12141094	0.000125	1.500000e+05	17183833	17183833	2022-07-03 13:11:49	False	True
-                2022-07-03 13:11:49.507000+02:00	12141095	0.000125	1.562695e+08	17183834	17183835	2022-07-03 13:11:49	False	True
-                2022-07-03 13:11:50.172000+02:00	12141096	0.000125	1.048632e+06	17183836	17183836	2022-07-03 13:11:50	False	True
-
+                                                  Aggregate tradeId     Price  Quantity  First tradeId  Last tradeId                 Date      Timestamp  Buyer was maker  Best price match
+                BTCBUSD Europe/Madrid
+                2022-11-20 14:11:36.763000+01:00          536009627  16524.58   0.21421      632568399     632568399  2022-11-20 14:11:36  1668949896763             True              True
+                2022-11-20 14:11:36.787000+01:00          536009628  16525.04   0.02224      632568400     632568400  2022-11-20 14:11:36  1668949896787             True              True
+                2022-11-20 14:11:36.794000+01:00          536009629  16525.04   0.01097      632568401     632568401  2022-11-20 14:11:36  1668949896794             True              True
+                2022-11-20 14:11:36.849000+01:00          536009630  16525.27   0.05260      632568402     632568403  2022-11-20 14:11:36  1668949896849            False              True
+                2022-11-20 14:11:36.849000+01:00          536009631  16525.28   0.00073      632568404     632568404  2022-11-20 14:11:36  1668949896849            False              True
+                ...                                             ...       ...       ...            ...           ...                  ...            ...              ...               ...
+                2022-11-20 15:10:57.928000+01:00          536083210  16556.75   0.01730      632653817     632653817  2022-11-20 15:10:57  1668953457928             True              True
+                2022-11-20 15:10:57.928000+01:00          536083211  16556.74   0.00851      632653818     632653819  2022-11-20 15:10:57  1668953457928             True              True
+                2022-11-20 15:10:57.950000+01:00          536083212  16558.48   0.00639      632653820     632653820  2022-11-20 15:10:57  1668953457950            False              True
+                2022-11-20 15:10:57.990000+01:00          536083213  16558.48   0.01242      632653821     632653821  2022-11-20 15:10:57  1668953457990             True              True
+                2022-11-20 15:10:58.020000+01:00          536083214  16558.49   0.00639      632653822     632653822  2022-11-20 15:10:58  1668953458020            False              True
+                [73588 rows x 9 columns]
 
         :return: Pandas DataFrame
 
         """
+        if time_zone:
+            self.time_zone = time_zone
+
+        if startTime:
+            handlers.wallet.convert_str_date_to_ms(date=startTime,
+                                                   time_zone=self.time_zone)
+        if endTime:
+            handlers.wallet.convert_str_date_to_ms(date=endTime,
+                                                   time_zone=self.time_zone)
+        if hours:
+            startTime = int(time()*1000) - (1000 * 60 * 60 * hours)
+        elif minutes:
+            startTime = int(time()*1000) - (1000 * 60 * minutes)
+
+        if startTime:
+            curr_startTime = startTime
+        else:
+            curr_startTime = self.start_time
+
+        if endTime:
+            curr_endTime = endTime
+        elif self.end_time:
+            curr_endTime = self.end_time
+        else:
+            curr_endTime = int(time()*1000)
+
         self.raw_trades = handlers.market.get_historical_aggregated_trades(symbol=self.symbol,
-                                                                           startTime=self.start_time,
-                                                                           endTime=self.end_time,
+                                                                           startTime=curr_startTime,
+                                                                           endTime=curr_endTime,
                                                                            redis_client_trades=self.from_redis_trades)
 
         self.trades = handlers.market.parse_agg_trades_to_dataframe(response=self.raw_trades,
@@ -1390,15 +1429,15 @@ class Symbol(object):
                                    logarithmic=logarithmic,
                                    title=title)
 
-    def plot_aggression(self,
-                        bins=50,
-                        hist_funct='sum',
-                        height=900,
-                        from_trades=False,
-                        title: str = None,
-                        total_volume_column: str = None,
-                        partial_vol_column: str = None,
-                        **kwargs_update_layout):
+    def plot_aggression_sizes(self,
+                              bins=50,
+                              hist_funct='sum',
+                              height=900,
+                              from_trades=False,
+                              title: str = None,
+                              total_volume_column: str = None,
+                              partial_vol_column: str = None,
+                              **kwargs_update_layout):
         """
         Binance fees can be cheaper for maker orders, many times when big traders, like whales, are operating . Showing what are doing
         makers.
@@ -1413,7 +1452,7 @@ class Symbol(object):
 
 
         :param bins: How many bars.
-        :param hist_funct: The way graph data is showed. It can be 'percent', 'probability', 'density', or 'probability density'
+        :param hist_funct: The way graph data is showed. It can be 'mean', 'sum', 'percent', 'probability', 'density', or 'probability density'
         :param height: Height of the graph.
         :param from_trades: Requieres grabbing trades before.
         :param title: A title.
@@ -1422,12 +1461,13 @@ class Symbol(object):
         :param kwargs_update_layout: Optional
 
         """
-        if from_trades:
+        if from_trades or not self.trades.empty:
             if self.trades.empty:
                 binpan_logger.info("Trades not downloaded. Please add trades data with: my_symbol.get_trades()")
                 return
             else:
                 _df = self.trades.copy(deep=True)
+
                 if not total_volume_column:
                     total_volume_column = 'Quantity'
 
@@ -1447,8 +1487,8 @@ class Symbol(object):
             aggressive_byers = _df[total_volume_column] - aggressive_sellers
 
         if not title:
-            title = f"Histogram for sizes in aggressive_sellers vs aggressive_byers {self.symbol} ({hist_funct})"
-        # TODO: check new names for the plot graph in docs
+            title = f"Histogram for sizes in aggressive sellers vs aggressive byers {self.symbol} ({hist_funct})"
+
         handlers.plotting.plot_hists_vs(x0=aggressive_sellers,
                                         x1=aggressive_byers,
                                         x0_name="Aggressive sellers",
@@ -1458,6 +1498,87 @@ class Symbol(object):
                                         height=height,
                                         title=title,
                                         **kwargs_update_layout)
+
+    def plot_market_profile(self,
+                            bins: int = 100,
+                            hours: int = None,
+                            minutes: int = None,
+                            startTime: int or str = None,
+                            endTime: int or str = None,
+                            height=900,
+                            from_trades=False,
+                            title: str = 'Market Profile',
+                            time_zone: str = None,
+                            **kwargs_update_layout):
+
+        """
+        Plots volume histogram by prices segregated aggressive buyers from sellers.
+
+
+        :param int bins: How many bars.
+        :param int hours: If passed, it use just last passed hours for the plot.
+        :param int minutes: If passed, it use just last passed minutes for the plot.
+        :param int or str startTime: If passed, it use just from the timestamp or date in format
+         (%Y-%m-%d %H:%M:%S: **2022-05-11 06:45:42**)) for the plot.
+        :param int or str endTime: If passed, it use just until the timestamp or date in format
+         (%Y-%m-%d %H:%M:%S: **2022-05-11 06:45:42**)) for the plot.
+        :param height: Height of the graph.
+        :param from_trades: Requieres grabbing trades before.
+        :param title: A title.
+        :param str time_zone: A time zone for time index conversion.
+        :param kwargs_update_layout: Optional
+
+        """
+
+        if time_zone:
+            self.time_zone = time_zone
+        if startTime:
+            handlers.wallet.convert_str_date_to_ms(date=startTime,
+                                                   time_zone=self.time_zone)
+        if endTime:
+            handlers.wallet.convert_str_date_to_ms(date=endTime,
+                                                   time_zone=self.time_zone)
+        if hours:
+            startTime = int(time() * 1000) - (1000 * 60 * 60 * hours)
+        elif minutes:
+            startTime = int(time() * 1000) - (1000 * 60 * minutes)
+
+        if from_trades:
+            if self.trades.empty:
+                binpan_logger.info("Trades not downloaded. Please add trades data with: my_symbol.get_trades()")
+                return
+        if from_trades or not self.trades.empty:
+            _df = self.trades.copy(deep=True)
+            if startTime:
+                _df = _df[_df['Timestamp'] >= startTime]
+            if endTime:
+                _df = _df[_df['Timestamp'] <= endTime]
+            handlers.plotting.bar_plot(df=_df,
+                                       x_col_to_bars='Price',
+                                       y_col='Quantity',
+                                       bar_segments='Buyer was maker',
+                                       bins=bins,
+                                       title=title,
+                                       height=height,
+                                       y_axis_title='Aggressive Sells VS Aggressive Buys',
+                                       legend_names={'agg_Quantity_Buyer_was_maker': 'Aggressive Sell',
+                                                     'agg_Quantity_not_Buyer_was_maker': 'Aggressive Buy'},
+                                       **kwargs_update_layout)
+        else:
+            _df = self.df.copy(deep=True)
+            if startTime:
+                _df = _df[_df['Timestamp'] >= startTime]
+            if endTime:
+                _df = _df[_df['Timestamp'] <= endTime]
+            binpan_logger.info(f"Using klines data. For deeper info add trades data with my_symbol.get_trades() method.")
+            handlers.plotting.bar_plot(df=_df,
+                                       x_col_to_bars='Close',
+                                       y_col='Volume',
+                                       y_axis_title='Volume levels',
+                                       bins=bins,
+                                       title=title,
+                                       height=height,
+                                       **kwargs_update_layout)
 
     def plot_trades_scatter(self,
                             x: str = ['Price', 'Close'],

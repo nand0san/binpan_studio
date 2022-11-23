@@ -586,17 +586,19 @@ def parse_agg_trades_to_dataframe(response: list,
 
     df = pd.DataFrame(response)
     df.rename(columns=columns, inplace=True)
-    df.loc[:, 'Buyer was maker'] = df['Buyer was maker'].replace({'Maker buyer': 1, 'Taker buyer': 0})
+    # df.loc[:, 'Buyer was maker'] = df['Buyer was maker'].replace({'Maker buyer': 1, 'Taker buyer': 0})
 
     df = convert_to_numeric(data=df)
 
-    timestamps_serie = df['Timestamp']
-    col = 'Timestamp'
+    timestamps_col = 'Timestamp'
+    timestamps_serie = df[timestamps_col].copy()
+    col = 'Date'
+    df.loc[:, col] = df[timestamps_col]
     if time_zone != 'UTC':  # converts to time zone the time columns
         df.loc[:, col] = handlers.time_helper.convert_utc_ms_column_to_time_zone(df, col, time_zone=time_zone)
         df.loc[:, col] = df[col].apply(lambda x: handlers.time_helper.convert_datetime_to_string(x))
     else:
-        df.loc[:, col] = df[col].apply(lambda x: handlers.time_helper.convert_milliseconds_to_utc_string(x))
+        df.loc[:, col] = df[timestamps_col].apply(lambda x: handlers.time_helper.convert_milliseconds_to_utc_string(x))
 
     if time_index:
         date_index = timestamps_serie.apply(handlers.time_helper.convert_milliseconds_to_time_zone_datetime, timezoned=time_zone)
@@ -604,8 +606,8 @@ def parse_agg_trades_to_dataframe(response: list,
 
     index_name = f"{symbol} {time_zone}"
     df.index.name = index_name
-    df.loc[:, 'Buyer was maker'] = df['Buyer was maker'].astype(bool)
-    return df[['Aggregate tradeId', 'Price', 'Quantity', 'First tradeId', 'Last tradeId', 'Timestamp', 'Buyer was maker',
+    # df.loc[:, 'Buyer was maker'] = df['Buyer was maker'].astype(bool)
+    return df[['Aggregate tradeId', 'Price', 'Quantity', 'First tradeId', 'Last tradeId', 'Date', 'Timestamp', 'Buyer was maker',
                'Best price match']]
 
 

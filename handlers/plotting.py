@@ -1023,7 +1023,7 @@ def plot_trade_size(data: pd.DataFrame,
            :width: 1000
 
     """
-    data['Buyer was maker'].replace({True: 'Taker Seller', False: 'Taker buyer'}, inplace=True)
+    data['Buyer was maker'].replace({False: 'Taker buyer', True: 'Taker Seller'}, inplace=True)
     fig = px.scatter(x=data.index, y=data['Price'], color=data['Buyer was maker'], size=data['Quantity'],
                      size_max=max_size, log_y=logarithmic)
     if not title:
@@ -1365,6 +1365,98 @@ def dist_plot(df: pd.DataFrame,
         .data)
 
     fig.update_layout(height=height, title=title, yaxis3={"overlaying": "y", "side": "right"}, showlegend=True, **update_layout_kwargs)
+    fig.show()
+
+
+def bar_plot(df: pd.DataFrame,
+             x_col_to_bars: str,
+             y_col: str,
+             bar_segments: str = None,
+             bins: int = 100,
+             aggregation: str = 'sum',
+             height: int = 800,
+             title: str = "Bar Plot",
+             y_axis_title: str = None,
+             legend_names: dict = None,
+             **update_layout_kwargs):
+    """
+    Plot a bar plot for a dataframe column.
+
+    :param pd.DataFrame df: A BinPan Dataframe like orderbook, candles, trades or any other.
+    :param str x_col_to_bars: A column name to group values into x bars, like in example, price.
+    :param str y_col: Column names for y-axis data, if more than one will be stacked.
+    :param str bar_segments: Other column name to differentiate each bar segment.
+    :param int bins: Columns in histogram.
+    :param str aggregation: Aggregation method, can be 'sum' or 'mean'.
+    :param int height: Plot sizing.
+    :param str title: A title string
+    :param str y_axis_title: Title for y axis plot.
+    :param dict legend_names: A dict to rename legend names.
+
+    """
+    _df = df.copy(deep=True)
+
+    slot = group_slot(data=_df, master_column=x_col_to_bars, bins=bins)
+
+    if bar_segments:
+        discrete_data = [pd.cut(_df[x_col_to_bars], np.arange(_df[x_col_to_bars].min(), _df[x_col_to_bars].max(), slot)), bar_segments]
+    else:
+        discrete_data = [pd.cut(_df[x_col_to_bars], np.arange(_df[x_col_to_bars].min(), _df[x_col_to_bars].max(), slot))]
+
+    if aggregation == 'sum':
+        grouped_data = _df.groupby(discrete_data).sum()
+    elif aggregation == 'mean':
+        grouped_data = _df.groupby(discrete_data).mean()
+    else:
+        msg = f"BinPan Exception: Aggregation method must be in ['sum', 'mean'] -> {aggregation}"
+        plot_logger.error(msg)
+        raise Exception(msg)
+
+    if bar_segments:
+        grouped_data.reset_index(inplace=True, level=1)
+        col_name_1 = f"agg_{y_col.replace(' ', '_')}_{bar_segments.replace(' ', '_')}"
+        col_name_2 = f"agg_{y_col.replace(' ', '_')}_not_{bar_segments.replace(' ', '_')}"
+        grouped_data[col_name_1] = grouped_data.loc[grouped_data[bar_segments]][y_col]
+        grouped_data[col_name_2] = grouped_data.loc[~grouped_data[bar_segments]][y_col]
+        y_columns = [col_name_1, col_name_2]
+    else:
+        y_columns = [y_col]
+
+    if bar_segments:
+        grouped_data.drop(x_col_to_bars, axis=1, inplace=True)
+        grouped_data.reset_index(inplace=True)
+        grouped_data.drop_duplicates(x_col_to_bars, keep='first', inplace=True)
+    else:
+        grouped_data.drop(x_col_to_bars, axis=1, inplace=True)
+        grouped_data.reset_index(inplace=True)
+
+    if not y_axis_title:
+        if bar_segments:
+            y_axis_title = str(y_columns).replace('_', ' ').replace("'", '')
+        else:
+            y_axis_title = y_col
+
+    grouped_data.loc[:, x_col_to_bars] = grouped_data[x_col_to_bars].astype('str')
+
+    # print(grouped_data)
+
+    fig = px.bar(data_frame=grouped_data,
+                 x=x_col_to_bars,
+                 y=y_columns,
+                 barmode='group')
+
+    fig.update_layout(
+        bargap=0.3,
+        title=title,
+        xaxis_title_text=f'{x_col_to_bars} in {bins} intervals.',
+        yaxis_title_text=y_axis_title,
+        bargroupgap=0.1,
+        height=height,
+        showlegend=True,
+        **update_layout_kwargs)
+    if legend_names:
+        # fig.for_each_trace(lambda t: print(t.name))
+        fig.for_each_trace(lambda t: t.update(name=legend_names[t.name]))
     fig.show()
 
 
