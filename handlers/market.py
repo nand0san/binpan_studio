@@ -149,8 +149,7 @@ def get_candles_by_time_stamps(symbol: str,
     start_string = handlers.time_helper.convert_milliseconds_to_str(ms=start_time, timezoned=time_zone)
     end_string = handlers.time_helper.convert_milliseconds_to_str(ms=end_time, timezoned=time_zone)
 
-    # fixme: change to debug
-    market_logger.info(f"get_candles_by_time_stamps -> symbol={symbol} tick_interval={tick_interval} start={start_string} end={end_string}")
+    market_logger.debug(f"get_candles_by_time_stamps -> symbol={symbol} tick_interval={tick_interval} start={start_string} end={end_string}")
 
     tick_milliseconds = int(tick_seconds[tick_interval] * 1000)
 

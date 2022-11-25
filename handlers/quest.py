@@ -1,4 +1,11 @@
 # coding=utf-8
+"""
+
+API requests engine.
+
+"""
+from typing import List, Tuple
+
 from .logs import Logs
 
 from .exceptions import BinanceAPIException, BinanceRequestException
@@ -11,6 +18,7 @@ import hmac
 import hashlib
 import copy
 from time import sleep
+
 # from sys import path
 # from os import getcwd
 #
@@ -71,7 +79,7 @@ api_limits_weight_decrease_per_seconds = {'X-SAPI-USED-IP-WEIGHT-1M': api_rate_l
                                           'x-mbx-used-weight': api_rate_limits['REQUEST_5M'] // (60 * 5),
                                           'x-mbx-order-count-10s': api_rate_limits['ORDERS_10S'] // 10,
                                           'x-mbx-order-count-1d': api_rate_limits['ORDERS_1D'] // (
-                                                      24 * 60 * 60)}  # is the five minutes api limit?
+                                                  24 * 60 * 60)}  # is the five minutes api limit?
 
 
 # TODO: identify headers for order endpoints
@@ -82,6 +90,13 @@ api_limits_weight_decrease_per_seconds = {'X-SAPI-USED-IP-WEIGHT-1M': api_rate_l
 
 
 def add_header_for_endpoint(endpoint: str, header: str):
+    """
+    Adds API headers response info for weight control.
+
+    :param str endpoint: Endpoint path.
+    :param str header: Header in response.
+    :return:
+    """
     global endpoint_headers
 
     if endpoint in endpoint_headers.keys():
@@ -91,10 +106,17 @@ def add_header_for_endpoint(endpoint: str, header: str):
             endpoint_headers.update({endpoint: my_headers})
     else:
         endpoint_headers.update({endpoint: [header]})
-        weight_logger.debug(f"New endpoint headers control: {endpoint} -> {endpoint_headers[endpoint]}")
+        weight_logger.info(f"New endpoint headers control: {endpoint} -> {endpoint_headers[endpoint]}")
 
 
 def update_weights(headers, father_url: str):
+    """
+    Update weights on headers dict, used in control of pauses in API requests to avoid bans.
+
+    :param headers: Response headers. Usually a dictionary.
+    :param str father_url: API url requested.
+    :return:
+    """
     global current_weight
 
     weight_logger.debug(f"Header: {headers}")
@@ -120,6 +142,13 @@ def update_weights(headers, father_url: str):
 
 def check_weight(weight: int,
                  endpoint: str):
+    """
+    Verify what weight will result before requesting API and compare to API limits.
+
+    :param int weight: Weight expected from the request planned.
+    :param str endpoint: Endpoint requested to find API weight.
+    :return:
+    """
     global current_weight, endpoint_headers, aplicable_limits, api_limits_weight_decrease_per_seconds
 
     weight_logger.debug(f"Checking weight for {endpoint}")
@@ -154,7 +183,12 @@ def check_weight(weight: int,
             sleep(excess)
 
 
-def get_server_time():
+def get_server_time() -> int:
+    """
+    Get time from server.
+
+    :return int: A linux timestamp in milliseconds.
+    """
     endpoint = '/api/v3/time'
     check_weight(1, endpoint=endpoint)
     return int(get_response(url=endpoint)['serverTime'])
@@ -189,9 +223,15 @@ def convert_response_type(response_data: dict or list,
     return response
 
 
-def get_response(url: str,
-                 params: dict or tuple = None,
-                 headers: dict = None):
+def get_response(url: str, params: dict or List[tuple] = None, headers: dict = None) -> dict or list:
+    """
+    Requests to API. Before requesting calculates resulting weight and waits enough time to not surplus limit for that endpoint.
+
+    :param str url: API endpoint url.
+    :param dit or List[tuple] params: Request params.
+    :param dict headers: Request headers.
+    :return: API response in dict or list format.
+    """
     if not url.startswith(base_url):
         url = urljoin(base_url, url)
 
@@ -203,7 +243,15 @@ def get_response(url: str,
     return handle_api_response(response)
 
 
-def post_response(url, params=None, headers=None):
+def post_response(url: str, params: dict or List[tuple] = None, headers: dict = None) -> dict or list:
+    """
+    Requests to API. Before requesting calculates resulting weight and waits enough time to not surplus limit for that endpoint.
+
+    :param str url: API endpoint url.
+    :param dit or List[tuple] params: Request params.
+    :param dict headers: Request headers.
+    :return: API response in dict or list format.
+    """
     quest_logger.debug(f"post_response: params: {params} headers: {headers}")
     if not url.startswith(base_url):
         url = urljoin(base_url, url)
@@ -213,7 +261,15 @@ def post_response(url, params=None, headers=None):
     return handle_api_response(response)
 
 
-def delete_response(url, params: list = None, headers: dict = None):
+def delete_response(url: str, params: dict or List[tuple] = None, headers: dict = None) -> dict or list:
+    """
+    Requests to API. Before requesting calculates resulting weight and waits enough time to not surplus limit for that endpoint.
+
+    :param str url: API endpoint url.
+    :param dit or List[tuple] params: Request params.
+    :param dict headers: Request headers.
+    :return: API response in dict or list format.
+    """
     if not url.startswith(base_url):
         url = urljoin(base_url, url)
     response = requests.delete(url, params=params, headers=headers)
@@ -239,7 +295,14 @@ def handle_api_response(response) -> dict or list:
 
 
 def hashed_signature(url_params: str,
-                     api_secret: str):  # los params (no se el type bien) para la signatura son los params de la timestamp
+                     api_secret: str) -> object:
+    """
+    Hashes params of a request with encoded API secret. Decodes it and return correct hashed signature.
+
+    :param str url_params: String of params to encode.
+    :param str api_secret: Encoded API secret.
+    :return: Hashed signature.
+    """
     return hmac.new(cipher_object.decrypt(api_secret).encode('utf-8'), url_params.encode('utf-8'),
                     hashlib.sha256).hexdigest()
 
@@ -248,7 +311,16 @@ def sign_request(params: dict,
                  recvWindow: int,
                  api_key: str,
                  api_secret: str
-                 ) -> (list, dict):
+                 ) -> Tuple[list, dict]:
+    """
+    Add signature to the request. Returns a list of params in tuples and a headers dict.
+
+    :param dict params: Request params.
+    :param int recvWindow: Milliseconds of life for the request to be responded.
+    :param str api_key: Encoded API key.
+    :param str api_secret: Encoded API secret.
+    :return Tuple[list, dict]: List of params in tuples and a headers dict.
+    """
     quest_logger.debug(f"parse_request: {params}")
 
     if params is None:
@@ -314,7 +386,7 @@ def post_signed_request(url: str,
                         params: dict = None,
                         recvWindow: int = 10000):
     """
-    Hace un POST firmado a una url junto con un diccionario de parámetros
+    Makes a signed POST to a url along with a dictionary of parameters.
     """
     params_tuples, headers = sign_request(params=params, recvWindow=recvWindow, api_key=api_key, api_secret=api_secret)
     ret = post_response(url, params=params_tuples, headers=headers)
@@ -330,7 +402,7 @@ def delete_signed_request(url: str,
                           params: dict = None,
                           recvWindow: int = 10000):
     """
-    Hace un DELETE firmado a una url junto con un diccionario de parámetros
+    Does a signed DELETE to a url along with a dictionary of parameters
     """
     params_tuples, headers = sign_request(params=params, recvWindow=recvWindow, api_key=api_key, api_secret=api_secret)
     ret = delete_response(url, params=params_tuples, headers=headers)
@@ -348,6 +420,16 @@ def api_raw_get(endpoint: str,
                 base_url: str = '',
                 params: dict = None,
                 headers: dict = None):
+    """
+    Shortcut to request GET to API.
+
+    :param str endpoint: API endpoint to request.
+    :param int weight: Expected weight for the request.
+    :param str base_url: Base URL.
+    :param dict params: Params for the request.
+    :param dict headers: Headers to use in the request.
+    :return:
+    """
     check_weight(weight, endpoint=base_url + endpoint)
 
     return get_response(url=base_url + endpoint,
@@ -362,6 +444,18 @@ def api_raw_signed_get(endpoint: str,
                        base_url: str = '',
                        params: dict = None,
                        weight: int = 1):
+    """
+    Shortcut to request signed GET to API.
+
+    :param bool decimal_mode: If True, declares format of numbers to decimal type.
+    :param str api_key: Encoded API key.
+    :param str api_secret: Encoded API secret.
+    :param str endpoint: API endpoint to request.
+    :param int weight: Expected weight for the request.
+    :param str base_url: Base URL.
+    :param dict params: Params for the request.
+    :return:
+    """
     check_weight(weight, endpoint=base_url + endpoint)
     return get_signed_request(url=base_url + endpoint,
                               params=params, decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
@@ -374,6 +468,18 @@ def api_raw_signed_post(endpoint: str,
                         base_url: str = '',
                         params: dict = None,
                         weight: int = 1):
+    """
+    Shortcut to request signed POST to API.
+
+    :param bool decimal_mode: If True, declares format of numbers to decimal type.
+    :param str api_key: Encoded API key.
+    :param str api_secret: Encoded API secret.
+    :param str endpoint: API endpoint to request.
+    :param int weight: Expected weight for the request.
+    :param str base_url: Base URL.
+    :param dict params: Params for the request.
+    :return:
+    """
     check_weight(weight, endpoint=base_url + endpoint)
     return post_signed_request(url=base_url + endpoint,
                                params=params, decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
