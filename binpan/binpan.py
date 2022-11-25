@@ -443,6 +443,7 @@ class Symbol(object):
         # query candles #
         #################
         if not from_csv:
+
             self.raw = handlers.market.get_candles_by_time_stamps(symbol=self.symbol,
                                                                   tick_interval=self.tick_interval,
                                                                   start_time=self.start_time,

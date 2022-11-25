@@ -992,6 +992,7 @@ def plot_trade_size(data: pd.DataFrame,
                     logarithmic: bool = False,
                     overlap_prices: pd.DataFrame = None,
                     title: str = None,
+                    shifted: int = 1,
                     **kwargs_update_layout):
     """
     Plots scatter plot from trades quantity and trades sizes. Marks are size scaled to the max size. Marks are semi transparent and colored
@@ -1005,6 +1006,7 @@ def plot_trade_size(data: pd.DataFrame,
     :param bool logarithmic: Y axis in a logarithmic scale.
     :param pd.DataFrame overlap_prices: Data to plot overlapping scatter plot.
     :param str title: Title string.
+    :param int shifted: If passed any integer, shifts candles to the right one step, this way can see more naturally trades actions over klines.
     :param kwargs_update_layout: Update layout plotly options.
 
     Example:
@@ -1035,7 +1037,12 @@ def plot_trade_size(data: pd.DataFrame,
         start = data.iloc[0]['Timestamp']
         end = data.iloc[-1]['Timestamp']
         # shift added for more reality viewing trades effect on klines
-        plot_data = overlap_prices[(overlap_prices['Open timestamp'] >= start) & (overlap_prices['Close timestamp'] <= end)].shift()
+        if shifted:
+            title = f"{title} with High and Low Prices (shifted {shifted} candles to the right)"
+            plot_data = overlap_prices[(overlap_prices['Open timestamp'] >= start) & (overlap_prices['Open timestamp'] <= end)].shift()
+        else:
+            title = f"{title} with High and Low Prices"
+            plot_data = overlap_prices[(overlap_prices['Open timestamp'] >= start) & (overlap_prices['Open timestamp'] <= end)]
 
         fig2 = px.line(plot_data, x=plot_data.index, y="High", log_y=logarithmic)
         fig2.update_traces(line=dict(color='rgba(0, 0, 0, 0.6)', width=0.5))
@@ -1044,7 +1051,6 @@ def plot_trade_size(data: pd.DataFrame,
         fig3.update_traces(line=dict(color='rgba(0, 0, 0, 0.6)', width=0.5))
 
         fig = go.Figure(data=fig.data + fig2.data + fig3.data)
-        title = f"{title} with High and Low Prices"
 
     fig.update_layout(
         title=title,
