@@ -47,6 +47,7 @@
 <li class="toctree-l1"><a class="reference internal" href="messages.html">Messages Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quest.html">Requests Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tags.html">Tags &amp; Backtesting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Module</a></li>
@@ -112,9 +113,17 @@
 </li>
       <li><a href="files.html#handlers.files.add_api_key">add_api_key() (in module handlers.files)</a>
 </li>
+      <li><a href="files.html#handlers.files.add_api_secret">add_api_secret() (in module handlers.files)</a>
+</li>
+      <li><a href="quest.html#handlers.quest.add_header_for_endpoint">add_header_for_endpoint() (in module handlers.quest)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="files.html#handlers.files.add_api_secret">add_api_secret() (in module handlers.files)</a>
+      <li><a href="quest.html#handlers.quest.api_raw_get">api_raw_get() (in module handlers.quest)</a>
+</li>
+      <li><a href="quest.html#handlers.quest.api_raw_signed_get">api_raw_signed_get() (in module handlers.quest)</a>
+</li>
+      <li><a href="quest.html#handlers.quest.api_raw_signed_post">api_raw_signed_post() (in module handlers.quest)</a>
 </li>
       <li><a href="files.html#handlers.files.append_dataframe_to_csv">append_dataframe_to_csv() (in module handlers.files)</a>
 </li>
@@ -169,6 +178,8 @@
 </li>
       <li><a href="tags.html#handlers.tags.check_action_labels_for_backtesting">check_action_labels_for_backtesting() (in module handlers.tags)</a>
 </li>
+      <li><a href="quest.html#handlers.quest.check_weight">check_weight() (in module handlers.quest)</a>
+</li>
       <li><a href="binpan.html#binpan.binpan.Symbol.clean_in_out">clean_in_out() (binpan.binpan.Symbol method)</a>
 
       <ul>
@@ -182,6 +193,8 @@
       <li><a href="binpan.html#binpan.binpan.Exchange.coin">coin() (binpan.binpan.Exchange method)</a>
 </li>
       <li><a href="market.html#handlers.market.convert_coin">convert_coin() (in module handlers.market)</a>
+</li>
+      <li><a href="quest.html#handlers.quest.convert_response_type">convert_response_type() (in module handlers.quest)</a>
 </li>
       <li><a href="wallet.html#handlers.wallet.convert_str_date_to_ms">convert_str_date_to_ms() (in module handlers.wallet)</a>
 </li>
@@ -203,10 +216,14 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="wallet.html#handlers.wallet.daily_account_snapshot">daily_account_snapshot() (in module handlers.wallet)</a>
 </li>
-      <li><a href="binpan.html#binpan.binpan.Symbol.df">df() (binpan.binpan.Symbol method)</a>
+      <li><a href="quest.html#handlers.quest.delete_response">delete_response() (in module handlers.quest)</a>
+</li>
+      <li><a href="quest.html#handlers.quest.delete_signed_request">delete_signed_request() (in module handlers.quest)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="binpan.html#binpan.binpan.Symbol.df">df() (binpan.binpan.Symbol method)</a>
+</li>
       <li><a href="indicators.html#handlers.indicators.df_splitter">df_splitter() (in module handlers.indicators)</a>
 </li>
       <li><a href="plotting.html#handlers.plotting.dist_plot">dist_plot() (in module handlers.plotting)</a>
@@ -355,12 +372,12 @@
 </li>
       <li><a href="wallet.html#handlers.wallet.get_margin_borrowed_balances">get_margin_borrowed_balances() (in module handlers.wallet)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="wallet.html#handlers.wallet.get_margin_free_balances">get_margin_free_balances() (in module handlers.wallet)</a>
 </li>
       <li><a href="wallet.html#handlers.wallet.get_margin_interest_balances">get_margin_interest_balances() (in module handlers.wallet)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="wallet.html#handlers.wallet.get_margin_netAsset_balances">get_margin_netAsset_balances() (in module handlers.wallet)</a>
 </li>
       <li><a href="wallet.html#handlers.wallet.get_margin_trades_list">get_margin_trades_list() (in module handlers.wallet)</a>
@@ -390,6 +407,14 @@
       <li><a href="market.html#handlers.market.get_prices_dic">get_prices_dic() (in module handlers.market)</a>
 </li>
       <li><a href="exchange.html#handlers.exchange.get_quotes_dic">get_quotes_dic() (in module handlers.exchange)</a>
+</li>
+      <li><a href="quest.html#handlers.quest.get_response">get_response() (in module handlers.quest)</a>
+</li>
+      <li><a href="quest.html#handlers.quest.get_semi_signed_request">get_semi_signed_request() (in module handlers.quest)</a>
+</li>
+      <li><a href="quest.html#handlers.quest.get_server_time">get_server_time() (in module handlers.quest)</a>
+</li>
+      <li><a href="quest.html#handlers.quest.get_signed_request">get_signed_request() (in module handlers.quest)</a>
 </li>
       <li><a href="wallet.html#handlers.wallet.get_spot_account_info">get_spot_account_info() (in module handlers.wallet)</a>
 </li>
@@ -429,6 +454,8 @@
 <h2 id="H">H</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="quest.html#handlers.quest.handle_api_response">handle_api_response() (in module handlers.quest)</a>
+</li>
       <li>
     handlers.exceptions
 
@@ -481,6 +508,13 @@
 </li>
       </ul></li>
       <li>
+    handlers.quest
+
+      <ul>
+        <li><a href="quest.html#module-handlers.quest">module</a>
+</li>
+      </ul></li>
+      <li>
     handlers.redis_fetch
 
       <ul>
@@ -508,6 +542,8 @@
         <li><a href="wallet.html#module-handlers.wallet">module</a>
 </li>
       </ul></li>
+      <li><a href="quest.html#handlers.quest.hashed_signature">hashed_signature() (in module handlers.quest)</a>
+</li>
       <li><a href="binpan.html#binpan.binpan.Symbol.hk">hk() (binpan.binpan.Symbol method)</a>
 </li>
   </ul></td>
@@ -592,6 +628,8 @@
 </li>
         <li><a href="plotting.html#module-handlers.plotting">handlers.plotting</a>
 </li>
+        <li><a href="quest.html#module-handlers.quest">handlers.quest</a>
+</li>
         <li><a href="redis_fetch.html#module-handlers.redis_fetch">handlers.redis_fetch</a>
 </li>
         <li><a href="strategies.html#module-handlers.strategies">handlers.strategies</a>
@@ -655,10 +693,10 @@
 </li>
       <li><a href="binpan.html#binpan.binpan.Symbol.plot_market_profile">plot_market_profile() (binpan.binpan.Symbol method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="binpan.html#binpan.binpan.Symbol.plot_orderbook">plot_orderbook() (binpan.binpan.Symbol method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="binpan.html#binpan.binpan.Symbol.plot_orderbook_density">plot_orderbook_density() (binpan.binpan.Symbol method)</a>
 </li>
       <li><a href="plotting.html#handlers.plotting.plot_pie">plot_pie() (in module handlers.plotting)</a>
@@ -672,6 +710,10 @@
       <li><a href="binpan.html#binpan.binpan.Symbol.plot_trades_scatter">plot_trades_scatter() (binpan.binpan.Symbol method)</a>
 </li>
       <li><a href="binpan.html#binpan.binpan.Symbol.plot_trades_size">plot_trades_size() (binpan.binpan.Symbol method)</a>
+</li>
+      <li><a href="quest.html#handlers.quest.post_response">post_response() (in module handlers.quest)</a>
+</li>
+      <li><a href="quest.html#handlers.quest.post_signed_request">post_signed_request() (in module handlers.quest)</a>
 </li>
       <li><a href="binpan.html#binpan.binpan.Symbol.profit_hour">profit_hour() (binpan.binpan.Symbol method)</a>
 </li>
@@ -749,6 +791,8 @@
 </li>
       <li><a href="indicators.html#handlers.indicators.shift_indicator">shift_indicator() (in module handlers.indicators)</a>
 </li>
+      <li><a href="quest.html#handlers.quest.sign_request">sign_request() (in module handlers.quest)</a>
+</li>
       <li><a href="tags.html#handlers.tags.simple_backtesting">simple_backtesting() (in module handlers.tags)</a>
 </li>
       <li><a href="binpan.html#binpan.binpan.Symbol.sma">sma() (binpan.binpan.Symbol method)</a>
@@ -824,6 +868,8 @@
       <li><a href="binpan.html#binpan.binpan.Wallet.update_margin">update_margin() (binpan.binpan.Wallet method)</a>
 </li>
       <li><a href="binpan.html#binpan.binpan.Wallet.update_spot">update_spot() (binpan.binpan.Wallet method)</a>
+</li>
+      <li><a href="quest.html#handlers.quest.update_weights">update_weights() (in module handlers.quest)</a>
 </li>
   </ul></td>
 </tr></table>

@@ -443,7 +443,6 @@ class Symbol(object):
         # query candles #
         #################
         if not from_csv:
-
             self.raw = handlers.market.get_candles_by_time_stamps(symbol=self.symbol,
                                                                   tick_interval=self.tick_interval,
                                                                   start_time=self.start_time,
@@ -464,8 +463,11 @@ class Symbol(object):
         self.plot_splitted_serie_couples = {}
         self.len = len(self.df)
 
-        # exchange data
+        # exchange data and tick size
         self.info_dic = handlers.exchange.get_info_dic()
+        self.tickSize = self.info_dic[self.symbol]['filters'][0]['tickSize']
+        self.decimals = handlers.exchange.get_decimal_positions(self.tickSize)
+
         self.order_filters = self.get_order_filters()
         self.order_types = self.get_order_types()
         self.permissions = self.get_permissions()
@@ -523,6 +525,16 @@ class Symbol(object):
         if self.trades.empty:
             print("Empty trades, please request using: get_trades() method: Example: my_symbol.get_trades()")
         return self.trades
+
+    # def tick(self) -> str:
+    #     """
+    #     Returns the minimum tick value.
+    #
+    #     self
+    #
+    #     :return:
+    #     """
+    #     # self.tickSize = self.info_dic[self.symbol]['filters']['tickSize']
 
     def symbol(self):
         """
@@ -1095,9 +1107,9 @@ class Symbol(object):
             handlers.wallet.convert_str_date_to_ms(date=endTime,
                                                    time_zone=self.time_zone)
         if hours:
-            startTime = int(time()*1000) - (1000 * 60 * 60 * hours)
+            startTime = int(time() * 1000) - (1000 * 60 * 60 * hours)
         elif minutes:
-            startTime = int(time()*1000) - (1000 * 60 * minutes)
+            startTime = int(time() * 1000) - (1000 * 60 * minutes)
 
         if startTime:
             curr_startTime = startTime
@@ -1109,7 +1121,7 @@ class Symbol(object):
         elif self.end_time:
             curr_endTime = self.end_time
         else:
-            curr_endTime = int(time()*1000)
+            curr_endTime = int(time() * 1000)
 
         self.raw_trades = handlers.market.get_historical_aggregated_trades(symbol=self.symbol,
                                                                            startTime=curr_startTime,
@@ -1395,6 +1407,7 @@ class Symbol(object):
                          logarithmic: bool = False,
                          overlap_prices: bool = True,
                          group_big_data: int = None,
+                         shifted: int = 1,
                          title: str = None):
         """
         It plots a time series graph plotting trades sized by quantity and color if taker or maker buyer.
@@ -1412,6 +1425,7 @@ class Symbol(object):
         :param int height: Default is 1000.
         :param bool logarithmic: If logarithmic, then "y" axis scale is shown in logarithmic scale.
         :param int group_big_data: If true, groups data in height bins, this can get faster plotting for big quantity of trades.
+        :param bool shifted: If True, shifts prices to plot klines one step to the right, that's more natural to see trades action in price.
         :param bool overlap_prices: If True, plots overlap line with High and Low prices.
         :param title: Graph title
 
@@ -1432,6 +1446,7 @@ class Symbol(object):
                                               height=height,
                                               logarithmic=logarithmic,
                                               overlap_prices=overlap_prices,
+                                              shifted=shifted,
                                               title=title)
         else:
             # TODO: GROUP SLOTS OF TRADES
@@ -1439,6 +1454,8 @@ class Symbol(object):
                                               max_size=max_size,
                                               height=height,
                                               logarithmic=logarithmic,
+                                              overlap_prices=overlap_prices,
+                                              shifted=shifted,
                                               title=title)
 
     def plot_trades_pie(self, categories: int = 25, logarithmic=True, title: str = None):

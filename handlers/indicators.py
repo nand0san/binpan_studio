@@ -164,7 +164,9 @@ def split_serie_by_position(serie: pd.Series,
                             splitter_serie: pd.Series,
                             fill_with_zeros: bool = True) -> pd.DataFrame:
     """
-    Splits a serie by values of other serie in four series for plotting purposes. It means will get 4 series with different situations:
+    Splits a serie by values of other serie in four series by relative positions for plotting clored clouds with plotly.
+
+    This means you will get 4 series with different situations:
 
        - serie is over the splitter serie.
        - serie is below the splitter serie.
@@ -267,7 +269,9 @@ def zoom_cloud_indicators(plot_splitted_serie_couples: dict,
 
 def shift_indicator(serie: pd.Series, window: int = 1):
     """
-    It shifts a candle ahead by the window argument value (or backwards if negative)
+    It shifts a candle ahead by the window argument value (or backwards if negative).
+
+    Just works with time indexes.
 
     :param pd.Series serie: A pandas Series.
     :param int window: Times values are shifted ahead. Default is 1.
@@ -285,3 +289,83 @@ def ffill_indicator(serie: pd.Series, window: int = 1):
     :return pd.Series: A series with index adjusted to the new shifted positions of values.
     """
     return serie.ffill(limit=window)
+
+
+###############
+# From trades #
+###############
+
+def reversal_candles(trades_prices: pd.Series,
+                     decimal_positions: int,
+                     min_height: int = 7,
+                     min_reversal: int = 4) -> pd.Series:
+    """
+    Generate reversal candles for reversal charts:
+       https://atas.net/atas-possibilities/charts/how-to-set-reversal-charts-for-finding-the-market-reversal/
+
+    :param pd.Series trades_prices: A serie with trade prices.
+    :param int decimal_positions: Because this function uses integer numbers for prices, is needed to convert prices. Just steps are relevant.
+    :param int min_height: Minimum candles height in pips.
+    :param int min_reversal: Maximum reversal to close the candles
+    :return pd.Series: A serie with the resulting candles number sequence.
+    """
+    prices = trades_prices.to_numpy() * 10 ** decimal_positions
+
+    height = 0
+
+    candle = 0
+    candle_ids = [0]  # first value in a candle
+
+    current_open = prices[0]
+    open_ = [current_open]
+    high = [current_open]
+    low = [current_open]
+    close = [current_open]
+    prices_pool = [current_open]
+    reversal_control = [0]
+
+    for idx in range(1, prices.size):
+        current_price = prices[idx]
+        previous_price = prices[idx - 1]
+
+        prices_pool.append(current_price)
+        current_high = max(prices_pool)
+        current_low = min(prices_pool)
+
+        delta = current_price - previous_price
+
+        # update height if not accomplished, else is fixed
+        if np.abs(height) <= min_height:
+            height += delta
+
+        height_bool = np.abs(height) > min_height
+        bull_reversal = (current_high - current_price) > min_reversal
+        bear_reversal = (current_price - current_low) > min_reversal
+
+        if (height_bool and height > 0 and bull_reversal) or (height_bool and height < 0 and bear_reversal):
+            # new candle setup
+            candle += 1
+            height = 0
+
+            current_open = current_price
+            prices_pool = []
+
+        # collect results
+        open_.append(current_open)
+        high.append(max(prices_pool, default=current_open))
+        low.append(min(prices_pool, default=current_open))
+        close.append(current_price)
+        candle_ids.append(candle)
+        # reversal_control.append((max(prices_pool, default=current_open) - current_price, min(prices_pool, default=current_open) - current_price))
+
+    candles = pd.Series(data=candle_ids, index=trades_prices.index, name='Candle')
+    highs = pd.Series(data=high, index=trades_prices.index, name='High')
+    lows = pd.Series(data=low, index=trades_prices.index, name='Low')
+    opens = pd.Series(data=open_, index=trades_prices.index, name='Open')
+    closes = pd.Series(data=close, index=trades_prices.index, name='Close')
+    # control = pd.Series(data=reversal_control, index=trades_prices.index, name='control')
+
+    # data = [candles, opens, highs, lows, closes, control]
+    data = [candles, opens, highs, lows, closes]
+
+    return pd.concat(data, axis=1, keys=[s.name for s in data])

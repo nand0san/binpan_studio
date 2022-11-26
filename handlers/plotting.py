@@ -1038,8 +1038,8 @@ def plot_trade_size(data: pd.DataFrame,
         end = data.iloc[-1]['Timestamp']
         # shift added for more reality viewing trades effect on klines
         if shifted:
-            title = f"{title} with High and Low Prices (shifted {shifted} candles to the right)"
-            plot_data = overlap_prices[(overlap_prices['Open timestamp'] >= start) & (overlap_prices['Open timestamp'] <= end)].shift()
+            title = f"{title} with High and Low Prices (shifted {shifted} candle to the right)"
+            plot_data = overlap_prices[(overlap_prices['Open timestamp'] >= start) & (overlap_prices['Open timestamp'] <= end)].shift(1, freq='infer')
         else:
             title = f"{title} with High and Low Prices"
             plot_data = overlap_prices[(overlap_prices['Open timestamp'] >= start) & (overlap_prices['Open timestamp'] <= end)]

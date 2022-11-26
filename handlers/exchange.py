@@ -1225,3 +1225,19 @@ def get_top_gainers(decimal_mode: bool,
         return top_gainers.sort_values(sort_by_column, ascending=False).head(top_gainers_qty)
     else:
         return top_gainers.sort_values(sort_by_column, ascending=False)
+
+
+#################
+# numeric tools #
+#################
+
+
+def get_decimal_positions(num: float or dd) -> int:
+    """
+    Count decimal positions for a value.
+
+    :param float or dd num: Input.
+    :return int: Count decimal positions.
+    """
+    num = dd(num).normalize()
+    return abs(num.as_tuple().exponent)
