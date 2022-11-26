@@ -471,13 +471,13 @@ def candles_ta(data: pd.DataFrame,
     :param plot_bgcolor: Set background color.
 
     """
-    if not indicators_color_filled:
+    if not indicators_color_filled and indicators_series:
         indicators_color_filled = {i.name: None for i in indicators_series}
     elif type(indicators_color_filled) == list:
         indicators_color_filled = {s.name: indicators_color_filled[i] for i, s in enumerate(indicators_series)}
     plot_logger.debug(f"candles_ta indicators_color_filled: {indicators_color_filled}")
 
-    if not indicators_filled_mode:
+    if not indicators_filled_mode and indicators_series:
         indicators_filled_mode = {i.name: None for i in indicators_series}
     elif type(indicators_filled_mode) == list:
         indicators_filled_mode = {s.name: indicators_filled_mode[i] for i, s in enumerate(indicators_series)}
@@ -532,8 +532,8 @@ def candles_ta(data: pd.DataFrame,
 
     plot_logger.debug(f"----------------------------------------------------------------------")
     plot_logger.debug(f"indicators_colors: {indicators_colors} len: {len(indicators_colors)}")
-    plot_logger.debug(f"indicators_color_filled: {indicators_color_filled} len: {len(indicators_color_filled)}")
-    plot_logger.debug(f"indicators_filled_mode: {indicators_filled_mode} len: {len(indicators_filled_mode)}")
+    # plot_logger.debug(f"indicators_color_filled: {indicators_color_filled} len: {len(indicators_color_filled)}")
+    # plot_logger.debug(f"indicators_filled_mode: {indicators_filled_mode} len: {len(indicators_filled_mode)}")
     plot_logger.debug(f"rows: {rows} len: {len(rows)}")
     plot_logger.debug(f"indicators_series: {len(indicators_series)} len: {len(indicators_series)}")
     plot_logger.debug(f"y_axis_idx: {y_axis_idx} len: {len(y_axis_idx)}")

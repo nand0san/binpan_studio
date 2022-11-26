@@ -6,6 +6,7 @@ BinPan own indicators and utils.
 import numpy as np
 import pandas as pd
 from typing import Tuple
+from handlers.time_helper import convert_milliseconds_to_time_zone_datetime
 
 from handlers.time_helper import pandas_freq_tick_interval
 
@@ -295,22 +296,24 @@ def ffill_indicator(serie: pd.Series, window: int = 1):
 # From trades #
 ###############
 
-def reversal_candles(trades_prices: pd.Series,
+def reversal_candles(trades: pd.DataFrame,
                      decimal_positions: int,
+                     time_zone: str,
                      min_height: int = 7,
-                     min_reversal: int = 4) -> pd.Series:
+                     min_reversal: int = 4) -> pd.DataFrame:
     """
     Generate reversal candles for reversal charts:
        https://atas.net/atas-possibilities/charts/how-to-set-reversal-charts-for-finding-the-market-reversal/
 
-    :param pd.Series trades_prices: A serie with trade prices.
+    :param pd.Series trades: A dataframe with trades sizes, side and prices.
     :param int decimal_positions: Because this function uses integer numbers for prices, is needed to convert prices. Just steps are relevant.
+    :param str time_zone: A time zone like "Europe/Madrid".
     :param int min_height: Minimum candles height in pips.
     :param int min_reversal: Maximum reversal to close the candles
-    :return pd.Series: A serie with the resulting candles number sequence.
+    :return pd.DataFrame: A serie with the resulting candles number sequence.
     """
-    prices = trades_prices.to_numpy() * 10 ** decimal_positions
 
+    prices = trades['Price'].to_numpy() * 10 ** decimal_positions
     height = 0
 
     candle = 0
@@ -322,7 +325,7 @@ def reversal_candles(trades_prices: pd.Series,
     low = [current_open]
     close = [current_open]
     prices_pool = [current_open]
-    reversal_control = [0]
+    # reversal_control = [0]
 
     for idx in range(1, prices.size):
         current_price = prices[idx]
@@ -358,14 +361,22 @@ def reversal_candles(trades_prices: pd.Series,
         candle_ids.append(candle)
         # reversal_control.append((max(prices_pool, default=current_open) - current_price, min(prices_pool, default=current_open) - current_price))
 
-    candles = pd.Series(data=candle_ids, index=trades_prices.index, name='Candle')
-    highs = pd.Series(data=high, index=trades_prices.index, name='High')
-    lows = pd.Series(data=low, index=trades_prices.index, name='Low')
-    opens = pd.Series(data=open_, index=trades_prices.index, name='Open')
-    closes = pd.Series(data=close, index=trades_prices.index, name='Close')
+    candles = pd.Series(data=candle_ids, index=trades.index, name='Candle')
+    highs = pd.Series(data=high, index=trades.index, name='High')
+    lows = pd.Series(data=low, index=trades.index, name='Low')
+    opens = pd.Series(data=open_, index=trades.index, name='Open')
+    closes = pd.Series(data=close, index=trades.index, name='Close')
     # control = pd.Series(data=reversal_control, index=trades_prices.index, name='control')
 
     # data = [candles, opens, highs, lows, closes, control]
-    data = [candles, opens, highs, lows, closes]
+    data = [candles*10**-decimal_positions, opens*10**-decimal_positions, highs*10**-decimal_positions, lows*10**-decimal_positions,
+            closes*10**-decimal_positions, trades['Quantity'], trades['Timestamp']]
 
-    return pd.concat(data, axis=1, keys=[s.name for s in data])
+    ret = pd.concat(data, axis=1, keys=[s.name for s in data])
+
+    klines = ret.groupby(['Candle']).agg(
+        {'Open': 'first', 'High': 'last', 'Low': 'last', 'Close': 'last', 'Quantity': 'sum', 'Timestamp': 'first'})
+
+    date_index = klines['Timestamp'].apply(convert_milliseconds_to_time_zone_datetime, timezoned=time_zone)
+    klines.set_index(date_index, inplace=True)
+    return klines
