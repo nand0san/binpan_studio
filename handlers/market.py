@@ -14,8 +14,9 @@ from typing import List
 
 import handlers.time_helper
 from .logs import Logs
-from .quest import check_weight, get_response, api_raw_get
+from .quest import check_weight, get_response, api_raw_get, get_semi_signed_request
 from .time_helper import tick_seconds, end_time_from_start_time, start_time_from_end_time
+from secret import api_key
 
 market_logger = Logs(filename='./logs/market_logger.log', name='market_logger', info_level='INFO')
 
@@ -149,7 +150,8 @@ def get_candles_by_time_stamps(symbol: str,
     start_string = handlers.time_helper.convert_milliseconds_to_str(ms=start_time, timezoned=time_zone)
     end_string = handlers.time_helper.convert_milliseconds_to_str(ms=end_time, timezoned=time_zone)
 
-    market_logger.debug(f"get_candles_by_time_stamps -> symbol={symbol} tick_interval={tick_interval} start={start_string} end={end_string}")
+    market_logger.debug(
+        f"get_candles_by_time_stamps -> symbol={symbol} tick_interval={tick_interval} start={start_string} end={end_string}")
 
     tick_milliseconds = int(tick_seconds[tick_interval] * 1000)
 
@@ -185,7 +187,6 @@ def get_candles_by_time_stamps(symbol: str,
                                              max=end,
                                              withscores=False)
             if not ret:
-
                 msg = f"BinPan Exception: Requested data for {symbol.lower()}@kline_{tick_interval} between {start_string} and " \
                       f"{end_string} missing in redis server: ."
                 market_logger.error(msg)
@@ -670,7 +671,8 @@ def get_last_trades(symbol: str,
 
 def get_trades(symbol: str,
                fromId: int = None,
-               limit=None):
+               limit: int = None,
+               decimal_mode: bool = False) -> list:
     """
     Returns trades from id to limit or last trades if id not specified.
 
@@ -685,6 +687,7 @@ def get_trades(symbol: str,
     :param int fromId: Trade id to fetch from. If not passed, gets most recent trades.
     :param str symbol: A binance valid symbol.
     :param int limit: Count of trades to ask for.
+    :param bool decimal_mode: Enables decimal type for return.
     :return list: Returns a list from the Binance API.
 
     .. code-block::
@@ -704,8 +707,11 @@ def get_trades(symbol: str,
 
     endpoint = '/api/v3/historicalTrades?'
     check_weight(5, endpoint=endpoint)
-    query = {'symbol': symbol, 'limit': limit, 'fromId': fromId}
-    return get_response(url=endpoint, params=query)
+    query = {'symbol': symbol, 'limit': limit, 'fromId': fromId, 'recWindow': None}
+    return get_semi_signed_request(url=endpoint,
+                                   decimal_mode=decimal_mode,
+                                   api_key=api_key,
+                                   params=query)
 
 
 #############

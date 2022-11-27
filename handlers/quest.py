@@ -291,7 +291,7 @@ def hashed_signature(url_params: str,
 
 
 def sign_request(params: dict or List[tuple],
-                 recvWindow: int,
+                 recvWindow: int or None,
                  api_key: str,
                  api_secret: str
                  ) -> Tuple[list, dict]:
@@ -299,7 +299,7 @@ def sign_request(params: dict or List[tuple],
     Add signature to the request. Returns a list of params in tuples and a headers dict.
 
     :param dict or List[tuple] params: Params for the request.
-    :param int recvWindow: Milliseconds of life for the request to be responded.
+    :param int or None recvWindow: Milliseconds of life for the request to be responded. /api/v3/historicalTrades do not admit it.
     :param str api_key: Encoded API key.
     :param str api_secret: Encoded API secret.
     :return Tuple[list, dict]: List of params in tuples and a headers dict.
@@ -337,7 +337,8 @@ def get_signed_request(url: str,
                        api_key: str,
                        api_secret: str,
                        params: dict or List[tuple] = None,
-                       recvWindow: int = 10000) -> dict or list:
+                       recvWindow: int = 10000
+                       ) -> dict or list:
     """
     It does a signed get to a url along with a dictionary of parameters. To avoid parameter order errors, they are passed in tuple format,
     it is also useful sending parameters that have the same name with several values:
