@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BinPan Module &mdash; BinPan 0.2.39 documentation</title>
+  <title>BinPan Module &mdash; BinPan 0.2.40 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/style.css" type="text/css" />
@@ -267,7 +267,7 @@ exchange.</p></li>
 <td><p>Returns trades dataframe.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.get_reversal_candles" title="binpan.binpan.Symbol.get_reversal_candles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_reversal_candles</span></code></a>([min_height, min_reversal])</p></td>
-<td><p>Resamples trades to reversal klines:</p></td>
+<td><p>Resamples aggregated API or REDIS trades to reversal klines:</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.symbol" title="binpan.binpan.Symbol.symbol"><code class="xref py py-obj docutils literal notranslate"><span class="pre">symbol</span></code></a>()</p></td>
 <td><p>Returns symbol.</p></td>
@@ -529,7 +529,7 @@ exchange.</p></li>
 <dt class="sig sig-object py" id="binpan.binpan.Symbol.get_reversal_candles">
 <span class="sig-name descname"><span class="pre">get_reversal_candles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_reversal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#binpan.binpan.Symbol.get_reversal_candles" title="Permalink to this definition"></a></dt>
 <dd><dl class="simple">
-<dt>Resamples trades to reversal klines:</dt><dd><p><a class="reference external" href="https://atas.net/atas-possibilities/charts/how-to-set-reversal-charts-for-finding-the-market-reversal/">https://atas.net/atas-possibilities/charts/how-to-set-reversal-charts-for-finding-the-market-reversal/</a></p>
+<dt>Resamples aggregated API or REDIS trades to reversal klines:</dt><dd><p><a class="reference external" href="https://atas.net/atas-possibilities/charts/how-to-set-reversal-charts-for-finding-the-market-reversal/">https://atas.net/atas-possibilities/charts/how-to-set-reversal-charts-for-finding-the-market-reversal/</a></p>
 </dd>
 </dl>
 <dl class="field-list simple">
@@ -1087,6 +1087,7 @@ waiting long time intervals grabbing the trades.)</p>
 <dt class="sig sig-object py" id="binpan.binpan.Symbol.plot_reversal">
 <span class="sig-name descname"><span class="pre">plot_reversal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_reversal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.binpan.Symbol.plot_reversal" title="Permalink to this definition"></a></dt>
 <dd><p>Plots reversal candles. It requires trades fetched previously.</p>
+<p>BinPan manages aggregated trades from binance API or from your REDIS.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">

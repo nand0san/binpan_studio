@@ -38,7 +38,7 @@ binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', 
 tick_seconds = handlers.time_helper.tick_seconds
 pandas_freq_tick_interval = handlers.time_helper.pandas_freq_tick_interval
 
-__version__ = "0.2.39"
+__version__ = "0.2.40"
 
 try:
     from secret import redis_conf, redis_conf_trades
@@ -539,7 +539,7 @@ class Symbol(object):
 
     def get_reversal_candles(self, min_height: int = 7, min_reversal: int = 4) -> pd.DataFrame or None:
         """
-        Resamples trades to reversal klines:
+        Resamples aggregated API or REDIS trades to reversal klines:
            https://atas.net/atas-possibilities/charts/how-to-set-reversal-charts-for-finding-the-market-reversal/
 
         :param min_height: Defaults to 7. Minimum reversal kline height to close a candle
@@ -1502,7 +1502,7 @@ class Symbol(object):
         """
         Plots reversal candles. It requires trades fetched previously.
 
-        Usually plotted from aggregated trades.
+        BinPan manages aggregated trades from binance API or from your REDIS.
 
         :param int min_height: It defaults to previous set. Can be reset when plotting.
         :param min_reversal: It defaults to previous set. Can be reset when plotting.
