@@ -546,16 +546,16 @@ class Symbol(object):
         :param min_reversal: Defaults to 4. Minimum reversal from hig/low to close a candle
         :return pd.DataFrame: Resample trades to reversal klines. Can be plotted.
         """
+        if self.trades.empty:
+            binpan_logger.info(empty_trades_msg)
+            return
+
         if min_height:
             self.min_height = min_height
         if min_reversal:
             self.min_reversal = min_reversal
 
-        if self.trades.empty:
-            binpan_logger.info(empty_trades_msg)
-            return
-
-        if self.reversal_klines.empty:
+        if self.reversal_klines.empty or min_height or min_reversal:
             self.reversal_klines = handlers.indicators.reversal_candles(trades=self.trades,
                                                                         decimal_positions=self.decimals,
                                                                         time_zone=self.time_zone,
@@ -1502,24 +1502,24 @@ class Symbol(object):
         """
         Plots reversal candles. It requires trades fetched previously.
 
+        Usually plotted from aggregated trades.
+
         :param int min_height: It defaults to previous set. Can be reset when plotting.
         :param min_reversal: It defaults to previous set. Can be reset when plotting.
         :param bool text_index: If True, plots klines equally spaced. This allows to plot volume.
         :return:
         """
+        if self.trades.empty:
+            binpan_logger.info(empty_trades_msg)
+            return
+
         if min_height:
             self.min_height = min_height
         if min_reversal:
             self.min_reversal = min_reversal
-        if min_height or min_reversal and not self.trades.empty:
-            self.reversal_klines = self.get_reversal_candles(min_height=min_height, min_reversal=min_reversal)
 
-        if self.reversal_klines.empty:
-            if self.trades.empty:
-                binpan_logger.info(empty_trades_msg)
-                return
-            else:
-                self.reversal_klines = self.get_reversal_candles(min_height=min_height, min_reversal=min_reversal)
+        if min_height or min_reversal:
+            self.reversal_klines = self.get_reversal_candles(min_height=self.min_height, min_reversal=self.min_reversal)
 
         if not 'title' in kwargs.keys():
             kwargs['title'] = f"Reversal Candles {self.min_height}/{self.min_reversal} {self.symbol}"
