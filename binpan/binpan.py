@@ -1508,6 +1508,26 @@ class Symbol(object):
         :param min_reversal: It defaults to previous set. Can be reset when plotting.
         :param bool text_index: If True, plots klines equally spaced. This allows to plot volume.
         :return:
+
+        Example:
+
+            .. code-block:: python
+
+               from binpan import binpan
+
+                ltc = binpan.Symbol(symbol='ltcbtc',
+                                    tick_interval='5m',
+                                    time_zone = 'Europe/Madrid',
+                                    time_index = True,
+                                    closed = True,
+                                    hours=5)
+               ltc.get_trades()
+               ltc.get_reversal_candles()
+               ltc.plot_reversal()
+
+            .. image:: images/indicators/reversal.png
+               :width: 1000
+
         """
         if self.trades.empty:
             binpan_logger.info(empty_trades_msg)
