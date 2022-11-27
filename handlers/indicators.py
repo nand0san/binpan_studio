@@ -313,10 +313,11 @@ def reversal_candles(trades: pd.DataFrame,
     :return pd.DataFrame: A serie with the resulting candles number sequence.
     """
 
-    prices = trades['Price'].to_numpy() * 10 ** decimal_positions
+    prices = (trades['Price'].to_numpy() * 10 ** decimal_positions).astype(int)
     height = 0
 
     candle = 0
+    prev_candle = 0
     candle_ids = [0]  # first value in a candle
 
     current_open = prices[0]
@@ -330,35 +331,37 @@ def reversal_candles(trades: pd.DataFrame,
     for idx in range(1, prices.size):
         current_price = prices[idx]
         previous_price = prices[idx - 1]
+        delta = current_price - previous_price
+
+        if candle != prev_candle:
+            current_open = current_price
 
         prices_pool.append(current_price)
         current_high = max(prices_pool)
         current_low = min(prices_pool)
 
-        delta = current_price - previous_price
+        # collect results
+        open_.append(current_open)
+        high.append(current_high)
+        low.append(current_low)
+        close.append(current_price)
+        candle_ids.append(candle)
 
         # update height if not accomplished, else is fixed
-        if np.abs(height) <= min_height:
+        if np.abs(height) < min_height:
             height += delta
 
-        height_bool = np.abs(height) > min_height
+        height_bool = np.abs(height) >= min_height
         bull_reversal = (current_high - current_price) > min_reversal
         bear_reversal = (current_price - current_low) > min_reversal
 
         if (height_bool and height > 0 and bull_reversal) or (height_bool and height < 0 and bear_reversal):
             # new candle setup
+            prev_candle = candle
             candle += 1
             height = 0
-
-            current_open = current_price
             prices_pool = []
 
-        # collect results
-        open_.append(current_open)
-        high.append(max(prices_pool, default=current_open))
-        low.append(min(prices_pool, default=current_open))
-        close.append(current_price)
-        candle_ids.append(candle)
         # reversal_control.append((max(prices_pool, default=current_open) - current_price, min(prices_pool, default=current_open) - current_price))
 
     candles = pd.Series(data=candle_ids, index=trades.index, name='Candle')
@@ -366,17 +369,25 @@ def reversal_candles(trades: pd.DataFrame,
     lows = pd.Series(data=low, index=trades.index, name='Low')
     opens = pd.Series(data=open_, index=trades.index, name='Open')
     closes = pd.Series(data=close, index=trades.index, name='Close')
-    # control = pd.Series(data=reversal_control, index=trades_prices.index, name='control')
+    # control = pd.Series(data=reversal_control, index=trades.index, name='control')
 
     # data = [candles, opens, highs, lows, closes, control]
-    data = [candles*10**-decimal_positions, opens*10**-decimal_positions, highs*10**-decimal_positions, lows*10**-decimal_positions,
-            closes*10**-decimal_positions, trades['Quantity'], trades['Timestamp']]
+    # data = [candles*10**-decimal_positions, opens*10**-decimal_positions, highs*10**-decimal_positions, lows*10**-decimal_positions,
+    #         closes*10**-decimal_positions, trades['Quantity'], trades['Timestamp']]
+    data = [candles, opens, highs, lows, closes, trades['Quantity'], trades['Timestamp']]
 
     ret = pd.concat(data, axis=1, keys=[s.name for s in data])
 
     klines = ret.groupby(['Candle']).agg(
-        {'Open': 'first', 'High': 'last', 'Low': 'last', 'Close': 'last', 'Quantity': 'sum', 'Timestamp': 'first'})
+        {'Open': 'first', 'High': 'last', 'Low': 'last', 'Close': 'last', 'Quantity': 'sum', 'Timestamp': 'first', 'control': 'last'})
 
     date_index = klines['Timestamp'].apply(convert_milliseconds_to_time_zone_datetime, timezoned=time_zone)
     klines.set_index(date_index, inplace=True)
+
+    repair_decimals = np.float(10**-decimal_positions)
+    klines['High'] *= repair_decimals
+    klines['Low'] *= repair_decimals
+    klines['Open'] *= repair_decimals
+    klines['Close'] *= repair_decimals
+
     return klines

@@ -160,6 +160,7 @@ class Symbol(object):
        But can be passed a StrictRedis client object previously configured.
        secret.py file map example: redis_conf = {'host':'192.168.1.5','port': 6379,'db': 0,'decode_responses': True}
 
+    :param bool or StrictRedis from_redis_trades: If enabled, BinPan will look trades to a redis client in a similar way tha from_redis.
     :param int display_columns:     Number of columns in the dataframe display. Convenient to adjust in jupyter notebooks.
     :param int display_rows:        Number of rows in the dataframe display. Convenient to adjust in jupyter notebooks.
     :param int display_width:       Display width in the dataframe display. Convenient to adjust in jupyter notebooks.
@@ -244,6 +245,7 @@ class Symbol(object):
                  closed: bool = True,
                  from_redis: bool or StrictRedis = None,
                  from_redis_trades: bool or StrictRedis = None,
+                 hours: int = None,
                  display_columns=25,
                  display_rows=10,
                  display_min_rows=25,
@@ -348,8 +350,6 @@ class Symbol(object):
         else:
             self.symbol = symbol.upper()
             self.tick_interval = tick_interval
-            # self.start_time = start_time
-            # self.end_time = end_time
             self.limit = limit
             self.time_zone = time_zone
             self.time_index = time_index
@@ -397,7 +397,6 @@ class Symbol(object):
         self.color_fill_control = dict()
         self.indicators_filled_mode = dict()
         self.axis_groups = dict()
-        # self.action_labels = dict()
         self.global_axis_group = 99
         self.strategies = 0
         self.row_counter = 1
@@ -418,8 +417,6 @@ class Symbol(object):
 
         start_time = handlers.wallet.convert_str_date_to_ms(date=start_time, time_zone=time_zone)
         end_time = handlers.wallet.convert_str_date_to_ms(date=end_time, time_zone=time_zone)
-        # self.start_time = start_time
-        # self.end_time = end_time
 
         # work with open timestamps
         if start_time:
@@ -427,6 +424,13 @@ class Symbol(object):
 
         if end_time:
             end_time = handlers.time_helper.open_from_milliseconds(ms=end_time, tick_interval=self.tick_interval)
+
+        # limit by hours
+        if hours:
+            if not end_time:
+                end_time = int(time() * 1000)
+            if not start_time:
+                start_time = end_time - (hours * 60 * 60 * 1000)
 
         # fill missing timestamps
         self.start_time, self.end_time = handlers.time_helper.time_interval(tick_interval=self.tick_interval,

@@ -368,7 +368,7 @@ def candles_ta(data: pd.DataFrame,
                height: int = 1000,
                range_slider: bool = False,
                candles_ta_height_ratio: float = 0.5,
-               plot_volume: bool = True,
+               plot_volume: bool or str = True,
                title: str = 'Candlesticks, indicators, and Volume plot',
                yaxis_title: str = 'Symbol Price',
                annotation_values: list = None,
@@ -377,7 +377,8 @@ def candles_ta(data: pd.DataFrame,
                annotation_colors: list = None,
                annotation_legend_names: list = None,
                labels: list = None,
-               plot_bgcolor: str = None):
+               plot_bgcolor: str = None,
+               text_index: bool = False):
     """
     Data needs to be a DataFrame that at least contains the columns: Open Close High Low Volume
 
@@ -408,7 +409,7 @@ def candles_ta(data: pd.DataFrame,
     :param int height: Plot sizing
     :param bool range_slider: For the volume plot.
     :param float candles_ta_height_ratio: A ratio between the big candles plot and (if any) the rest of indicator subplots below.
-    :param bool plot_volume: Optional to plot volume.
+    :param bool or str plot_volume: Optional to plot volume from "Volume" column or pass volume column name.
     :param str title: A title string.
     :param str yaxis_title: A name string.
     :param list annotation_values: A list of pandas series with values to plot marks or annotations overlapped in the candles plot.
@@ -469,6 +470,7 @@ def candles_ta(data: pd.DataFrame,
         :width: 1000
 
     :param plot_bgcolor: Set background color.
+    :param bool text_index: If enables, index will be transformed to a text index. It can be useful to plot candles not time correlated like reversal candles.
 
     """
     if not indicators_color_filled and indicators_series:
@@ -483,7 +485,12 @@ def candles_ta(data: pd.DataFrame,
         indicators_filled_mode = {s.name: indicators_filled_mode[i] for i, s in enumerate(indicators_series)}
     plot_logger.debug(f"candles_ta indicators_filled_mode: {indicators_filled_mode}")
 
+    # catch data
     df_plot = data.copy(deep=True)
+    if type(plot_volume) == str:
+        df_plot.rename(columns={plot_volume: 'Volume'}, inplace=True)
+    if text_index:
+        df_plot.reset_index(drop=True, inplace=True)
 
     if not indicators_series:
         indicators_series = []
@@ -532,8 +539,8 @@ def candles_ta(data: pd.DataFrame,
 
     plot_logger.debug(f"----------------------------------------------------------------------")
     plot_logger.debug(f"indicators_colors: {indicators_colors} len: {len(indicators_colors)}")
-    # plot_logger.debug(f"indicators_color_filled: {indicators_color_filled} len: {len(indicators_color_filled)}")
-    # plot_logger.debug(f"indicators_filled_mode: {indicators_filled_mode} len: {len(indicators_filled_mode)}")
+    plot_logger.debug(f"indicators_color_filled: {indicators_color_filled}")
+    plot_logger.debug(f"indicators_filled_mode: {indicators_filled_mode}")
     plot_logger.debug(f"rows: {rows} len: {len(rows)}")
     plot_logger.debug(f"indicators_series: {len(indicators_series)} len: {len(indicators_series)}")
     plot_logger.debug(f"y_axis_idx: {y_axis_idx} len: {len(y_axis_idx)}")

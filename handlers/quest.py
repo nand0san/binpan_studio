@@ -83,7 +83,7 @@ def add_header_for_endpoint(endpoint: str, header: str):
             endpoint_headers.update({endpoint: my_headers})
     else:
         endpoint_headers.update({endpoint: [header]})
-        weight_logger.info(f"New endpoint headers control: {endpoint} -> {endpoint_headers[endpoint]}")
+        weight_logger.debug(f"New endpoint headers control: {endpoint} -> {endpoint_headers[endpoint]}")
 
 
 def update_weights(headers, father_url: str):
