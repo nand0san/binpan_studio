@@ -5,8 +5,7 @@ BinPan own indicators and utils.
 """
 import numpy as np
 import pandas as pd
-from typing import Tuple
-
+from handlers.time_helper import convert_milliseconds_to_time_zone_datetime
 from handlers.time_helper import pandas_freq_tick_interval
 
 
@@ -164,7 +163,9 @@ def split_serie_by_position(serie: pd.Series,
                             splitter_serie: pd.Series,
                             fill_with_zeros: bool = True) -> pd.DataFrame:
     """
-    Splits a serie by values of other serie in four series for plotting purposes. It means will get 4 series with different situations:
+    Splits a serie by values of other serie in four series by relative positions for plotting colored clouds with plotly.
+
+    This means you will get 4 series with different situations:
 
        - serie is over the splitter serie.
        - serie is below the splitter serie.
@@ -267,7 +268,9 @@ def zoom_cloud_indicators(plot_splitted_serie_couples: dict,
 
 def shift_indicator(serie: pd.Series, window: int = 1):
     """
-    It shifts a candle ahead by the window argument value (or backwards if negative)
+    It shifts a candle ahead by the window argument value (or backwards if negative).
+
+    Just works with time indexes.
 
     :param pd.Series serie: A pandas Series.
     :param int window: Times values are shifted ahead. Default is 1.
@@ -285,3 +288,123 @@ def ffill_indicator(serie: pd.Series, window: int = 1):
     :return pd.Series: A series with index adjusted to the new shifted positions of values.
     """
     return serie.ffill(limit=window)
+
+
+###############
+# From trades #
+###############
+
+def reversal_candles(trades: pd.DataFrame,
+                     decimal_positions: int,
+                     time_zone: str,
+                     min_height: int = 7,
+                     min_reversal: int = 4) -> pd.DataFrame:
+    """
+    Generate reversal candles for reversal charts:
+       https://atas.net/atas-possibilities/charts/how-to-set-reversal-charts-for-finding-the-market-reversal/
+
+    :param pd.Series trades: A dataframe with trades sizes, side and prices.
+    :param int decimal_positions: Because this function uses integer numbers for prices, is needed to convert prices. Just steps are relevant.
+    :param str time_zone: A time zone like "Europe/Madrid".
+    :param int min_height: Minimum candles height in pips.
+    :param int min_reversal: Maximum reversal to close the candles
+    :return pd.DataFrame: A serie with the resulting candles number sequence.
+
+     Example:
+        .. code-block:: python
+
+           from binpan import binpan
+
+            ltc = binpan.Symbol(symbol='ltcbtc',
+                                tick_interval='5m',
+                                time_zone = 'Europe/Madrid',
+                                time_index = True,
+                                closed = True,
+                                hours=5)
+           ltc.get_trades()
+           ltc.get_reversal_candles()
+           ltc.plot_reversal()
+
+        .. image:: images/indicators/reversal.png
+           :width: 1000
+
+    """
+
+    prices = (trades['Price'].to_numpy() * 10 ** decimal_positions).astype(int)
+    height = 0
+
+    candle = 0
+    prev_candle = 0
+    candle_ids = [0]  # first value in a candle
+
+    current_open = prices[0]
+    open_ = [current_open]
+    high = [current_open]
+    low = [current_open]
+    close = [current_open]
+    prices_pool = [current_open]
+    # reversal_control = [0]
+
+    for idx in range(1, prices.size):
+        current_price = prices[idx]
+        previous_price = prices[idx - 1]
+        delta = current_price - previous_price
+
+        if candle != prev_candle:
+            current_open = current_price
+
+        prices_pool.append(current_price)
+        current_high = max(prices_pool)
+        current_low = min(prices_pool)
+
+        # collect results
+        open_.append(current_open)
+        high.append(current_high)
+        low.append(current_low)
+        close.append(current_price)
+        candle_ids.append(candle)
+
+        # update height if not accomplished, else is fixed
+        if np.abs(height) < min_height:
+            height += delta
+
+        height_bool = np.abs(height) >= min_height
+        bull_reversal = (current_high - current_price) > min_reversal
+        bear_reversal = (current_price - current_low) > min_reversal
+
+        if (height_bool and height > 0 and bull_reversal) or (height_bool and height < 0 and bear_reversal):
+            # new candle setup
+            prev_candle = candle
+            candle += 1
+            height = 0
+            prices_pool = []
+
+        # reversal_control.append((max(prices_pool, default=current_open) - current_price, min(prices_pool, default=current_open) - current_price))
+
+    candles = pd.Series(data=candle_ids, index=trades.index, name='Candle')
+    highs = pd.Series(data=high, index=trades.index, name='High')
+    lows = pd.Series(data=low, index=trades.index, name='Low')
+    opens = pd.Series(data=open_, index=trades.index, name='Open')
+    closes = pd.Series(data=close, index=trades.index, name='Close')
+    # control = pd.Series(data=reversal_control, index=trades.index, name='control')
+
+    # data = [candles, opens, highs, lows, closes, control]
+    # data = [candles*10**-decimal_positions, opens*10**-decimal_positions, highs*10**-decimal_positions, lows*10**-decimal_positions,
+    #         closes*10**-decimal_positions, trades['Quantity'], trades['Timestamp']]
+    data = [candles, opens, highs, lows, closes, trades['Quantity'], trades['Timestamp']]
+
+    ret = pd.concat(data, axis=1, keys=[s.name for s in data])
+
+    klines = ret.groupby(['Candle']).agg(
+        {'Open': 'first', 'High': 'last', 'Low': 'last', 'Close': 'last', 'Quantity': 'sum', 'Timestamp': 'first'})
+
+    date_index = klines['Timestamp'].apply(convert_milliseconds_to_time_zone_datetime, timezoned=time_zone)
+    klines.set_index(date_index, inplace=True)
+
+    repair_decimals = np.float(10**-decimal_positions)
+    klines['High'] *= repair_decimals
+    klines['Low'] *= repair_decimals
+    klines['Open'] *= repair_decimals
+    klines['Close'] *= repair_decimals
+
+    return klines

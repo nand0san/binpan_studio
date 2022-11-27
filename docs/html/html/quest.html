@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Requests Module &mdash; BinPan 0.2.40 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/style.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Strategies Module" href="strategies.html" />
+    <link rel="prev" title="Redis Module" href="redis_fetch.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> BinPan
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="binpan.html">BinPan Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exchange.html">Exchange Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="files.html">Files Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="indicators.html">Indicators Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="messages.html">Messages Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Requests Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#tools">Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#requests">Requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#request-shortcuts">Request Shortcuts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tags.html">Tags &amp; Backtesting Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">BinPan</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Requests Module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/quest.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="requests-module">
+<h1>Requests Module<a class="headerlink" href="#requests-module" title="Permalink to this heading"></a></h1>
+<p>This module manage requests and weight for API interactions.</p>
+<p>To import this module:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">handlers</span> <span class="kn">import</span> <span class="n">quest</span>
+</pre></div>
+</div>
+<span class="target" id="module-handlers.quest"></span><p>API requests module.</p>
+<section id="tools">
+<h2>Tools<a class="headerlink" href="#tools" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.quest.add_header_for_endpoint">
+<span class="sig-prename descclassname"><span class="pre">handlers.quest.</span></span><span class="sig-name descname"><span class="pre">add_header_for_endpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.quest.add_header_for_endpoint" title="Permalink to this definition"></a></dt>
+<dd><p>Adds API headers response info for weight control.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>endpoint</strong> (<em>str</em>) – Endpoint path.</p></li>
+<li><p><strong>header</strong> (<em>str</em>) – Header in response.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.quest.update_weights">
+<span class="sig-prename descclassname"><span class="pre">handlers.quest.</span></span><span class="sig-name descname"><span class="pre">update_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">headers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">father_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.quest.update_weights" title="Permalink to this definition"></a></dt>
+<dd><p>Update weights on headers weight control global dictionary, used in control of pauses in API requests to avoid bans.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>headers</strong> – Response headers. Usually a dictionary.</p></li>
+<li><p><strong>father_url</strong> (<em>str</em>) – API url requested.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.quest.check_weight">
+<span class="sig-prename descclassname"><span class="pre">handlers.quest.</span></span><span class="sig-name descname"><span class="pre">check_weight</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.quest.check_weight" title="Permalink to this definition"></a></dt>
+<dd><p>Verify what weight will result before requesting API and compare to API limits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>weight</strong> (<em>int</em>) – Weight expected from the request planned.</p></li>
+<li><p><strong>endpoint</strong> (<em>str</em>) – Endpoint requested to find API weight.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.quest.get_server_time">
+<span class="sig-prename descclassname"><span class="pre">handlers.quest.</span></span><span class="sig-name descname"><span class="pre">get_server_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.quest.get_server_time" title="Permalink to this definition"></a></dt>
+<dd><p>Get time from server.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return int</dt>
+<dd class="field-odd"><p>A linux timestamp in milliseconds.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="requests">
+<h2>Requests<a class="headerlink" href="#requests" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.quest.convert_response_type">
+<span class="sig-prename descclassname"><span class="pre">handlers.quest.</span></span><span class="sig-name descname"><span class="pre">convert_response_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.quest.convert_response_type" title="Permalink to this definition"></a></dt>
+<dd><p>Infers types into api response and changes those.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>response_data</strong> (<em>dict</em><em> or </em><em>list</em>) – API response json loaded.</p></li>
+<li><p><strong>decimal_mode</strong> (<em>bool</em>) – Sets numeric data type to decimal.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return dict or list</dt>
+<dd class="field-even"><p>Typed API data in response..</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.quest.get_response">
+<span class="sig-prename descclassname"><span class="pre">handlers.quest.</span></span><span class="sig-name descname"><span class="pre">get_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.quest.get_response" title="Permalink to this definition"></a></dt>
+<dd><p>Requests GET to API. Before requesting calculates resulting weight and waits enough time to not surplus limit for that endpoint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>url</strong> (<em>str</em>) – API endpoint url.</p></li>
+<li><p><strong>params</strong> (<em>dit</em><em> or </em><em>List</em><em>[</em><em>tuple</em><em>]</em>) – Request params.</p></li>
+<li><p><strong>headers</strong> (<em>dict</em>) – Request headers.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return dict or list</dt>
+<dd class="field-even"><p>API response in dict or list format.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.quest.post_response">
+<span class="sig-prename descclassname"><span class="pre">handlers.quest.</span></span><span class="sig-name descname"><span class="pre">post_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.quest.post_response" title="Permalink to this definition"></a></dt>
+<dd><p>Requests POST to API. Before requesting calculates resulting weight and waits enough time to not surplus limit for that endpoint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>url</strong> (<em>str</em>) – API endpoint url.</p></li>
+<li><p><strong>params</strong> (<em>dit</em><em> or </em><em>List</em><em>[</em><em>tuple</em><em>]</em>) – Request params.</p></li>
+<li><p><strong>headers</strong> (<em>dict</em>) – Request headers.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>API response in dict or list format.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.quest.delete_response">
+<span class="sig-prename descclassname"><span class="pre">handlers.quest.</span></span><span class="sig-name descname"><span class="pre">delete_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.quest.delete_response" title="Permalink to this definition"></a></dt>
+<dd><p>Requests DELETE to API. Before requesting calculates resulting weight and waits enough time to not surplus limit for that endpoint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>url</strong> (<em>str</em>) – API endpoint url.</p></li>
+<li><p><strong>params</strong> (<em>dit</em><em> or </em><em>List</em><em>[</em><em>tuple</em><em>]</em>) – Request params.</p></li>
+<li><p><strong>headers</strong> (<em>dict</em>) – Request headers.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>API response in dict or list format.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.quest.handle_api_response">
+<span class="sig-prename descclassname"><span class="pre">handlers.quest.</span></span><span class="sig-name descname"><span class="pre">handle_api_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.quest.handle_api_response" title="Permalink to this definition"></a></dt>
+<dd><p>Raises if there is any problem with the server response or returns the raw json.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>API response in dict or list format.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.quest.hashed_signature">
+<span class="sig-prename descclassname"><span class="pre">handlers.quest.</span></span><span class="sig-name descname"><span class="pre">hashed_signature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span></span></span><a class="headerlink" href="#handlers.quest.hashed_signature" title="Permalink to this definition"></a></dt>
+<dd><p>Hashes params of a request with encoded API secret. Decodes it and return correct hashed signature.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>url_params</strong> (<em>str</em>) – String of params to encode.</p></li>
+<li><p><strong>api_secret</strong> (<em>str</em>) – Encoded API secret.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Hashed signature.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.quest.sign_request">
+<span class="sig-prename descclassname"><span class="pre">handlers.quest.</span></span><span class="sig-name descname"><span class="pre">sign_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recvWindow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#handlers.quest.sign_request" title="Permalink to this definition"></a></dt>
+<dd><p>Add signature to the request. Returns a list of params in tuples and a headers dict.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>params</strong> (<em>dict</em><em> or </em><em>List</em><em>[</em><em>tuple</em><em>]</em>) – Params for the request.</p></li>
+<li><p><strong>recvWindow</strong> (<em>int</em>) – Milliseconds of life for the request to be responded.</p></li>
+<li><p><strong>api_key</strong> (<em>str</em>) – Encoded API key.</p></li>
+<li><p><strong>api_secret</strong> (<em>str</em>) – Encoded API secret.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return Tuple[list, dict]</dt>
+<dd class="field-even"><p>List of params in tuples and a headers dict.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.quest.get_signed_request">
+<span class="sig-prename descclassname"><span class="pre">handlers.quest.</span></span><span class="sig-name descname"><span class="pre">get_signed_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recvWindow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.quest.get_signed_request" title="Permalink to this definition"></a></dt>
+<dd><p>It does a signed get to a url along with a dictionary of parameters. To avoid parameter order errors, they are passed in tuple format,
+it is also useful sending parameters that have the same name with several values:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://dev.binance.vision/t/faq-signature-for-this-request-is-not-valid/176/4">https://dev.binance.vision/t/faq-signature-for-this-request-is-not-valid/176/4</a></p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>url</strong> (<em>str</em>) – API endpoint.</p></li>
+<li><p><strong>decimal_mode</strong> (<em>bool</em>) – Sets numeric data format to decimal.</p></li>
+<li><p><strong>api_key</strong> (<em>str</em>) – Encoded API key.</p></li>
+<li><p><strong>api_secret</strong> (<em>str</em>) – Encoded API secret.</p></li>
+<li><p><strong>params</strong> (<em>dict</em><em> or </em><em>List</em><em>[</em><em>tuple</em><em>]</em>) – Params for the request.</p></li>
+<li><p><strong>recvWindow</strong> (<em>int</em>) – Milliseconds of life for the request to be responded.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return dict or list</dt>
+<dd class="field-even"><p>API response in dict or list format.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.quest.get_semi_signed_request">
+<span class="sig-prename descclassname"><span class="pre">handlers.quest.</span></span><span class="sig-name descname"><span class="pre">get_semi_signed_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.quest.get_semi_signed_request" title="Permalink to this definition"></a></dt>
+<dd><p>Requests GET with api key header and params. Some methods requested this way.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>url</strong> (<em>str</em>) – API endpoint.</p></li>
+<li><p><strong>decimal_mode</strong> (<em>bool</em>) – Sets numeric data format to decimal.</p></li>
+<li><p><strong>api_key</strong> (<em>str</em>) – Encoded API key.</p></li>
+<li><p><strong>params</strong> (<em>dict</em><em> or </em><em>List</em><em>[</em><em>tuple</em><em>]</em>) – Params for the request.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return dict or list</dt>
+<dd class="field-even"><p>API response in dict or list format.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.quest.post_signed_request">
+<span class="sig-prename descclassname"><span class="pre">handlers.quest.</span></span><span class="sig-name descname"><span class="pre">post_signed_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recvWindow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.quest.post_signed_request" title="Permalink to this definition"></a></dt>
+<dd><p>Makes a signed POST to a url along with a dictionary of parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>url</strong> (<em>str</em>) – API endpoint.</p></li>
+<li><p><strong>decimal_mode</strong> (<em>bool</em>) – Sets numeric data format to decimal.</p></li>
+<li><p><strong>api_key</strong> (<em>str</em>) – Encoded API key.</p></li>
+<li><p><strong>api_secret</strong> (<em>str</em>) – Encoded API secret.</p></li>
+<li><p><strong>params</strong> (<em>dict</em><em> or </em><em>List</em><em>[</em><em>tuple</em><em>]</em>) – Params for the request.</p></li>
+<li><p><strong>recvWindow</strong> (<em>int</em>) – Milliseconds of life for the request to be responded.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return dict or list</dt>
+<dd class="field-even"><p>API response in dict or list format.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.quest.delete_signed_request">
+<span class="sig-prename descclassname"><span class="pre">handlers.quest.</span></span><span class="sig-name descname"><span class="pre">delete_signed_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recvWindow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.quest.delete_signed_request" title="Permalink to this definition"></a></dt>
+<dd><p>Makes a signed DELETE to a url along with a dictionary of parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>url</strong> (<em>str</em>) – API endpoint.</p></li>
+<li><p><strong>decimal_mode</strong> (<em>bool</em>) – Sets numeric data format to decimal.</p></li>
+<li><p><strong>api_key</strong> (<em>str</em>) – Encoded API key.</p></li>
+<li><p><strong>api_secret</strong> (<em>str</em>) – Encoded API secret.</p></li>
+<li><p><strong>params</strong> (<em>dict</em><em> or </em><em>List</em><em>[</em><em>tuple</em><em>]</em>) – Params for the request.</p></li>
+<li><p><strong>recvWindow</strong> (<em>int</em>) – Milliseconds of life for the request to be responded.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return dict or list</dt>
+<dd class="field-even"><p>API response in dict or list format.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="request-shortcuts">
+<h2>Request Shortcuts<a class="headerlink" href="#request-shortcuts" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.quest.api_raw_get">
+<span class="sig-prename descclassname"><span class="pre">handlers.quest.</span></span><span class="sig-name descname"><span class="pre">api_raw_get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.quest.api_raw_get" title="Permalink to this definition"></a></dt>
+<dd><p>Shortcut to request GET to API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>endpoint</strong> (<em>str</em>) – API endpoint to request.</p></li>
+<li><p><strong>weight</strong> (<em>int</em>) – Expected weight for the request.</p></li>
+<li><p><strong>base_url</strong> (<em>str</em>) – Base URL.</p></li>
+<li><p><strong>params</strong> (<em>dict</em><em> or </em><em>List</em><em>[</em><em>tuple</em><em>]</em>) – Params for the request.</p></li>
+<li><p><strong>headers</strong> (<em>dict</em>) – Headers to use in the request.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return dict or list</dt>
+<dd class="field-even"><p>API response in dict or list format.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.quest.api_raw_signed_get">
+<span class="sig-prename descclassname"><span class="pre">handlers.quest.</span></span><span class="sig-name descname"><span class="pre">api_raw_signed_get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.quest.api_raw_signed_get" title="Permalink to this definition"></a></dt>
+<dd><p>Shortcut to request signed GET to API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>decimal_mode</strong> (<em>bool</em>) – If True, declares format of numbers to decimal type.</p></li>
+<li><p><strong>api_key</strong> (<em>str</em>) – Encoded API key.</p></li>
+<li><p><strong>api_secret</strong> (<em>str</em>) – Encoded API secret.</p></li>
+<li><p><strong>endpoint</strong> (<em>str</em>) – API endpoint to request.</p></li>
+<li><p><strong>weight</strong> (<em>int</em>) – Expected weight for the request.</p></li>
+<li><p><strong>base_url</strong> (<em>str</em>) – Base URL.</p></li>
+<li><p><strong>params</strong> (<em>dict</em><em> or </em><em>List</em><em>[</em><em>tuple</em><em>]</em>) – Params for the request.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return dict or list</dt>
+<dd class="field-even"><p>API response in dict or list format.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.quest.api_raw_signed_post">
+<span class="sig-prename descclassname"><span class="pre">handlers.quest.</span></span><span class="sig-name descname"><span class="pre">api_raw_signed_post</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.quest.api_raw_signed_post" title="Permalink to this definition"></a></dt>
+<dd><p>Shortcut to request signed POST to API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>decimal_mode</strong> (<em>bool</em>) – If True, declares format of numbers to decimal type.</p></li>
+<li><p><strong>api_key</strong> (<em>str</em>) – Encoded API key.</p></li>
+<li><p><strong>api_secret</strong> (<em>str</em>) – Encoded API secret.</p></li>
+<li><p><strong>endpoint</strong> (<em>str</em>) – API endpoint to request.</p></li>
+<li><p><strong>weight</strong> (<em>int</em>) – Expected weight for the request.</p></li>
+<li><p><strong>base_url</strong> (<em>str</em>) – Base URL.</p></li>
+<li><p><strong>params</strong> (<em>dict</em><em> or </em><em>List</em><em>[</em><em>tuple</em><em>]</em>) – Params for the request.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return dict or list</dt>
+<dd class="field-even"><p>API response in dict or list format.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="redis_fetch.html" class="btn btn-neutral float-left" title="Redis Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="strategies.html" class="btn btn-neutral float-right" title="Strategies Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fernando Alfonso.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

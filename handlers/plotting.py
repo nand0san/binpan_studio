@@ -72,13 +72,18 @@ def set_subplots(extra_rows: int, candles_ta_height_ratio: float = 0.8, vertical
                          vertical_spacing=vertical_spacing, specs=specs)
 
 
-def set_candles(df: pd.DataFrame) -> tuple:
+def set_candles(df: pd.DataFrame,
+                x_labels: list = None) -> tuple:
     """
     Put candles and axis into a tuple.
-    :param df: Dataframe OHLC type.
+    :param pd.DataFrame df: Dataframe OHLC type.
+    :param list x_labels: Labels to replace in x axis plotting.
     :return:
     """
     candles_plot = go.Candlestick(x=df.index, open=df['Open'], high=df['High'], low=df['Low'], close=df['Close'], name='Candles')
+    if x_labels:
+        # candles_plot.x = x_labels
+        candles_plot.x = np.array(x_labels)
     ax = 1
     return candles_plot, ax
 
@@ -368,7 +373,7 @@ def candles_ta(data: pd.DataFrame,
                height: int = 1000,
                range_slider: bool = False,
                candles_ta_height_ratio: float = 0.5,
-               plot_volume: bool = True,
+               plot_volume: bool or str = True,
                title: str = 'Candlesticks, indicators, and Volume plot',
                yaxis_title: str = 'Symbol Price',
                annotation_values: list = None,
@@ -377,7 +382,8 @@ def candles_ta(data: pd.DataFrame,
                annotation_colors: list = None,
                annotation_legend_names: list = None,
                labels: list = None,
-               plot_bgcolor: str = None):
+               plot_bgcolor: str = None,
+               text_index: bool = False):
     """
     Data needs to be a DataFrame that at least contains the columns: Open Close High Low Volume
 
@@ -408,7 +414,7 @@ def candles_ta(data: pd.DataFrame,
     :param int height: Plot sizing
     :param bool range_slider: For the volume plot.
     :param float candles_ta_height_ratio: A ratio between the big candles plot and (if any) the rest of indicator subplots below.
-    :param bool plot_volume: Optional to plot volume.
+    :param bool or str plot_volume: Optional to plot volume from "Volume" column or pass volume column name.
     :param str title: A title string.
     :param str yaxis_title: A name string.
     :param list annotation_values: A list of pandas series with values to plot marks or annotations overlapped in the candles plot.
@@ -469,21 +475,33 @@ def candles_ta(data: pd.DataFrame,
         :width: 1000
 
     :param plot_bgcolor: Set background color.
+    :param bool text_index: If enables, index will be transformed to a text index. It can be useful to plot candles not time correlated like reversal candles.
 
     """
-    if not indicators_color_filled:
+    if not indicators_color_filled and indicators_series:
         indicators_color_filled = {i.name: None for i in indicators_series}
     elif type(indicators_color_filled) == list:
         indicators_color_filled = {s.name: indicators_color_filled[i] for i, s in enumerate(indicators_series)}
     plot_logger.debug(f"candles_ta indicators_color_filled: {indicators_color_filled}")
 
-    if not indicators_filled_mode:
+    if not indicators_filled_mode and indicators_series:
         indicators_filled_mode = {i.name: None for i in indicators_series}
     elif type(indicators_filled_mode) == list:
         indicators_filled_mode = {s.name: indicators_filled_mode[i] for i, s in enumerate(indicators_series)}
     plot_logger.debug(f"candles_ta indicators_filled_mode: {indicators_filled_mode}")
 
+    # catch data
     df_plot = data.copy(deep=True)
+    if type(plot_volume) == str:
+        df_plot.rename(columns={plot_volume: 'Volume'}, inplace=True)
+
+    if text_index:
+        df_plot.index.name = 'Plot Dates'
+        df_plot.reset_index(drop=False, inplace=True)
+        x_labels = df_plot['Plot Dates'].tolist()
+        x_labels = [str(x).split(' ')[1].split('+')[0] for x in x_labels]
+    else:
+        x_labels = None
 
     if not indicators_series:
         indicators_series = []
@@ -506,7 +524,7 @@ def candles_ta(data: pd.DataFrame,
 
     # limit
     axes = 0
-    candles_plot, ax = set_candles(df_plot)
+    candles_plot, ax = set_candles(df=df_plot, x_labels=x_labels)
     axes += ax
 
     # volume
@@ -532,8 +550,8 @@ def candles_ta(data: pd.DataFrame,
 
     plot_logger.debug(f"----------------------------------------------------------------------")
     plot_logger.debug(f"indicators_colors: {indicators_colors} len: {len(indicators_colors)}")
-    plot_logger.debug(f"indicators_color_filled: {indicators_color_filled} len: {len(indicators_color_filled)}")
-    plot_logger.debug(f"indicators_filled_mode: {indicators_filled_mode} len: {len(indicators_filled_mode)}")
+    plot_logger.debug(f"indicators_color_filled: {indicators_color_filled}")
+    plot_logger.debug(f"indicators_filled_mode: {indicators_filled_mode}")
     plot_logger.debug(f"rows: {rows} len: {len(rows)}")
     plot_logger.debug(f"indicators_series: {len(indicators_series)} len: {len(indicators_series)}")
     plot_logger.debug(f"y_axis_idx: {y_axis_idx} len: {len(y_axis_idx)}")
@@ -986,12 +1004,14 @@ def candles_tagged(data: pd.DataFrame,
 # trades plots #
 ################
 
-def plot_trade_size(data: pd.DataFrame,
-                    max_size: int = 60,
-                    height: int = 1000,
-                    logarithmic: bool = False,
-                    title: str = None,
-                    **kwargs_update_layout):
+def plot_trades(data: pd.DataFrame,
+                max_size: int = 60,
+                height: int = 1000,
+                logarithmic: bool = False,
+                overlap_prices: pd.DataFrame = None,
+                title: str = None,
+                shifted: int = 1,
+                **kwargs_update_layout):
     """
     Plots scatter plot from trades quantity and trades sizes. Marks are size scaled to the max size. Marks are semi transparent and colored
     using Maker buyer or Taker buyer discrete colors. Usually red and blue.
@@ -1002,7 +1022,9 @@ def plot_trade_size(data: pd.DataFrame,
     :param int max_size: Size of the marks for the biggest quantity sized trades.
     :param int height: Plot sizing.
     :param bool logarithmic: Y axis in a logarithmic scale.
+    :param pd.DataFrame overlap_prices: Data to plot overlapping scatter plot.
     :param str title: Title string.
+    :param int shifted: If passed any integer, shifts candles to the right one step, this way can see more naturally trades actions over klines.
     :param kwargs_update_layout: Update layout plotly options.
 
     Example:
@@ -1028,6 +1050,27 @@ def plot_trade_size(data: pd.DataFrame,
                      size_max=max_size, log_y=logarithmic)
     if not title:
         title = f"Trades size {data.index.name}"
+
+    if type(overlap_prices) == pd.DataFrame:
+        start = data.iloc[0]['Timestamp']
+        end = data.iloc[-1]['Timestamp']
+        # shift added for more reality viewing trades effect on klines
+        if shifted:
+            title = f"{title} with High and Low Prices (shifted {shifted} candle to the right)"
+            plot_data = overlap_prices[(overlap_prices['Open timestamp'] >= start) & (overlap_prices['Open timestamp'] <= end)].shift(1,
+                                                                                                                                      freq='infer')
+        else:
+            title = f"{title} with High and Low Prices"
+            plot_data = overlap_prices[(overlap_prices['Open timestamp'] >= start) & (overlap_prices['Open timestamp'] <= end)]
+
+        fig2 = px.line(plot_data, x=plot_data.index, y="High", log_y=logarithmic)
+        fig2.update_traces(line=dict(color='rgba(0, 0, 0, 0.6)', width=0.5))
+
+        fig3 = px.line(plot_data, x=plot_data.index, y="Low", log_y=logarithmic)
+        fig3.update_traces(line=dict(color='rgba(0, 0, 0, 0.6)', width=0.5))
+
+        fig = go.Figure(data=fig.data + fig2.data + fig3.data)
+
     fig.update_layout(
         title=title,
         xaxis_title_text=f'{data.index.name}',
@@ -1037,21 +1080,9 @@ def plot_trade_size(data: pd.DataFrame,
     fig.show()
 
 
-def normalize(max_value: int or float, min_value: int or float, data: list):
-    """
-    Normalize data from minimum as 0 to maximum as 1.
-
-    :param int or float max_value: A numeric value.
-    :param int or float min_value: A numeric value.
-    :param data: List of numerica data.
-    :return: Normalized numeric data.
-    """
-    return [(i / sum(data)) * max_value + min_value for i in data]
-
-
-###################
-# analyzing plots #
-###################
+##################
+# Analysis plots #
+##################
 
 def plot_pie(serie: pd.Series,
              categories: int = 15,
@@ -1463,6 +1494,18 @@ def bar_plot(df: pd.DataFrame,
 ##############
 # plot tools #
 ##############
+
+def normalize(max_value: int or float, min_value: int or float, data: list):
+    """
+    Normalize data from minimum as 0 to maximum as 1.
+
+    :param int or float max_value: A numeric value.
+    :param int or float min_value: A numeric value.
+    :param data: List of numerica data.
+    :return: Normalized numeric data.
+    """
+    return [(i / sum(data)) * max_value + min_value for i in data]
+
 
 def find_step_for_bins(data: pd.DataFrame,
                        master_column: str,

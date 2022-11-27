@@ -96,6 +96,7 @@ def get_candles_by_time_stamps(symbol: str,
                                start_time: int = None,
                                end_time: int = None,
                                limit=1000,
+                               time_zone='Europe/Madrid',
                                redis_client: StrictRedis = None) -> list:
     """
     Calls API for candles list buy one or two timestamps, starting and ending.
@@ -120,6 +121,7 @@ def get_candles_by_time_stamps(symbol: str,
     :param int end_time: A timestamp in milliseconds from epoch.
     :param int limit: Count of candles to ask for.
     :param bool redis_client: A redis instance of a connector.
+    :param str time_zone: Just used for exception errors.
     :return list: Returns a list from the Binance API
 
     .. code-block::
@@ -143,6 +145,11 @@ def get_candles_by_time_stamps(symbol: str,
 
     """
     endpoint = '/api/v3/klines?'
+
+    start_string = handlers.time_helper.convert_milliseconds_to_str(ms=start_time, timezoned=time_zone)
+    end_string = handlers.time_helper.convert_milliseconds_to_str(ms=end_time, timezoned=time_zone)
+
+    market_logger.debug(f"get_candles_by_time_stamps -> symbol={symbol} tick_interval={tick_interval} start={start_string} end={end_string}")
 
     tick_milliseconds = int(tick_seconds[tick_interval] * 1000)
 
@@ -168,10 +175,21 @@ def get_candles_by_time_stamps(symbol: str,
         end = r[1]
 
         if redis_client:
+            if type(redis_client) != StrictRedis:
+                msg = f"BinPan exceptionRedis client error: type passed={type(redis_client)}"
+                market_logger.error(msg)
+                raise Exception(msg)
+
             ret = redis_client.zrangebyscore(name=f"{symbol.lower()}@kline_{tick_interval}",
                                              min=start,
                                              max=end,
                                              withscores=False)
+            if not ret:
+
+                msg = f"BinPan Exception: Requested data for {symbol.lower()}@kline_{tick_interval} between {start_string} and " \
+                      f"{end_string} missing in redis server: ."
+                market_logger.error(msg)
+                raise Exception(msg)
 
             response = [json.loads(i) for i in ret]
         else:

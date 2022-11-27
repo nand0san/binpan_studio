@@ -38,7 +38,7 @@ binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', 
 tick_seconds = handlers.time_helper.tick_seconds
 pandas_freq_tick_interval = handlers.time_helper.pandas_freq_tick_interval
 
-__version__ = "0.2.39"
+__version__ = "0.2.40"
 
 try:
     from secret import redis_conf, redis_conf_trades
@@ -75,6 +75,8 @@ plotly_colors = handlers.plotting.plotly_colors
 pd.set_option('display.max_columns', 20)
 pd.set_option('display.width', 250)
 pd.set_option('display.min_rows', 10)
+
+empty_trades_msg = "Empty trades, please request using: get_trades() method: Example: my_symbol.get_trades()"
 
 
 class Symbol(object):
@@ -160,6 +162,7 @@ class Symbol(object):
        But can be passed a StrictRedis client object previously configured.
        secret.py file map example: redis_conf = {'host':'192.168.1.5','port': 6379,'db': 0,'decode_responses': True}
 
+    :param bool or StrictRedis from_redis_trades: If enabled, BinPan will look trades to a redis client in a similar way tha from_redis.
     :param int display_columns:     Number of columns in the dataframe display. Convenient to adjust in jupyter notebooks.
     :param int display_rows:        Number of rows in the dataframe display. Convenient to adjust in jupyter notebooks.
     :param int display_width:       Display width in the dataframe display. Convenient to adjust in jupyter notebooks.
@@ -244,6 +247,7 @@ class Symbol(object):
                  closed: bool = True,
                  from_redis: bool or StrictRedis = None,
                  from_redis_trades: bool or StrictRedis = None,
+                 hours: int = None,
                  display_columns=25,
                  display_rows=10,
                  display_min_rows=25,
@@ -292,6 +296,7 @@ class Symbol(object):
                                'q': 'Quantity',
                                'p': 'Price',
                                'a': 'Aggregate tradeId'}
+        self.reversal_columns = ['Open', 'High', 'Low', 'Close', 'Quantity', 'Timestamp']
 
         self.time_cols = ['Open time', 'Close time']
         self.dts_time_cols = ['Open timestamp', 'Close timestamp']
@@ -348,8 +353,6 @@ class Symbol(object):
         else:
             self.symbol = symbol.upper()
             self.tick_interval = tick_interval
-            self.start_time = start_time
-            self.end_time = end_time
             self.limit = limit
             self.time_zone = time_zone
             self.time_index = time_index
@@ -390,6 +393,9 @@ class Symbol(object):
 
         self.raw_trades = []
         self.trades = pd.DataFrame(columns=list(self.trades_columns.values()))
+        self.min_height = 7
+        self.min_reversal = 4
+        self.reversal_klines = pd.DataFrame(columns=self.reversal_columns)
 
         self.orderbook = pd.DataFrame(columns=['Price', 'Quantity', 'Side'])
         self.row_control = dict()
@@ -397,7 +403,6 @@ class Symbol(object):
         self.color_fill_control = dict()
         self.indicators_filled_mode = dict()
         self.axis_groups = dict()
-        # self.action_labels = dict()
         self.global_axis_group = 99
         self.strategies = 0
         self.row_counter = 1
@@ -409,7 +414,7 @@ class Symbol(object):
         self.set_display_max_rows()
 
         binpan_logger.debug(f"New instance of BinPan Symbol {self.version}: {self.symbol}, {self.tick_interval}, limit={self.limit},"
-                            f" start={self.start_time}, end={self.end_time}, {self.time_zone}, time_index={self.time_index}"
+                            f" start={start_time}, end={end_time}, {self.time_zone}, time_index={self.time_index}"
                             f", closed_candles={self.closed}")
 
         ##############
@@ -418,27 +423,31 @@ class Symbol(object):
 
         start_time = handlers.wallet.convert_str_date_to_ms(date=start_time, time_zone=time_zone)
         end_time = handlers.wallet.convert_str_date_to_ms(date=end_time, time_zone=time_zone)
-        self.start_time = start_time
-        self.end_time = end_time
 
         # work with open timestamps
         if start_time:
-            self.start_time = handlers.time_helper.open_from_milliseconds(ms=start_time, tick_interval=self.tick_interval)
+            start_time = handlers.time_helper.open_from_milliseconds(ms=start_time, tick_interval=self.tick_interval)
 
         if end_time:
-            self.end_time = handlers.time_helper.open_from_milliseconds(ms=end_time, tick_interval=self.tick_interval)
+            end_time = handlers.time_helper.open_from_milliseconds(ms=end_time, tick_interval=self.tick_interval)
+
+        # limit by hours
+        if hours:
+            if not end_time:
+                end_time = int(time() * 1000)
+            if not start_time:
+                start_time = end_time - (hours * 60 * 60 * 1000)
 
         # fill missing timestamps
         self.start_time, self.end_time = handlers.time_helper.time_interval(tick_interval=self.tick_interval,
                                                                             limit=self.limit,
-                                                                            start=self.start_time,
-                                                                            end=self.end_time)
+                                                                            start_time=start_time,
+                                                                            end_time=end_time)
         # discard not closed
         now = handlers.time_helper.utc()
         current_open = handlers.time_helper.open_from_milliseconds(ms=now, tick_interval=self.tick_interval)
-        if self.closed:
-            if self.end_time >= current_open:
-                self.end_time = current_open - 1000
+        if self.closed and self.end_time >= current_open:
+            self.end_time = current_open - 2000
 
         #################
         # query candles #
@@ -464,8 +473,12 @@ class Symbol(object):
         self.plot_splitted_serie_couples = {}
         self.len = len(self.df)
 
-        # exchange data
+        # exchange data and tick size
         self.info_dic = handlers.exchange.get_info_dic()
+        self.tickSize = self.info_dic[self.symbol]['filters'][0]['tickSize']
+        self.decimals = handlers.exchange.get_decimal_positions(self.tickSize)
+        self.pip = self.tickSize
+
         self.order_filters = self.get_order_filters()
         self.order_types = self.get_order_types()
         self.permissions = self.get_permissions()
@@ -486,6 +499,34 @@ class Symbol(object):
         """
         return self.df
 
+    # def update_klines(self):
+    #     """
+    #     Update klines from Binance or Redis source.
+    #
+    #     This will automatically rewrite endtime of data.
+    #
+    #     :return:
+    #     """
+    #
+    #     self.end_time = int(time()*1000)
+    #     self.raw = handlers.market.get_candles_by_time_stamps(symbol=self.symbol,
+    #                                                           tick_interval=self.tick_interval,
+    #                                                           start_time=self.start_time,
+    #                                                           end_time=self.end_time,
+    #                                                           limit=self.limit,
+    #                                                           redis_client=self.from_redis)
+    #
+    #     dataframe = handlers.market.parse_candles_to_dataframe(raw_response=self.raw,
+    #                                                            columns=self.original_candles_cols,
+    #                                                            time_cols=self.time_cols,
+    #                                                            symbol=self.symbol,
+    #                                                            tick_interval=self.tick_interval,
+    #                                                            time_zone=self.time_zone,
+    #                                                            time_index=self.time_index)
+    #     self.df = dataframe
+    #
+    #     return self.df
+
     def trades(self):
         """
         Returns trades dataframe.
@@ -493,8 +534,44 @@ class Symbol(object):
         :return pd.DataFrame:
         """
         if self.trades.empty:
-            print("Empty trades, please request using: get_trades() method: Example: my_symbol.get_trades()")
+            binpan_logger.info(empty_trades_msg)
         return self.trades
+
+    def get_reversal_candles(self, min_height: int = 7, min_reversal: int = 4) -> pd.DataFrame or None:
+        """
+        Resamples aggregated API or REDIS trades to reversal klines:
+           https://atas.net/atas-possibilities/charts/how-to-set-reversal-charts-for-finding-the-market-reversal/
+
+        :param min_height: Defaults to 7. Minimum reversal kline height to close a candle
+        :param min_reversal: Defaults to 4. Minimum reversal from hig/low to close a candle
+        :return pd.DataFrame: Resample trades to reversal klines. Can be plotted.
+        """
+        if self.trades.empty:
+            binpan_logger.info(empty_trades_msg)
+            return
+
+        if min_height:
+            self.min_height = min_height
+        if min_reversal:
+            self.min_reversal = min_reversal
+
+        if self.reversal_klines.empty or min_height or min_reversal:
+            self.reversal_klines = handlers.indicators.reversal_candles(trades=self.trades,
+                                                                        decimal_positions=self.decimals,
+                                                                        time_zone=self.time_zone,
+                                                                        min_height=self.min_height,
+                                                                        min_reversal=self.min_reversal)
+        return self.reversal_klines
+
+    # def tick(self) -> str:
+    #     """
+    #     Returns the minimum tick value.
+    #
+    #     self
+    #
+    #     :return:
+    #     """
+    #     # self.tickSize = self.info_dic[self.symbol]['filters']['tickSize']
 
     def symbol(self):
         """
@@ -1067,9 +1144,9 @@ class Symbol(object):
             handlers.wallet.convert_str_date_to_ms(date=endTime,
                                                    time_zone=self.time_zone)
         if hours:
-            startTime = int(time()*1000) - (1000 * 60 * 60 * hours)
+            startTime = int(time() * 1000) - (1000 * 60 * 60 * hours)
         elif minutes:
-            startTime = int(time()*1000) - (1000 * 60 * minutes)
+            startTime = int(time() * 1000) - (1000 * 60 * minutes)
 
         if startTime:
             curr_startTime = startTime
@@ -1081,7 +1158,7 @@ class Symbol(object):
         elif self.end_time:
             curr_endTime = self.end_time
         else:
-            curr_endTime = int(time()*1000)
+            curr_endTime = int(time() * 1000)
 
         self.raw_trades = handlers.market.get_historical_aggregated_trades(symbol=self.symbol,
                                                                            startTime=curr_startTime,
@@ -1365,7 +1442,9 @@ class Symbol(object):
                          max_size: int = 60,
                          height: int = 1000,
                          logarithmic: bool = False,
+                         overlap_prices: bool = True,
                          group_big_data: int = None,
+                         shifted: int = 1,
                          title: str = None):
         """
         It plots a time series graph plotting trades sized by quantity and color if taker or maker buyer.
@@ -1383,28 +1462,95 @@ class Symbol(object):
         :param int height: Default is 1000.
         :param bool logarithmic: If logarithmic, then "y" axis scale is shown in logarithmic scale.
         :param int group_big_data: If true, groups data in height bins, this can get faster plotting for big quantity of trades.
+        :param bool shifted: If True, shifts prices to plot klines one step to the right, that's more natural to see trades action in price.
+        :param bool overlap_prices: If True, plots overlap line with High and Low prices.
         :param title: Graph title
 
         """
         if self.trades.empty:
-            binpan_logger.info("Trades not downloaded. Please add trades data with: my_symbol.get_trades()")
+            binpan_logger.info(empty_trades_msg)
             return
         if not title:
             title = f"Size trade categories {self.symbol}"
         managed_data = self.trades.copy(deep=True)
+
+        if overlap_prices:
+            overlap_prices = self.df
+
         if not group_big_data:
-            handlers.plotting.plot_trade_size(data=managed_data,
-                                              max_size=max_size,
-                                              height=height,
-                                              logarithmic=logarithmic,
-                                              title=title)
+            handlers.plotting.plot_trades(data=managed_data,
+                                          max_size=max_size,
+                                          height=height,
+                                          logarithmic=logarithmic,
+                                          overlap_prices=overlap_prices,
+                                          shifted=shifted,
+                                          title=title)
         else:
             # TODO: GROUP SLOTS OF TRADES
-            handlers.plotting.plot_trade_size(data=managed_data,
-                                              max_size=max_size,
-                                              height=height,
-                                              logarithmic=logarithmic,
-                                              title=title)
+            handlers.plotting.plot_trades(data=managed_data,
+                                          max_size=max_size,
+                                          height=height,
+                                          logarithmic=logarithmic,
+                                          overlap_prices=overlap_prices,
+                                          shifted=shifted,
+                                          title=title)
+
+    def plot_reversal(self,
+                      min_height: int = None,
+                      min_reversal: int = None,
+                      text_index: bool = True, **kwargs):
+        """
+        Plots reversal candles. It requires trades fetched previously.
+
+        BinPan manages aggregated trades from binance API or from your REDIS.
+
+        :param int min_height: It defaults to previous set. Can be reset when plotting.
+        :param min_reversal: It defaults to previous set. Can be reset when plotting.
+        :param bool text_index: If True, plots klines equally spaced. This allows to plot volume.
+        :return:
+
+        Example:
+
+            .. code-block:: python
+
+               from binpan import binpan
+
+                ltc = binpan.Symbol(symbol='ltcbtc',
+                                    tick_interval='5m',
+                                    time_zone = 'Europe/Madrid',
+                                    time_index = True,
+                                    closed = True,
+                                    hours=5)
+               ltc.get_trades()
+               ltc.get_reversal_candles()
+               ltc.plot_reversal()
+
+            .. image:: images/indicators/reversal.png
+               :width: 1000
+
+        """
+        if self.trades.empty:
+            binpan_logger.info(empty_trades_msg)
+            return
+
+        if min_height:
+            self.min_height = min_height
+        if min_reversal:
+            self.min_reversal = min_reversal
+
+        if min_height or min_reversal:
+            self.reversal_klines = self.get_reversal_candles(min_height=self.min_height, min_reversal=self.min_reversal)
+
+        if not 'title' in kwargs.keys():
+            kwargs['title'] = f"Reversal Candles {self.min_height}/{self.min_reversal} {self.symbol}"
+        if not 'yaxis_title' in kwargs.keys():
+            kwargs['yaxis_title'] = f"Price {self.symbol}"
+        if not 'candles_ta_height_ratio' in kwargs.keys():
+            kwargs['candles_ta_height_ratio'] = 0.7
+        handlers.plotting.candles_ta(data=self.reversal_klines,
+                                     plot_volume='Quantity',
+                                     text_index=text_index,
+                                     **kwargs)
 
     def plot_trades_pie(self, categories: int = 25, logarithmic=True, title: str = None):
         """
@@ -1420,7 +1566,7 @@ class Symbol(object):
 
         """
         if self.trades.empty:
-            binpan_logger.info("Trades not downloaded. Please add trades data with: my_symbol.get_trades()")
+            binpan_logger.info(empty_trades_msg)
             return
         if not title:
             title = f"Size trade categories {self.symbol}"
@@ -1463,7 +1609,7 @@ class Symbol(object):
         """
         if from_trades or not self.trades.empty:
             if self.trades.empty:
-                binpan_logger.info("Trades not downloaded. Please add trades data with: my_symbol.get_trades()")
+                binpan_logger.info(empty_trades_msg)
                 return
             else:
                 _df = self.trades.copy(deep=True)
@@ -1545,7 +1691,7 @@ class Symbol(object):
 
         if from_trades:
             if self.trades.empty:
-                binpan_logger.info("Trades not downloaded. Please add trades data with: my_symbol.get_trades()")
+                binpan_logger.info(empty_trades_msg)
                 return
         if from_trades or not self.trades.empty:
             _df = self.trades.copy(deep=True)
@@ -1612,7 +1758,7 @@ class Symbol(object):
 
         """
         if self.trades.empty and from_trades:
-            binpan_logger.info("Trades not downloaded. Please add trades data with: my_symbol.get_trades()")
+            binpan_logger.info(empty_trades_msg)
             return
         if not from_trades:
             data = self.df.copy(deep=True)
