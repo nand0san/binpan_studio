@@ -76,6 +76,8 @@ pd.set_option('display.max_columns', 20)
 pd.set_option('display.width', 250)
 pd.set_option('display.min_rows', 10)
 
+empty_trades_msg = "Empty trades, please request using: get_trades() method: Example: my_symbol.get_trades()"
+
 
 class Symbol(object):
     """
@@ -294,6 +296,7 @@ class Symbol(object):
                                'q': 'Quantity',
                                'p': 'Price',
                                'a': 'Aggregate tradeId'}
+        self.reversal_columns = ['Open', 'High', 'Low', 'Close', 'Quantity', 'Timestamp']
 
         self.time_cols = ['Open time', 'Close time']
         self.dts_time_cols = ['Open timestamp', 'Close timestamp']
@@ -390,6 +393,9 @@ class Symbol(object):
 
         self.raw_trades = []
         self.trades = pd.DataFrame(columns=list(self.trades_columns.values()))
+        self.min_height = 7
+        self.min_reversal = 4
+        self.reversal_klines = pd.DataFrame(columns=self.reversal_columns)
 
         self.orderbook = pd.DataFrame(columns=['Price', 'Quantity', 'Side'])
         self.row_control = dict()
@@ -471,6 +477,7 @@ class Symbol(object):
         self.info_dic = handlers.exchange.get_info_dic()
         self.tickSize = self.info_dic[self.symbol]['filters'][0]['tickSize']
         self.decimals = handlers.exchange.get_decimal_positions(self.tickSize)
+        self.pip = self.tickSize
 
         self.order_filters = self.get_order_filters()
         self.order_types = self.get_order_types()
@@ -527,8 +534,34 @@ class Symbol(object):
         :return pd.DataFrame:
         """
         if self.trades.empty:
-            print("Empty trades, please request using: get_trades() method: Example: my_symbol.get_trades()")
+            binpan_logger.info(empty_trades_msg)
         return self.trades
+
+    def get_reversal_candles(self, min_height: int = 7, min_reversal: int = 4) -> pd.DataFrame or None:
+        """
+        Resamples trades to reversal klines:
+           https://atas.net/atas-possibilities/charts/how-to-set-reversal-charts-for-finding-the-market-reversal/
+
+        :param min_height: Defaults to 7. Minimum reversal kline height to close a candle
+        :param min_reversal: Defaults to 4. Minimum reversal from hig/low to close a candle
+        :return pd.DataFrame: Resample trades to reversal klines. Can be plotted.
+        """
+        if min_height:
+            self.min_height = min_height
+        if min_reversal:
+            self.min_reversal = min_reversal
+
+        if self.trades.empty:
+            binpan_logger.info(empty_trades_msg)
+            return
+
+        if self.reversal_klines.empty:
+            self.reversal_klines = handlers.indicators.reversal_candles(trades=self.trades,
+                                                                        decimal_positions=self.decimals,
+                                                                        time_zone=self.time_zone,
+                                                                        min_height=self.min_height,
+                                                                        min_reversal=self.min_reversal)
+        return self.reversal_klines
 
     # def tick(self) -> str:
     #     """
@@ -1435,7 +1468,7 @@ class Symbol(object):
 
         """
         if self.trades.empty:
-            binpan_logger.info("Trades not downloaded. Please add trades data with: my_symbol.get_trades()")
+            binpan_logger.info(empty_trades_msg)
             return
         if not title:
             title = f"Size trade categories {self.symbol}"
@@ -1445,22 +1478,59 @@ class Symbol(object):
             overlap_prices = self.df
 
         if not group_big_data:
-            handlers.plotting.plot_trade_size(data=managed_data,
-                                              max_size=max_size,
-                                              height=height,
-                                              logarithmic=logarithmic,
-                                              overlap_prices=overlap_prices,
-                                              shifted=shifted,
-                                              title=title)
+            handlers.plotting.plot_trades(data=managed_data,
+                                          max_size=max_size,
+                                          height=height,
+                                          logarithmic=logarithmic,
+                                          overlap_prices=overlap_prices,
+                                          shifted=shifted,
+                                          title=title)
         else:
             # TODO: GROUP SLOTS OF TRADES
-            handlers.plotting.plot_trade_size(data=managed_data,
-                                              max_size=max_size,
-                                              height=height,
-                                              logarithmic=logarithmic,
-                                              overlap_prices=overlap_prices,
-                                              shifted=shifted,
-                                              title=title)
+            handlers.plotting.plot_trades(data=managed_data,
+                                          max_size=max_size,
+                                          height=height,
+                                          logarithmic=logarithmic,
+                                          overlap_prices=overlap_prices,
+                                          shifted=shifted,
+                                          title=title)
+
+    def plot_reversal(self,
+                      min_height: int = None,
+                      min_reversal: int = None,
+                      text_index: bool = True, **kwargs):
+        """
+        Plots reversal candles. It requires trades fetched previously.
+
+        :param int min_height: It defaults to previous set. Can be reset when plotting.
+        :param min_reversal: It defaults to previous set. Can be reset when plotting.
+        :param bool text_index: If True, plots klines equally spaced. This allows to plot volume.
+        :return:
+        """
+        if min_height:
+            self.min_height = min_height
+        if min_reversal:
+            self.min_reversal = min_reversal
+        if min_height or min_reversal and not self.trades.empty:
+            self.reversal_klines = self.get_reversal_candles(min_height=min_height, min_reversal=min_reversal)
+
+        if self.reversal_klines.empty:
+            if self.trades.empty:
+                binpan_logger.info(empty_trades_msg)
+                return
+            else:
+                self.reversal_klines = self.get_reversal_candles(min_height=min_height, min_reversal=min_reversal)
+
+        if not 'title' in kwargs.keys():
+            kwargs['title'] = f"Reversal Candles {self.min_height}/{self.min_reversal} {self.symbol}"
+        if not 'yaxis_title' in kwargs.keys():
+            kwargs['yaxis_title'] = f"Price {self.symbol}"
+        if not 'candles_ta_height_ratio' in kwargs.keys():
+            kwargs['candles_ta_height_ratio'] = 0.7
+        handlers.plotting.candles_ta(data=self.reversal_klines,
+                                     plot_volume='Quantity',
+                                     text_index=text_index,
+                                     **kwargs)
 
     def plot_trades_pie(self, categories: int = 25, logarithmic=True, title: str = None):
         """
@@ -1476,7 +1546,7 @@ class Symbol(object):
 
         """
         if self.trades.empty:
-            binpan_logger.info("Trades not downloaded. Please add trades data with: my_symbol.get_trades()")
+            binpan_logger.info(empty_trades_msg)
             return
         if not title:
             title = f"Size trade categories {self.symbol}"
@@ -1519,7 +1589,7 @@ class Symbol(object):
         """
         if from_trades or not self.trades.empty:
             if self.trades.empty:
-                binpan_logger.info("Trades not downloaded. Please add trades data with: my_symbol.get_trades()")
+                binpan_logger.info(empty_trades_msg)
                 return
             else:
                 _df = self.trades.copy(deep=True)
@@ -1601,7 +1671,7 @@ class Symbol(object):
 
         if from_trades:
             if self.trades.empty:
-                binpan_logger.info("Trades not downloaded. Please add trades data with: my_symbol.get_trades()")
+                binpan_logger.info(empty_trades_msg)
                 return
         if from_trades or not self.trades.empty:
             _df = self.trades.copy(deep=True)
@@ -1668,7 +1738,7 @@ class Symbol(object):
 
         """
         if self.trades.empty and from_trades:
-            binpan_logger.info("Trades not downloaded. Please add trades data with: my_symbol.get_trades()")
+            binpan_logger.info(empty_trades_msg)
             return
         if not from_trades:
             data = self.df.copy(deep=True)

@@ -5,9 +5,7 @@ BinPan own indicators and utils.
 """
 import numpy as np
 import pandas as pd
-from typing import Tuple
 from handlers.time_helper import convert_milliseconds_to_time_zone_datetime
-
 from handlers.time_helper import pandas_freq_tick_interval
 
 
@@ -165,7 +163,7 @@ def split_serie_by_position(serie: pd.Series,
                             splitter_serie: pd.Series,
                             fill_with_zeros: bool = True) -> pd.DataFrame:
     """
-    Splits a serie by values of other serie in four series by relative positions for plotting clored clouds with plotly.
+    Splits a serie by values of other serie in four series by relative positions for plotting colored clouds with plotly.
 
     This means you will get 4 series with different situations:
 
@@ -311,6 +309,25 @@ def reversal_candles(trades: pd.DataFrame,
     :param int min_height: Minimum candles height in pips.
     :param int min_reversal: Maximum reversal to close the candles
     :return pd.DataFrame: A serie with the resulting candles number sequence.
+
+     Example:
+        .. code-block:: python
+
+           from binpan import binpan
+
+            ltc = binpan.Symbol(symbol='ltcbtc',
+                                tick_interval='5m',
+                                time_zone = 'Europe/Madrid',
+                                time_index = True,
+                                closed = True,
+                                hours=5)
+           ltc.get_trades()
+           ltc.get_reversal_candles()
+           ltc.plot_reversal()
+
+        .. image:: images/indicators/reversal.png
+           :width: 1000
+
     """
 
     prices = (trades['Price'].to_numpy() * 10 ** decimal_positions).astype(int)
@@ -379,7 +396,7 @@ def reversal_candles(trades: pd.DataFrame,
     ret = pd.concat(data, axis=1, keys=[s.name for s in data])
 
     klines = ret.groupby(['Candle']).agg(
-        {'Open': 'first', 'High': 'last', 'Low': 'last', 'Close': 'last', 'Quantity': 'sum', 'Timestamp': 'first', 'control': 'last'})
+        {'Open': 'first', 'High': 'last', 'Low': 'last', 'Close': 'last', 'Quantity': 'sum', 'Timestamp': 'first'})
 
     date_index = klines['Timestamp'].apply(convert_milliseconds_to_time_zone_datetime, timezoned=time_zone)
     klines.set_index(date_index, inplace=True)

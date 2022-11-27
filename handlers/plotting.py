@@ -72,13 +72,18 @@ def set_subplots(extra_rows: int, candles_ta_height_ratio: float = 0.8, vertical
                          vertical_spacing=vertical_spacing, specs=specs)
 
 
-def set_candles(df: pd.DataFrame) -> tuple:
+def set_candles(df: pd.DataFrame,
+                x_labels: list = None) -> tuple:
     """
     Put candles and axis into a tuple.
-    :param df: Dataframe OHLC type.
+    :param pd.DataFrame df: Dataframe OHLC type.
+    :param list x_labels: Labels to replace in x axis plotting.
     :return:
     """
     candles_plot = go.Candlestick(x=df.index, open=df['Open'], high=df['High'], low=df['Low'], close=df['Close'], name='Candles')
+    if x_labels:
+        # candles_plot.x = x_labels
+        candles_plot.x = np.array(x_labels)
     ax = 1
     return candles_plot, ax
 
@@ -489,8 +494,14 @@ def candles_ta(data: pd.DataFrame,
     df_plot = data.copy(deep=True)
     if type(plot_volume) == str:
         df_plot.rename(columns={plot_volume: 'Volume'}, inplace=True)
+
     if text_index:
-        df_plot.reset_index(drop=True, inplace=True)
+        df_plot.index.name = 'Plot Dates'
+        df_plot.reset_index(drop=False, inplace=True)
+        x_labels = df_plot['Plot Dates'].tolist()
+        x_labels = [str(x).split(' ')[1].split('+')[0] for x in x_labels]
+    else:
+        x_labels = None
 
     if not indicators_series:
         indicators_series = []
@@ -513,7 +524,7 @@ def candles_ta(data: pd.DataFrame,
 
     # limit
     axes = 0
-    candles_plot, ax = set_candles(df_plot)
+    candles_plot, ax = set_candles(df=df_plot, x_labels=x_labels)
     axes += ax
 
     # volume
@@ -993,14 +1004,14 @@ def candles_tagged(data: pd.DataFrame,
 # trades plots #
 ################
 
-def plot_trade_size(data: pd.DataFrame,
-                    max_size: int = 60,
-                    height: int = 1000,
-                    logarithmic: bool = False,
-                    overlap_prices: pd.DataFrame = None,
-                    title: str = None,
-                    shifted: int = 1,
-                    **kwargs_update_layout):
+def plot_trades(data: pd.DataFrame,
+                max_size: int = 60,
+                height: int = 1000,
+                logarithmic: bool = False,
+                overlap_prices: pd.DataFrame = None,
+                title: str = None,
+                shifted: int = 1,
+                **kwargs_update_layout):
     """
     Plots scatter plot from trades quantity and trades sizes. Marks are size scaled to the max size. Marks are semi transparent and colored
     using Maker buyer or Taker buyer discrete colors. Usually red and blue.
@@ -1046,7 +1057,8 @@ def plot_trade_size(data: pd.DataFrame,
         # shift added for more reality viewing trades effect on klines
         if shifted:
             title = f"{title} with High and Low Prices (shifted {shifted} candle to the right)"
-            plot_data = overlap_prices[(overlap_prices['Open timestamp'] >= start) & (overlap_prices['Open timestamp'] <= end)].shift(1, freq='infer')
+            plot_data = overlap_prices[(overlap_prices['Open timestamp'] >= start) & (overlap_prices['Open timestamp'] <= end)].shift(1,
+                                                                                                                                      freq='infer')
         else:
             title = f"{title} with High and Low Prices"
             plot_data = overlap_prices[(overlap_prices['Open timestamp'] >= start) & (overlap_prices['Open timestamp'] <= end)]
@@ -1068,21 +1080,9 @@ def plot_trade_size(data: pd.DataFrame,
     fig.show()
 
 
-def normalize(max_value: int or float, min_value: int or float, data: list):
-    """
-    Normalize data from minimum as 0 to maximum as 1.
-
-    :param int or float max_value: A numeric value.
-    :param int or float min_value: A numeric value.
-    :param data: List of numerica data.
-    :return: Normalized numeric data.
-    """
-    return [(i / sum(data)) * max_value + min_value for i in data]
-
-
-###################
-# analyzing plots #
-###################
+##################
+# Analysis plots #
+##################
 
 def plot_pie(serie: pd.Series,
              categories: int = 15,
@@ -1494,6 +1494,18 @@ def bar_plot(df: pd.DataFrame,
 ##############
 # plot tools #
 ##############
+
+def normalize(max_value: int or float, min_value: int or float, data: list):
+    """
+    Normalize data from minimum as 0 to maximum as 1.
+
+    :param int or float max_value: A numeric value.
+    :param int or float min_value: A numeric value.
+    :param data: List of numerica data.
+    :return: Normalized numeric data.
+    """
+    return [(i / sum(data)) * max_value + min_value for i in data]
+
 
 def find_step_for_bins(data: pd.DataFrame,
                        master_column: str,

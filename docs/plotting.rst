@@ -52,7 +52,8 @@ Candles Plots
 Trades Plots
 ------------
 
-.. autofunction:: plot_trade_size
+.. autofunction:: plot_trades
+
 
 Analysis Plots
 --------------
@@ -66,5 +67,19 @@ Analysis Plots
 .. autofunction:: orderbook_depth
 
 .. autofunction:: dist_plot
+
+.. autofunction:: bar_plot
+
+
+Plot Tools
+----------
+
+.. autofunction:: normalize
+
+.. autofunction:: find_step_for_bins
+
+.. autofunction:: group_slot
+
+
 
 

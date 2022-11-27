@@ -55,6 +55,7 @@
 <li class="toctree-l1"><a class="reference internal" href="messages.html">Messages Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quest.html">Requests Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tags.html">Tags &amp; Backtesting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Module</a></li>
@@ -98,7 +99,7 @@
 <p>There is a tutorial in a Jupyter Notebook file in <a class="reference external" href="https://github.com/nand0san/binpan_studio">https://github.com/nand0san/binpan_studio</a></p>
 <dl class="py class">
 <dt class="sig sig-object py" id="binpan.binpan.Symbol">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">binpan.binpan.</span></span><span class="sig-name descname"><span class="pre">Symbol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'UTC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">closed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_redis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_redis_trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_rows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_min_rows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">320</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_csv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.binpan.Symbol" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">binpan.binpan.</span></span><span class="sig-name descname"><span class="pre">Symbol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'UTC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">closed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_redis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_redis_trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hours</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_rows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_min_rows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">320</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_csv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.binpan.Symbol" title="Permalink to this definition"></a></dt>
 <dd><p>Creates an object from binance klines and/or trade data. It contains the raw api response and a dataframe that can be modified.</p>
 <p>Any symbol can be used as argument and any time interval like: ‘1m’, ‘3m’, ‘5m’, ‘15m’, ‘30m’, ‘1h’, ‘2h’, ‘4h’, ‘6h’, ‘8h’,
 ‘12h’, ‘1d’, ‘3d’, ‘1w’, ‘1M’</p>
@@ -181,6 +182,7 @@ because daily time saving changes.</p>
 <li><p><strong>from_redis</strong> (<em>bool</em><em> or </em><em>StrictRedis</em>) – If enabled, BinPan will look for a secret file with the redis ip, port and any other parameter in a map.
 But can be passed a StrictRedis client object previously configured.
 secret.py file map example: redis_conf = {‘host’:’192.168.1.5’,’port’: 6379,’db’: 0,’decode_responses’: True}</p></li>
+<li><p><strong>from_redis_trades</strong> (<em>bool</em><em> or </em><em>StrictRedis</em>) – If enabled, BinPan will look trades to a redis client in a similar way tha from_redis.</p></li>
 <li><p><strong>display_columns</strong> (<em>int</em>) – Number of columns in the dataframe display. Convenient to adjust in jupyter notebooks.</p></li>
 <li><p><strong>display_rows</strong> (<em>int</em>) – Number of rows in the dataframe display. Convenient to adjust in jupyter notebooks.</p></li>
 <li><p><strong>display_width</strong> (<em>int</em>) – Display width in the dataframe display. Convenient to adjust in jupyter notebooks.</p></li>
@@ -264,110 +266,116 @@ exchange.</p></li>
 <tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.trades" title="binpan.binpan.Symbol.trades"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trades</span></code></a>()</p></td>
 <td><p>Returns trades dataframe.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.symbol" title="binpan.binpan.Symbol.symbol"><code class="xref py py-obj docutils literal notranslate"><span class="pre">symbol</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.get_reversal_candles" title="binpan.binpan.Symbol.get_reversal_candles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_reversal_candles</span></code></a>([min_height, min_reversal])</p></td>
+<td><p>Resamples trades to reversal klines:</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.symbol" title="binpan.binpan.Symbol.symbol"><code class="xref py py-obj docutils literal notranslate"><span class="pre">symbol</span></code></a>()</p></td>
 <td><p>Returns symbol.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.version" title="binpan.binpan.Symbol.version"><code class="xref py py-obj docutils literal notranslate"><span class="pre">version</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.version" title="binpan.binpan.Symbol.version"><code class="xref py py-obj docutils literal notranslate"><span class="pre">version</span></code></a>()</p></td>
 <td><p>Returns version on BinPan.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.fees" title="binpan.binpan.Symbol.fees"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fees</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.fees" title="binpan.binpan.Symbol.fees"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fees</span></code></a>()</p></td>
 <td><p>Returns fees for symbol.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.tick_interval" title="binpan.binpan.Symbol.tick_interval"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tick_interval</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.tick_interval" title="binpan.binpan.Symbol.tick_interval"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tick_interval</span></code></a>()</p></td>
 <td><p>Returns tick_interval for symbol.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_strategy_groups" title="binpan.binpan.Symbol.set_strategy_groups"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_strategy_groups</span></code></a>(column, group[, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_strategy_groups" title="binpan.binpan.Symbol.set_strategy_groups"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_strategy_groups</span></code></a>(column, group[, ...])</p></td>
 <td><p>Returns strategy_groups for BinPan DataFrame.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.get_strategy_columns" title="binpan.binpan.Symbol.get_strategy_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_strategy_columns</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.get_strategy_columns" title="binpan.binpan.Symbol.get_strategy_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_strategy_columns</span></code></a>()</p></td>
 <td><p>Returns column names starting with &quot;Strategy&quot;.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.start_time" title="binpan.binpan.Symbol.start_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">start_time</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.start_time" title="binpan.binpan.Symbol.start_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">start_time</span></code></a>()</p></td>
 <td><p>Returns start_time on instance.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.end_time" title="binpan.binpan.Symbol.end_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">end_time</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.end_time" title="binpan.binpan.Symbol.end_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">end_time</span></code></a>()</p></td>
 <td><p>Returns end_time on instance.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.limit" title="binpan.binpan.Symbol.limit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">limit</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.limit" title="binpan.binpan.Symbol.limit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">limit</span></code></a>()</p></td>
 <td><p>Returns limit on instance.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.time_zone" title="binpan.binpan.Symbol.time_zone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time_zone</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.time_zone" title="binpan.binpan.Symbol.time_zone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time_zone</span></code></a>()</p></td>
 <td><p>Returns time_zone for symbol.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.time_index" title="binpan.binpan.Symbol.time_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time_index</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.time_index" title="binpan.binpan.Symbol.time_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time_index</span></code></a>()</p></td>
 <td><p>Returns if time_index.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.closed" title="binpan.binpan.Symbol.closed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">closed</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.closed" title="binpan.binpan.Symbol.closed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">closed</span></code></a>()</p></td>
 <td><p>Returns if not closed candles were dropped when instantiated.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.update_info_dic" title="binpan.binpan.Symbol.update_info_dic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_info_dic</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.update_info_dic" title="binpan.binpan.Symbol.update_info_dic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_info_dic</span></code></a>()</p></td>
 <td><p>Returns exchangeInfo data when instantiated.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.save_csv" title="binpan.binpan.Symbol.save_csv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_csv</span></code></a>([timestamped])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.save_csv" title="binpan.binpan.Symbol.save_csv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_csv</span></code></a>([timestamped])</p></td>
 <td><p>Saves current csv to a csv file.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_display_columns" title="binpan.binpan.Symbol.set_display_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_display_columns</span></code></a>([display_columns])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_display_columns" title="binpan.binpan.Symbol.set_display_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_display_columns</span></code></a>([display_columns])</p></td>
 <td><p>Change the number of maximum columns shown in the display of the dataframe.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_display_min_rows" title="binpan.binpan.Symbol.set_display_min_rows"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_display_min_rows</span></code></a>([display_rows])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_display_min_rows" title="binpan.binpan.Symbol.set_display_min_rows"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_display_min_rows</span></code></a>([display_rows])</p></td>
 <td><p>Change the number of minimum rows shown in the display of the dataframe.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_display_max_rows" title="binpan.binpan.Symbol.set_display_max_rows"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_display_max_rows</span></code></a>([display_max_rows])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_display_max_rows" title="binpan.binpan.Symbol.set_display_max_rows"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_display_max_rows</span></code></a>([display_max_rows])</p></td>
 <td><p>Change the number of maximum rows shown in the display of the dataframe.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_display_width" title="binpan.binpan.Symbol.set_display_width"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_display_width</span></code></a>([display_width])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_display_width" title="binpan.binpan.Symbol.set_display_width"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_display_width</span></code></a>([display_width])</p></td>
 <td><p>Change the shown width shown in the display of the dataframe.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_display_decimals" title="binpan.binpan.Symbol.set_display_decimals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_display_decimals</span></code></a>(display_decimals)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_display_decimals" title="binpan.binpan.Symbol.set_display_decimals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_display_decimals</span></code></a>(display_decimals)</p></td>
 <td><p>Change the decimals shown in the dataframe.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.basic" title="binpan.binpan.Symbol.basic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">basic</span></code></a>([exceptions, actions_col, inplace])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.basic" title="binpan.binpan.Symbol.basic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">basic</span></code></a>([exceptions, actions_col, inplace])</p></td>
 <td><p>Shows just a basic selection of columns data in the dataframe.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.drop" title="binpan.binpan.Symbol.drop"><code class="xref py py-obj docutils literal notranslate"><span class="pre">drop</span></code></a>([columns_to_drop, inplace])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.drop" title="binpan.binpan.Symbol.drop"><code class="xref py py-obj docutils literal notranslate"><span class="pre">drop</span></code></a>([columns_to_drop, inplace])</p></td>
 <td><p>It drops some columns from the dataframe.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.insert_indicator" title="binpan.binpan.Symbol.insert_indicator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert_indicator</span></code></a>(source_data[, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.insert_indicator" title="binpan.binpan.Symbol.insert_indicator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert_indicator</span></code></a>(source_data[, ...])</p></td>
 <td><p>Adds indicator to dataframe.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.hk" title="binpan.binpan.Symbol.hk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hk</span></code></a>([inplace])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.hk" title="binpan.binpan.Symbol.hk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hk</span></code></a>([inplace])</p></td>
 <td><p>It computes Heikin Ashi candles.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.get_timestamps" title="binpan.binpan.Symbol.get_timestamps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_timestamps</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.get_timestamps" title="binpan.binpan.Symbol.get_timestamps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_timestamps</span></code></a>()</p></td>
 <td><p>Get the first Open timestamp and the last Close timestamp.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.get_dates" title="binpan.binpan.Symbol.get_dates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_dates</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.get_dates" title="binpan.binpan.Symbol.get_dates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_dates</span></code></a>()</p></td>
 <td><p>Get the first Open timestamp and the last Close timestamp, and converts to timezoned dates.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.get_trades" title="binpan.binpan.Symbol.get_trades"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_trades</span></code></a>([hours, minutes, startTime, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.get_trades" title="binpan.binpan.Symbol.get_trades"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_trades</span></code></a>([hours, minutes, startTime, ...])</p></td>
 <td><p>Calls the API and creates another dataframe included in the object with the aggregated trades from API for the period of the created object.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.is_new" title="binpan.binpan.Symbol.is_new"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_new</span></code></a>(source_data[, suffix])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.is_new" title="binpan.binpan.Symbol.is_new"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_new</span></code></a>(source_data[, suffix])</p></td>
 <td><p>Verify if indicator columns are previously created to avoid allocating new rows and colors etc.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_plot_row" title="binpan.binpan.Symbol.set_plot_row"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_row</span></code></a>([indicator_column, row_position])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_plot_row" title="binpan.binpan.Symbol.set_plot_row"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_row</span></code></a>([indicator_column, row_position])</p></td>
 <td><p>Internal control formatting plots.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_plot_color" title="binpan.binpan.Symbol.set_plot_color"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_color</span></code></a>([indicator_column, color])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_plot_color" title="binpan.binpan.Symbol.set_plot_color"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_color</span></code></a>([indicator_column, color])</p></td>
 <td><p>Internal control formatting plots.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_plot_color_fill" title="binpan.binpan.Symbol.set_plot_color_fill"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_color_fill</span></code></a>([indicator_column, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_plot_color_fill" title="binpan.binpan.Symbol.set_plot_color_fill"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_color_fill</span></code></a>([indicator_column, ...])</p></td>
 <td><p>Internal control formatting plots.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_plot_filled_mode" title="binpan.binpan.Symbol.set_plot_filled_mode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_filled_mode</span></code></a>([indicator_column, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_plot_filled_mode" title="binpan.binpan.Symbol.set_plot_filled_mode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_filled_mode</span></code></a>([indicator_column, ...])</p></td>
 <td><p>Internal control formatting plots.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_plot_axis_group" title="binpan.binpan.Symbol.set_plot_axis_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_axis_group</span></code></a>([indicator_column, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_plot_axis_group" title="binpan.binpan.Symbol.set_plot_axis_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_axis_group</span></code></a>([indicator_column, ...])</p></td>
 <td><p>Internal control formatting plots.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_plot_splitted_serie_couple" title="binpan.binpan.Symbol.set_plot_splitted_serie_couple"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_splitted_serie_couple</span></code></a>([...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_plot_splitted_serie_couple" title="binpan.binpan.Symbol.set_plot_splitted_serie_couple"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_splitted_serie_couple</span></code></a>([...])</p></td>
 <td><p>Modify the control for splitted series in plots with colored area in two colors by relative position.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.plot" title="binpan.binpan.Symbol.plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code></a>([width, height, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.plot" title="binpan.binpan.Symbol.plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code></a>([width, height, ...])</p></td>
 <td><p>Plots a candles figure for the object.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.plot_trades_size" title="binpan.binpan.Symbol.plot_trades_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_trades_size</span></code></a>([max_size, height, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.plot_trades_size" title="binpan.binpan.Symbol.plot_trades_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_trades_size</span></code></a>([max_size, height, ...])</p></td>
 <td><p>It plots a time series graph plotting trades sized by quantity and color if taker or maker buyer.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.plot_reversal" title="binpan.binpan.Symbol.plot_reversal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_reversal</span></code></a>([min_height, min_reversal, ...])</p></td>
+<td><p>Plots reversal candles.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.plot_trades_pie" title="binpan.binpan.Symbol.plot_trades_pie"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_trades_pie</span></code></a>([categories, logarithmic, title])</p></td>
 <td><p>Plots a pie chart.</p></td>
@@ -514,6 +522,26 @@ exchange.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Return pd.DataFrame</dt>
 <dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.binpan.Symbol.get_reversal_candles">
+<span class="sig-name descname"><span class="pre">get_reversal_candles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_reversal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#binpan.binpan.Symbol.get_reversal_candles" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Resamples trades to reversal klines:</dt><dd><p><a class="reference external" href="https://atas.net/atas-possibilities/charts/how-to-set-reversal-charts-for-finding-the-market-reversal/">https://atas.net/atas-possibilities/charts/how-to-set-reversal-charts-for-finding-the-market-reversal/</a></p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>min_height</strong> – Defaults to 7. Minimum reversal kline height to close a candle</p></li>
+<li><p><strong>min_reversal</strong> – Defaults to 4. Minimum reversal from hig/low to close a candle</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.DataFrame</dt>
+<dd class="field-even"><p>Resample trades to reversal klines. Can be plotted.</p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -1051,6 +1079,24 @@ waiting long time intervals grabbing the trades.)</p>
 <li><p><strong>overlap_prices</strong> (<em>bool</em>) – If True, plots overlap line with High and Low prices.</p></li>
 <li><p><strong>title</strong> – Graph title</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.binpan.Symbol.plot_reversal">
+<span class="sig-name descname"><span class="pre">plot_reversal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_reversal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.binpan.Symbol.plot_reversal" title="Permalink to this definition"></a></dt>
+<dd><p>Plots reversal candles. It requires trades fetched previously.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>min_height</strong> (<em>int</em>) – It defaults to previous set. Can be reset when plotting.</p></li>
+<li><p><strong>min_reversal</strong> – It defaults to previous set. Can be reset when plotting.</p></li>
+<li><p><strong>text_index</strong> (<em>bool</em>) – If True, plots klines equally spaced. This allows to plot volume.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
 </dd>
 </dl>
 </dd></dl>

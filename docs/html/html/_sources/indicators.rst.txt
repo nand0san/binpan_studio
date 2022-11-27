@@ -31,3 +31,7 @@ Indicators utils
 
 .. autofunction:: ffill_indicator
 
+Indicators from Trades
+----------------------
+
+.. autofunction:: reversal_candles

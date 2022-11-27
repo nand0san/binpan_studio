@@ -48,12 +48,14 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Indicators Module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#module-handlers.indicators">Indicators</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#indicators-utils">Indicators utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#indicators-from-trades">Indicators from Trades</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="messages.html">Messages Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quest.html">Requests Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tags.html">Tags &amp; Backtesting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Module</a></li>
@@ -150,7 +152,8 @@ before Default: 26.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.indicators.split_serie_by_position">
 <span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">split_serie_by_position</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">serie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">splitter_serie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_with_zeros</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.indicators.split_serie_by_position" title="Permalink to this definition"></a></dt>
-<dd><p>Splits a serie by values of other serie in four series for plotting purposes. It means will get 4 series with different situations:</p>
+<dd><p>Splits a serie by values of other serie in four series by relative positions for plotting colored clouds with plotly.</p>
+<p>This means you will get 4 series with different situations:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>serie is over the splitter serie.</p></li>
@@ -214,7 +217,8 @@ before Default: 26.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.indicators.shift_indicator">
 <span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">shift_indicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">serie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.indicators.shift_indicator" title="Permalink to this definition"></a></dt>
-<dd><p>It shifts a candle ahead by the window argument value (or backwards if negative)</p>
+<dd><p>It shifts a candle ahead by the window argument value (or backwards if negative).</p>
+<p>Just works with time indexes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -241,6 +245,49 @@ before Default: 26.</p></li>
 </dd>
 <dt class="field-even">Return pd.Series</dt>
 <dd class="field-even"><p>A series with index adjusted to the new shifted positions of values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="indicators-from-trades">
+<h2>Indicators from Trades<a class="headerlink" href="#indicators-from-trades" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.indicators.reversal_candles">
+<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">reversal_candles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_positions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_reversal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.indicators.reversal_candles" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Generate reversal candles for reversal charts:</dt><dd><p><a class="reference external" href="https://atas.net/atas-possibilities/charts/how-to-set-reversal-charts-for-finding-the-market-reversal/">https://atas.net/atas-possibilities/charts/how-to-set-reversal-charts-for-finding-the-market-reversal/</a></p>
+</dd>
+</dl>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>trades</strong> (<em>pd.Series</em>) – A dataframe with trades sizes, side and prices.</p></li>
+<li><p><strong>decimal_positions</strong> (<em>int</em>) – Because this function uses integer numbers for prices, is needed to convert prices. Just steps are relevant.</p></li>
+<li><p><strong>time_zone</strong> (<em>str</em>) – A time zone like “Europe/Madrid”.</p></li>
+<li><p><strong>min_height</strong> (<em>int</em>) – Minimum candles height in pips.</p></li>
+<li><p><strong>min_reversal</strong> (<em>int</em>) – Maximum reversal to close the candles</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.DataFrame</dt>
+<dd class="field-even"><p>A serie with the resulting candles number sequence.</p>
+<dl>
+<dt>Example:</dt><dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">binpan</span> <span class="kn">import</span> <span class="n">binpan</span>
+
+ <span class="n">ltc</span> <span class="o">=</span> <span class="n">binpan</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;ltcbtc&#39;</span><span class="p">,</span>
+                     <span class="n">tick_interval</span><span class="o">=</span><span class="s1">&#39;5m&#39;</span><span class="p">,</span>
+                     <span class="n">time_zone</span> <span class="o">=</span> <span class="s1">&#39;Europe/Madrid&#39;</span><span class="p">,</span>
+                     <span class="n">time_index</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                     <span class="n">closed</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                     <span class="n">hours</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">ltc</span><span class="o">.</span><span class="n">get_trades</span><span class="p">()</span>
+<span class="n">ltc</span><span class="o">.</span><span class="n">get_reversal_candles</span><span class="p">()</span>
+<span class="n">ltc</span><span class="o">.</span><span class="n">plot_reversal</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/reversal.png"><img alt="_images/reversal.png" src="_images/reversal.png" style="width: 1000px;" /></a>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
