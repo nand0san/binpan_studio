@@ -177,7 +177,14 @@ def get_candles_by_time_stamps(symbol: str,
         end = r[1]
 
         if redis_client:
-            if type(redis_client) != StrictRedis:
+            if type(redis_client) == dict:
+                try:
+                    redis_client = StrictRedis(**redis_client)
+                except Exception:
+                    msg = f"BinPan exceptionRedis client error: arguments for client={redis_client}"
+                    market_logger.error(msg)
+                    raise Exception(msg)
+            elif type(redis_client) != StrictRedis:
                 msg = f"BinPan exceptionRedis client error: type passed={type(redis_client)}"
                 market_logger.error(msg)
                 raise Exception(msg)
@@ -187,11 +194,7 @@ def get_candles_by_time_stamps(symbol: str,
                                              max=end,
                                              withscores=False)
             if not ret:
-                msg = f"BinPan Exception: Requested data for {symbol.lower()}@kline_{tick_interval} between {start_string} and " \
-                      f"{end_string} missing in redis server: ."
-                market_logger.error(msg)
-                raise Exception(msg)
-
+                continue
             response = [json.loads(i) for i in ret]
         else:
             params = {'symbol': symbol,
@@ -204,6 +207,12 @@ def get_candles_by_time_stamps(symbol: str,
             response = get_response(url=endpoint, params=params)
 
         raw_candles += response
+
+    if not raw_candles:
+        msg = f"BinPan Exception: Requested data for {symbol.lower()}@kline_{tick_interval} between {start_string} and " \
+              f"{end_string} missing in redis server: ."
+        market_logger.error(msg)
+        raise Exception(msg)
 
     # descarta sobrantes
     overtime_candle_ts = handlers.time_helper.next_open_by_milliseconds(ms=end_time, tick_interval=tick_interval)

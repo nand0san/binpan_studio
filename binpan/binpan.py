@@ -38,7 +38,7 @@ binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', 
 tick_seconds = handlers.time_helper.tick_seconds
 pandas_freq_tick_interval = handlers.time_helper.pandas_freq_tick_interval
 
-__version__ = "0.2.41"
+__version__ = "0.2.42"
 
 try:
     from secret import redis_conf, redis_conf_trades
@@ -453,6 +453,7 @@ class Symbol(object):
         # query candles #
         #################
         if not from_csv:
+
             self.raw = handlers.market.get_candles_by_time_stamps(symbol=self.symbol,
                                                                   tick_interval=self.tick_interval,
                                                                   start_time=self.start_time,
