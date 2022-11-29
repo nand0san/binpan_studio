@@ -41,7 +41,7 @@ pandas_freq_tick_interval = handlers.time_helper.pandas_freq_tick_interval
 __version__ = "0.2.42"
 
 try:
-    from secret import redis_conf, redis_conf_trades
+    from secret import redis_conf, redis_conf_trades, redis_conf_atomic_trades
 except:
     msg = "REDIS: Redis configuration not found in secret.py, if needed, must be passed latter to client. Needed redis server for candles " \
           "and redis server for trades configuration."
@@ -77,6 +77,7 @@ pd.set_option('display.width', 250)
 pd.set_option('display.min_rows', 10)
 
 empty_trades_msg = "Empty trades, please request using: get_trades() method: Example: my_symbol.get_trades()"
+empty_atomic_trades_msg = "Empty atomic trades, please request using: get_atomic_trades() method: Example: my_symbol.get_atomic_trades()"
 
 
 class Symbol(object):
@@ -162,7 +163,8 @@ class Symbol(object):
        But can be passed a StrictRedis client object previously configured.
        secret.py file map example: redis_conf = {'host':'192.168.1.5','port': 6379,'db': 0,'decode_responses': True}
 
-    :param bool or StrictRedis from_redis_trades: If enabled, BinPan will look trades to a redis client in a similar way tha from_redis.
+    :param bool or StrictRedis from_redis_trades: If enabled, BinPan will look for aggregated trades to a redis client in a similar way than from_redis.
+    :param bool or StrictRedis from_redis_atomic_trades: If enabled, BinPan will look for atomic trades to a redis client in a similar way than from_redis.
     :param int display_columns:     Number of columns in the dataframe display. Convenient to adjust in jupyter notebooks.
     :param int display_rows:        Number of rows in the dataframe display. Convenient to adjust in jupyter notebooks.
     :param int display_width:       Display width in the dataframe display. Convenient to adjust in jupyter notebooks.
@@ -196,44 +198,6 @@ class Symbol(object):
         2022-06-22 17:10:00+00:00	1073.42	1076.30	1073.24	1075.77	228.4269	2.456515e+05	426.0	127.7424	1.373634e+05
         100 rows × 9 columns
 
-
-    Created objects contain different instantiated variables like **mysymbol.df** that shows the candles dataframe:
-
-    - **mysymbol.df**: shows candles dataframe
-    - **mysymbol.trades**: a pandas dataframe (if requested) with aggregated trades between start and end of the dataframe timestamps.
-    - **mysymbol.version**: Version of BinPan.
-    - **mysymbol.symbol**: symbol instantiated.
-    - **mysymbol.fees**: personal fees applied for the symbol.
-    - **mysymbol.tick_interval**: tick_interval selected.
-    - **mysymbol.start_time**: start time instantiated.
-    - **mysymbol.end_time**: end time instantiated.
-    - **mysymbol.limit**: limit of candles in the instance, but if instantiated with start and end times, can be overridden.
-    - **mysymbol.time_zone**: timezone of the dates in the index of the dataframe.
-    - **mysymbol.time_index**: time index if true or integer index if false.
-    - **mysymbol.closed**: asked for dropping not closed candles.
-    - **mysymbol.start_ms_time**: timestamp obtained from api in the first candle.
-    - **mysymbol.end_ms_time**: timestamp obtained from api in the last candle.
-    - **mysymbol.display_columns**: display columns in shell
-    - **mysymbol.display_rows**: display rows in shell
-    - **mysymbol.display_min_rows**: display max_rows in shell
-    - **mysymbol.display_width**: display width in shell
-    - **mysymbol.orderbook**: a pandas dataframe (if requested) with last orderbook requested.
-    - **mysymbol.row_control**: dictionary with data about plotting control. Represents each dataframe colum position in the plots.
-    - **mysymbol.color_control**: dictionary with data about plotting control. Represents each dataframe colum color in the plots.
-    - **mysymbol.color_fill_control**: dictionary with data about plotting control. Represents each dataframe colum with color filled to
-      zero line in the plots.
-    - **mysymbol.indicators_filled_mode**: dictionary with filling mode for each line. Values can be None, tonexty, tozeroy.
-    - **mysymbol.axis_group**: dictionary with axis group each line. Values can be None or y, y2, etc.
-    - **mysymbol.row_counter**: counter for the indicator rows in a plot.
-    - **mysymbol.len**: length of the dataframe
-    - **mysymbol.raw**: api klines raw response when instantiated.
-    - **mysymbol.info_dic**: exchangeInfo data when instantiated. It includes, filters, fees, and many other data for all symbols in the
-      exchange.
-    - **mysymbol.order_filters**: filters applied for the symbol when ordering.
-    - **mysymbol.order_types**: list of type of orders available for that symbol.
-    - **mysymbol.permissions**: list of possible trading ways, like SPOT or MARGIN.
-    - **mysymbol.precision**: decimals quantity applied for base and quote assets.
-
     """
 
     def __init__(self,
@@ -247,6 +211,7 @@ class Symbol(object):
                  closed: bool = True,
                  from_redis: bool or StrictRedis = None,
                  from_redis_trades: bool or StrictRedis = None,
+                 from_redis_atomic_trades: bool or StrictRedis = None,
                  hours: int = None,
                  display_columns=25,
                  display_rows=10,
@@ -296,6 +261,27 @@ class Symbol(object):
                                'q': 'Quantity',
                                'p': 'Price',
                                'a': 'Aggregate tradeId'}
+
+        self.atomic_trades_columns = {'id': 'Trade Id',
+                                      'price': 'Price',
+                                      'qty': 'Quantity',
+                                      'quoteQty': 'Quote quantity',
+                                      'time': 'Timestamp',
+                                      'isBuyerMaker': 'Buyer was maker',
+                                      'isBestMatch': 'Best price match'}
+
+        self.atomic_trades_columns_redis = {'M': 'Best price match',
+                                            'm': 'Buyer was maker',
+                                            'T': 'Timestamp',
+                                            'a': 'Seller Order Id',
+                                            'b': 'Buyer Order Id',
+                                            'q': 'Quantity',
+                                            'p': 'Price',
+                                            't': 'Trade Id',
+                                            's': 'Symbol',
+                                            'E': 'Event time',
+                                            'e': 'Event type'}
+
         self.reversal_columns = ['Open', 'High', 'Low', 'Close', 'Quantity', 'Timestamp']
 
         self.time_cols = ['Open time', 'Close time']
@@ -386,16 +372,34 @@ class Symbol(object):
         else:
             self.from_redis_trades = from_redis_trades
 
+        if from_redis_atomic_trades:
+            if type(from_redis_atomic_trades) == bool:
+                try:
+                    self.from_redis_atomic_trades = redis_client(**redis_conf_atomic_trades)
+                except Exception as exc:
+                    msg = f"BinPan error: Redis atomic trades parameters misconfiguration in secret.py -> {exc}"
+                    binpan_logger.warning(msg)
+                    raise Exception(msg)
+            else:
+                self.from_redis_atomic_trades = from_redis_atomic_trades
+        else:
+            self.from_redis_atomic_trades = from_redis_atomic_trades
+
         self.display_columns = display_columns
         self.display_rows = display_rows
         self.display_min_rows = display_min_rows
         self.display_width = display_width
 
-        self.raw_trades = []
-        self.trades = pd.DataFrame(columns=list(self.trades_columns.values()))
+        self.raw_agg_trades = []
+        self.agg_trades = pd.DataFrame(columns=list(self.trades_columns.values()))
+
+        self.raw_atomic_trades = []
+        self.atomic_trades = pd.DataFrame(columns=list(self.atomic_trades_columns.values()))
+
         self.min_height = 7
         self.min_reversal = 4
-        self.reversal_klines = pd.DataFrame(columns=self.reversal_columns)
+        self.reversal_agg_klines = pd.DataFrame(columns=self.reversal_columns)
+        self.reversal_atomic_klines = pd.DataFrame(columns=self.reversal_columns)
 
         self.orderbook = pd.DataFrame(columns=['Price', 'Quantity', 'Side'])
         self.row_control = dict()
@@ -453,7 +457,6 @@ class Symbol(object):
         # query candles #
         #################
         if not from_csv:
-
             self.raw = handlers.market.get_candles_by_time_stamps(symbol=self.symbol,
                                                                   tick_interval=self.tick_interval,
                                                                   start_time=self.start_time,
@@ -528,41 +531,25 @@ class Symbol(object):
     #
     #     return self.df
 
-    def trades(self):
+    def agg_trades(self):
         """
         Returns trades dataframe.
 
         :return pd.DataFrame:
         """
-        if self.trades.empty:
+        if self.agg_trades.empty:
             binpan_logger.info(empty_trades_msg)
-        return self.trades
+        return self.agg_trades
 
-    def get_reversal_candles(self, min_height: int = 7, min_reversal: int = 4) -> pd.DataFrame or None:
+    def atomic_trades(self):
         """
-        Resamples aggregated API or REDIS trades to reversal klines:
-           https://atas.net/atas-possibilities/charts/how-to-set-reversal-charts-for-finding-the-market-reversal/
+        Returns atomic trades dataframe.
 
-        :param min_height: Defaults to 7. Minimum reversal kline height to close a candle
-        :param min_reversal: Defaults to 4. Minimum reversal from hig/low to close a candle
-        :return pd.DataFrame: Resample trades to reversal klines. Can be plotted.
+        :return pd.DataFrame:
         """
-        if self.trades.empty:
-            binpan_logger.info(empty_trades_msg)
-            return
-
-        if min_height:
-            self.min_height = min_height
-        if min_reversal:
-            self.min_reversal = min_reversal
-
-        if self.reversal_klines.empty or min_height or min_reversal:
-            self.reversal_klines = handlers.indicators.reversal_candles(trades=self.trades,
-                                                                        decimal_positions=self.decimals,
-                                                                        time_zone=self.time_zone,
-                                                                        min_height=self.min_height,
-                                                                        min_reversal=self.min_reversal)
-        return self.reversal_klines
+        if self.atomic_trades.empty:
+            binpan_logger.info(empty_atomic_trades_msg)
+        return self.atomic_trades
 
     # def tick(self) -> str:
     #     """
@@ -1090,12 +1077,12 @@ class Symbol(object):
         ret_end = handlers.time_helper.convert_milliseconds_to_str(ms=end, timezoned=self.time_zone)
         return ret_start, ret_end
 
-    def get_trades(self,
-                   hours: int = None,
-                   minutes: int = None,
-                   startTime: int or str = None,
-                   endTime: int or str = None,
-                   time_zone: str = None):
+    def get_agg_trades(self,
+                       hours: int = None,
+                       minutes: int = None,
+                       startTime: int or str = None,
+                       endTime: int or str = None,
+                       time_zone: str = None):
         """
         Calls the API and creates another dataframe included in the object with the aggregated trades from API for the period of the
         created object.
@@ -1161,17 +1148,87 @@ class Symbol(object):
         else:
             curr_endTime = int(time() * 1000)
 
-        self.raw_trades = handlers.market.get_historical_aggregated_trades(symbol=self.symbol,
-                                                                           startTime=curr_startTime,
-                                                                           endTime=curr_endTime,
-                                                                           redis_client_trades=self.from_redis_trades)
+        self.raw_agg_trades = handlers.market.get_historical_aggregated_trades(symbol=self.symbol,
+                                                                               startTime=curr_startTime,
+                                                                               endTime=curr_endTime,
+                                                                               redis_client_trades=self.from_redis_trades)
 
-        self.trades = handlers.market.parse_agg_trades_to_dataframe(response=self.raw_trades,
-                                                                    columns=self.trades_columns,
-                                                                    symbol=self.symbol,
-                                                                    time_zone=self.time_zone,
-                                                                    time_index=self.time_index)
-        return self.trades
+        self.agg_trades = handlers.market.parse_agg_trades_to_dataframe(response=self.raw_agg_trades,
+                                                                        columns=self.trades_columns,
+                                                                        symbol=self.symbol,
+                                                                        time_zone=self.time_zone,
+                                                                        time_index=self.time_index)
+        return self.agg_trades
+
+    def get_atomic_trades(self,
+                          hours: int = None,
+                          minutes: int = None,
+                          startTime: int or str = None,
+                          endTime: int or str = None,
+                          time_zone: str = None):
+        """
+        Calls the API and creates another dataframe included in the object with the atomic trades from API for the period of the
+        created object.
+
+        .. note::
+
+           If the object covers a long time interval, this action can take a relative long time. The BinPan library take care of the
+           API weight and can take a sleep to wait until API weight returns to a low value.
+
+        :param int hours: If passed, it use just last passed hours for the plot.
+        :param int minutes: If passed, it use just last passed minutes for the plot.
+        :param int or str startTime: If passed, it use just from the timestamp or date in format
+         (%Y-%m-%d %H:%M:%S: **2022-05-11 06:45:42**)) for the plot.
+        :param int or str endTime: If passed, it use just until the timestamp or date in format
+         (%Y-%m-%d %H:%M:%S: **2022-05-11 06:45:42**)) for the plot.
+        :param str time_zone: A time zone for time index conversion.
+
+        :return: Pandas DataFrame
+
+        """
+        if time_zone:
+            self.time_zone = time_zone
+
+        if startTime:
+            handlers.wallet.convert_str_date_to_ms(date=startTime,
+                                                   time_zone=self.time_zone)
+        if endTime:
+            handlers.wallet.convert_str_date_to_ms(date=endTime,
+                                                   time_zone=self.time_zone)
+        if hours:
+            startTime = int(time() * 1000) - (1000 * 60 * 60 * hours)
+        elif minutes:
+            startTime = int(time() * 1000) - (1000 * 60 * minutes)
+
+        if startTime:
+            curr_startTime = startTime
+        else:
+            curr_startTime = self.start_time
+
+        if endTime:
+            curr_endTime = endTime
+        elif self.end_time:
+            curr_endTime = self.end_time
+        else:
+            curr_endTime = int(time() * 1000)
+
+        self.raw_atomic_trades = handlers.market.get_historical_atomic_trades(symbol=self.symbol,
+                                                                              startTime=curr_startTime,
+                                                                              endTime=curr_endTime,
+                                                                              redis_client_trades=self.from_redis_atomic_trades)
+        if self.from_redis_atomic_trades:
+            self.atomic_trades = handlers.market.parse_atomic_trades_to_dataframe(response=self.raw_atomic_trades,
+                                                                                  columns=self.atomic_trades_columns_redis,
+                                                                                  symbol=self.symbol,
+                                                                                  time_zone=self.time_zone,
+                                                                                  time_index=self.time_index)
+        else:
+            self.atomic_trades = handlers.market.parse_atomic_trades_to_dataframe(response=self.raw_atomic_trades,
+                                                                                  columns=self.atomic_trades_columns,
+                                                                                  symbol=self.symbol,
+                                                                                  time_zone=self.time_zone,
+                                                                                  time_index=self.time_index)
+        return self.atomic_trades
 
     def is_new(self,
                source_data: pd.Series or pd.DataFrame,
@@ -1212,6 +1269,58 @@ class Symbol(object):
                 binpan_logger.info(f"New column: {gen_col}")
 
         return True
+
+    def get_reversal_agg_candles(self, min_height: int = 7, min_reversal: int = 4) -> pd.DataFrame or None:
+        """
+        Resamples aggregated API trades or REDIS trades aggregated trades to reversal klines:
+           https://atas.net/atas-possibilities/charts/how-to-set-reversal-charts-for-finding-the-market-reversal/
+
+        :param min_height: Defaults to 7. Minimum reversal kline height to close a candle
+        :param min_reversal: Defaults to 4. Minimum reversal from hig/low to close a candle
+        :return pd.DataFrame: Resample trades to reversal klines. Can be plotted.
+        """
+        if self.agg_trades.empty:
+            binpan_logger.info(empty_trades_msg)
+            return
+
+        if min_height:
+            self.min_height = min_height
+        if min_reversal:
+            self.min_reversal = min_reversal
+
+        if self.reversal_klines.empty or min_height or min_reversal:
+            self.reversal_agg_klines = handlers.indicators.reversal_candles(trades=self.agg_trades,
+                                                                            decimal_positions=self.decimals,
+                                                                            time_zone=self.time_zone,
+                                                                            min_height=self.min_height,
+                                                                            min_reversal=self.min_reversal)
+        return self.reversal_klines
+
+    def get_reversal_atomic_candles(self, min_height: int = 7, min_reversal: int = 4) -> pd.DataFrame or None:
+        """
+        Resamples API atomic trades or REDIS atomic trades to reversal klines:
+           https://atas.net/atas-possibilities/charts/how-to-set-reversal-charts-for-finding-the-market-reversal/
+
+        :param min_height: Defaults to 7. Minimum reversal kline height to close a candle
+        :param min_reversal: Defaults to 4. Minimum reversal from hig/low to close a candle
+        :return pd.DataFrame: Resample trades to reversal klines. Can be plotted.
+        """
+        if self.atomic_trades.empty:
+            binpan_logger.info(empty_atomic_trades_msg)
+            return
+
+        if min_height:
+            self.min_height = min_height
+        if min_reversal:
+            self.min_reversal = min_reversal
+
+        if self.reversal_atomic_klines.empty or min_height or min_reversal:
+            self.reversal_atomic_klines = handlers.indicators.reversal_candles(trades=self.atomic_trades,
+                                                                               decimal_positions=self.decimals,
+                                                                               time_zone=self.time_zone,
+                                                                               min_height=self.min_height,
+                                                                               min_reversal=self.min_reversal)
+        return self.reversal_atomic_klines
 
     ################
     # Plots
@@ -1468,12 +1577,12 @@ class Symbol(object):
         :param title: Graph title
 
         """
-        if self.trades.empty:
+        if self.agg_trades.empty:
             binpan_logger.info(empty_trades_msg)
             return
         if not title:
             title = f"Size trade categories {self.symbol}"
-        managed_data = self.trades.copy(deep=True)
+        managed_data = self.agg_trades.copy(deep=True)
 
         if overlap_prices:
             overlap_prices = self.df
@@ -1530,7 +1639,7 @@ class Symbol(object):
                :width: 1000
 
         """
-        if self.trades.empty:
+        if self.agg_trades.empty:
             binpan_logger.info(empty_trades_msg)
             return
 
@@ -1566,12 +1675,12 @@ class Symbol(object):
         :param title: A title for the plot.
 
         """
-        if self.trades.empty:
+        if self.agg_trades.empty:
             binpan_logger.info(empty_trades_msg)
             return
         if not title:
             title = f"Size trade categories {self.symbol}"
-        handlers.plotting.plot_pie(serie=self.trades['Quantity'],
+        handlers.plotting.plot_pie(serie=self.agg_trades['Quantity'],
                                    categories=categories,
                                    logarithmic=logarithmic,
                                    title=title)
@@ -1608,12 +1717,12 @@ class Symbol(object):
         :param kwargs_update_layout: Optional
 
         """
-        if from_trades or not self.trades.empty:
-            if self.trades.empty:
+        if from_trades or not self.agg_trades.empty:
+            if self.agg_trades.empty:
                 binpan_logger.info(empty_trades_msg)
                 return
             else:
-                _df = self.trades.copy(deep=True)
+                _df = self.agg_trades.copy(deep=True)
 
                 if not total_volume_column:
                     total_volume_column = 'Quantity'
@@ -1691,11 +1800,11 @@ class Symbol(object):
             startTime = int(time() * 1000) - (1000 * 60 * minutes)
 
         if from_trades:
-            if self.trades.empty:
+            if self.agg_trades.empty:
                 binpan_logger.info(empty_trades_msg)
                 return
-        if from_trades or not self.trades.empty:
-            _df = self.trades.copy(deep=True)
+        if from_trades or not self.agg_trades.empty:
+            _df = self.agg_trades.copy(deep=True)
             if startTime:
                 _df = _df[_df['Timestamp'] >= startTime]
             if endTime:
@@ -1758,7 +1867,7 @@ class Symbol(object):
         :param kwargs: Optional plotly args.
 
         """
-        if self.trades.empty and from_trades:
+        if self.agg_trades.empty and from_trades:
             binpan_logger.info(empty_trades_msg)
             return
         if not from_trades:
@@ -1780,7 +1889,7 @@ class Symbol(object):
                                            height=height,
                                            **kwargs)
         else:
-            data = self.trades.copy(deep=True)
+            data = self.agg_trades.copy(deep=True)
             if not (type(x) == str and type(y) == str) and type(color):
                 x = x[0]
                 y = y[0]

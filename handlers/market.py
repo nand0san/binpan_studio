@@ -98,7 +98,7 @@ def get_candles_by_time_stamps(symbol: str,
                                end_time: int = None,
                                limit=1000,
                                time_zone='Europe/Madrid',
-                               redis_client: StrictRedis = None) -> list:
+                               redis_client: StrictRedis or dict = None) -> list:
     """
     Calls API for candles list buy one or two timestamps, starting and ending.
 
@@ -121,7 +121,10 @@ def get_candles_by_time_stamps(symbol: str,
     :param int start_time: A timestamp in milliseconds from epoch.
     :param int end_time: A timestamp in milliseconds from epoch.
     :param int limit: Count of candles to ask for.
-    :param bool redis_client: A redis instance of a connector.
+    :param bool or StrictRedis or dict redis_client: A redis instance of a connector. Also can be passed a dictionary with redis client configuration. Example:
+
+        redis_client = {'host': '192.168.89.242', 'port': 6379, 'db': 0, 'decode_responses': True}
+
     :param str time_zone: Just used for exception errors.
     :return list: Returns a list from the Binance API
 
@@ -451,7 +454,7 @@ def get_agg_trades(symbol: str,
                 else:
                     response = []
 
-                market_logger.info(f"Clean {len(response)} trades found for {symbol}")
+                market_logger.info(f"Clean aggregated {len(response)} trades found for {symbol}")
 
             if not response:
                 start_str = handlers.time_helper.convert_milliseconds_to_utc_string(ms=startTime)
@@ -573,7 +576,7 @@ def get_historical_aggregated_trades(symbol: str,
                 else:
                     response = []
 
-                market_logger.info(f"Clean {len(response)} trades found for {symbol}")
+                market_logger.info(f"Clean aggregated {len(response)} trades found for {symbol}")
 
             if not response:
                 start_str = handlers.time_helper.convert_milliseconds_to_utc_string(ms=startTime)
@@ -639,10 +642,10 @@ def parse_agg_trades_to_dataframe(response: list,
                'Best price match']]
 
 
-def get_last_trades(symbol: str,
-                    limit=1000):
+def get_last_atomic_trades(symbol: str,
+                           limit=1000):
     """
-    Returns recent trades.
+    Returns recent atomic (not aggregated) trades.
 
     GET /api/v3/trades
 
@@ -678,12 +681,12 @@ def get_last_trades(symbol: str,
     return get_response(url=endpoint, params=query)
 
 
-def get_trades(symbol: str,
-               fromId: int = None,
-               limit: int = None,
-               decimal_mode: bool = False) -> list:
+def get_atomic_trades(symbol: str,
+                      fromId: int = None,
+                      limit: int = None,
+                      decimal_mode: bool = False) -> list:
     """
-    Returns trades from id to limit or last trades if id not specified.
+    Returns atomic (not aggregated) trades from id to limit or last trades if id not specified.
 
     Limit applied in fromId mode defaults to 500. Maximum is 1000.
 
@@ -721,6 +724,187 @@ def get_trades(symbol: str,
                                    decimal_mode=decimal_mode,
                                    api_key=api_key,
                                    params=query)
+
+
+def get_historical_atomic_trades(symbol: str,
+                                 startTime: int = None,
+                                 endTime: int = None,
+                                 start_trade_id: int = None,
+                                 end_trade_id: int = None,
+                                 limit: int = 1000,
+                                 redis_client_trades: StrictRedis = None) -> List[dict]:
+    """
+    Returns atomic (not aggregated) trades between timestamps. It iterates over limit 1000 intervals to adjust to API limit.
+
+    This request can be very slow because the API request weight limit.
+
+    :param int startTime: A timestamp in milliseconds from epoch.
+    :param int endTime: A timestamp in milliseconds from epoch.
+    :param int start_trade_id: A trade id as first one (older).
+    :param int end_trade_id: A trade id as last one (newer).
+    :param int limit: Limit for missing heads or tails of the interval requested with timestamps or trade ids.
+    :param str symbol: A binance valid symbol.
+    :param bool redis_client_trades: A redis instance of a connector. Must be a trades redis connector, usually different configuration
+     from candles redis server.
+    :return list: Returns a list from the Binance API
+
+    .. code-block::
+
+        Last Trades example:
+            [
+                {'id': 86206215,
+                 'price': '0.00454100',
+                 'qty': '0.02400000',
+                 'quoteQty': '0.00010898',
+                 'time': 1669579405932,
+                 'isBuyerMaker': False,
+                 'isBestMatch': True}, ...
+             ]
+    """
+
+    if start_trade_id and not end_trade_id:
+        end_trade_id = start_trade_id + limit
+    elif end_trade_id and not start_trade_id:
+        start_trade_id = end_trade_id - limit
+
+    trades = handlers.market.get_last_atomic_trades(symbol=symbol, limit=1000)
+    requests_cnt = 0
+    # with trade ids
+    if start_trade_id and end_trade_id and not redis_client_trades:
+        current_first_trade = trades[0]['id']
+        while trades[0]['id'] > start_trade_id:
+            requests_cnt += 1
+            market_logger.info(f"Requests to API for atomic trades of {symbol}: {requests_cnt}")
+            fetched_older_trades = handlers.market.get_atomic_trades(symbol=symbol,
+                                                                     fromId=(current_first_trade - 1000),
+                                                                     limit=1000)
+            trades = fetched_older_trades + trades
+            current_first_trade = trades[0]['id']
+        return [i for i in trades if start_trade_id <= i['id'] <= end_trade_id]
+
+    # with timestamps
+    if not redis_client_trades:
+        current_first_trade = trades[0]['id']
+
+        while trades[0]['time'] > startTime:
+            requests_cnt += 1
+            market_logger.info(f"Requests to API for atomic trades of {symbol}: {requests_cnt}")
+            fetched_older_trades = handlers.market.get_atomic_trades(symbol=symbol,
+                                                                     fromId=(current_first_trade - 1000),
+                                                                     limit=1000)
+            trades = fetched_older_trades + trades
+            current_first_trade = trades[0]['id']
+        return [i for i in trades if startTime <= i['time'] <= endTime]
+
+    # from redis
+    response = []
+    market_logger.info(f"Fetching atomic trades from redis server for {symbol}")
+
+    curr_trades = redis_client_trades.zrange(name=f"{symbol.lower()}@trade",
+                                             start=0,
+                                             end=-1,
+                                             withscores=True)
+
+    curr_trades = [json.loads(i[0]) for i in curr_trades]
+    market_logger.debug(f"Fetched {len(curr_trades)} atomic trades for {symbol}")
+
+    if curr_trades:
+        timestamps_dict = {k['T']: k['t'] for k in curr_trades}
+        trade_ids = [i for t, i in timestamps_dict.items() if startTime <= t <= endTime]
+        market_logger.debug(f"List of trades {len(trade_ids)} for {symbol}")
+
+        if trade_ids:
+            response = redis_client_trades.zrangebyscore(name=f"{symbol.lower()}@trade",
+                                                         min=trade_ids[0],
+                                                         max=trade_ids[-1],
+                                                         withscores=False)
+            response = [json.loads(i) for i in response]
+        else:
+            response = []
+
+        market_logger.info(f"Clean atomic {len(response)} trades found for {symbol}")
+
+    if not response:
+        start_str = handlers.time_helper.convert_milliseconds_to_utc_string(ms=startTime)
+        end_str = handlers.time_helper.convert_milliseconds_to_utc_string(ms=endTime)
+        market_logger.info(f"No atomic trade IDs found for {symbol} for given interval {start_str} and {end_str} (UTC) in server.")
+    return response
+
+
+def parse_atomic_trades_to_dataframe(response: list,
+                                     columns: dict,
+                                     symbol: str,
+                                     time_zone: str = None,
+                                     time_index: bool = None):
+    """
+    Parses the API response into a pandas dataframe.
+
+    .. code-block::
+
+        [
+          {
+            "id": 28457,
+            "price": "4.00000100",
+            "qty": "12.00000000",
+            "quoteQty": "48.000012",
+            "time": 1499865549590, // Trade executed timestamp, as same as `T` in the stream
+            "isBuyerMaker": true,
+            "isBestMatch": true
+          }
+        ]
+
+    Redis response:
+
+     {'e': 'trade',
+      'E': 1669721069347,
+      's': 'LTCBTC',
+      't': 86293174,
+      'p': '0.00466300',
+      'q': '3.10900000',
+      'b': 992385453,
+      'a': 992385448,
+      'T': 1669721069347,
+      'm': False,
+      'M': True},
+     ...]
+
+    :param list response: API raw response from atomic trades.
+    :param columns: Column names.
+    :param symbol: The used symbol.
+    :param time_zone: Selected time zone.
+    :param time_index: Or integer index.
+    :return: Pandas DataFrame
+
+    """
+    if not response:
+        return pd.DataFrame(columns=list(columns.values()))
+
+    df = pd.DataFrame(response)
+    df.rename(columns=columns, inplace=True)
+
+    df = convert_to_numeric(data=df)
+
+    timestamps_col = 'Timestamp'
+    timestamps_serie = df[timestamps_col].copy()
+    col = 'Date'
+    df.loc[:, col] = df[timestamps_col]
+    if time_zone != 'UTC':  # converts to time zone the time columns
+        df.loc[:, col] = handlers.time_helper.convert_utc_ms_column_to_time_zone(df, col, time_zone=time_zone)
+        df.loc[:, col] = df[col].apply(lambda x: handlers.time_helper.convert_datetime_to_string(x))
+    else:
+        df.loc[:, col] = df[timestamps_col].apply(lambda x: handlers.time_helper.convert_milliseconds_to_utc_string(x))
+
+    if time_index:
+        date_index = timestamps_serie.apply(handlers.time_helper.convert_milliseconds_to_time_zone_datetime, timezoned=time_zone)
+        df.set_index(date_index, inplace=True)
+
+    index_name = f"{symbol} {time_zone}"
+    df.index.name = index_name
+
+    if 'quoteQty' in columns.keys():
+        return df[['Trade Id', 'Price', 'Quantity', 'Quote quantity', 'Date', 'Timestamp', 'Buyer was maker', 'Best price match']]
+    else:  # it was a redis response
+        return df[['Trade Id', 'Price', 'Quantity', 'Buyer Order Id', 'Seller Order Id', 'Date', 'Timestamp', 'Buyer was maker', 'Best price match']]
 
 
 #############
