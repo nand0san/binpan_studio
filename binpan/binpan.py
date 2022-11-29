@@ -1288,13 +1288,13 @@ class Symbol(object):
         if min_reversal:
             self.min_reversal = min_reversal
 
-        if self.reversal_klines.empty or min_height or min_reversal:
+        if self.reversal_agg_klines.empty or min_height or min_reversal:
             self.reversal_agg_klines = handlers.indicators.reversal_candles(trades=self.agg_trades,
                                                                             decimal_positions=self.decimals,
                                                                             time_zone=self.time_zone,
                                                                             min_height=self.min_height,
                                                                             min_reversal=self.min_reversal)
-        return self.reversal_klines
+        return self.reversal_agg_klines
 
     def get_reversal_atomic_candles(self, min_height: int = 7, min_reversal: int = 4) -> pd.DataFrame or None:
         """
@@ -1608,15 +1608,18 @@ class Symbol(object):
     def plot_reversal(self,
                       min_height: int = None,
                       min_reversal: int = None,
-                      text_index: bool = True, **kwargs):
+                      text_index: bool = True,
+                      from_atomic: bool = False,
+                      **kwargs):
         """
-        Plots reversal candles. It requires trades fetched previously.
+        Plots reversal candles. It requires aggregated or atomic trades fetched previously.
 
         BinPan manages aggregated trades from binance API or from your REDIS.
 
         :param int min_height: It defaults to previous set. Can be reset when plotting.
         :param min_reversal: It defaults to previous set. Can be reset when plotting.
         :param bool text_index: If True, plots klines equally spaced. This allows to plot volume.
+        :param bool from_atomic: If True, klines are obtained from atomic trades.
         :return:
 
         Example:
@@ -1639,8 +1642,11 @@ class Symbol(object):
                :width: 1000
 
         """
-        if self.agg_trades.empty:
+        if not from_atomic and self.agg_trades.empty:
             binpan_logger.info(empty_trades_msg)
+            return
+        if from_atomic and self.atomic_trades.empty:
+            binpan_logger.info(empty_atomic_trades_msg)
             return
 
         if min_height:
@@ -1649,7 +1655,10 @@ class Symbol(object):
             self.min_reversal = min_reversal
 
         if min_height or min_reversal:
-            self.reversal_klines = self.get_reversal_candles(min_height=self.min_height, min_reversal=self.min_reversal)
+            if from_atomic:
+                self.reversal_atomic_klines = self.get_reversal_atomic_candles(min_height=self.min_height, min_reversal=self.min_reversal)
+            else:
+                self.reversal_agg_klines = self.get_reversal_agg_candles(min_height=self.min_height, min_reversal=self.min_reversal)
 
         if not 'title' in kwargs.keys():
             kwargs['title'] = f"Reversal Candles {self.min_height}/{self.min_reversal} {self.symbol}"
@@ -1657,10 +1666,17 @@ class Symbol(object):
             kwargs['yaxis_title'] = f"Price {self.symbol}"
         if not 'candles_ta_height_ratio' in kwargs.keys():
             kwargs['candles_ta_height_ratio'] = 0.7
-        handlers.plotting.candles_ta(data=self.reversal_klines,
-                                     plot_volume='Quantity',
-                                     text_index=text_index,
-                                     **kwargs)
+
+        if from_atomic:
+            handlers.plotting.candles_ta(data=self.reversal_atomic_klines,
+                                         plot_volume='Quantity',
+                                         text_index=text_index,
+                                         **kwargs)
+        else:
+            handlers.plotting.candles_ta(data=self.reversal_agg_klines,
+                                         plot_volume='Quantity',
+                                         text_index=text_index,
+                                         **kwargs)
 
     def plot_trades_pie(self, categories: int = 25, logarithmic=True, title: str = None):
         """
