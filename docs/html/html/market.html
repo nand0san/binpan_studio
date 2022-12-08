@@ -31,6 +31,9 @@
         <div class="wy-side-nav-search" >
             <a href="index.html" class="icon icon-home"> BinPan
           </a>
+              <div class="version">
+                0.2.42
+              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -143,7 +146,9 @@ is open right in between the endtime timestamp.</p>
 <li><p><strong>start_time</strong> (<em>int</em>) – A timestamp in milliseconds from epoch.</p></li>
 <li><p><strong>end_time</strong> (<em>int</em>) – A timestamp in milliseconds from epoch.</p></li>
 <li><p><strong>limit</strong> (<em>int</em>) – Count of candles to ask for.</p></li>
-<li><p><strong>redis_client</strong> (<em>bool</em>) – A redis instance of a connector.</p></li>
+<li><p><strong>redis_client</strong> (<em>bool</em><em> or </em><em>StrictRedis</em><em> or </em><em>dict</em>) – <p>A redis instance of a connector. Also can be passed a dictionary with redis client configuration. Example:</p>
+<p>redis_client = {‘host’: ‘192.168.89.242’, ‘port’: 6379, ‘db’: 0, ‘decode_responses’: True}</p>
+</p></li>
 <li><p><strong>time_zone</strong> (<em>str</em>) – Just used for exception errors.</p></li>
 </ul>
 </dd>
@@ -343,9 +348,9 @@ from candles redis server.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="handlers.market.get_last_trades">
-<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_last_trades</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.market.get_last_trades" title="Permalink to this definition"></a></dt>
-<dd><p>Returns recent trades.</p>
+<dt class="sig sig-object py" id="handlers.market.get_last_atomic_trades">
+<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_last_atomic_trades</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.market.get_last_atomic_trades" title="Permalink to this definition"></a></dt>
+<dd><p>Returns recent atomic (not aggregated) trades.</p>
 <p>GET /api/v3/trades</p>
 <p>Get recent trades.</p>
 <p>Weight(IP): 1</p>
@@ -377,9 +382,9 @@ from candles redis server.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="handlers.market.get_trades">
-<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_trades</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fromId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.market.get_trades" title="Permalink to this definition"></a></dt>
-<dd><p>Returns trades from id to limit or last trades if id not specified.</p>
+<dt class="sig sig-object py" id="handlers.market.get_atomic_trades">
+<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_atomic_trades</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fromId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.market.get_atomic_trades" title="Permalink to this definition"></a></dt>
+<dd><p>Returns atomic (not aggregated) trades from id to limit or last trades if id not specified.</p>
 <p>Limit applied in fromId mode defaults to 500. Maximum is 1000.</p>
 <p>GET /api/v3/historicalTrades</p>
 <p>Get older market trades.</p>

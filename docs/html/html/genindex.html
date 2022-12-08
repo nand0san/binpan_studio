@@ -28,6 +28,9 @@
         <div class="wy-side-nav-search" >
             <a href="index.html" class="icon icon-home"> BinPan
           </a>
+              <div class="version">
+                0.2.42
+              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -117,6 +120,8 @@
 </li>
       <li><a href="quest.html#handlers.quest.add_header_for_endpoint">add_header_for_endpoint() (in module handlers.quest)</a>
 </li>
+      <li><a href="binpan.html#binpan.binpan.Symbol.agg_trades">agg_trades() (binpan.binpan.Symbol method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="quest.html#handlers.quest.api_raw_get">api_raw_get() (in module handlers.quest)</a>
@@ -128,6 +133,8 @@
       <li><a href="files.html#handlers.files.append_dataframe_to_csv">append_dataframe_to_csv() (in module handlers.files)</a>
 </li>
       <li><a href="wallet.html#handlers.wallet.assets_convertible_dust">assets_convertible_dust() (in module handlers.wallet)</a>
+</li>
+      <li><a href="binpan.html#binpan.binpan.Symbol.atomic_trades">atomic_trades() (binpan.binpan.Symbol method)</a>
 </li>
       <li><a href="binpan.html#binpan.binpan.Symbol.atr">atr() (binpan.binpan.Symbol method)</a>
 </li>
@@ -318,8 +325,18 @@
 </li>
       <li><a href="exchange.html#handlers.exchange.get_account_status">get_account_status() (in module handlers.exchange)</a>
 </li>
-      <li><a href="market.html#handlers.market.get_agg_trades">get_agg_trades() (in module handlers.market)</a>
+      <li><a href="binpan.html#binpan.binpan.Symbol.get_agg_trades">get_agg_trades() (binpan.binpan.Symbol method)</a>
+
+      <ul>
+        <li><a href="market.html#handlers.market.get_agg_trades">(in module handlers.market)</a>
 </li>
+      </ul></li>
+      <li><a href="binpan.html#binpan.binpan.Symbol.get_atomic_trades">get_atomic_trades() (binpan.binpan.Symbol method)</a>
+
+      <ul>
+        <li><a href="market.html#handlers.market.get_atomic_trades">(in module handlers.market)</a>
+</li>
+      </ul></li>
       <li><a href="exchange.html#handlers.exchange.get_bases_dic">get_bases_dic() (in module handlers.exchange)</a>
 </li>
       <li><a href="market.html#handlers.market.get_candles_by_time_stamps">get_candles_by_time_stamps() (in module handlers.market)</a>
@@ -358,9 +375,9 @@
 </li>
       <li><a href="exchange.html#handlers.exchange.get_info_dic">get_info_dic() (in module handlers.exchange)</a>
 </li>
-      <li><a href="market.html#handlers.market.get_last_price">get_last_price() (in module handlers.market)</a>
+      <li><a href="market.html#handlers.market.get_last_atomic_trades">get_last_atomic_trades() (in module handlers.market)</a>
 </li>
-      <li><a href="market.html#handlers.market.get_last_trades">get_last_trades() (in module handlers.market)</a>
+      <li><a href="market.html#handlers.market.get_last_price">get_last_price() (in module handlers.market)</a>
 </li>
       <li><a href="exchange.html#handlers.exchange.get_legal_coins">get_legal_coins() (in module handlers.exchange)</a>
 </li>
@@ -378,12 +395,12 @@
 </li>
       <li><a href="wallet.html#handlers.wallet.get_margin_free_balances">get_margin_free_balances() (in module handlers.wallet)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="wallet.html#handlers.wallet.get_margin_interest_balances">get_margin_interest_balances() (in module handlers.wallet)</a>
 </li>
       <li><a href="wallet.html#handlers.wallet.get_margin_netAsset_balances">get_margin_netAsset_balances() (in module handlers.wallet)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="wallet.html#handlers.wallet.get_margin_trades_list">get_margin_trades_list() (in module handlers.wallet)</a>
 </li>
       <li><a href="market.html#handlers.market.get_order_book">get_order_book() (in module handlers.market)</a>
@@ -414,7 +431,9 @@
 </li>
       <li><a href="quest.html#handlers.quest.get_response">get_response() (in module handlers.quest)</a>
 </li>
-      <li><a href="binpan.html#binpan.binpan.Symbol.get_reversal_candles">get_reversal_candles() (binpan.binpan.Symbol method)</a>
+      <li><a href="binpan.html#binpan.binpan.Symbol.get_reversal_agg_candles">get_reversal_agg_candles() (binpan.binpan.Symbol method)</a>
+</li>
+      <li><a href="binpan.html#binpan.binpan.Symbol.get_reversal_atomic_candles">get_reversal_atomic_candles() (binpan.binpan.Symbol method)</a>
 </li>
       <li><a href="quest.html#handlers.quest.get_semi_signed_request">get_semi_signed_request() (in module handlers.quest)</a>
 </li>
@@ -448,12 +467,6 @@
 </li>
       <li><a href="exchange.html#handlers.exchange.get_top_gainers">get_top_gainers() (in module handlers.exchange)</a>
 </li>
-      <li><a href="binpan.html#binpan.binpan.Symbol.get_trades">get_trades() (binpan.binpan.Symbol method)</a>
-
-      <ul>
-        <li><a href="market.html#handlers.market.get_trades">(in module handlers.market)</a>
-</li>
-      </ul></li>
       <li><a href="plotting.html#handlers.plotting.group_slot">group_slot() (in module handlers.plotting)</a>
 </li>
   </ul></td>
@@ -864,8 +877,6 @@
       <li><a href="binpan.html#binpan.binpan.Symbol.time_index">time_index() (binpan.binpan.Symbol method)</a>
 </li>
       <li><a href="binpan.html#binpan.binpan.Symbol.time_zone">time_zone() (binpan.binpan.Symbol method)</a>
-</li>
-      <li><a href="binpan.html#binpan.binpan.Symbol.trades">trades() (binpan.binpan.Symbol method)</a>
 </li>
   </ul></td>
 </tr></table>

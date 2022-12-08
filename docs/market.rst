@@ -44,9 +44,9 @@ Trades
 
 .. autofunction:: parse_agg_trades_to_dataframe
 
-.. autofunction:: get_last_trades
+.. autofunction:: get_last_atomic_trades
 
-.. autofunction:: get_trades
+.. autofunction:: get_atomic_trades
 
 Orderbook
 ---------

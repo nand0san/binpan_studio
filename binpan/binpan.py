@@ -38,7 +38,7 @@ binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', 
 tick_seconds = handlers.time_helper.tick_seconds
 pandas_freq_tick_interval = handlers.time_helper.pandas_freq_tick_interval
 
-__version__ = "0.2.42"
+from secret import version
 
 try:
     from secret import redis_conf, redis_conf_trades, redis_conf_atomic_trades
@@ -69,6 +69,8 @@ API keys will be added to a file called secret.py in an encrypted way. API keys 
 Create API keys: https://www.binance.com/en/support/faq/360002502072
 """
     binpan_logger.warning(msg)
+
+__version__ = version
 
 plotly_colors = handlers.plotting.plotly_colors
 

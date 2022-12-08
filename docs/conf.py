@@ -12,7 +12,10 @@
 #
 import os
 import sys
-from dotenv import dotenv_values
+from pathlib import Path
+import importlib.util
+
+# from dotenv import dotenv_values
 
 sys.path.insert(0, os.path.abspath('..'))
 
@@ -28,9 +31,19 @@ author = 'Fernando Alfonso'
 # parent = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
 # sys.path.append(parent)
 
-config = dotenv_values("version.env")
+root_path = Path("__file__").parent.absolute().parent.absolute()
+secret_path = os.path.join(root_path, "secret.py")
+# print(secret_path)
+spec = importlib.util.spec_from_file_location("module.name", secret_path)
+my_secret = importlib.util.module_from_spec(spec)
+sys.modules["module.name"] = my_secret
+spec.loader.exec_module(my_secret)
+version = my_secret.version
+release = my_secret.version
 
-release = config["BINPAN_VERSION"]
+# config = dotenv_values("version.env")
+#
+# release = config["BINPAN_VERSION"]
 
 # -- General configuration ---------------------------------------------------
 
@@ -45,8 +58,7 @@ extensions = [
 #     "sphinx.ext.napoleon",
 
 autodoc_member_order = 'bysource'
-autodoc_default_options = {'autosummary': True,
-                           }
+autodoc_default_options = {'autosummary': True}
 autosummary_generate = True  # Turn on sphinx.ext.autosummary
 
 # Add any paths that contain templates here, relative to this directory.
