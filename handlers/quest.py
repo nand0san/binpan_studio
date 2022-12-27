@@ -8,7 +8,9 @@ from typing import List, Tuple
 
 from .logs import Logs
 
-from .exceptions import BinanceAPIException, BinanceRequestException
+# from .exceptions import BinanceAPIException, BinanceRequestException
+from .exceptions import *
+
 
 from .starters import AesCipher, get_exchange_limits
 

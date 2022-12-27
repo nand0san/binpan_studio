@@ -5,7 +5,7 @@ from time import time
 
 from typing import Tuple
 
-from .quest import get_server_time
+# from .quest import get_server_time
 from .logs import Logs
 
 time_logger = Logs(filename='./logs/time_helpers.log', name='time_helpers', info_level='INFO')
@@ -110,7 +110,8 @@ def convert_milliseconds_to_str(ms: int, timezoned: str = None) -> str:
 
 
 def utc_start_of_day_ms() -> int:
-    now = get_server_time()
+    # now = get_server_time()
+    now = int(time()*1000)
     dt = convert_milliseconds_to_utc_datetime(now).replace(hour=0, minute=0, second=0, microsecond=0)
     return int(convert_datetime_to_milliseconds(dt))
 
@@ -201,7 +202,8 @@ def ticks_between_timestamps(start: int,
 
 def get_ticks_to_timestamp_utc(ticks_interval: str, timestamp: int = None):
     """Retorna cuantas velas se requieren hasta el timestamp pasado hasta ahora"""
-    now = get_server_time()
+    # now = get_server_time()
+    now = int(time()*1000)
     tick_ms = tick_seconds[ticks_interval] * 1000
     interval_ms = now - timestamp
     return interval_ms // tick_ms
@@ -265,7 +267,8 @@ def detect_tick_interval(data: pd.DataFrame) -> str:
 
 def next_open_utc(tick_interval: str) -> int:
     """Calcula el timestamp del next open para un tick_interval"""
-    utc_ms = get_server_time()
+    # utc_ms = get_server_time()
+    utc_ms = int(time()*1000)
     units = (utc_ms // (tick_seconds[tick_interval] * 1000))
     last_open_ms = units * tick_seconds[tick_interval] * 1000
     return last_open_ms + (tick_seconds[tick_interval] * 1000)

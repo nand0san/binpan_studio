@@ -12,6 +12,11 @@ class Logs:
             home = path.expanduser('~')
             makedirs(f'{home}/deploy/deeplab_working', exist_ok=True)
         self.logger = logging.getLogger(name)
+
+        # avoid duplicated logs
+        if self.logger.hasHandlers():
+            self.logger.handlers = []
+            
         self.log_file = filename
 
         # Create handlers

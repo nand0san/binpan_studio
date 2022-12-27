@@ -940,9 +940,8 @@ def candles_tagged(data: pd.DataFrame,
             assert len(markers_labels) == len(marker_legend_names)
 
         except Exception as exc:
-            raise BinPanException(exc.__class__,
-                                  "Plotting labels, annotation colors or names not consistent with markers list length",
-                                  "Function candles_tagged")
+            raise BinPanException(f"Function candles_tagged: Plotting labels, annotation colors or names not consistent with markers list length -> {exc}",
+                                  telegram_send=True)
         labels_locator = list(markers_labels.keys())
     else:
         markers_labels = dict()

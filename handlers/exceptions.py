@@ -1,5 +1,6 @@
 import json
-from handlers.logs import Logs
+from .logs import Logs
+from .messages import telegram_bot_send_text
 
 exceptions_logger = Logs(filename='./logs/exceptions.log', name='exceptions', info_level='INFO')
 
@@ -12,7 +13,6 @@ exceptions_logger = Logs(filename='./logs/exceptions.log', name='exceptions', in
 
 
 class MissingApiData(Exception):
-
     def __init__(self, message):
         self.message = message
         self.msg = f"""No API Key or API Secret. 
@@ -153,16 +153,50 @@ class NotImplementedException(Exception):
         super().__init__(message)
 
 
+#
+# class BinPanException(Exception):
+#     """
+#     Message the exception and logs it.
+#     """
+#
+#     def __init__(self, exception_class, doc, message):
+#         self.exception_class = exception_class
+#         self.doc = doc
+#         self.message = message
+#
+#     def __str__(self):
+#         msg = f'BinPan Exception: {self.exception_class} {self.doc} {self.message}'
+#         exceptions_logger.error(msg)
+#
+
 class BinPanException(Exception):
     """
-    Message the exception and logs it.
+    BinPan exception with custom message.
+
+    :param str msg: A message for the Exception message.
+    :param bool telegram_send:
     """
 
-    def __init__(self, exception_class, doc, message):
-        self.exception_class = exception_class
-        self.doc = doc
-        self.message = message
+    def __init__(self,
+                 msg: str,
+                 telegram_send: bool = False):
+        self.message = msg
+        self.telegram_send = telegram_send
+
+        self.internal_msg = f"BinPan Cache Exception: {msg}"
+
+        exceptions_logger.error(msg)
+
+        if telegram_send:
+            self.telegram_msg()
+
+        super().__init__(self.message)
 
     def __str__(self):
-        msg = f'BinPan Exception: {self.exception_class} {self.doc} {self.message}'
-        exceptions_logger.error(msg)
+        return self.message
+
+    def telegram_msg(self):
+        """
+        Sends to telegram the internal message.
+        """
+        telegram_bot_send_text(msg=self.internal_msg)
