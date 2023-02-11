@@ -100,7 +100,7 @@ def get_candles_by_time_stamps(symbol: str,
                                time_zone='Europe/Madrid',
                                redis_client: StrictRedis or dict = None) -> list:
     """
-    Calls API for candles list buy one or two timestamps, starting and ending.
+    Calls API for a candles list using one or two timestamps, starting and ending.
 
     In case the limit is passed and exceeded by requested time intervals, the start_time prevails over the end_time,
     start_time must come in milliseconds from epoch.
@@ -111,7 +111,7 @@ def get_candles_by_time_stamps(symbol: str,
     that timeStamp, but the next candle of the corresponding tick_interval, except in case it exactly matches the value of an open
     timestamp, in which case it will include it in the return.
 
-    The indicated endTime will include the candlestick that timestamp is on. It will come in milliseconds. It can be not a closed one if
+    The indicated endTime will include the candlestick that timestamp is on. It should be in milliseconds. It can be a not closed one if
     is open right in between the endtime timestamp.
 
     If no timestamps are passed, the last quantity candlesticks up to limit count are returned.
