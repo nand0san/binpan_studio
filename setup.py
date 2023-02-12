@@ -1,6 +1,11 @@
 from setuptools import setup
 import pathlib
-from secret import version
+
+try:
+    from secret import version
+except ImportError:
+    pass
+
 # import configparser
 
 # The directory containing this file
