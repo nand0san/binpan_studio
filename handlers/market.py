@@ -955,7 +955,7 @@ def get_order_book(symbol: str, limit=5000) -> dict:
 # Order Book Ticker #
 #####################
 
-def get_orderbook_tickers(symbol: str = None) -> dict:
+def get_orderbook_tickers(symbol: str = None, decimal_mode: bool = False) -> dict:
     """
     Symbol Order Book Ticker
 
@@ -980,6 +980,8 @@ def get_orderbook_tickers(symbol: str = None) -> dict:
     Examples of accepted format for the symbols parameter: ["BTCUSDT","BNBUSDT"]
 
     :param str symbol: Optional. If not passed, all symbols returned.
+    :param bool decimal_mode: If selected, return decimal values.
+
     :return: Api response is:
 
         .. code-block::
@@ -1021,8 +1023,14 @@ def get_orderbook_tickers(symbol: str = None) -> dict:
     query = {'symbol': symbol}
     response = get_response(url=endpoint, params=query)
     if type(response) == dict:
-        return {response['symbol']: response}
-    return {i['symbol']: i for i in response}
+        ret = {response['symbol']: response}
+    else:
+        ret = {i['symbol']: i for i in response}
+    if decimal_mode:
+        ret = {k: {kk: dd(vv) for kk, vv in v.items() if kk != 'symbol'} for k, v in ret.items()}
+    else:
+        ret = {k: {kk: float(vv) for kk, vv in v.items() if kk != 'symbol'} for k, v in ret.items()}
+    return ret
 
 ####################
 # coin conversions #
