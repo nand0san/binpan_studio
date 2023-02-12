@@ -4,7 +4,7 @@ import pathlib
 try:
     from secret import version
 except ImportError:
-    version = "0.2.45"
+    version = "0.2.47"
 
 # import configparser
 
