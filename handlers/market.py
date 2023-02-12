@@ -233,7 +233,7 @@ def parse_candles_to_dataframe(raw_response: list,
                                symbol: str,
                                tick_interval: str,
                                columns: list = None,
-                               time_cols: list = ['Open time', 'Close time'],
+                               time_cols: list = None,
                                time_zone: str or None = 'UTC',
                                time_index=False) -> pd.DataFrame:
     """
@@ -255,6 +255,9 @@ def parse_candles_to_dataframe(raw_response: list,
     :return:                    Pandas DataFrame
 
     """
+    if not time_cols:
+        time_cols = ['Open time', 'Close time']
+
     if not columns:
         columns = ['Open time', 'Open', 'High', 'Low', 'Close', 'Volume', 'Close time', 'Quote volume',
                    'Trades', 'Taker buy base volume', 'Taker buy quote volume', 'Ignore']
@@ -904,7 +907,8 @@ def parse_atomic_trades_to_dataframe(response: list,
     if 'quoteQty' in columns.keys():
         return df[['Trade Id', 'Price', 'Quantity', 'Quote quantity', 'Date', 'Timestamp', 'Buyer was maker', 'Best price match']]
     else:  # it was a redis response
-        return df[['Trade Id', 'Price', 'Quantity', 'Buyer Order Id', 'Seller Order Id', 'Date', 'Timestamp', 'Buyer was maker', 'Best price match']]
+        return df[['Trade Id', 'Price', 'Quantity', 'Buyer Order Id', 'Seller Order Id', 'Date', 'Timestamp', 'Buyer was maker',
+                   'Best price match']]
 
 
 #############
@@ -946,6 +950,79 @@ def get_order_book(symbol: str, limit=5000) -> dict:
     query = {'symbol': symbol, 'limit': limit}
     return get_response(url=endpoint, params=query)
 
+
+#####################
+# Order Book Ticker #
+#####################
+
+def get_orderbook_tickers(symbol: str = None) -> dict:
+    """
+    Symbol Order Book Ticker
+
+
+    GET /api/v3/ticker/bookTicker
+
+    Best price/qty on the order book for a symbol or symbols.
+
+    Weight(IP):
+
+    Parameter	Symbols Provided	Weight
+    symbol	                    1	    1
+    symbol parameter is omitted	        2
+    symbols	Any	                        2
+    Parameters:
+
+    Name	Type	Mandatory	Description
+    symbol	STRING	NO	Parameter symbol and symbols cannot be used in combination.
+
+    If neither parameter is sent, bookTickers for all symbols will be returned in an array.
+
+    Examples of accepted format for the symbols parameter: ["BTCUSDT","BNBUSDT"]
+
+    :param str symbol: Optional. If not passed, all symbols returned.
+    :return: Api response is:
+
+        .. code-block::
+            Response:
+
+            {
+              "symbol": "LTCBTC",
+              "bidPrice": "4.00000000",
+              "bidQty": "431.00000000",
+              "askPrice": "4.00000200",
+              "askQty": "9.00000000"
+            }
+            OR
+
+            [
+              {
+                "symbol": "LTCBTC",
+                "bidPrice": "4.00000000",
+                "bidQty": "431.00000000",
+                "askPrice": "4.00000200",
+                "askQty": "9.00000000"
+              },
+              {
+                "symbol": "ETHBTC",
+                "bidPrice": "0.07946700",
+                "bidQty": "9.00000000",
+                "askPrice": "100000.00000000",
+                "askQty": "1000.00000000"
+              }
+            ]
+
+    """
+    endpoint = '/api/v3/ticker/bookTicker?'
+    if symbol:
+        weight = 1
+    else:
+        weight = 2
+    check_weight(weight, endpoint=endpoint)
+    query = {'symbol': symbol}
+    response = get_response(url=endpoint, params=query)
+    if type(response) == dict:
+        return {response['symbol']: response}
+    return {i['symbol']: i for i in response}
 
 ####################
 # coin conversions #
