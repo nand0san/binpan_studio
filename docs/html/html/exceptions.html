@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Exceptions Module &mdash; BinPan 0.2.46 documentation</title>
+  <title>Exceptions Module &mdash; BinPan 0.2.47 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/style.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="index.html" class="icon icon-home"> BinPan
           </a>
               <div class="version">
-                0.2.46
+                0.2.47
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -91,7 +91,19 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">handlers</span> <span class="kn">import</span> <span class="n">exceptions</span>
 </pre></div>
 </div>
-<span class="target" id="module-handlers.exceptions"></span><dl class="py class">
+<span class="target" id="module-handlers.exceptions"></span><p>Exceptions control.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="handlers.exceptions.BinPanException">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.exceptions.</span></span><span class="sig-name descname"><span class="pre">BinPanException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.exceptions.BinPanException" title="Permalink to this definition"></a></dt>
+<dd><p>BinPan exception with custom message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>msg</strong> (<em>str</em>) – A message for the Exception message.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="handlers.exceptions.BinanceAPIException">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.exceptions.</span></span><span class="sig-name descname"><span class="pre">BinanceAPIException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.exceptions.BinanceAPIException" title="Permalink to this definition"></a></dt>
 <dd><p>Extract exception from response.</p>
