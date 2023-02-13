@@ -1,4 +1,4 @@
 """
 Release info
 """
-version = "0.2.49"
+version = "0.3.1"
