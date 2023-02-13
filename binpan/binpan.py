@@ -3,6 +3,8 @@
 This is the main classes file.
 
 """
+__version__ = "0.3.5"
+
 import os
 from sys import path
 
@@ -28,7 +30,6 @@ import handlers.starters
 import handlers.strategies
 import handlers.time_helper
 import handlers.wallet
-from version import version
 
 import pandas_ta as ta
 from random import choice
@@ -38,7 +39,7 @@ from time import time
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
 pandas_freq_tick_interval = handlers.time_helper.pandas_freq_tick_interval
-__version__ = version
+
 
 try:
     from secret import redis_conf, redis_conf_trades, redis_conf_atomic_trades

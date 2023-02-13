@@ -1,6 +1,5 @@
 from setuptools import setup
 import pathlib
-from version import version
 
 # The directory containing this file
 HERE = pathlib.Path(__file__).parent
@@ -16,7 +15,7 @@ read_required = open('requirements.txt', 'r')
 REQUIRED = read_required.read()
 read_required.close()
 
-my_version = version
+my_version = "0.3.5"
 
 setup(name='binpan',
       version=my_version,
@@ -35,5 +34,5 @@ setup(name='binpan',
       long_description=README_TEXT,
       long_description_content_type="text/markdown",
       package_dir={"": "."},
-      packages=["handlers", "binpan", "version"]
+      packages=["handlers", "binpan"]
       )
