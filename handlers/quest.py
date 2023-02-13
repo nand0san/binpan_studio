@@ -7,11 +7,7 @@ API requests module.
 from typing import List, Tuple
 
 from .logs import Logs
-
-# from .exceptions import BinanceAPIException, BinanceRequestException
-from .exceptions import *
-
-
+from .exceptions import BinanceAPIException, BinanceRequestException
 from .starters import AesCipher, get_exchange_limits
 
 from urllib.parse import urljoin, urlencode

@@ -13,14 +13,17 @@ Can be imported this way:
    from handlers import exceptions
 
 
-
 .. automodule:: handlers.exceptions
 
+
+.. autoclass:: BinPanException
+    :members:
 
 .. autoclass:: BinanceAPIException
     :members:
 
-
 .. autoclass:: BinanceRequestException
     :members:
+
+
 
