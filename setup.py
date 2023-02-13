@@ -1,6 +1,6 @@
 from setuptools import setup
 import pathlib
-from secret import version
+from version import version
 
 # The directory containing this file
 HERE = pathlib.Path(__file__).parent
