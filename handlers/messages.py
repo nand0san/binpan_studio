@@ -18,7 +18,7 @@ try:
 
 except Exception as exc:
     msg = """\n\n-------------------------------------------------------------
-WARNING: No API Key or API Secret
+WARNING: No Telegram API Key or API Secret
     
 Not found telegram bot key or chat key for the telegram message module.
 

@@ -38,16 +38,14 @@ class MissingApiData(Exception):
     """
     def __init__(self, message):
         self.message = message
-        self.msg = f"""No API Key or API Secret. 
-        
-        API key would be needed for personal API calls. Any other calls will work.
+        self.msg = f"""No Binance API Key or API Secret. API key would be needed for personal API calls. Any other calls will work.
 
-        Adding:
+        Adding example:
 
-        from binpan import handlers
-
-        handlers.files.add_api_key("xxxx")
-        handlers.files.add_api_secret("xxxx")
+            from binpan import handlers
+    
+            handlers.files.add_api_key("xxxx")
+            handlers.files.add_api_secret("xxxx")
 
         API keys will be added to a file called secret.py in an encrypted way. API keys in memory stay encrypted except in the API call instant.
 

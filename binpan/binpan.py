@@ -54,11 +54,11 @@ try:
 except ImportError:
     api_key, api_secret = "PLEASE ADD API KEY", "PLEASE ADD API SECRET"
     msg = """\n\n-------------------------------------------------------------
-WARNING: No API Key or API Secret
+WARNING: No Binance API Key or API Secret
 
 API key would be needed for personal API calls. Any other calls will work.
 
-Adding:
+Adding example:
 
 from binpan import handlers
 
@@ -345,7 +345,8 @@ class Symbol(object):
             self.time_index = time_index
             self.closed = closed
 
-        self.fees = self.get_fees(symbol=self.symbol)
+        # self.fees = self.get_fees(symbol=self.symbol)
+        self.fees = None
 
         if from_redis:
             if type(from_redis) == bool:
