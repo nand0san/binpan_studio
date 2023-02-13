@@ -1,12 +1,6 @@
 from setuptools import setup
 import pathlib
-
-try:
-    from secret import version
-except ImportError:
-    version = "0.2.47"
-
-# import configparser
+from secret import version
 
 # The directory containing this file
 HERE = pathlib.Path(__file__).parent
