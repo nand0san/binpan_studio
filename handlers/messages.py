@@ -1,3 +1,6 @@
+"""
+Telegram and messages control.
+"""
 from .starters import AesCipher
 from .logs import Logs
 from .time_helper import convert_milliseconds_to_str
@@ -74,21 +77,20 @@ def telegram_bot_send_text(msg: dict or str,
     else:
         bot_message = str(msg)
 
+    # telegram keys
     if not alt_enc_bot_id:
-        alt_enc_bot_id = cipher_object.decrypt(encoded_telegram_bot_id)
+        alt_enc_bot_id = encoded_telegram_bot_id
     if not alt_chat_id:
-        alt_chat_id = cipher_object.decrypt(encoded_chat_id)
+        alt_chat_id = encoded_chat_id
+    alt_enc_bot_id = cipher_object.decrypt(alt_enc_bot_id)
+    alt_chat_id = cipher_object.decrypt(alt_chat_id)
 
     send_text = f'https://api.telegram.org/bot{alt_enc_bot_id}/sendMessage?chat_id={alt_chat_id}&' \
                 f'parse_mode={parse_mode}={bot_message}'
-
     if disable_notification:
         send_text += "&disable_notification=true"
-
     response = requests.get(send_text)
-
     msg_logger.info("TELEGRAM " + " ".join(bot_message.replace('\n', ' ').split()))
-
     return response.json()
 
 
@@ -113,7 +115,7 @@ def telegram_parse_dict(msg_data: dict, timezone='UTC'):
         except:
             fv2 = fv1
         if 'pct' in k:
-            fv2 = fv2 * 100
+            fv2 *= 100
             row = f"*{k}* : `{fv2:.2f}` \n"
         elif type(fv2) == float:
             row = f"*{k}* : `{fv2:.8f}` \n"

@@ -38,8 +38,6 @@ binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', 
 tick_seconds = handlers.time_helper.tick_seconds
 pandas_freq_tick_interval = handlers.time_helper.pandas_freq_tick_interval
 
-from secret import version
-
 try:
     from secret import redis_conf, redis_conf_trades, redis_conf_atomic_trades
 except:
@@ -69,8 +67,6 @@ API keys will be added to a file called secret.py in an encrypted way. API keys 
 Create API keys: https://www.binance.com/en/support/faq/360002502072
 """
     binpan_logger.warning(msg)
-
-__version__ = version
 
 plotly_colors = handlers.plotting.plotly_colors
 
@@ -289,7 +285,7 @@ class Symbol(object):
         self.time_cols = ['Open time', 'Close time']
         self.dts_time_cols = ['Open timestamp', 'Close timestamp']
 
-        self.version = __version__
+        # self.version = __version__
         if from_csv:
             if type(from_csv) == str:
                 filename = from_csv
@@ -788,7 +784,7 @@ class Symbol(object):
         else:
             return handlers.market.basic_dataframe(data=self.df, exceptions=exceptions, actions_col=actions_col)
 
-    def drop(self, columns_to_drop=[], inplace=False) -> pd.DataFrame:
+    def drop(self, columns_to_drop=None, inplace=False) -> pd.DataFrame:
         """
         It drops some columns from the dataframe. If columns list not passed, then defaults to the initial columns.
 
@@ -801,6 +797,8 @@ class Symbol(object):
         :return pd.DataFrame: Pandas DataFrame with columns dropped.
 
         """
+        if not columns_to_drop:
+            columns_to_drop = []
         current_columns = self.df.columns
         if not columns_to_drop:
             columns_to_drop = []
@@ -1460,7 +1458,7 @@ class Symbol(object):
              volume: bool = True,
              title: str = None,
              yaxis_title: str = 'Price',
-             overlapped_indicators: list = [],
+             overlapped_indicators: list = None,
              priced_actions_col: str = 'Close',
              actions_col: str = None,
              marker_labels: dict = None,
@@ -1498,6 +1496,8 @@ class Symbol(object):
         :param int zoom_end_idx: It can zoom to an index interval.
 
         """
+        if not overlapped_indicators:
+            overlapped_indicators = []
         temp_df = self.df.iloc[zoom_start_idx:zoom_end_idx]
 
         if not title:
@@ -1855,10 +1855,10 @@ class Symbol(object):
                                        **kwargs_update_layout)
 
     def plot_trades_scatter(self,
-                            x: str = ['Price', 'Close'],
-                            y: str = ['Quantity', 'Volume'],
+                            x: str = None,
+                            y: str = None,
                             dot_symbol='Buyer was maker',
-                            color: str = ['Buyer was maker', 'Taker buy base volume'],
+                            color: str = None,
                             marginal=True,
                             from_trades=True,
                             height=1000,
@@ -1885,6 +1885,12 @@ class Symbol(object):
         :param kwargs: Optional plotly args.
 
         """
+        if not x:
+            x = ['Price', 'Close']
+        if not y:
+            y = ['Quantity', 'Volume']
+        if not color:
+            color = ['Buyer was maker', 'Taker buy base volume']
         if self.agg_trades.empty and from_trades:
             binpan_logger.info(empty_trades_msg)
             return
@@ -2388,7 +2394,7 @@ class Symbol(object):
              smooth: int = 9,
              inplace: bool = True,
              suffix: str = '',
-             colors: list = ['black', 'orange', 'green', 'blue'],
+             colors: list = None,
              **kwargs):
         """
         Generate technical indicator Moving Average, Convergence/Divergence (MACD).
@@ -2413,6 +2419,8 @@ class Symbol(object):
            :alt: Candles with some indicators
 
         """
+        if not colors:
+            colors = ['black', 'orange', 'green', 'blue']
         macd = self.df.ta.macd(fast=fast,
                                slow=slow,
                                signal=smooth,
@@ -2500,7 +2508,7 @@ class Symbol(object):
                   d_smooth: int = 3,
                   inplace: bool = True,
                   suffix: str = '',
-                  colors: list = ['orange', 'blue'],
+                  colors: list = None,
                   **kwargs) -> pd.DataFrame:
         """
         Stochastic Relative Strength Index (RSI) with a fast and slow exponential moving averages.
@@ -2521,6 +2529,8 @@ class Symbol(object):
            :alt: Candles with some indicators
 
         """
+        if not colors:
+            colors = ['orange', 'blue']
         stoch_df = ta.stochrsi(close=self.df['Close'],
                                length=rsi_length,
                                rsi_length=rsi_length,
@@ -2864,7 +2874,7 @@ class Symbol(object):
                ddof: int = 0,
                inplace: bool = True,
                suffix: str = '',
-               colors: list = ['red', 'orange', 'green'],
+               colors: list = None,
                my_fill_color: str = 'rgba(47, 48, 56, 0.2)',
                **kwargs):
         """
@@ -2893,6 +2903,8 @@ class Symbol(object):
            :alt: Candles with some indicators
 
         """
+        if not colors:
+            colors = ['red', 'orange', 'green']
         bbands = self.df.ta.bbands(close=self.df['Close'],
                                    length=length,
                                    std=std,
@@ -2932,7 +2944,7 @@ class Symbol(object):
               k_smooth: int = 1,
               inplace: bool = True,
               suffix: str = '',
-              colors: list = ['orange', 'blue'],
+              colors: list = None,
               **kwargs) -> pd.DataFrame:
         """
         Stochastic Oscillator with a fast and slow exponential moving averages.
@@ -2953,6 +2965,8 @@ class Symbol(object):
            :alt: Candles with some indicators
 
         """
+        if not colors:
+            colors = ['orange', 'blue']
         stoch_df = ta.stoch(high=self.df['High'],
                             low=self.df['Low'],
                             close=self.df['Close'],
@@ -2978,7 +2992,7 @@ class Symbol(object):
                  senkou_cloud_base: int = 52,
                  inplace: bool = True,
                  suffix: str = '',
-                 colors: list = ['orange', 'skyblue', 'grey', 'green', 'red']):
+                 colors: list = None):
         """
         The Ichimoku Cloud is a collection of technical indicators that show support and resistance levels, as well as momentum and trend
         direction. It does this by taking multiple averages and plotting them on a chart. It also uses these figures to compute a “cloud”
@@ -3006,7 +3020,8 @@ class Symbol(object):
            :alt: Candles with some indicators
 
         """
-
+        if not colors:
+            colors = ['orange', 'skyblue', 'grey', 'green', 'red']
         ichimoku_data = handlers.indicators.ichimoku(data=self.df,
                                                      tenkan=tenkan,
                                                      kijun=kijun,
@@ -3057,7 +3072,7 @@ class Symbol(object):
                   period: int = 2,
                   inplace: bool = True,
                   suffix: str = '',
-                  colors: list = ['orange', 'skyblue']):
+                  colors: list = None):
         """
         The fractal indicator is based on a simple price pattern that is frequently seen in financial markets. Outside of trading, a fractal
         is a recurring geometric pattern that is repeated on all time frames. From this concept, the fractal indicator was devised.
@@ -3076,7 +3091,8 @@ class Symbol(object):
             https://community.plotly.com/t/plotly-colours-list/11730
 
         """
-
+        if not colors:
+            colors = ['orange', 'skyblue']
         fractal = handlers.indicators.fractal_w(data=self.df, period=period, suffix=suffix)
 
         if inplace and self.is_new(fractal):
@@ -3683,7 +3699,7 @@ class Symbol(object):
     def merge_columns(self,
                       main_column: str or int or pd.Series,
                       other_column: str or int or pd.Series,
-                      sign_other: dict = {1: -1},
+                      sign_other: dict = None,
                       strategy_group: str = '',
                       inplace=True,
                       suffix: str = '',
@@ -3703,6 +3719,8 @@ class Symbol(object):
         :param str or int color: A color from plotly list of colors or its index in that list.
         :return pd.Series: A merged serie.
         """
+        if not sign_other:
+            sign_other = {1: -1}
         if type(main_column) == str:
             data_a = self.df[main_column]
         elif type(main_column) == int:

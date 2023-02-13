@@ -1,3 +1,6 @@
+"""
+Functions to initialize before starting anything.
+"""
 import requests
 from base64 import b64encode, b64decode
 import hashlib
@@ -9,19 +12,34 @@ from Crypto.Util.Padding import pad, unpad
 
 
 class AesCipher(object):
+    """
+    Cyphering object.
+    """
 
     def __init__(self):
         __seed = bytes(expanduser("~") + get_cpu_info()['brand_raw'], "utf8")
         self.__iv = hashlib.md5(__seed).hexdigest()
         self.__key = hashlib.md5(__seed[::-1]).hexdigest()
 
-    def encrypt(self, msg):
+    def encrypt(self, msg: str) -> str:
+        """
+        Encrypting function.
+
+        :param str msg: Any message to encrypt.
+        :return str: A bytes base64 string.
+        """
         msg_padded = pad(msg.encode(), AES.block_size)
         cipher = AES.new(unhexlify(self.__key), AES.MODE_CBC, unhexlify(self.__iv))
         cipher_text = cipher.encrypt(msg_padded)
         return b64encode(cipher_text).decode('utf-8')
 
-    def decrypt(self, msg_encrypted):
+    def decrypt(self, msg_encrypted: str) -> str:
+        """
+        Decrypt function.
+
+        :param str msg_encrypted: A bytes base64 string.
+        :return str: Plain text.
+        """
         decipher = AES.new(unhexlify(self.__key), AES.MODE_CBC, unhexlify(self.__iv))
         plaintext = unpad(decipher.decrypt(b64decode(msg_encrypted)), AES.block_size).decode('utf-8')
         return plaintext

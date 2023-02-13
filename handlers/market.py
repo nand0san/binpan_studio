@@ -16,9 +16,30 @@ import handlers.time_helper
 from .logs import Logs
 from .quest import check_weight, get_response, api_raw_get, get_semi_signed_request
 from .time_helper import tick_seconds, end_time_from_start_time, start_time_from_end_time
-from secret import api_key
 
 market_logger = Logs(filename='./logs/market_logger.log', name='market_logger', info_level='INFO')
+
+try:
+    from secret import api_key
+except ImportError:
+    api_key, api_secret = "PLEASE ADD API KEY", "PLEASE ADD API SECRET"
+    msg = """\n\n-------------------------------------------------------------
+WARNING: No API Key or API Secret
+
+API key would be needed for personal API calls. Any other calls will work.
+
+Adding:
+
+from binpan import handlers
+
+handlers.files.add_api_key("xxxx")
+handlers.files.add_api_secret("xxxx")
+
+API keys will be added to a file called secret.py in an encrypted way. API keys in memory stay encrypted except in the API call instant.
+
+Create API keys: https://www.binance.com/en/support/faq/360002502072
+"""
+    market_logger.warning(msg)
 
 base_url = 'https://api.binance.com'
 
@@ -1031,6 +1052,7 @@ def get_orderbook_tickers(symbol: str = None, decimal_mode: bool = False) -> dic
     else:
         ret = {k: {kk: float(vv) for kk, vv in v.items() if kk != 'symbol'} for k, v in ret.items()}
     return ret
+
 
 ####################
 # coin conversions #
