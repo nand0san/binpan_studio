@@ -28,6 +28,7 @@ import handlers.starters
 import handlers.strategies
 import handlers.time_helper
 import handlers.wallet
+from version import version
 
 import pandas_ta as ta
 from random import choice
@@ -37,6 +38,7 @@ from time import time
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
 pandas_freq_tick_interval = handlers.time_helper.pandas_freq_tick_interval
+__version__ = version
 
 try:
     from secret import redis_conf, redis_conf_trades, redis_conf_atomic_trades
@@ -74,7 +76,7 @@ pd.set_option('display.max_columns', 20)
 pd.set_option('display.width', 250)
 pd.set_option('display.min_rows', 10)
 
-empty_trades_msg = "Empty trades, please request using: get_trades() method: Example: my_symbol.get_trades()"
+empty_agg_trades_msg = "Empty trades, please request using: get_agg_trades() method: Example: my_symbol.get_agg_trades()"
 empty_atomic_trades_msg = "Empty atomic trades, please request using: get_atomic_trades() method: Example: my_symbol.get_atomic_trades()"
 
 
@@ -285,7 +287,7 @@ class Symbol(object):
         self.time_cols = ['Open time', 'Close time']
         self.dts_time_cols = ['Open timestamp', 'Close timestamp']
 
-        # self.version = __version__
+        self.version = __version__
         if from_csv:
             if type(from_csv) == str:
                 filename = from_csv
@@ -536,7 +538,7 @@ class Symbol(object):
         :return pd.DataFrame:
         """
         if self.agg_trades.empty:
-            binpan_logger.info(empty_trades_msg)
+            binpan_logger.info(empty_agg_trades_msg)
         return self.agg_trades
 
     def atomic_trades(self):
@@ -581,7 +583,7 @@ class Symbol(object):
 
         :return dict:
         """
-        return self.version
+        return self.fees
 
     def tick_interval(self):
         """
@@ -1122,6 +1124,7 @@ class Symbol(object):
         :return: Pandas DataFrame
 
         """
+        # fixme: loosing periods
         if time_zone:
             self.time_zone = time_zone
 
@@ -1143,15 +1146,19 @@ class Symbol(object):
 
         if endTime:
             curr_endTime = endTime
-        elif self.end_time:
-            curr_endTime = self.end_time
+        # elif self.end_time:
+        #     curr_endTime = self.end_time
         else:
             curr_endTime = int(time() * 1000)
 
-        self.raw_agg_trades = handlers.market.get_historical_aggregated_trades(symbol=self.symbol,
-                                                                               startTime=curr_startTime,
-                                                                               endTime=curr_endTime,
-                                                                               redis_client_trades=self.from_redis_trades)
+        st = handlers.time_helper.convert_milliseconds_to_str(curr_startTime, timezoned=self.time_zone)
+        en = handlers.time_helper.convert_milliseconds_to_str(curr_endTime, timezoned=self.time_zone)
+        print(f"Requesting aggregated trades between {st} and {en}")
+
+        self.raw_agg_trades = handlers.market.get_agg_trades(symbol=self.symbol,
+                                                             startTime=curr_startTime,
+                                                             endTime=curr_endTime,
+                                                             redis_client_trades=self.from_redis_trades)
 
         self.agg_trades = handlers.market.parse_agg_trades_to_dataframe(response=self.raw_agg_trades,
                                                                         columns=self.trades_columns,
@@ -1207,10 +1214,14 @@ class Symbol(object):
 
         if endTime:
             curr_endTime = endTime
-        elif self.end_time:
-            curr_endTime = self.end_time
+        # elif self.end_time:
+        #     curr_endTime = min(self.end_time, int(time() * 1000))
         else:
             curr_endTime = int(time() * 1000)
+
+        st = handlers.time_helper.convert_milliseconds_to_str(curr_startTime, timezoned=self.time_zone)
+        en = handlers.time_helper.convert_milliseconds_to_str(curr_endTime, timezoned=self.time_zone)
+        print(f"Requesting atomic trades between {st} and {en}")
 
         self.raw_atomic_trades = handlers.market.get_historical_atomic_trades(symbol=self.symbol,
                                                                               startTime=curr_startTime,
@@ -1228,6 +1239,7 @@ class Symbol(object):
                                                                                   symbol=self.symbol,
                                                                                   time_zone=self.time_zone,
                                                                                   time_index=self.time_index)
+        # fixme: empty response
         return self.atomic_trades
 
     def is_new(self,
@@ -1280,7 +1292,7 @@ class Symbol(object):
         :return pd.DataFrame: Resample trades to reversal klines. Can be plotted.
         """
         if self.agg_trades.empty:
-            binpan_logger.info(empty_trades_msg)
+            binpan_logger.info(empty_agg_trades_msg)
             return
 
         if min_height:
@@ -1580,7 +1592,7 @@ class Symbol(object):
 
         """
         if self.agg_trades.empty:
-            binpan_logger.info(empty_trades_msg)
+            binpan_logger.info(empty_agg_trades_msg)
             return
         if not title:
             title = f"Size trade categories {self.symbol}"
@@ -1645,7 +1657,7 @@ class Symbol(object):
 
         """
         if not from_atomic and self.agg_trades.empty:
-            binpan_logger.info(empty_trades_msg)
+            binpan_logger.info(empty_agg_trades_msg)
             return
         if from_atomic and self.atomic_trades.empty:
             binpan_logger.info(empty_atomic_trades_msg)
@@ -1694,7 +1706,7 @@ class Symbol(object):
 
         """
         if self.agg_trades.empty:
-            binpan_logger.info(empty_trades_msg)
+            binpan_logger.info(empty_agg_trades_msg)
             return
         if not title:
             title = f"Size trade categories {self.symbol}"
@@ -1737,7 +1749,7 @@ class Symbol(object):
         """
         if from_trades or not self.agg_trades.empty:
             if self.agg_trades.empty:
-                binpan_logger.info(empty_trades_msg)
+                binpan_logger.info(empty_agg_trades_msg)
                 return
             else:
                 _df = self.agg_trades.copy(deep=True)
@@ -1819,7 +1831,7 @@ class Symbol(object):
 
         if from_trades:
             if self.agg_trades.empty:
-                binpan_logger.info(empty_trades_msg)
+                binpan_logger.info(empty_agg_trades_msg)
                 return
         if from_trades or not self.agg_trades.empty:
             _df = self.agg_trades.copy(deep=True)
@@ -1892,7 +1904,7 @@ class Symbol(object):
         if not color:
             color = ['Buyer was maker', 'Taker buy base volume']
         if self.agg_trades.empty and from_trades:
-            binpan_logger.info(empty_trades_msg)
+            binpan_logger.info(empty_agg_trades_msg)
             return
         if not from_trades:
             data = self.df.copy(deep=True)

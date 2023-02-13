@@ -40,13 +40,15 @@ Trades
 
 .. autofunction:: get_agg_trades
 
-.. autofunction:: get_historical_aggregated_trades
-
 .. autofunction:: parse_agg_trades_to_dataframe
 
 .. autofunction:: get_last_atomic_trades
 
 .. autofunction:: get_atomic_trades
+
+.. autofunction:: get_historical_atomic_trades
+
+.. autofunction:: parse_atomic_trades_to_dataframe
 
 Orderbook
 ---------

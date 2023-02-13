@@ -1,5 +1,5 @@
 import logging
-from logging.handlers import RotatingFileHandler
+# from logging.handlers import RotatingFileHandler
 
 from os import makedirs, path
 

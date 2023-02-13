@@ -73,10 +73,25 @@ def datetime_utc_to_milliseconds(dt: datetime):
 
 
 def end_time_from_start_time(startTime: int, limit=1000, tick_interval='1h') -> int:
+    """
+    Calculates end time by tick interval and limit.
+
+    :param int startTime: A timestamp in milliseconds.
+    :param int limit: Klines. Maximum is 1000.
+    :param str tick_interval: Kline interval.
+    :return int: Endtime timestamp in milliseconds.
+    """
     return startTime + (limit * tick_seconds[tick_interval] * 1000)
 
 
 def start_time_from_end_time(endTime: int, limit=1000, tick_interval='1h') -> int:
+    """
+    Calculates startime from a timestamp and a limit of klines before.
+    :param int endTime: Timestamp in ms.
+    :param int limit: API klines limit is 1000.
+    :param str tick_interval: Kline interval.
+    :return int: Timestamp in ms.
+    """
     return endTime - (limit * tick_seconds[tick_interval] * 1000)
 
 

@@ -362,13 +362,13 @@ def deploy_traces(annotations: list,
 
 def candles_ta(data: pd.DataFrame,
                indicators_series: list = None,
-               rows_pos: list = [],
-               indicator_names: list = [],
-               indicators_colors: list = [],
+               rows_pos=None,
+               indicator_names=None,
+               indicators_colors=None,
                indicators_color_filled: dict = None,
                indicators_filled_mode: dict = None,
-               axis_groups: dict = {},
-               plot_splitted_serie_couple: dict = {},
+               axis_groups=None,
+               plot_splitted_serie_couple=None,
                width: int = 1800,
                height: int = 1000,
                range_slider: bool = False,
@@ -478,6 +478,16 @@ def candles_ta(data: pd.DataFrame,
     :param bool text_index: If enables, index will be transformed to a text index. It can be useful to plot candles not time correlated like reversal candles.
 
     """
+    if plot_splitted_serie_couple is None:
+        plot_splitted_serie_couple = {}
+    if axis_groups is None:
+        axis_groups = {}
+    if indicators_colors is None:
+        indicators_colors = []
+    if indicator_names is None:
+        indicator_names = []
+    if rows_pos is None:
+        rows_pos = []
     if not indicators_color_filled and indicators_series:
         indicators_color_filled = {i.name: None for i in indicators_series}
     elif type(indicators_color_filled) == list:
@@ -688,15 +698,15 @@ def candles_tagged(data: pd.DataFrame,
                    plot_volume=True,
                    title: str = 'Candlesticks Strategy Plot',
                    yaxis_title: str = 'Symbol Price',
-                   on_candles_indicator: list = [],
-                   indicator_series: list = [],
-                   indicator_names: list = [],
-                   indicator_colors: list = [],
+                   on_candles_indicator=None,
+                   indicator_series=None,
+                   indicator_names=None,
+                   indicator_colors=None,
                    fill_control: dict or list = None,
                    indicators_filled_mode: dict or list = None,
-                   axis_groups: dict or list = {},
-                   plot_splitted_serie_couple: dict or list = {},
-                   rows_pos: list = [],
+                   axis_groups=None,
+                   plot_splitted_serie_couple=None,
+                   rows_pos=None,
                    plot_bgcolor=None,
                    actions_col: str = None,
                    priced_actions_col: str = 'Close',
@@ -896,6 +906,21 @@ def candles_tagged(data: pd.DataFrame,
     :param dict marker_legend_names: A dict with the names to print as tags over the annotations. Used just if actions column passed.
 
     """
+    if rows_pos is None:
+        rows_pos = []
+    if plot_splitted_serie_couple is None:
+        plot_splitted_serie_couple = {}
+    if axis_groups is None:
+        axis_groups = {}
+    if indicator_colors is None:
+        indicator_colors = []
+    if indicator_names is None:
+        indicator_names = []
+    if on_candles_indicator is None:
+        on_candles_indicator = []
+    if indicator_series is None:
+        indicator_series = []
+
     data_ = data.copy(deep=True)
     annotations_values = []
 
@@ -940,8 +965,7 @@ def candles_tagged(data: pd.DataFrame,
             assert len(markers_labels) == len(marker_legend_names)
 
         except Exception as exc:
-            raise BinPanException(f"Function candles_tagged: Plotting labels, annotation colors or names not consistent with markers list length -> {exc}",
-                                  telegram_send=True)
+            raise BinPanException(f"Function candles_tagged: Plotting labels, annotation colors or names not consistent with markers list length -> {exc}")
         labels_locator = list(markers_labels.keys())
     else:
         markers_labels = dict()
@@ -1037,7 +1061,7 @@ def plot_trades(data: pd.DataFrame,
                                 time_zone = 'Europe/Madrid',
                                 time_index = True,
                                 closed = True)
-           lunc.get_trades()
+           lunc.get_agg_trades()
            binpan.handlers.plotting.plot_trade_size(data = lunc.trades, logarithmic=True)
 
         .. image:: images/plot_trades_size_log.png
@@ -1109,7 +1133,7 @@ def plot_pie(serie: pd.Series,
                                 time_index = True,
                                 closed = True)
 
-           lunc.get_trades()
+           lunc.get_agg_trades()
 
            binpan.handlers.plotting.plot_pie(serie = lunc.trades['Quantity'], logarithmic=True)
 

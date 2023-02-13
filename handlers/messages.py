@@ -63,7 +63,7 @@ def telegram_bot_send_text(msg: dict or str,
         handlers.files.add_any_key(key="xxxxxxxxxx", key_name="encoded_chat_id")
 
 
-    :param str msg: A message
+    :param str or dict msg: A message
     :param str parse_mode: Parsing telegram message. Default is 'Markdown&text'.
     :param disable_notification: Avoids getting notified by the telegram message. Only working in group chats.
         https://stackoverflow.com/questions/64360221/disable-notification-in-python-telegram-bot
