@@ -4,7 +4,7 @@ Market functions
 
 """
 
-from tqdm import tqdm
+# from tqdm import tqdm
 from time import time
 import pandas as pd
 import json
@@ -389,15 +389,100 @@ def convert_to_numeric(data: pd.DataFrame) -> pd.DataFrame:
 # Trades #
 ##########
 
+def get_last_agg_trades(symbol: str,
+                        limit=1000) -> list:
+    """
+    Get just the last aggregated trades from API.
 
-def get_agg_trades(symbol: str,
-                   fromId: int = None,
-                   toId: int = None,
-                   limit=None,
-                   startTime: int = None,
-                   endTime: int = None,
-                   previous_request=None,
-                   redis_client_trades: StrictRedis = None) -> List[dict]:
+    GET /api/v3/aggTrades
+
+    Get compressed, aggregate trades. Trades that fill at the time, from the same order, with the same price will have the quantity aggregated.
+
+    Weight(IP): 1
+
+    :param symbol: A binance symbol.
+    :param limit: API max limit is 1000.
+    :return list: Aggregated trades in a list.
+
+    Return example:
+
+    .. code-block::
+
+        [
+          {
+            "a": 26129,         // Aggregate tradeId
+            "p": "0.01633102",  // Price
+            "q": "4.70443515",  // Quantity
+            "f": 27781,         // First tradeId
+            "l": 27781,         // Last tradeId
+            "T": 1498793709153, // Timestamp
+            "m": true,          // Was the buyer the maker?
+            "M": true           // Was the trade the best price match?
+          }
+        ]
+
+    """
+    endpoint = '/api/v3/aggTrades?'
+    check_weight(1, endpoint=endpoint)
+    query = {'symbol': symbol, 'limit': limit}
+    return get_response(url=endpoint, params=query)
+
+
+def get_aggregated_trades(symbol: str,
+                          fromId: int = None,
+                          limit: int = None,
+                          decimal_mode: bool = False) -> list:
+    """
+    Returns aggregated trades from id to limit or last trades if id not specified.
+
+    Limit applied in fromId mode defaults to 500. Maximum is 1000.
+
+    GET /api/v3/aggTrades
+
+    Get compressed, aggregate trades. Trades that fill at the time, from the same order, with the same price will have the quantity aggregated.
+
+    Weight(IP): 1
+
+    :param str symbol: A binance valid symbol.
+    :param int fromId: Trade id to fetch from. If not passed, gets most recent trades.
+    :param int limit: Count of trades to ask for.
+    :param bool decimal_mode: Enables decimal type for return.
+    :return list: Returns a list from the Binance API.
+
+    Return example:
+
+    .. code-block::
+
+        [
+          {
+            "a": 26129,         // Aggregate tradeId
+            "p": "0.01633102",  // Price
+            "q": "4.70443515",  // Quantity
+            "f": 27781,         // First tradeId
+            "l": 27781,         // Last tradeId
+            "T": 1498793709153, // Timestamp
+            "m": true,          // Was the buyer the maker?
+            "M": true           // Was the trade the best price match?
+          }
+        ]
+    """
+
+    endpoint = '/api/v3/aggTrades?'
+    check_weight(1, endpoint=endpoint)
+    query = {'symbol': symbol, 'limit': limit, 'fromId': fromId, 'recWindow': None}
+    return get_semi_signed_request(url=endpoint,
+                                   decimal_mode=decimal_mode,
+                                   api_key=api_key,
+                                   params=query)
+
+
+def get_historical_agg_trades(symbol: str,
+                              startTime: int = None,
+                              endTime: int = None,
+                              start_trade_id: int = None,
+                              end_trade_id: int = None,
+                              limit: int = 1000,
+                              redis_client_trades: StrictRedis = None) -> List[dict]:
     """
     Returns aggregated trades from id to limit or last trades if id not specified. Also is possible to get from starTime utc in
     milliseconds from epoch or until endtime milliseconds from epoch.
@@ -412,12 +497,11 @@ def get_agg_trades(symbol: str,
     Limit applied in fromId mode defaults to 500. Maximum is 1000.
 
     :param str symbol: A binance valid symbol.
-    :param int fromId: An aggregated trade id.
-    :param int toId: An aggregated trade id end, used just with redis.
     :param int limit: Count of trades to ask for.
     :param int startTime: A timestamp in milliseconds from epoch.
     :param int endTime: A timestamp in milliseconds from epoch.
-    :param list previous_request: To avoid API limit, this function can be used recursively.
+    :param int start_trade_id: A trade id as first one (older).
+    :param int end_trade_id: A trade id as last one (newer).
     :param bool redis_client_trades: A redis instance of a connector. Must be a trades redis connector, usually different configuration
      from candles redis server.
     :return list: Returns a list from the Binance API in dicts.
@@ -437,219 +521,113 @@ def get_agg_trades(symbol: str,
           }
         ]
     """
-    if previous_request is None:
-        previous_request = []
 
-    endpoint = '/api/v3/aggTrades?'
-    check_weight(1, endpoint=endpoint)
+    if start_trade_id and not end_trade_id:
+        end_trade_id = start_trade_id + limit
+    elif end_trade_id and not start_trade_id:
+        start_trade_id = end_trade_id - limit
 
-    if redis_client_trades:
-        if fromId and limit:
+    trades = handlers.market.get_last_agg_trades(symbol=symbol, limit=1000)
+    requests_cnt = 0
 
+    # with trade ids, find start
+    if start_trade_id and end_trade_id and not redis_client_trades:
+        current_first_trade = trades[0]['a']
+        # while trades[0]['id'] > start_trade_id:
+        while current_first_trade > start_trade_id:
+            requests_cnt += 1
+            market_logger.info(f"Requests to API for aggregated trades of {symbol}: {requests_cnt}")
+            fetched_older_trades = handlers.market.get_aggregated_trades(symbol=symbol,
+                                                                         fromId=(current_first_trade - 1000),
+                                                                         limit=1000)
+            trades = fetched_older_trades + trades
+            current_first_trade = trades[0]['a']
+
+        current_last_trade = trades[-1]['a']
+        while current_last_trade < end_trade_id:
+            requests_cnt += 1
+            market_logger.info(f"Requests to API for aggregated trades of {symbol}: {requests_cnt}")
+            fetched_older_trades = handlers.market.get_aggregated_trades(symbol=symbol,
+                                                                         fromId=current_last_trade,
+                                                                         limit=1000)
+            trades = fetched_older_trades + trades
+            current_last_trade = trades[-1]['a']
+
+        ret = [i for i in trades if start_trade_id <= i['a'] <= end_trade_id]
+        return sorted(ret, key=lambda x: x['a'])
+
+    # with timestamps or trade ids
+    if not redis_client_trades and (startTime or endTime):
+        current_first_trade_time = trades[0]['T']
+        current_first_trade = trades[0]['a']
+        # if startTime or endTime:
+        if startTime:
+            while current_first_trade_time >= startTime:
+                requests_cnt += 1
+                market_logger.info(f"Requests API for aggregated trades STARTIME {symbol}: {requests_cnt}")
+                fetched_older_trades = handlers.market.get_aggregated_trades(symbol=symbol,
+                                                                             fromId=current_first_trade - 1000,
+                                                                             limit=1000)
+                trades = fetched_older_trades + trades
+                current_first_trade_time = trades[0]['T']
+                current_first_trade = trades[0]['a']
+        if endTime:
+            current_last_trade = trades[-1]['a']
+            current_last_trade_time = trades[-1]['T']
+            while current_last_trade_time <= endTime:
+                requests_cnt += 1
+                market_logger.info(f"Requests API for aggregated trades ENDTIME {symbol}: {requests_cnt}")
+                fetched_newer_trades = handlers.market.get_aggregated_trades(symbol=symbol,
+                                                                             fromId=current_last_trade,
+                                                                             limit=1000)
+                trades += fetched_newer_trades
+                current_last_trade = trades[-1]['a']
+                current_last_trade_time = trades[-1]['T']
+
+        ret = [i for i in trades if startTime <= i['T'] <= endTime]
+        return sorted(ret, key=lambda x: x['a'])
+
+    # from redis
+    response = []
+    market_logger.info(f"Fetching aggregated trades from redis server for {symbol}")
+
+    curr_trades = redis_client_trades.zrange(name=f"{symbol.lower()}@aggTrade",
+                                             start=0,
+                                             end=-1,
+                                             withscores=True)
+
+    curr_trades = [json.loads(i[0]) for i in curr_trades]
+    market_logger.debug(f"Fetched {len(curr_trades)} aggregated trades for {symbol}")
+
+    if curr_trades:
+        timestamps_dict = {k['T']: k['a'] for k in curr_trades}  # associate timestamps with trade id
+        trade_ids = [i for t, i in timestamps_dict.items() if startTime <= t <= endTime]
+        market_logger.debug(f"List of aggregated trades {len(trade_ids)} for {symbol}")
+
+        if trade_ids:
             response = redis_client_trades.zrangebyscore(name=f"{symbol.lower()}@aggTrade",
-                                                         min=fromId,
-                                                         max=fromId + limit,
+                                                         min=trade_ids[0],
+                                                         max=trade_ids[-1],
                                                          withscores=False)
-        elif fromId and toId:
-            response = redis_client_trades.zrangebyscore(name=f"{symbol.lower()}@aggTrade",
-                                                         min=fromId,
-                                                         max=toId,
-                                                         withscores=False)
-
-        elif startTime and endTime:
-
-            response = []
-            market_logger.info(f"Fetching all trades from redis server for {symbol}")
-
-            curr_trades = redis_client_trades.zrange(name=f"{symbol.lower()}@aggTrade",
-                                                     start=0,
-                                                     end=-1,
-                                                     withscores=True)
-
-            curr_trades = [json.loads(i[0]) for i in curr_trades]
-            market_logger.debug(f"Fetched {len(curr_trades)} aggregate trades for {symbol}")
-
-            if curr_trades:
-                timestamps_dict = {k['T']: k['a'] for k in curr_trades}
-                trade_ids = [i for t, i in timestamps_dict.items() if startTime <= t <= endTime]
-                market_logger.debug(f"List of trades {len(trade_ids)} for {symbol}")
-
-                if trade_ids:
-                    response = redis_client_trades.zrangebyscore(name=f"{symbol.lower()}@aggTrade",
-                                                                 min=trade_ids[0],
-                                                                 max=trade_ids[-1],
-                                                                 withscores=False)
-                    response = [json.loads(i) for i in response]
-                else:
-                    response = []
-
-                market_logger.info(f"Clean aggregated {len(response)} trades found for {symbol}")
-
-            if not response:
-                start_str = handlers.time_helper.convert_milliseconds_to_utc_string(ms=startTime)
-                end_str = handlers.time_helper.convert_milliseconds_to_utc_string(ms=endTime)
-                market_logger.info(f"No trade IDs found for {symbol} for given interval {start_str} and {end_str} (UTC) in server.")
-
+            response = [json.loads(i) for i in response]
         else:
-            market_logger.info(f"Request for trades from {symbol} returning ALL trades available in Redis.")
-
-            ret_raw = redis_client_trades.zrange(name=f"{symbol.lower()}@aggTrade",
-                                                 start=0,
-                                                 end=-1,
-                                                 withscores=False)
             response = []
-            pbar = tqdm(ret_raw)
-            for i in pbar:
-                pbar.set_description(desc=f"Aggregate Trades for {symbol}", refresh=True)
-                response.append(json.loads(i))
 
-    else:  # API calls
-        if fromId and not startTime and not endTime:
-            query = {'symbol': symbol, 'limit': limit, 'fromId': fromId}
+        market_logger.info(f"Clean aggregated {len(response)} trades found for {symbol}")
 
-        elif startTime and endTime:  # Limited to one hour by api
-            # if previous_request:
-            #     print('Prev msg response')
-            #     print(handlers.time_helper.convert_milliseconds_to_str(previous_request[0]['T'], timezoned='Europe/Madrid'))
-            #     print(handlers.time_helper.convert_milliseconds_to_str(previous_request[-1]['T'], timezoned='Europe/Madrid'))
-            # deprecated:
-            # try:
-            #     assert (endTime - startTime) <= (1000 * 60 * 60)
-            # except AssertionError:
-            #     msg = f"BinPan Error: Aggregate trades timestamps interval cannot be greater than 1 hour. Please use historical aggregate " \
-            #           f"trades function: interval in minutes = {(endTime - startTime) / (1000 * 60)} start: {startTime} end: {endTime}"
-            #     market_logger.error(msg)
-            #     raise Exception(msg)
-
-            query = {'symbol': symbol, 'limit': 1000, 'startTime': startTime}
-
-            response = get_response(url=endpoint, params=query)
-            response = previous_request + response
-            last_timestamp = response[-1]['T']
-            # print('Request result')
-            # print(handlers.time_helper.convert_milliseconds_to_str(startTime, timezoned='Europe/Madrid'))
-            # print(handlers.time_helper.convert_milliseconds_to_str(last_timestamp, timezoned='Europe/Madrid'))
-
-            # dupes remove
-            response_prev = set()
-            unique_response = []
-            for dic in response:
-                t = tuple(dic.items())
-                if t not in response_prev:
-                    response_prev.add(t)
-                    unique_response.append(dic)
-
-            if last_timestamp >= endTime:
-                return sorted(response, key=lambda x: x['T'])
-            else:
-                market_logger.info(f"Missing timestamps yet: {endTime}-{last_timestamp} = {endTime - last_timestamp}")
-                ret = sorted(response, key=lambda x: x['T'])
-                return get_agg_trades(symbol=symbol, startTime=last_timestamp, endTime=endTime, previous_request=ret)
-
-        elif startTime or endTime:
-            # query = {'symbol': symbol, 'limit': limit}
-            query = {'symbol': symbol, 'limit': limit, 'startTime': startTime, 'endTime': endTime}
-
-            # deprecated:
-            # if startTime and not endTime:
-            #     query.update({'startTime': startTime})
-            #     query.update({'endTime': end_time_from_start_time(startTime=startTime,
-            #                                                       limit=1000,
-            #                                                       tick_interval='1h')})
-            # if endTime and not startTime:
-            #     query.update({'endTime': endTime})
-            #     query.update({'startTime': start_time_from_end_time(endTime=endTime,
-            #                                                         limit=1000,
-            #                                                         tick_interval='1h')})
-        else:  # last ones
-            query = {'symbol': symbol, 'limit': limit}
-
-        response = get_response(url=endpoint, params=query)
-
+    if not response:
+        start_str = handlers.time_helper.convert_milliseconds_to_utc_string(ms=startTime)
+        end_str = handlers.time_helper.convert_milliseconds_to_utc_string(ms=endTime)
+        market_logger.info(f"No aggregated trade IDs found for {symbol} for given interval {start_str} and {end_str} (UTC) in server.")
     return response
-
-
-# DEPRECATED
-# def get_historical_aggregated_trades(symbol: str,
-#                                      startTime: int,
-#                                      endTime: int,
-#                                      redis_client_trades: StrictRedis = None) -> List[dict]:
-#     """
-#     Returns aggregated trades between timestamps. API changed limit for requesting aggregated trades, now it is 1000 trades each request.
-#
-#     :param int startTime: A timestamp in milliseconds from epoch.
-#     :param int endTime: A timestamp in milliseconds from epoch.
-#     :param str symbol: A binance valid symbol.
-#     :param bool redis_client_trades: A redis instance of a connector. Must be a trades redis connector, usually different configuration
-#      from candles redis server.
-#     :return list: Returns a list from the Binance API
-#
-#     .. code-block::
-#
-#         [
-#           {
-#             "a": 26129,         // Aggregate tradeId
-#             "p": "0.01633102",  // Price
-#             "q": "4.70443515",  // Quantity
-#             "f": 27781,         // First tradeId
-#             "l": 27781,         // Last tradeId
-#             "T": 1498793709153, // Timestamp
-#             "m": true,          // Was the buyer the maker?
-#             "M": true           // Was the trade the best price match?
-#           }
-#         ]
-#     """
-#     # API put 1000 limit, not hour limit anymore
-#     hour_ms = 60 * 60 * 1000
-#     if (endTime - startTime) <= hour_ms:
-#         return get_agg_trades(symbol=symbol, startTime=startTime, endTime=endTime, redis_client_trades=redis_client_trades)
-#     else:
-#         response = []
-#         if not redis_client_trades:
-#             pbar = tqdm(range(startTime, endTime, hour_ms))
-#             for i in pbar:
-#                 pbar.set_description(desc=f"Historical Aggregate Trades for {symbol}", refresh=True)
-#                 response += get_agg_trades(symbol=symbol, startTime=i, endTime=i + hour_ms, redis_client_trades=redis_client_trades)
-#         else:
-#             response = []
-#             market_logger.info(f"Fetching all trades from redis server for {symbol}")
-#
-#             curr_trades = redis_client_trades.zrange(name=f"{symbol.lower()}@aggTrade",
-#                                                      start=0,
-#                                                      end=-1,
-#                                                      withscores=True)
-#
-#             curr_trades = [json.loads(i[0]) for i in curr_trades]
-#             market_logger.debug(f"Fetched {len(curr_trades)} aggregate trades for {symbol}")
-#
-#             if curr_trades:
-#                 timestamps_dict = {k['T']: k['a'] for k in curr_trades}
-#                 trade_ids = [i for t, i in timestamps_dict.items() if startTime <= t <= endTime]
-#                 market_logger.debug(f"List of trades {len(trade_ids)} for {symbol}")
-#
-#                 if trade_ids:
-#                     response = redis_client_trades.zrangebyscore(name=f"{symbol.lower()}@aggTrade",
-#                                                                  min=trade_ids[0],
-#                                                                  max=trade_ids[-1],
-#                                                                  withscores=False)
-#                     response = [json.loads(i) for i in response]
-#                 else:
-#                     response = []
-#
-#                 market_logger.info(f"Clean aggregated {len(response)} trades found for {symbol}")
-#
-#             if not response:
-#                 start_str = handlers.time_helper.convert_milliseconds_to_utc_string(ms=startTime)
-#                 end_str = handlers.time_helper.convert_milliseconds_to_utc_string(ms=endTime)
-#                 market_logger.info(f"No trade IDs found for {symbol} for given interval {start_str} and {end_str} (UTC) in server.")
-#         return response
 
 
 def parse_agg_trades_to_dataframe(response: list,
                                   columns: dict,
                                   symbol: str,
                                   time_zone: str = None,
-                                  time_index: bool = None):
+                                  time_index: bool = None,
+                                  drop_dupes: str = None):
     """
     Parses the API response into a pandas dataframe.
 
@@ -669,6 +647,7 @@ def parse_agg_trades_to_dataframe(response: list,
     :param symbol: The used symbol.
     :param time_zone: Selected time zone.
     :param time_index: Or integer index.
+    :param str drop_dupes: Drop duplicated by a column name.
     :return: Pandas DataFrame
 
     """
@@ -698,12 +677,16 @@ def parse_agg_trades_to_dataframe(response: list,
     index_name = f"{symbol} {time_zone}"
     df.index.name = index_name
     # df.loc[:, 'Buyer was maker'] = df['Buyer was maker'].astype(bool)
+
+    if drop_dupes:
+        df.drop_duplicates(subset=drop_dupes, keep='last', inplace=True)
+
     return df[['Aggregate tradeId', 'Price', 'Quantity', 'First tradeId', 'Last tradeId', 'Date', 'Timestamp', 'Buyer was maker',
                'Best price match']]
 
 
 def get_last_atomic_trades(symbol: str,
-                           limit=1000):
+                           limit=1000) -> list:
     """
     Returns recent atomic (not aggregated) trades.
 
@@ -885,30 +868,6 @@ def get_historical_atomic_trades(symbol: str,
                 current_last_trade_time = trades[-1]['time']
 
         ret = [i for i in trades if startTime <= i['time'] <= endTime]
-        #
-        # else:
-        #     if start_trade_id:
-        #         current_first_trade = trades[0]['id']
-        #         while current_first_trade > start_trade_id:
-        #             requests_cnt += 1
-        #             market_logger.info(f"Requests API for atomic trades {symbol}: {requests_cnt}")
-        #             fetched_older_trades = handlers.market.get_atomic_trades(symbol=symbol,
-        #                                                                      fromId=(current_first_trade - 1000),
-        #                                                                      limit=1000)
-        #             trades = fetched_older_trades + trades
-        #             current_first_trade = trades[0]['id']
-        #
-        #     if end_trade_id:
-        #         current_last_trade = trades[-1]['id']
-        #         while current_last_trade < end_trade_id:
-        #             requests_cnt += 1
-        #             market_logger.info(f"Requests API for atomic trades {symbol}: {requests_cnt}")
-        #             fetched_newer_trades = handlers.market.get_atomic_trades(symbol=symbol,
-        #                                                                      fromId=current_last_trade,
-        #                                                                      limit=1000)
-        #             trades += fetched_newer_trades
-        #             current_last_trade = trades[-1]['id']
-        #     ret = [i for i in trades if start_trade_id <= i['id'] <= end_trade_id]
         return sorted(ret, key=lambda x: x['id'])
 
     # from redis
@@ -924,9 +883,9 @@ def get_historical_atomic_trades(symbol: str,
     market_logger.debug(f"Fetched {len(curr_trades)} atomic trades for {symbol}")
 
     if curr_trades:
-        timestamps_dict = {k['T']: k['t'] for k in curr_trades}
+        timestamps_dict = {k['T']: k['t'] for k in curr_trades}  # associate timestamps with trade id
         trade_ids = [i for t, i in timestamps_dict.items() if startTime <= t <= endTime]
-        market_logger.debug(f"List of trades {len(trade_ids)} for {symbol}")
+        market_logger.debug(f"List of atomic trades {len(trade_ids)} for {symbol}")
 
         if trade_ids:
             response = redis_client_trades.zrangebyscore(name=f"{symbol.lower()}@trade",
@@ -950,7 +909,8 @@ def parse_atomic_trades_to_dataframe(response: list,
                                      columns: dict,
                                      symbol: str,
                                      time_zone: str = None,
-                                     time_index: bool = None):
+                                     time_index: bool = None,
+                                     drop_dupes: str = None):
     """
     Parses the API response into a pandas dataframe.
 
@@ -988,6 +948,7 @@ def parse_atomic_trades_to_dataframe(response: list,
     :param symbol: The used symbol.
     :param time_zone: Selected time zone.
     :param time_index: Or integer index.
+    :param str drop_dupes: Drop duplicated by a column name.
     :return: Pandas DataFrame
 
     """
@@ -1015,6 +976,9 @@ def parse_atomic_trades_to_dataframe(response: list,
 
     index_name = f"{symbol} {time_zone}"
     df.index.name = index_name
+
+    if drop_dupes:
+        df.drop_duplicates(subset=drop_dupes, keep='last', inplace=True)
 
     if 'quoteQty' in columns.keys():
         return df[['Trade Id', 'Price', 'Quantity', 'Quote quantity', 'Date', 'Timestamp', 'Buyer was maker', 'Best price match']]

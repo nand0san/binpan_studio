@@ -38,7 +38,11 @@ Format Data
 Trades
 ------
 
-.. autofunction:: get_agg_trades
+.. autofunction:: get_last_agg_trades
+
+.. autofunction:: get_aggregated_trades
+
+.. autofunction:: get_historical_agg_trades
 
 .. autofunction:: parse_agg_trades_to_dataframe
 

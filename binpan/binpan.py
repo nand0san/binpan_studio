@@ -3,7 +3,7 @@
 This is the main classes file.
 
 """
-__version__ = "0.3.6"
+__version__ = "0.4.1"
 
 import os
 from sys import path
@@ -253,14 +253,14 @@ class Symbol(object):
         self.presentation_columns = ['Open', 'High', 'Low', 'Close', 'Volume', 'Quote volume', 'Trades', 'Taker buy base volume',
                                      'Taker buy quote volume']
 
-        self.trades_columns = {'M': 'Best price match',
-                               'm': 'Buyer was maker',
-                               'T': 'Timestamp',
-                               'l': 'Last tradeId',
-                               'f': 'First tradeId',
-                               'q': 'Quantity',
-                               'p': 'Price',
-                               'a': 'Aggregate tradeId'}
+        self.agg_trades_columns = {'M': 'Best price match',
+                                   'm': 'Buyer was maker',
+                                   'T': 'Timestamp',
+                                   'l': 'Last tradeId',
+                                   'f': 'First tradeId',
+                                   'q': 'Quantity',
+                                   'p': 'Price',
+                                   'a': 'Aggregate tradeId'}
 
         self.atomic_trades_columns = {'id': 'Trade Id',
                                       'price': 'Price',
@@ -270,17 +270,25 @@ class Symbol(object):
                                       'isBuyerMaker': 'Buyer was maker',
                                       'isBestMatch': 'Best price match'}
 
-        self.atomic_trades_columns_redis = {'M': 'Best price match',
-                                            'm': 'Buyer was maker',
-                                            'T': 'Timestamp',
-                                            'a': 'Seller Order Id',
-                                            'b': 'Buyer Order Id',
-                                            'q': 'Quantity',
+        # updated from binpan cache modificados para el parser
+        self.agg_trades_columns_redis = {'a': "Aggregate tradeId",
+                                         'p': 'Price',
+                                         'q': 'Quantity',
+                                         'f': "First tradeId",
+                                         'l': "Last tradeId",
+                                         'T': "Timestamp",
+                                         'm': "Buyer was maker",
+                                         'M': "Best price match"}
+
+        # updated from binpan cache modificados para el parser
+        self.atomic_trades_columns_redis = {'t': "Trade Id",
                                             'p': 'Price',
-                                            't': 'Trade Id',
-                                            's': 'Symbol',
-                                            'E': 'Event time',
-                                            'e': 'Event type'}
+                                            'q': 'Quantity',  # quote qty missing in atomic trades websockets
+                                            'b': "Buyer Order Id",
+                                            'a': "Seller Order Id",
+                                            'T': "Timestamp",
+                                            'm': "Buyer was maker",
+                                            'M': "Best price match"}
 
         self.reversal_columns = ['Open', 'High', 'Low', 'Close', 'Quantity', 'Timestamp']
 
@@ -392,7 +400,7 @@ class Symbol(object):
         self.display_width = display_width
 
         self.raw_agg_trades = []
-        self.agg_trades = pd.DataFrame(columns=list(self.trades_columns.values()))
+        self.agg_trades = pd.DataFrame(columns=list(self.agg_trades_columns.values()))
 
         self.raw_atomic_trades = []
         self.atomic_trades = pd.DataFrame(columns=list(self.atomic_trades_columns.values()))
@@ -1198,16 +1206,25 @@ class Symbol(object):
         en = handlers.time_helper.convert_milliseconds_to_str(curr_endTime, timezoned=self.time_zone)
         print(f"Requesting aggregated trades between {st} and {en}")
 
-        self.raw_agg_trades = handlers.market.get_agg_trades(symbol=self.symbol,
-                                                             startTime=curr_startTime,
-                                                             endTime=curr_endTime,
-                                                             redis_client_trades=self.from_redis_trades)
+        self.raw_agg_trades = handlers.market.get_historical_agg_trades(symbol=self.symbol,
+                                                                        startTime=curr_startTime,
+                                                                        endTime=curr_endTime,
+                                                                        redis_client_trades=self.from_redis_trades)
 
-        self.agg_trades = handlers.market.parse_agg_trades_to_dataframe(response=self.raw_agg_trades,
-                                                                        columns=self.trades_columns,
-                                                                        symbol=self.symbol,
-                                                                        time_zone=self.time_zone,
-                                                                        time_index=self.time_index)
+        if self.from_redis_atomic_trades:
+            self.agg_trades = handlers.market.parse_agg_trades_to_dataframe(response=self.raw_agg_trades,
+                                                                            columns=self.agg_trades_columns_redis,
+                                                                            symbol=self.symbol,
+                                                                            time_zone=self.time_zone,
+                                                                            time_index=self.time_index,
+                                                                            drop_dupes='Aggregate tradeId')
+        else:
+            self.agg_trades = handlers.market.parse_agg_trades_to_dataframe(response=self.raw_agg_trades,
+                                                                            columns=self.agg_trades_columns,
+                                                                            symbol=self.symbol,
+                                                                            time_zone=self.time_zone,
+                                                                            time_index=self.time_index,
+                                                                            drop_dupes='Aggregate tradeId')
         return self.agg_trades
 
     def get_atomic_trades(self,
@@ -1275,14 +1292,15 @@ class Symbol(object):
                                                                                   columns=self.atomic_trades_columns_redis,
                                                                                   symbol=self.symbol,
                                                                                   time_zone=self.time_zone,
-                                                                                  time_index=self.time_index)
+                                                                                  time_index=self.time_index,
+                                                                                  drop_dupes='Trade Id')
         else:
             self.atomic_trades = handlers.market.parse_atomic_trades_to_dataframe(response=self.raw_atomic_trades,
                                                                                   columns=self.atomic_trades_columns,
                                                                                   symbol=self.symbol,
                                                                                   time_zone=self.time_zone,
-                                                                                  time_index=self.time_index)
-        # fixme: empty response
+                                                                                  time_index=self.time_index,
+                                                                                  drop_dupes='Trade Id')
         return self.atomic_trades
 
     def is_new(self,
