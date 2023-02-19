@@ -3,7 +3,7 @@
 This is the main classes file.
 
 """
-__version__ = "0.4.1"
+__version__ = "0.4.2"
 
 import os
 from sys import path
@@ -35,6 +35,8 @@ import pandas_ta as ta
 from random import choice
 import importlib
 from time import time
+from handlers.market import agg_trades_columns_from_binance, agg_trades_columns_from_redis, atomic_trades_columns_from_binance, \
+    atomic_trades_columns_from_redis
 
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
@@ -163,7 +165,8 @@ class Symbol(object):
        But can be passed a StrictRedis client object previously configured.
        secret.py file map example: redis_conf = {'host':'192.168.1.5','port': 6379,'db': 0,'decode_responses': True}
 
-    :param bool or StrictRedis from_redis_trades: If enabled, BinPan will look for aggregated trades to a redis client in a similar way than from_redis.
+    :param bool or StrictRedis from_redis_agg_trades: If enabled, BinPan will look for aggregated trades to a redis client in a similar way
+     than from_redis.
     :param bool or StrictRedis from_redis_atomic_trades: If enabled, BinPan will look for atomic trades to a redis client in a similar way than from_redis.
     :param int display_columns:     Number of columns in the dataframe display. Convenient to adjust in jupyter notebooks.
     :param int display_rows:        Number of rows in the dataframe display. Convenient to adjust in jupyter notebooks.
@@ -210,7 +213,7 @@ class Symbol(object):
                  time_index: bool = True,
                  closed: bool = True,
                  from_redis: bool or StrictRedis = None,
-                 from_redis_trades: bool or StrictRedis = None,
+                 from_redis_agg_trades: bool or StrictRedis = None,
                  from_redis_atomic_trades: bool or StrictRedis = None,
                  hours: int = None,
                  display_columns=25,
@@ -368,8 +371,8 @@ class Symbol(object):
         else:
             self.from_redis = from_redis
 
-        if from_redis_trades:
-            if type(from_redis_trades) == bool:
+        if from_redis_agg_trades:
+            if type(from_redis_agg_trades) == bool:
                 try:
                     self.from_redis_trades = redis_client(**redis_conf_trades)
                 except Exception as exc:
@@ -377,9 +380,9 @@ class Symbol(object):
                     binpan_logger.warning(msg)
                     raise Exception(msg)
             else:
-                self.from_redis_trades = from_redis_trades
+                self.from_redis_trades = from_redis_agg_trades
         else:
-            self.from_redis_trades = from_redis_trades
+            self.from_redis_trades = from_redis_agg_trades
 
         if from_redis_atomic_trades:
             if type(from_redis_atomic_trades) == bool:
@@ -1135,7 +1138,8 @@ class Symbol(object):
                        minutes: int = None,
                        startTime: int or str = None,
                        endTime: int or str = None,
-                       time_zone: str = None):
+                       time_zone: str = None,
+                       from_csv: str = None) -> pd.DataFrame:
         """
         Calls the API and creates another dataframe included in the object with the aggregated trades from API for the period of the
         created object.
@@ -1172,10 +1176,10 @@ class Symbol(object):
                 2022-11-20 15:10:58.020000+01:00          536083214  16558.49   0.00639      632653822     632653822  2022-11-20 15:10:58  1668953458020            False              True
                 [73588 rows x 9 columns]
 
+        :param str from_csv: If set, loads from a file.
         :return: Pandas DataFrame
 
         """
-        # fixme: loosing periods
         if time_zone:
             self.time_zone = time_zone
 
@@ -1206,25 +1210,37 @@ class Symbol(object):
         en = handlers.time_helper.convert_milliseconds_to_str(curr_endTime, timezoned=self.time_zone)
         print(f"Requesting aggregated trades between {st} and {en}")
 
-        self.raw_agg_trades = handlers.market.get_historical_agg_trades(symbol=self.symbol,
-                                                                        startTime=curr_startTime,
-                                                                        endTime=curr_endTime,
-                                                                        redis_client_trades=self.from_redis_trades)
-
-        if self.from_redis_atomic_trades:
-            self.agg_trades = handlers.market.parse_agg_trades_to_dataframe(response=self.raw_agg_trades,
-                                                                            columns=self.agg_trades_columns_redis,
-                                                                            symbol=self.symbol,
-                                                                            time_zone=self.time_zone,
-                                                                            time_index=self.time_index,
-                                                                            drop_dupes='Aggregate tradeId')
+        if from_csv:
+            if type(from_csv) == str:
+                filename = from_csv
+            else:
+                filename = handlers.files.select_file(path=self.cwd, extension='csv')
+            # load and to numeric types
+            df_ = handlers.files.read_csv_to_dataframe(filename=filename)
+            # check columns
+            for col in df_.columns:
+                if not col in agg_trades_columns_from_redis and not col in agg_trades_columns_from_binance:
+                    raise handlers.exceptions.BinPanException(f"File do not seems to be Aggregated Trades File!")
+            self.agg_trades = handlers.market.convert_to_numeric(data=df_)
         else:
-            self.agg_trades = handlers.market.parse_agg_trades_to_dataframe(response=self.raw_agg_trades,
-                                                                            columns=self.agg_trades_columns,
-                                                                            symbol=self.symbol,
-                                                                            time_zone=self.time_zone,
-                                                                            time_index=self.time_index,
-                                                                            drop_dupes='Aggregate tradeId')
+            self.raw_agg_trades = handlers.market.get_historical_agg_trades(symbol=self.symbol,
+                                                                            startTime=curr_startTime,
+                                                                            endTime=curr_endTime,
+                                                                            redis_client_trades=self.from_redis_trades)
+            if self.from_redis_atomic_trades:
+                self.agg_trades = handlers.market.parse_agg_trades_to_dataframe(response=self.raw_agg_trades,
+                                                                                columns=self.agg_trades_columns_redis,
+                                                                                symbol=self.symbol,
+                                                                                time_zone=self.time_zone,
+                                                                                time_index=self.time_index,
+                                                                                drop_dupes='Aggregate tradeId')
+            else:
+                self.agg_trades = handlers.market.parse_agg_trades_to_dataframe(response=self.raw_agg_trades,
+                                                                                columns=self.agg_trades_columns,
+                                                                                symbol=self.symbol,
+                                                                                time_zone=self.time_zone,
+                                                                                time_index=self.time_index,
+                                                                                drop_dupes='Aggregate tradeId')
         return self.agg_trades
 
     def get_atomic_trades(self,
@@ -1232,7 +1248,8 @@ class Symbol(object):
                           minutes: int = None,
                           startTime: int or str = None,
                           endTime: int or str = None,
-                          time_zone: str = None):
+                          time_zone: str = None,
+                          from_csv: str = None) -> pd.DataFrame:
         """
         Calls the API and creates another dataframe included in the object with the atomic trades from API for the period of the
         created object.
@@ -1249,7 +1266,7 @@ class Symbol(object):
         :param int or str endTime: If passed, it use just until the timestamp or date in format
          (%Y-%m-%d %H:%M:%S: **2022-05-11 06:45:42**)) for the plot.
         :param str time_zone: A time zone for time index conversion.
-
+        :param str from_csv: If set, loads from a file.
         :return: Pandas DataFrame
 
         """
@@ -1283,24 +1300,39 @@ class Symbol(object):
         en = handlers.time_helper.convert_milliseconds_to_str(curr_endTime, timezoned=self.time_zone)
         print(f"Requesting atomic trades between {st} and {en}")
 
-        self.raw_atomic_trades = handlers.market.get_historical_atomic_trades(symbol=self.symbol,
-                                                                              startTime=curr_startTime,
-                                                                              endTime=curr_endTime,
-                                                                              redis_client_trades=self.from_redis_atomic_trades)
-        if self.from_redis_atomic_trades:
-            self.atomic_trades = handlers.market.parse_atomic_trades_to_dataframe(response=self.raw_atomic_trades,
-                                                                                  columns=self.atomic_trades_columns_redis,
-                                                                                  symbol=self.symbol,
-                                                                                  time_zone=self.time_zone,
-                                                                                  time_index=self.time_index,
-                                                                                  drop_dupes='Trade Id')
+        if from_csv:
+            if type(from_csv) == str:
+                filename = from_csv
+            else:
+                filename = handlers.files.select_file(path=self.cwd, extension='csv')
+            # load and to numeric types
+            df_ = handlers.files.read_csv_to_dataframe(filename=filename)
+
+            # check columns
+            for col in df_.columns:
+                if not col in atomic_trades_columns_from_redis and not col in atomic_trades_columns_from_binance:
+                    raise handlers.exceptions.BinPanException(f"File do not seems to be Atomic Trades File!")
+
+            self.atomic_trades = handlers.market.convert_to_numeric(data=df_)
         else:
-            self.atomic_trades = handlers.market.parse_atomic_trades_to_dataframe(response=self.raw_atomic_trades,
-                                                                                  columns=self.atomic_trades_columns,
-                                                                                  symbol=self.symbol,
-                                                                                  time_zone=self.time_zone,
-                                                                                  time_index=self.time_index,
-                                                                                  drop_dupes='Trade Id')
+            self.raw_atomic_trades = handlers.market.get_historical_atomic_trades(symbol=self.symbol,
+                                                                                  startTime=curr_startTime,
+                                                                                  endTime=curr_endTime,
+                                                                                  redis_client_trades=self.from_redis_atomic_trades)
+            if self.from_redis_atomic_trades:
+                self.atomic_trades = handlers.market.parse_atomic_trades_to_dataframe(response=self.raw_atomic_trades,
+                                                                                      columns=self.atomic_trades_columns_redis,
+                                                                                      symbol=self.symbol,
+                                                                                      time_zone=self.time_zone,
+                                                                                      time_index=self.time_index,
+                                                                                      drop_dupes='Trade Id')
+            else:
+                self.atomic_trades = handlers.market.parse_atomic_trades_to_dataframe(response=self.raw_atomic_trades,
+                                                                                      columns=self.atomic_trades_columns,
+                                                                                      symbol=self.symbol,
+                                                                                      time_zone=self.time_zone,
+                                                                                      time_index=self.time_index,
+                                                                                      drop_dupes='Trade Id')
         return self.atomic_trades
 
     def is_new(self,
@@ -1623,16 +1655,16 @@ class Symbol(object):
                                          markers=markers,
                                          marker_colors=marker_colors)
 
-    def plot_trades_size(self,
-                         max_size: int = 60,
-                         height: int = 1000,
-                         logarithmic: bool = False,
-                         overlap_prices: bool = True,
-                         group_big_data: int = None,
-                         shifted: int = 1,
-                         title: str = None):
+    def plot_agg_trades_size(self,
+                             max_size: int = 60,
+                             height: int = 1000,
+                             logarithmic: bool = False,
+                             overlap_prices: bool = True,
+                             group_big_data: int = None,
+                             shifted: int = 1,
+                             title: str = None):
         """
-        It plots a time series graph plotting trades sized by quantity and color if taker or maker buyer.
+        It plots a time series graph plotting aggregated trades sized by quantity and color if taker or maker buyer.
 
         Can be used with trades (requieres calling for trades before, or using candles and volume from the object to avoid
         waiting long time intervals grabbing the trades.)
@@ -1656,7 +1688,7 @@ class Symbol(object):
             binpan_logger.info(empty_agg_trades_msg)
             return
         if not title:
-            title = f"Size trade categories {self.symbol}"
+            title = f"Size aggregated trade categories {self.symbol}"
         managed_data = self.agg_trades.copy(deep=True)
 
         if overlap_prices:
@@ -1671,7 +1703,58 @@ class Symbol(object):
                                           shifted=shifted,
                                           title=title)
         else:
-            # TODO: GROUP SLOTS OF TRADES
+            handlers.plotting.plot_trades(data=managed_data,
+                                          max_size=max_size,
+                                          height=height,
+                                          logarithmic=logarithmic,
+                                          overlap_prices=overlap_prices,
+                                          shifted=shifted,
+                                          title=title)
+
+    def plot_atomic_trades_size(self,
+                                max_size: int = 60,
+                                height: int = 1000,
+                                logarithmic: bool = False,
+                                overlap_prices: bool = True,
+                                group_big_data: int = None,
+                                shifted: int = 1,
+                                title: str = None):
+        """
+        It plots a time series graph plotting atomic trades sized by quantity and color if taker or maker buyer.
+
+        Can be used with trades (requieres calling for trades before, or using candles and volume from the object to avoid
+        waiting long time intervals grabbing the trades.)
+
+        It can be useful finding support and resistance zones.
+
+        :param int max_size: Max size for the markers. Default is 60. Useful to show whales operating.
+        :param int height: Default is 1000.
+        :param bool logarithmic: If logarithmic, then "y" axis scale is shown in logarithmic scale.
+        :param int group_big_data: If true, groups data in height bins, this can get faster plotting for big quantity of trades.
+        :param bool shifted: If True, shifts prices to plot klines one step to the right, that's more natural to see trades action in price.
+        :param bool overlap_prices: If True, plots overlap line with High and Low prices.
+        :param title: Graph title
+
+        """
+        if self.atomic_trades.empty:
+            binpan_logger.info(empty_atomic_trades_msg)
+            return
+        if not title:
+            title = f"Size atomic trade categories {self.symbol}"
+        managed_data = self.atomic_trades.copy(deep=True)
+
+        if overlap_prices:
+            overlap_prices = self.df
+
+        if not group_big_data:
+            handlers.plotting.plot_trades(data=managed_data,
+                                          max_size=max_size,
+                                          height=height,
+                                          logarithmic=logarithmic,
+                                          overlap_prices=overlap_prices,
+                                          shifted=shifted,
+                                          title=title)
+        else:
             handlers.plotting.plot_trades(data=managed_data,
                                           max_size=max_size,
                                           height=height,

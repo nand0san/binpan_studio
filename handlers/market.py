@@ -64,6 +64,10 @@ trades_columns = {'M': 'Best price match',
                   'p': 'Price',
                   'a': 'Aggregate tradeId'}
 
+agg_trades_columns_from_binance = ['Aggregate tradeId', 'Price', 'Quantity', 'First tradeId', 'Last tradeId', 'Date', 'Timestamp', 'Buyer was maker', 'Best price match']
+agg_trades_columns_from_redis = ['Aggregate tradeId', 'Price', 'Quantity', 'First tradeId', 'Last tradeId', 'Date', 'Timestamp', 'Buyer was maker', 'Best price match']
+atomic_trades_columns_from_binance = ['Trade Id', 'Price', 'Quantity', 'Quote quantity', 'Date', 'Timestamp', 'Buyer was maker', 'Best price match']
+atomic_trades_columns_from_redis = ['Trade Id', 'Price', 'Quantity', 'Buyer Order Id', 'Seller Order Id', 'Date', 'Timestamp', 'Buyer was maker', 'Best price match']
 
 ##########
 # Prices #
@@ -573,6 +577,7 @@ def get_historical_agg_trades(symbol: str,
                 current_first_trade = trades[0]['a']
         if endTime:
             current_last_trade = trades[-1]['a']
+            prev_last_trade = current_last_trade
             current_last_trade_time = trades[-1]['T']
             while current_last_trade_time <= endTime:
                 requests_cnt += 1
@@ -583,6 +588,10 @@ def get_historical_agg_trades(symbol: str,
                 trades += fetched_newer_trades
                 current_last_trade = trades[-1]['a']
                 current_last_trade_time = trades[-1]['T']
+                if current_last_trade != prev_last_trade:
+                    prev_last_trade = current_last_trade  # vigilando esto
+                else:
+                    break
 
         ret = [i for i in trades if startTime <= i['T'] <= endTime]
         return sorted(ret, key=lambda x: x['a'])
@@ -681,8 +690,9 @@ def parse_agg_trades_to_dataframe(response: list,
     if drop_dupes:
         df.drop_duplicates(subset=drop_dupes, keep='last', inplace=True)
 
-    return df[['Aggregate tradeId', 'Price', 'Quantity', 'First tradeId', 'Last tradeId', 'Date', 'Timestamp', 'Buyer was maker',
-               'Best price match']]
+    # return df[['Aggregate tradeId', 'Price', 'Quantity', 'First tradeId', 'Last tradeId', 'Date', 'Timestamp', 'Buyer was maker',
+    #            'Best price match']]
+    return df[agg_trades_columns_from_binance]
 
 
 def get_last_atomic_trades(symbol: str,
@@ -856,6 +866,7 @@ def get_historical_atomic_trades(symbol: str,
                 current_first_trade = trades[0]['id']
         if endTime:
             current_last_trade = trades[-1]['id']
+            prev_last_trade = current_last_trade
             current_last_trade_time = trades[-1]['time']
             while current_last_trade_time <= endTime:
                 requests_cnt += 1
@@ -866,6 +877,10 @@ def get_historical_atomic_trades(symbol: str,
                 trades += fetched_newer_trades
                 current_last_trade = trades[-1]['id']
                 current_last_trade_time = trades[-1]['time']
+                if current_last_trade != prev_last_trade:
+                    prev_last_trade = current_last_trade  # vigilando esto
+                else:
+                    break
 
         ret = [i for i in trades if startTime <= i['time'] <= endTime]
         return sorted(ret, key=lambda x: x['id'])
@@ -981,10 +996,12 @@ def parse_atomic_trades_to_dataframe(response: list,
         df.drop_duplicates(subset=drop_dupes, keep='last', inplace=True)
 
     if 'quoteQty' in columns.keys():
-        return df[['Trade Id', 'Price', 'Quantity', 'Quote quantity', 'Date', 'Timestamp', 'Buyer was maker', 'Best price match']]
+        # return df[['Trade Id', 'Price', 'Quantity', 'Quote quantity', 'Date', 'Timestamp', 'Buyer was maker', 'Best price match']]
+        return df[atomic_trades_columns_from_binance]
     else:  # it was a redis response
-        return df[['Trade Id', 'Price', 'Quantity', 'Buyer Order Id', 'Seller Order Id', 'Date', 'Timestamp', 'Buyer was maker',
-                   'Best price match']]
+        # return df[['Trade Id', 'Price', 'Quantity', 'Buyer Order Id', 'Seller Order Id', 'Date', 'Timestamp', 'Buyer was maker',
+        #            'Best price match']]
+        return df[atomic_trades_columns_from_redis]
 
 
 #############
