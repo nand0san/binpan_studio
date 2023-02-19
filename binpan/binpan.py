@@ -3,7 +3,7 @@
 This is the main classes file.
 
 """
-__version__ = "0.3.5"
+__version__ = "0.3.6"
 
 import os
 from sys import path
@@ -39,7 +39,6 @@ from time import time
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 tick_seconds = handlers.time_helper.tick_seconds
 pandas_freq_tick_interval = handlers.time_helper.pandas_freq_tick_interval
-
 
 try:
     from secret import redis_conf, redis_conf_trades, redis_conf_atomic_trades
@@ -207,7 +206,7 @@ class Symbol(object):
                  start_time: int or str = None,
                  end_time: int or str = None,
                  limit: int = 1000,
-                 time_zone: str = 'UTC',
+                 time_zone: str = 'Europe/Madrid',
                  time_index: bool = True,
                  closed: bool = True,
                  from_redis: bool or StrictRedis = None,
@@ -690,6 +689,48 @@ class Symbol(object):
         :return:
         """
         df_ = self.df
+        if timestamped:
+            start, end = self.get_timestamps()
+            filename = f"{df_.index.name.replace('/', '-')} {start} {end}.csv"
+        else:
+            filename = f"{df_.index.name.replace('/', '-')}.csv"
+
+        handlers.files.save_dataframe_to_csv(filename=filename,
+                                             data=df_,
+                                             timestamp=not timestamped)
+        binpan_logger.info(f"Saved file {filename}")
+
+    def save_atomic_trades_csv(self, timestamped: bool = True):
+        """
+        Saves current atomic trades to a csv file.
+
+        :param bool timestamped: Adds start and end timestamps to the name.
+        :return:
+        """
+        if self.atomic_trades.empty:
+            print(f"No atomic trades to save.")
+        df_ = self.atomic_trades
+        if timestamped:
+            start, end = self.get_timestamps()
+            filename = f"{df_.index.name.replace('/', '-')} {start} {end}.csv"
+        else:
+            filename = f"{df_.index.name.replace('/', '-')}.csv"
+
+        handlers.files.save_dataframe_to_csv(filename=filename,
+                                             data=df_,
+                                             timestamp=not timestamped)
+        binpan_logger.info(f"Saved file {filename}")
+
+    def save_agg_trades_csv(self, timestamped: bool = True):
+        """
+        Saves current aggregated trades to a csv file.
+
+        :param bool timestamped: Adds start and end timestamps to the name.
+        :return:
+        """
+        if self.agg_trades.empty:
+            print(f"No aggregated trades to save.")
+        df_ = self.agg_trades
         if timestamped:
             start, end = self.get_timestamps()
             filename = f"{df_.index.name.replace('/', '-')} {start} {end}.csv"
