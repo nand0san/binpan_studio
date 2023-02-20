@@ -1936,11 +1936,11 @@ class Symbol(object):
                             startTime: int or str = None,
                             endTime: int or str = None,
                             height=900,
-                            from_trades=False,
+                            from_agg_trades=False,
+                            from_atomic_trades=False,
                             title: str = 'Market Profile',
                             time_zone: str = None,
                             **kwargs_update_layout):
-
         """
         Plots volume histogram by prices segregated aggressive buyers from sellers.
 
@@ -1953,12 +1953,17 @@ class Symbol(object):
         :param int or str endTime: If passed, it use just until the timestamp or date in format
          (%Y-%m-%d %H:%M:%S: **2022-05-11 06:45:42**)) for the plot.
         :param height: Height of the graph.
-        :param from_trades: Requieres grabbing trades before.
+        :param from_agg_trades: Requieres grabbing aggregated trades before.
+        :param from_atomic_trades: Requieres grabbing atomic trades before.
         :param title: A title.
         :param str time_zone: A time zone for time index conversion.
         :param kwargs_update_layout: Optional
 
         """
+        try:
+            assert not(from_agg_trades and from_atomic_trades)
+        except AssertionError:
+            raise handlers.exceptions.BinPanException(f"Please specify just one source of data, atomic trades or aggregated, not both.")
 
         if time_zone:
             self.time_zone = time_zone
@@ -1973,11 +1978,17 @@ class Symbol(object):
         elif minutes:
             startTime = int(time() * 1000) - (1000 * 60 * minutes)
 
-        if from_trades:
+        if from_agg_trades:
             if self.agg_trades.empty:
                 binpan_logger.info(empty_agg_trades_msg)
                 return
-        if from_trades or not self.agg_trades.empty:
+        if from_atomic_trades:
+            if self.atomic_trades.empty:
+                binpan_logger.info(empty_atomic_trades_msg)
+                return
+
+        if from_agg_trades:
+            title += ' Aggregated'
             _df = self.agg_trades.copy(deep=True)
             if startTime:
                 _df = _df[_df['Timestamp'] >= startTime]
@@ -1990,7 +2001,25 @@ class Symbol(object):
                                        bins=bins,
                                        title=title,
                                        height=height,
-                                       y_axis_title='Aggressive Sells VS Aggressive Buys',
+                                       y_axis_title='Aggressive Sells VS Aggressive Buys Aggregated',
+                                       legend_names={'agg_Quantity_Buyer_was_maker': 'Aggressive Sell',
+                                                     'agg_Quantity_not_Buyer_was_maker': 'Aggressive Buy'},
+                                       **kwargs_update_layout)
+        elif from_atomic_trades:
+            title += ' Atomic'
+            _df = self.atomic_trades.copy(deep=True)
+            if startTime:
+                _df = _df[_df['Timestamp'] >= startTime]
+            if endTime:
+                _df = _df[_df['Timestamp'] <= endTime]
+            handlers.plotting.bar_plot(df=_df,
+                                       x_col_to_bars='Price',
+                                       y_col='Quantity',
+                                       bar_segments='Buyer was maker',
+                                       bins=bins,
+                                       title=title,
+                                       height=height,
+                                       y_axis_title='Aggressive Sells VS Aggressive Buys Atomic',
                                        legend_names={'agg_Quantity_Buyer_was_maker': 'Aggressive Sell',
                                                      'agg_Quantity_not_Buyer_was_maker': 'Aggressive Buy'},
                                        **kwargs_update_layout)

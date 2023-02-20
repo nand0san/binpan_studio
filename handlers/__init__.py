@@ -1,3 +1,7 @@
+"""
+Handlers package.
+"""
+from . import aggregations
 from . import exceptions
 from . import exchange
 from . import files

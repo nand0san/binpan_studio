@@ -108,6 +108,7 @@ Hope you find it useful breaking the market!!!
    :caption: Contents:
 
    binpan.rst
+   aggregations.rst
    exceptions.rst
    exchange.rst
    files.rst

@@ -1,0 +1,15 @@
+Aggregations Module
+===================
+
+This module can manage data aggregation.
+
+This module can be imported:
+
+.. code-block::
+
+   from handlers import aggregations
+
+.. automodule:: handlers.aggregations
+
+.. autofunction:: ohlc_group
+
