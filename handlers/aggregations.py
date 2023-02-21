@@ -2,6 +2,11 @@
 Data Aggregation.
 """
 import pandas as pd
+# from .time_helper import pandas_freq_tick_interval
+
+# from .exceptions import BinPanException
+
+# from .market import atomic_trades_columns_from_redis, atomic_trades_columns_from_binance, agg_trades_columns_from_binance, agg_trades_columns_from_redis
 
 
 # TODO: add documentation
@@ -39,9 +44,9 @@ def ohlc_group(data: pd.DataFrame, column_to_ohlc: str, group_column: str) -> pd
     :return: A copy of the dataframe with OHLC data.
     """
     df = data.copy(deep=True)
+    df['Open'] = df.groupby([group_column])[column_to_ohlc].transform('first')
     df['High'] = df.groupby([group_column])[column_to_ohlc].transform('max')
     df['Low'] = df.groupby([group_column])[column_to_ohlc].transform('min')
-    df['Open'] = df.groupby([group_column])[column_to_ohlc].transform('first')
     df['Close'] = df.groupby([group_column])[column_to_ohlc].transform('last')
     return df
 
@@ -69,9 +74,8 @@ def sum_split_by_boolean_column_and_group(data: pd.DataFrame, column_to_split_su
     idx2 = df[df[bool_col] == False].index
     df.loc[idx1, split1] = sum_serie.loc[idx1]
     df.loc[idx2, split2] = sum_serie.loc[idx2]
-    df.fillna(inplace=True, method='ffill')
+    # df.fillna(inplace=True, method='ffill')
     # df.fillna(inplace=True, method='bfill')
-    # fixme: strage assignement for the first or last each streak
     return df[cols]
 
 
@@ -100,3 +104,70 @@ def aggregate_last(data: pd.DataFrame, group_column: str) -> pd.DataFrame:
     df = data.copy(deep=True)
     aggregator = {c: 'last' for c in df.columns}
     return df.groupby(group_column).agg(aggregator)
+
+
+############
+# df utils #
+############
+
+
+def time_index_from_timestamps(data: pd.DataFrame, timezone: str = 'Europe/Madrid', drop_col: bool = False):
+    """
+    Assumes existing timestamp column or at least Open timestamp column.
+
+    :param pd.Dataframe data: A dataframe.
+    :param bool drop_col: Drop column applied as index.
+    :param str timezone: The index of the pandas dataframe in the object can be converted to any timezone, i.e. "Europe/Madrid"
+                           - TZ database: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+
+    :return pd.DataFrame: A dataframe copy with the new index. Timestamp columns will be not dropped.
+    """
+    df_ = data.copy(deep=True)
+    time_cols = sorted([c for c in df_.columns if 'timestamp' in c.lower()])
+    time_col = time_cols[0]
+    df_.sort_values(time_col, inplace=True)
+    df_.index = pd.DatetimeIndex(pd.to_datetime(df_[time_col], unit='ms')).tz_localize('UTC').tz_convert(timezone)
+
+    if drop_col:
+        df_.drop(time_col, axis=1, inplace=True)
+    return df_
+
+
+def columns_restriction(data: pd.DataFrame, mode: str, extra=None) -> pd.DataFrame:
+    """
+    Filter columns by preset.
+
+    :param pd.DataFrame data: A dataframe.
+    :param str mode: Presets are: TB, VB, DB, VIB, DIB, TRB, VRB, DRB. All from chapter 2 of AFML book (Marcos López de Prado).
+        https://www.amazon.com/-/es/Marcos-Lopez-Prado/dp/1119482089
+    :param list extra: Optional extra columns.
+    :return pd.DataFrame: Just preset columns.
+    """
+    df = data.copy(deep=True)
+    if extra is None:
+        extra = []
+    bool_cols = [c for c in data.columns if c.endswith('True') or c.endswith('False')]  # add created from bool columns
+    cols = []
+    if mode == 'TB':
+        cols = ['Timestamp', 'Open', 'High', 'Low', 'Close'] + bool_cols + extra
+    return df[cols]
+
+
+##################
+# AFML shortcuts #
+##################
+
+def tick_bars(trades: pd.DataFrame, size: int):
+    """
+    Creates Tick Bars OHLC bars from trades-
+
+    :param pd.DataFrame trades: Expected binpan aggregated trades or atomic trades dataframe.
+    :param int size: Size of ticks in bars to be compiled.
+    :return:
+    """
+    df = generate_count_grouper_column(data=trades, grouper_name='group', size=size)
+    df = ohlc_group(df, 'Price', 'group')
+    df = sum_split_by_boolean_column_and_group(df, 'Quantity', 'Buyer was maker', 'group')
+    df = aggregate_by(df, 'group', 'first')
+    df = columns_restriction(df, 'TB')
+    return time_index_from_timestamps(df)

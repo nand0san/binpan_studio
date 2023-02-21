@@ -327,9 +327,10 @@ class Symbol(object):
 
             if time_index:
                 df_.sort_values('Open timestamp', inplace=True)
-                idx = pd.DatetimeIndex(pd.to_datetime(df_['Open timestamp'], unit='ms')).tz_localize('UTC').tz_convert('Europe/Madrid')
+                idx = pd.DatetimeIndex(pd.to_datetime(df_['Open timestamp'], unit='ms')).tz_localize('UTC').tz_convert(self.time_zone)
                 df_.index = idx
-                df_ = df_.asfreq(pandas_freq_tick_interval[tick_interval])  # this adds freq, infer will not work if API blackout period
+                df_ = df_.asfreq(pandas_freq_tick_interval[self.tick_interval])  # this adds freq, infer will not work if API blackout 
+                # period
                 self.df = df_
                 # drops API blackout periods, but throw errors upwards with some indicators because freq=None before drop.
                 # self.df.dropna(how='all', inplace=True)
@@ -1155,7 +1156,7 @@ class Symbol(object):
          (%Y-%m-%d %H:%M:%S: **2022-05-11 06:45:42**)) for the plot.
         :param int or str endTime: If passed, it use just until the timestamp or date in format
          (%Y-%m-%d %H:%M:%S: **2022-05-11 06:45:42**)) for the plot.
-        :param str time_zone: A time zone for time index conversion.
+        :param str time_zone: A time zone for time index conversion. Example: "Europe/Madrid"
 
         Example:
 
@@ -1265,7 +1266,7 @@ class Symbol(object):
          (%Y-%m-%d %H:%M:%S: **2022-05-11 06:45:42**)) for the plot.
         :param int or str endTime: If passed, it use just until the timestamp or date in format
          (%Y-%m-%d %H:%M:%S: **2022-05-11 06:45:42**)) for the plot.
-        :param str time_zone: A time zone for time index conversion.
+        :param str time_zone: A time zone for time index conversion. Example: "Europe/Madrid"
         :param str from_csv: If set, loads from a file.
         :return: Pandas DataFrame
 
@@ -1956,7 +1957,7 @@ class Symbol(object):
         :param from_agg_trades: Requieres grabbing aggregated trades before.
         :param from_atomic_trades: Requieres grabbing atomic trades before.
         :param title: A title.
-        :param str time_zone: A time zone for time index conversion.
+        :param str time_zone: A time zone for time index conversion. Example: "Europe/Madrid"
         :param kwargs_update_layout: Optional
 
         """
@@ -4376,7 +4377,7 @@ class Wallet(object):
         :param int or str startTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
         :param int or str endTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
         :param int snapshot_days: Days to look if not start time or endtime passed.
-        :param str time_zone: A time zone for time index conversion.
+        :param str time_zone: A time zone for time index conversion. Example: "Europe/Madrid"
         :return pd.DataFrame: Spot wallet snapshot for the time period requested.
         """
         if time_zone:
@@ -4419,7 +4420,7 @@ class Wallet(object):
         :param int or str startTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
         :param int or str endTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
         :param int snapshot_days: Days to look if not start time or endtime passed.
-        :param str time_zone: A time zone for time index conversion.
+        :param str time_zone: A time zone for time index conversion. Example: "Europe/Madrid"
         :return pd.DataFrame: Spot wallet snapshot for the time period requested.
         """
         if time_zone:
