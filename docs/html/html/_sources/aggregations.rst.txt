@@ -21,7 +21,10 @@ Aggregations
 
 .. autofunction:: sum_split_by_boolean_column_and_group
 
-.. autofunction:: aggregate_by
+.. autofunction:: drop_aggregated
+
+.. autofunction:: tag_by_accumulation
+
 
 
 DataFrame Tools
@@ -42,4 +45,8 @@ This methods manage data following the Chapter 2 of the book Advances in Financi
 Machine Learning by Macros López de Prado.
 
 .. autofunction:: tick_bars
+
+.. autofunction:: volume_bars
+
+.. autofunction:: dollar_bars
 
