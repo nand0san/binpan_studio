@@ -90,25 +90,28 @@ def set_candles(df: pd.DataFrame,
 
 # noinspection PyTypeChecker
 def set_volume_series(df: pd.DataFrame,
-                      win: int = 21) -> tuple:
+                      win: int = 21,
+                      green_color='rgba(70, 197, 74, 1)',
+                      red_color='rgba(197, 79, 70, 1)') -> tuple:
     """
     Sets or unsets volume histogram.
 
     :param df: A binpan's dataframe.
     :param win: Window for volume average line.
+    :param str green_color: An rgba color string like: 'rgba(144,194,178,255)'
+    :param red_color: An rgba color string like: 'rgba(242,149,149,255)'
     :return: A tuple with several figures.
     """
     # volume
     volume_green = df[df['Open'] <= df['Close']]
     volume_red = df[df['Open'] > df['Close']]
 
-    volume_g = go.Bar(x=volume_green.index, y=volume_green['Volume'], marker_color='rgba(144,194,178,255)',
-                      name='Up volume')
-    volume_r = go.Bar(x=volume_red.index, y=volume_red['Volume'], marker_color='rgba(242,149,149,255)',
-                      name='Down volume')
+    volume_g = go.Bar(x=volume_green.index, y=volume_green['Volume'], marker_color=green_color, name='Up volume')
+    volume_r = go.Bar(x=volume_red.index, y=volume_red['Volume'], marker_color=red_color, name='Down volume')
     vol_ewma = df['Volume'].ewm(span=win, min_periods=0, adjust=False, ignore_na=False).mean()
     # volume_ma = set_ta_scatter(df_, vol_ewma)
     volume_ma = go.Scatter(x=df.index, y=vol_ewma, line=dict(color='black', width=0.5), name=f'Volume EMA {win}')
+
     return volume_g, volume_r, volume_ma, 3
 
 
@@ -383,7 +386,9 @@ def candles_ta(data: pd.DataFrame,
                annotation_legend_names: list = None,
                labels: list = None,
                plot_bgcolor: str = None,
-               text_index: bool = False):
+               text_index: bool = False,
+               vol_up_color: str = None,
+               vol_down_color: str = None):
     """
     Data needs to be a DataFrame that at least contains the columns: Open Close High Low Volume
 
@@ -475,6 +480,10 @@ def candles_ta(data: pd.DataFrame,
         :width: 1000
 
     :param plot_bgcolor: Set background color.
+    :param str vol_up_color: Color for down volume bars. An rgba color string like: rgba(144,194,178,255) or 'rgba(38, 171, 40,
+     100)' for more opacity.
+    :param str vol_down_color: Color for down volume bars. An rgba color string like: 'rgba(242,149,149,255)' or 'rgba(233, 56, 18,
+     100)' for more opacity.
     :param bool text_index: If enables, index will be transformed to a text index. It can be useful to plot candles not time correlated like reversal candles.
 
     """
@@ -488,16 +497,19 @@ def candles_ta(data: pd.DataFrame,
         indicator_names = []
     if rows_pos is None:
         rows_pos = []
+
     if not indicators_color_filled and indicators_series:
         indicators_color_filled = {i.name: None for i in indicators_series}
     elif type(indicators_color_filled) == list:
         indicators_color_filled = {s.name: indicators_color_filled[i] for i, s in enumerate(indicators_series)}
+
     plot_logger.debug(f"candles_ta indicators_color_filled: {indicators_color_filled}")
 
     if not indicators_filled_mode and indicators_series:
         indicators_filled_mode = {i.name: None for i in indicators_series}
     elif type(indicators_filled_mode) == list:
         indicators_filled_mode = {s.name: indicators_filled_mode[i] for i, s in enumerate(indicators_series)}
+
     plot_logger.debug(f"candles_ta indicators_filled_mode: {indicators_filled_mode}")
 
     # catch data
@@ -539,7 +551,7 @@ def candles_ta(data: pd.DataFrame,
 
     # volume
     if plot_volume:
-        volume_g, volume_r, volume_ma, ax = set_volume_series(df_plot)
+        volume_g, volume_r, volume_ma, ax = set_volume_series(df_plot, green_color=vol_up_color, red_color=vol_down_color)
         axes += ax
         rows = [1, 2, 2, 2]
         pre_rows = 4
