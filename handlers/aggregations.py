@@ -2,9 +2,11 @@
 Data Aggregation.
 """
 import pandas as pd
+
+
 # from .time_helper import pandas_freq_tick_interval
 
-# from .exceptions import BinPanException
+from .exceptions import BinPanException
 
 # from .market import atomic_trades_columns_from_redis, atomic_trades_columns_from_binance, agg_trades_columns_from_binance, agg_trades_columns_from_redis
 
@@ -36,7 +38,7 @@ def generate_count_grouper_column(data: pd.DataFrame, grouper_name: str, size: i
 
 def ohlc_group(data: pd.DataFrame, column_to_ohlc: str, group_column: str) -> pd.DataFrame:
     """
-    Creates  OHLC columns for a column based on group by other column values.
+    Creates  OHLC columns for a column based on group by other column with discrete values.
 
     :param pd.Dataframe data: A dataframe with at least two columns.
     :param str column_to_ohlc: Column to sparse values to OHLC columns in each group.
@@ -93,19 +95,6 @@ def aggregate_by(data: pd.DataFrame, group_column: str, by='last') -> pd.DataFra
     return df.groupby(group_column).agg(aggregator)
 
 
-def aggregate_last(data: pd.DataFrame, group_column: str) -> pd.DataFrame:
-    """
-    Drop lines except the first row of each group_column streak.
-
-    :param pd.Dataframe data: A dataframe.
-    :param str group_column: This column will be the grouping key.
-    :return: A copy of the dataframe with just the first row each grouper streak.
-    """
-    df = data.copy(deep=True)
-    aggregator = {c: 'last' for c in df.columns}
-    return df.groupby(group_column).agg(aggregator)
-
-
 ############
 # df utils #
 ############
@@ -149,13 +138,33 @@ def columns_restriction(data: pd.DataFrame, mode: str, extra=None) -> pd.DataFra
     bool_cols = [c for c in data.columns if c.endswith('True') or c.endswith('False')]  # add created from bool columns
     cols = []
     if mode == 'TB':
-        cols = ['Timestamp', 'Open', 'High', 'Low', 'Close'] + bool_cols + extra
+        cols = ['Open', 'High', 'Low', 'Close', 'Timestamp'] + bool_cols + extra
     return df[cols]
+
+
+# def generate_volume_column(data: pd.DataFrame, add_cols: tuple, plotting_vol_taker_buy: str = None) -> pd.DataFrame:
+    #     :param str plotting_vol_taker_buy: If passed, renames that column passed as taker buy for plotting candles.
+    # if plotting_vol_taker_buy:
+    #     df.rename(columns={plotting_vol_taker_buy: 'Taker buy base volume'}, inplace=True)
+    #     df['Taker buy base volume'].fillna(value=0, inplace=True)
+def generate_volume_column(data: pd.DataFrame, add_cols: tuple) -> pd.DataFrame:
+    """
+    Add two columns to generate volume of base.
+
+    :param pd.DataFrame data: A dataframe.
+    :param tuple add_cols: Ordered tuple with two columns to add for calculating the total volume.
+    :return pd.DataFrame: A copy with volume added.
+    """
+    df = data.copy(deep=True)
+    df.loc[:, 'Volume'] = df.loc[:, add_cols[0]] + df.loc[:, add_cols[1]]
+
+    return df
 
 
 ##################
 # AFML shortcuts #
 ##################
+
 
 def tick_bars(trades: pd.DataFrame, size: int):
     """
@@ -165,9 +174,15 @@ def tick_bars(trades: pd.DataFrame, size: int):
     :param int size: Size of ticks in bars to be compiled.
     :return:
     """
+    if trades.empty:
+        raise BinPanException("BinPan Exception: Tick Bars cannot be calculated with empty data.")
     df = generate_count_grouper_column(data=trades, grouper_name='group', size=size)
-    df = ohlc_group(df, 'Price', 'group')
+    df = ohlc_group(data=df, column_to_ohlc='Price', group_column='group')
     df = sum_split_by_boolean_column_and_group(df, 'Quantity', 'Buyer was maker', 'group')
-    df = aggregate_by(df, 'group', 'first')
-    df = columns_restriction(df, 'TB')
-    return time_index_from_timestamps(df)
+    df = aggregate_by(data=df, group_column='group', by='first')
+    df = columns_restriction(data=df, mode='TB')
+    df = time_index_from_timestamps(df)
+    # add Volume for plotting
+    bool_cols = [c for c in df.columns if 'True' in c or 'False' in c]
+    df = generate_volume_column(data=df, add_cols=(bool_cols[0], bool_cols[1]))
+    return df
