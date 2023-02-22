@@ -14,7 +14,6 @@ This module can be imported:
 Aggregations
 ------------
 
-
 .. autofunction:: generate_count_grouper_column
 
 .. autofunction:: ohlc_group
@@ -37,6 +36,12 @@ DataFrame Tools
 .. autofunction:: generate_volume_column
 
 
+Concepts
+--------
+
+.. autofunction:: sign_of_price
+
+
 
 AFML Methods
 ------------
@@ -49,4 +54,10 @@ Machine Learning by Macros López de Prado.
 .. autofunction:: volume_bars
 
 .. autofunction:: dollar_bars
+
+.. autofunction:: imbalance_bars_divergent
+
+.. autofunction:: imbalance_bars_fixed
+
+
 

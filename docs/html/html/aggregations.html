@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aggregations Module &mdash; BinPan 0.3.5 documentation</title>
+  <title>Aggregations Module &mdash; BinPan 0.4.3 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/style.css" type="text/css" />
@@ -17,6 +17,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -32,7 +33,7 @@
             <a href="index.html" class="icon icon-home"> BinPan
           </a>
               <div class="version">
-                0.3.5
+                0.4.3
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -48,6 +49,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Aggregations Module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#aggregations">Aggregations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#dataframe-tools">DataFrame Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#concepts">Concepts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#afml-methods">AFML Methods</a></li>
 </ul>
 </li>
@@ -251,6 +253,28 @@
 </dd></dl>
 
 </section>
+<section id="concepts">
+<h2>Concepts<a class="headerlink" href="#concepts" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.aggregations.sign_of_price">
+<span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">sign_of_price</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'sign'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.aggregations.sign_of_price" title="Permalink to this definition"></a></dt>
+<dd><p>Creates a column with the sign of the price by each trade. 1 if the trade increased the price and -1 for decreased price.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}b_t= \begin{cases}b_{t-1} &amp; \text { if } \Delta p_t=0 \\ \frac{\left|\Delta p_t\right|}{\Delta p_t} &amp; \text { if } \Delta p_t \neq 0\end{cases}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>pd.DataFrame</em>) – Trades dataframe.</p></li>
+<li><p><strong>col_name</strong> (<em>str</em>) – New column name.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.DataFrame</dt>
+<dd class="field-even"><p>A copy of the data with the new column.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 <section id="afml-methods">
 <h2>AFML Methods<a class="headerlink" href="#afml-methods" title="Permalink to this heading"></a></h2>
 <p>This methods manage data following the Chapter 2 of the book Advances in Financial
@@ -298,6 +322,60 @@ Machine Learning by Macros López de Prado.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>trades</strong> (<em>pd.DataFrame</em>) – Expected binpan aggregated trades or atomic trades dataframe.</p></li>
 <li><p><strong>threshold</strong> (<em>int</em>) – Size of Dollar (or quote) threshold in bars to be compiled.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dataframe sampled with the new bars sampling.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.aggregations.imbalance_bars_divergent">
+<span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">imbalance_bars_divergent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">starting_imbalance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.aggregations.imbalance_bars_divergent" title="Permalink to this definition"></a></dt>
+<dd><p>Generates candles by grouping each accumulated imbalance defined by:</p>
+<div class="math notranslate nohighlight">
+\[\theta_T=\sum_{t=1}^T b_t\]</div>
+<p>To close a bar, the imbalance must meet expected imbalance while iterating trades, in other words, when expected ticks times the
+difference between probability of positive signs versus negative signes meets the imbalance.</p>
+<div class="math notranslate nohighlight">
+\[T^*=\underset{T}{\arg \min }\left\{\left|\theta_T\right| \geq \mathrm{E}_0[T]\left|2 \mathrm{P}\left[b_t=1\right]-1\right|\right\}\]</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>No matter how you obtain expected ticks size and probability for the next imbalance threshold. It explodes. I will focus on fixed
+threshold in other function.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>trades</strong> (<em>pd.DataFrame</em>) – Expected binpan aggregated trades or atomic trades dataframe.</p></li>
+<li><p><strong>starting_imbalance</strong> (<em>float</em>) – Starting value for following bars. Its recommended to wait some bars quantity to consider established sizes.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dataframe sampled with the new bars sampling.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.aggregations.imbalance_bars_fixed">
+<span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">imbalance_bars_fixed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imbalance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.aggregations.imbalance_bars_fixed" title="Permalink to this definition"></a></dt>
+<dd><p>Generates candles by grouping each accumulated fixed imbalance threshold defined by:</p>
+<div class="math notranslate nohighlight">
+\[\theta_T=\sum_{t=1}^T b_t\]</div>
+<p>To close a bar, the imbalance must meet expected fixed imbalance while iterating trades.</p>
+<div class="math notranslate nohighlight">
+\[T^*=\underset{T}{\arg \min }\left\{\left|\theta_T\right| \geq \mathrm{E}_0[T]\left|2 \mathrm{P}\left[b_t=1\right]-1\right|\right\}\]</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Fixed threshold for rendering imbalance bars.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>trades</strong> (<em>pd.DataFrame</em>) – Expected binpan aggregated trades or atomic trades dataframe.</p></li>
+<li><p><strong>imbalance</strong> (<em>float</em>) – Fixed value for imbalance threshold.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>

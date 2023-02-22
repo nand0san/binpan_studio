@@ -2,11 +2,12 @@
 Data Aggregation.
 """
 import pandas as pd
-
+import numpy as np
 
 # from .time_helper import pandas_freq_tick_interval
 
 from .exceptions import BinPanException
+
 
 # from .market import atomic_trades_columns_from_redis, atomic_trades_columns_from_binance, agg_trades_columns_from_binance, agg_trades_columns_from_redis
 
@@ -161,7 +162,7 @@ def columns_restriction(data: pd.DataFrame, mode: str, extra=None) -> pd.DataFra
     :param list extra: Optional extra columns.
     :return pd.DataFrame: Just preset columns.
     """
-    valid_modes = ['TB', 'VB', 'DB', 'VIB', 'DIB', 'TRB', 'VRB', 'DRB']
+    valid_modes = ['TB', 'VB', 'DB', 'IB', 'VIB', 'DIB', 'TRB', 'VRB', 'DRB']
     try:
         assert mode in valid_modes
     except AssertionError:
@@ -171,7 +172,7 @@ def columns_restriction(data: pd.DataFrame, mode: str, extra=None) -> pd.DataFra
         extra = []
     bool_cols = [c for c in data.columns if c.endswith('True') or c.endswith('False')]  # add created from bool columns
     cols = []
-    if mode == 'TB' or mode == 'VB' or mode == 'DB':
+    if mode == 'TB' or mode == 'VB' or mode == 'DB' or mode == 'IB':
         cols = ['Open', 'High', 'Low', 'Close', 'Timestamp'] + bool_cols + extra
     return df[cols]
 
@@ -191,6 +192,29 @@ def generate_volume_column(data: pd.DataFrame, add_cols: tuple, quote_column: bo
     df.loc[:, 'Volume'] = df.loc[:, add_cols[0]] + df.loc[:, add_cols[1]]
     if quote_column:
         df.loc[:, 'Volume quote'] = df['Close'] * df['Volume']
+    return df
+
+
+#############
+# conceptos #
+#############
+
+def sign_of_price(data: pd.DataFrame, col_name: str = 'sign') -> pd.DataFrame:
+    """
+    Creates a column with the sign of the price by each trade. 1 if the trade increased the price and -1 for decreased price.
+
+    .. math::
+
+       b_t= \\begin{cases}b_{t-1} & \\text { if } \\Delta p_t=0 \\\\ \\frac{\\left|\\Delta p_t\\right|}{\\Delta p_t} & \\text { if } \\Delta p_t \\neq 0\\end{cases}
+
+
+    :param pd.DataFrame data: Trades dataframe.
+    :param str col_name: New column name.
+    :return pd.DataFrame: A copy of the data with the new column.
+
+    """
+    df = data.copy(deep=True)
+    df.loc[:, col_name] = np.sign(df['Price'].diff()).fillna(0)
     return df
 
 
@@ -270,3 +294,148 @@ def dollar_bars(trades: pd.DataFrame, threshold: int) -> pd.DataFrame:
     bool_cols = [c for c in df.columns if 'True' in c or 'False' in c]
     df = generate_volume_column(data=df, add_cols=(bool_cols[0], bool_cols[1]), quote_column=True)
     return df
+
+
+def imbalance_bars_divergent(trades: pd.DataFrame, starting_imbalance: float) -> pd.DataFrame:
+    """
+    Generates candles by grouping each accumulated imbalance defined by:
+
+    .. math::
+
+       \\theta_T=\\sum_{t=1}^T b_t
+
+    To close a bar, the imbalance must meet expected imbalance while iterating trades, in other words, when expected ticks times the
+    difference between probability of positive signs versus negative signes meets the imbalance.
+
+    .. math::
+
+       T^*=\\underset{T}{\\arg \\min }\\left\\{\\left|\\theta_T\\right| \\geq \\mathrm{E}_0[T]\\left|2 \\mathrm{P}\\left[b_t=1\\right]-1\\right|\\right\\}
+
+    .. note::
+
+       No matter how you obtain expected ticks size and probability for the next imbalance threshold. It explodes. I will focus on fixed
+       threshold in other function.
+
+    :param pd.DataFrame trades: Expected binpan aggregated trades or atomic trades dataframe.
+    :param float starting_imbalance: Starting value for following bars. Its recommended to wait some bars quantity to consider established sizes.
+    :return: A dataframe sampled with the new bars sampling.
+    """
+    df = sign_of_price(data=trades, col_name='sign')
+    current_imbalance = 0
+    bar_counter = 0
+    rows_with_bar_counter = []
+
+    current_trades_qty = 0
+    positive_qty = 0
+    expected_imbalance = starting_imbalance
+
+    for idx, row in df.iterrows():
+
+        # save data with bar counter
+        new_data = dict(row.to_dict())
+        new_data.update({'group': bar_counter})
+        rows_with_bar_counter.append(new_data)
+
+        # metrics for closing the current bar
+        sign = new_data['sign']
+        current_imbalance += sign
+
+        # expected values for next trade
+        current_trades_qty += 1
+        if sign > 0:
+            positive_qty += 1
+        prob = (2 * positive_qty / current_trades_qty) - 1
+
+        # update values if closed bar
+        if abs(current_imbalance) >= expected_imbalance:
+            bar_counter += 1
+            # just previous values for now, weighted expected values will diverge too.
+            print(f"Current imbalance:{current_imbalance} trades:{current_trades_qty} pos_trades:{positive_qty} prob:{prob} expected_imbalance"
+                  f":{abs(current_trades_qty * prob)}")
+            expected_imbalance = abs(current_trades_qty * prob)
+            current_trades_qty = 0
+            current_imbalance = 0
+            positive_qty = 0
+
+    df = pd.DataFrame(data=rows_with_bar_counter, index=trades.index)
+    df = pd.DataFrame(data=rows_with_bar_counter, index=trades.index)
+    df = ohlc_group(data=df, column_to_ohlc='Price', group_column='group')
+    df = sum_split_by_boolean_column_and_group(data=df, column_to_split_sum='Quantity', bool_col='Buyer was maker', group_column='group')
+    df = drop_aggregated(data=df, group_column='group', by='first')
+    df = columns_restriction(data=df, mode='IB')
+    df = time_index_from_timestamps(df)
+    # add Volume for plotting
+    bool_cols = [c for c in df.columns if 'True' in c or 'False' in c]
+    df = generate_volume_column(data=df, add_cols=(bool_cols[0], bool_cols[1]), quote_column=True)
+    return df
+
+
+def imbalance_bars_fixed(trades: pd.DataFrame, imbalance: float) -> pd.DataFrame:
+    """
+    Generates candles by grouping each accumulated fixed imbalance threshold defined by:
+
+    .. math::
+
+       \\theta_T=\\sum_{t=1}^T b_t
+
+    To close a bar, the imbalance must meet expected fixed imbalance while iterating trades.
+
+    .. math::
+
+       T^*=\\underset{T}{\\arg \\min }\\left\\{\\left|\\theta_T\\right| \\geq \\mathrm{E}_0[T]\\left|2 \\mathrm{P}\\left[b_t=1\\right]-1\\right|\\right\\}
+
+    .. note::
+
+       Fixed threshold for rendering imbalance bars.
+
+    :param pd.DataFrame trades: Expected binpan aggregated trades or atomic trades dataframe.
+    :param float imbalance: Fixed value for imbalance threshold.
+    :return: A dataframe sampled with the new bars sampling.
+    """
+    df_ = sign_of_price(data=trades, col_name='sign')
+    current_imbalance = 0
+    bar_counter = 0
+    rows_with_bar_counter = []
+
+    current_trades_qty = 0
+    positive_qty = 0
+
+    for idx, row in df_.iterrows():
+
+        # save data with bar counter
+        new_data = dict(row.to_dict())
+        new_data.update({'group': bar_counter})
+        rows_with_bar_counter.append(new_data)
+
+        # metrics for closing the current bar
+        sign = new_data['sign']
+        current_imbalance += sign
+
+        # expected values for next trade
+        current_trades_qty += 1
+        if sign > 0:
+            positive_qty += 1
+        prob = (2 * positive_qty / current_trades_qty) - 1
+
+        # update values if closed bar
+        if abs(current_imbalance) >= imbalance:
+            bar_counter += 1
+            # just previous values for now
+            print(f"Current imbalance:{current_imbalance} trades:{current_trades_qty} pos_trades:{positive_qty} prob:{prob} expected_imbalance"
+                  f":{abs(current_trades_qty * prob)}")
+            current_trades_qty = 0
+            current_imbalance = 0
+            positive_qty = 0
+
+    df = pd.DataFrame(data=rows_with_bar_counter, index=trades.index)
+    df = ohlc_group(data=df, column_to_ohlc='Price', group_column='group')
+    df = sum_split_by_boolean_column_and_group(data=df, column_to_split_sum='Quantity', bool_col='Buyer was maker', group_column='group')
+    df = drop_aggregated(data=df, group_column='group', by='first')
+    df = columns_restriction(data=df, mode='IB')
+    df = time_index_from_timestamps(df)
+    # add Volume for plotting
+    bool_cols = [c for c in df.columns if 'True' in c or 'False' in c]
+    df = generate_volume_column(data=df, add_cols=(bool_cols[0], bool_cols[1]), quote_column=True)
+    return df
+
+
