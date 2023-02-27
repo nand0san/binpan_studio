@@ -437,5 +437,3 @@ def imbalance_bars_fixed(trades: pd.DataFrame, imbalance: float) -> pd.DataFrame
     bool_cols = [c for c in df.columns if 'True' in c or 'False' in c]
     df = generate_volume_column(data=df, add_cols=(bool_cols[0], bool_cols[1]), quote_column=True)
     return df
-
-

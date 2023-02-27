@@ -13,6 +13,7 @@ from redis import StrictRedis
 from typing import List
 
 import handlers.time_helper
+from .exceptions import BinPanException
 from .logs import Logs
 from .quest import check_weight, get_response, api_raw_get, get_semi_signed_request
 # from .time_helper import tick_seconds, end_time_from_start_time, start_time_from_end_time
@@ -525,7 +526,10 @@ def get_historical_agg_trades(symbol: str,
           }
         ]
     """
-
+    try:
+        assert bool(startTime or endTime) ^ bool(start_trade_id or end_trade_id)
+    except AssertionError:
+        raise BinPanException(f"BinPan Exception: get_historical_agg_trades params mixed time, timestamp and trade id: {locals()}")
     if start_trade_id and not end_trade_id:
         end_trade_id = start_trade_id + limit
     elif end_trade_id and not start_trade_id:
@@ -814,6 +818,10 @@ def get_historical_atomic_trades(symbol: str,
                  'isBestMatch': True}, ...
              ]
     """
+    try:
+        assert bool(startTime or endTime) ^ bool(start_trade_id or end_trade_id)
+    except AssertionError:
+        raise BinPanException(f"BinPan Exception: get_historical_atomic_trades params mixed time, timestamp and trade id: {locals()}")
 
     if start_trade_id and not end_trade_id:
         end_trade_id = start_trade_id + limit
