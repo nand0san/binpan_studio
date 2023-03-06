@@ -329,11 +329,11 @@ the maximum limit of 1000 is NOT applied.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>symbol</strong> (<em>str</em>) – A binance valid symbol.</p></li>
-<li><p><strong>limit</strong> (<em>int</em>) – Count of trades to ask for.</p></li>
 <li><p><strong>startTime</strong> (<em>int</em>) – A timestamp in milliseconds from epoch.</p></li>
 <li><p><strong>endTime</strong> (<em>int</em>) – A timestamp in milliseconds from epoch.</p></li>
 <li><p><strong>start_trade_id</strong> (<em>int</em>) – A trade id as first one (older).</p></li>
 <li><p><strong>end_trade_id</strong> (<em>int</em>) – A trade id as last one (newer).</p></li>
+<li><p><strong>limit</strong> (<em>int</em>) – Count of trades to ask for. Ignored if start and end passed.</p></li>
 <li><p><strong>redis_client_trades</strong> (<em>bool</em>) – A redis instance of a connector. Must be a trades redis connector, usually different configuration
 from candles redis server.</p></li>
 </ul>
@@ -471,7 +471,7 @@ from candles redis server.</p></li>
 <li><p><strong>endTime</strong> (<em>int</em>) – A timestamp in milliseconds from epoch.</p></li>
 <li><p><strong>start_trade_id</strong> (<em>int</em>) – A trade id as first one (older).</p></li>
 <li><p><strong>end_trade_id</strong> (<em>int</em>) – A trade id as last one (newer).</p></li>
-<li><p><strong>limit</strong> (<em>int</em>) – Limit for missing heads or tails of the interval requested with timestamps or trade ids.</p></li>
+<li><p><strong>limit</strong> (<em>int</em>) – Limit for missing heads or tails of the interval requested with timestamps or trade ids. Ig nored if  start and end passed.</p></li>
 <li><p><strong>symbol</strong> (<em>str</em>) – A binance valid symbol.</p></li>
 <li><p><strong>redis_client_trades</strong> (<em>bool</em>) – A redis instance of a connector. Must be a trades redis connector, usually different configuration
 from candles redis server.</p></li>
