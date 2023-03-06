@@ -502,11 +502,11 @@ def get_historical_agg_trades(symbol: str,
     Limit applied in fromId mode defaults to 500. Maximum is 1000.
 
     :param str symbol: A binance valid symbol.
-    :param int limit: Count of trades to ask for.
     :param int startTime: A timestamp in milliseconds from epoch.
     :param int endTime: A timestamp in milliseconds from epoch.
     :param int start_trade_id: A trade id as first one (older).
     :param int end_trade_id: A trade id as last one (newer).
+    :param int limit: Count of trades to ask for. Ignored if start and end passed.
     :param bool redis_client_trades: A redis instance of a connector. Must be a trades redis connector, usually different configuration
      from candles redis server.
     :return list: Returns a list from the Binance API in dicts.
@@ -530,6 +530,7 @@ def get_historical_agg_trades(symbol: str,
         assert bool(startTime or endTime) ^ bool(start_trade_id or end_trade_id)
     except AssertionError:
         raise BinPanException(f"BinPan Exception: get_historical_agg_trades params mixed time, timestamp and trade id: {locals()}")
+
     if start_trade_id and not end_trade_id:
         end_trade_id = start_trade_id + limit
     elif end_trade_id and not start_trade_id:
@@ -799,7 +800,7 @@ def get_historical_atomic_trades(symbol: str,
     :param int endTime: A timestamp in milliseconds from epoch.
     :param int start_trade_id: A trade id as first one (older).
     :param int end_trade_id: A trade id as last one (newer).
-    :param int limit: Limit for missing heads or tails of the interval requested with timestamps or trade ids.
+    :param int limit: Limit for missing heads or tails of the interval requested with timestamps or trade ids. Ig nored if  start and end passed.
     :param str symbol: A binance valid symbol.
     :param bool redis_client_trades: A redis instance of a connector. Must be a trades redis connector, usually different configuration
      from candles redis server.
