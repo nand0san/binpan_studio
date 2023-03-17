@@ -52,7 +52,7 @@ First, import the sys module in your Jupyter notebook.
 
 Next, install the required packages using the following command:
 
-.. code-block:: python
+.. code-block::
 
     import sys
 
@@ -65,7 +65,7 @@ Repeat step 2 for all the packages that you need to install.
 If you face import errors related to the crypto or pycryptodome packages, use the following commands to uninstall and reinstall
 the packages:
 
-.. code-block:: python
+.. code-block::
 
     # insecure
     !{sys.executable} -m pip uninstall crypto
@@ -78,7 +78,7 @@ Note that the crypto and pycryptodome packages are used for encryption/decryptio
 
 Finally, install any other required packages using the following command:
 
-.. code-block:: python
+.. code-block::
 
     !{sys.executable} -m pip install <package_name>
 

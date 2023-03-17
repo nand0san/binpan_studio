@@ -118,6 +118,7 @@ Hope you find it useful breaking the market!!!
    plotting.rst
    redis_fetch.rst
    quest.rst
+   stat_tests.rst
    strategies.rst
    tags.rst
    wallet.rst

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BinPan Module &mdash; BinPan 0.4.3 documentation</title>
+  <title>BinPan Module &mdash; BinPan 0.4.4 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/style.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="index.html" class="icon icon-home"> BinPan
           </a>
               <div class="version">
-                0.4.3
+                0.4.4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -48,6 +48,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#symbol-class">Symbol Class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#exchange-class">Exchange Class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#wallet-class">Wallet Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#jupyter-import-problems-troubleshooting">Jupyter Import Problems Troubleshooting</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="aggregations.html">Aggregations Module</a></li>
@@ -60,6 +61,7 @@
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quest.html">Requests Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stat_tests.html">Statistical Tests and Tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tags.html">Tags &amp; Backtesting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Module</a></li>
@@ -2473,6 +2475,38 @@ performance analysis.</p>
 
 </dd></dl>
 
+</section>
+<section id="jupyter-import-problems-troubleshooting">
+<h2>Jupyter Import Problems Troubleshooting<a class="headerlink" href="#jupyter-import-problems-troubleshooting" title="Permalink to this heading"></a></h2>
+<p>When working with Jupyter, you may encounter import errors while trying to import packages such as BinPan. These errors can be caused by various reasons such as package installation order, virtual environment issues, etc. To resolve such errors, you can try installing the required modules directly to the Jupyter Notebook kernel by following the steps below:</p>
+<p>First, import the sys module in your Jupyter notebook.</p>
+<p>Next, install the required packages using the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>import sys
+
+!{sys.executable} -m pip install &lt;package_name&gt;
+</pre></div>
+</div>
+<p>Replace &lt;package_name&gt; with the name of the package that you want to install.</p>
+<p>Repeat step 2 for all the packages that you need to install.</p>
+<p>If you face import errors related to the crypto or pycryptodome packages, use the following commands to uninstall and reinstall
+the packages:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># insecure
+!{sys.executable} -m pip uninstall crypto
+!{sys.executable} -m pip uninstall pycryptodome
+
+secure
+!{sys.executable} -m pip install pycryptodome
+</pre></div>
+</div>
+<p>Note that the crypto and pycryptodome packages are used for encryption/decryption purposes and it is recommended to use the more secure pycryptodome package.</p>
+<p>Finally, install any other required packages using the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>!{sys.executable} -m pip install &lt;package_name&gt;
+</pre></div>
+</div>
+<p>Replace &lt;package_name&gt; with the name of the package that you want to install.</p>
+<p>By following these steps, you can install the required packages directly to the Jupyter Notebook kernel and resolve any import
+errors that you may encounter. In addition, it is recommended to ensure that the virtual environment used by Jupyter is
+configured correctly to avoid any conflicts with package installations.</p>
 </section>
 </section>
 

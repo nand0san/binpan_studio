@@ -358,7 +358,6 @@ def imbalance_bars_divergent(trades: pd.DataFrame, starting_imbalance: float) ->
             positive_qty = 0
 
     df = pd.DataFrame(data=rows_with_bar_counter, index=trades.index)
-    df = pd.DataFrame(data=rows_with_bar_counter, index=trades.index)
     df = ohlc_group(data=df, column_to_ohlc='Price', group_column='group')
     df = sum_split_by_boolean_column_and_group(data=df, column_to_split_sum='Quantity', bool_col='Buyer was maker', group_column='group')
     df = drop_aggregated(data=df, group_column='group', by='first')
