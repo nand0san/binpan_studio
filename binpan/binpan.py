@@ -1225,10 +1225,16 @@ class Symbol(object):
                     raise handlers.exceptions.BinPanException(f"File do not seems to be Aggregated Trades File!")
             self.agg_trades = handlers.market.convert_to_numeric(data=df_)
         else:
-            self.raw_agg_trades = handlers.market.get_historical_agg_trades(symbol=self.symbol,
-                                                                            startTime=curr_startTime,
-                                                                            endTime=curr_endTime,
-                                                                            redis_client_trades=self.from_redis_trades)
+            try:
+                self.raw_agg_trades = handlers.market.get_historical_agg_trades(symbol=self.symbol,
+                                                                                startTime=curr_startTime,
+                                                                                endTime=curr_endTime,
+                                                                                redis_client_trades=self.from_redis_trades)
+            except Exception as exc:
+                msg = f"Error fetching raw_agg_trades, maybe missing API key in secret.py file!!!"
+                binpan_logger.error(msg)
+                self.raw_agg_trades = []
+
             if self.from_redis_atomic_trades:
                 self.agg_trades = handlers.market.parse_agg_trades_to_dataframe(response=self.raw_agg_trades,
                                                                                 columns=self.agg_trades_columns_redis,
@@ -1317,10 +1323,16 @@ class Symbol(object):
 
             self.atomic_trades = handlers.market.convert_to_numeric(data=df_)
         else:
-            self.raw_atomic_trades = handlers.market.get_historical_atomic_trades(symbol=self.symbol,
-                                                                                  startTime=curr_startTime,
-                                                                                  endTime=curr_endTime,
-                                                                                  redis_client_trades=self.from_redis_atomic_trades)
+            try:
+                self.raw_atomic_trades = handlers.market.get_historical_atomic_trades(symbol=self.symbol,
+                                                                                      startTime=curr_startTime,
+                                                                                      endTime=curr_endTime,
+                                                                                      redis_client_trades=self.from_redis_atomic_trades)
+            except Exception:
+                msg = f"Error fetching raw_atomic_trades, maybe missing API key in secret.py file!!!"
+                binpan_logger.error(msg)
+                self.raw_atomic_trades = []
+
             if self.from_redis_atomic_trades:
                 self.atomic_trades = handlers.market.parse_atomic_trades_to_dataframe(response=self.raw_atomic_trades,
                                                                                       columns=self.atomic_trades_columns_redis,
