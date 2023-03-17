@@ -35,7 +35,7 @@ def get_exchange_info() -> dict:
 
     Example:
 
-       ..code-block::
+       .. code-block::
 
             {
               "timezone": "UTC",

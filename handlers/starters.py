@@ -67,10 +67,30 @@ def get_exchange_limits() -> dict:
     """
     base_url = 'https://api.binance.com'
     endpoint = '/api/v3/exchangeInfo'
-    response = requests.get(base_url+endpoint).json()
+    response = requests.get(base_url + endpoint).json()
     # info_dic = {k['symbol']: k for k in response['symbols']}
+    try:
+        limits = response['rateLimits']
+    except KeyError:
+        print(response)
+        print(response.keys())
+        limits = [{'rateLimitType': 'REQUEST_WEIGHT',
+                   'interval': 'MINUTE',
+                   'intervalNum': 1,
+                   'limit': 1200},
+                  {'rateLimitType': 'ORDERS',
+                   'interval': 'SECOND',
+                   'intervalNum': 10,
+                   'limit': 50},
+                  {'rateLimitType': 'ORDERS',
+                   'interval': 'DAY',
+                   'intervalNum': 1,
+                   'limit': 160000},
+                  {'rateLimitType': 'RAW_REQUESTS',
+                   'interval': 'MINUTE',
+                   'intervalNum': 5,
+                   'limit': 6100}]
 
-    limits = response['rateLimits']
     limits_dict = {}
     for limit in limits:
         if 'REQUEST' in limit['rateLimitType']:
