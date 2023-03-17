@@ -1,47 +1,86 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html lang="en">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wallet Module &mdash; BinPan 0.4.4 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/style.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-    <script src="_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Tags &amp; Backtesting Module" href="tags.html" /> 
-</head>
-
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> BinPan
-          </a>
-              <div class="version">
-                0.4.4
-              </div>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Wallet Module - BinPan 0.4.4 documentation</title>
+    <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="Tags &amp; Backtesting Module" href="tags.html" /><link rel="stylesheet" href="_static/pygments.css?v=2023.3.11" type="text/css" />
+    <link rel="stylesheet" href="_static/shibuya.css?v=2023.3.11" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/style.css" />
+    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=2023.3.11" />
+    <style>
+:root {
+  --sy-f-sys:-apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Droid Sans, Helvetica Neue;--sy-f-cjk:PingFang SC, Hiragino Sans GB, Droid Sans Fallback, Microsoft YaHei;--sy-f-heading:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-text:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-mono:Menlo, Monaco, Consolas, "Courier New", monospace;--sy-c-divider:rgba(var(--sy-rc-text), 0.1);--sy-c-divider-weak:rgba(var(--sy-rc-text), 0.05);--sy-c-border:rgba(var(--sy-rc-text), 0.14);--sy-s-banner-height:0rem;--sy-s-navbar-height:4rem;--sy-s-offset-top:calc(var(--sy-s-navbar-height) + var(--sy-s-banner-height));--sy-c-link:rgb(var(--sy-rc-theme));
+  --sy-rc-theme:143, 118, 214;--sy-rc-bg:255, 255, 255;--sy-rc-invert:0, 0, 0;--sy-rc-text:0, 0, 0;--sy-c-bg:#fff;--sy-c-bg-weak:#f9f9f9;--sy-c-text:#374151;--sy-c-text-weak:#6b7280;--sy-c-heading:#111827;--sy-c-bold:#111827;--sy-c-foot-text:#232226;--sy-c-foot-bg:#fafafa;--sy-c-foot-divider:#f0f0f0;
+}
+@media not print {
+  html.light {
+    --sy-rc-theme:143, 118, 214;--sy-rc-bg:255, 255, 255;--sy-rc-invert:0, 0, 0;--sy-rc-text:0, 0, 0;--sy-c-bg:#fff;--sy-c-bg-weak:#f9f9f9;--sy-c-text:#374151;--sy-c-text-weak:#6b7280;--sy-c-heading:#111827;--sy-c-bold:#111827;--sy-c-foot-text:#232226;--sy-c-foot-bg:#fafafa;--sy-c-foot-divider:#f0f0f0;
+  }
+  html.dark {
+    --sy-rc-theme:143, 118, 214;--sy-rc-bg:18, 18, 18;--sy-rc-invert:255, 255, 255;--sy-rc-text:255, 255, 255;--sy-c-bg:#121212;--sy-c-bg-weak:#212833;--sy-c-text:#cedbea;--sy-c-text-weak:#77889f;--sy-c-heading:#ebf0f4;--sy-c-bold:#ebf0f4;--sy-c-foot-text:#eee;--sy-c-foot-bg:#000;--sy-c-foot-divider:#000;
+  }
+}
+</style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-heading: Inter, var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    <meta property="og:type" content="website"/><meta property="og:title" content="Wallet Module"/>
+<meta name="twitter:card" content="summary"/></head>
+<body><div class="document"><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <div class="sy-head-brand flex items-center">
+      <div class="md:hidden flex items-center">
+        <button class="hamburger js-menu mr-3" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2 -translate-x-2"></span>
+          <span class="hamburger_3 -translate-x-1"></span>
+        </button>
+      </div>
+      <a href="index.html">
+        
+        
+        <strong>BinPan</strong>
+      </a>
+      
+    </div>
+    <div class="sy-head-actions flex gap-2 items-center print:hidden">
+      <nav class="sy-head-nav hidden md:block">
+      </nav>
+      <div class="hidden md:block"><form class="searchbox flex items-center" action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form>
+      </div>
+      <button class="js-theme theme-switch flex items-center ml-1" data-aria-light="Switch to dark mode" data-aria-dark="Switch to light mode">
+        <i class="i-icon theme-icon"></i>
+      </button>
+      
+        <button class="js-menu xl:hidden flex items-center ml-1" aria-label="Show table of contents" type="button" aria-controls="rside" aria-expanded="false">
+          <i class="i-icon outdent"></i>
+        </button>
+    </div>
+  </div>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-64 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="md:hidden pt-6 px-6"><form class="searchbox flex items-center" action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <button>Go</button>
+</form>
+      </div>
+      <div class="md:hidden pt-3 px-6">
+      </div>
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc">
+          <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="binpan.html">BinPan Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="aggregations.html">Aggregations Module</a></li>
@@ -57,52 +96,49 @@
 <li class="toctree-l1"><a class="reference internal" href="stat_tests.html">Statistical Tests and Tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tags.html">Tags &amp; Backtesting Module</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Wallet Module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#wallet-snapshots">Wallet snapshots</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#trades">Trades</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#spot-balances">Spot Balances</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#margin-balances">Margin Balances</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#helper">Helper</a></li>
-</ul>
-</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Wallet Module</a></li>
 </ul>
 
         </div>
       </div>
-    </nav>
+    </div>
+  </aside>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-icon close"></i>
+    </button>
+    <div class="sy-scrollbar px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4">
+  <div class="localtoc">
+    <h3>Table of Contents</h3>
+    <ul>
+<li><a class="reference internal" href="#wallet-snapshots">Wallet snapshots</a></li>
+<li><a class="reference internal" href="#trades">Trades</a></li>
+<li><a class="reference internal" href="#spot-balances">Spot Balances</a></li>
+<li><a class="reference internal" href="#margin-balances">Margin Balances</a></li>
+<li><a class="reference internal" href="#helper">Helper</a></li>
+</ul>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">BinPan</a>
-      </nav>
 
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Wallet Module</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="_sources/wallet.rst.txt" rel="nofollow"> View page source</a>
-      </li>
-  </ul>
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
-  <section id="wallet-module">
-<h1>Wallet Module<a class="headerlink" href="#wallet-module" title="Permalink to this heading"></a></h1>
+  </div><div id="ethical-ad-placement"></div>
+    </div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+    <div class="flex flex-col break-words justify-between">
+      <div class="min-w-0 max-w-6xl px-6 pb-6 pt-6 xl:px-12">
+        <article class="yue" role="main">
+          <section id="wallet-module">
+<h1>Wallet Module<a class="headerlink" href="#wallet-module" title="Permalink to this heading">¶</a></h1>
 <p>This module can manage wallet data from Binance API.</p>
 <p>To import this module:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">handlers</span> <span class="kn">import</span> <span class="n">wallet</span>
-</pre></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="kn">from</span> <span class="nn">handlers</span> <span class="kn">import</span> <span class="n">wallet</span>
+</span></pre></div>
 </div>
 <span class="target" id="module-handlers.wallet"></span><section id="wallet-snapshots">
-<h2>Wallet snapshots<a class="headerlink" href="#wallet-snapshots" title="Permalink to this heading"></a></h2>
+<h2>Wallet snapshots<a class="headerlink" href="#wallet-snapshots" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.wallet.daily_account_snapshot">
-<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">daily_account_snapshot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">account_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.wallet.daily_account_snapshot" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">daily_account_snapshot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">account_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.wallet.daily_account_snapshot" title="Permalink to this definition">¶</a></dt>
 <dd><p>The query time period must be inside the previous 30 days.
 Support query within the last month, one month only.
 If startTime and endTime not sent, return records of the last days by default.</p>
@@ -128,7 +164,7 @@ If startTime and endTime not sent, return records of the last days by default.</
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.wallet.assets_convertible_dust">
-<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">assets_convertible_dust</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.wallet.assets_convertible_dust" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">assets_convertible_dust</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.wallet.assets_convertible_dust" title="Permalink to this definition">¶</a></dt>
 <dd><p>Assets dust that can be converted to BNB.
 Weight(IP): 1</p>
 <dl class="field-list simple">
@@ -143,32 +179,32 @@ Weight(IP): 1</p>
 <dd class="field-even"><p>A dictionary.</p>
 </dd>
 </dl>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>{
-     &quot;details&quot;: [
-         {
-             &quot;asset&quot;: &quot;ADA&quot;,
-             &quot;assetFullName&quot;: &quot;ADA&quot;,
-             &quot;amountFree&quot;: &quot;6.21&quot;,   //Convertible amount
-             &quot;toBTC&quot;: &quot;0.00016848&quot;,  //BTC amount
-             &quot;toBNB&quot;: &quot;0.01777302&quot;,  //BNB amount（Not deducted commission fee）
-             &quot;toBNBOffExchange&quot;: &quot;0.01741756&quot;, //BNB amount（Deducted commission fee）
-             &quot;exchange&quot;: &quot;0.00035546&quot; //Commission fee
-         }
-     ],
-     &quot;totalTransferBtc&quot;: &quot;0.00016848&quot;,
-     &quot;totalTransferBNB&quot;: &quot;0.01777302&quot;,
-     &quot;dribbletPercentage&quot;: &quot;0.02&quot;     //Commission fee
- }
-</pre></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1">{
+</span><span id="1-2">     &quot;details&quot;: [
+</span><span id="1-3">         {
+</span><span id="1-4">             &quot;asset&quot;: &quot;ADA&quot;,
+</span><span id="1-5">             &quot;assetFullName&quot;: &quot;ADA&quot;,
+</span><span id="1-6">             &quot;amountFree&quot;: &quot;6.21&quot;,   //Convertible amount
+</span><span id="1-7">             &quot;toBTC&quot;: &quot;0.00016848&quot;,  //BTC amount
+</span><span id="1-8">             &quot;toBNB&quot;: &quot;0.01777302&quot;,  //BNB amount（Not deducted commission fee）
+</span><span id="1-9">             &quot;toBNBOffExchange&quot;: &quot;0.01741756&quot;, //BNB amount（Deducted commission fee）
+</span><span id="1-10">             &quot;exchange&quot;: &quot;0.00035546&quot; //Commission fee
+</span><span id="1-11">         }
+</span><span id="1-12">     ],
+</span><span id="1-13">     &quot;totalTransferBtc&quot;: &quot;0.00016848&quot;,
+</span><span id="1-14">     &quot;totalTransferBNB&quot;: &quot;0.01777302&quot;,
+</span><span id="1-15">     &quot;dribbletPercentage&quot;: &quot;0.02&quot;     //Commission fee
+</span><span id="1-16"> }
+</span></pre></div>
 </div>
 </dd></dl>
 
 </section>
 <section id="trades">
-<h2>Trades<a class="headerlink" href="#trades" title="Permalink to this heading"></a></h2>
+<h2>Trades<a class="headerlink" href="#trades" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.wallet.get_fills_price">
-<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_fills_price</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_order_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isBuyer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operation_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.wallet.get_fills_price" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_fills_price</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_order_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isBuyer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operation_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.wallet.get_fills_price" title="Permalink to this definition">¶</a></dt>
 <dd><p>Obtain averaged price from order API response or claims last trade.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -188,157 +224,157 @@ Weight(IP): 1</p>
 </dd>
 </dl>
 <p>Example of not totally done order:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;symbol&#39;</span><span class="p">:</span> <span class="s1">&#39;ACMBUSD&#39;</span><span class="p">,</span>
-<span class="s1">&#39;orderId&#39;</span><span class="p">:</span> <span class="mi">53255492</span><span class="p">,</span>
-<span class="s1">&#39;orderListId&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
-<span class="s1">&#39;clientOrderId&#39;</span><span class="p">:</span> <span class="s1">&#39;DUHlcCqIX2OO298XoAbvEB&#39;</span><span class="p">,</span>
-<span class="s1">&#39;transactTime&#39;</span><span class="p">:</span> <span class="mi">1660332903950</span><span class="p">,</span>
-<span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="mf">4.158</span><span class="p">,</span>
-<span class="s1">&#39;origQty&#39;</span><span class="p">:</span> <span class="mf">21.1</span><span class="p">,</span>
-<span class="s1">&#39;executedQty&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
-<span class="s1">&#39;cummulativeQuoteQty&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
-<span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;NEW&#39;</span><span class="p">,</span>
-<span class="s1">&#39;timeInForce&#39;</span><span class="p">:</span> <span class="s1">&#39;GTC&#39;</span><span class="p">,</span>
-<span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;LIMIT&#39;</span><span class="p">,</span>
-<span class="s1">&#39;side&#39;</span><span class="p">:</span> <span class="s1">&#39;BUY&#39;</span><span class="p">,</span>
-<span class="s1">&#39;fills&#39;</span><span class="p">:</span> <span class="p">[]}</span>
-</pre></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="p">{</span><span class="s1">&#39;symbol&#39;</span><span class="p">:</span> <span class="s1">&#39;ACMBUSD&#39;</span><span class="p">,</span>
+</span><span id="1-2"><span class="s1">&#39;orderId&#39;</span><span class="p">:</span> <span class="mi">53255492</span><span class="p">,</span>
+</span><span id="1-3"><span class="s1">&#39;orderListId&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+</span><span id="1-4"><span class="s1">&#39;clientOrderId&#39;</span><span class="p">:</span> <span class="s1">&#39;DUHlcCqIX2OO298XoAbvEB&#39;</span><span class="p">,</span>
+</span><span id="1-5"><span class="s1">&#39;transactTime&#39;</span><span class="p">:</span> <span class="mi">1660332903950</span><span class="p">,</span>
+</span><span id="1-6"><span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="mf">4.158</span><span class="p">,</span>
+</span><span id="1-7"><span class="s1">&#39;origQty&#39;</span><span class="p">:</span> <span class="mf">21.1</span><span class="p">,</span>
+</span><span id="1-8"><span class="s1">&#39;executedQty&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+</span><span id="1-9"><span class="s1">&#39;cummulativeQuoteQty&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+</span><span id="1-10"><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;NEW&#39;</span><span class="p">,</span>
+</span><span id="1-11"><span class="s1">&#39;timeInForce&#39;</span><span class="p">:</span> <span class="s1">&#39;GTC&#39;</span><span class="p">,</span>
+</span><span id="1-12"><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;LIMIT&#39;</span><span class="p">,</span>
+</span><span id="1-13"><span class="s1">&#39;side&#39;</span><span class="p">:</span> <span class="s1">&#39;BUY&#39;</span><span class="p">,</span>
+</span><span id="1-14"><span class="s1">&#39;fills&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+</span></pre></div>
 </div>
 <p>Example of full SPOT response:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="s2">&quot;symbol&quot;</span><span class="p">:</span> <span class="s2">&quot;BTCUSDT&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;orderId&quot;</span><span class="p">:</span> <span class="mi">28</span><span class="p">,</span>
-  <span class="s2">&quot;orderListId&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">//</span><span class="n">Unless</span> <span class="n">OCO</span><span class="p">,</span> <span class="n">value</span> <span class="n">will</span> <span class="n">be</span> <span class="o">-</span><span class="mi">1</span>
-  <span class="s2">&quot;clientOrderId&quot;</span><span class="p">:</span> <span class="s2">&quot;6gCrw2kRUFF9CvJDWP16IP&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;transactTime&quot;</span><span class="p">:</span> <span class="mi">1507725176595</span><span class="p">,</span>
-  <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;origQty&quot;</span><span class="p">:</span> <span class="s2">&quot;10.00000000&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;executedQty&quot;</span><span class="p">:</span> <span class="s2">&quot;10.00000000&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;cummulativeQuoteQty&quot;</span><span class="p">:</span> <span class="s2">&quot;10.00000000&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;FILLED&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;timeInForce&quot;</span><span class="p">:</span> <span class="s2">&quot;GTC&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;MARKET&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;side&quot;</span><span class="p">:</span> <span class="s2">&quot;SELL&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;strategyId&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>               <span class="o">//</span> <span class="n">This</span> <span class="ow">is</span> <span class="n">only</span> <span class="n">visible</span> <span class="k">if</span> <span class="n">the</span> <span class="n">field</span> <span class="n">was</span> <span class="n">populated</span> <span class="n">on</span> <span class="n">order</span> <span class="n">placement</span><span class="o">.</span>
-  <span class="s2">&quot;strategyType&quot;</span><span class="p">:</span> <span class="mi">1000000</span>        <span class="o">//</span> <span class="n">This</span> <span class="ow">is</span> <span class="n">only</span> <span class="n">visible</span> <span class="k">if</span> <span class="n">the</span> <span class="n">field</span> <span class="n">was</span> <span class="n">populated</span> <span class="n">on</span> <span class="n">order</span> <span class="n">placement</span><span class="o">.</span>
-  <span class="s2">&quot;fills&quot;</span><span class="p">:</span> <span class="p">[</span>
-    <span class="p">{</span>
-      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;4000.00000000&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;1.00000000&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;4.00000000&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;tradeId&quot;</span><span class="p">:</span> <span class="mi">56</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;3999.00000000&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;5.00000000&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;19.99500000&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;tradeId&quot;</span><span class="p">:</span> <span class="mi">57</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;3998.00000000&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;2.00000000&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;7.99600000&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;tradeId&quot;</span><span class="p">:</span> <span class="mi">58</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;3997.00000000&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;1.00000000&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;3.99700000&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;tradeId&quot;</span><span class="p">:</span> <span class="mi">59</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;3995.00000000&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;1.00000000&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;3.99500000&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;tradeId&quot;</span><span class="p">:</span> <span class="mi">60</span>
-    <span class="p">}</span>
-  <span class="p">]</span>
-<span class="p">}</span>
-</pre></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="p">{</span>
+</span><span id="1-2">  <span class="s2">&quot;symbol&quot;</span><span class="p">:</span> <span class="s2">&quot;BTCUSDT&quot;</span><span class="p">,</span>
+</span><span id="1-3">  <span class="s2">&quot;orderId&quot;</span><span class="p">:</span> <span class="mi">28</span><span class="p">,</span>
+</span><span id="1-4">  <span class="s2">&quot;orderListId&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">//</span><span class="n">Unless</span> <span class="n">OCO</span><span class="p">,</span> <span class="n">value</span> <span class="n">will</span> <span class="n">be</span> <span class="o">-</span><span class="mi">1</span>
+</span><span id="1-5">  <span class="s2">&quot;clientOrderId&quot;</span><span class="p">:</span> <span class="s2">&quot;6gCrw2kRUFF9CvJDWP16IP&quot;</span><span class="p">,</span>
+</span><span id="1-6">  <span class="s2">&quot;transactTime&quot;</span><span class="p">:</span> <span class="mi">1507725176595</span><span class="p">,</span>
+</span><span id="1-7">  <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-8">  <span class="s2">&quot;origQty&quot;</span><span class="p">:</span> <span class="s2">&quot;10.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-9">  <span class="s2">&quot;executedQty&quot;</span><span class="p">:</span> <span class="s2">&quot;10.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-10">  <span class="s2">&quot;cummulativeQuoteQty&quot;</span><span class="p">:</span> <span class="s2">&quot;10.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-11">  <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;FILLED&quot;</span><span class="p">,</span>
+</span><span id="1-12">  <span class="s2">&quot;timeInForce&quot;</span><span class="p">:</span> <span class="s2">&quot;GTC&quot;</span><span class="p">,</span>
+</span><span id="1-13">  <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;MARKET&quot;</span><span class="p">,</span>
+</span><span id="1-14">  <span class="s2">&quot;side&quot;</span><span class="p">:</span> <span class="s2">&quot;SELL&quot;</span><span class="p">,</span>
+</span><span id="1-15">  <span class="s2">&quot;strategyId&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>               <span class="o">//</span> <span class="n">This</span> <span class="ow">is</span> <span class="n">only</span> <span class="n">visible</span> <span class="k">if</span> <span class="n">the</span> <span class="n">field</span> <span class="n">was</span> <span class="n">populated</span> <span class="n">on</span> <span class="n">order</span> <span class="n">placement</span><span class="o">.</span>
+</span><span id="1-16">  <span class="s2">&quot;strategyType&quot;</span><span class="p">:</span> <span class="mi">1000000</span>        <span class="o">//</span> <span class="n">This</span> <span class="ow">is</span> <span class="n">only</span> <span class="n">visible</span> <span class="k">if</span> <span class="n">the</span> <span class="n">field</span> <span class="n">was</span> <span class="n">populated</span> <span class="n">on</span> <span class="n">order</span> <span class="n">placement</span><span class="o">.</span>
+</span><span id="1-17">  <span class="s2">&quot;fills&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span id="1-18">    <span class="p">{</span>
+</span><span id="1-19">      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;4000.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-20">      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;1.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-21">      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;4.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-22">      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span><span class="p">,</span>
+</span><span id="1-23">      <span class="s2">&quot;tradeId&quot;</span><span class="p">:</span> <span class="mi">56</span>
+</span><span id="1-24">    <span class="p">},</span>
+</span><span id="1-25">    <span class="p">{</span>
+</span><span id="1-26">      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;3999.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-27">      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;5.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-28">      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;19.99500000&quot;</span><span class="p">,</span>
+</span><span id="1-29">      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span><span class="p">,</span>
+</span><span id="1-30">      <span class="s2">&quot;tradeId&quot;</span><span class="p">:</span> <span class="mi">57</span>
+</span><span id="1-31">    <span class="p">},</span>
+</span><span id="1-32">    <span class="p">{</span>
+</span><span id="1-33">      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;3998.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-34">      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;2.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-35">      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;7.99600000&quot;</span><span class="p">,</span>
+</span><span id="1-36">      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span><span class="p">,</span>
+</span><span id="1-37">      <span class="s2">&quot;tradeId&quot;</span><span class="p">:</span> <span class="mi">58</span>
+</span><span id="1-38">    <span class="p">},</span>
+</span><span id="1-39">    <span class="p">{</span>
+</span><span id="1-40">      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;3997.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-41">      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;1.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-42">      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;3.99700000&quot;</span><span class="p">,</span>
+</span><span id="1-43">      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span><span class="p">,</span>
+</span><span id="1-44">      <span class="s2">&quot;tradeId&quot;</span><span class="p">:</span> <span class="mi">59</span>
+</span><span id="1-45">    <span class="p">},</span>
+</span><span id="1-46">    <span class="p">{</span>
+</span><span id="1-47">      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;3995.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-48">      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;1.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-49">      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;3.99500000&quot;</span><span class="p">,</span>
+</span><span id="1-50">      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span><span class="p">,</span>
+</span><span id="1-51">      <span class="s2">&quot;tradeId&quot;</span><span class="p">:</span> <span class="mi">60</span>
+</span><span id="1-52">    <span class="p">}</span>
+</span><span id="1-53">  <span class="p">]</span>
+</span><span id="1-54"><span class="p">}</span>
+</span></pre></div>
 </div>
 <p>Example of FULL MARGIN RESPONSE:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="s2">&quot;symbol&quot;</span><span class="p">:</span> <span class="s2">&quot;BTCUSDT&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;orderId&quot;</span><span class="p">:</span> <span class="mi">28</span><span class="p">,</span>
-  <span class="s2">&quot;clientOrderId&quot;</span><span class="p">:</span> <span class="s2">&quot;6gCrw2kRUFF9CvJDWP16IP&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;transactTime&quot;</span><span class="p">:</span> <span class="mi">1507725176595</span><span class="p">,</span>
-  <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;1.00000000&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;origQty&quot;</span><span class="p">:</span> <span class="s2">&quot;10.00000000&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;executedQty&quot;</span><span class="p">:</span> <span class="s2">&quot;10.00000000&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;cummulativeQuoteQty&quot;</span><span class="p">:</span> <span class="s2">&quot;10.00000000&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;FILLED&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;timeInForce&quot;</span><span class="p">:</span> <span class="s2">&quot;GTC&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;MARKET&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;side&quot;</span><span class="p">:</span> <span class="s2">&quot;SELL&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;marginBuyBorrowAmount&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>       <span class="o">//</span> <span class="n">will</span> <span class="ow">not</span> <span class="k">return</span> <span class="k">if</span> <span class="n">no</span> <span class="n">margin</span> <span class="n">trade</span> <span class="n">happens</span>
-  <span class="s2">&quot;marginBuyBorrowAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;BTC&quot;</span><span class="p">,</span>    <span class="o">//</span> <span class="n">will</span> <span class="ow">not</span> <span class="k">return</span> <span class="k">if</span> <span class="n">no</span> <span class="n">margin</span> <span class="n">trade</span> <span class="n">happens</span>
-  <span class="s2">&quot;isIsolated&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>       <span class="o">//</span> <span class="k">if</span> <span class="n">isolated</span> <span class="n">margin</span>
-  <span class="s2">&quot;fills&quot;</span><span class="p">:</span> <span class="p">[</span>
-    <span class="p">{</span>
-      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;4000.00000000&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;1.00000000&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;4.00000000&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;3999.00000000&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;5.00000000&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;19.99500000&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;3998.00000000&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;2.00000000&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;7.99600000&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;3997.00000000&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;1.00000000&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;3.99700000&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;3995.00000000&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;1.00000000&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;3.99500000&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span>
-    <span class="p">}</span>
-  <span class="p">]</span>
-<span class="p">}</span>
-</pre></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="p">{</span>
+</span><span id="1-2">  <span class="s2">&quot;symbol&quot;</span><span class="p">:</span> <span class="s2">&quot;BTCUSDT&quot;</span><span class="p">,</span>
+</span><span id="1-3">  <span class="s2">&quot;orderId&quot;</span><span class="p">:</span> <span class="mi">28</span><span class="p">,</span>
+</span><span id="1-4">  <span class="s2">&quot;clientOrderId&quot;</span><span class="p">:</span> <span class="s2">&quot;6gCrw2kRUFF9CvJDWP16IP&quot;</span><span class="p">,</span>
+</span><span id="1-5">  <span class="s2">&quot;transactTime&quot;</span><span class="p">:</span> <span class="mi">1507725176595</span><span class="p">,</span>
+</span><span id="1-6">  <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;1.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-7">  <span class="s2">&quot;origQty&quot;</span><span class="p">:</span> <span class="s2">&quot;10.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-8">  <span class="s2">&quot;executedQty&quot;</span><span class="p">:</span> <span class="s2">&quot;10.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-9">  <span class="s2">&quot;cummulativeQuoteQty&quot;</span><span class="p">:</span> <span class="s2">&quot;10.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-10">  <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;FILLED&quot;</span><span class="p">,</span>
+</span><span id="1-11">  <span class="s2">&quot;timeInForce&quot;</span><span class="p">:</span> <span class="s2">&quot;GTC&quot;</span><span class="p">,</span>
+</span><span id="1-12">  <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;MARKET&quot;</span><span class="p">,</span>
+</span><span id="1-13">  <span class="s2">&quot;side&quot;</span><span class="p">:</span> <span class="s2">&quot;SELL&quot;</span><span class="p">,</span>
+</span><span id="1-14">  <span class="s2">&quot;marginBuyBorrowAmount&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>       <span class="o">//</span> <span class="n">will</span> <span class="ow">not</span> <span class="k">return</span> <span class="k">if</span> <span class="n">no</span> <span class="n">margin</span> <span class="n">trade</span> <span class="n">happens</span>
+</span><span id="1-15">  <span class="s2">&quot;marginBuyBorrowAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;BTC&quot;</span><span class="p">,</span>    <span class="o">//</span> <span class="n">will</span> <span class="ow">not</span> <span class="k">return</span> <span class="k">if</span> <span class="n">no</span> <span class="n">margin</span> <span class="n">trade</span> <span class="n">happens</span>
+</span><span id="1-16">  <span class="s2">&quot;isIsolated&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>       <span class="o">//</span> <span class="k">if</span> <span class="n">isolated</span> <span class="n">margin</span>
+</span><span id="1-17">  <span class="s2">&quot;fills&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span id="1-18">    <span class="p">{</span>
+</span><span id="1-19">      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;4000.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-20">      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;1.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-21">      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;4.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-22">      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span>
+</span><span id="1-23">    <span class="p">},</span>
+</span><span id="1-24">    <span class="p">{</span>
+</span><span id="1-25">      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;3999.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-26">      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;5.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-27">      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;19.99500000&quot;</span><span class="p">,</span>
+</span><span id="1-28">      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span>
+</span><span id="1-29">    <span class="p">},</span>
+</span><span id="1-30">    <span class="p">{</span>
+</span><span id="1-31">      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;3998.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-32">      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;2.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-33">      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;7.99600000&quot;</span><span class="p">,</span>
+</span><span id="1-34">      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span>
+</span><span id="1-35">    <span class="p">},</span>
+</span><span id="1-36">    <span class="p">{</span>
+</span><span id="1-37">      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;3997.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-38">      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;1.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-39">      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;3.99700000&quot;</span><span class="p">,</span>
+</span><span id="1-40">      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span>
+</span><span id="1-41">    <span class="p">},</span>
+</span><span id="1-42">    <span class="p">{</span>
+</span><span id="1-43">      <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;3995.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-44">      <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;1.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-45">      <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;3.99500000&quot;</span><span class="p">,</span>
+</span><span id="1-46">      <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span>
+</span><span id="1-47">    <span class="p">}</span>
+</span><span id="1-48">  <span class="p">]</span>
+</span><span id="1-49"><span class="p">}</span>
+</span></pre></div>
 </div>
 <p>STOP LIMIT EXAMPLE requested order response:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;symbol&#39;</span><span class="p">:</span> <span class="s1">&#39;CHZBUSD&#39;</span><span class="p">,</span>
- <span class="s1">&#39;orderId&#39;</span><span class="p">:</span> <span class="mi">212320642</span><span class="p">,</span>
- <span class="s1">&#39;orderListId&#39;</span><span class="p">:</span> <span class="mi">72689217</span><span class="p">,</span>
- <span class="s1">&#39;clientOrderId&#39;</span><span class="p">:</span> <span class="s1">&#39;FLc7AHuuZCpChiH99eHtZh&#39;</span><span class="p">,</span>
- <span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="mf">0.2139</span><span class="p">,</span>
- <span class="s1">&#39;origQty&#39;</span><span class="p">:</span> <span class="mf">224.0</span><span class="p">,</span>
- <span class="s1">&#39;executedQty&#39;</span><span class="p">:</span> <span class="mf">224.0</span><span class="p">,</span>
- <span class="s1">&#39;cummulativeQuoteQty&#39;</span><span class="p">:</span> <span class="mf">47.9584</span><span class="p">,</span>
- <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;FILLED&#39;</span><span class="p">,</span>
- <span class="s1">&#39;timeInForce&#39;</span><span class="p">:</span> <span class="s1">&#39;GTC&#39;</span><span class="p">,</span>
- <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;STOP_LOSS_LIMIT&#39;</span><span class="p">,</span>
- <span class="s1">&#39;side&#39;</span><span class="p">:</span> <span class="s1">&#39;SELL&#39;</span><span class="p">,</span>
- <span class="s1">&#39;stopPrice&#39;</span><span class="p">:</span> <span class="mf">0.2141</span><span class="p">,</span>
- <span class="s1">&#39;icebergQty&#39;</span><span class="p">:</span> <span class="s1">&#39;0.00000000&#39;</span><span class="p">,</span>
- <span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="mi">1661203865507</span><span class="p">,</span>
- <span class="s1">&#39;updateTime&#39;</span><span class="p">:</span> <span class="mi">1661203966780</span><span class="p">,</span>
- <span class="s1">&#39;isWorking&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
- <span class="s1">&#39;origQuoteOrderQty&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
-</pre></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="p">{</span><span class="s1">&#39;symbol&#39;</span><span class="p">:</span> <span class="s1">&#39;CHZBUSD&#39;</span><span class="p">,</span>
+</span><span id="1-2"> <span class="s1">&#39;orderId&#39;</span><span class="p">:</span> <span class="mi">212320642</span><span class="p">,</span>
+</span><span id="1-3"> <span class="s1">&#39;orderListId&#39;</span><span class="p">:</span> <span class="mi">72689217</span><span class="p">,</span>
+</span><span id="1-4"> <span class="s1">&#39;clientOrderId&#39;</span><span class="p">:</span> <span class="s1">&#39;FLc7AHuuZCpChiH99eHtZh&#39;</span><span class="p">,</span>
+</span><span id="1-5"> <span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="mf">0.2139</span><span class="p">,</span>
+</span><span id="1-6"> <span class="s1">&#39;origQty&#39;</span><span class="p">:</span> <span class="mf">224.0</span><span class="p">,</span>
+</span><span id="1-7"> <span class="s1">&#39;executedQty&#39;</span><span class="p">:</span> <span class="mf">224.0</span><span class="p">,</span>
+</span><span id="1-8"> <span class="s1">&#39;cummulativeQuoteQty&#39;</span><span class="p">:</span> <span class="mf">47.9584</span><span class="p">,</span>
+</span><span id="1-9"> <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;FILLED&#39;</span><span class="p">,</span>
+</span><span id="1-10"> <span class="s1">&#39;timeInForce&#39;</span><span class="p">:</span> <span class="s1">&#39;GTC&#39;</span><span class="p">,</span>
+</span><span id="1-11"> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;STOP_LOSS_LIMIT&#39;</span><span class="p">,</span>
+</span><span id="1-12"> <span class="s1">&#39;side&#39;</span><span class="p">:</span> <span class="s1">&#39;SELL&#39;</span><span class="p">,</span>
+</span><span id="1-13"> <span class="s1">&#39;stopPrice&#39;</span><span class="p">:</span> <span class="mf">0.2141</span><span class="p">,</span>
+</span><span id="1-14"> <span class="s1">&#39;icebergQty&#39;</span><span class="p">:</span> <span class="s1">&#39;0.00000000&#39;</span><span class="p">,</span>
+</span><span id="1-15"> <span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="mi">1661203865507</span><span class="p">,</span>
+</span><span id="1-16"> <span class="s1">&#39;updateTime&#39;</span><span class="p">:</span> <span class="mi">1661203966780</span><span class="p">,</span>
+</span><span id="1-17"> <span class="s1">&#39;isWorking&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="1-18"> <span class="s1">&#39;origQuoteOrderQty&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
+</span></pre></div>
 </div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.wallet.get_fills_qty">
-<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_fills_qty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_order_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isBuyer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operation_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.wallet.get_fills_qty" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_fills_qty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_order_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isBuyer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operation_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.wallet.get_fills_qty" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extracts order quantity from an order response or checks a trade from API.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -360,7 +396,7 @@ Weight(IP): 1</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.wallet.get_spot_trades_list">
-<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_spot_trades_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orderId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fromId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recvWindow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.wallet.get_spot_trades_list" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_spot_trades_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orderId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fromId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recvWindow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.wallet.get_spot_trades_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get trades for a specific account and symbol.</p>
 <p>Weight(IP): 10</p>
 <dl class="field-list simple">
@@ -385,31 +421,31 @@ most recent trades are returned.</p></li>
 </dl>
 <p>Example:</p>
 <blockquote>
-<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
-   <span class="p">{</span>
-       <span class="s2">&quot;symbol&quot;</span><span class="p">:</span> <span class="s2">&quot;BNBBTC&quot;</span><span class="p">,</span>
-       <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">28457</span><span class="p">,</span>
-       <span class="s2">&quot;orderId&quot;</span><span class="p">:</span> <span class="mi">100234</span><span class="p">,</span>
-       <span class="s2">&quot;orderListId&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">//</span><span class="n">Unless</span> <span class="n">OCO</span><span class="p">,</span> <span class="n">the</span> <span class="n">value</span> <span class="n">will</span> <span class="n">always</span> <span class="n">be</span> <span class="o">-</span><span class="mi">1</span>
-       <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;4.00000100&quot;</span><span class="p">,</span>
-       <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;12.00000000&quot;</span><span class="p">,</span>
-       <span class="s2">&quot;quoteQty&quot;</span><span class="p">:</span> <span class="s2">&quot;48.000012&quot;</span><span class="p">,</span>
-       <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;10.10000000&quot;</span><span class="p">,</span>
-       <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;BNB&quot;</span><span class="p">,</span>
-       <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="mi">1499865549590</span><span class="p">,</span>
-       <span class="s2">&quot;isBuyer&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
-       <span class="s2">&quot;isMaker&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
-       <span class="s2">&quot;isBestMatch&quot;</span><span class="p">:</span> <span class="n">true</span>
-     <span class="p">}</span>
-  <span class="p">]</span>
-</pre></div>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="p">[</span>
+</span><span id="1-2">   <span class="p">{</span>
+</span><span id="1-3">       <span class="s2">&quot;symbol&quot;</span><span class="p">:</span> <span class="s2">&quot;BNBBTC&quot;</span><span class="p">,</span>
+</span><span id="1-4">       <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">28457</span><span class="p">,</span>
+</span><span id="1-5">       <span class="s2">&quot;orderId&quot;</span><span class="p">:</span> <span class="mi">100234</span><span class="p">,</span>
+</span><span id="1-6">       <span class="s2">&quot;orderListId&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">//</span><span class="n">Unless</span> <span class="n">OCO</span><span class="p">,</span> <span class="n">the</span> <span class="n">value</span> <span class="n">will</span> <span class="n">always</span> <span class="n">be</span> <span class="o">-</span><span class="mi">1</span>
+</span><span id="1-7">       <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;4.00000100&quot;</span><span class="p">,</span>
+</span><span id="1-8">       <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;12.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-9">       <span class="s2">&quot;quoteQty&quot;</span><span class="p">:</span> <span class="s2">&quot;48.000012&quot;</span><span class="p">,</span>
+</span><span id="1-10">       <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;10.10000000&quot;</span><span class="p">,</span>
+</span><span id="1-11">       <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;BNB&quot;</span><span class="p">,</span>
+</span><span id="1-12">       <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="mi">1499865549590</span><span class="p">,</span>
+</span><span id="1-13">       <span class="s2">&quot;isBuyer&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
+</span><span id="1-14">       <span class="s2">&quot;isMaker&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
+</span><span id="1-15">       <span class="s2">&quot;isBestMatch&quot;</span><span class="p">:</span> <span class="n">true</span>
+</span><span id="1-16">     <span class="p">}</span>
+</span><span id="1-17">  <span class="p">]</span>
+</span></pre></div>
 </div>
 </div></blockquote>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.wallet.get_margin_trades_list">
-<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_margin_trades_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isIsolated</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orderId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fromId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recvWindow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.wallet.get_margin_trades_list" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_margin_trades_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isIsolated</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orderId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fromId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recvWindow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.wallet.get_margin_trades_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get margin trades for a specific account and symbol.</p>
 <p>If fromId is set, it will get trades &gt;= that fromId. Otherwise most recent trades are returned.</p>
 <p>Weight(IP): 10</p>
@@ -436,33 +472,33 @@ most recent trades are returned.</p></li>
 </dl>
 <p>Example:</p>
 <blockquote>
-<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="p">[</span>
-    <span class="p">{</span>
-        <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00006000&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;BTC&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">34</span><span class="p">,</span>
-        <span class="s2">&quot;isBestMatch&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
-        <span class="s2">&quot;isBuyer&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
-        <span class="s2">&quot;isMaker&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
-        <span class="s2">&quot;orderId&quot;</span><span class="p">:</span> <span class="mi">39324</span><span class="p">,</span>
-        <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;0.02000000&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;3.00000000&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;symbol&quot;</span><span class="p">:</span> <span class="s2">&quot;BNBBTC&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;isIsolated&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
-        <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="mi">1561973357171</span>
-    <span class="p">}</span>
-<span class="p">]</span>
-</pre></div>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1"> <span class="p">[</span>
+</span><span id="1-2">    <span class="p">{</span>
+</span><span id="1-3">        <span class="s2">&quot;commission&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00006000&quot;</span><span class="p">,</span>
+</span><span id="1-4">        <span class="s2">&quot;commissionAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;BTC&quot;</span><span class="p">,</span>
+</span><span id="1-5">        <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">34</span><span class="p">,</span>
+</span><span id="1-6">        <span class="s2">&quot;isBestMatch&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
+</span><span id="1-7">        <span class="s2">&quot;isBuyer&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
+</span><span id="1-8">        <span class="s2">&quot;isMaker&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
+</span><span id="1-9">        <span class="s2">&quot;orderId&quot;</span><span class="p">:</span> <span class="mi">39324</span><span class="p">,</span>
+</span><span id="1-10">        <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;0.02000000&quot;</span><span class="p">,</span>
+</span><span id="1-11">        <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;3.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-12">        <span class="s2">&quot;symbol&quot;</span><span class="p">:</span> <span class="s2">&quot;BNBBTC&quot;</span><span class="p">,</span>
+</span><span id="1-13">        <span class="s2">&quot;isIsolated&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
+</span><span id="1-14">        <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="mi">1561973357171</span>
+</span><span id="1-15">    <span class="p">}</span>
+</span><span id="1-16"><span class="p">]</span>
+</span></pre></div>
 </div>
 </div></blockquote>
 </dd></dl>
 
 </section>
 <section id="spot-balances">
-<h2>Spot Balances<a class="headerlink" href="#spot-balances" title="Permalink to this heading"></a></h2>
+<h2>Spot Balances<a class="headerlink" href="#spot-balances" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.wallet.get_spot_account_info">
-<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_spot_account_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recvWindow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.wallet.get_spot_account_info" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_spot_account_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recvWindow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.wallet.get_spot_account_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get current account information.</p>
 <p>Weight(IP): 10</p>
 <dl class="field-list simple">
@@ -480,30 +516,30 @@ most recent trades are returned.</p></li>
 </dl>
 <p>Example:</p>
 <blockquote>
-<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-   <span class="s2">&quot;makerCommission&quot;</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
-   <span class="s2">&quot;takerCommission&quot;</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
-   <span class="s2">&quot;buyerCommission&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-   <span class="s2">&quot;sellerCommission&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-   <span class="s2">&quot;canTrade&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
-   <span class="s2">&quot;canWithdraw&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
-   <span class="s2">&quot;canDeposit&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
-   <span class="s2">&quot;updateTime&quot;</span><span class="p">:</span> <span class="mi">123456789</span><span class="p">,</span>
-   <span class="s2">&quot;accountType&quot;</span><span class="p">:</span> <span class="s2">&quot;SPOT&quot;</span><span class="p">,</span>
-   <span class="s2">&quot;balances&quot;</span><span class="p">:</span> <span class="p">[</span>
-     <span class="p">{</span><span class="s2">&quot;asset&quot;</span><span class="p">:</span> <span class="s2">&quot;BTC&quot;</span><span class="p">,</span> <span class="s2">&quot;free&quot;</span><span class="p">:</span> <span class="s2">&quot;4723846.89208129&quot;</span><span class="p">,</span><span class="s2">&quot;locked&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span><span class="p">},</span>
-     <span class="p">{</span><span class="s2">&quot;asset&quot;</span><span class="p">:</span> <span class="s2">&quot;LTC&quot;</span><span class="p">,</span><span class="s2">&quot;free&quot;</span><span class="p">:</span> <span class="s2">&quot;4763368.68006011&quot;</span><span class="p">,</span><span class="s2">&quot;locked&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span><span class="p">}</span>
-   <span class="p">],</span>
-   <span class="s2">&quot;permissions&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;SPOT&quot;</span><span class="p">]</span>
-<span class="p">}</span>
-</pre></div>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="p">{</span>
+</span><span id="1-2">   <span class="s2">&quot;makerCommission&quot;</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
+</span><span id="1-3">   <span class="s2">&quot;takerCommission&quot;</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
+</span><span id="1-4">   <span class="s2">&quot;buyerCommission&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+</span><span id="1-5">   <span class="s2">&quot;sellerCommission&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+</span><span id="1-6">   <span class="s2">&quot;canTrade&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
+</span><span id="1-7">   <span class="s2">&quot;canWithdraw&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
+</span><span id="1-8">   <span class="s2">&quot;canDeposit&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
+</span><span id="1-9">   <span class="s2">&quot;updateTime&quot;</span><span class="p">:</span> <span class="mi">123456789</span><span class="p">,</span>
+</span><span id="1-10">   <span class="s2">&quot;accountType&quot;</span><span class="p">:</span> <span class="s2">&quot;SPOT&quot;</span><span class="p">,</span>
+</span><span id="1-11">   <span class="s2">&quot;balances&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span id="1-12">     <span class="p">{</span><span class="s2">&quot;asset&quot;</span><span class="p">:</span> <span class="s2">&quot;BTC&quot;</span><span class="p">,</span> <span class="s2">&quot;free&quot;</span><span class="p">:</span> <span class="s2">&quot;4723846.89208129&quot;</span><span class="p">,</span><span class="s2">&quot;locked&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span><span class="p">},</span>
+</span><span id="1-13">     <span class="p">{</span><span class="s2">&quot;asset&quot;</span><span class="p">:</span> <span class="s2">&quot;LTC&quot;</span><span class="p">,</span><span class="s2">&quot;free&quot;</span><span class="p">:</span> <span class="s2">&quot;4763368.68006011&quot;</span><span class="p">,</span><span class="s2">&quot;locked&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span><span class="p">}</span>
+</span><span id="1-14">   <span class="p">],</span>
+</span><span id="1-15">   <span class="s2">&quot;permissions&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;SPOT&quot;</span><span class="p">]</span>
+</span><span id="1-16"><span class="p">}</span>
+</span></pre></div>
 </div>
 </div></blockquote>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.wallet.get_spot_free_balances">
-<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_spot_free_balances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.wallet.get_spot_free_balances" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_spot_free_balances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.wallet.get_spot_free_balances" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parses available balances from account info.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -522,7 +558,7 @@ most recent trades are returned.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.wallet.get_spot_locked_balances">
-<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_spot_locked_balances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.wallet.get_spot_locked_balances" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_spot_locked_balances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.wallet.get_spot_locked_balances" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parses locked in order balances from account info.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -541,7 +577,7 @@ most recent trades are returned.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.wallet.get_coins_with_balance">
-<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_coins_with_balance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.wallet.get_coins_with_balance" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_coins_with_balance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.wallet.get_coins_with_balance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the non-zero balances of an account, free or locked ones. Useful getting wallet value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -558,20 +594,20 @@ most recent trades are returned.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.wallet.get_spot_balances_df">
-<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_spot_balances_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_empty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.wallet.get_spot_balances_df" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_spot_balances_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_empty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.wallet.get_spot_balances_df" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a dataframe with the free or blocked amounts of the spot wallet. The index is the assets list.</p>
 <p>Example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">handlers.messages</span> <span class="kn">import</span> <span class="n">get_spot_balances_df</span>
-
-<span class="n">df</span> <span class="o">=</span> <span class="n">get_spot_balances_df</span><span class="p">()</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-
-            <span class="n">free</span>      <span class="n">locked</span>
-     <span class="n">asset</span>
-     <span class="n">BNB</span>    <span class="mf">0.128359</span>     <span class="mf">0.0</span>
-     <span class="n">BUSD</span>   <span class="mf">0.000001</span>     <span class="mf">0.0</span>
-</pre></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="kn">from</span> <span class="nn">handlers.messages</span> <span class="kn">import</span> <span class="n">get_spot_balances_df</span>
+</span><span id="1-2">
+</span><span id="1-3"><span class="n">df</span> <span class="o">=</span> <span class="n">get_spot_balances_df</span><span class="p">()</span>
+</span><span id="1-4">
+</span><span id="1-5"><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+</span><span id="1-6">
+</span><span id="1-7">            <span class="n">free</span>      <span class="n">locked</span>
+</span><span id="1-8">     <span class="n">asset</span>
+</span><span id="1-9">     <span class="n">BNB</span>    <span class="mf">0.128359</span>     <span class="mf">0.0</span>
+</span><span id="1-10">     <span class="n">BUSD</span>   <span class="mf">0.000001</span>     <span class="mf">0.0</span>
+</span></pre></div>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -590,7 +626,7 @@ most recent trades are returned.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.wallet.get_spot_balances_total_value">
-<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_spot_balances_total_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">balances_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BUSD'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.wallet.get_spot_balances_total_value" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_spot_balances_total_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">balances_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BUSD'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.wallet.get_spot_balances_total_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns total value expressed in a quote coin. Counts free and locked assets.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -610,10 +646,10 @@ most recent trades are returned.</p></li>
 
 </section>
 <section id="margin-balances">
-<h2>Margin Balances<a class="headerlink" href="#margin-balances" title="Permalink to this heading"></a></h2>
+<h2>Margin Balances<a class="headerlink" href="#margin-balances" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.wallet.get_margin_account_details">
-<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_margin_account_details</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.wallet.get_margin_account_details" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_margin_account_details</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.wallet.get_margin_account_details" title="Permalink to this definition">¶</a></dt>
 <dd><p>Query Cross Margin Account Details (USER_DATA)</p>
 <p>GET /sapi/v1/margin/account (HMAC SHA256)</p>
 <p>Weight(IP): 10</p>
@@ -627,56 +663,56 @@ most recent trades are returned.</p></li>
 </dd>
 </dl>
 <p>Response:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-       <span class="s2">&quot;borrowEnabled&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
-       <span class="s2">&quot;marginLevel&quot;</span><span class="p">:</span> <span class="s2">&quot;11.64405625&quot;</span><span class="p">,</span>
-       <span class="s2">&quot;totalAssetOfBtc&quot;</span><span class="p">:</span> <span class="s2">&quot;6.82728457&quot;</span><span class="p">,</span>
-       <span class="s2">&quot;totalLiabilityOfBtc&quot;</span><span class="p">:</span> <span class="s2">&quot;0.58633215&quot;</span><span class="p">,</span>
-       <span class="s2">&quot;totalNetAssetOfBtc&quot;</span><span class="p">:</span> <span class="s2">&quot;6.24095242&quot;</span><span class="p">,</span>
-       <span class="s2">&quot;tradeEnabled&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
-       <span class="s2">&quot;transferEnabled&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
-       <span class="s2">&quot;userAssets&quot;</span><span class="p">:</span> <span class="p">[</span>
-           <span class="p">{</span>
-               <span class="s2">&quot;asset&quot;</span><span class="p">:</span> <span class="s2">&quot;BTC&quot;</span><span class="p">,</span>
-               <span class="s2">&quot;borrowed&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span><span class="p">,</span>
-               <span class="s2">&quot;free&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00499500&quot;</span><span class="p">,</span>
-               <span class="s2">&quot;interest&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span><span class="p">,</span>
-               <span class="s2">&quot;locked&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span><span class="p">,</span>
-               <span class="s2">&quot;netAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00499500&quot;</span>
-           <span class="p">},</span>
-           <span class="p">{</span>
-               <span class="s2">&quot;asset&quot;</span><span class="p">:</span> <span class="s2">&quot;BNB&quot;</span><span class="p">,</span>
-               <span class="s2">&quot;borrowed&quot;</span><span class="p">:</span> <span class="s2">&quot;201.66666672&quot;</span><span class="p">,</span>
-               <span class="s2">&quot;free&quot;</span><span class="p">:</span> <span class="s2">&quot;2346.50000000&quot;</span><span class="p">,</span>
-               <span class="s2">&quot;interest&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span><span class="p">,</span>
-               <span class="s2">&quot;locked&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span><span class="p">,</span>
-               <span class="s2">&quot;netAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;2144.83333328&quot;</span>
-           <span class="p">},</span>
-           <span class="p">{</span>
-               <span class="s2">&quot;asset&quot;</span><span class="p">:</span> <span class="s2">&quot;ETH&quot;</span><span class="p">,</span>
-               <span class="s2">&quot;borrowed&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span><span class="p">,</span>
-               <span class="s2">&quot;free&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span><span class="p">,</span>
-               <span class="s2">&quot;interest&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span><span class="p">,</span>
-               <span class="s2">&quot;locked&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span><span class="p">,</span>
-               <span class="s2">&quot;netAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span>
-           <span class="p">},</span>
-           <span class="p">{</span>
-               <span class="s2">&quot;asset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span><span class="p">,</span>
-               <span class="s2">&quot;borrowed&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span><span class="p">,</span>
-               <span class="s2">&quot;free&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span><span class="p">,</span>
-               <span class="s2">&quot;interest&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span><span class="p">,</span>
-               <span class="s2">&quot;locked&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span><span class="p">,</span>
-               <span class="s2">&quot;netAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span>
-           <span class="p">}</span>
-       <span class="p">]</span>
- <span class="p">}</span>
-</pre></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="p">{</span>
+</span><span id="1-2">       <span class="s2">&quot;borrowEnabled&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
+</span><span id="1-3">       <span class="s2">&quot;marginLevel&quot;</span><span class="p">:</span> <span class="s2">&quot;11.64405625&quot;</span><span class="p">,</span>
+</span><span id="1-4">       <span class="s2">&quot;totalAssetOfBtc&quot;</span><span class="p">:</span> <span class="s2">&quot;6.82728457&quot;</span><span class="p">,</span>
+</span><span id="1-5">       <span class="s2">&quot;totalLiabilityOfBtc&quot;</span><span class="p">:</span> <span class="s2">&quot;0.58633215&quot;</span><span class="p">,</span>
+</span><span id="1-6">       <span class="s2">&quot;totalNetAssetOfBtc&quot;</span><span class="p">:</span> <span class="s2">&quot;6.24095242&quot;</span><span class="p">,</span>
+</span><span id="1-7">       <span class="s2">&quot;tradeEnabled&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
+</span><span id="1-8">       <span class="s2">&quot;transferEnabled&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
+</span><span id="1-9">       <span class="s2">&quot;userAssets&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span id="1-10">           <span class="p">{</span>
+</span><span id="1-11">               <span class="s2">&quot;asset&quot;</span><span class="p">:</span> <span class="s2">&quot;BTC&quot;</span><span class="p">,</span>
+</span><span id="1-12">               <span class="s2">&quot;borrowed&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-13">               <span class="s2">&quot;free&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00499500&quot;</span><span class="p">,</span>
+</span><span id="1-14">               <span class="s2">&quot;interest&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-15">               <span class="s2">&quot;locked&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-16">               <span class="s2">&quot;netAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00499500&quot;</span>
+</span><span id="1-17">           <span class="p">},</span>
+</span><span id="1-18">           <span class="p">{</span>
+</span><span id="1-19">               <span class="s2">&quot;asset&quot;</span><span class="p">:</span> <span class="s2">&quot;BNB&quot;</span><span class="p">,</span>
+</span><span id="1-20">               <span class="s2">&quot;borrowed&quot;</span><span class="p">:</span> <span class="s2">&quot;201.66666672&quot;</span><span class="p">,</span>
+</span><span id="1-21">               <span class="s2">&quot;free&quot;</span><span class="p">:</span> <span class="s2">&quot;2346.50000000&quot;</span><span class="p">,</span>
+</span><span id="1-22">               <span class="s2">&quot;interest&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-23">               <span class="s2">&quot;locked&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-24">               <span class="s2">&quot;netAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;2144.83333328&quot;</span>
+</span><span id="1-25">           <span class="p">},</span>
+</span><span id="1-26">           <span class="p">{</span>
+</span><span id="1-27">               <span class="s2">&quot;asset&quot;</span><span class="p">:</span> <span class="s2">&quot;ETH&quot;</span><span class="p">,</span>
+</span><span id="1-28">               <span class="s2">&quot;borrowed&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-29">               <span class="s2">&quot;free&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-30">               <span class="s2">&quot;interest&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-31">               <span class="s2">&quot;locked&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-32">               <span class="s2">&quot;netAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span>
+</span><span id="1-33">           <span class="p">},</span>
+</span><span id="1-34">           <span class="p">{</span>
+</span><span id="1-35">               <span class="s2">&quot;asset&quot;</span><span class="p">:</span> <span class="s2">&quot;USDT&quot;</span><span class="p">,</span>
+</span><span id="1-36">               <span class="s2">&quot;borrowed&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-37">               <span class="s2">&quot;free&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-38">               <span class="s2">&quot;interest&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-39">               <span class="s2">&quot;locked&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-40">               <span class="s2">&quot;netAsset&quot;</span><span class="p">:</span> <span class="s2">&quot;0.00000000&quot;</span>
+</span><span id="1-41">           <span class="p">}</span>
+</span><span id="1-42">       <span class="p">]</span>
+</span><span id="1-43"> <span class="p">}</span>
+</span></pre></div>
 </div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.wallet.get_margin_balances">
-<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_margin_balances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.wallet.get_margin_balances" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_margin_balances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.wallet.get_margin_balances" title="Permalink to this definition">¶</a></dt>
 <dd><p>Collects balances in the margin account that are not null.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -691,23 +727,23 @@ most recent trades are returned.</p></li>
 </dd>
 </dl>
 <p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;BNB&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;free&#39;</span><span class="p">:</span> <span class="mf">0.06</span><span class="p">,</span>
-   <span class="s1">&#39;locked&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
-   <span class="s1">&#39;borrowed&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
-   <span class="s1">&#39;interest&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
-   <span class="s1">&#39;netAsset&#39;</span><span class="p">:</span> <span class="mf">0.06</span><span class="p">},</span>
-  <span class="s1">&#39;BUSD&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;free&#39;</span><span class="p">:</span> <span class="mf">50.0</span><span class="p">,</span>
-   <span class="s1">&#39;locked&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
-   <span class="s1">&#39;borrowed&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
-   <span class="s1">&#39;interest&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
-   <span class="s1">&#39;netAsset&#39;</span><span class="p">:</span> <span class="mf">50.0</span><span class="p">}}</span>
-</pre></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="p">{</span><span class="s1">&#39;BNB&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;free&#39;</span><span class="p">:</span> <span class="mf">0.06</span><span class="p">,</span>
+</span><span id="1-2">   <span class="s1">&#39;locked&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+</span><span id="1-3">   <span class="s1">&#39;borrowed&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+</span><span id="1-4">   <span class="s1">&#39;interest&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+</span><span id="1-5">   <span class="s1">&#39;netAsset&#39;</span><span class="p">:</span> <span class="mf">0.06</span><span class="p">},</span>
+</span><span id="1-6">  <span class="s1">&#39;BUSD&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;free&#39;</span><span class="p">:</span> <span class="mf">50.0</span><span class="p">,</span>
+</span><span id="1-7">   <span class="s1">&#39;locked&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+</span><span id="1-8">   <span class="s1">&#39;borrowed&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+</span><span id="1-9">   <span class="s1">&#39;interest&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+</span><span id="1-10">   <span class="s1">&#39;netAsset&#39;</span><span class="p">:</span> <span class="mf">50.0</span><span class="p">}}</span>
+</span></pre></div>
 </div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.wallet.get_margin_free_balances">
-<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_margin_free_balances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">balances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.wallet.get_margin_free_balances" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_margin_free_balances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">balances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.wallet.get_margin_free_balances" title="Permalink to this definition">¶</a></dt>
 <dd><p>Just returns free existing balances. It is optional to avoid an API call.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -726,7 +762,7 @@ most recent trades are returned.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.wallet.get_margin_borrowed_balances">
-<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_margin_borrowed_balances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">balances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.wallet.get_margin_borrowed_balances" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_margin_borrowed_balances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">balances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.wallet.get_margin_borrowed_balances" title="Permalink to this definition">¶</a></dt>
 <dd><p>Just returns borrowed existing balances. It is optional to avoid an API call.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -745,7 +781,7 @@ most recent trades are returned.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.wallet.get_margin_interest_balances">
-<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_margin_interest_balances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">balances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.wallet.get_margin_interest_balances" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_margin_interest_balances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">balances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.wallet.get_margin_interest_balances" title="Permalink to this definition">¶</a></dt>
 <dd><p>Just returns interest existing balances. It is optional to avoid an API call.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -764,7 +800,7 @@ most recent trades are returned.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.wallet.get_margin_netAsset_balances">
-<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_margin_netAsset_balances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">balances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.wallet.get_margin_netAsset_balances" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_margin_netAsset_balances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">balances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.wallet.get_margin_netAsset_balances" title="Permalink to this definition">¶</a></dt>
 <dd><p>Just returns netAsset existing balances. It is optional to avoid an API call.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -783,7 +819,7 @@ most recent trades are returned.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.wallet.get_margin_balances_total_value">
-<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_margin_balances_total_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">balances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BUSD'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.wallet.get_margin_balances_total_value" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_margin_balances_total_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">balances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BUSD'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.wallet.get_margin_balances_total_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns total value expressed in a quote coin. Counts free, locked, borrowed and interest assets.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -803,10 +839,10 @@ most recent trades are returned.</p></li>
 
 </section>
 <section id="helper">
-<h2>Helper<a class="headerlink" href="#helper" title="Permalink to this heading"></a></h2>
+<h2>Helper<a class="headerlink" href="#helper" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.wallet.convert_str_date_to_ms">
-<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">convert_str_date_to_ms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.wallet.convert_str_date_to_ms" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">convert_str_date_to_ms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.wallet.convert_str_date_to_ms" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts dates strings formatted as “2022-05-11 06:45:42” to timestamp in milliseconds. If timestamp passed
 it returns the timestamp.</p>
 <dl class="field-list simple">
@@ -825,34 +861,54 @@ it returns the timestamp.</p>
 </section>
 </section>
 
-
-           </div>
-          </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="tags.html" class="btn btn-neutral float-left" title="Tags &amp; Backtesting Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-    </div>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2022, Fernando Alfonso.</p>
-  </div>
-
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
-        </div>
+        </article>
+        
       </div>
-    </section>
+      <div class="min-w-0 max-w-6xl px-6 pb-6 xl:pt-6 xl:px-12">
+        <div class="navigation flex print:hidden">
+  <div class="navigation-prev">
+    <a href="tags.html">
+      <i class="i-icon chevron"></i>
+      <div class="page-info">
+        <span>Previous</span>
+        
+        <div class="title">Tags &amp; Backtesting Module</div>
+        
+      </div>
+    </a>
   </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
-
+  
+</div>
+        
+      </div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2022, Fernando Alfonso</p>
+        
+        <p>
+          Made with
+          
+          <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+          
+          <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+        </p>
+      </div>
+      <div class="sy-foot-socials">
+      </div>
+    </div>
+  </div>
+</footer></div>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+      <script src="_static/jquery.js"></script>
+      <script src="_static/underscore.js"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script src="_static/doctools.js"></script>
+      <script src="_static/shibuya.js?v=2023.3.11"></script>
+    
 </body>
 </html>

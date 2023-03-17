@@ -159,6 +159,6 @@ handlers/*backup.py
 ichimoku.ipynb
 deep data.ipynb
 AFML.ipynb
-AFML*.ipynb
+AFML_02.2.ipynb
 orderbook*.ipynb
 

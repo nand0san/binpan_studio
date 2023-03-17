@@ -1,48 +1,86 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html lang="en">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Messages Module &mdash; BinPan 0.4.4 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/style.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-    <script src="_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Plotting Module" href="plotting.html" />
-    <link rel="prev" title="Market Module" href="market.html" /> 
-</head>
-
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> BinPan
-          </a>
-              <div class="version">
-                0.4.4
-              </div>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Messages Module - BinPan 0.4.4 documentation</title>
+    <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Plotting Module" href="plotting.html" /><link rel="prev" title="Market Module" href="market.html" /><link rel="stylesheet" href="_static/pygments.css?v=2023.3.11" type="text/css" />
+    <link rel="stylesheet" href="_static/shibuya.css?v=2023.3.11" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/style.css" />
+    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=2023.3.11" />
+    <style>
+:root {
+  --sy-f-sys:-apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Droid Sans, Helvetica Neue;--sy-f-cjk:PingFang SC, Hiragino Sans GB, Droid Sans Fallback, Microsoft YaHei;--sy-f-heading:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-text:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-mono:Menlo, Monaco, Consolas, "Courier New", monospace;--sy-c-divider:rgba(var(--sy-rc-text), 0.1);--sy-c-divider-weak:rgba(var(--sy-rc-text), 0.05);--sy-c-border:rgba(var(--sy-rc-text), 0.14);--sy-s-banner-height:0rem;--sy-s-navbar-height:4rem;--sy-s-offset-top:calc(var(--sy-s-navbar-height) + var(--sy-s-banner-height));--sy-c-link:rgb(var(--sy-rc-theme));
+  --sy-rc-theme:143, 118, 214;--sy-rc-bg:255, 255, 255;--sy-rc-invert:0, 0, 0;--sy-rc-text:0, 0, 0;--sy-c-bg:#fff;--sy-c-bg-weak:#f9f9f9;--sy-c-text:#374151;--sy-c-text-weak:#6b7280;--sy-c-heading:#111827;--sy-c-bold:#111827;--sy-c-foot-text:#232226;--sy-c-foot-bg:#fafafa;--sy-c-foot-divider:#f0f0f0;
+}
+@media not print {
+  html.light {
+    --sy-rc-theme:143, 118, 214;--sy-rc-bg:255, 255, 255;--sy-rc-invert:0, 0, 0;--sy-rc-text:0, 0, 0;--sy-c-bg:#fff;--sy-c-bg-weak:#f9f9f9;--sy-c-text:#374151;--sy-c-text-weak:#6b7280;--sy-c-heading:#111827;--sy-c-bold:#111827;--sy-c-foot-text:#232226;--sy-c-foot-bg:#fafafa;--sy-c-foot-divider:#f0f0f0;
+  }
+  html.dark {
+    --sy-rc-theme:143, 118, 214;--sy-rc-bg:18, 18, 18;--sy-rc-invert:255, 255, 255;--sy-rc-text:255, 255, 255;--sy-c-bg:#121212;--sy-c-bg-weak:#212833;--sy-c-text:#cedbea;--sy-c-text-weak:#77889f;--sy-c-heading:#ebf0f4;--sy-c-bold:#ebf0f4;--sy-c-foot-text:#eee;--sy-c-foot-bg:#000;--sy-c-foot-divider:#000;
+  }
+}
+</style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-heading: Inter, var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    <meta property="og:type" content="website"/><meta property="og:title" content="Messages Module"/>
+<meta name="twitter:card" content="summary"/></head>
+<body><div class="document"><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <div class="sy-head-brand flex items-center">
+      <div class="md:hidden flex items-center">
+        <button class="hamburger js-menu mr-3" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2 -translate-x-2"></span>
+          <span class="hamburger_3 -translate-x-1"></span>
+        </button>
+      </div>
+      <a href="index.html">
+        
+        
+        <strong>BinPan</strong>
+      </a>
+      
+    </div>
+    <div class="sy-head-actions flex gap-2 items-center print:hidden">
+      <nav class="sy-head-nav hidden md:block">
+      </nav>
+      <div class="hidden md:block"><form class="searchbox flex items-center" action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form>
+      </div>
+      <button class="js-theme theme-switch flex items-center ml-1" data-aria-light="Switch to dark mode" data-aria-dark="Switch to light mode">
+        <i class="i-icon theme-icon"></i>
+      </button>
+      
+        <button class="js-menu xl:hidden flex items-center ml-1" aria-label="Show table of contents" type="button" aria-controls="rside" aria-expanded="false">
+          <i class="i-icon outdent"></i>
+        </button>
+    </div>
+  </div>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-64 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="md:hidden pt-6 px-6"><form class="searchbox flex items-center" action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <button>Go</button>
+</form>
+      </div>
+      <div class="md:hidden pt-3 px-6">
+      </div>
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc">
+          <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="binpan.html">BinPan Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="aggregations.html">Aggregations Module</a></li>
@@ -51,12 +89,7 @@
 <li class="toctree-l1"><a class="reference internal" href="files.html">Files Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="indicators.html">Indicators Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Messages Module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#telegram-messages">Telegram Messages</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#parsers">Parsers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#utils">Utils</a></li>
-</ul>
-</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Messages Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quest.html">Requests Module</a></li>
@@ -68,53 +101,55 @@
 
         </div>
       </div>
-    </nav>
+    </div>
+  </aside>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-icon close"></i>
+    </button>
+    <div class="sy-scrollbar px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4">
+  <div class="localtoc">
+    <h3>Table of Contents</h3>
+    <ul>
+<li><a class="reference internal" href="#telegram-messages">Telegram Messages</a></li>
+<li><a class="reference internal" href="#parsers">Parsers</a></li>
+<li><a class="reference internal" href="#utils">Utils</a></li>
+</ul>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">BinPan</a>
-      </nav>
 
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Messages Module</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="_sources/messages.rst.txt" rel="nofollow"> View page source</a>
-      </li>
-  </ul>
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
-  <section id="messages-module">
-<h1>Messages Module<a class="headerlink" href="#messages-module" title="Permalink to this heading"></a></h1>
+  </div><div id="ethical-ad-placement"></div>
+    </div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+    <div class="flex flex-col break-words justify-between">
+      <div class="min-w-0 max-w-6xl px-6 pb-6 pt-6 xl:px-12">
+        <article class="yue" role="main">
+          <section id="messages-module">
+<h1>Messages Module<a class="headerlink" href="#messages-module" title="Permalink to this heading">¶</a></h1>
 <p>This module can send messages through Telegram API for your bot and chat id.</p>
 <p>To import this module:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">handlers</span> <span class="kn">import</span> <span class="n">messages</span>
-</pre></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="kn">from</span> <span class="nn">handlers</span> <span class="kn">import</span> <span class="n">messages</span>
+</span></pre></div>
 </div>
 <span class="target" id="module-handlers.messages"></span><p>Telegram and messages control.</p>
 <section id="telegram-messages">
-<h2>Telegram Messages<a class="headerlink" href="#telegram-messages" title="Permalink to this heading"></a></h2>
+<h2>Telegram Messages<a class="headerlink" href="#telegram-messages" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.messages.telegram_bot_send_text">
-<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">telegram_bot_send_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parse_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Markdown&amp;text'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_notification</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alt_enc_bot_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alt_chat_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.messages.telegram_bot_send_text" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">telegram_bot_send_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parse_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Markdown&amp;text'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_notification</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alt_enc_bot_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alt_chat_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.messages.telegram_bot_send_text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sends a telegram message.</p>
 <p>It takes bot key and chat id from secret encrypted file. It is required to create previously the bot and chat keys with the
 variable names <em>encoded_chat_id</em>, <em>encoded_telegram_bot_id</em>.</p>
 <p>Example adding bot key and chat id:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">binpan</span> <span class="kn">import</span> <span class="n">handlers</span>
-
-<span class="c1"># from @BotFather, get the bot api key</span>
-<span class="n">handlers</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">add_any_key</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;xxxxxxxxxx&quot;</span><span class="p">,</span> <span class="n">key_name</span><span class="o">=</span><span class="s2">&quot;encoded_telegram_bot_id&quot;</span><span class="p">)</span>
-
-<span class="c1"># write to your bot and then get your chat id from https://api.telegram.org/bot&lt;YourBOTToken&gt;/getUpdates</span>
-<span class="n">handlers</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">add_any_key</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;xxxxxxxxxx&quot;</span><span class="p">,</span> <span class="n">key_name</span><span class="o">=</span><span class="s2">&quot;encoded_chat_id&quot;</span><span class="p">)</span>
-</pre></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="kn">from</span> <span class="nn">binpan</span> <span class="kn">import</span> <span class="n">handlers</span>
+</span><span id="1-2">
+</span><span id="1-3"><span class="c1"># from @BotFather, get the bot api key</span>
+</span><span id="1-4"><span class="n">handlers</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">add_any_key</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;xxxxxxxxxx&quot;</span><span class="p">,</span> <span class="n">key_name</span><span class="o">=</span><span class="s2">&quot;encoded_telegram_bot_id&quot;</span><span class="p">)</span>
+</span><span id="1-5">
+</span><span id="1-6"><span class="c1"># write to your bot and then get your chat id from https://api.telegram.org/bot&lt;YourBOTToken&gt;/getUpdates</span>
+</span><span id="1-7"><span class="n">handlers</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">add_any_key</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;xxxxxxxxxx&quot;</span><span class="p">,</span> <span class="n">key_name</span><span class="o">=</span><span class="s2">&quot;encoded_chat_id&quot;</span><span class="p">)</span>
+</span></pre></div>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -135,10 +170,10 @@ variable names <em>encoded_chat_id</em>, <em>encoded_telegram_bot_id</em>.</p>
 
 </section>
 <section id="parsers">
-<h2>Parsers<a class="headerlink" href="#parsers" title="Permalink to this heading"></a></h2>
+<h2>Parsers<a class="headerlink" href="#parsers" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.messages.telegram_parse_dict">
-<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">telegram_parse_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'UTC'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.messages.telegram_parse_dict" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">telegram_parse_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'UTC'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.messages.telegram_parse_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parses a dict and downcast types.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -155,7 +190,7 @@ variable names <em>encoded_chat_id</em>, <em>encoded_telegram_bot_id</em>.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.messages.telegram_parse_dataframe_markdown">
-<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">telegram_parse_dataframe_markdown</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indentation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Balances'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.messages.telegram_parse_dataframe_markdown" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">telegram_parse_dataframe_markdown</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indentation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Balances'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.messages.telegram_parse_dataframe_markdown" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parses a Dataframe in telegrams message format.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -173,7 +208,7 @@ variable names <em>encoded_chat_id</em>, <em>encoded_telegram_bot_id</em>.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.messages.telegram_parse_order_markdown">
-<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">telegram_parse_order_markdown</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isBuyer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezoned</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Europe/Madrid'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.messages.telegram_parse_order_markdown" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">telegram_parse_order_markdown</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isBuyer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezoned</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Europe/Madrid'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.messages.telegram_parse_order_markdown" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parses API order response to telegram string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -193,10 +228,10 @@ variable names <em>encoded_chat_id</em>, <em>encoded_telegram_bot_id</em>.</p>
 
 </section>
 <section id="utils">
-<h2>Utils<a class="headerlink" href="#utils" title="Permalink to this heading"></a></h2>
+<h2>Utils<a class="headerlink" href="#utils" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.messages.send_balances">
-<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">send_balances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BUSD'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.messages.send_balances" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">send_balances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BUSD'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.messages.send_balances" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sends telegram message with total value of spot wallet in selected coin.</p>
 <p>It returns free and locked assets value added.
 :param bool decimal_mode: Fixes Decimal return type and operative.
@@ -209,35 +244,62 @@ variable names <em>encoded_chat_id</em>, <em>encoded_telegram_bot_id</em>.</p>
 </section>
 </section>
 
-
-           </div>
-          </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="market.html" class="btn btn-neutral float-left" title="Market Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="plotting.html" class="btn btn-neutral float-right" title="Plotting Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2022, Fernando Alfonso.</p>
-  </div>
-
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
-        </div>
+        </article>
+        
       </div>
-    </section>
+      <div class="min-w-0 max-w-6xl px-6 pb-6 xl:pt-6 xl:px-12">
+        <div class="navigation flex print:hidden">
+  <div class="navigation-prev">
+    <a href="market.html">
+      <i class="i-icon chevron"></i>
+      <div class="page-info">
+        <span>Previous</span>
+        
+        <div class="title">Market Module</div>
+        
+      </div>
+    </a>
   </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
-
+  <div class="navigation-next">
+    <a href="plotting.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title">Plotting Module</div>
+      </div>
+      <i class="i-icon chevron"></i>
+    </a>
+  </div>
+</div>
+        
+      </div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2022, Fernando Alfonso</p>
+        
+        <p>
+          Made with
+          
+          <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+          
+          <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+        </p>
+      </div>
+      <div class="sy-foot-socials">
+      </div>
+    </div>
+  </div>
+</footer></div>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+      <script src="_static/jquery.js"></script>
+      <script src="_static/underscore.js"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script src="_static/doctools.js"></script>
+      <script src="_static/shibuya.js?v=2023.3.11"></script>
+    
 </body>
 </html>

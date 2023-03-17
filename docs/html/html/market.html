@@ -1,48 +1,86 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html lang="en">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Market Module &mdash; BinPan 0.4.4 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/style.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-    <script src="_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Messages Module" href="messages.html" />
-    <link rel="prev" title="Indicators Module" href="indicators.html" /> 
-</head>
-
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> BinPan
-          </a>
-              <div class="version">
-                0.4.4
-              </div>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Market Module - BinPan 0.4.4 documentation</title>
+    <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Messages Module" href="messages.html" /><link rel="prev" title="Indicators Module" href="indicators.html" /><link rel="stylesheet" href="_static/pygments.css?v=2023.3.11" type="text/css" />
+    <link rel="stylesheet" href="_static/shibuya.css?v=2023.3.11" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/style.css" />
+    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=2023.3.11" />
+    <style>
+:root {
+  --sy-f-sys:-apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Droid Sans, Helvetica Neue;--sy-f-cjk:PingFang SC, Hiragino Sans GB, Droid Sans Fallback, Microsoft YaHei;--sy-f-heading:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-text:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-mono:Menlo, Monaco, Consolas, "Courier New", monospace;--sy-c-divider:rgba(var(--sy-rc-text), 0.1);--sy-c-divider-weak:rgba(var(--sy-rc-text), 0.05);--sy-c-border:rgba(var(--sy-rc-text), 0.14);--sy-s-banner-height:0rem;--sy-s-navbar-height:4rem;--sy-s-offset-top:calc(var(--sy-s-navbar-height) + var(--sy-s-banner-height));--sy-c-link:rgb(var(--sy-rc-theme));
+  --sy-rc-theme:143, 118, 214;--sy-rc-bg:255, 255, 255;--sy-rc-invert:0, 0, 0;--sy-rc-text:0, 0, 0;--sy-c-bg:#fff;--sy-c-bg-weak:#f9f9f9;--sy-c-text:#374151;--sy-c-text-weak:#6b7280;--sy-c-heading:#111827;--sy-c-bold:#111827;--sy-c-foot-text:#232226;--sy-c-foot-bg:#fafafa;--sy-c-foot-divider:#f0f0f0;
+}
+@media not print {
+  html.light {
+    --sy-rc-theme:143, 118, 214;--sy-rc-bg:255, 255, 255;--sy-rc-invert:0, 0, 0;--sy-rc-text:0, 0, 0;--sy-c-bg:#fff;--sy-c-bg-weak:#f9f9f9;--sy-c-text:#374151;--sy-c-text-weak:#6b7280;--sy-c-heading:#111827;--sy-c-bold:#111827;--sy-c-foot-text:#232226;--sy-c-foot-bg:#fafafa;--sy-c-foot-divider:#f0f0f0;
+  }
+  html.dark {
+    --sy-rc-theme:143, 118, 214;--sy-rc-bg:18, 18, 18;--sy-rc-invert:255, 255, 255;--sy-rc-text:255, 255, 255;--sy-c-bg:#121212;--sy-c-bg-weak:#212833;--sy-c-text:#cedbea;--sy-c-text-weak:#77889f;--sy-c-heading:#ebf0f4;--sy-c-bold:#ebf0f4;--sy-c-foot-text:#eee;--sy-c-foot-bg:#000;--sy-c-foot-divider:#000;
+  }
+}
+</style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-heading: Inter, var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    <meta property="og:type" content="website"/><meta property="og:title" content="Market Module"/>
+<meta name="twitter:card" content="summary"/></head>
+<body><div class="document"><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <div class="sy-head-brand flex items-center">
+      <div class="md:hidden flex items-center">
+        <button class="hamburger js-menu mr-3" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2 -translate-x-2"></span>
+          <span class="hamburger_3 -translate-x-1"></span>
+        </button>
+      </div>
+      <a href="index.html">
+        
+        
+        <strong>BinPan</strong>
+      </a>
+      
+    </div>
+    <div class="sy-head-actions flex gap-2 items-center print:hidden">
+      <nav class="sy-head-nav hidden md:block">
+      </nav>
+      <div class="hidden md:block"><form class="searchbox flex items-center" action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form>
+      </div>
+      <button class="js-theme theme-switch flex items-center ml-1" data-aria-light="Switch to dark mode" data-aria-dark="Switch to light mode">
+        <i class="i-icon theme-icon"></i>
+      </button>
+      
+        <button class="js-menu xl:hidden flex items-center ml-1" aria-label="Show table of contents" type="button" aria-controls="rside" aria-expanded="false">
+          <i class="i-icon outdent"></i>
+        </button>
+    </div>
+  </div>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-64 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="md:hidden pt-6 px-6"><form class="searchbox flex items-center" action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <button>Go</button>
+</form>
+      </div>
+      <div class="md:hidden pt-3 px-6">
+      </div>
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc">
+          <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="binpan.html">BinPan Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="aggregations.html">Aggregations Module</a></li>
@@ -50,15 +88,7 @@
 <li class="toctree-l1"><a class="reference internal" href="exchange.html">Exchange Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="files.html">Files Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="indicators.html">Indicators Module</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Market Module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#prices">Prices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#klines">Klines</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#format-data">Format Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#trades">Trades</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#orderbook">Orderbook</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#coin-conversion">Coin Conversion</a></li>
-</ul>
-</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Market Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="messages.html">Messages Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
@@ -71,41 +101,46 @@
 
         </div>
       </div>
-    </nav>
+    </div>
+  </aside>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-icon close"></i>
+    </button>
+    <div class="sy-scrollbar px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4">
+  <div class="localtoc">
+    <h3>Table of Contents</h3>
+    <ul>
+<li><a class="reference internal" href="#prices">Prices</a></li>
+<li><a class="reference internal" href="#klines">Klines</a></li>
+<li><a class="reference internal" href="#format-data">Format Data</a></li>
+<li><a class="reference internal" href="#trades">Trades</a></li>
+<li><a class="reference internal" href="#orderbook">Orderbook</a></li>
+<li><a class="reference internal" href="#coin-conversion">Coin Conversion</a></li>
+</ul>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">BinPan</a>
-      </nav>
 
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Market Module</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="_sources/market.rst.txt" rel="nofollow"> View page source</a>
-      </li>
-  </ul>
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
-  <section id="market-module">
-<h1>Market Module<a class="headerlink" href="#market-module" title="Permalink to this heading"></a></h1>
+  </div><div id="ethical-ad-placement"></div>
+    </div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+    <div class="flex flex-col break-words justify-between">
+      <div class="min-w-0 max-w-6xl px-6 pb-6 pt-6 xl:px-12">
+        <article class="yue" role="main">
+          <section id="market-module">
+<h1>Market Module<a class="headerlink" href="#market-module" title="Permalink to this heading">¶</a></h1>
 <p>This module can manage market data from Binance API.</p>
 <p>To import this module:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">handlers</span> <span class="kn">import</span> <span class="n">market</span>
-</pre></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="kn">from</span> <span class="nn">handlers</span> <span class="kn">import</span> <span class="n">market</span>
+</span></pre></div>
 </div>
 <span class="target" id="module-handlers.market"></span><p>Market functions</p>
 <section id="prices">
-<h2>Prices<a class="headerlink" href="#prices" title="Permalink to this heading"></a></h2>
+<h2>Prices<a class="headerlink" href="#prices" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.market.get_last_price">
-<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_last_price</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.market.get_last_price" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_last_price</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.market.get_last_price" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns all prices of symbols in a dict or if symbol specified, the float price of symbol.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -118,7 +153,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.market.get_prices_dic">
-<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_prices_dic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.market.get_prices_dic" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_prices_dic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.market.get_prices_dic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets all symbols current prices into a dictionary.
 :decimal_mode bool: It flags to work in decimal mode.
 :return dict:</p>
@@ -126,10 +161,10 @@
 
 </section>
 <section id="klines">
-<h2>Klines<a class="headerlink" href="#klines" title="Permalink to this heading"></a></h2>
+<h2>Klines<a class="headerlink" href="#klines" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.market.get_candles_by_time_stamps">
-<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_candles_by_time_stamps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Europe/Madrid'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redis_client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Redis</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.market.get_candles_by_time_stamps" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_candles_by_time_stamps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Europe/Madrid'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redis_client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Redis</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.market.get_candles_by_time_stamps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calls API for a candles list using one or two timestamps, starting and ending.</p>
 <p>In case the limit is passed and exceeded by requested time intervals, the start_time prevails over the end_time,
 start_time must come in milliseconds from epoch.</p>
@@ -158,29 +193,29 @@ is open right in between the endtime timestamp.</p>
 <dd class="field-even"><p>Returns a list from the Binance API</p>
 </dd>
 </dl>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
-  <span class="p">[</span>
-    <span class="mi">1499040000000</span><span class="p">,</span>      <span class="o">//</span> <span class="n">Open</span> <span class="n">time</span>
-    <span class="s2">&quot;0.01634790&quot;</span><span class="p">,</span>       <span class="o">//</span> <span class="n">Open</span>
-    <span class="s2">&quot;0.80000000&quot;</span><span class="p">,</span>       <span class="o">//</span> <span class="n">High</span>
-    <span class="s2">&quot;0.01575800&quot;</span><span class="p">,</span>       <span class="o">//</span> <span class="n">Low</span>
-    <span class="s2">&quot;0.01577100&quot;</span><span class="p">,</span>       <span class="o">//</span> <span class="n">Close</span>
-    <span class="s2">&quot;148976.11427815&quot;</span><span class="p">,</span>  <span class="o">//</span> <span class="n">Volume</span>
-    <span class="mi">1499644799999</span><span class="p">,</span>      <span class="o">//</span> <span class="n">Close</span> <span class="n">time</span>
-    <span class="s2">&quot;2434.19055334&quot;</span><span class="p">,</span>    <span class="o">//</span> <span class="n">Quote</span> <span class="n">asset</span> <span class="n">volume</span>
-    <span class="mi">308</span><span class="p">,</span>                <span class="o">//</span> <span class="n">Number</span> <span class="n">of</span> <span class="n">trades</span>
-    <span class="s2">&quot;1756.87402397&quot;</span><span class="p">,</span>    <span class="o">//</span> <span class="n">Taker</span> <span class="n">buy</span> <span class="n">base</span> <span class="n">asset</span> <span class="n">volume</span>
-    <span class="s2">&quot;28.46694368&quot;</span><span class="p">,</span>      <span class="o">//</span> <span class="n">Taker</span> <span class="n">buy</span> <span class="n">quote</span> <span class="n">asset</span> <span class="n">volume</span>
-    <span class="s2">&quot;17928899.62484339&quot;</span> <span class="o">//</span> <span class="n">Ignore</span><span class="o">.</span>
-  <span class="p">]</span>
-<span class="p">]</span>
-</pre></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="p">[</span>
+</span><span id="1-2">  <span class="p">[</span>
+</span><span id="1-3">    <span class="mi">1499040000000</span><span class="p">,</span>      <span class="o">//</span> <span class="n">Open</span> <span class="n">time</span>
+</span><span id="1-4">    <span class="s2">&quot;0.01634790&quot;</span><span class="p">,</span>       <span class="o">//</span> <span class="n">Open</span>
+</span><span id="1-5">    <span class="s2">&quot;0.80000000&quot;</span><span class="p">,</span>       <span class="o">//</span> <span class="n">High</span>
+</span><span id="1-6">    <span class="s2">&quot;0.01575800&quot;</span><span class="p">,</span>       <span class="o">//</span> <span class="n">Low</span>
+</span><span id="1-7">    <span class="s2">&quot;0.01577100&quot;</span><span class="p">,</span>       <span class="o">//</span> <span class="n">Close</span>
+</span><span id="1-8">    <span class="s2">&quot;148976.11427815&quot;</span><span class="p">,</span>  <span class="o">//</span> <span class="n">Volume</span>
+</span><span id="1-9">    <span class="mi">1499644799999</span><span class="p">,</span>      <span class="o">//</span> <span class="n">Close</span> <span class="n">time</span>
+</span><span id="1-10">    <span class="s2">&quot;2434.19055334&quot;</span><span class="p">,</span>    <span class="o">//</span> <span class="n">Quote</span> <span class="n">asset</span> <span class="n">volume</span>
+</span><span id="1-11">    <span class="mi">308</span><span class="p">,</span>                <span class="o">//</span> <span class="n">Number</span> <span class="n">of</span> <span class="n">trades</span>
+</span><span id="1-12">    <span class="s2">&quot;1756.87402397&quot;</span><span class="p">,</span>    <span class="o">//</span> <span class="n">Taker</span> <span class="n">buy</span> <span class="n">base</span> <span class="n">asset</span> <span class="n">volume</span>
+</span><span id="1-13">    <span class="s2">&quot;28.46694368&quot;</span><span class="p">,</span>      <span class="o">//</span> <span class="n">Taker</span> <span class="n">buy</span> <span class="n">quote</span> <span class="n">asset</span> <span class="n">volume</span>
+</span><span id="1-14">    <span class="s2">&quot;17928899.62484339&quot;</span> <span class="o">//</span> <span class="n">Ignore</span><span class="o">.</span>
+</span><span id="1-15">  <span class="p">]</span>
+</span><span id="1-16"><span class="p">]</span>
+</span></pre></div>
 </div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.market.parse_candles_to_dataframe">
-<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">parse_candles_to_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_cols</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'UTC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.market.parse_candles_to_dataframe" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">parse_candles_to_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_cols</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'UTC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.market.parse_candles_to_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Format a list of lists by changing the indicated time fields to string format.</p>
 <p>Passing a time_zone, for example ‘Europe/Madrid’, will change the time from utc to the indicated zone.</p>
 <p>It will automatically sort the DataFrame using the first column of the time_cols list.</p>
@@ -205,10 +240,10 @@ is open right in between the endtime timestamp.</p>
 
 </section>
 <section id="format-data">
-<h2>Format Data<a class="headerlink" href="#format-data" title="Permalink to this heading"></a></h2>
+<h2>Format Data<a class="headerlink" href="#format-data" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.market.basic_dataframe">
-<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">basic_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exceptions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actions_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'actions'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.market.basic_dataframe" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">basic_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exceptions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actions_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'actions'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.market.basic_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete all columns except: Open, High, Low, Close, Volume, actions.</p>
 <p>Some columns can be excepted.</p>
 <p>Useful to drop messed technical indicators columns in one shot.</p>
@@ -228,7 +263,7 @@ is open right in between the endtime timestamp.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.market.convert_to_numeric">
-<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">convert_to_numeric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.market.convert_to_numeric" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">convert_to_numeric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.market.convert_to_numeric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts to numeric all posible columns for a given Dataframe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -242,10 +277,10 @@ is open right in between the endtime timestamp.</p>
 
 </section>
 <section id="trades">
-<h2>Trades<a class="headerlink" href="#trades" title="Permalink to this heading"></a></h2>
+<h2>Trades<a class="headerlink" href="#trades" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.market.get_last_agg_trades">
-<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_last_agg_trades</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.market.get_last_agg_trades" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_last_agg_trades</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.market.get_last_agg_trades" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get just the last aggregated trades from API.</p>
 <p>GET /api/v3/aggTrades</p>
 <p>Get compressed, aggregate trades. Trades that fill at the time, from the same order, with the same price will have the quantity aggregated.</p>
@@ -262,25 +297,25 @@ is open right in between the endtime timestamp.</p>
 </dd>
 </dl>
 <p>Return example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[
-  {
-    &quot;a&quot;: 26129,         // Aggregate tradeId
-    &quot;p&quot;: &quot;0.01633102&quot;,  // Price
-    &quot;q&quot;: &quot;4.70443515&quot;,  // Quantity
-    &quot;f&quot;: 27781,         // First tradeId
-    &quot;l&quot;: 27781,         // Last tradeId
-    &quot;T&quot;: 1498793709153, // Timestamp
-    &quot;m&quot;: true,          // Was the buyer the maker?
-    &quot;M&quot;: true           // Was the trade the best price match?
-  }
-]
-</pre></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1">[
+</span><span id="1-2">  {
+</span><span id="1-3">    &quot;a&quot;: 26129,         // Aggregate tradeId
+</span><span id="1-4">    &quot;p&quot;: &quot;0.01633102&quot;,  // Price
+</span><span id="1-5">    &quot;q&quot;: &quot;4.70443515&quot;,  // Quantity
+</span><span id="1-6">    &quot;f&quot;: 27781,         // First tradeId
+</span><span id="1-7">    &quot;l&quot;: 27781,         // Last tradeId
+</span><span id="1-8">    &quot;T&quot;: 1498793709153, // Timestamp
+</span><span id="1-9">    &quot;m&quot;: true,          // Was the buyer the maker?
+</span><span id="1-10">    &quot;M&quot;: true           // Was the trade the best price match?
+</span><span id="1-11">  }
+</span><span id="1-12">]
+</span></pre></div>
 </div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.market.get_aggregated_trades">
-<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_aggregated_trades</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fromId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.market.get_aggregated_trades" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_aggregated_trades</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fromId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.market.get_aggregated_trades" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns aggregated trades from id to limit or last trades if id not specified.</p>
 <p>Limit applied in fromId mode defaults to 500. Maximum is 1000.</p>
 <p>GET /api/v3/aggTrades</p>
@@ -300,25 +335,25 @@ is open right in between the endtime timestamp.</p>
 </dd>
 </dl>
 <p>Return example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[
-  {
-    &quot;a&quot;: 26129,         // Aggregate tradeId
-    &quot;p&quot;: &quot;0.01633102&quot;,  // Price
-    &quot;q&quot;: &quot;4.70443515&quot;,  // Quantity
-    &quot;f&quot;: 27781,         // First tradeId
-    &quot;l&quot;: 27781,         // Last tradeId
-    &quot;T&quot;: 1498793709153, // Timestamp
-    &quot;m&quot;: true,          // Was the buyer the maker?
-    &quot;M&quot;: true           // Was the trade the best price match?
-  }
-]
-</pre></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1">[
+</span><span id="1-2">  {
+</span><span id="1-3">    &quot;a&quot;: 26129,         // Aggregate tradeId
+</span><span id="1-4">    &quot;p&quot;: &quot;0.01633102&quot;,  // Price
+</span><span id="1-5">    &quot;q&quot;: &quot;4.70443515&quot;,  // Quantity
+</span><span id="1-6">    &quot;f&quot;: 27781,         // First tradeId
+</span><span id="1-7">    &quot;l&quot;: 27781,         // Last tradeId
+</span><span id="1-8">    &quot;T&quot;: 1498793709153, // Timestamp
+</span><span id="1-9">    &quot;m&quot;: true,          // Was the buyer the maker?
+</span><span id="1-10">    &quot;M&quot;: true           // Was the trade the best price match?
+</span><span id="1-11">  }
+</span><span id="1-12">]
+</span></pre></div>
 </div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.market.get_historical_agg_trades">
-<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_historical_agg_trades</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_trade_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_trade_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redis_client_trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Redis</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#handlers.market.get_historical_agg_trades" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_historical_agg_trades</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_trade_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_trade_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redis_client_trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Redis</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#handlers.market.get_historical_agg_trades" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns aggregated trades from id to limit or last trades if id not specified. Also is possible to get from starTime utc in
 milliseconds from epoch or until endtime milliseconds from epoch.</p>
 <p>Deprecated: If it is tested with more than 1 hour of trades, it gives error 1127 and if you adjust it to one hour,
@@ -343,35 +378,35 @@ from candles redis server.</p></li>
 <dd class="field-even"><p>Returns a list from the Binance API in dicts.</p>
 </dd>
 </dl>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[
-  {
-    &quot;a&quot;: 26129,         // Aggregate tradeId
-    &quot;p&quot;: &quot;0.01633102&quot;,  // Price
-    &quot;q&quot;: &quot;4.70443515&quot;,  // Quantity
-    &quot;f&quot;: 27781,         // First tradeId
-    &quot;l&quot;: 27781,         // Last tradeId
-    &quot;T&quot;: 1498793709153, // Timestamp
-    &quot;m&quot;: true,          // Was the buyer the maker?
-    &quot;M&quot;: true           // Was the trade the best price match?
-  }
-]
-</pre></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1">[
+</span><span id="1-2">  {
+</span><span id="1-3">    &quot;a&quot;: 26129,         // Aggregate tradeId
+</span><span id="1-4">    &quot;p&quot;: &quot;0.01633102&quot;,  // Price
+</span><span id="1-5">    &quot;q&quot;: &quot;4.70443515&quot;,  // Quantity
+</span><span id="1-6">    &quot;f&quot;: 27781,         // First tradeId
+</span><span id="1-7">    &quot;l&quot;: 27781,         // Last tradeId
+</span><span id="1-8">    &quot;T&quot;: 1498793709153, // Timestamp
+</span><span id="1-9">    &quot;m&quot;: true,          // Was the buyer the maker?
+</span><span id="1-10">    &quot;M&quot;: true           // Was the trade the best price match?
+</span><span id="1-11">  }
+</span><span id="1-12">]
+</span></pre></div>
 </div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.market.parse_agg_trades_to_dataframe">
-<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">parse_agg_trades_to_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_dupes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.market.parse_agg_trades_to_dataframe" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">parse_agg_trades_to_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_dupes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.market.parse_agg_trades_to_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parses the API response into a pandas dataframe.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;M&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
- <span class="s1">&#39;T&#39;</span><span class="p">:</span> <span class="mi">1656166914571</span><span class="p">,</span>
- <span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">1218761712</span><span class="p">,</span>
- <span class="s1">&#39;f&#39;</span><span class="p">:</span> <span class="mi">1424997754</span><span class="p">,</span>
- <span class="s1">&#39;l&#39;</span><span class="p">:</span> <span class="mi">1424997754</span><span class="p">,</span>
- <span class="s1">&#39;m&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
- <span class="s1">&#39;p&#39;</span><span class="p">:</span> <span class="s1">&#39;21185.05000000&#39;</span><span class="p">,</span>
- <span class="s1">&#39;q&#39;</span><span class="p">:</span> <span class="s1">&#39;0.03395000&#39;</span><span class="p">}</span>
-</pre></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="p">{</span><span class="s1">&#39;M&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="1-2"> <span class="s1">&#39;T&#39;</span><span class="p">:</span> <span class="mi">1656166914571</span><span class="p">,</span>
+</span><span id="1-3"> <span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">1218761712</span><span class="p">,</span>
+</span><span id="1-4"> <span class="s1">&#39;f&#39;</span><span class="p">:</span> <span class="mi">1424997754</span><span class="p">,</span>
+</span><span id="1-5"> <span class="s1">&#39;l&#39;</span><span class="p">:</span> <span class="mi">1424997754</span><span class="p">,</span>
+</span><span id="1-6"> <span class="s1">&#39;m&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="1-7"> <span class="s1">&#39;p&#39;</span><span class="p">:</span> <span class="s1">&#39;21185.05000000&#39;</span><span class="p">,</span>
+</span><span id="1-8"> <span class="s1">&#39;q&#39;</span><span class="p">:</span> <span class="s1">&#39;0.03395000&#39;</span><span class="p">}</span>
+</span></pre></div>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -392,7 +427,7 @@ from candles redis server.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.market.get_last_atomic_trades">
-<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_last_atomic_trades</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.market.get_last_atomic_trades" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_last_atomic_trades</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.market.get_last_atomic_trades" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns recent atomic (not aggregated) trades.</p>
 <p>GET /api/v3/trades</p>
 <p>Get recent trades.</p>
@@ -409,24 +444,24 @@ from candles redis server.</p></li>
 </dd>
 </dl>
 <p>Return example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
-  <span class="p">{</span>
-    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">28457</span><span class="p">,</span>
-    <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;4.00000100&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;12.00000000&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;quoteQty&quot;</span><span class="p">:</span> <span class="s2">&quot;48.000012&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="mi">1499865549590</span><span class="p">,</span>
-    <span class="s2">&quot;isBuyerMaker&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
-    <span class="s2">&quot;isBestMatch&quot;</span><span class="p">:</span> <span class="n">true</span>
-  <span class="p">}</span>
-<span class="p">]</span>
-</pre></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="p">[</span>
+</span><span id="1-2">  <span class="p">{</span>
+</span><span id="1-3">    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">28457</span><span class="p">,</span>
+</span><span id="1-4">    <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;4.00000100&quot;</span><span class="p">,</span>
+</span><span id="1-5">    <span class="s2">&quot;qty&quot;</span><span class="p">:</span> <span class="s2">&quot;12.00000000&quot;</span><span class="p">,</span>
+</span><span id="1-6">    <span class="s2">&quot;quoteQty&quot;</span><span class="p">:</span> <span class="s2">&quot;48.000012&quot;</span><span class="p">,</span>
+</span><span id="1-7">    <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="mi">1499865549590</span><span class="p">,</span>
+</span><span id="1-8">    <span class="s2">&quot;isBuyerMaker&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
+</span><span id="1-9">    <span class="s2">&quot;isBestMatch&quot;</span><span class="p">:</span> <span class="n">true</span>
+</span><span id="1-10">  <span class="p">}</span>
+</span><span id="1-11"><span class="p">]</span>
+</span></pre></div>
 </div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.market.get_atomic_trades">
-<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_atomic_trades</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fromId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.market.get_atomic_trades" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_atomic_trades</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fromId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.market.get_atomic_trades" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns atomic (not aggregated) trades from id to limit or last trades if id not specified.</p>
 <p>Limit applied in fromId mode defaults to 500. Maximum is 1000.</p>
 <p>GET /api/v3/historicalTrades</p>
@@ -445,24 +480,24 @@ from candles redis server.</p></li>
 <dd class="field-even"><p>Returns a list from the Binance API.</p>
 </dd>
 </dl>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[
-  {
-    &quot;id&quot;: 28457,
-    &quot;price&quot;: &quot;4.00000100&quot;,
-    &quot;qty&quot;: &quot;12.00000000&quot;,
-    &quot;quoteQty&quot;: &quot;48.000012&quot;,
-    &quot;time&quot;: 1499865549590, // Trade executed timestamp, as same as `T` in the stream
-    &quot;isBuyerMaker&quot;: true,
-    &quot;isBestMatch&quot;: true
-  }
-]
-</pre></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1">[
+</span><span id="1-2">  {
+</span><span id="1-3">    &quot;id&quot;: 28457,
+</span><span id="1-4">    &quot;price&quot;: &quot;4.00000100&quot;,
+</span><span id="1-5">    &quot;qty&quot;: &quot;12.00000000&quot;,
+</span><span id="1-6">    &quot;quoteQty&quot;: &quot;48.000012&quot;,
+</span><span id="1-7">    &quot;time&quot;: 1499865549590, // Trade executed timestamp, as same as `T` in the stream
+</span><span id="1-8">    &quot;isBuyerMaker&quot;: true,
+</span><span id="1-9">    &quot;isBestMatch&quot;: true
+</span><span id="1-10">  }
+</span><span id="1-11">]
+</span></pre></div>
 </div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.market.get_historical_atomic_trades">
-<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_historical_atomic_trades</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_trade_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_trade_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redis_client_trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Redis</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#handlers.market.get_historical_atomic_trades" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_historical_atomic_trades</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_trade_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_trade_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redis_client_trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Redis</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#handlers.market.get_historical_atomic_trades" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns atomic (not aggregated) trades between timestamps. It iterates over limit 1000 intervals to adjust to API limit.</p>
 <p>This request can be very slow because the API request weight limit.</p>
 <dl class="field-list simple">
@@ -482,51 +517,51 @@ from candles redis server.</p></li>
 <dd class="field-even"><p>Returns a list from the Binance API</p>
 </dd>
 </dl>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Last</span> <span class="n">Trades</span> <span class="n">example</span><span class="p">:</span>
-    <span class="p">[</span>
-        <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="mi">86206215</span><span class="p">,</span>
-         <span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="s1">&#39;0.00454100&#39;</span><span class="p">,</span>
-         <span class="s1">&#39;qty&#39;</span><span class="p">:</span> <span class="s1">&#39;0.02400000&#39;</span><span class="p">,</span>
-         <span class="s1">&#39;quoteQty&#39;</span><span class="p">:</span> <span class="s1">&#39;0.00010898&#39;</span><span class="p">,</span>
-         <span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="mi">1669579405932</span><span class="p">,</span>
-         <span class="s1">&#39;isBuyerMaker&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-         <span class="s1">&#39;isBestMatch&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span> <span class="o">...</span>
-     <span class="p">]</span>
-</pre></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="n">Last</span> <span class="n">Trades</span> <span class="n">example</span><span class="p">:</span>
+</span><span id="1-2">    <span class="p">[</span>
+</span><span id="1-3">        <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="mi">86206215</span><span class="p">,</span>
+</span><span id="1-4">         <span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="s1">&#39;0.00454100&#39;</span><span class="p">,</span>
+</span><span id="1-5">         <span class="s1">&#39;qty&#39;</span><span class="p">:</span> <span class="s1">&#39;0.02400000&#39;</span><span class="p">,</span>
+</span><span id="1-6">         <span class="s1">&#39;quoteQty&#39;</span><span class="p">:</span> <span class="s1">&#39;0.00010898&#39;</span><span class="p">,</span>
+</span><span id="1-7">         <span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="mi">1669579405932</span><span class="p">,</span>
+</span><span id="1-8">         <span class="s1">&#39;isBuyerMaker&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="1-9">         <span class="s1">&#39;isBestMatch&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span> <span class="o">...</span>
+</span><span id="1-10">     <span class="p">]</span>
+</span></pre></div>
 </div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.market.parse_atomic_trades_to_dataframe">
-<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">parse_atomic_trades_to_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_dupes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.market.parse_atomic_trades_to_dataframe" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">parse_atomic_trades_to_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_dupes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.market.parse_atomic_trades_to_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parses the API response into a pandas dataframe.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[
-  {
-    &quot;id&quot;: 28457,
-    &quot;price&quot;: &quot;4.00000100&quot;,
-    &quot;qty&quot;: &quot;12.00000000&quot;,
-    &quot;quoteQty&quot;: &quot;48.000012&quot;,
-    &quot;time&quot;: 1499865549590, // Trade executed timestamp, as same as `T` in the stream
-    &quot;isBuyerMaker&quot;: true,
-    &quot;isBestMatch&quot;: true
-  }
-]
-
-Redis response:
-
- {&#39;e&#39;: &#39;trade&#39;,
-  &#39;E&#39;: 1669721069347,
-  &#39;s&#39;: &#39;LTCBTC&#39;,
-  &#39;t&#39;: 86293174,
-  &#39;p&#39;: &#39;0.00466300&#39;,
-  &#39;q&#39;: &#39;3.10900000&#39;,
-  &#39;b&#39;: 992385453,
-  &#39;a&#39;: 992385448,
-  &#39;T&#39;: 1669721069347,
-  &#39;m&#39;: False,
-  &#39;M&#39;: True},
- ...]
-</pre></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1">[
+</span><span id="1-2">  {
+</span><span id="1-3">    &quot;id&quot;: 28457,
+</span><span id="1-4">    &quot;price&quot;: &quot;4.00000100&quot;,
+</span><span id="1-5">    &quot;qty&quot;: &quot;12.00000000&quot;,
+</span><span id="1-6">    &quot;quoteQty&quot;: &quot;48.000012&quot;,
+</span><span id="1-7">    &quot;time&quot;: 1499865549590, // Trade executed timestamp, as same as `T` in the stream
+</span><span id="1-8">    &quot;isBuyerMaker&quot;: true,
+</span><span id="1-9">    &quot;isBestMatch&quot;: true
+</span><span id="1-10">  }
+</span><span id="1-11">]
+</span><span id="1-12">
+</span><span id="1-13">Redis response:
+</span><span id="1-14">
+</span><span id="1-15"> {&#39;e&#39;: &#39;trade&#39;,
+</span><span id="1-16">  &#39;E&#39;: 1669721069347,
+</span><span id="1-17">  &#39;s&#39;: &#39;LTCBTC&#39;,
+</span><span id="1-18">  &#39;t&#39;: 86293174,
+</span><span id="1-19">  &#39;p&#39;: &#39;0.00466300&#39;,
+</span><span id="1-20">  &#39;q&#39;: &#39;3.10900000&#39;,
+</span><span id="1-21">  &#39;b&#39;: 992385453,
+</span><span id="1-22">  &#39;a&#39;: 992385448,
+</span><span id="1-23">  &#39;T&#39;: 1669721069347,
+</span><span id="1-24">  &#39;m&#39;: False,
+</span><span id="1-25">  &#39;M&#39;: True},
+</span><span id="1-26"> ...]
+</span></pre></div>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -547,10 +582,10 @@ Redis response:
 
 </section>
 <section id="orderbook">
-<h2>Orderbook<a class="headerlink" href="#orderbook" title="Permalink to this heading"></a></h2>
+<h2>Orderbook<a class="headerlink" href="#orderbook" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.market.get_order_book">
-<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_order_book</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.market.get_order_book" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_order_book</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.market.get_order_book" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a dictionary with timestamp, bids and asks. Bids and asks are a list of lists with strings representing price and quantity.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -563,31 +598,31 @@ Redis response:
 <dd class="field-even"><p>A dict with ask and bids</p>
 </dd>
 </dl>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="s2">&quot;lastUpdateId&quot;</span><span class="p">:</span> <span class="mi">1027024</span><span class="p">,</span>
-  <span class="s2">&quot;bids&quot;</span><span class="p">:</span> <span class="p">[</span>
-    <span class="p">[</span>
-      <span class="s2">&quot;4.00000000&quot;</span><span class="p">,</span>     <span class="o">//</span> <span class="n">PRICE</span>
-      <span class="s2">&quot;431.00000000&quot;</span>    <span class="o">//</span> <span class="n">QTY</span>
-    <span class="p">]</span>
-  <span class="p">],</span>
-  <span class="s2">&quot;asks&quot;</span><span class="p">:</span> <span class="p">[</span>
-    <span class="p">[</span>
-      <span class="s2">&quot;4.00000200&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;12.00000000&quot;</span>
-    <span class="p">]</span>
-  <span class="p">]</span>
-<span class="p">}</span>
-</pre></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="p">{</span>
+</span><span id="1-2">  <span class="s2">&quot;lastUpdateId&quot;</span><span class="p">:</span> <span class="mi">1027024</span><span class="p">,</span>
+</span><span id="1-3">  <span class="s2">&quot;bids&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span id="1-4">    <span class="p">[</span>
+</span><span id="1-5">      <span class="s2">&quot;4.00000000&quot;</span><span class="p">,</span>     <span class="o">//</span> <span class="n">PRICE</span>
+</span><span id="1-6">      <span class="s2">&quot;431.00000000&quot;</span>    <span class="o">//</span> <span class="n">QTY</span>
+</span><span id="1-7">    <span class="p">]</span>
+</span><span id="1-8">  <span class="p">],</span>
+</span><span id="1-9">  <span class="s2">&quot;asks&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span id="1-10">    <span class="p">[</span>
+</span><span id="1-11">      <span class="s2">&quot;4.00000200&quot;</span><span class="p">,</span>
+</span><span id="1-12">      <span class="s2">&quot;12.00000000&quot;</span>
+</span><span id="1-13">    <span class="p">]</span>
+</span><span id="1-14">  <span class="p">]</span>
+</span><span id="1-15"><span class="p">}</span>
+</span></pre></div>
 </div>
 </dd></dl>
 
 </section>
 <section id="coin-conversion">
-<h2>Coin Conversion<a class="headerlink" href="#coin-conversion" title="Permalink to this heading"></a></h2>
+<h2>Coin Conversion<a class="headerlink" href="#coin-conversion" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.market.intermediate_conversion">
-<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">intermediate_conversion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">try_coin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BTC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coin_qty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.market.intermediate_conversion" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">intermediate_conversion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">try_coin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BTC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coin_qty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.market.intermediate_conversion" title="Permalink to this definition">¶</a></dt>
 <dd><p>Uses an intermediate symbol for conversion. Uses stablecoin USDT versus other “try” coin.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -607,7 +642,7 @@ Redis response:
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.market.convert_coin">
-<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">convert_coin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BUSD'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coin_qty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.market.convert_coin" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">convert_coin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BUSD'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coin_qty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.market.convert_coin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates a coin quantity value converted to other coin with current exchange prices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -628,35 +663,62 @@ Redis response:
 </section>
 </section>
 
-
-           </div>
-          </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="indicators.html" class="btn btn-neutral float-left" title="Indicators Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="messages.html" class="btn btn-neutral float-right" title="Messages Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2022, Fernando Alfonso.</p>
-  </div>
-
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
-        </div>
+        </article>
+        
       </div>
-    </section>
+      <div class="min-w-0 max-w-6xl px-6 pb-6 xl:pt-6 xl:px-12">
+        <div class="navigation flex print:hidden">
+  <div class="navigation-prev">
+    <a href="indicators.html">
+      <i class="i-icon chevron"></i>
+      <div class="page-info">
+        <span>Previous</span>
+        
+        <div class="title">Indicators Module</div>
+        
+      </div>
+    </a>
   </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
-
+  <div class="navigation-next">
+    <a href="messages.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title">Messages Module</div>
+      </div>
+      <i class="i-icon chevron"></i>
+    </a>
+  </div>
+</div>
+        
+      </div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2022, Fernando Alfonso</p>
+        
+        <p>
+          Made with
+          
+          <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+          
+          <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+        </p>
+      </div>
+      <div class="sy-foot-socials">
+      </div>
+    </div>
+  </div>
+</footer></div>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+      <script src="_static/jquery.js"></script>
+      <script src="_static/underscore.js"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script src="_static/doctools.js"></script>
+      <script src="_static/shibuya.js?v=2023.3.11"></script>
+    
 </body>
 </html>

@@ -1,48 +1,86 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html lang="en">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Statistical Tests and Tools &mdash; BinPan 0.4.4 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/style.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-    <script src="_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Strategies Module" href="strategies.html" />
-    <link rel="prev" title="Requests Module" href="quest.html" /> 
-</head>
-
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> BinPan
-          </a>
-              <div class="version">
-                0.4.4
-              </div>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Statistical Tests and Tools - BinPan 0.4.4 documentation</title>
+    <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Strategies Module" href="strategies.html" /><link rel="prev" title="Requests Module" href="quest.html" /><link rel="stylesheet" href="_static/pygments.css?v=2023.3.11" type="text/css" />
+    <link rel="stylesheet" href="_static/shibuya.css?v=2023.3.11" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/style.css" />
+    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=2023.3.11" />
+    <style>
+:root {
+  --sy-f-sys:-apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Droid Sans, Helvetica Neue;--sy-f-cjk:PingFang SC, Hiragino Sans GB, Droid Sans Fallback, Microsoft YaHei;--sy-f-heading:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-text:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-mono:Menlo, Monaco, Consolas, "Courier New", monospace;--sy-c-divider:rgba(var(--sy-rc-text), 0.1);--sy-c-divider-weak:rgba(var(--sy-rc-text), 0.05);--sy-c-border:rgba(var(--sy-rc-text), 0.14);--sy-s-banner-height:0rem;--sy-s-navbar-height:4rem;--sy-s-offset-top:calc(var(--sy-s-navbar-height) + var(--sy-s-banner-height));--sy-c-link:rgb(var(--sy-rc-theme));
+  --sy-rc-theme:143, 118, 214;--sy-rc-bg:255, 255, 255;--sy-rc-invert:0, 0, 0;--sy-rc-text:0, 0, 0;--sy-c-bg:#fff;--sy-c-bg-weak:#f9f9f9;--sy-c-text:#374151;--sy-c-text-weak:#6b7280;--sy-c-heading:#111827;--sy-c-bold:#111827;--sy-c-foot-text:#232226;--sy-c-foot-bg:#fafafa;--sy-c-foot-divider:#f0f0f0;
+}
+@media not print {
+  html.light {
+    --sy-rc-theme:143, 118, 214;--sy-rc-bg:255, 255, 255;--sy-rc-invert:0, 0, 0;--sy-rc-text:0, 0, 0;--sy-c-bg:#fff;--sy-c-bg-weak:#f9f9f9;--sy-c-text:#374151;--sy-c-text-weak:#6b7280;--sy-c-heading:#111827;--sy-c-bold:#111827;--sy-c-foot-text:#232226;--sy-c-foot-bg:#fafafa;--sy-c-foot-divider:#f0f0f0;
+  }
+  html.dark {
+    --sy-rc-theme:143, 118, 214;--sy-rc-bg:18, 18, 18;--sy-rc-invert:255, 255, 255;--sy-rc-text:255, 255, 255;--sy-c-bg:#121212;--sy-c-bg-weak:#212833;--sy-c-text:#cedbea;--sy-c-text-weak:#77889f;--sy-c-heading:#ebf0f4;--sy-c-bold:#ebf0f4;--sy-c-foot-text:#eee;--sy-c-foot-bg:#000;--sy-c-foot-divider:#000;
+  }
+}
+</style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-heading: Inter, var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    <meta property="og:type" content="website"/><meta property="og:title" content="Statistical Tests and Tools"/>
+<meta name="twitter:card" content="summary"/></head>
+<body><div class="document"><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <div class="sy-head-brand flex items-center">
+      <div class="md:hidden flex items-center">
+        <button class="hamburger js-menu mr-3" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2 -translate-x-2"></span>
+          <span class="hamburger_3 -translate-x-1"></span>
+        </button>
+      </div>
+      <a href="index.html">
+        
+        
+        <strong>BinPan</strong>
+      </a>
+      
+    </div>
+    <div class="sy-head-actions flex gap-2 items-center print:hidden">
+      <nav class="sy-head-nav hidden md:block">
+      </nav>
+      <div class="hidden md:block"><form class="searchbox flex items-center" action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form>
+      </div>
+      <button class="js-theme theme-switch flex items-center ml-1" data-aria-light="Switch to dark mode" data-aria-dark="Switch to light mode">
+        <i class="i-icon theme-icon"></i>
+      </button>
+      
+        <button class="js-menu xl:hidden flex items-center ml-1" aria-label="Show table of contents" type="button" aria-controls="rside" aria-expanded="false">
+          <i class="i-icon outdent"></i>
+        </button>
+    </div>
+  </div>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-64 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="md:hidden pt-6 px-6"><form class="searchbox flex items-center" action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <button>Go</button>
+</form>
+      </div>
+      <div class="md:hidden pt-3 px-6">
+      </div>
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc">
+          <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="binpan.html">BinPan Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="aggregations.html">Aggregations Module</a></li>
@@ -55,13 +93,7 @@
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quest.html">Requests Module</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Statistical Tests and Tools</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#autocorrelation-coefficient">autocorrelation_coefficient</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#compute-variances">compute_variances</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#jarque-bera-test">jarque_bera_test</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#notes">Notes</a></li>
-</ul>
-</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Statistical Tests and Tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tags.html">Tags &amp; Backtesting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Module</a></li>
@@ -69,50 +101,56 @@
 
         </div>
       </div>
-    </nav>
+    </div>
+  </aside>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-icon close"></i>
+    </button>
+    <div class="sy-scrollbar px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4">
+  <div class="localtoc">
+    <h3>Table of Contents</h3>
+    <ul>
+<li><a class="reference internal" href="#autocorrelation-coefficient">autocorrelation_coefficient</a></li>
+<li><a class="reference internal" href="#compute-variances">compute_variances</a></li>
+<li><a class="reference internal" href="#jarque-bera-test">jarque_bera_test</a></li>
+<li><a class="reference internal" href="#notes">Notes</a></li>
+</ul>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">BinPan</a>
-      </nav>
 
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Statistical Tests and Tools</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="_sources/stat_tests.rst.txt" rel="nofollow"> View page source</a>
-      </li>
-  </ul>
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
-  <section id="statistical-tests-and-tools">
-<h1>Statistical Tests and Tools<a class="headerlink" href="#statistical-tests-and-tools" title="Permalink to this heading"></a></h1>
+  </div><div id="ethical-ad-placement"></div>
+    </div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+    <div class="flex flex-col break-words justify-between">
+      <div class="min-w-0 max-w-6xl px-6 pb-6 pt-6 xl:px-12">
+        <article class="yue" role="main">
+          <section id="statistical-tests-and-tools">
+<h1>Statistical Tests and Tools<a class="headerlink" href="#statistical-tests-and-tools" title="Permalink to this heading">¶</a></h1>
 <p>This module provides statistical tests and tools for financial data analysis.</p>
 <p>This module can be imported:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">handlers</span> <span class="kn">import</span> <span class="n">stat_tests</span>
-</pre></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="kn">from</span> <span class="nn">handlers</span> <span class="kn">import</span> <span class="n">stat_tests</span>
+</span></pre></div>
 </div>
 <span class="target" id="module-handlers.stat_tests"></span><p>Statistical tests and tools.</p>
 <section id="autocorrelation-coefficient">
-<h2>autocorrelation_coefficient<a class="headerlink" href="#autocorrelation-coefficient" title="Permalink to this heading"></a></h2>
+<h2>autocorrelation_coefficient<a class="headerlink" href="#autocorrelation-coefficient" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.stat_tests.autocorrelation_coefficient">
-<span class="sig-prename descclassname"><span class="pre">handlers.stat_tests.</span></span><span class="sig-name descname"><span class="pre">autocorrelation_coefficient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.stat_tests.autocorrelation_coefficient" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.stat_tests.</span></span><span class="sig-name descname"><span class="pre">autocorrelation_coefficient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.stat_tests.autocorrelation_coefficient" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the autocorrelation coefficient of the returns in a pandas DataFrame.</p>
+<p>Parameters:</p>
 <dl class="simple">
 <dt>data<span class="classifier">pandas.DataFrame</span></dt><dd><p>The DataFrame containing financial data in OHLC format.</p>
 </dd>
 </dl>
+<p>Returns:</p>
 <dl class="simple">
 <dt>float</dt><dd><p>The autocorrelation coefficient of the returns.</p>
 </dd>
 </dl>
+<p>Notes:</p>
 <p>The autocorrelation coefficient measures the strength of the linear relationship between
 the returns and their lagged values. A value of zero indicates no correlation, while a value
 of one indicates perfect positive correlation and a value of negative one indicates perfect
@@ -121,21 +159,24 @@ negative correlation.</p>
 
 </section>
 <section id="compute-variances">
-<h2>compute_variances<a class="headerlink" href="#compute-variances" title="Permalink to this heading"></a></h2>
+<h2>compute_variances<a class="headerlink" href="#compute-variances" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.stat_tests.compute_variances">
-<span class="sig-prename descclassname"><span class="pre">handlers.stat_tests.</span></span><span class="sig-name descname"><span class="pre">compute_variances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.stat_tests.compute_variances" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.stat_tests.</span></span><span class="sig-name descname"><span class="pre">compute_variances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.stat_tests.compute_variances" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the hourly resampled bars variance and variance of variances for a given OHLC DataFrame.</p>
+<p>Parameters:</p>
 <dl class="simple">
 <dt>data<span class="classifier">pandas.DataFrame</span></dt><dd><p>The DataFrame containing financial data in OHLC format.</p>
 </dd>
 </dl>
+<p>Returns:</p>
 <dl class="simple">
 <dt>tuple</dt><dd><p>A tuple containing two pandas Series:
 - hourly_returns: The hourly resampled bars variance of the returns.
 - hourly_variances: The variance of the hourly variances.</p>
 </dd>
 </dl>
+<p>Notes:</p>
 <p>This function calculates the returns as the percentage change in the ‘Close’ column of the input
 DataFrame, and then groups the data by hour using the <cite>pd.Grouper</cite> method. The hourly resampled bars
 variance of the returns is then calculated for each hour, and the variance of these variances is
@@ -144,19 +185,22 @@ calculated and returned as <cite>hourly_variances</cite>.</p>
 
 </section>
 <section id="jarque-bera-test">
-<h2>jarque_bera_test<a class="headerlink" href="#jarque-bera-test" title="Permalink to this heading"></a></h2>
+<h2>jarque_bera_test<a class="headerlink" href="#jarque-bera-test" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.stat_tests.jarque_bera_test">
-<span class="sig-prename descclassname"><span class="pre">handlers.stat_tests.</span></span><span class="sig-name descname"><span class="pre">jarque_bera_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.stat_tests.jarque_bera_test" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.stat_tests.</span></span><span class="sig-name descname"><span class="pre">jarque_bera_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.stat_tests.jarque_bera_test" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform the Jarque-Bera test for normality on the returns of an OHLC DataFrame.</p>
+<p>Parameters:</p>
 <dl class="simple">
 <dt>data<span class="classifier">pandas.DataFrame</span></dt><dd><p>The DataFrame containing financial data in OHLC format.</p>
 </dd>
 </dl>
+<p>Returns:</p>
 <dl class="simple">
 <dt>tuple</dt><dd><p>A tuple containing the test statistic and p-value of the Jarque-Bera test.</p>
 </dd>
 </dl>
+<p>Notes:</p>
 <p>This function first calculates the returns as the percentage change in the ‘Close’ column of the input
 DataFrame, and then drops the first row, which will have a NaN return. Finally, the Jarque-Bera test for
 normality is performed on the returns using the <cite>jarque_bera</cite> function from the <cite>scipy.stats</cite> module.
@@ -168,7 +212,7 @@ and the data is not normally distributed.</p>
 
 </section>
 <section id="notes">
-<h2>Notes<a class="headerlink" href="#notes" title="Permalink to this heading"></a></h2>
+<h2>Notes<a class="headerlink" href="#notes" title="Permalink to this heading">¶</a></h2>
 <p>The <cite>autocorrelation_coefficient</cite> function calculates the autocorrelation coefficient of the returns in a pandas DataFrame.</p>
 <p>The <cite>compute_variances</cite> function calculates the hourly resampled bars variance and variance of variances for a given OHLC DataFrame.</p>
 <p>The <cite>jarque_bera_test</cite> function performs the Jarque-Bera test for normality on the returns of an OHLC DataFrame.</p>
@@ -176,35 +220,62 @@ and the data is not normally distributed.</p>
 </section>
 </section>
 
-
-           </div>
-          </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="quest.html" class="btn btn-neutral float-left" title="Requests Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="strategies.html" class="btn btn-neutral float-right" title="Strategies Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2022, Fernando Alfonso.</p>
-  </div>
-
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
-        </div>
+        </article>
+        
       </div>
-    </section>
+      <div class="min-w-0 max-w-6xl px-6 pb-6 xl:pt-6 xl:px-12">
+        <div class="navigation flex print:hidden">
+  <div class="navigation-prev">
+    <a href="quest.html">
+      <i class="i-icon chevron"></i>
+      <div class="page-info">
+        <span>Previous</span>
+        
+        <div class="title">Requests Module</div>
+        
+      </div>
+    </a>
   </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
-
+  <div class="navigation-next">
+    <a href="strategies.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title">Strategies Module</div>
+      </div>
+      <i class="i-icon chevron"></i>
+    </a>
+  </div>
+</div>
+        
+      </div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2022, Fernando Alfonso</p>
+        
+        <p>
+          Made with
+          
+          <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+          
+          <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+        </p>
+      </div>
+      <div class="sy-foot-socials">
+      </div>
+    </div>
+  </div>
+</footer></div>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+      <script src="_static/jquery.js"></script>
+      <script src="_static/underscore.js"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script src="_static/doctools.js"></script>
+      <script src="_static/shibuya.js?v=2023.3.11"></script>
+    
 </body>
 </html>

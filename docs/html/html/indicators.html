@@ -1,60 +1,93 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html lang="en">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Indicators Module &mdash; BinPan 0.4.4 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/style.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-    <script src="_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Market Module" href="market.html" />
-    <link rel="prev" title="Files Module" href="files.html" /> 
-</head>
-
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> BinPan
-          </a>
-              <div class="version">
-                0.4.4
-              </div>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Indicators Module - BinPan 0.4.4 documentation</title>
+    <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Market Module" href="market.html" /><link rel="prev" title="Files Module" href="files.html" /><link rel="stylesheet" href="_static/pygments.css?v=2023.3.11" type="text/css" />
+    <link rel="stylesheet" href="_static/shibuya.css?v=2023.3.11" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/style.css" />
+    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=2023.3.11" />
+    <style>
+:root {
+  --sy-f-sys:-apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Droid Sans, Helvetica Neue;--sy-f-cjk:PingFang SC, Hiragino Sans GB, Droid Sans Fallback, Microsoft YaHei;--sy-f-heading:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-text:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-mono:Menlo, Monaco, Consolas, "Courier New", monospace;--sy-c-divider:rgba(var(--sy-rc-text), 0.1);--sy-c-divider-weak:rgba(var(--sy-rc-text), 0.05);--sy-c-border:rgba(var(--sy-rc-text), 0.14);--sy-s-banner-height:0rem;--sy-s-navbar-height:4rem;--sy-s-offset-top:calc(var(--sy-s-navbar-height) + var(--sy-s-banner-height));--sy-c-link:rgb(var(--sy-rc-theme));
+  --sy-rc-theme:143, 118, 214;--sy-rc-bg:255, 255, 255;--sy-rc-invert:0, 0, 0;--sy-rc-text:0, 0, 0;--sy-c-bg:#fff;--sy-c-bg-weak:#f9f9f9;--sy-c-text:#374151;--sy-c-text-weak:#6b7280;--sy-c-heading:#111827;--sy-c-bold:#111827;--sy-c-foot-text:#232226;--sy-c-foot-bg:#fafafa;--sy-c-foot-divider:#f0f0f0;
+}
+@media not print {
+  html.light {
+    --sy-rc-theme:143, 118, 214;--sy-rc-bg:255, 255, 255;--sy-rc-invert:0, 0, 0;--sy-rc-text:0, 0, 0;--sy-c-bg:#fff;--sy-c-bg-weak:#f9f9f9;--sy-c-text:#374151;--sy-c-text-weak:#6b7280;--sy-c-heading:#111827;--sy-c-bold:#111827;--sy-c-foot-text:#232226;--sy-c-foot-bg:#fafafa;--sy-c-foot-divider:#f0f0f0;
+  }
+  html.dark {
+    --sy-rc-theme:143, 118, 214;--sy-rc-bg:18, 18, 18;--sy-rc-invert:255, 255, 255;--sy-rc-text:255, 255, 255;--sy-c-bg:#121212;--sy-c-bg-weak:#212833;--sy-c-text:#cedbea;--sy-c-text-weak:#77889f;--sy-c-heading:#ebf0f4;--sy-c-bold:#ebf0f4;--sy-c-foot-text:#eee;--sy-c-foot-bg:#000;--sy-c-foot-divider:#000;
+  }
+}
+</style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-heading: Inter, var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    <meta property="og:type" content="website"/><meta property="og:title" content="Indicators Module"/>
+<meta name="twitter:card" content="summary"/></head>
+<body><div class="document"><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <div class="sy-head-brand flex items-center">
+      <div class="md:hidden flex items-center">
+        <button class="hamburger js-menu mr-3" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2 -translate-x-2"></span>
+          <span class="hamburger_3 -translate-x-1"></span>
+        </button>
+      </div>
+      <a href="index.html">
+        
+        
+        <strong>BinPan</strong>
+      </a>
+      
+    </div>
+    <div class="sy-head-actions flex gap-2 items-center print:hidden">
+      <nav class="sy-head-nav hidden md:block">
+      </nav>
+      <div class="hidden md:block"><form class="searchbox flex items-center" action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form>
+      </div>
+      <button class="js-theme theme-switch flex items-center ml-1" data-aria-light="Switch to dark mode" data-aria-dark="Switch to light mode">
+        <i class="i-icon theme-icon"></i>
+      </button>
+      
+        <button class="js-menu xl:hidden flex items-center ml-1" aria-label="Show table of contents" type="button" aria-controls="rside" aria-expanded="false">
+          <i class="i-icon outdent"></i>
+        </button>
+    </div>
+  </div>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-64 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="md:hidden pt-6 px-6"><form class="searchbox flex items-center" action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <button>Go</button>
+</form>
+      </div>
+      <div class="md:hidden pt-3 px-6">
+      </div>
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc">
+          <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="binpan.html">BinPan Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="aggregations.html">Aggregations Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exchange.html">Exchange Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="files.html">Files Module</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Indicators Module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-handlers.indicators">Indicators</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#indicators-utils">Indicators utils</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#indicators-from-trades">Indicators from Trades</a></li>
-</ul>
-</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Indicators Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="messages.html">Messages Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
@@ -68,41 +101,43 @@
 
         </div>
       </div>
-    </nav>
+    </div>
+  </aside>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-icon close"></i>
+    </button>
+    <div class="sy-scrollbar px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4">
+  <div class="localtoc">
+    <h3>Table of Contents</h3>
+    <ul>
+<li><a class="reference internal" href="#module-handlers.indicators">Indicators</a></li>
+<li><a class="reference internal" href="#indicators-utils">Indicators utils</a></li>
+<li><a class="reference internal" href="#indicators-from-trades">Indicators from Trades</a></li>
+</ul>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">BinPan</a>
-      </nav>
 
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Indicators Module</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="_sources/indicators.rst.txt" rel="nofollow"> View page source</a>
-      </li>
-  </ul>
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
-  <section id="indicators-module">
-<h1>Indicators Module<a class="headerlink" href="#indicators-module" title="Permalink to this heading"></a></h1>
+  </div><div id="ethical-ad-placement"></div>
+    </div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+    <div class="flex flex-col break-words justify-between">
+      <div class="min-w-0 max-w-6xl px-6 pb-6 pt-6 xl:px-12">
+        <article class="yue" role="main">
+          <section id="indicators-module">
+<h1>Indicators Module<a class="headerlink" href="#indicators-module" title="Permalink to this heading">¶</a></h1>
 <p>This module can calculate trading indicators.</p>
 <p>To import this module:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">handlers</span> <span class="kn">import</span> <span class="n">indicators</span>
-</pre></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="kn">from</span> <span class="nn">handlers</span> <span class="kn">import</span> <span class="n">indicators</span>
+</span></pre></div>
 </div>
 <section id="module-handlers.indicators">
-<span id="indicators"></span><h2>Indicators<a class="headerlink" href="#module-handlers.indicators" title="Permalink to this heading"></a></h2>
+<span id="indicators"></span><h2>Indicators<a class="headerlink" href="#module-handlers.indicators" title="Permalink to this heading">¶</a></h2>
 <p>BinPan own indicators and utils.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.indicators.ichimoku">
-<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">ichimoku</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tenkan</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kijun</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">26</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chikou_span</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">26</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">senkou_cloud_base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">52</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.indicators.ichimoku" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">ichimoku</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tenkan</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kijun</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">26</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chikou_span</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">26</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">senkou_cloud_base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">52</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.indicators.ichimoku" title="Permalink to this definition">¶</a></dt>
 <dd><p>The Ichimoku Cloud is a collection of technical indicators that show support and resistance levels, as well as momentum and trend
 direction. It does this by taking multiple averages and plotting them on a chart. It also uses these figures to compute a “cloud”
 that attempts to forecast where the price may find support or resistance in the future.</p>
@@ -122,12 +157,12 @@ before Default: 26.</p></li>
 </dd>
 <dt class="field-even">Return pd.DataFrame</dt>
 <dd class="field-even"><p>A pandas dataframe with columns as indicator lines.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">binpan</span> <span class="kn">import</span> <span class="n">binpan</span>
-
-<span class="n">sym</span> <span class="o">=</span> <span class="n">binpan</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;LUNCBUSD&#39;</span><span class="p">,</span> <span class="n">tick_interval</span><span class="o">=</span><span class="s1">&#39;1m&#39;</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
-<span class="n">sym</span><span class="o">.</span><span class="n">ichimoku</span><span class="p">()</span>
-<span class="n">sym</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-</pre></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="kn">from</span> <span class="nn">binpan</span> <span class="kn">import</span> <span class="n">binpan</span>
+</span><span id="1-2">
+</span><span id="1-3"><span class="n">sym</span> <span class="o">=</span> <span class="n">binpan</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;LUNCBUSD&#39;</span><span class="p">,</span> <span class="n">tick_interval</span><span class="o">=</span><span class="s1">&#39;1m&#39;</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+</span><span id="1-4"><span class="n">sym</span><span class="o">.</span><span class="n">ichimoku</span><span class="p">()</span>
+</span><span id="1-5"><span class="n">sym</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</span></pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/ichimoku.png"><img alt="Candles with some indicators" src="_images/ichimoku.png" style="width: 1000px;" /></a>
 </dd>
@@ -136,7 +171,7 @@ before Default: 26.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.indicators.ker">
-<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">ker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">close</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="headerlink" href="#handlers.indicators.ker" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">ker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">close</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="headerlink" href="#handlers.indicators.ker" title="Permalink to this definition">¶</a></dt>
 <dd><p>Kaufman’s Efficiency Ratio based in: <a class="reference external" href="https://stackoverflow.com/questions/36980238/calculating-kaufmans-efficiency-ratio-in-python-with-pandas">https://stackoverflow.com/questions/36980238/calculating-kaufmans-efficiency-ratio-in-python-with-pandas</a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -153,10 +188,10 @@ before Default: 26.</p></li>
 
 </section>
 <section id="indicators-utils">
-<h2>Indicators utils<a class="headerlink" href="#indicators-utils" title="Permalink to this heading"></a></h2>
+<h2>Indicators utils<a class="headerlink" href="#indicators-utils" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.indicators.split_serie_by_position">
-<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">split_serie_by_position</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">serie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">splitter_serie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_with_zeros</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.indicators.split_serie_by_position" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">split_serie_by_position</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">serie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">splitter_serie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_with_zeros</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.indicators.split_serie_by_position" title="Permalink to this definition">¶</a></dt>
 <dd><p>Splits a serie by values of other serie in four series by relative positions for plotting colored clouds with plotly.</p>
 <p>This means you will get 4 series with different situations:</p>
 <blockquote>
@@ -183,7 +218,7 @@ before Default: 26.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.indicators.df_splitter">
-<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">df_splitter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">up_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">down_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.indicators.df_splitter" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">df_splitter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">up_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">down_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.indicators.df_splitter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Splits a dataframe y sub dataframes to plot by colored areas.</p>
 <p>Based on: <a class="reference external" href="https://stackoverflow.com/questions/64741015/plotly-how-to-color-the-fill-between-two-lines-based-on-a-condition">https://stackoverflow.com/questions/64741015/plotly-how-to-color-the-fill-between-two-lines-based-on-a-condition</a></p>
 <dl class="field-list simple">
@@ -202,7 +237,7 @@ before Default: 26.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.indicators.zoom_cloud_indicators">
-<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">zoom_cloud_indicators</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plot_splitted_serie_couples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">main_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.indicators.zoom_cloud_indicators" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">zoom_cloud_indicators</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plot_splitted_serie_couples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">main_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.indicators.zoom_cloud_indicators" title="Permalink to this definition">¶</a></dt>
 <dd><p>It zooms the cloud indicators in an index interval for a plot zoom.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -221,7 +256,7 @@ before Default: 26.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.indicators.shift_indicator">
-<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">shift_indicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">serie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.indicators.shift_indicator" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">shift_indicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">serie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.indicators.shift_indicator" title="Permalink to this definition">¶</a></dt>
 <dd><p>It shifts a candle ahead by the window argument value (or backwards if negative).</p>
 <p>Just works with time indexes.</p>
 <dl class="field-list simple">
@@ -239,7 +274,7 @@ before Default: 26.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.indicators.ffill_indicator">
-<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">ffill_indicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">serie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.indicators.ffill_indicator" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">ffill_indicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">serie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.indicators.ffill_indicator" title="Permalink to this definition">¶</a></dt>
 <dd><p>It forward fills a value through nans while a window of candles ahead.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -256,10 +291,10 @@ before Default: 26.</p></li>
 
 </section>
 <section id="indicators-from-trades">
-<h2>Indicators from Trades<a class="headerlink" href="#indicators-from-trades" title="Permalink to this heading"></a></h2>
+<h2>Indicators from Trades<a class="headerlink" href="#indicators-from-trades" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.indicators.reversal_candles">
-<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">reversal_candles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_positions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_reversal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.indicators.reversal_candles" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">reversal_candles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_positions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_reversal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.indicators.reversal_candles" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Generate reversal candles for reversal charts:</dt><dd><p><a class="reference external" href="https://atas.net/atas-possibilities/charts/how-to-set-reversal-charts-for-finding-the-market-reversal/">https://atas.net/atas-possibilities/charts/how-to-set-reversal-charts-for-finding-the-market-reversal/</a></p>
 </dd>
@@ -277,18 +312,18 @@ before Default: 26.</p></li>
 <dt class="field-even">Return pd.DataFrame</dt>
 <dd class="field-even"><p>A serie with the resulting candles number sequence.</p>
 <dl>
-<dt>Example:</dt><dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">binpan</span> <span class="kn">import</span> <span class="n">binpan</span>
-
- <span class="n">ltc</span> <span class="o">=</span> <span class="n">binpan</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;ltcbtc&#39;</span><span class="p">,</span>
-                     <span class="n">tick_interval</span><span class="o">=</span><span class="s1">&#39;5m&#39;</span><span class="p">,</span>
-                     <span class="n">time_zone</span> <span class="o">=</span> <span class="s1">&#39;Europe/Madrid&#39;</span><span class="p">,</span>
-                     <span class="n">time_index</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-                     <span class="n">closed</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-                     <span class="n">hours</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-<span class="n">ltc</span><span class="o">.</span><span class="n">get_trades</span><span class="p">()</span>
-<span class="n">ltc</span><span class="o">.</span><span class="n">get_reversal_candles</span><span class="p">()</span>
-<span class="n">ltc</span><span class="o">.</span><span class="n">plot_reversal</span><span class="p">()</span>
-</pre></div>
+<dt>Example:</dt><dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="kn">from</span> <span class="nn">binpan</span> <span class="kn">import</span> <span class="n">binpan</span>
+</span><span id="1-2">
+</span><span id="1-3"> <span class="n">ltc</span> <span class="o">=</span> <span class="n">binpan</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;ltcbtc&#39;</span><span class="p">,</span>
+</span><span id="1-4">                     <span class="n">tick_interval</span><span class="o">=</span><span class="s1">&#39;5m&#39;</span><span class="p">,</span>
+</span><span id="1-5">                     <span class="n">time_zone</span> <span class="o">=</span> <span class="s1">&#39;Europe/Madrid&#39;</span><span class="p">,</span>
+</span><span id="1-6">                     <span class="n">time_index</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="1-7">                     <span class="n">closed</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="1-8">                     <span class="n">hours</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</span><span id="1-9"><span class="n">ltc</span><span class="o">.</span><span class="n">get_trades</span><span class="p">()</span>
+</span><span id="1-10"><span class="n">ltc</span><span class="o">.</span><span class="n">get_reversal_candles</span><span class="p">()</span>
+</span><span id="1-11"><span class="n">ltc</span><span class="o">.</span><span class="n">plot_reversal</span><span class="p">()</span>
+</span></pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/reversal.png"><img alt="_images/reversal.png" src="_images/reversal.png" style="width: 1000px;" /></a>
 </dd>
@@ -300,35 +335,62 @@ before Default: 26.</p></li>
 </section>
 </section>
 
-
-           </div>
-          </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="files.html" class="btn btn-neutral float-left" title="Files Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="market.html" class="btn btn-neutral float-right" title="Market Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2022, Fernando Alfonso.</p>
-  </div>
-
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
-        </div>
+        </article>
+        
       </div>
-    </section>
+      <div class="min-w-0 max-w-6xl px-6 pb-6 xl:pt-6 xl:px-12">
+        <div class="navigation flex print:hidden">
+  <div class="navigation-prev">
+    <a href="files.html">
+      <i class="i-icon chevron"></i>
+      <div class="page-info">
+        <span>Previous</span>
+        
+        <div class="title">Files Module</div>
+        
+      </div>
+    </a>
   </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
-
+  <div class="navigation-next">
+    <a href="market.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title">Market Module</div>
+      </div>
+      <i class="i-icon chevron"></i>
+    </a>
+  </div>
+</div>
+        
+      </div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2022, Fernando Alfonso</p>
+        
+        <p>
+          Made with
+          
+          <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+          
+          <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+        </p>
+      </div>
+      <div class="sy-foot-socials">
+      </div>
+    </div>
+  </div>
+</footer></div>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+      <script src="_static/jquery.js"></script>
+      <script src="_static/underscore.js"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script src="_static/doctools.js"></script>
+      <script src="_static/shibuya.js?v=2023.3.11"></script>
+    
 </body>
 </html>

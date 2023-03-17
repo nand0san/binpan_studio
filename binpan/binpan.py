@@ -84,12 +84,13 @@ empty_atomic_trades_msg = "Empty atomic trades, please request using: get_atomic
 
 class Symbol(object):
     """
-    Creates an object from binance klines and/or trade data. It contains the raw api response and a dataframe that can be modified.
+    Creates an object from binance klines and/or trade data. It contains the raw api response, a dataframe that can be modified and many
+    more.
 
-    Any symbol can be used as argument and any time interval like: '1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '6h', '8h',
-    '12h', '1d', '3d', '1w', '1M'
+    Symbols can be any trading pair on Binance, such as BTCUSDT or ETHBUSD, and time intervals can be specified using the
+    following strings: '1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '6h', '8h', '12h', '1d', '3d', '1w', or '1M'.
 
-    Object has several plot methods.
+    The class provides several plotting methods for quick data visualization.
 
     :param str symbol:  It can be any symbol in the binance exchange, like BTCUSDT, ethbusd or any other. Capital letters doesn't matter.
 
