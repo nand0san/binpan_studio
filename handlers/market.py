@@ -379,20 +379,22 @@ def basic_dataframe(data: pd.DataFrame,
             return df_[['Open', 'High', 'Low', 'Close', 'Volume', actions_col]].copy(deep=True)
 
 
-def convert_to_numeric(data: pd.DataFrame) -> pd.DataFrame:
+def convert_to_numeric(data: pd.DataFrame, mode='raise') -> pd.DataFrame:
     """
     Converts to numeric all posible columns for a given Dataframe.
 
     :param pd.DataFrame data: A dataframe with columns
+    :param str mode: Mode for exceptions. DEfault is 'raise'.
     :return pd.DataFrame: A dataframe with numeric values in each column that can be numeric.
     """
-
-    for col in data.columns:
+    df = data.copy(deep=True)
+    for col in df.columns:
         try:
-            data.loc[:, col] = pd.to_numeric(arg=data[col], downcast='integer', errors='raise')
-        except Exception:
+            df.loc[:, col] = pd.to_numeric(arg=df[col], downcast='integer', errors=mode)
+        except Exception as exc:
+            print(f"Passing convert_to_numeric: {exc}")
             pass
-    return data
+    return df
 
 
 ##########
