@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Aggregations Module - BinPan 0.4.4 documentation</title>
+      <title>Aggregations Module - BinPan 0.4.6 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Exceptions Module" href="exceptions.html" /><link rel="prev" title="BinPan Module" href="binpan.html" /><link rel="stylesheet" href="_static/pygments.css?v=2023.3.11" type="text/css" />
     <link rel="stylesheet" href="_static/shibuya.css?v=2023.3.11" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/style.css" />
@@ -293,7 +293,9 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.aggregations.sign_of_price">
 <span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">sign_of_price</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'sign'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.aggregations.sign_of_price" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a column with the sign of the price by each trade. 1 if the trade increased the price and -1 for decreased price.</p>
+<dd><p>Creates a new dataframe with a column with the sign of the price by each trade.
+1 if the trade increased the price and -1 for decreased price. Also called “tick rule”.</p>
+<p>Nans will be filled as zero.</p>
 <div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
 \[\begin{split}b_t= \begin{cases}b_{t-1} &amp; \text { if } \Delta p_t=0 \\ \frac{\left|\Delta p_t\right|}{\Delta p_t} &amp; \text { if } \Delta p_t \neq 0\end{cases}\end{split}\]</div>
