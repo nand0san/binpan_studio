@@ -5,6 +5,7 @@ Statistical tests and tools.
 from scipy.stats import jarque_bera
 import pandas as pd
 import numpy as np
+import numba as nb
 
 
 def autocorrelation_coefficient(data: pd.DataFrame):
@@ -113,3 +114,136 @@ def jarque_bera_test(data):
     # perform the Jarque-Bera test on the returns
     test = jarque_bera(df['Return'])
     return test
+
+
+############
+# CALCULOS #
+############
+
+
+def ema_numpy(arr: np.ndarray, window: int) -> np.ndarray:
+    """
+    Calculate the Exponential Moving Average (EMA) of the given array using NumPy.
+
+    :param arr: A NumPy array containing the input data.
+    :type arr: np.ndarray
+    :param window: The window size for the EMA calculation.
+    :type window: int
+    :return: A NumPy array containing the EMA values.
+    :rtype: np.ndarray
+
+    Example:
+
+    .. code-block::
+
+        import numpy as np
+        arr = np.array([1.0, 2.5, 3.7, 4.2, 5.0, 6.3])
+        window = 3
+        ema_result = ema_numpy(arr, window)
+        print(ema_result)
+
+        [1.         1.66666667 2.61111111 3.40740741 4.27160494 5.18106996]
+
+    """
+
+    alpha = 2 / (window + 1)
+    ema = np.zeros_like(arr)
+    ema[0] = arr[0]
+
+    for i in range(1, arr.shape[0]):
+        ema[i] = alpha * arr[i] + (1 - alpha) * ema[i - 1]
+
+    return ema
+
+
+def sma_numpy(arr: np.ndarray, window: int) -> np.ndarray:
+    """
+    Calculate the Simple Moving Average (SMA) of the given array using NumPy.
+
+    :param arr: A NumPy array containing the input data.
+    :type arr: np.ndarray
+    :param window: The window size for the SMA calculation.
+    :type window: int
+    :return: A NumPy array containing the SMA values.
+    :rtype: np.ndarray
+
+    Example:
+
+    .. code-block::
+
+        import numpy as np
+        arr = np.array([1.0, 2.5, 3.7, 4.2, 5.0, 6.3])
+        window = 3
+        sma_result = sma_numpy(arr, window)
+        print(sma_result)
+
+        [       nan        nan 2.4        3.46666667 4.3        5.16666667]
+    """
+
+    sma = np.convolve(arr, np.ones(window), 'valid') / window
+    padding = np.full(window - 1, np.nan)
+    sma_padded = np.concatenate((padding, sma))
+
+    return sma_padded
+
+
+@nb.jit(nopython=True)
+def ema_numba(arr: np.ndarray, window: int) -> np.ndarray:
+    """
+    Calculate the Exponential Moving Average (EMA) of the given array using NumPy.
+
+    Args:
+        arr: A NumPy array containing the input data.
+        window: The window size for the EMA calculation.
+
+    Returns:
+        A NumPy array containing the EMA values.
+
+    Example:
+
+    .. code-block::
+
+        import numpy as np
+        arr = np.array([1.0, 2.5, 3.7, 4.2, 5.0, 6.3])
+        window = 3
+        ema_result = ema_numpy(arr, window)
+        print(ema_result)
+
+        [1.         1.66666667 2.61111111 3.40740741 4.27160494 5.18106996]
+    """
+    alpha = 2 / (window + 1)
+    ema = np.zeros_like(arr)
+    ema[0] = arr[0]
+    for i in range(1, arr.shape[0]):
+        ema[i] = alpha * arr[i] + (1 - alpha) * ema[i - 1]
+    return ema
+
+
+@nb.jit(nopython=True)
+def sma_numba(arr: np.ndarray, window: int) -> np.ndarray:
+    """
+    Calculate the Simple Moving Average (SMA) of the given array using NumPy.
+
+    Args:
+        arr: A NumPy array containing the input data.
+        window: The window size for the SMA calculation.
+
+    Returns:
+        A NumPy array containing the SMA values.
+
+    Example:
+
+    .. code-block::
+
+        import numpy as np
+        arr = np.array([1.0, 2.5, 3.7, 4.2, 5.0, 6.3])
+        window = 3
+        sma_result = sma_numpy(arr, window)
+        print(sma_result)
+
+        [       nan        nan 2.4        3.46666667 4.3        5.16666667]
+    """
+    sma = np.zeros_like(arr)
+    for i in range(window - 1, arr.shape[0]):
+        sma[i] = np.sum(arr[i - window + 1:i + 1]) / window
+    return sma
