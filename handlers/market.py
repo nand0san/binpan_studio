@@ -735,7 +735,6 @@ def get_historical_agg_trades(symbol: str,
     # with trade ids, find start
     if start_trade_id and end_trade_id and not redis_client_trades:
         current_first_trade = trades[0]['a']
-        # while trades[0]['id'] > start_trade_id:
         while current_first_trade > start_trade_id:
             requests_cnt += 1
             market_logger.info(f"Requests to API for aggregated trades of {symbol}: {requests_cnt}")
@@ -1035,7 +1034,6 @@ def get_historical_atomic_trades(symbol: str,
     # with trade ids, find start
     if start_trade_id and end_trade_id and not redis_client_trades:
         current_first_trade = trades[0]['id']
-        # while trades[0]['id'] > start_trade_id:
         while current_first_trade > start_trade_id:
             requests_cnt += 1
             market_logger.info(f"Requests to API for atomic trades of {symbol}: {requests_cnt}")
@@ -1064,7 +1062,6 @@ def get_historical_atomic_trades(symbol: str,
         current_first_trade = trades[0]['id']
 
         if startTime:
-            retry_count = 0
             while current_first_trade_time >= startTime and retry_count < retry_limit:
                 requests_cnt += 1
                 market_logger.info(f"Requests API for atomic trades STARTIME {symbol}: {requests_cnt} current_first_trade:{current_first_trade}")
@@ -1074,14 +1071,13 @@ def get_historical_atomic_trades(symbol: str,
                 trades = fetched_older_trades + trades
                 current_first_trade_time = trades[0]['time']
                 current_first_trade = trades[0]['id']
-                retry_count += 1
-
         if endTime:
             current_last_trade = trades[-1]['id']
             prev_last_trade = current_last_trade
             current_last_trade_time = trades[-1]['time']
             retry_count = 0
-            while current_last_trade_time <= endTime and retry_count < retry_limit:
+
+            while current_last_trade_time <= endTime:
                 requests_cnt += 1
                 market_logger.info(f"Requests API for atomic trades ENDTIME {symbol}: {requests_cnt} current_last_trade:{current_last_trade}")
                 fetched_newer_trades = handlers.market.get_atomic_trades(symbol=symbol,
@@ -1095,6 +1091,8 @@ def get_historical_atomic_trades(symbol: str,
                     retry_count = 0
                 else:
                     retry_count += 1
+                    if retry_count >= 3:
+                        break
 
         ret = [i for i in trades if startTime <= i['time'] <= endTime]
         return sorted(ret, key=lambda x: x['id'])
