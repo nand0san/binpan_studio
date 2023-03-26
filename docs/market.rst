@@ -24,6 +24,8 @@ Klines
 
 .. autofunction:: get_candles_by_time_stamps
 
+.. autofunction:: get_historical_candles
+
 .. autofunction:: parse_candles_to_dataframe
 
 

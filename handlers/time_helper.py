@@ -316,3 +316,19 @@ def wait_seconds_until_next_minute():
     server_time = int(time() * 1000)  # ahorro de llamadas al server, mejorada sincro de tiempo en windows
     now = datetime.fromtimestamp(server_time / 1000.0).replace(tzinfo=pytz.UTC)
     return 60 - now.second
+
+
+def calculate_iterations(start_time: int, end_time: int, tick_interval_ms: int, limit: int = 1000) -> int:
+    """
+    Calculate the number of iterations required to retrieve data within the given time range considering the API limit.
+
+    :param int start_time: Start timestamp (milliseconds) of the time range.
+    :param int end_time: End timestamp (milliseconds) of the time range.
+    :param int tick_interval_ms: Kline tick interval in milliseconds.
+    :param int limit: API limit for the number of klines in a single request (default: 1000).
+    :return: The number of iterations required to retrieve data within the given time range.
+    :rtype: int
+    """
+    total_intervals = (end_time - start_time) // tick_interval_ms
+    iterations = (total_intervals + limit - 1) // limit
+    return iterations
