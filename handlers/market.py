@@ -1062,7 +1062,7 @@ def get_historical_atomic_trades(symbol: str,
         current_first_trade = trades[0]['id']
 
         if startTime:
-            while current_first_trade_time >= startTime and retry_count < retry_limit:
+            while current_first_trade_time >= startTime:
                 requests_cnt += 1
                 market_logger.info(f"Requests API for atomic trades STARTIME {symbol}: {requests_cnt} current_first_trade:{current_first_trade}")
                 fetched_older_trades = handlers.market.get_atomic_trades(symbol=symbol,
