@@ -57,15 +57,24 @@ def ohlc_group(data: pd.DataFrame, column_to_ohlc: str, group_column: str) -> pd
     return df
 
 
-def sum_split_by_boolean_column_and_group(data: pd.DataFrame, column_to_split_sum: str, bool_col: str, group_column: str) -> pd.DataFrame:
+def sum_split_by_boolean_column_and_group(data: pd.DataFrame, column_to_split_sum: str = "Qunantity", bool_col: str = "Buyer was maker",
+                                          group_column: str = "group") -> pd.DataFrame:
     """
-    If a boolean column in a dataframe with a grouper column, it splits data into two columns for true and false by the grouper.
+    Splits the sum of a numeric column into two new columns based on a boolean column and groups the data using another column.
 
-    :param pd.Dataframe data: A dataframe with at least 3 columns.
-    :param str column_to_split_sum: Numeric column with data to sum by group and split by boolean column.
-    :param str bool_col: Column to define splitting.
-    :param str group_column: This column will be the grouping key.
-    :return: A copy of the dataframe with splitted sum by group from column to split sum.
+    This function is useful for generating two new columns, one for the true values and another for the false values, with the sum
+    of the specified numeric column for each group and filling the remaining cells with NaNs.
+
+    :param data: A dataframe with at least 3 columns.
+    :type data: pd.DataFrame
+    :param column_to_split_sum: Numeric column with data to sum by group and split by boolean column, defaults to "Quantity".
+    :type column_to_split_sum: str, optional
+    :param bool_col: Column to define splitting, defaults to "Buyer was maker".
+    :type bool_col: str, optional
+    :param group_column: This column will be the grouping key, defaults to "group".
+    :type group_column: str, optional
+    :return: A copy of the dataframe with splitted sum by group from the column to split sum.
+    :rtype: pd.DataFrame
     """
     grouper = [group_column, bool_col]
     df = data.copy(deep=True)
@@ -85,9 +94,37 @@ def sum_split_by_boolean_column_and_group(data: pd.DataFrame, column_to_split_su
     return df[cols]
 
 
+def count_trues_cumulative(data: pd.DataFrame, bool_column: str, new_column: str) -> pd.DataFrame:
+    """
+    Add a new column to the DataFrame with cumulative numbers for each True value in a boolean column.
+
+    :param data: The input DataFrame.
+    :type data: pd.DataFrame
+    :param bool_column: The name of the boolean column to evaluate.
+    :type bool_column: str
+    :param new_column: The name of the new column to store the cumulative numbers for True values.
+    :type new_column: str
+    :return: A new DataFrame with an additional column containing the cumulative numbers for True values.
+    :rtype: pd.DataFrame
+    """
+    df = data.copy(deep=True)
+    counter = 0
+
+    def increment_if_true(x):
+        nonlocal counter
+        if x:
+            counter += 1
+        return counter
+
+    df[new_column] = df[bool_column].apply(increment_if_true)
+    return df
+
+
 def drop_aggregated(data: pd.DataFrame, group_column: str, by='last') -> pd.DataFrame:
     """
     Drop lines except the first/last/min/max etc row of each group_column streak.
+
+    It assumes that the grouping column is a serie of integers to group it by blocks.
 
     :param pd.Dataframe data: A dataframe.
     :param str group_column: This column will be the grouping key.
@@ -95,6 +132,20 @@ def drop_aggregated(data: pd.DataFrame, group_column: str, by='last') -> pd.Data
     :return: A copy of the dataframe with just the first row each grouper streak.
     """
     df = data.copy(deep=True)
+
+    # type test
+    is_int_or_nan = df[group_column].apply(lambda x: isinstance(x, (int, np.integer)) or np.isnan(x))
+    assert is_int_or_nan.all(), "Group column must use integer numbers"
+
+    # sequential integers fault warning
+    integers = data.loc[df[group_column].apply(lambda x: isinstance(x, (int, np.integer))), group_column]
+    differences = np.diff(integers)
+    differences = np.isnan(differences) | (differences == 1)
+    try:
+        assert differences.all(), f"Warning: Numbers in column '{group_column}' are not consecutive."
+    except:
+        pass
+
     aggregator = {c: by for c in df.columns}
     return df.groupby(group_column).agg(aggregator)
 
@@ -133,12 +184,13 @@ def tag_by_accumulation(trades: pd.DataFrame, threshold: int, agg_column: str = 
 ############
 
 
-def time_index_from_timestamps(data: pd.DataFrame, timezone: str = 'Europe/Madrid', drop_col: bool = False):
+def time_index_from_timestamps(data: pd.DataFrame, index_name: str = None, timezone: str = 'Europe/Madrid', drop_col: bool = False, ):
     """
     Assumes existing timestamp column or at least Open timestamp column.
 
     :param pd.Dataframe data: A dataframe.
     :param bool drop_col: Drop column applied as index.
+    :param str index_name: Name for the resulting index.
     :param str timezone: The index of the pandas dataframe in the object can be converted to any timezone, i.e. "Europe/Madrid"
                            - TZ database: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 
@@ -152,6 +204,8 @@ def time_index_from_timestamps(data: pd.DataFrame, timezone: str = 'Europe/Madri
 
     if drop_col:
         df_.drop(time_col, axis=1, inplace=True)
+    if index_name:
+        df_.index.name = index_name
     return df_
 
 
@@ -239,12 +293,14 @@ def tick_bars(trades: pd.DataFrame, size: int) -> pd.DataFrame:
     """
     if trades.empty:
         raise BinPanException("BinPan Exception: Tick Bars cannot be calculated with empty data.")
+    index_name = trades.index.name
+
     df = generate_count_grouper_column(data=trades, grouper_name='group', size=size)
     df = ohlc_group(data=df, column_to_ohlc='Price', group_column='group')
     df = sum_split_by_boolean_column_and_group(df, 'Quantity', 'Buyer was maker', 'group')
     df = drop_aggregated(data=df, group_column='group', by='first')
     df = columns_restriction(data=df, mode='TB')
-    df = time_index_from_timestamps(df)
+    df = time_index_from_timestamps(df, index_name=index_name)
     # add Volume for plotting
     bool_cols = [c for c in df.columns if 'True' in c or 'False' in c]
     df = generate_volume_column(data=df, add_cols=(bool_cols[0], bool_cols[1]))
@@ -261,13 +317,15 @@ def volume_bars(trades: pd.DataFrame, threshold: int) -> pd.DataFrame:
     """
     if trades.empty:
         raise BinPanException("BinPan Exception: Volume Bars cannot be calculated with empty data.")
+    index_name = trades.index.name
+
     df = tag_by_accumulation(trades=trades, threshold=threshold, agg_column='Quantity', grouper_name='group')
     # df = generate_count_grouper_column(data=trades, grouper_name='group', size=size)
     df = ohlc_group(data=df, column_to_ohlc='Price', group_column='group')
     df = sum_split_by_boolean_column_and_group(data=df, column_to_split_sum='Quantity', bool_col='Buyer was maker', group_column='group')
     df = drop_aggregated(data=df, group_column='group', by='first')
     df = columns_restriction(data=df, mode='VB')
-    df = time_index_from_timestamps(df)
+    df = time_index_from_timestamps(df, index_name=index_name)
     # add Volume for plotting
     bool_cols = [c for c in df.columns if 'True' in c or 'False' in c]
     df = generate_volume_column(data=df, add_cols=(bool_cols[0], bool_cols[1]))
@@ -284,7 +342,10 @@ def dollar_bars(trades: pd.DataFrame, threshold: int) -> pd.DataFrame:
     """
     if trades.empty:
         raise BinPanException("BinPan Exception: Dollar Bars cannot be calculated with empty data.")
+    index_name = trades.index.name
+
     df = trades.copy(deep=True)
+
     try:
         assert 'Quote quantity' in trades.columns
     except AssertionError:
@@ -295,7 +356,7 @@ def dollar_bars(trades: pd.DataFrame, threshold: int) -> pd.DataFrame:
     df = sum_split_by_boolean_column_and_group(data=df, column_to_split_sum='Quantity', bool_col='Buyer was maker', group_column='group')
     df = drop_aggregated(data=df, group_column='group', by='first')
     df = columns_restriction(data=df, mode='DB')
-    df = time_index_from_timestamps(df)
+    df = time_index_from_timestamps(df, index_name=index_name)
     # add Volume for plotting
     bool_cols = [c for c in df.columns if 'True' in c or 'False' in c]
     df = generate_volume_column(data=df, add_cols=(bool_cols[0], bool_cols[1]), quote_column=True)
@@ -314,11 +375,13 @@ def ohlc_bars(rows_with_bar_counter: list, index: pd.Index, mode: str = 'IB'):
     """
 
     df = pd.DataFrame(data=rows_with_bar_counter, index=index)
+    index_name = df.index.name
+
     df = ohlc_group(data=df, column_to_ohlc='Price', group_column='group')
     df = sum_split_by_boolean_column_and_group(data=df, column_to_split_sum='Quantity', bool_col='Buyer was maker', group_column='group')
     df = drop_aggregated(data=df, group_column='group', by='first')
     df = columns_restriction(data=df, mode=mode)
-    df = time_index_from_timestamps(df)
+    df = time_index_from_timestamps(df, index_name=index_name)
     # add Volume for plotting
     bool_cols = [c for c in df.columns if 'True' in c or 'False' in c]
     df = generate_volume_column(data=df, add_cols=(bool_cols[0], bool_cols[1]), quote_column=True)
@@ -459,7 +522,8 @@ class ImbalanceBars(object):
         Decide whether to sample the current bar and update variables accordingly.
         """
         if abs(self.current_imbalance) >= abs(self.expected_imbalance):
-            print(f"Current imbalance:{self.current_imbalance} prob:{self.current_probability} expected_imbalance:{self.expected_imbalance}")
+            print(
+                f"Current imbalance:{self.current_imbalance} prob:{self.current_probability} expected_imbalance:{self.expected_imbalance}")
             self.bar_counter += 1
             self.sampled_sizes = np.append(self.sampled_sizes, float(len(my_molecule)))
             self.current_probability = self.get_probability(my_molecule=my_molecule)
@@ -502,7 +566,10 @@ def imbalance_bars_divergent(trades: pd.DataFrame, starting_imbalance: float) ->
     :param float starting_imbalance: Starting value for following bars. Its recommended to wait some bars quantity to consider established sizes.
     :return: A dataframe sampled with the new bars sampling.
     """
+    index_name = trades.index.name
     df = sign_of_price(data=trades, col_name='sign')
+
+
     current_imbalance = 0
     bar_counter = 0
     rows_with_bar_counter = []
@@ -545,7 +612,7 @@ def imbalance_bars_divergent(trades: pd.DataFrame, starting_imbalance: float) ->
     df = sum_split_by_boolean_column_and_group(data=df, column_to_split_sum='Quantity', bool_col='Buyer was maker', group_column='group')
     df = drop_aggregated(data=df, group_column='group', by='first')
     df = columns_restriction(data=df, mode='IB')
-    df = time_index_from_timestamps(df)
+    df = time_index_from_timestamps(df, index_name=index_name)
     # add Volume for plotting
     bool_cols = [c for c in df.columns if 'True' in c or 'False' in c]
     df = generate_volume_column(data=df, add_cols=(bool_cols[0], bool_cols[1]), quote_column=True)
@@ -574,6 +641,7 @@ def imbalance_bars_fixed(trades: pd.DataFrame, imbalance: float) -> pd.DataFrame
     :param float imbalance: Fixed value for imbalance threshold.
     :return: A dataframe sampled with the new bars sampling.
     """
+    index_name = trades.index.name
     df_ = sign_of_price(data=trades, col_name='sign')
     current_imbalance = 0
     bar_counter = 0
@@ -615,7 +683,44 @@ def imbalance_bars_fixed(trades: pd.DataFrame, imbalance: float) -> pd.DataFrame
     df = sum_split_by_boolean_column_and_group(data=df, column_to_split_sum='Quantity', bool_col='Buyer was maker', group_column='group')
     df = drop_aggregated(data=df, group_column='group', by='first')
     df = columns_restriction(data=df, mode='IB')
-    df = time_index_from_timestamps(df)
+    df = time_index_from_timestamps(df, index_name=index_name)
+    # add Volume for plotting
+    bool_cols = [c for c in df.columns if 'True' in c or 'False' in c]
+    df = generate_volume_column(data=df, add_cols=(bool_cols[0], bool_cols[1]), quote_column=True)
+    return df
+
+
+def tick_imbalance_bars(trades: pd.DataFrame, window: int = 10):
+    df = trades.copy(deep=True)
+    index_name = df.index.name
+
+    # tick rule
+    df['delta_p'] = df['Price'].diff()
+    df['b_t'] = np.where(df['delta_p'] == 0, np.nan, np.sign(df['delta_p']))
+    df['b_t'].fillna(method='ffill', inplace=True)
+
+    df['theta_T'] = df['b_t'].cumsum()
+
+    # milliseconds T
+    df['T'] = (df.index.to_series().diff().dt.total_seconds() * 1000).fillna(0).astype(int)
+
+    # expectation
+    df['E0_T'] = df['T'].ewm(span=window).mean()
+    df['E0_P'] = df['b_t'].ewm(span=window).mean()
+    df['expected_imbalance'] = np.abs(df['E0_T'] * (2 * df['E0_P'] - 1))
+
+    # sampling
+    df['T_star'] = np.abs(df['theta_T']) >= np.abs(df['E0_T'] * (2 * df['E0_P'] - 1))
+
+    df = ohlc_group(data=df, column_to_ohlc='Price', group_column='T_star')
+    df = sum_split_by_boolean_column_and_group(data=df, column_to_split_sum='Quantity', bool_col='Buyer was maker', group_column='T_star')
+    df = count_trues_cumulative(data=df, bool_column='T_star', new_column="T_start_count")
+
+    df = drop_aggregated(data=df, group_column='T_start_count', by='first')
+
+    df = columns_restriction(data=df, mode='IB', extra=['expected_imbalance', 'E0_T', 'E0_P'])
+    df = time_index_from_timestamps(df, index_name=index_name)
+
     # add Volume for plotting
     bool_cols = [c for c in df.columns if 'True' in c or 'False' in c]
     df = generate_volume_column(data=df, add_cols=(bool_cols[0], bool_cols[1]), quote_column=True)
