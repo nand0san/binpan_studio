@@ -4,6 +4,7 @@ Data Aggregation.
 import pandas as pd
 import numpy as np
 from tqdm import tqdm
+from typing import Tuple, List, Dict
 
 import handlers.market
 # from .time_helper import pandas_freq_tick_interval
@@ -274,7 +275,10 @@ def sign_of_price(data: pd.DataFrame, col_name: str = 'sign') -> pd.DataFrame:
 
     """
     df = data.copy(deep=True)
-    df.loc[:, col_name] = np.sign(df['Price'].diff()).fillna(0)
+    df[col_name] = df['Price'].diff()
+    df[col_name] = np.where(df[col_name] == 0., np.nan, np.sign(df[col_name]))
+    df[col_name].fillna(method='ffill', inplace=True)
+    df[col_name] = df[col_name].fillna(0).astype(int)
     return df
 
 
@@ -404,9 +408,9 @@ class ImbalanceBars(object):
                  trades: pd.DataFrame,
                  bar_type: str,
                  method: str = 'ema',
-                 threshold: int = 10,
+                 threshold: int = 100,
                  window: int = 21,
-                 boot_trades: int = 50):
+                 boot_trades: int = 1000):
         """
         Initialize the ImbalanceBars object with the given parameters.
         """
@@ -425,6 +429,7 @@ class ImbalanceBars(object):
         self.sampled_probabilities = np.empty(shape=(0,), dtype=float)
 
         self.current_probability = None
+        self.current_size = None
         self.current_imbalance = None
         self.expected_imbalance = None
         self.bar_counter = 0
@@ -433,7 +438,8 @@ class ImbalanceBars(object):
         self.initialize_startup_variables()
 
         print(f"Boot current_probability: {self.current_probability}")
-        print(f"Boot current_imbalance: {self.current_imbalance}")
+        print(f"Boot current_size: {self.boot_trades}")
+        print(f"expected_imbalance: {self.expected_imbalance}")
 
         self.sampling_loop()
         self.construct_bars()
@@ -443,13 +449,23 @@ class ImbalanceBars(object):
         Initialize startup variables based on the chosen method.
         """
         if self.method == 'fix':
-            self.current_imbalance = self.threshold
-            self.current_probability = None
             self.expected_imbalance = self.threshold
+
         else:
-            self.current_imbalance = self.get_imbalance(my_molecule=self.trades.iloc[:self.boot_trades].to_dict('records'))
-            self.current_probability = self.get_probability(my_molecule=self.trades.iloc[:self.boot_trades].to_dict('records'))
-            self.expected_imbalance = self.current_imbalance
+            self.current_size = self.boot_trades
+
+            if self.bar_type == 'imbalance':
+                # 2P -1 es la suma de b_T para la barran, es decir, sign acumulado
+                self.current_probability = self.trades.iloc[:self.boot_trades]['sign'].sum()
+
+                # molecule = self.trades.iloc[:self.boot_trades]['sign'].values
+                # count_ones = np.count_nonzero(molecule == 1)
+                #
+                # self.current_probability = count_ones / self.boot_trades
+                # self.expected_imbalance = self.current_size * abs((2 * self.current_probability) - 1)
+                self.expected_imbalance = self.current_size * abs(self.current_probability)
+            else:
+                raise BinPanException(f"falta implementar en initialize_startup_variables")
 
     def get_expected_size(self) -> float:
         """
@@ -464,10 +480,17 @@ class ImbalanceBars(object):
         """
         Calculate the expected probability of the imbalance bars using the chosen method.
         """
+        ret = None
         if self.method == "ema":
-            return ema_numba(self.sampled_probabilities, window=self.window)[-1]
+            ret = ema_numba(self.sampled_probabilities, window=self.window)[-1]
         elif self.method == "sma":
-            return sma_numba(self.sampled_probabilities, window=self.window)[-1]
+            ret = sma_numba(self.sampled_probabilities, window=self.window)[-1]
+        # assert 0 <= ret <= 1
+        try:
+            assert ret != 0
+        except:
+            print("debug")
+        return ret
 
     def get_expected_imbalance(self) -> float or int:
         """
@@ -477,62 +500,79 @@ class ImbalanceBars(object):
             if self.method == "fix":
                 return self.threshold
             else:
-                return self.get_expected_size() * self.get_expected_probability()
+                # print(f"size: {self.get_expected_size():.4f} * {self.get_expected_probability():.4f} prob")
+                size = self.get_expected_size()
+                exp_prob = self.get_expected_probability()
+                # calc_prob = abs(2 * exp_prob - 1)
+                # try:
+                #     assert size > 0
+                #     assert calc_prob >= 0
+                # except Exception:
+                #     raise BinPanException(f"get_expected_imbalance: {exp_prob} {calc_prob} {size}")
+                # return size * calc_prob
+                return size * exp_prob
         else:
-            # TODO: imbalance bar types
-            pass
-
-    def get_probability(self, my_molecule: list) -> float:
-        """
-        Calculate the probability value of the given molecule based on the bar type.
-        """
-        positive_signs = len([d['sign'] for d in my_molecule if d['sign'] > 0])
-        if self.bar_type == 'imbalance':
-            return (2 * positive_signs / len(my_molecule)) - 1
-        else:  # TODO: imbalance bar types
-            return 0
-
-    def get_imbalance(self, my_molecule: list) -> float:
-        """
-        Calculate the imbalance value of the given molecule based on the bar type.
-        """
-        if self.bar_type == "imbalance":
-            return sum(d['sign'] for d in my_molecule)
-        else:  # TODO: imbalance bar types
-            return 0
+            raise BinPanException(f"get_expected_imbalance implementation needed: {self.method} {self.bar_type}")
 
     def sampling_loop(self) -> None:
         """
         Main sampling loop to iterate through trades and create imbalance bars.
         """
-        my_molecule = []
+        my_molecule_sign = []
+        my_molecule_cum_size = 0
 
-        for idx, row in tqdm(self.trades.iterrows()):
+        # for idx, row in self.trades.iloc[self.boot_trades:].iterrows():
+        for idx, row in self.trades.iterrows():
+
             new_data = dict(row.to_dict())
+
+            my_molecule_sign += [new_data['sign']]
+            my_molecule_cum_size += 1
+
+            my_molecule_sign, my_molecule_cum_size = self.decide_sampling(my_molecule_sign, my_molecule_cum_size)
+
             new_data.update({'group': self.bar_counter})
             self.rows_with_bar_counter.append(new_data)
 
-            my_molecule.append(new_data)
-
-            self.current_imbalance = self.get_imbalance(my_molecule=my_molecule)
-            my_molecule = self.decide_sampling(my_molecule)
-
-    def decide_sampling(self, my_molecule: list) -> list:
+    def decide_sampling(self, my_molecule_sign: list, my_molecule_cum_size: int) -> Tuple[list, int]:
         """
         Decide whether to sample the current bar and update variables accordingly.
-        """
-        if abs(self.current_imbalance) >= abs(self.expected_imbalance):
-            print(
-                f"Current imbalance:{self.current_imbalance} prob:{self.current_probability} expected_imbalance:{self.expected_imbalance}")
-            self.bar_counter += 1
-            self.sampled_sizes = np.append(self.sampled_sizes, float(len(my_molecule)))
-            self.current_probability = self.get_probability(my_molecule=my_molecule)
-            self.sampled_probabilities = np.append(self.sampled_probabilities, self.current_probability)
-            self.expected_imbalance = self.get_expected_imbalance()
 
-            my_molecule = []
-            self.current_imbalance = 0
-        return my_molecule
+        Sample surpassing data to the next bar.
+        """
+        if self.bar_type == "imbalance":
+            # prob = np.count_nonzero(np.array(my_molecule_sign) == 1) / my_molecule_cum_size
+            # assert 0 <= prob <= 1
+            # self.current_imbalance = my_molecule_cum_size * abs(2 * prob - 1)
+
+            # modo practico
+            prob = abs(np.sum(np.array(my_molecule_sign)))
+
+            self.current_imbalance = abs(my_molecule_cum_size * prob)
+        else:
+            raise BinPanException(f"falta implementar en decide_sampling")
+        # check
+        if self.current_imbalance >= self.expected_imbalance:
+            # calc_prob = abs(2*prob -1)
+            # print(f"exp_imb:{self.expected_imbalance:.8f}\tprob:{prob:.8f}\tcalc_prob:{calc_prob:.4f}\tsize:{my_molecule_cum_size} = \t{self.current_imbalance}")
+            print(f"exp_imb:{self.expected_imbalance:.8f}\tsize:{my_molecule_cum_size}\tprob:{prob} = \t{self.current_imbalance}")
+            self.bar_counter += 1
+
+            self.sampled_sizes = np.append(self.sampled_sizes, my_molecule_cum_size - 1)  # just prev size, ojo q da negativo si viene cero
+            # prob_saving = np.count_nonzero(np.array(my_molecule_sign[:-1]) == 1) / my_molecule_cum_size  # -1 for size if prev
+            # self.sampled_probabilities = np.append(self.sampled_probabilities, prob)  # just prev values
+
+            # modo practico sin ultimo valor
+            prob = abs(np.sum(np.array(my_molecule_sign[:-1])))  # sin el ultimo valor
+            self.sampled_probabilities = np.append(self.sampled_probabilities, prob)  # just prev values
+
+            my_molecule_cum_size = 0
+            my_molecule_sign = []
+
+            self.expected_imbalance = self.get_expected_imbalance()
+            if self.expected_imbalance == 0:
+                raise BinPanException(f"Error, expected imbalance = 0")
+        return my_molecule_sign, my_molecule_cum_size
 
     def construct_bars(self) -> None:
         """
@@ -568,7 +608,6 @@ def imbalance_bars_divergent(trades: pd.DataFrame, starting_imbalance: float) ->
     """
     index_name = trades.index.name
     df = sign_of_price(data=trades, col_name='sign')
-
 
     current_imbalance = 0
     bar_counter = 0
