@@ -1230,7 +1230,7 @@ class Symbol(object):
                                                                                 startTime=curr_startTime,
                                                                                 endTime=curr_endTime,
                                                                                 redis_client_trades=self.from_redis_trades)
-            except Exception as exc:
+            except Exception as _:
                 msg = f"Error fetching raw_agg_trades, maybe missing API key in secret.py file!!!"
                 binpan_logger.error(msg)
                 self.raw_agg_trades = []
@@ -1585,7 +1585,11 @@ class Symbol(object):
              marker_colors: list = None,
              background_color=None,
              zoom_start_idx=None,
-             zoom_end_idx=None):
+             zoom_end_idx=None,
+             support_lines: list = None,
+             support_lines_color: str = 'darkblue',
+             resistance_lines: list = None,
+             resistance_lines_color: str = 'darkred'):
         """
         Plots a candles figure for the object.
 
@@ -1613,7 +1617,10 @@ class Symbol(object):
         :param str background_color: Sets background color. Select a valid plotly color name.
         :param int zoom_start_idx: It can zoom to an index interval.
         :param int zoom_end_idx: It can zoom to an index interval.
-
+        :param list support_lines: A list of prices to plot horizontal lines in the candles plot for supports or any other level.
+        :param str support_lines_color: A color for horizontal lines, 'darkblue' is by default.
+        :param list resistance_lines: A list of prices to plot horizontal lines in the candles plot for resistances or any other level.
+        :param str resistance_lines_color: A color for horizontal lines, 'darkred' is by default.
         """
         if not overlapped_indicators:
             overlapped_indicators = []
@@ -1629,14 +1636,15 @@ class Symbol(object):
 
         rows_pos = [self.row_control[k] for k in self.row_control.keys()]
 
-        # if actions_col:
-        # if not marker_labels:
-        #     marker_labels = {'buy': 1, 'sell': -1}
-        # if not markers:
-        #     markers = ['arrow-bar-up', 'arrow-bar-down']
-        # if not marker_colors:
-        #     my_marker_colors = ['red', 'green']
-        #     {mark: my_marker_colors[idx % 2] for idx, mark in enumerate(marker_labels.keys())}
+        if support_lines:
+            for s_value in support_lines:
+                overlapped_indicators += [pd.Series(index=temp_df.index, data=s_value)]
+                indicator_names += [f"Support {s_value}"]
+                indicators_colors += [support_lines_color]
+            for r_value in resistance_lines:
+                overlapped_indicators += [pd.Series(index=temp_df.index, data=r_value)]
+                indicator_names += [f"Resistance {r_value}"]
+                indicators_colors += [resistance_lines_color]
 
         if zoom_start_idx is not None or zoom_end_idx is not None:
             zoomed_plot_splitted_serie_couples = handlers.indicators.zoom_cloud_indicators(self.plot_splitted_serie_couples,
@@ -1975,7 +1983,7 @@ class Symbol(object):
 
         """
         try:
-            assert not(from_agg_trades and from_atomic_trades)
+            assert not (from_agg_trades and from_atomic_trades)
         except AssertionError:
             raise handlers.exceptions.BinPanException(f"Please specify just one source of data, atomic trades or aggregated, not both.")
 
