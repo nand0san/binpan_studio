@@ -11,7 +11,7 @@ scipy>=1.7.3
 requests>=2.28.2
 setuptools==67.6.1
 # python-dotenv==0.21.0
-numba # no version for python 3.11 yet
+# numba # no version for python 3.11 yet, required version between 3.7 and 3.10
 sphinx
 autodocsumm
 shibuya>=0.2.10
