@@ -416,6 +416,9 @@ def support_resistance_levels(data: pd.DataFrame, max_clusters: int = 10) -> tup
     """
     Calculate support and resistance levels for a given set of trades using K-means clustering.
 
+    .. image:: images/indicators/support_resistance.png
+           :width: 1000
+
     :param data: A pandas DataFrame with trade data, containing a 'Price' column and a 'Buyer was maker' column.
     :param max_clusters: Maximum number of clusters to consider for finding the optimal number of centroids.
     :return: A tuple containing two lists: the first list contains the support levels, and the second list contains

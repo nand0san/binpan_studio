@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Indicators Module - BinPan 0.4.12 documentation</title>
+      <title>Indicators Module - BinPan 0.4.13 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Market Module" href="market.html" /><link rel="prev" title="Files Module" href="files.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -143,6 +143,7 @@ html.dark {
 </li>
 <li><a class="reference internal" href="#indicators-from-trades">Indicators from Trades</a><ul>
 <li><a class="reference internal" href="#handlers.indicators.reversal_candles"><code class="docutils literal notranslate"><span class="pre">reversal_candles()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.indicators.support_resistance_levels"><code class="docutils literal notranslate"><span class="pre">support_resistance_levels()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -359,6 +360,25 @@ before Default: 26.</p></li>
 <a class="reference internal image-reference" href="_images/reversal.png"><img alt="_images/reversal.png" src="_images/reversal.png" style="width: 1000px;" /></a>
 </dd>
 </dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.indicators.support_resistance_levels">
+<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">support_resistance_levels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_clusters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#handlers.indicators.support_resistance_levels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate support and resistance levels for a given set of trades using K-means clustering.</p>
+<a class="reference internal image-reference" href="_images/support_resistance.png"><img alt="_images/support_resistance.png" src="_images/support_resistance.png" style="width: 1000px;" /></a>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – A pandas DataFrame with trade data, containing a ‘Price’ column and a ‘Buyer was maker’ column.</p></li>
+<li><p><strong>max_clusters</strong> – Maximum number of clusters to consider for finding the optimal number of centroids.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing two lists: the first list contains the support levels, and the second list contains
+the resistance levels. Both lists contain float values.</p>
 </dd>
 </dl>
 </dd></dl>
