@@ -201,11 +201,13 @@
 </li>
       <li><a href="binpan.html#binpan.binpan.Exchange.coin">coin() (binpan.binpan.Exchange method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="aggregations.html#handlers.aggregations.columns_restriction">columns_restriction() (in module handlers.aggregations)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="stat_tests.html#handlers.stat_tests.compute_variances">compute_variances() (in module handlers.stat_tests)</a>
+</li>
+      <li><a href="aggregations.html#handlers.aggregations.ImbalanceBars.construct_bars">construct_bars() (handlers.aggregations.ImbalanceBars method)</a>
 </li>
       <li><a href="market.html#handlers.market.convert_coin">convert_coin() (in module handlers.market)</a>
 </li>
@@ -219,6 +221,8 @@
 </li>
       <li><a href="exchange.html#handlers.exchange.convert_to_other_coin">convert_to_other_coin() (in module handlers.exchange)</a>
 </li>
+      <li><a href="aggregations.html#handlers.aggregations.count_trues_cumulative">count_trues_cumulative() (in module handlers.aggregations)</a>
+</li>
       <li><a href="files.html#handlers.files.create_dir">create_dir() (in module handlers.files)</a>
 </li>
       <li><a href="binpan.html#binpan.binpan.Symbol.cross">cross() (binpan.binpan.Symbol method)</a>
@@ -230,6 +234,8 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="wallet.html#handlers.wallet.daily_account_snapshot">daily_account_snapshot() (in module handlers.wallet)</a>
+</li>
+      <li><a href="aggregations.html#handlers.aggregations.ImbalanceBars.decide_sampling">decide_sampling() (handlers.aggregations.ImbalanceBars method)</a>
 </li>
       <li><a href="quest.html#handlers.quest.delete_response">delete_response() (in module handlers.quest)</a>
 </li>
@@ -373,6 +379,12 @@
 </li>
       <li><a href="exchange.html#handlers.exchange.get_exchange_limits">get_exchange_limits() (in module handlers.exchange)</a>
 </li>
+      <li><a href="aggregations.html#handlers.aggregations.ImbalanceBars.get_expected_imbalance">get_expected_imbalance() (handlers.aggregations.ImbalanceBars method)</a>
+</li>
+      <li><a href="aggregations.html#handlers.aggregations.ImbalanceBars.get_expected_probability">get_expected_probability() (handlers.aggregations.ImbalanceBars method)</a>
+</li>
+      <li><a href="aggregations.html#handlers.aggregations.ImbalanceBars.get_expected_size">get_expected_size() (handlers.aggregations.ImbalanceBars method)</a>
+</li>
       <li><a href="binpan.html#binpan.binpan.Symbol.get_fees">get_fees() (binpan.binpan.Symbol method)</a>
 
       <ul>
@@ -409,10 +421,10 @@
 </li>
       <li><a href="wallet.html#handlers.wallet.get_margin_account_details">get_margin_account_details() (in module handlers.wallet)</a>
 </li>
-      <li><a href="wallet.html#handlers.wallet.get_margin_balances">get_margin_balances() (in module handlers.wallet)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="wallet.html#handlers.wallet.get_margin_balances">get_margin_balances() (in module handlers.wallet)</a>
+</li>
       <li><a href="wallet.html#handlers.wallet.get_margin_balances_total_value">get_margin_balances_total_value() (in module handlers.wallet)</a>
 </li>
       <li><a href="wallet.html#handlers.wallet.get_margin_borrowed_balances">get_margin_borrowed_balances() (in module handlers.wallet)</a>
@@ -619,8 +631,12 @@
 </li>
       <li><a href="aggregations.html#handlers.aggregations.imbalance_bars_fixed">imbalance_bars_fixed() (in module handlers.aggregations)</a>
 </li>
+      <li><a href="aggregations.html#handlers.aggregations.ImbalanceBars">ImbalanceBars (class in handlers.aggregations)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="aggregations.html#handlers.aggregations.ImbalanceBars.initialize_startup_variables">initialize_startup_variables() (handlers.aggregations.ImbalanceBars method)</a>
+</li>
       <li><a href="binpan.html#binpan.binpan.Symbol.insert_indicator">insert_indicator() (binpan.binpan.Symbol method)</a>
 </li>
       <li><a href="redis_fetch.html#handlers.redis_fetch.insert_line_before_index_in_list">insert_line_before_index_in_list() (in module handlers.redis_fetch)</a>
@@ -736,6 +752,8 @@
 <h2 id="O">O</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="aggregations.html#handlers.aggregations.ohlc_bars">ohlc_bars() (in module handlers.aggregations)</a>
+</li>
       <li><a href="aggregations.html#handlers.aggregations.ohlc_group">ohlc_group() (in module handlers.aggregations)</a>
 </li>
   </ul></td>
@@ -836,6 +854,8 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="aggregations.html#handlers.aggregations.ImbalanceBars.sampling_loop">sampling_loop() (handlers.aggregations.ImbalanceBars method)</a>
+</li>
       <li><a href="binpan.html#binpan.binpan.Symbol.save_agg_trades_csv">save_agg_trades_csv() (binpan.binpan.Symbol method)</a>
 </li>
       <li><a href="binpan.html#binpan.binpan.Symbol.save_atomic_trades_csv">save_atomic_trades_csv() (binpan.binpan.Symbol method)</a>
@@ -936,15 +956,17 @@
 </li>
       <li><a href="messages.html#handlers.messages.telegram_bot_send_text">telegram_bot_send_text() (in module handlers.messages)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="messages.html#handlers.messages.telegram_parse_dataframe_markdown">telegram_parse_dataframe_markdown() (in module handlers.messages)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="messages.html#handlers.messages.telegram_parse_dict">telegram_parse_dict() (in module handlers.messages)</a>
 </li>
       <li><a href="messages.html#handlers.messages.telegram_parse_order_markdown">telegram_parse_order_markdown() (in module handlers.messages)</a>
 </li>
       <li><a href="aggregations.html#handlers.aggregations.tick_bars">tick_bars() (in module handlers.aggregations)</a>
+</li>
+      <li><a href="aggregations.html#handlers.aggregations.tick_imbalance_bars_chat_gpt">tick_imbalance_bars_chat_gpt() (in module handlers.aggregations)</a>
 </li>
       <li><a href="binpan.html#binpan.binpan.Symbol.tick_interval">tick_interval() (binpan.binpan.Symbol method)</a>
 </li>

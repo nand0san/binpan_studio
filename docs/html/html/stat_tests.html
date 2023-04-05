@@ -94,7 +94,7 @@
 <li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quest.html">Requests Module</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Statistical Tests and Tools</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#calculations">Calculations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#module-handlers.stat_tests">Aggregations Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tags.html">Tags &amp; Backtesting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Module</a></li>
@@ -111,21 +111,8 @@
     <div class="sy-scrollbar px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4">
   <div class="localtoc">
     <h3>Table of Contents</h3>
-    <ul>
-<li><a class="reference internal" href="#autocorrelation-coefficient">autocorrelation_coefficient</a></li>
-<li><a class="reference internal" href="#compute-variances">compute_variances</a></li>
-<li><a class="reference internal" href="#jarque-bera-test">jarque_bera_test</a></li>
-<li><a class="reference internal" href="#notes">Notes</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#calculations">Calculations</a><ul>
-<li><a class="reference internal" href="#ema-numpy">ema_numpy</a></li>
-<li><a class="reference internal" href="#sma-numpy">sma_numpy</a></li>
-<li><a class="reference internal" href="#ema-numba">ema_numba</a></li>
-<li><a class="reference internal" href="#sma-numba">sma_numba</a></li>
-<li><a class="reference internal" href="#id1">Notes</a></li>
-</ul>
-
+    </li>
+<li><a class="reference internal" href="#module-handlers.stat_tests">Aggregations Module</a>
 
   </div><div id="ethical-ad-placement"></div>
     </div>
@@ -137,14 +124,42 @@
         <article class="yue" role="main">
           <section id="statistical-tests-and-tools">
 <h1>Statistical Tests and Tools<a class="headerlink" href="#statistical-tests-and-tools" title="Permalink to this heading">¶</a></h1>
-<p>This module provides statistical tests and tools for financial data analysis.</p>
-<p>This module can be imported:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="kn">from</span> <span class="nn">handlers</span> <span class="kn">import</span> <span class="n">stat_tests</span>
-</span></pre></div>
+</section>
+<section id="module-handlers.stat_tests">
+<span id="aggregations-module"></span><h1>Aggregations Module<a class="headerlink" href="#module-handlers.stat_tests" title="Permalink to this heading">¶</a></h1>
+<p>Statistical tests and tools.</p>
+<p><strong>Functions:</strong></p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.stat_tests.autocorrelation_coefficient" title="handlers.stat_tests.autocorrelation_coefficient"><code class="xref py py-obj docutils literal notranslate"><span class="pre">autocorrelation_coefficient</span></code></a>(data)</p></td>
+<td><p>Calculate the autocorrelation coefficient of the returns in a pandas DataFrame.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.stat_tests.compute_variances" title="handlers.stat_tests.compute_variances"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_variances</span></code></a>(data)</p></td>
+<td><p>Compute the hourly resampled bars variance and variance of variances for a given OHLC DataFrame.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.stat_tests.jarque_bera_test" title="handlers.stat_tests.jarque_bera_test"><code class="xref py py-obj docutils literal notranslate"><span class="pre">jarque_bera_test</span></code></a>(data)</p></td>
+<td><p>Perform the Jarque-Bera test for normality on the returns of an OHLC DataFrame.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.stat_tests.ema_numpy" title="handlers.stat_tests.ema_numpy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ema_numpy</span></code></a>(arr, window)</p></td>
+<td><p>Calculate the Exponential Moving Average (EMA) of the given array using NumPy.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.stat_tests.sma_numpy" title="handlers.stat_tests.sma_numpy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sma_numpy</span></code></a>(arr, window)</p></td>
+<td><p>Calculate the Simple Moving Average (SMA) of the given array using NumPy.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.stat_tests.ema_numba" title="handlers.stat_tests.ema_numba"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ema_numba</span></code></a>(arr, window)</p></td>
+<td><p>Calculate the Exponential Moving Average (EMA) of the given array using NumPy.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.stat_tests.sma_numba" title="handlers.stat_tests.sma_numba"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sma_numba</span></code></a>(arr, window)</p></td>
+<td><p>Calculate the Simple Moving Average (SMA) of the given array using NumPy.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
-<span class="target" id="module-handlers.stat_tests"></span><p>Statistical tests and tools.</p>
-<section id="autocorrelation-coefficient">
-<h2>autocorrelation_coefficient<a class="headerlink" href="#autocorrelation-coefficient" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.stat_tests.autocorrelation_coefficient">
 <span class="sig-prename descclassname"><span class="pre">handlers.stat_tests.</span></span><span class="sig-name descname"><span class="pre">autocorrelation_coefficient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.stat_tests.autocorrelation_coefficient" title="Permalink to this definition">¶</a></dt>
@@ -166,9 +181,6 @@ of one indicates perfect positive correlation and a value of negative one indica
 negative correlation.</p>
 </dd></dl>
 
-</section>
-<section id="compute-variances">
-<h2>compute_variances<a class="headerlink" href="#compute-variances" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.stat_tests.compute_variances">
 <span class="sig-prename descclassname"><span class="pre">handlers.stat_tests.</span></span><span class="sig-name descname"><span class="pre">compute_variances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.stat_tests.compute_variances" title="Permalink to this definition">¶</a></dt>
@@ -192,9 +204,6 @@ variance of the returns is then calculated for each hour, and the variance of th
 calculated and returned as <cite>hourly_variances</cite>.</p>
 </dd></dl>
 
-</section>
-<section id="jarque-bera-test">
-<h2>jarque_bera_test<a class="headerlink" href="#jarque-bera-test" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.stat_tests.jarque_bera_test">
 <span class="sig-prename descclassname"><span class="pre">handlers.stat_tests.</span></span><span class="sig-name descname"><span class="pre">jarque_bera_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.stat_tests.jarque_bera_test" title="Permalink to this definition">¶</a></dt>
@@ -219,19 +228,6 @@ distribution. Therefore, a small p-value (e.g., less than 0.05) indicates that t
 and the data is not normally distributed.</p>
 </dd></dl>
 
-</section>
-<section id="notes">
-<h2>Notes<a class="headerlink" href="#notes" title="Permalink to this heading">¶</a></h2>
-<p>The <cite>autocorrelation_coefficient</cite> function calculates the autocorrelation coefficient of the returns in a pandas DataFrame.</p>
-<p>The <cite>compute_variances</cite> function calculates the hourly resampled bars variance and variance of variances for a given OHLC DataFrame.</p>
-<p>The <cite>jarque_bera_test</cite> function performs the Jarque-Bera test for normality on the returns of an OHLC DataFrame.</p>
-<p>The null hypothesis of the Jarque-Bera test is that the sample of data being tested is drawn from a normal distribution. Therefore, a small p-value (e.g., less than 0.05) indicates that the null hypothesis is rejected and the data is not normally distributed.</p>
-</section>
-</section>
-<section id="calculations">
-<h1>Calculations<a class="headerlink" href="#calculations" title="Permalink to this heading">¶</a></h1>
-<section id="ema-numpy">
-<h2>ema_numpy<a class="headerlink" href="#ema-numpy" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.stat_tests.ema_numpy">
 <span class="sig-prename descclassname"><span class="pre">handlers.stat_tests.</span></span><span class="sig-name descname"><span class="pre">ema_numpy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#handlers.stat_tests.ema_numpy" title="Permalink to this definition">¶</a></dt>
@@ -262,9 +258,6 @@ and the data is not normally distributed.</p>
 </div>
 </dd></dl>
 
-</section>
-<section id="sma-numpy">
-<h2>sma_numpy<a class="headerlink" href="#sma-numpy" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.stat_tests.sma_numpy">
 <span class="sig-prename descclassname"><span class="pre">handlers.stat_tests.</span></span><span class="sig-name descname"><span class="pre">sma_numpy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#handlers.stat_tests.sma_numpy" title="Permalink to this definition">¶</a></dt>
@@ -295,9 +288,6 @@ and the data is not normally distributed.</p>
 </div>
 </dd></dl>
 
-</section>
-<section id="ema-numba">
-<h2>ema_numba<a class="headerlink" href="#ema-numba" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.stat_tests.ema_numba">
 <span class="sig-prename descclassname"><span class="pre">handlers.stat_tests.</span></span><span class="sig-name descname"><span class="pre">ema_numba</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#handlers.stat_tests.ema_numba" title="Permalink to this definition">¶</a></dt>
@@ -321,9 +311,6 @@ window: The window size for the EMA calculation.</p>
 </div>
 </dd></dl>
 
-</section>
-<section id="sma-numba">
-<h2>sma_numba<a class="headerlink" href="#sma-numba" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.stat_tests.sma_numba">
 <span class="sig-prename descclassname"><span class="pre">handlers.stat_tests.</span></span><span class="sig-name descname"><span class="pre">sma_numba</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#handlers.stat_tests.sma_numba" title="Permalink to this definition">¶</a></dt>
@@ -347,13 +334,6 @@ window: The window size for the SMA calculation.</p>
 </div>
 </dd></dl>
 
-</section>
-<section id="id1">
-<h2>Notes<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h2>
-<p>The ema_numpy and sma_numpy functions use numpy library for the calculations, and are suitable for small to medium-sized datasets.</p>
-<p>The ema_numba and sma_numba functions use numba library for the calculations, and are optimized for larger datasets.</p>
-<p>All functions require the input data to be a 1D numpy array of numerical values.</p>
-</section>
 </section>
 
         </article>

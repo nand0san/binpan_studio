@@ -62,9 +62,6 @@
         <i class="i-icon theme-icon"></i>
       </button>
       
-        <button class="js-menu xl:hidden flex items-center ml-1" aria-label="Show table of contents" type="button" aria-controls="rside" aria-expanded="false">
-          <i class="i-icon outdent"></i>
-        </button>
     </div>
   </div>
 </div>
@@ -108,18 +105,7 @@
     <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
       <i class="i-icon close"></i>
     </button>
-    <div class="sy-scrollbar px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4">
-  <div class="localtoc">
-    <h3>Table of Contents</h3>
-    <ul>
-<li><a class="reference internal" href="#aggregations">Aggregations</a></li>
-<li><a class="reference internal" href="#dataframe-tools">DataFrame Tools</a></li>
-<li><a class="reference internal" href="#concepts">Concepts</a></li>
-<li><a class="reference internal" href="#afml-methods">AFML Methods</a></li>
-</ul>
-
-
-  </div><div id="ethical-ad-placement"></div>
+    <div class="sy-scrollbar px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div id="ethical-ad-placement"></div>
     </div>
   </aside>
   <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
@@ -127,16 +113,85 @@
     <div class="flex flex-col break-words justify-between">
       <div class="min-w-0 max-w-6xl px-6 pb-6 pt-6 xl:px-12">
         <article class="yue" role="main">
-          <section id="aggregations-module">
-<h1>Aggregations Module<a class="headerlink" href="#aggregations-module" title="Permalink to this heading">¶</a></h1>
-<p>This module can manage data aggregation.</p>
-<p>This module can be imported:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="kn">from</span> <span class="nn">handlers</span> <span class="kn">import</span> <span class="n">aggregations</span>
-</span></pre></div>
+          <section id="module-handlers.aggregations">
+<span id="aggregations-module"></span><h1>Aggregations Module<a class="headerlink" href="#module-handlers.aggregations" title="Permalink to this heading">¶</a></h1>
+<p>Data Aggregation.</p>
+<p><strong>Functions:</strong></p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.aggregations.generate_count_grouper_column" title="handlers.aggregations.generate_count_grouper_column"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_count_grouper_column</span></code></a>(data, ...)</p></td>
+<td><p>It adds a column with a value for each rows count.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.aggregations.ohlc_group" title="handlers.aggregations.ohlc_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ohlc_group</span></code></a>(data, column_to_ohlc, group_column)</p></td>
+<td><p>Creates  OHLC columns for a column based on group by other column with discrete values.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.aggregations.sum_split_by_boolean_column_and_group" title="handlers.aggregations.sum_split_by_boolean_column_and_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sum_split_by_boolean_column_and_group</span></code></a>(data)</p></td>
+<td><p>Splits the sum of a numeric column into two new columns based on a boolean column and groups the data using another column.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.aggregations.count_trues_cumulative" title="handlers.aggregations.count_trues_cumulative"><code class="xref py py-obj docutils literal notranslate"><span class="pre">count_trues_cumulative</span></code></a>(data, bool_column, ...)</p></td>
+<td><p>Add a new column to the DataFrame with cumulative numbers for each True value in a boolean column.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.aggregations.drop_aggregated" title="handlers.aggregations.drop_aggregated"><code class="xref py py-obj docutils literal notranslate"><span class="pre">drop_aggregated</span></code></a>(data, group_column[, by])</p></td>
+<td><p>Drop lines except the first/last/min/max etc row of each group_column streak.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.aggregations.tag_by_accumulation" title="handlers.aggregations.tag_by_accumulation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tag_by_accumulation</span></code></a>(trades, threshold[, ...])</p></td>
+<td><p>Creates integer sequence by column value threshold accumulation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.aggregations.time_index_from_timestamps" title="handlers.aggregations.time_index_from_timestamps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time_index_from_timestamps</span></code></a>(data[, ...])</p></td>
+<td><p>Assumes existing timestamp column or at least Open timestamp column.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.aggregations.columns_restriction" title="handlers.aggregations.columns_restriction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">columns_restriction</span></code></a>(data, mode[, extra])</p></td>
+<td><p>Filter columns by preset.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.aggregations.generate_volume_column" title="handlers.aggregations.generate_volume_column"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_volume_column</span></code></a>(data, add_cols[, ...])</p></td>
+<td><p>Add two columns to generate volume of base.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.aggregations.sign_of_price" title="handlers.aggregations.sign_of_price"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sign_of_price</span></code></a>(data[, col_name])</p></td>
+<td><p>Creates a new dataframe with a column with the sign of the price by each trade.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.aggregations.tick_bars" title="handlers.aggregations.tick_bars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tick_bars</span></code></a>(trades, size)</p></td>
+<td><p>Creates Tick Bars OHLC bars from trades-</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.aggregations.volume_bars" title="handlers.aggregations.volume_bars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">volume_bars</span></code></a>(trades, threshold)</p></td>
+<td><p>Creates Volume Bars OHLC bars from trades.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.aggregations.dollar_bars" title="handlers.aggregations.dollar_bars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dollar_bars</span></code></a>(trades, threshold)</p></td>
+<td><p>Creates Dollar (or quote) Bars OHLC bars from trades.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.aggregations.ohlc_bars" title="handlers.aggregations.ohlc_bars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ohlc_bars</span></code></a>(rows_with_bar_counter, index[, mode])</p></td>
+<td><p>Generate an OHLC dataframe from a trades dataframe with a column containing sampled numeric tags for each bar's aggregation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.aggregations.imbalance_bars_divergent" title="handlers.aggregations.imbalance_bars_divergent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">imbalance_bars_divergent</span></code></a>(trades, ...)</p></td>
+<td><p>Generates candles by grouping each accumulated imbalance defined by:</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.aggregations.imbalance_bars_fixed" title="handlers.aggregations.imbalance_bars_fixed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">imbalance_bars_fixed</span></code></a>(trades, imbalance)</p></td>
+<td><p>Generates candles by grouping each accumulated fixed imbalance threshold defined by:</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.aggregations.tick_imbalance_bars_chat_gpt" title="handlers.aggregations.tick_imbalance_bars_chat_gpt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tick_imbalance_bars_chat_gpt</span></code></a>(trades[, window])</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
 </div>
-<span class="target" id="module-handlers.aggregations"></span><p>Data Aggregation.</p>
-<section id="aggregations">
-<h2>Aggregations<a class="headerlink" href="#aggregations" title="Permalink to this heading">¶</a></h2>
+<p><strong>Classes:</strong></p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.aggregations.ImbalanceBars" title="handlers.aggregations.ImbalanceBars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ImbalanceBars</span></code></a>(trades, bar_type[, method, ...])</p></td>
+<td><p>Sample imbalance bars.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.aggregations.generate_count_grouper_column">
 <span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">generate_count_grouper_column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grouper_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.aggregations.generate_count_grouper_column" title="Permalink to this definition">¶</a></dt>
@@ -175,19 +230,45 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.aggregations.sum_split_by_boolean_column_and_group">
-<span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">sum_split_by_boolean_column_and_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_split_sum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bool_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.aggregations.sum_split_by_boolean_column_and_group" title="Permalink to this definition">¶</a></dt>
-<dd><p>If a boolean column in a dataframe with a grouper column, it splits data into two columns for true and false by the grouper.</p>
+<span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">sum_split_by_boolean_column_and_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_split_sum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Qunantity'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bool_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Buyer</span> <span class="pre">was</span> <span class="pre">maker'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.aggregations.sum_split_by_boolean_column_and_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Splits the sum of a numeric column into two new columns based on a boolean column and groups the data using another column.</p>
+<p>This function is useful for generating two new columns, one for the true values and another for the false values, with the sum
+of the specified numeric column for each group and filling the remaining cells with NaNs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>pd.Dataframe</em>) – A dataframe with at least 3 columns.</p></li>
-<li><p><strong>column_to_split_sum</strong> (<em>str</em>) – Numeric column with data to sum by group and split by boolean column.</p></li>
-<li><p><strong>bool_col</strong> (<em>str</em>) – Column to define splitting.</p></li>
-<li><p><strong>group_column</strong> (<em>str</em>) – This column will be the grouping key.</p></li>
+<li><p><strong>data</strong> (<em>pd.DataFrame</em>) – A dataframe with at least 3 columns.</p></li>
+<li><p><strong>column_to_split_sum</strong> (<em>str</em><em>, </em><em>optional</em>) – Numeric column with data to sum by group and split by boolean column, defaults to “Quantity”.</p></li>
+<li><p><strong>bool_col</strong> (<em>str</em><em>, </em><em>optional</em>) – Column to define splitting, defaults to “Buyer was maker”.</p></li>
+<li><p><strong>group_column</strong> (<em>str</em><em>, </em><em>optional</em>) – This column will be the grouping key, defaults to “group”.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A copy of the dataframe with splitted sum by group from column to split sum.</p>
+<dd class="field-even"><p>A copy of the dataframe with splitted sum by group from the column to split sum.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.aggregations.count_trues_cumulative">
+<span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">count_trues_cumulative</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bool_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.aggregations.count_trues_cumulative" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a new column to the DataFrame with cumulative numbers for each True value in a boolean column.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>pd.DataFrame</em>) – The input DataFrame.</p></li>
+<li><p><strong>bool_column</strong> (<em>str</em>) – The name of the boolean column to evaluate.</p></li>
+<li><p><strong>new_column</strong> (<em>str</em>) – The name of the new column to store the cumulative numbers for True values.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A new DataFrame with an additional column containing the cumulative numbers for True values.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
 </dd>
 </dl>
 </dd></dl>
@@ -196,6 +277,7 @@
 <dt class="sig sig-object py" id="handlers.aggregations.drop_aggregated">
 <span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">drop_aggregated</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'last'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.aggregations.drop_aggregated" title="Permalink to this definition">¶</a></dt>
 <dd><p>Drop lines except the first/last/min/max etc row of each group_column streak.</p>
+<p>It assumes that the grouping column is a serie of integers to group it by blocks.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -229,18 +311,16 @@
 </dl>
 </dd></dl>
 
-</section>
-<section id="dataframe-tools">
-<h2>DataFrame Tools<a class="headerlink" href="#dataframe-tools" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.aggregations.time_index_from_timestamps">
-<span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">time_index_from_timestamps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Europe/Madrid'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.aggregations.time_index_from_timestamps" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">time_index_from_timestamps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Europe/Madrid'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.aggregations.time_index_from_timestamps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Assumes existing timestamp column or at least Open timestamp column.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>pd.Dataframe</em>) – A dataframe.</p></li>
 <li><p><strong>drop_col</strong> (<em>bool</em>) – Drop column applied as index.</p></li>
+<li><p><strong>index_name</strong> (<em>str</em>) – Name for the resulting index.</p></li>
 <li><p><strong>timezone</strong> (<em>str</em>) – The index of the pandas dataframe in the object can be converted to any timezone, i.e. “Europe/Madrid”
 - TZ database: <a class="reference external" href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones">https://en.wikipedia.org/wiki/List_of_tz_database_time_zones</a></p></li>
 </ul>
@@ -288,9 +368,6 @@
 </dl>
 </dd></dl>
 
-</section>
-<section id="concepts">
-<h2>Concepts<a class="headerlink" href="#concepts" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.aggregations.sign_of_price">
 <span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">sign_of_price</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'sign'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.aggregations.sign_of_price" title="Permalink to this definition">¶</a></dt>
@@ -314,11 +391,6 @@
 </dl>
 </dd></dl>
 
-</section>
-<section id="afml-methods">
-<h2>AFML Methods<a class="headerlink" href="#afml-methods" title="Permalink to this heading">¶</a></h2>
-<p>This methods manage data following the Chapter 2 of the book Advances in Financial
-Machine Learning by Macros López de Prado.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.aggregations.tick_bars">
 <span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">tick_bars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.aggregations.tick_bars" title="Permalink to this definition">¶</a></dt>
@@ -368,6 +440,121 @@ Machine Learning by Macros López de Prado.</p>
 <dd class="field-even"><p>A dataframe sampled with the new bars sampling.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.aggregations.ohlc_bars">
+<span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">ohlc_bars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rows_with_bar_counter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'IB'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.aggregations.ohlc_bars" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate an OHLC dataframe from a trades dataframe with a column containing sampled numeric tags for each bar’s aggregation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rows_with_bar_counter</strong> (<em>list</em>) – A list of trades with a column containing bar numbers to group into OHLC bars.</p></li>
+<li><p><strong>index</strong> (<em>pd.Index</em>) – Index for the resulting dataframe.</p></li>
+<li><p><strong>mode</strong> (<em>str</em>) – Presets are: TB, VB, DB, VIB, DIB, TRB, VRB, DRB. All from chapter 2 of AFML book (Marcos López de Prado).
+<a class="reference external" href="https://www.amazon.com/-/es/Marcos-Lopez-Prado/dp/1119482089">https://www.amazon.com/-/es/Marcos-Lopez-Prado/dp/1119482089</a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dataframe with OHLC bars.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="handlers.aggregations.ImbalanceBars">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">ImbalanceBars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bar_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'ema'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixed_imbalance_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">21</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boot_trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adjust_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.aggregations.ImbalanceBars" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Sample imbalance bars.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>trades</strong> (<em>pd.DataFrame</em>) – A dataframe with trades, atomic or aggregated.</p></li>
+<li><p><strong>bar_type</strong> (<em>str</em>) – Can be ‘imbalance’, ‘volume’, ‘dollar’.</p></li>
+<li><p><strong>method</strong> (<em>str</em>) – Expected imbalance calculation method can be ‘fix’, ‘sma’, ‘ema’</p></li>
+<li><p><strong>fixed_imbalance_threshold</strong> (<em>int</em>) – A threshold for fixed imbalance</p></li>
+<li><p><strong>window</strong> (<em>int</em>) – A rolling window size for moving averages.</p></li>
+<li><p><strong>boot_trades</strong> (<em>int</em>) – Number of trades to use for initial imbalance calculation.</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – Prints data while computing bars.</p></li>
+<li><p><strong>adjust_threshold</strong> (<em>bool</em>) – If true, threshold will be multiplied by first price. Ca be useful with volume bars.</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Methods:</strong></p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.aggregations.ImbalanceBars.initialize_startup_variables" title="handlers.aggregations.ImbalanceBars.initialize_startup_variables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">initialize_startup_variables</span></code></a>()</p></td>
+<td><p>Initialize startup variables based on the chosen method.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.aggregations.ImbalanceBars.get_expected_size" title="handlers.aggregations.ImbalanceBars.get_expected_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_expected_size</span></code></a>()</p></td>
+<td><p>Calculate the expected size of the imbalance bars using the chosen method.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.aggregations.ImbalanceBars.get_expected_probability" title="handlers.aggregations.ImbalanceBars.get_expected_probability"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_expected_probability</span></code></a>()</p></td>
+<td><p>Calculate the expected probability of the imbalance bars using the chosen method.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.aggregations.ImbalanceBars.get_expected_imbalance" title="handlers.aggregations.ImbalanceBars.get_expected_imbalance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_expected_imbalance</span></code></a>()</p></td>
+<td><p>Calculate the expected imbalance value based on the bar type and chosen method.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.aggregations.ImbalanceBars.sampling_loop" title="handlers.aggregations.ImbalanceBars.sampling_loop"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sampling_loop</span></code></a>()</p></td>
+<td><p>Main sampling loop to iterate through trades and create imbalance bars.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.aggregations.ImbalanceBars.decide_sampling" title="handlers.aggregations.ImbalanceBars.decide_sampling"><code class="xref py py-obj docutils literal notranslate"><span class="pre">decide_sampling</span></code></a>(my_molecule_sign, ...)</p></td>
+<td><p>Decide whether to sample the current bar and update variables accordingly.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.aggregations.ImbalanceBars.construct_bars" title="handlers.aggregations.ImbalanceBars.construct_bars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">construct_bars</span></code></a>()</p></td>
+<td><p>Construct the resulting imbalance bars DataFrame.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="handlers.aggregations.ImbalanceBars.initialize_startup_variables">
+<span class="sig-name descname"><span class="pre">initialize_startup_variables</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#handlers.aggregations.ImbalanceBars.initialize_startup_variables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize startup variables based on the chosen method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="handlers.aggregations.ImbalanceBars.get_expected_size">
+<span class="sig-name descname"><span class="pre">get_expected_size</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.aggregations.ImbalanceBars.get_expected_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the expected size of the imbalance bars using the chosen method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="handlers.aggregations.ImbalanceBars.get_expected_probability">
+<span class="sig-name descname"><span class="pre">get_expected_probability</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.aggregations.ImbalanceBars.get_expected_probability" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the expected probability of the imbalance bars using the chosen method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="handlers.aggregations.ImbalanceBars.get_expected_imbalance">
+<span class="sig-name descname"><span class="pre">get_expected_imbalance</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.aggregations.ImbalanceBars.get_expected_imbalance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the expected imbalance value based on the bar type and chosen method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="handlers.aggregations.ImbalanceBars.sampling_loop">
+<span class="sig-name descname"><span class="pre">sampling_loop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#handlers.aggregations.ImbalanceBars.sampling_loop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main sampling loop to iterate through trades and create imbalance bars.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="handlers.aggregations.ImbalanceBars.decide_sampling">
+<span class="sig-name descname"><span class="pre">decide_sampling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">my_molecule_sign</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">my_molecule_cum_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#handlers.aggregations.ImbalanceBars.decide_sampling" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decide whether to sample the current bar and update variables accordingly.</p>
+<p>Sample surpassing data to the next bar.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="handlers.aggregations.ImbalanceBars.construct_bars">
+<span class="sig-name descname"><span class="pre">construct_bars</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#handlers.aggregations.ImbalanceBars.construct_bars" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct the resulting imbalance bars DataFrame.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py function">
@@ -432,7 +619,11 @@ threshold in other function.</p>
 </dl>
 </dd></dl>
 
-</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.aggregations.tick_imbalance_bars_chat_gpt">
+<span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">tick_imbalance_bars_chat_gpt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.aggregations.tick_imbalance_bars_chat_gpt" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </section>
 
         </article>
