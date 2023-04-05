@@ -34,16 +34,32 @@ tick_interval_values = ['1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '6h', 
 
 # time control functions
 
-def convert_utc_ms_column_to_time_zone(df: pd.DataFrame, col: str, time_zone='Europe/Madrid') -> pd.Series:
+# def convert_utc_ms_column_to_time_zone(df: pd.DataFrame, col: str, time_zone='Europe/Madrid') -> pd.Series:
+#     """
+#     Replace a column from milliseconds to datetime with time zone.
+#     :param df: A pandas dataframe.
+#     :param col: Name of the column to replace.
+#     :param time_zone: A time zone like 'Europe/Madrid'
+#     :return: Modified dataframe.
+#     """
+#     df[col] = pd.to_datetime(df[col], unit='ms')
+#     return df[col].dt.tz_localize('utc').dt.tz_convert(time_zone)
+def convert_utc_ms_column_to_time_zone(df: pd.DataFrame, col: str, time_zone='Europe/Madrid', ambiguous='infer') -> pd.Series:
     """
     Replace a column from milliseconds to datetime with time zone.
     :param df: A pandas dataframe.
     :param col: Name of the column to replace.
     :param time_zone: A time zone like 'Europe/Madrid'
+    :param ambiguous: A string or list to resolve ambiguous times during DST transitions. Default is 'infer'.
     :return: Modified dataframe.
     """
     df[col] = pd.to_datetime(df[col], unit='ms')
-    return df[col].dt.tz_localize('utc').dt.tz_convert(time_zone)
+
+    # Add timezone check
+    if df[col].dt.tz is None:
+        return df[col].dt.tz_localize('utc', ambiguous=ambiguous).dt.tz_convert(time_zone)
+    else:
+        return df[col].dt.tz_convert(time_zone)
 
 
 def convert_datetime_to_string(dt: datetime) -> str:

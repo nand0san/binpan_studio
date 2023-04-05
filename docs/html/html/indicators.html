@@ -4,22 +4,39 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Indicators Module - BinPan 0.4.11 documentation</title>
-    <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Market Module" href="market.html" /><link rel="prev" title="Files Module" href="files.html" /><link rel="stylesheet" href="_static/pygments.css?v=2023.3.11" type="text/css" />
-    <link rel="stylesheet" href="_static/shibuya.css?v=2023.3.11" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Market Module" href="market.html" /><link rel="prev" title="Files Module" href="files.html" />
+  <script>
+    const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const sessionTheme = sessionStorage['_theme']
+    if (sessionTheme) {
+      document.documentElement.classList.add(sessionTheme)
+    } else if (isDarkTheme) {
+      document.documentElement.classList.add('dark')
+    }
+  </script><link rel="stylesheet" href="_static/pygments.css?v=2023.3.19" type="text/css" />
+    <link rel="stylesheet" href="_static/shibuya.css?v=2023.3.19" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/style.css" />
-    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=2023.3.11" />
+    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=2023.3.19" />
     <style>
 :root {
   --sy-f-sys:-apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Droid Sans, Helvetica Neue;--sy-f-cjk:PingFang SC, Hiragino Sans GB, Droid Sans Fallback, Microsoft YaHei;--sy-f-heading:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-text:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-mono:Menlo, Monaco, Consolas, "Courier New", monospace;--sy-c-divider:rgba(var(--sy-rc-text), 0.1);--sy-c-divider-weak:rgba(var(--sy-rc-text), 0.05);--sy-c-border:rgba(var(--sy-rc-text), 0.14);--sy-s-banner-height:0rem;--sy-s-navbar-height:4rem;--sy-s-offset-top:calc(var(--sy-s-navbar-height) + var(--sy-s-banner-height));--sy-c-link:rgb(var(--sy-rc-theme));
   --sy-rc-theme:143, 118, 214;--sy-rc-bg:255, 255, 255;--sy-rc-invert:0, 0, 0;--sy-rc-text:0, 0, 0;--sy-c-bg:#fff;--sy-c-bg-weak:#f9f9f9;--sy-c-text:#374151;--sy-c-text-weak:#6b7280;--sy-c-heading:#111827;--sy-c-bold:#111827;--sy-c-foot-text:#232226;--sy-c-foot-bg:#fafafa;--sy-c-foot-divider:#f0f0f0;
 }
-@media not print {
-  html.light {
+@media (prefers-color-scheme: light) {
+  :root {
     --sy-rc-theme:143, 118, 214;--sy-rc-bg:255, 255, 255;--sy-rc-invert:0, 0, 0;--sy-rc-text:0, 0, 0;--sy-c-bg:#fff;--sy-c-bg-weak:#f9f9f9;--sy-c-text:#374151;--sy-c-text-weak:#6b7280;--sy-c-heading:#111827;--sy-c-bold:#111827;--sy-c-foot-text:#232226;--sy-c-foot-bg:#fafafa;--sy-c-foot-divider:#f0f0f0;
   }
-  html.dark {
+}
+@media (prefers-color-scheme: dark) {
+  :root {
     --sy-rc-theme:143, 118, 214;--sy-rc-bg:18, 18, 18;--sy-rc-invert:255, 255, 255;--sy-rc-text:255, 255, 255;--sy-c-bg:#121212;--sy-c-bg-weak:#212833;--sy-c-text:#cedbea;--sy-c-text-weak:#77889f;--sy-c-heading:#ebf0f4;--sy-c-bold:#ebf0f4;--sy-c-foot-text:#eee;--sy-c-foot-bg:#000;--sy-c-foot-divider:#000;
   }
+}
+html.light {
+  --sy-rc-theme:143, 118, 214;--sy-rc-bg:255, 255, 255;--sy-rc-invert:0, 0, 0;--sy-rc-text:0, 0, 0;--sy-c-bg:#fff;--sy-c-bg-weak:#f9f9f9;--sy-c-text:#374151;--sy-c-text-weak:#6b7280;--sy-c-heading:#111827;--sy-c-bold:#111827;--sy-c-foot-text:#232226;--sy-c-foot-bg:#fafafa;--sy-c-foot-divider:#f0f0f0;
+}
+html.dark {
+  --sy-rc-theme:143, 118, 214;--sy-rc-bg:18, 18, 18;--sy-rc-invert:255, 255, 255;--sy-rc-text:255, 255, 255;--sy-c-bg:#121212;--sy-c-bg-weak:#212833;--sy-c-text:#cedbea;--sy-c-text-weak:#77889f;--sy-c-heading:#ebf0f4;--sy-c-bold:#ebf0f4;--sy-c-foot-text:#eee;--sy-c-foot-bg:#000;--sy-c-foot-divider:#000;
 }
 </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -94,7 +111,6 @@
 <li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quest.html">Requests Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stat_tests.html">Statistical Tests and Tools</a></li>
-<li class="toctree-l1"><a class="reference internal" href="stat_tests.html#calculations">Calculations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tags.html">Tags &amp; Backtesting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Module</a></li>
@@ -112,9 +128,23 @@
   <div class="localtoc">
     <h3>Table of Contents</h3>
     <ul>
-<li><a class="reference internal" href="#module-handlers.indicators">Indicators</a></li>
-<li><a class="reference internal" href="#indicators-utils">Indicators utils</a></li>
-<li><a class="reference internal" href="#indicators-from-trades">Indicators from Trades</a></li>
+<li><a class="reference internal" href="#module-handlers.indicators">Indicators</a><ul>
+<li><a class="reference internal" href="#handlers.indicators.ichimoku"><code class="docutils literal notranslate"><span class="pre">ichimoku()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.indicators.ker"><code class="docutils literal notranslate"><span class="pre">ker()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#indicators-utils">Indicators utils</a><ul>
+<li><a class="reference internal" href="#handlers.indicators.split_serie_by_position"><code class="docutils literal notranslate"><span class="pre">split_serie_by_position()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.indicators.df_splitter"><code class="docutils literal notranslate"><span class="pre">df_splitter()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.indicators.zoom_cloud_indicators"><code class="docutils literal notranslate"><span class="pre">zoom_cloud_indicators()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.indicators.shift_indicator"><code class="docutils literal notranslate"><span class="pre">shift_indicator()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.indicators.ffill_indicator"><code class="docutils literal notranslate"><span class="pre">ffill_indicator()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#indicators-from-trades">Indicators from Trades</a><ul>
+<li><a class="reference internal" href="#handlers.indicators.reversal_candles"><code class="docutils literal notranslate"><span class="pre">reversal_candles()</span></code></a></li>
+</ul>
+</li>
 </ul>
 
 
@@ -145,7 +175,7 @@ that attempts to forecast where the price may find support or resistance in the 
 <p><a class="reference external" href="https://school.stockcharts.com/doku.php?id=technical_indicators:ichimoku_cloud">https://school.stockcharts.com/doku.php?id=technical_indicators:ichimoku_cloud</a></p>
 <p><a class="reference external" href="https://www.youtube.com/watch?v=mCri-FFvZjo&amp;list=PLv-cA-4O3y97HAd9OCvVKSfvQ8kkAGKlf&amp;index=7">https://www.youtube.com/watch?v=mCri-FFvZjo&amp;list=PLv-cA-4O3y97HAd9OCvVKSfvQ8kkAGKlf&amp;index=7</a></p>
 <dl class="field-list">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>pd.DataFrame</em>) – A BinPan Symbol dataframe.</p></li>
 <li><p><strong>tenkan</strong> (<em>int</em>) – The short period. It’s the half sum of max and min price in the window. Default: 9</p></li>
@@ -156,7 +186,7 @@ before Default: 26.</p></li>
 <li><p><strong>suffix</strong> (<em>str</em>) – A decorative suffix for the name of the column created.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return pd.DataFrame</dt>
+<dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
 <dd class="field-even"><p>A pandas dataframe with columns as indicator lines.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="kn">from</span> <span class="nn">binpan</span> <span class="kn">import</span> <span class="n">binpan</span>
 </span><span id="1-2">
@@ -175,13 +205,13 @@ before Default: 26.</p></li>
 <span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">ker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">close</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="headerlink" href="#handlers.indicators.ker" title="Permalink to this definition">¶</a></dt>
 <dd><p>Kaufman’s Efficiency Ratio based in: <a class="reference external" href="https://stackoverflow.com/questions/36980238/calculating-kaufmans-efficiency-ratio-in-python-with-pandas">https://stackoverflow.com/questions/36980238/calculating-kaufmans-efficiency-ratio-in-python-with-pandas</a></p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>close</strong> (<em>pd.Series</em>) – Close prices serie.</p></li>
 <li><p><strong>window</strong> (<em>int</em>) – Window to check indicator.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return pd.Series</dt>
+<dt class="field-even">Return pd.Series<span class="colon">:</span></dt>
 <dd class="field-even"><p>Results.</p>
 </dd>
 </dl>
@@ -204,14 +234,14 @@ before Default: 26.</p></li>
 </ul>
 </div></blockquote>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>serie</strong> (<em>pd.Series</em>) – A serie to classify in reference to other serie.</p></li>
 <li><p><strong>splitter_serie</strong> (<em>pd.Series</em>) – A serie to split in two couple of series classified by position reference.</p></li>
 <li><p><strong>fill_with_zeros</strong> (<em>bool</em>) – Fill nans with zeros for splitted lines like MACD to avoid artifacts in plots.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return tuple</dt>
+<dt class="field-even">Return tuple<span class="colon">:</span></dt>
 <dd class="field-even"><p>A tuple with four series classified by upper position or lower position.</p>
 </dd>
 </dl>
@@ -223,14 +253,14 @@ before Default: 26.</p></li>
 <dd><p>Splits a dataframe y sub dataframes to plot by colored areas.</p>
 <p>Based on: <a class="reference external" href="https://stackoverflow.com/questions/64741015/plotly-how-to-color-the-fill-between-two-lines-based-on-a-condition">https://stackoverflow.com/questions/64741015/plotly-how-to-color-the-fill-between-two-lines-based-on-a-condition</a></p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>pd.DataFrame</em>) – Indicator Dataframe</p></li>
 <li><p><strong>up_column</strong> (<em>str</em>) – Name of the column to plot green when up side.</p></li>
 <li><p><strong>down_column</strong> (<em>str</em>) – Name of the column to plot green when down side.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return list</dt>
+<dt class="field-even">Return list<span class="colon">:</span></dt>
 <dd class="field-even"><p>A list with splitted dataframes to plot for.</p>
 </dd>
 </dl>
@@ -241,7 +271,7 @@ before Default: 26.</p></li>
 <span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">zoom_cloud_indicators</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plot_splitted_serie_couples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">main_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.indicators.zoom_cloud_indicators" title="Permalink to this definition">¶</a></dt>
 <dd><p>It zooms the cloud indicators in an index interval for a plot zoom.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>plot_splitted_serie_couples</strong> (<em>dict</em>) – Splitted indicators for cloud colored area plotting.</p></li>
 <li><p><strong>main_index</strong> (<em>list</em>) – The BinPan general index for cutting.</p></li>
@@ -249,7 +279,7 @@ before Default: 26.</p></li>
 <li><p><strong>end_idx</strong> (<em>int</em>) – A index to cut.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return dict</dt>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
 <dd class="field-even"><p>All indicators cut.</p>
 </dd>
 </dl>
@@ -261,13 +291,13 @@ before Default: 26.</p></li>
 <dd><p>It shifts a candle ahead by the window argument value (or backwards if negative).</p>
 <p>Just works with time indexes.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>serie</strong> (<em>pd.Series</em>) – A pandas Series.</p></li>
 <li><p><strong>window</strong> (<em>int</em>) – Times values are shifted ahead. Default is 1.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return pd.Series</dt>
+<dt class="field-even">Return pd.Series<span class="colon">:</span></dt>
 <dd class="field-even"><p>A series with index adjusted to the new shifted positions of values.</p>
 </dd>
 </dl>
@@ -278,13 +308,13 @@ before Default: 26.</p></li>
 <span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">ffill_indicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">serie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.indicators.ffill_indicator" title="Permalink to this definition">¶</a></dt>
 <dd><p>It forward fills a value through nans while a window of candles ahead.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>serie</strong> (<em>pd.Series</em>) – A pandas Series.</p></li>
 <li><p><strong>window</strong> (<em>int</em>) – Times values are shifted ahead. Default is 1.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return pd.Series</dt>
+<dt class="field-even">Return pd.Series<span class="colon">:</span></dt>
 <dd class="field-even"><p>A series with index adjusted to the new shifted positions of values.</p>
 </dd>
 </dl>
@@ -301,7 +331,7 @@ before Default: 26.</p></li>
 </dd>
 </dl>
 <dl class="field-list">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>trades</strong> (<em>pd.Series</em>) – A dataframe with trades sizes, side and prices.</p></li>
 <li><p><strong>decimal_positions</strong> (<em>int</em>) – Because this function uses integer numbers for prices, is needed to convert prices. Just steps are relevant.</p></li>
@@ -310,7 +340,7 @@ before Default: 26.</p></li>
 <li><p><strong>min_reversal</strong> (<em>int</em>) – Maximum reversal to close the candles</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return pd.DataFrame</dt>
+<dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
 <dd class="field-even"><p>A serie with the resulting candles number sequence.</p>
 <dl>
 <dt>Example:</dt><dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="kn">from</span> <span class="nn">binpan</span> <span class="kn">import</span> <span class="n">binpan</span>
@@ -387,11 +417,9 @@ before Default: 26.</p></li>
   </div>
 </footer></div>
       <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-      <script src="_static/jquery.js"></script>
-      <script src="_static/underscore.js"></script>
-      <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
       <script src="_static/doctools.js"></script>
-      <script src="_static/shibuya.js?v=2023.3.11"></script>
+      <script src="_static/sphinx_highlight.js"></script>
+      <script src="_static/shibuya.js?v=2023.3.19"></script>
     
 </body>
 </html>

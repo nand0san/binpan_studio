@@ -9,6 +9,7 @@ from os.path import expanduser
 from cpuinfo import get_cpu_info
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
+import sys
 
 
 class AesCipher(object):
@@ -128,3 +129,13 @@ def get_exchange_limits() -> dict:
     #     limits_dict[k2] = v
 
     return limits_dict
+
+
+def is_python_version_numba_supported() -> bool:
+    """
+    Verify if python version is numba supported.
+    """
+    min_version = (3, 7)
+    max_version = (3, 10)
+    current_version = sys.version_info
+    return min_version <= current_version < max_version

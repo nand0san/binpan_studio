@@ -5,7 +5,25 @@ Statistical tests and tools.
 from scipy.stats import jarque_bera
 import pandas as pd
 import numpy as np
-import numba as nb
+
+from .starters import is_python_version_numba_supported
+
+try:
+    if is_python_version_numba_supported():
+        from numba import jit
+
+    else:
+        msg = "Cannot import numba; only Python versions >=3.7,<3.11 are supported."
+        raise ImportError(msg)
+except ImportError as e:
+    print(e)
+
+    # Define a no-op decorator to replace @nb.jit
+    def jit(*args, **kwargs):
+        def decorator(func):
+            return func
+
+        return decorator
 
 
 def autocorrelation_coefficient(data: pd.DataFrame):
@@ -187,7 +205,7 @@ def sma_numpy(arr: np.ndarray, window: int) -> np.ndarray:
     return sma_padded
 
 
-@nb.jit(nopython=True)
+@jit(nopython=True)
 def ema_numba(arr: np.ndarray, window: int) -> np.ndarray:
     """
     Calculate the Exponential Moving Average (EMA) of the given array using NumPy.
@@ -219,7 +237,7 @@ def ema_numba(arr: np.ndarray, window: int) -> np.ndarray:
     return ema
 
 
-@nb.jit(nopython=True)
+@jit(nopython=True)
 def sma_numba(arr: np.ndarray, window: int) -> np.ndarray:
     """
     Calculate the Simple Moving Average (SMA) of the given array using NumPy.

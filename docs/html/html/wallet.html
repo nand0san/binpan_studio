@@ -4,22 +4,39 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Wallet Module - BinPan 0.4.11 documentation</title>
-    <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="Tags &amp; Backtesting Module" href="tags.html" /><link rel="stylesheet" href="_static/pygments.css?v=2023.3.11" type="text/css" />
-    <link rel="stylesheet" href="_static/shibuya.css?v=2023.3.11" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="Tags &amp; Backtesting Module" href="tags.html" />
+  <script>
+    const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const sessionTheme = sessionStorage['_theme']
+    if (sessionTheme) {
+      document.documentElement.classList.add(sessionTheme)
+    } else if (isDarkTheme) {
+      document.documentElement.classList.add('dark')
+    }
+  </script><link rel="stylesheet" href="_static/pygments.css?v=2023.3.19" type="text/css" />
+    <link rel="stylesheet" href="_static/shibuya.css?v=2023.3.19" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/style.css" />
-    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=2023.3.11" />
+    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=2023.3.19" />
     <style>
 :root {
   --sy-f-sys:-apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Droid Sans, Helvetica Neue;--sy-f-cjk:PingFang SC, Hiragino Sans GB, Droid Sans Fallback, Microsoft YaHei;--sy-f-heading:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-text:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-mono:Menlo, Monaco, Consolas, "Courier New", monospace;--sy-c-divider:rgba(var(--sy-rc-text), 0.1);--sy-c-divider-weak:rgba(var(--sy-rc-text), 0.05);--sy-c-border:rgba(var(--sy-rc-text), 0.14);--sy-s-banner-height:0rem;--sy-s-navbar-height:4rem;--sy-s-offset-top:calc(var(--sy-s-navbar-height) + var(--sy-s-banner-height));--sy-c-link:rgb(var(--sy-rc-theme));
   --sy-rc-theme:143, 118, 214;--sy-rc-bg:255, 255, 255;--sy-rc-invert:0, 0, 0;--sy-rc-text:0, 0, 0;--sy-c-bg:#fff;--sy-c-bg-weak:#f9f9f9;--sy-c-text:#374151;--sy-c-text-weak:#6b7280;--sy-c-heading:#111827;--sy-c-bold:#111827;--sy-c-foot-text:#232226;--sy-c-foot-bg:#fafafa;--sy-c-foot-divider:#f0f0f0;
 }
-@media not print {
-  html.light {
+@media (prefers-color-scheme: light) {
+  :root {
     --sy-rc-theme:143, 118, 214;--sy-rc-bg:255, 255, 255;--sy-rc-invert:0, 0, 0;--sy-rc-text:0, 0, 0;--sy-c-bg:#fff;--sy-c-bg-weak:#f9f9f9;--sy-c-text:#374151;--sy-c-text-weak:#6b7280;--sy-c-heading:#111827;--sy-c-bold:#111827;--sy-c-foot-text:#232226;--sy-c-foot-bg:#fafafa;--sy-c-foot-divider:#f0f0f0;
   }
-  html.dark {
+}
+@media (prefers-color-scheme: dark) {
+  :root {
     --sy-rc-theme:143, 118, 214;--sy-rc-bg:18, 18, 18;--sy-rc-invert:255, 255, 255;--sy-rc-text:255, 255, 255;--sy-c-bg:#121212;--sy-c-bg-weak:#212833;--sy-c-text:#cedbea;--sy-c-text-weak:#77889f;--sy-c-heading:#ebf0f4;--sy-c-bold:#ebf0f4;--sy-c-foot-text:#eee;--sy-c-foot-bg:#000;--sy-c-foot-divider:#000;
   }
+}
+html.light {
+  --sy-rc-theme:143, 118, 214;--sy-rc-bg:255, 255, 255;--sy-rc-invert:0, 0, 0;--sy-rc-text:0, 0, 0;--sy-c-bg:#fff;--sy-c-bg-weak:#f9f9f9;--sy-c-text:#374151;--sy-c-text-weak:#6b7280;--sy-c-heading:#111827;--sy-c-bold:#111827;--sy-c-foot-text:#232226;--sy-c-foot-bg:#fafafa;--sy-c-foot-divider:#f0f0f0;
+}
+html.dark {
+  --sy-rc-theme:143, 118, 214;--sy-rc-bg:18, 18, 18;--sy-rc-invert:255, 255, 255;--sy-rc-text:255, 255, 255;--sy-c-bg:#121212;--sy-c-bg-weak:#212833;--sy-c-text:#cedbea;--sy-c-text-weak:#77889f;--sy-c-heading:#ebf0f4;--sy-c-bold:#ebf0f4;--sy-c-foot-text:#eee;--sy-c-foot-bg:#000;--sy-c-foot-divider:#000;
 }
 </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -94,7 +111,6 @@
 <li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quest.html">Requests Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stat_tests.html">Statistical Tests and Tools</a></li>
-<li class="toctree-l1"><a class="reference internal" href="stat_tests.html#calculations">Calculations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tags.html">Tags &amp; Backtesting Module</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Wallet Module</a></li>
@@ -112,11 +128,41 @@
   <div class="localtoc">
     <h3>Table of Contents</h3>
     <ul>
-<li><a class="reference internal" href="#wallet-snapshots">Wallet snapshots</a></li>
-<li><a class="reference internal" href="#trades">Trades</a></li>
-<li><a class="reference internal" href="#spot-balances">Spot Balances</a></li>
-<li><a class="reference internal" href="#margin-balances">Margin Balances</a></li>
-<li><a class="reference internal" href="#helper">Helper</a></li>
+<li><a class="reference internal" href="#wallet-snapshots">Wallet snapshots</a><ul>
+<li><a class="reference internal" href="#handlers.wallet.daily_account_snapshot"><code class="docutils literal notranslate"><span class="pre">daily_account_snapshot()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.wallet.assets_convertible_dust"><code class="docutils literal notranslate"><span class="pre">assets_convertible_dust()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#trades">Trades</a><ul>
+<li><a class="reference internal" href="#handlers.wallet.get_fills_price"><code class="docutils literal notranslate"><span class="pre">get_fills_price()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.wallet.get_fills_qty"><code class="docutils literal notranslate"><span class="pre">get_fills_qty()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.wallet.get_spot_trades_list"><code class="docutils literal notranslate"><span class="pre">get_spot_trades_list()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.wallet.get_margin_trades_list"><code class="docutils literal notranslate"><span class="pre">get_margin_trades_list()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#spot-balances">Spot Balances</a><ul>
+<li><a class="reference internal" href="#handlers.wallet.get_spot_account_info"><code class="docutils literal notranslate"><span class="pre">get_spot_account_info()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.wallet.get_spot_free_balances"><code class="docutils literal notranslate"><span class="pre">get_spot_free_balances()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.wallet.get_spot_locked_balances"><code class="docutils literal notranslate"><span class="pre">get_spot_locked_balances()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.wallet.get_coins_with_balance"><code class="docutils literal notranslate"><span class="pre">get_coins_with_balance()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.wallet.get_spot_balances_df"><code class="docutils literal notranslate"><span class="pre">get_spot_balances_df()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.wallet.get_spot_balances_total_value"><code class="docutils literal notranslate"><span class="pre">get_spot_balances_total_value()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#margin-balances">Margin Balances</a><ul>
+<li><a class="reference internal" href="#handlers.wallet.get_margin_account_details"><code class="docutils literal notranslate"><span class="pre">get_margin_account_details()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.wallet.get_margin_balances"><code class="docutils literal notranslate"><span class="pre">get_margin_balances()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.wallet.get_margin_free_balances"><code class="docutils literal notranslate"><span class="pre">get_margin_free_balances()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.wallet.get_margin_borrowed_balances"><code class="docutils literal notranslate"><span class="pre">get_margin_borrowed_balances()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.wallet.get_margin_interest_balances"><code class="docutils literal notranslate"><span class="pre">get_margin_interest_balances()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.wallet.get_margin_netAsset_balances"><code class="docutils literal notranslate"><span class="pre">get_margin_netAsset_balances()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.wallet.get_margin_balances_total_value"><code class="docutils literal notranslate"><span class="pre">get_margin_balances_total_value()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#helper">Helper</a><ul>
+<li><a class="reference internal" href="#handlers.wallet.convert_str_date_to_ms"><code class="docutils literal notranslate"><span class="pre">convert_str_date_to_ms()</span></code></a></li>
+</ul>
+</li>
 </ul>
 
 
@@ -139,13 +185,13 @@
 <h2>Wallet snapshots<a class="headerlink" href="#wallet-snapshots" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.wallet.daily_account_snapshot">
-<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">daily_account_snapshot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">account_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.wallet.daily_account_snapshot" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">daily_account_snapshot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">account_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.wallet.daily_account_snapshot" title="Permalink to this definition">¶</a></dt>
 <dd><p>The query time period must be inside the previous 30 days.
 Support query within the last month, one month only.
 If startTime and endTime not sent, return records of the last days by default.</p>
 <p>Weight(IP): 2400</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>account_type</strong> (<em>str</em>) – SPOT or MARGIN (cross)</p></li>
 <li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type and operative.</p></li>
@@ -157,7 +203,7 @@ If startTime and endTime not sent, return records of the last days by default.</
 <li><p><strong>time_zone</strong> (<em>str</em>) – A time zone to parse index like ‘Europe/Madrid’</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return pd.DataFrame</dt>
+<dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
 <dd class="field-even"><p>Pandas DataFrame</p>
 </dd>
 </dl>
@@ -169,14 +215,14 @@ If startTime and endTime not sent, return records of the last days by default.</
 <dd><p>Assets dust that can be converted to BNB.
 Weight(IP): 1</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>decimal_mode</strong> (<em>bool</em>) – It flags to work in decimal mode.</p></li>
 <li><p><strong>api_key</strong> (<em>str</em>) – A BinPan encrypted in BinPan’s way api key. Do not use unencrypted api values, import it from  secret.py file.</p></li>
 <li><p><strong>api_secret</strong> (<em>str</em>) – A BinPan encrypted in BinPan’s way api secret. Do not use unencrypted api values, import it from  secret.py file.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return dict</dt>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
 <dd class="field-even"><p>A dictionary.</p>
 </dd>
 </dl>
@@ -208,7 +254,7 @@ Weight(IP): 1</p>
 <span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_fills_price</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_order_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isBuyer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operation_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.wallet.get_fills_price" title="Permalink to this definition">¶</a></dt>
 <dd><p>Obtain averaged price from order API response or claims last trade.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>original_order_dict</strong> (<em>dict</em>) – API order dict response.</p></li>
 <li><p><strong>isBuyer</strong> (<em>bool</em>) – Sets if was a buyer order to filter for wanted order.</p></li>
@@ -220,7 +266,7 @@ Weight(IP): 1</p>
 <li><p><strong>api_secret</strong> (<em>str</em>) – A BinPan encrypted in BinPan’s way api secret. Do not use unencrypted api values, import it from  secret.py file.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return float</dt>
+<dt class="field-even">Return float<span class="colon">:</span></dt>
 <dd class="field-even"><p>Price averaged.</p>
 </dd>
 </dl>
@@ -378,7 +424,7 @@ Weight(IP): 1</p>
 <span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_fills_qty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_order_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isBuyer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operation_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.wallet.get_fills_qty" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extracts order quantity from an order response or checks a trade from API.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>original_order_dict</strong> (<em>dict</em>) – A putting order response from API dict.</p></li>
 <li><p><strong>api_key</strong> (<em>str</em>) – A BinPan encrypted in BinPan’s way api key. Do not use unencrypted api values, import it from  secret.py file.</p></li>
@@ -389,7 +435,7 @@ Weight(IP): 1</p>
 <li><p><strong>decimal_mode</strong> (<em>bool</em>) – Sets Decimal operating mode.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return float or decimal.Decimal</dt>
+<dt class="field-even">Return float or decimal.Decimal<span class="colon">:</span></dt>
 <dd class="field-even"><p>Returns the needed value.</p>
 </dd>
 </dl>
@@ -397,11 +443,11 @@ Weight(IP): 1</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.wallet.get_spot_trades_list">
-<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_spot_trades_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orderId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fromId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recvWindow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.wallet.get_spot_trades_list" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_spot_trades_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orderId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fromId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recvWindow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.wallet.get_spot_trades_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get trades for a specific account and symbol.</p>
 <p>Weight(IP): 10</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>symbol</strong> (<em>str</em>) – Symbol’s trades.</p></li>
 <li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type and operative.</p></li>
@@ -416,7 +462,7 @@ most recent trades are returned.</p></li>
 <li><p><strong>recvWindow</strong> (<em>int</em>) – The value cannot be greater than 60000</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return list</dt>
+<dt class="field-even">Return list<span class="colon">:</span></dt>
 <dd class="field-even"><p>A list.</p>
 </dd>
 </dl>
@@ -446,12 +492,12 @@ most recent trades are returned.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.wallet.get_margin_trades_list">
-<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_margin_trades_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isIsolated</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orderId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fromId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recvWindow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.wallet.get_margin_trades_list" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_margin_trades_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isIsolated</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orderId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fromId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recvWindow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.wallet.get_margin_trades_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get margin trades for a specific account and symbol.</p>
 <p>If fromId is set, it will get trades &gt;= that fromId. Otherwise most recent trades are returned.</p>
 <p>Weight(IP): 10</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>symbol</strong> (<em>str</em>) – Symbol’s trades.</p></li>
 <li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type and operative.</p></li>
@@ -467,7 +513,7 @@ most recent trades are returned.</p></li>
 <li><p><strong>recvWindow</strong> (<em>int</em>) – The value cannot be greater than 60000</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return list</dt>
+<dt class="field-even">Return list<span class="colon">:</span></dt>
 <dd class="field-even"><p>A list.</p>
 </dd>
 </dl>
@@ -503,7 +549,7 @@ most recent trades are returned.</p></li>
 <dd><p>Get current account information.</p>
 <p>Weight(IP): 10</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type and operative.</p></li>
 <li><p><strong>api_key</strong> (<em>str</em>) – A BinPan encrypted in BinPan’s way api key. Do not use unencrypted api values, import it from  secret.py file.</p></li>
@@ -511,7 +557,7 @@ most recent trades are returned.</p></li>
 <li><p><strong>recvWindow</strong> (<em>int</em>) – The value cannot be greater than 60000</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return dict</dt>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
 <dd class="field-even"><p>A dictionary with data.</p>
 </dd>
 </dl>
@@ -540,10 +586,10 @@ most recent trades are returned.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.wallet.get_spot_free_balances">
-<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_spot_free_balances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.wallet.get_spot_free_balances" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_spot_free_balances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.wallet.get_spot_free_balances" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parses available balances from account info.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data_dic</strong> (<em>dict</em>) – If available, account info can be passed as data_dic parameter to avoid API calling.</p></li>
 <li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type and operative.</p></li>
@@ -551,7 +597,7 @@ most recent trades are returned.</p></li>
 <li><p><strong>api_secret</strong> (<em>str</em>) – A BinPan encrypted in BinPan’s way api secret. Do not use unencrypted api values, import it from  secret.py file.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return dict</dt>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
 <dd class="field-even"><p>Free balances.</p>
 </dd>
 </dl>
@@ -559,10 +605,10 @@ most recent trades are returned.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.wallet.get_spot_locked_balances">
-<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_spot_locked_balances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.wallet.get_spot_locked_balances" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_spot_locked_balances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.wallet.get_spot_locked_balances" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parses locked in order balances from account info.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type and operative.</p></li>
 <li><p><strong>api_key</strong> (<em>str</em>) – A BinPan encrypted in BinPan’s way api key. Do not use unencrypted api values, import it from  secret.py file.</p></li>
@@ -570,7 +616,7 @@ most recent trades are returned.</p></li>
 <li><p><strong>data_dic</strong> (<em>dict</em>) – If available, account info can be passed as data_dic parameter to avoid API calling.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return dict</dt>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
 <dd class="field-even"><p>Locked balances.</p>
 </dd>
 </dl>
@@ -581,14 +627,14 @@ most recent trades are returned.</p></li>
 <span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_coins_with_balance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.wallet.get_coins_with_balance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the non-zero balances of an account, free or locked ones. Useful getting wallet value.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type and operative.</p></li>
 <li><p><strong>api_key</strong> (<em>str</em>) – A BinPan encrypted in BinPan’s way api key. Do not use unencrypted api values, import it from  secret.py file.</p></li>
 <li><p><strong>api_secret</strong> (<em>str</em>) – A BinPan encrypted in BinPan’s way api secret. Do not use unencrypted api values, import it from  secret.py file.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return list</dt>
+<dt class="field-even">Return list<span class="colon">:</span></dt>
 <dd class="field-even"><p></p></dd>
 </dl>
 </dd></dl>
@@ -611,7 +657,7 @@ most recent trades are returned.</p></li>
 </span></pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type and operative.</p></li>
 <li><p><strong>api_key</strong> (<em>str</em>) – A BinPan encrypted in BinPan’s way api key. Do not use unencrypted api values, import it from  secret.py file.</p></li>
@@ -619,7 +665,7 @@ most recent trades are returned.</p></li>
 <li><p><strong>filter_empty</strong> (<em>bool</em>) – Discards empty quantities.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return pd.DataFrame</dt>
+<dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
 <dd class="field-even"><p>A dataframe with assets locked or free.</p>
 </dd>
 </dl>
@@ -627,10 +673,10 @@ most recent trades are returned.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.wallet.get_spot_balances_total_value">
-<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_spot_balances_total_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">balances_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BUSD'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.wallet.get_spot_balances_total_value" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_spot_balances_total_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">balances_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BUSD'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.wallet.get_spot_balances_total_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns total value expressed in a quote coin. Counts free and locked assets.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type and operative.</p></li>
 <li><p><strong>api_key</strong> (<em>str</em>) – A BinPan encrypted in BinPan’s way api key. Do not use unencrypted api values, import it from  secret.py file.</p></li>
@@ -639,7 +685,7 @@ most recent trades are returned.</p></li>
 <li><p><strong>convert_to</strong> (<em>str</em>) – A Binance coin.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return float</dt>
+<dt class="field-even">Return float<span class="colon">:</span></dt>
 <dd class="field-even"><p>Total quantity expressed in quote.</p>
 </dd>
 </dl>
@@ -655,7 +701,7 @@ most recent trades are returned.</p></li>
 <p>GET /sapi/v1/margin/account (HMAC SHA256)</p>
 <p>Weight(IP): 10</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type and operative.</p></li>
 <li><p><strong>api_key</strong> (<em>str</em>) – A BinPan encrypted in BinPan’s way api key. Do not use unencrypted api values, import it from  secret.py file.</p></li>
@@ -716,14 +762,14 @@ most recent trades are returned.</p></li>
 <span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_margin_balances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.wallet.get_margin_balances" title="Permalink to this definition">¶</a></dt>
 <dd><p>Collects balances in the margin account that are not null.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type and operative.</p></li>
 <li><p><strong>api_key</strong> (<em>str</em>) – A BinPan encrypted in BinPan’s way api key. Do not use unencrypted api values, import it from  secret.py file.</p></li>
 <li><p><strong>api_secret</strong> (<em>str</em>) – A BinPan encrypted in BinPan’s way api secret. Do not use unencrypted api values, import it from  secret.py file.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return dict</dt>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
 <dd class="field-even"><p>A dictionary with coins with balances.</p>
 </dd>
 </dl>
@@ -744,10 +790,10 @@ most recent trades are returned.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.wallet.get_margin_free_balances">
-<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_margin_free_balances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">balances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.wallet.get_margin_free_balances" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_margin_free_balances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">balances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.wallet.get_margin_free_balances" title="Permalink to this definition">¶</a></dt>
 <dd><p>Just returns free existing balances. It is optional to avoid an API call.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>balances</strong> (<em>dict</em>) – Returns dict with assets as keys and a float value for not null quantities.</p></li>
 <li><p><strong>api_key</strong> (<em>str</em>) – A BinPan encrypted in BinPan’s way api key. Do not use unencrypted api values, import it from  secret.py file.</p></li>
@@ -755,7 +801,7 @@ most recent trades are returned.</p></li>
 <li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return dict</dt>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
 <dd class="field-even"><p>A dict with float values.</p>
 </dd>
 </dl>
@@ -763,10 +809,10 @@ most recent trades are returned.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.wallet.get_margin_borrowed_balances">
-<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_margin_borrowed_balances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">balances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.wallet.get_margin_borrowed_balances" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_margin_borrowed_balances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">balances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.wallet.get_margin_borrowed_balances" title="Permalink to this definition">¶</a></dt>
 <dd><p>Just returns borrowed existing balances. It is optional to avoid an API call.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type.</p></li>
 <li><p><strong>api_key</strong> (<em>str</em>) – A BinPan encrypted in BinPan’s way api key. Do not use unencrypted api values, import it from  secret.py file.</p></li>
@@ -774,7 +820,7 @@ most recent trades are returned.</p></li>
 <li><p><strong>balances</strong> (<em>dict</em>) – Returns dict with assets as keys and a float value for not null quantities.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return dict</dt>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
 <dd class="field-even"><p>A dict with float values.</p>
 </dd>
 </dl>
@@ -782,10 +828,10 @@ most recent trades are returned.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.wallet.get_margin_interest_balances">
-<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_margin_interest_balances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">balances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.wallet.get_margin_interest_balances" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_margin_interest_balances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">balances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.wallet.get_margin_interest_balances" title="Permalink to this definition">¶</a></dt>
 <dd><p>Just returns interest existing balances. It is optional to avoid an API call.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type.</p></li>
 <li><p><strong>api_key</strong> (<em>str</em>) – A BinPan encrypted in BinPan’s way api key. Do not use unencrypted api values, import it from  secret.py file.</p></li>
@@ -793,7 +839,7 @@ most recent trades are returned.</p></li>
 <li><p><strong>balances</strong> (<em>dict</em>) – Returns dict with assets as keys and a float value for not null quantities.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return dict</dt>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
 <dd class="field-even"><p>A dict with float values.</p>
 </dd>
 </dl>
@@ -801,10 +847,10 @@ most recent trades are returned.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.wallet.get_margin_netAsset_balances">
-<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_margin_netAsset_balances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">balances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.wallet.get_margin_netAsset_balances" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_margin_netAsset_balances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">balances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.wallet.get_margin_netAsset_balances" title="Permalink to this definition">¶</a></dt>
 <dd><p>Just returns netAsset existing balances. It is optional to avoid an API call.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type.</p></li>
 <li><p><strong>api_key</strong> (<em>str</em>) – A BinPan encrypted in BinPan’s way api key. Do not use unencrypted api values, import it from  secret.py file.</p></li>
@@ -812,7 +858,7 @@ most recent trades are returned.</p></li>
 <li><p><strong>balances</strong> (<em>dict</em>) – Returns dict with assets as keys and a float value for not null quantities.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return dict</dt>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
 <dd class="field-even"><p>A dict with float values.</p>
 </dd>
 </dl>
@@ -820,10 +866,10 @@ most recent trades are returned.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.wallet.get_margin_balances_total_value">
-<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_margin_balances_total_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">balances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BUSD'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.wallet.get_margin_balances_total_value" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_margin_balances_total_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">balances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BUSD'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.wallet.get_margin_balances_total_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns total value expressed in a quote coin. Counts free, locked, borrowed and interest assets.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>balances</strong> (<em>dict</em>) – A BinPan balances dict. It is optional to avoid an API call.</p></li>
 <li><p><strong>api_key</strong> (<em>str</em>) – A BinPan encrypted in BinPan’s way api key. Do not use unencrypted api values, import it from  secret.py file.</p></li>
@@ -832,7 +878,7 @@ most recent trades are returned.</p></li>
 <li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return float</dt>
+<dt class="field-even">Return float<span class="colon">:</span></dt>
 <dd class="field-even"><p>Total quantity expressed in quote.</p>
 </dd>
 </dl>
@@ -847,13 +893,13 @@ most recent trades are returned.</p></li>
 <dd><p>Converts dates strings formatted as “2022-05-11 06:45:42” to timestamp in milliseconds. If timestamp passed
 it returns the timestamp.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>date</strong> (<em>str</em><em> or </em><em>int</em>) – Date to check format.</p></li>
 <li><p><strong>time_zone</strong> – A time zone like ‘Europe/Madrid’</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return int</dt>
+<dt class="field-even">Return int<span class="colon">:</span></dt>
 <dd class="field-even"><p>Milliseconds of timestamp.</p>
 </dd>
 </dl>
@@ -905,11 +951,9 @@ it returns the timestamp.</p>
   </div>
 </footer></div>
       <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-      <script src="_static/jquery.js"></script>
-      <script src="_static/underscore.js"></script>
-      <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
       <script src="_static/doctools.js"></script>
-      <script src="_static/shibuya.js?v=2023.3.11"></script>
+      <script src="_static/sphinx_highlight.js"></script>
+      <script src="_static/shibuya.js?v=2023.3.19"></script>
     
 </body>
 </html>

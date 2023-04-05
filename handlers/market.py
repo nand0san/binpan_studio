@@ -356,7 +356,9 @@ def parse_candles_to_dataframe(raw_response: list,
     if type(time_zone) == str and time_zone != 'UTC':  # converts to time zone the time columns
         for col in time_cols:
             df.loc[:, col] = handlers.time_helper.convert_utc_ms_column_to_time_zone(df, col, time_zone=time_zone)
-            df.loc[:, col] = df[col].apply(lambda x: handlers.time_helper.convert_datetime_to_string(x))
+            # df.loc[:, col] = df[col].apply(lambda x: handlers.time_helper.convert_datetime_to_string(x))
+            df.loc[:, col] = handlers.time_helper.convert_utc_ms_column_to_time_zone(df, col, time_zone=time_zone, ambiguous='infer')
+
     else:
         for col in time_cols:
             df.loc[:, col] = df[col].apply(lambda x: handlers.time_helper.convert_milliseconds_to_utc_string(x))

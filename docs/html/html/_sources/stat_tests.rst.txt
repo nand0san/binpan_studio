@@ -1,8 +1,6 @@
 Statistical Tests and Tools
 ===========================
 
-Aggregations Module
-===================
 
 .. automodule:: handlers.stat_tests
    :members:

@@ -4,22 +4,39 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Aggregations Module - BinPan 0.4.11 documentation</title>
-    <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Exceptions Module" href="exceptions.html" /><link rel="prev" title="BinPan Module" href="binpan.html" /><link rel="stylesheet" href="_static/pygments.css?v=2023.3.11" type="text/css" />
-    <link rel="stylesheet" href="_static/shibuya.css?v=2023.3.11" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Exceptions Module" href="exceptions.html" /><link rel="prev" title="BinPan Module" href="binpan.html" />
+  <script>
+    const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const sessionTheme = sessionStorage['_theme']
+    if (sessionTheme) {
+      document.documentElement.classList.add(sessionTheme)
+    } else if (isDarkTheme) {
+      document.documentElement.classList.add('dark')
+    }
+  </script><link rel="stylesheet" href="_static/pygments.css?v=2023.3.19" type="text/css" />
+    <link rel="stylesheet" href="_static/shibuya.css?v=2023.3.19" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/style.css" />
-    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=2023.3.11" />
+    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=2023.3.19" />
     <style>
 :root {
   --sy-f-sys:-apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Droid Sans, Helvetica Neue;--sy-f-cjk:PingFang SC, Hiragino Sans GB, Droid Sans Fallback, Microsoft YaHei;--sy-f-heading:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-text:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-mono:Menlo, Monaco, Consolas, "Courier New", monospace;--sy-c-divider:rgba(var(--sy-rc-text), 0.1);--sy-c-divider-weak:rgba(var(--sy-rc-text), 0.05);--sy-c-border:rgba(var(--sy-rc-text), 0.14);--sy-s-banner-height:0rem;--sy-s-navbar-height:4rem;--sy-s-offset-top:calc(var(--sy-s-navbar-height) + var(--sy-s-banner-height));--sy-c-link:rgb(var(--sy-rc-theme));
   --sy-rc-theme:143, 118, 214;--sy-rc-bg:255, 255, 255;--sy-rc-invert:0, 0, 0;--sy-rc-text:0, 0, 0;--sy-c-bg:#fff;--sy-c-bg-weak:#f9f9f9;--sy-c-text:#374151;--sy-c-text-weak:#6b7280;--sy-c-heading:#111827;--sy-c-bold:#111827;--sy-c-foot-text:#232226;--sy-c-foot-bg:#fafafa;--sy-c-foot-divider:#f0f0f0;
 }
-@media not print {
-  html.light {
+@media (prefers-color-scheme: light) {
+  :root {
     --sy-rc-theme:143, 118, 214;--sy-rc-bg:255, 255, 255;--sy-rc-invert:0, 0, 0;--sy-rc-text:0, 0, 0;--sy-c-bg:#fff;--sy-c-bg-weak:#f9f9f9;--sy-c-text:#374151;--sy-c-text-weak:#6b7280;--sy-c-heading:#111827;--sy-c-bold:#111827;--sy-c-foot-text:#232226;--sy-c-foot-bg:#fafafa;--sy-c-foot-divider:#f0f0f0;
   }
-  html.dark {
+}
+@media (prefers-color-scheme: dark) {
+  :root {
     --sy-rc-theme:143, 118, 214;--sy-rc-bg:18, 18, 18;--sy-rc-invert:255, 255, 255;--sy-rc-text:255, 255, 255;--sy-c-bg:#121212;--sy-c-bg-weak:#212833;--sy-c-text:#cedbea;--sy-c-text-weak:#77889f;--sy-c-heading:#ebf0f4;--sy-c-bold:#ebf0f4;--sy-c-foot-text:#eee;--sy-c-foot-bg:#000;--sy-c-foot-divider:#000;
   }
+}
+html.light {
+  --sy-rc-theme:143, 118, 214;--sy-rc-bg:255, 255, 255;--sy-rc-invert:0, 0, 0;--sy-rc-text:0, 0, 0;--sy-c-bg:#fff;--sy-c-bg-weak:#f9f9f9;--sy-c-text:#374151;--sy-c-text-weak:#6b7280;--sy-c-heading:#111827;--sy-c-bold:#111827;--sy-c-foot-text:#232226;--sy-c-foot-bg:#fafafa;--sy-c-foot-divider:#f0f0f0;
+}
+html.dark {
+  --sy-rc-theme:143, 118, 214;--sy-rc-bg:18, 18, 18;--sy-rc-invert:255, 255, 255;--sy-rc-text:255, 255, 255;--sy-c-bg:#121212;--sy-c-bg-weak:#212833;--sy-c-text:#cedbea;--sy-c-text-weak:#77889f;--sy-c-heading:#ebf0f4;--sy-c-bold:#ebf0f4;--sy-c-foot-text:#eee;--sy-c-foot-bg:#000;--sy-c-foot-divider:#000;
 }
 </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -62,6 +79,9 @@
         <i class="i-icon theme-icon"></i>
       </button>
       
+        <button class="js-menu xl:hidden flex items-center ml-1" aria-label="Show table of contents" type="button" aria-controls="rside" aria-expanded="false">
+          <i class="i-icon outdent"></i>
+        </button>
     </div>
   </div>
 </div>
@@ -91,7 +111,6 @@
 <li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quest.html">Requests Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stat_tests.html">Statistical Tests and Tools</a></li>
-<li class="toctree-l1"><a class="reference internal" href="stat_tests.html#calculations">Calculations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tags.html">Tags &amp; Backtesting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Module</a></li>
@@ -105,7 +124,41 @@
     <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
       <i class="i-icon close"></i>
     </button>
-    <div class="sy-scrollbar px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div id="ethical-ad-placement"></div>
+    <div class="sy-scrollbar px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4">
+  <div class="localtoc">
+    <h3>Table of Contents</h3>
+    <ul>
+<li><a class="reference internal" href="#handlers.aggregations.generate_count_grouper_column"><code class="docutils literal notranslate"><span class="pre">generate_count_grouper_column()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.aggregations.ohlc_group"><code class="docutils literal notranslate"><span class="pre">ohlc_group()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.aggregations.sum_split_by_boolean_column_and_group"><code class="docutils literal notranslate"><span class="pre">sum_split_by_boolean_column_and_group()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.aggregations.count_trues_cumulative"><code class="docutils literal notranslate"><span class="pre">count_trues_cumulative()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.aggregations.drop_aggregated"><code class="docutils literal notranslate"><span class="pre">drop_aggregated()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.aggregations.tag_by_accumulation"><code class="docutils literal notranslate"><span class="pre">tag_by_accumulation()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.aggregations.time_index_from_timestamps"><code class="docutils literal notranslate"><span class="pre">time_index_from_timestamps()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.aggregations.columns_restriction"><code class="docutils literal notranslate"><span class="pre">columns_restriction()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.aggregations.generate_volume_column"><code class="docutils literal notranslate"><span class="pre">generate_volume_column()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.aggregations.sign_of_price"><code class="docutils literal notranslate"><span class="pre">sign_of_price()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.aggregations.tick_bars"><code class="docutils literal notranslate"><span class="pre">tick_bars()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.aggregations.volume_bars"><code class="docutils literal notranslate"><span class="pre">volume_bars()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.aggregations.dollar_bars"><code class="docutils literal notranslate"><span class="pre">dollar_bars()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.aggregations.ohlc_bars"><code class="docutils literal notranslate"><span class="pre">ohlc_bars()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.aggregations.ImbalanceBars"><code class="docutils literal notranslate"><span class="pre">ImbalanceBars</span></code></a><ul>
+<li><a class="reference internal" href="#handlers.aggregations.ImbalanceBars.initialize_startup_variables"><code class="docutils literal notranslate"><span class="pre">ImbalanceBars.initialize_startup_variables()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.aggregations.ImbalanceBars.get_expected_size"><code class="docutils literal notranslate"><span class="pre">ImbalanceBars.get_expected_size()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.aggregations.ImbalanceBars.get_expected_probability"><code class="docutils literal notranslate"><span class="pre">ImbalanceBars.get_expected_probability()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.aggregations.ImbalanceBars.get_expected_imbalance"><code class="docutils literal notranslate"><span class="pre">ImbalanceBars.get_expected_imbalance()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.aggregations.ImbalanceBars.sampling_loop"><code class="docutils literal notranslate"><span class="pre">ImbalanceBars.sampling_loop()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.aggregations.ImbalanceBars.decide_sampling"><code class="docutils literal notranslate"><span class="pre">ImbalanceBars.decide_sampling()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.aggregations.ImbalanceBars.construct_bars"><code class="docutils literal notranslate"><span class="pre">ImbalanceBars.construct_bars()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#handlers.aggregations.imbalance_bars_divergent"><code class="docutils literal notranslate"><span class="pre">imbalance_bars_divergent()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.aggregations.imbalance_bars_fixed"><code class="docutils literal notranslate"><span class="pre">imbalance_bars_fixed()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.aggregations.tick_imbalance_bars_chat_gpt"><code class="docutils literal notranslate"><span class="pre">tick_imbalance_bars_chat_gpt()</span></code></a></li>
+</ul>
+
+
+  </div><div id="ethical-ad-placement"></div>
     </div>
   </aside>
   <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
@@ -119,10 +172,6 @@
 <p><strong>Functions:</strong></p>
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.aggregations.generate_count_grouper_column" title="handlers.aggregations.generate_count_grouper_column"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_count_grouper_column</span></code></a>(data, ...)</p></td>
 <td><p>It adds a column with a value for each rows count.</p></td>
@@ -181,10 +230,6 @@
 <p><strong>Classes:</strong></p>
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.aggregations.ImbalanceBars" title="handlers.aggregations.ImbalanceBars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ImbalanceBars</span></code></a>(trades, bar_type[, method, ...])</p></td>
 <td><p>Sample imbalance bars.</p></td>
@@ -197,14 +242,14 @@
 <span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">generate_count_grouper_column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grouper_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.aggregations.generate_count_grouper_column" title="Permalink to this definition">¶</a></dt>
 <dd><p>It adds a column with a value for each rows count.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>pd.Dataframe</em>) – A dataframe with at least two columns.</p></li>
 <li><p><strong>grouper_name</strong> (<em>str</em>) – Name for the column to be used as grouper.</p></li>
 <li><p><strong>size</strong> (<em>int</em>) – Count of rows to declare grouper integer sequence.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A copy of the dataframe with a new column.</p>
 </dd>
 </dl>
@@ -215,14 +260,14 @@
 <span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">ohlc_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_ohlc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.aggregations.ohlc_group" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates  OHLC columns for a column based on group by other column with discrete values.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>pd.Dataframe</em>) – A dataframe with at least two columns.</p></li>
 <li><p><strong>column_to_ohlc</strong> (<em>str</em>) – Column to sparse values to OHLC columns in each group.</p></li>
 <li><p><strong>group_column</strong> (<em>str</em>) – This column will be the grouping key.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A copy of the dataframe with OHLC data.</p>
 </dd>
 </dl>
@@ -235,7 +280,7 @@
 <p>This function is useful for generating two new columns, one for the true values and another for the false values, with the sum
 of the specified numeric column for each group and filling the remaining cells with NaNs.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>pd.DataFrame</em>) – A dataframe with at least 3 columns.</p></li>
 <li><p><strong>column_to_split_sum</strong> (<em>str</em><em>, </em><em>optional</em>) – Numeric column with data to sum by group and split by boolean column, defaults to “Quantity”.</p></li>
@@ -243,10 +288,10 @@ of the specified numeric column for each group and filling the remaining cells w
 <li><p><strong>group_column</strong> (<em>str</em><em>, </em><em>optional</em>) – This column will be the grouping key, defaults to “group”.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A copy of the dataframe with splitted sum by group from the column to split sum.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>pd.DataFrame</p>
 </dd>
 </dl>
@@ -257,17 +302,17 @@ of the specified numeric column for each group and filling the remaining cells w
 <span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">count_trues_cumulative</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bool_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.aggregations.count_trues_cumulative" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a new column to the DataFrame with cumulative numbers for each True value in a boolean column.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>pd.DataFrame</em>) – The input DataFrame.</p></li>
 <li><p><strong>bool_column</strong> (<em>str</em>) – The name of the boolean column to evaluate.</p></li>
 <li><p><strong>new_column</strong> (<em>str</em>) – The name of the new column to store the cumulative numbers for True values.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A new DataFrame with an additional column containing the cumulative numbers for True values.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>pd.DataFrame</p>
 </dd>
 </dl>
@@ -279,14 +324,14 @@ of the specified numeric column for each group and filling the remaining cells w
 <dd><p>Drop lines except the first/last/min/max etc row of each group_column streak.</p>
 <p>It assumes that the grouping column is a serie of integers to group it by blocks.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>pd.Dataframe</em>) – A dataframe.</p></li>
 <li><p><strong>group_column</strong> (<em>str</em>) – This column will be the grouping key.</p></li>
 <li><p><strong>by</strong> (<em>str</em>) – Pandas valid aggregation method.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A copy of the dataframe with just the first row each grouper streak.</p>
 </dd>
 </dl>
@@ -297,7 +342,7 @@ of the specified numeric column for each group and filling the remaining cells w
 <span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">tag_by_accumulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">agg_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Quantity'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grouper_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.aggregations.tag_by_accumulation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates integer sequence by column value threshold accumulation.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>trades</strong> (<em>pd.DataFrame</em>) – Expected binpan aggregated trades or atomic trades dataframe.</p></li>
 <li><p><strong>agg_column</strong> (<em>str</em>) – Name of the column to group by volume accumulation.</p></li>
@@ -305,7 +350,7 @@ of the specified numeric column for each group and filling the remaining cells w
 <li><p><strong>threshold</strong> (<em>int</em>) – Size of volume aggregated in bars to be compiled.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p></p>
 </dd>
 </dl>
@@ -313,10 +358,10 @@ of the specified numeric column for each group and filling the remaining cells w
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.aggregations.time_index_from_timestamps">
-<span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">time_index_from_timestamps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Europe/Madrid'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.aggregations.time_index_from_timestamps" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">time_index_from_timestamps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Europe/Madrid'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.aggregations.time_index_from_timestamps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Assumes existing timestamp column or at least Open timestamp column.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>pd.Dataframe</em>) – A dataframe.</p></li>
 <li><p><strong>drop_col</strong> (<em>bool</em>) – Drop column applied as index.</p></li>
@@ -325,7 +370,7 @@ of the specified numeric column for each group and filling the remaining cells w
 - TZ database: <a class="reference external" href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones">https://en.wikipedia.org/wiki/List_of_tz_database_time_zones</a></p></li>
 </ul>
 </dd>
-<dt class="field-even">Return pd.DataFrame</dt>
+<dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
 <dd class="field-even"><p>A dataframe copy with the new index. Timestamp columns will be not dropped.</p>
 </dd>
 </dl>
@@ -336,7 +381,7 @@ of the specified numeric column for each group and filling the remaining cells w
 <span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">columns_restriction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.aggregations.columns_restriction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Filter columns by preset.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>pd.DataFrame</em>) – A dataframe.</p></li>
 <li><p><strong>mode</strong> (<em>str</em>) – Presets are: TB, VB, DB, VIB, DIB, TRB, VRB, DRB. All from chapter 2 of AFML book (Marcos López de Prado).
@@ -344,7 +389,7 @@ of the specified numeric column for each group and filling the remaining cells w
 <li><p><strong>extra</strong> (<em>list</em>) – Optional extra columns.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return pd.DataFrame</dt>
+<dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
 <dd class="field-even"><p>Just preset columns.</p>
 </dd>
 </dl>
@@ -352,17 +397,17 @@ of the specified numeric column for each group and filling the remaining cells w
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.aggregations.generate_volume_column">
-<span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">generate_volume_column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_cols</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quote_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.aggregations.generate_volume_column" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">generate_volume_column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_cols</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quote_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.aggregations.generate_volume_column" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add two columns to generate volume of base.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>pd.DataFrame</em>) – A dataframe.</p></li>
 <li><p><strong>add_cols</strong> (<em>tuple</em>) – Ordered tuple with two columns to add for calculating the total volume.</p></li>
 <li><p><strong>quote_column</strong> (<em>bool</em>) – If True, Volume for quote will be added obtained from Volume and Close price.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return pd.DataFrame</dt>
+<dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
 <dd class="field-even"><p>A copy with volume added.</p>
 </dd>
 </dl>
@@ -379,13 +424,13 @@ of the specified numeric column for each group and filling the remaining cells w
 \[\begin{split}b_t= \begin{cases}b_{t-1} &amp; \text { if } \Delta p_t=0 \\ \frac{\left|\Delta p_t\right|}{\Delta p_t} &amp; \text { if } \Delta p_t \neq 0\end{cases}\end{split}\]</div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>pd.DataFrame</em>) – Trades dataframe.</p></li>
 <li><p><strong>col_name</strong> (<em>str</em>) – New column name.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return pd.DataFrame</dt>
+<dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
 <dd class="field-even"><p>A copy of the data with the new column.</p>
 </dd>
 </dl>
@@ -396,13 +441,13 @@ of the specified numeric column for each group and filling the remaining cells w
 <span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">tick_bars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.aggregations.tick_bars" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates Tick Bars OHLC bars from trades-</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>trades</strong> (<em>pd.DataFrame</em>) – Expected binpan aggregated trades or atomic trades dataframe.</p></li>
 <li><p><strong>size</strong> (<em>int</em>) – Size of ticks in bars to be compiled.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A dataframe sampled with the new bars sampling.</p>
 </dd>
 </dl>
@@ -413,13 +458,13 @@ of the specified numeric column for each group and filling the remaining cells w
 <span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">volume_bars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.aggregations.volume_bars" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates Volume Bars OHLC bars from trades.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>trades</strong> (<em>pd.DataFrame</em>) – Expected binpan aggregated trades or atomic trades dataframe.</p></li>
 <li><p><strong>threshold</strong> (<em>int</em>) – Size of volume threshold in bars to be compiled.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A dataframe sampled with the new bars sampling.</p>
 </dd>
 </dl>
@@ -430,13 +475,13 @@ of the specified numeric column for each group and filling the remaining cells w
 <span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">dollar_bars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.aggregations.dollar_bars" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates Dollar (or quote) Bars OHLC bars from trades.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>trades</strong> (<em>pd.DataFrame</em>) – Expected binpan aggregated trades or atomic trades dataframe.</p></li>
 <li><p><strong>threshold</strong> (<em>int</em>) – Size of Dollar (or quote) threshold in bars to be compiled.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A dataframe sampled with the new bars sampling.</p>
 </dd>
 </dl>
@@ -447,7 +492,7 @@ of the specified numeric column for each group and filling the remaining cells w
 <span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">ohlc_bars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rows_with_bar_counter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'IB'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.aggregations.ohlc_bars" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate an OHLC dataframe from a trades dataframe with a column containing sampled numeric tags for each bar’s aggregation.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>rows_with_bar_counter</strong> (<em>list</em>) – A list of trades with a column containing bar numbers to group into OHLC bars.</p></li>
 <li><p><strong>index</strong> (<em>pd.Index</em>) – Index for the resulting dataframe.</p></li>
@@ -455,7 +500,7 @@ of the specified numeric column for each group and filling the remaining cells w
 <a class="reference external" href="https://www.amazon.com/-/es/Marcos-Lopez-Prado/dp/1119482089">https://www.amazon.com/-/es/Marcos-Lopez-Prado/dp/1119482089</a></p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A dataframe with OHLC bars.</p>
 </dd>
 </dl>
@@ -467,7 +512,7 @@ of the specified numeric column for each group and filling the remaining cells w
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Sample imbalance bars.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>trades</strong> (<em>pd.DataFrame</em>) – A dataframe with trades, atomic or aggregated.</p></li>
 <li><p><strong>bar_type</strong> (<em>str</em>) – Can be ‘imbalance’, ‘volume’, ‘dollar’.</p></li>
@@ -483,10 +528,6 @@ of the specified numeric column for each group and filling the remaining cells w
 <p><strong>Methods:</strong></p>
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.aggregations.ImbalanceBars.initialize_startup_variables" title="handlers.aggregations.ImbalanceBars.initialize_startup_variables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">initialize_startup_variables</span></code></a>()</p></td>
 <td><p>Initialize startup variables based on the chosen method.</p></td>
@@ -577,13 +618,13 @@ difference between probability of positive signs versus negative signes meets th
 threshold in other function.</p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>trades</strong> (<em>pd.DataFrame</em>) – Expected binpan aggregated trades or atomic trades dataframe.</p></li>
 <li><p><strong>starting_imbalance</strong> (<em>float</em>) – Starting value for following bars. Its recommended to wait some bars quantity to consider established sizes.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A dataframe sampled with the new bars sampling.</p>
 </dd>
 </dl>
@@ -607,13 +648,13 @@ threshold in other function.</p>
 <p>Fixed threshold for rendering imbalance bars.</p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>trades</strong> (<em>pd.DataFrame</em>) – Expected binpan aggregated trades or atomic trades dataframe.</p></li>
 <li><p><strong>imbalance</strong> (<em>float</em>) – Fixed value for imbalance threshold.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A dataframe sampled with the new bars sampling.</p>
 </dd>
 </dl>
@@ -677,11 +718,9 @@ threshold in other function.</p>
   </div>
 </footer></div>
       <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-      <script src="_static/jquery.js"></script>
-      <script src="_static/underscore.js"></script>
-      <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
       <script src="_static/doctools.js"></script>
-      <script src="_static/shibuya.js?v=2023.3.11"></script>
+      <script src="_static/sphinx_highlight.js"></script>
+      <script src="_static/shibuya.js?v=2023.3.19"></script>
       <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
 </body>

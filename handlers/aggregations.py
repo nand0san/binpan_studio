@@ -10,7 +10,13 @@ import handlers.market
 # from .time_helper import pandas_freq_tick_interval
 
 from .exceptions import BinPanException
-from .stat_tests import ema_numpy, sma_numpy, ema_numba, sma_numba
+from .starters import is_python_version_numba_supported
+
+if is_python_version_numba_supported():
+    from .stat_tests import ema_numpy, sma_numpy, ema_numba, sma_numba
+else:
+    from .stat_tests import ema_numpy as ema_numba
+    from .stat_tests import sma_numpy as sma_numba
 
 
 # from .market import atomic_trades_columns_from_redis, atomic_trades_columns_from_binance, agg_trades_columns_from_binance, agg_trades_columns_from_redis
@@ -275,7 +281,10 @@ def sign_of_price(data: pd.DataFrame, col_name: str = 'sign') -> pd.DataFrame:
 
     """
     df = data.copy(deep=True)
-    df[col_name] = df['Price'].diff()
+    # df[col_name] = df['Price'].diff()
+
+    df[col_name] = df['Price'].diff().astype(float)
+
     df[col_name] = np.where(df[col_name] == 0., np.nan, np.sign(df[col_name]))
     df[col_name].fillna(method='ffill', inplace=True)
     df[col_name] = df[col_name].fillna(0).astype(int)

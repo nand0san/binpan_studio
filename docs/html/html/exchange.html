@@ -4,22 +4,39 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Exchange Module - BinPan 0.4.11 documentation</title>
-    <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Files Module" href="files.html" /><link rel="prev" title="Exceptions Module" href="exceptions.html" /><link rel="stylesheet" href="_static/pygments.css?v=2023.3.11" type="text/css" />
-    <link rel="stylesheet" href="_static/shibuya.css?v=2023.3.11" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Files Module" href="files.html" /><link rel="prev" title="Exceptions Module" href="exceptions.html" />
+  <script>
+    const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const sessionTheme = sessionStorage['_theme']
+    if (sessionTheme) {
+      document.documentElement.classList.add(sessionTheme)
+    } else if (isDarkTheme) {
+      document.documentElement.classList.add('dark')
+    }
+  </script><link rel="stylesheet" href="_static/pygments.css?v=2023.3.19" type="text/css" />
+    <link rel="stylesheet" href="_static/shibuya.css?v=2023.3.19" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/style.css" />
-    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=2023.3.11" />
+    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=2023.3.19" />
     <style>
 :root {
   --sy-f-sys:-apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Droid Sans, Helvetica Neue;--sy-f-cjk:PingFang SC, Hiragino Sans GB, Droid Sans Fallback, Microsoft YaHei;--sy-f-heading:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-text:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-mono:Menlo, Monaco, Consolas, "Courier New", monospace;--sy-c-divider:rgba(var(--sy-rc-text), 0.1);--sy-c-divider-weak:rgba(var(--sy-rc-text), 0.05);--sy-c-border:rgba(var(--sy-rc-text), 0.14);--sy-s-banner-height:0rem;--sy-s-navbar-height:4rem;--sy-s-offset-top:calc(var(--sy-s-navbar-height) + var(--sy-s-banner-height));--sy-c-link:rgb(var(--sy-rc-theme));
   --sy-rc-theme:143, 118, 214;--sy-rc-bg:255, 255, 255;--sy-rc-invert:0, 0, 0;--sy-rc-text:0, 0, 0;--sy-c-bg:#fff;--sy-c-bg-weak:#f9f9f9;--sy-c-text:#374151;--sy-c-text-weak:#6b7280;--sy-c-heading:#111827;--sy-c-bold:#111827;--sy-c-foot-text:#232226;--sy-c-foot-bg:#fafafa;--sy-c-foot-divider:#f0f0f0;
 }
-@media not print {
-  html.light {
+@media (prefers-color-scheme: light) {
+  :root {
     --sy-rc-theme:143, 118, 214;--sy-rc-bg:255, 255, 255;--sy-rc-invert:0, 0, 0;--sy-rc-text:0, 0, 0;--sy-c-bg:#fff;--sy-c-bg-weak:#f9f9f9;--sy-c-text:#374151;--sy-c-text-weak:#6b7280;--sy-c-heading:#111827;--sy-c-bold:#111827;--sy-c-foot-text:#232226;--sy-c-foot-bg:#fafafa;--sy-c-foot-divider:#f0f0f0;
   }
-  html.dark {
+}
+@media (prefers-color-scheme: dark) {
+  :root {
     --sy-rc-theme:143, 118, 214;--sy-rc-bg:18, 18, 18;--sy-rc-invert:255, 255, 255;--sy-rc-text:255, 255, 255;--sy-c-bg:#121212;--sy-c-bg-weak:#212833;--sy-c-text:#cedbea;--sy-c-text-weak:#77889f;--sy-c-heading:#ebf0f4;--sy-c-bold:#ebf0f4;--sy-c-foot-text:#eee;--sy-c-foot-bg:#000;--sy-c-foot-divider:#000;
   }
+}
+html.light {
+  --sy-rc-theme:143, 118, 214;--sy-rc-bg:255, 255, 255;--sy-rc-invert:0, 0, 0;--sy-rc-text:0, 0, 0;--sy-c-bg:#fff;--sy-c-bg-weak:#f9f9f9;--sy-c-text:#374151;--sy-c-text-weak:#6b7280;--sy-c-heading:#111827;--sy-c-bold:#111827;--sy-c-foot-text:#232226;--sy-c-foot-bg:#fafafa;--sy-c-foot-divider:#f0f0f0;
+}
+html.dark {
+  --sy-rc-theme:143, 118, 214;--sy-rc-bg:18, 18, 18;--sy-rc-invert:255, 255, 255;--sy-rc-text:255, 255, 255;--sy-c-bg:#121212;--sy-c-bg-weak:#212833;--sy-c-text:#cedbea;--sy-c-text-weak:#77889f;--sy-c-heading:#ebf0f4;--sy-c-bold:#ebf0f4;--sy-c-foot-text:#eee;--sy-c-foot-bg:#000;--sy-c-foot-divider:#000;
 }
 </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -94,7 +111,6 @@
 <li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quest.html">Requests Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stat_tests.html">Statistical Tests and Tools</a></li>
-<li class="toctree-l1"><a class="reference internal" href="stat_tests.html#calculations">Calculations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tags.html">Tags &amp; Backtesting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Module</a></li>
@@ -112,12 +128,56 @@
   <div class="localtoc">
     <h3>Table of Contents</h3>
     <ul>
-<li><a class="reference internal" href="#exchange-general-data">Exchange General Data</a></li>
-<li><a class="reference internal" href="#account">Account</a></li>
-<li><a class="reference internal" href="#weight-api-control">Weight API control</a></li>
-<li><a class="reference internal" href="#symbols-trading-filters">Symbols Trading Filters</a></li>
-<li><a class="reference internal" href="#symbol-characteristics-filtering">Symbol Characteristics Filtering</a></li>
-<li><a class="reference internal" href="#symbol-operative-data">Symbol Operative Data</a></li>
+<li><a class="reference internal" href="#exchange-general-data">Exchange General Data</a><ul>
+<li><a class="reference internal" href="#handlers.exchange.get_exchange_info"><code class="docutils literal notranslate"><span class="pre">get_exchange_info()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.exchange.get_info_dic"><code class="docutils literal notranslate"><span class="pre">get_info_dic()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#account">Account</a><ul>
+<li><a class="reference internal" href="#handlers.exchange.get_account_status"><code class="docutils literal notranslate"><span class="pre">get_account_status()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#weight-api-control">Weight API control</a><ul>
+<li><a class="reference internal" href="#handlers.exchange.get_exchange_limits"><code class="docutils literal notranslate"><span class="pre">get_exchange_limits()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#symbols-trading-filters">Symbols Trading Filters</a><ul>
+<li><a class="reference internal" href="#handlers.exchange.get_symbols_filters"><code class="docutils literal notranslate"><span class="pre">get_symbols_filters()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.exchange.get_filters"><code class="docutils literal notranslate"><span class="pre">get_filters()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#symbol-characteristics-filtering">Symbol Characteristics Filtering</a><ul>
+<li><a class="reference internal" href="#handlers.exchange.filter_tradeable"><code class="docutils literal notranslate"><span class="pre">filter_tradeable()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.exchange.filter_spot"><code class="docutils literal notranslate"><span class="pre">filter_spot()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.exchange.filter_margin"><code class="docutils literal notranslate"><span class="pre">filter_margin()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.exchange.filter_not_margin"><code class="docutils literal notranslate"><span class="pre">filter_not_margin()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.exchange.filter_leveraged_tokens"><code class="docutils literal notranslate"><span class="pre">filter_leveraged_tokens()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.exchange.filter_legal"><code class="docutils literal notranslate"><span class="pre">filter_legal()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#symbol-operative-data">Symbol Operative Data</a><ul>
+<li><a class="reference internal" href="#handlers.exchange.get_precision"><code class="docutils literal notranslate"><span class="pre">get_precision()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.exchange.get_orderTypes_and_permissions"><code class="docutils literal notranslate"><span class="pre">get_orderTypes_and_permissions()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.exchange.get_fees_dict"><code class="docutils literal notranslate"><span class="pre">get_fees_dict()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.exchange.get_fees"><code class="docutils literal notranslate"><span class="pre">get_fees()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.exchange.get_system_status"><code class="docutils literal notranslate"><span class="pre">get_system_status()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.exchange.get_coins_and_networks_info"><code class="docutils literal notranslate"><span class="pre">get_coins_and_networks_info()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.exchange.get_coins_info_list"><code class="docutils literal notranslate"><span class="pre">get_coins_info_list()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.exchange.get_coins_info_dic"><code class="docutils literal notranslate"><span class="pre">get_coins_info_dic()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.exchange.get_legal_coins"><code class="docutils literal notranslate"><span class="pre">get_legal_coins()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.exchange.get_leveraged_coins"><code class="docutils literal notranslate"><span class="pre">get_leveraged_coins()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.exchange.get_leveraged_symbols"><code class="docutils literal notranslate"><span class="pre">get_leveraged_symbols()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.exchange.get_quotes_dic"><code class="docutils literal notranslate"><span class="pre">get_quotes_dic()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.exchange.get_bases_dic"><code class="docutils literal notranslate"><span class="pre">get_bases_dic()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.exchange.exchange_status"><code class="docutils literal notranslate"><span class="pre">exchange_status()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.exchange.get_24h_statistics"><code class="docutils literal notranslate"><span class="pre">get_24h_statistics()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.exchange.not_iterative_coin_conversion"><code class="docutils literal notranslate"><span class="pre">not_iterative_coin_conversion()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.exchange.convert_to_other_coin"><code class="docutils literal notranslate"><span class="pre">convert_to_other_coin()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.exchange.convert_symbol_base_to_other_coin"><code class="docutils literal notranslate"><span class="pre">convert_symbol_base_to_other_coin()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.exchange.statistics_24h"><code class="docutils literal notranslate"><span class="pre">statistics_24h()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.exchange.get_top_gainers"><code class="docutils literal notranslate"><span class="pre">get_top_gainers()</span></code></a></li>
+</ul>
+</li>
 </ul>
 
 
@@ -144,7 +204,7 @@
 <span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_exchange_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.exchange.get_exchange_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns general exchange info from /api/v3/exchangeInfo endpoint.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return dict</dt>
+<dt class="field-odd">Return dict<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict_keys([‘timezone’, ‘serverTime’, ‘rateLimits’, ‘exchangeFilters’, ‘symbols’])</p>
 </dd>
 </dl>
@@ -209,7 +269,7 @@
 <span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_info_dic</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.exchange.get_info_dic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the dictionary of each symbol with its information from the exchange.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return dict</dt>
+<dt class="field-odd">Return dict<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Returns info for each symbol as keys in the dict.</p>
 </dd>
 </dl>
@@ -284,7 +344,7 @@
 <p>For Machine Learning limits, restrictions will be applied to account. If a user has been restricted by the ML system, they may
 check the reason and the duration by using the [/sapi/v1/account/status] endpoint</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return dict</dt>
+<dt class="field-odd">Return dict<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Example:</p>
 </dd>
 </dl>
@@ -298,7 +358,7 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 <h2>Weight API control<a class="headerlink" href="#weight-api-control" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.exchange.get_exchange_limits">
-<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_exchange_limits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.exchange.get_exchange_limits" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_exchange_limits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.exchange.get_exchange_limits" title="Permalink to this definition">¶</a></dt>
 <dd><p>Binance manage several limits: RAW_REQUESTS, REQUEST_WEIGHT, and ORDERS rate limits.</p>
 <p>The headers for those limits, I assume that are:
 - RAW_REQUESTS: x-mbx-used-weight. Is cross all the api calls.
@@ -317,7 +377,7 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 </div>
 </div></blockquote>
 <dl class="field-list simple">
-<dt class="field-odd">Return dict</dt>
+<dt class="field-odd">Return dict<span class="colon">:</span></dt>
 <dd class="field-odd"><p></p></dd>
 </dl>
 </dd></dl>
@@ -327,7 +387,7 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 <h2>Symbols Trading Filters<a class="headerlink" href="#symbols-trading-filters" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.exchange.get_symbols_filters">
-<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_symbols_filters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.exchange.get_symbols_filters" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_symbols_filters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.exchange.get_symbols_filters" title="Permalink to this definition">¶</a></dt>
 <dd><p>Example:</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="n">exchange</span><span class="o">.</span><span class="n">get_filters</span><span class="p">(</span><span class="s1">&#39;TLMBUSD&#39;</span><span class="p">,</span> <span class="n">info_dic</span><span class="o">=</span><span class="n">info_dic</span><span class="p">)</span>
 </span><span id="1-2">
@@ -356,10 +416,10 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 </span></pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>info_dic</strong> (<em>dict</em>) – A BinPan exchange info dictionary</p>
 </dd>
-<dt class="field-even">Return dict</dt>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
 <dd class="field-even"><p>A dict with all flatten values.</p>
 </dd>
 </dl>
@@ -367,16 +427,16 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.exchange.get_filters">
-<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_filters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.exchange.get_filters" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_filters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.exchange.get_filters" title="Permalink to this definition">¶</a></dt>
 <dd><p>For a symbol, get exchange filter conditions.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>symbol</strong> (<em>str</em>) – A Binance symbol.</p></li>
 <li><p><strong>info_dic</strong> (<em>dict</em>) – BinPan exchange info dictionary. It’s optional to avoid an API call. It’s optional to avoid an API call.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return a dict</dt>
+<dt class="field-even">Return a dict<span class="colon">:</span></dt>
 <dd class="field-even"><p>A dictionary with exclusively data for a symbol.</p>
 </dd>
 </dl>
@@ -421,10 +481,10 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 <span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">filter_tradeable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.exchange.filter_tradeable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns, from BinPan exchange info dictionary currently trading symbols.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>info_dic</strong> (<em>dict</em>) – BinPan exchange info dictionary. It’s optional to avoid an API call.</p>
 </dd>
-<dt class="field-even">Return dict</dt>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
 <dd class="field-even"><p>BinPan exchange info dictionary, but, just with currently trading symbols.</p>
 </dd>
 </dl>
@@ -435,10 +495,10 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 <span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">filter_spot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.exchange.filter_spot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns, from BinPan exchange info dictionary currently SPOT symbols.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>info_dic</strong> (<em>dict</em>) – BinPan exchange info dictionary. It’s optional to avoid an API call.</p>
 </dd>
-<dt class="field-even">Return dict</dt>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
 <dd class="field-even"><p>BinPan exchange info dictionary, but, just with currently SPOT symbols.</p>
 </dd>
 </dl>
@@ -449,10 +509,10 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 <span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">filter_margin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.exchange.filter_margin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns, from BinPan exchange info dictionary currently MARGIN symbols.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>info_dic</strong> (<em>dict</em>) – BinPan exchange info dictionary. It’s optional to avoid an API call.</p>
 </dd>
-<dt class="field-even">Return dict</dt>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
 <dd class="field-even"><p>BinPan exchange info dictionary, but, just with currently MARGIN symbols.</p>
 </dd>
 </dl>
@@ -460,16 +520,16 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.exchange.filter_not_margin">
-<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">filter_not_margin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbols</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.exchange.filter_not_margin" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">filter_not_margin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbols</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.exchange.filter_not_margin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns, from BinPan exchange info dictionary currently NOT MARGIN symbols.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>symbols</strong> (<em>list</em>) – A list of symbols to apply filter. Optional.</p></li>
 <li><p><strong>info_dic</strong> (<em>dict</em>) – BinPan exchange info dictionary. It’s optional to avoid an API call.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return list</dt>
+<dt class="field-even">Return list<span class="colon">:</span></dt>
 <dd class="field-even"><p>BinPan exchange info dictionary, but, just with currently NOT MARGIN symbols.</p>
 </dd>
 </dl>
@@ -480,10 +540,10 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 <span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">filter_leveraged_tokens</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.exchange.filter_leveraged_tokens" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns, from BinPan exchange info dictionary currently NOT LEVERAGED symbols.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>info_dic</strong> (<em>dict</em>) – BinPan exchange info dictionary. It’s optional to avoid an API call.</p>
 </dd>
-<dt class="field-even">Return dict</dt>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
 <dd class="field-even"><p>BinPan exchange info dictionary, but, just with currently NOT LEVERAGED symbols.</p>
 </dd>
 </dl>
@@ -494,13 +554,13 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 <span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">filter_legal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">legal_coins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.exchange.filter_legal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns, from BinPan exchange info dictionary currently trading symbols not using legal Fiat money.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>legal_coins</strong> (<em>list</em>) – List of legal coins, Fiat coins.</p></li>
 <li><p><strong>info_dic</strong> (<em>dict</em>) – BinPan exchange info dictionary. It’s optional to avoid an API call.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return dict</dt>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
 <dd class="field-even"><p>BinPan exchange info dictionary, but, without fiat legal symbols.</p>
 </dd>
 </dl>
@@ -511,7 +571,7 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 <h2>Symbol Operative Data<a class="headerlink" href="#symbol-operative-data" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.exchange.get_precision">
-<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_precision</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.exchange.get_precision" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_precision</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.exchange.get_precision" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets a dictionary with decimal positions each symbol.
 :param dict info_dic: BinPan exchange info dictionary. It’s optional to avoid an API call.
 :return dict: dictionary with decimal positions each symbol.</p>
@@ -519,7 +579,7 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.exchange.get_orderTypes_and_permissions">
-<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_orderTypes_and_permissions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.exchange.get_orderTypes_and_permissions" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_orderTypes_and_permissions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.exchange.get_orderTypes_and_permissions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets a dictionary with a list of order types suppoerted each symbol.
 :param dict info_dic: BinPan exchange info dictionary. It’s optional to avoid an API call.
 :return dict: dictionary with a list of order types suppoerted each symbol.</p>
@@ -527,10 +587,10 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.exchange.get_fees_dict">
-<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_fees_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.exchange.get_fees_dict" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_fees_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.exchange.get_fees_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns fees for a symbol or for every symbol if not passed a symbol.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>symbol</strong> (<em>str</em>) – Optional to request just one symbol instead of all.</p></li>
 <li><p><strong>api_key</strong> (<em>str</em>) – A BinPan encrypted in BinPan’s way api key. Do not use unencrypted api values, import it from  secret.py file.</p></li>
@@ -538,7 +598,7 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 <li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return dict</dt>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
 <dd class="field-even"><p>A dict with maker and taker fees.</p>
 </dd>
 </dl>
@@ -546,10 +606,10 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.exchange.get_fees">
-<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_fees</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.exchange.get_fees" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_fees</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.exchange.get_fees" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns fees for a symbol or for every symbol if not passed.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type and operative.</p></li>
 <li><p><strong>api_key</strong> (<em>str</em>) – A BinPan encrypted in BinPan’s way api key. Do not use unencrypted api values, import it from  secret.py file.</p></li>
@@ -557,7 +617,7 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 <li><p><strong>symbol</strong> (<em>str</em>) – Optional to request just one symbol instead of all.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return pd.DataFrame</dt>
+<dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
 <dd class="field-even"><p>A pandas dataframe with all the fees applied each symbol.</p>
 </dd>
 </dl>
@@ -569,7 +629,7 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 <dd><p>Fetch system status.</p>
 <p>Weight(IP): 1</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return dict</dt>
+<dt class="field-odd">Return dict<span class="colon">:</span></dt>
 <dd class="field-odd"><p>As shown in example.</p>
 </dd>
 </dl>
@@ -589,18 +649,18 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 <p>GET /sapi/v1/capital/config/getall (HMAC SHA256)</p>
 <p>Weight(IP): 10</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return pd.DataFrame, pd.DataFrame</dt>
+<dt class="field-odd">Return pd.DataFrame, pd.DataFrame<span class="colon">:</span></dt>
 <dd class="field-odd"><p></p></dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.exchange.get_coins_info_list">
-<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_coins_info_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.exchange.get_coins_info_list" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_coins_info_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.exchange.get_coins_info_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bring all coins exchange info in a list if no one is specified.</p>
 <p>Returns a list of dictionaries, one for each currency.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type and operative.</p></li>
 <li><p><strong>api_key</strong> (<em>str</em>) – A BinPan encrypted in BinPan’s way api key. Do not use unencrypted api values, import it from  secret.py file.</p></li>
@@ -608,7 +668,7 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 <li><p><strong>coin</strong> (<em>str</em>) – Limit response to a coin.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return list</dt>
+<dt class="field-even">Return list<span class="colon">:</span></dt>
 <dd class="field-even"><p>A list of dictionaries each coin.</p>
 </dd>
 </dl>
@@ -616,10 +676,10 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.exchange.get_coins_info_dic">
-<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_coins_info_dic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.exchange.get_coins_info_dic" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_coins_info_dic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.exchange.get_coins_info_dic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Useful managing coins info in a big dictionary with coins as keys.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type and operative.</p></li>
 <li><p><strong>api_key</strong> (<em>str</em>) – A BinPan encrypted in BinPan’s way api key. Do not use unencrypted api values, import it from  secret.py file.</p></li>
@@ -627,7 +687,7 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 <li><p><strong>coin</strong> (<em>str</em>) – Limit response to a coin.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return list</dt>
+<dt class="field-even">Return list<span class="colon">:</span></dt>
 <dd class="field-even"><p>A dictionary with each coin data as value.</p>
 </dd>
 </dl>
@@ -635,10 +695,10 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.exchange.get_legal_coins">
-<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_legal_coins</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coins_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.exchange.get_legal_coins" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_legal_coins</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coins_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.exchange.get_legal_coins" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fetch coins containing isLegalMoney=true</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type and operative.</p></li>
 <li><p><strong>api_key</strong> (<em>str</em>) – A BinPan encrypted in BinPan’s way api key. Do not use unencrypted api values, import it from  secret.py file.</p></li>
@@ -646,7 +706,7 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 <li><p><strong>coins_dic</strong> (<em>dict</em>) – Avoid fetching the API by passing a dict with coins data.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return list</dt>
+<dt class="field-even">Return list<span class="colon">:</span></dt>
 <dd class="field-even"><p>A list with coins names.</p>
 </dd>
 </dl>
@@ -654,7 +714,7 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.exchange.get_leveraged_coins">
-<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_leveraged_coins</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coins_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.exchange.get_leveraged_coins" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_leveraged_coins</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coins_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.exchange.get_leveraged_coins" title="Permalink to this definition">¶</a></dt>
 <dd><p>Search for Binance leveraged coins by searching UP or DOWN before an existing coin, examples:</p>
 <blockquote>
 <div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="p">[</span><span class="s1">&#39;1INCHDOWN&#39;</span><span class="p">,</span> <span class="s1">&#39;1INCHUP&#39;</span><span class="p">,</span> <span class="s1">&#39;AAVEDOWN&#39;</span><span class="p">,</span> <span class="s1">&#39;AAVEUP&#39;</span><span class="p">,</span> <span class="s1">&#39;ADADOWN&#39;</span><span class="p">,</span> <span class="o">...</span> <span class="p">]</span>
@@ -662,7 +722,7 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 </div>
 </div></blockquote>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type and operative.</p></li>
 <li><p><strong>api_key</strong> (<em>str</em>) – A BinPan encrypted in BinPan’s way api key. Do not use unencrypted api values, import it from  secret.py file.</p></li>
@@ -670,7 +730,7 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 <li><p><strong>coins_dic</strong> (<em>dict</em>) – Avoid fetching the API by passing a dict with coins data.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return list</dt>
+<dt class="field-even">Return list<span class="colon">:</span></dt>
 <dd class="field-even"><p>A list with leveraged coins names.</p>
 </dd>
 </dl>
@@ -678,7 +738,7 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.exchange.get_leveraged_symbols">
-<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_leveraged_symbols</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leveraged_coins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.exchange.get_leveraged_symbols" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_leveraged_symbols</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leveraged_coins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.exchange.get_leveraged_symbols" title="Permalink to this definition">¶</a></dt>
 <dd><p>Search for Binance symbols based on leveraged coins by searching UP or DOWN before an existing coin in symbol,
 leveraged coins examples are:</p>
 <blockquote>
@@ -690,7 +750,7 @@ leveraged coins examples are:</p>
 </div>
 </div></blockquote>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type and operative.</p></li>
 <li><p><strong>api_key</strong> (<em>str</em>) – A BinPan encrypted in BinPan’s way api key. Do not use unencrypted api values, import it from  secret.py file.</p></li>
@@ -699,7 +759,7 @@ leveraged coins examples are:</p>
 <li><p><strong>leveraged_coins</strong> (<em>list</em>) – Avoid fetching the API for getting coins by passing a list with coins data.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return list</dt>
+<dt class="field-even">Return list<span class="colon">:</span></dt>
 <dd class="field-even"><p>A list with leveraged coins names.</p>
 </dd>
 </dl>
@@ -707,13 +767,13 @@ leveraged coins examples are:</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.exchange.get_quotes_dic">
-<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_quotes_dic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.exchange.get_quotes_dic" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_quotes_dic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.exchange.get_quotes_dic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get quote coin each symbol.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>info_dic</strong> (<em>dict</em>) – BinPan exchange info dictionary. It’s optional to avoid an API call.</p>
 </dd>
-<dt class="field-even">Return dictionary</dt>
+<dt class="field-even">Return dictionary<span class="colon">:</span></dt>
 <dd class="field-even"><p>It gets symbols as keys and quote coin as values.</p>
 </dd>
 </dl>
@@ -721,19 +781,19 @@ leveraged coins examples are:</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.exchange.get_bases_dic">
-<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_bases_dic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.exchange.get_bases_dic" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_bases_dic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.exchange.get_bases_dic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get base coin each symbol.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>info_dic</strong> (<em>dict</em>) – BinPan exchange info dictionary. It’s optional to avoid an API call.</p></li>
 <li><p><strong>info_dic</strong> – </p></li>
 </ul>
 </dd>
-<dt class="field-even">Return dictionary</dt>
+<dt class="field-even">Return dictionary<span class="colon">:</span></dt>
 <dd class="field-even"><p>It gets symbols as keys and base coin as values.</p>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p></p>
 </dd>
 </dl>
@@ -741,10 +801,10 @@ leveraged coins examples are:</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.exchange.exchange_status">
-<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">exchange_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tradeable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin_required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_legal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_leveraged</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol_filters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#handlers.exchange.exchange_status" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">exchange_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tradeable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin_required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_legal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_leveraged</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol_filters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#handlers.exchange.exchange_status" title="Permalink to this definition">¶</a></dt>
 <dd><p>It returns a lot of results: bases_dic, quotes_dic, legal_coins, not_legal_pairs, symbol_filters, filtered_pairs</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type and operative.</p></li>
 <li><p><strong>api_key</strong> (<em>str</em>) – A BinPan encrypted in BinPan’s way api key. Do not use unencrypted api values, import it from  secret.py file.</p></li>
@@ -758,7 +818,7 @@ leveraged coins examples are:</p>
 <li><p><strong>symbol_filters</strong> (<em>dict</em>) – A BinPan symbols filters dict.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return tuple</dt>
+<dt class="field-even">Return tuple<span class="colon">:</span></dt>
 <dd class="field-even"><p>bases_dic, quotes_dic, legal_coins, not_legal_pairs, symbol_filters, filtered_pairs</p>
 </dd>
 </dl>
@@ -766,7 +826,7 @@ leveraged coins examples are:</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.exchange.get_24h_statistics">
-<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_24h_statistics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.exchange.get_24h_statistics" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_24h_statistics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.exchange.get_24h_statistics" title="Permalink to this definition">¶</a></dt>
 <dd><p>GET /api/v3/ticker/24hr</p>
 <p>24 hour rolling window price change statistics. Careful when accessing this with no symbol.</p>
 <p>Weight(IP):</p>
@@ -776,10 +836,10 @@ leveraged coins examples are:</p>
 <p>101 or more:        40</p>
 <p>If symbols parameter is omitted     40</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>symbol</strong> (<em>str</em>) – Optional symbol.</p>
 </dd>
-<dt class="field-even">Return dict</dt>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
 <dd class="field-even"><p>As example shown.</p>
 </dd>
 </dl>
@@ -813,10 +873,10 @@ leveraged coins examples are:</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.exchange.not_iterative_coin_conversion">
-<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">not_iterative_coin_conversion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">try_coin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BTC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coin_qty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.exchange.not_iterative_coin_conversion" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">not_iterative_coin_conversion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">try_coin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BTC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coin_qty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.exchange.not_iterative_coin_conversion" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts any coin quantity value to a reference coin.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type and operative.</p></li>
 <li><p><strong>coin</strong> (<em>str</em>) – A coin to convert to other coin value.</p></li>
@@ -825,7 +885,7 @@ leveraged coins examples are:</p>
 <li><p><strong>coin_qty</strong> (<em>float</em>) – A quantity to use in calculation.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return float</dt>
+<dt class="field-even">Return float<span class="colon">:</span></dt>
 <dd class="field-even"><p>Converted value result.</p>
 </dd>
 </dl>
@@ -833,10 +893,10 @@ leveraged coins examples are:</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.exchange.convert_to_other_coin">
-<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">convert_to_other_coin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'USDT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coin_qty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.exchange.convert_to_other_coin" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">convert_to_other_coin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'USDT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coin_qty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.exchange.convert_to_other_coin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert value of a quantity of coins to value in other coin.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type and operative.</p></li>
 <li><p><strong>coin</strong> (<em>str</em>) – Your coin.</p></li>
@@ -845,7 +905,7 @@ leveraged coins examples are:</p>
 <li><p><strong>prices</strong> (<em>dict</em>) – A dict with all current prices.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return float</dt>
+<dt class="field-even">Return float<span class="colon">:</span></dt>
 <dd class="field-even"><p>Value expressed in the converted coin.</p>
 </dd>
 </dl>
@@ -853,12 +913,12 @@ leveraged coins examples are:</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.exchange.convert_symbol_base_to_other_coin">
-<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">convert_symbol_base_to_other_coin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol_to_convert_base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'ETHBTC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_qty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'USDT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.exchange.convert_symbol_base_to_other_coin" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">convert_symbol_base_to_other_coin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol_to_convert_base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'ETHBTC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_qty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'USDT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.exchange.convert_symbol_base_to_other_coin" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
 <div><p>Convert value of a quantity of coins to value in other coin.</p>
 </div></blockquote>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type and operative.</p></li>
 <li><p><strong>symbol_to_convert_base</strong> (<em>str</em>) – A symbol to get it’s base to convert to other coin value.</p></li>
@@ -868,7 +928,7 @@ leveraged coins examples are:</p>
 <li><p><strong>info_dic</strong> (<em>dict</em>) – BinPan exchange info dictionary. It’s optional to avoid an API call.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return float</dt>
+<dt class="field-even">Return float<span class="colon">:</span></dt>
 <dd class="field-even"><p>Value expressed in the converted coin.</p>
 </dd>
 </dl>
@@ -880,7 +940,7 @@ leveraged coins examples are:</p>
 <dd><p>Generates a dataframe with the filters to apply with the statistics of the last 24 hours. Optionally, you can generate the column to
 convert the volume to USDT.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type and operative.</p></li>
 <li><p><strong>api_key</strong> (<em>str</em>) – A BinPan encrypted in BinPan’s way api key. Do not use unencrypted api values, import it from  secret.py file.</p></li>
@@ -895,7 +955,7 @@ convert the volume to USDT.</p>
 <li><p><strong>sort_by</strong> (<em>str</em>) – A column to sort by. Default is ‘priceChangePercent’.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return pd.DataFrame</dt>
+<dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
 <dd class="field-even"><p>Picture result.</p>
 </dd>
 </dl>
@@ -904,11 +964,11 @@ convert the volume to USDT.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.exchange.get_top_gainers">
-<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_top_gainers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tradeable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin_required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_legal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_leveraged</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_gainers_qty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">my_quote</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BUSD'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_stable_pairs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_by_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'priceChangePercent'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_return</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.exchange.get_top_gainers" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_top_gainers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tradeable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin_required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_legal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_leveraged</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_gainers_qty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">my_quote</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BUSD'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_stable_pairs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_by_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'priceChangePercent'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_return</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.exchange.get_top_gainers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates a dataframe for symbols against a quote with the filters to apply with the statistics of the last 24 hours.
 Optionally, you can generate the column to convert the volume to USDT.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type and operative.</p></li>
 <li><p><strong>api_key</strong> (<em>str</em>) – A BinPan encrypted in BinPan’s way api key. Do not use unencrypted api values, import it from  secret.py file.</p></li>
@@ -926,7 +986,7 @@ Optionally, you can generate the column to convert the volume to USDT.</p>
 <li><p><strong>full_return</strong> – Activate return full columns data from exchange, else, returns just a few basic columns.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return pd.DataFrame</dt>
+<dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
 <dd class="field-even"><p>A dataframe as in the example .</p>
 </dd>
 </dl>
@@ -1008,11 +1068,9 @@ Optionally, you can generate the column to convert the volume to USDT.</p>
   </div>
 </footer></div>
       <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-      <script src="_static/jquery.js"></script>
-      <script src="_static/underscore.js"></script>
-      <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
       <script src="_static/doctools.js"></script>
-      <script src="_static/shibuya.js?v=2023.3.11"></script>
+      <script src="_static/sphinx_highlight.js"></script>
+      <script src="_static/shibuya.js?v=2023.3.19"></script>
     
 </body>
 </html>

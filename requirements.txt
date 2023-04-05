@@ -4,11 +4,14 @@ numpy>=1.21.6
 pycryptodome>=3.17
 pytz>=2022.7.1
 tqdm==4.65.0
-plotly==5.13.1
+plotly==5.14.0
 py-cpuinfo>=9.0.0
 pandas-ta>=0.3.14b0
 scipy>=1.7.3
 requests>=2.28.2
-setuptools==67.6.0
+setuptools==67.6.1
 # python-dotenv==0.21.0
-numba
+numba # no version for python 3.11 yet
+sphinx
+autodocsumm
+shibuya>=0.2.10
