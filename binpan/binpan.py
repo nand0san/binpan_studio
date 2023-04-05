@@ -12,7 +12,7 @@ import pandas as pd
 import numpy as np
 
 from redis import StrictRedis
-from typing import Tuple
+from typing import Tuple, List
 
 # from typing import Tuple
 
@@ -222,6 +222,9 @@ class Symbol(object):
                  display_min_rows=25,
                  display_width=320,
                  from_csv: bool or str = False):
+
+        self.s_lines = None  # support levels from trades
+        self.r_lines = None  # support levels from trades
 
         try:
             secret_module = importlib.import_module('secret')
@@ -1641,6 +1644,7 @@ class Symbol(object):
                 overlapped_indicators += [pd.Series(index=temp_df.index, data=s_value)]
                 indicator_names += [f"Support {s_value}"]
                 indicators_colors += [support_lines_color]
+        if resistance_lines:
             for r_value in resistance_lines:
                 overlapped_indicators += [pd.Series(index=temp_df.index, data=r_value)]
                 indicator_names += [f"Resistance {r_value}"]
@@ -3658,6 +3662,27 @@ class Symbol(object):
             return ta.pvt(**kwargs)
         elif name == "vp":
             return ta.vp(**kwargs)
+
+    def support_resistance(self, from_atomic: bool = True, from_aggregated: bool = False) -> Tuple[List[float], List[float]]:
+        """
+        Calculate support and resistance levels for the Symbol based on either atomic trades or aggregated trades.
+
+        :param bool from_atomic: If True, support and resistance levels will be calculated using atomic trades.
+        :param bool from_aggregated: If True, support and resistance levels will be calculated using aggregated trades.
+        :return: A tuple containing two lists: the first list contains support levels, and the second list contains resistance levels.
+        """
+        if from_atomic:
+            if self.atomic_trades.empty:
+                print(f"Please add atomic trades first: my_symbol.get_atomic_trades()")
+            else:
+                self.s_lines, self.r_lines = handlers.indicators.support_resistance_levels(self.atomic_trades)
+        elif from_aggregated:
+            if self.agg_trades.empty:
+                print(f"Please add aggregated trades first: my_symbol.get_agg_trades()")
+            else:
+                self.s_lines, self.r_lines = handlers.indicators.support_resistance_levels(self.agg_trades)
+
+        return self.s_lines, self.r_lines
 
     #############
     # Relations #

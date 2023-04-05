@@ -35,3 +35,9 @@ Indicators from Trades
 ----------------------
 
 .. autofunction:: reversal_candles
+
+.. autofunction:: find_optimal_clusters
+
+.. autofunction:: support_resistance_levels
+
+

@@ -5,6 +5,8 @@ BinPan own indicators and utils.
 """
 import numpy as np
 import pandas as pd
+from tqdm import tqdm
+
 from handlers.time_helper import convert_milliseconds_to_time_zone_datetime
 from handlers.time_helper import pandas_freq_tick_interval
 
@@ -401,10 +403,62 @@ def reversal_candles(trades: pd.DataFrame,
     date_index = klines['Timestamp'].apply(convert_milliseconds_to_time_zone_datetime, timezoned=time_zone)
     klines.set_index(date_index, inplace=True)
 
-    repair_decimals = np.float(10**-decimal_positions)
+    repair_decimals = np.float(10 ** -decimal_positions)
     klines['High'] *= repair_decimals
     klines['Low'] *= repair_decimals
     klines['Open'] *= repair_decimals
     klines['Close'] *= repair_decimals
 
     return klines
+
+
+def support_resistance_levels(data: pd.DataFrame, max_clusters: int = 10) -> tuple:
+    """
+    Calculate support and resistance levels for a given set of trades using K-means clustering.
+
+    :param data: A pandas DataFrame with trade data, containing a 'Price' column and a 'Buyer was maker' column.
+    :param max_clusters: Maximum number of clusters to consider for finding the optimal number of centroids.
+    :return: A tuple containing two lists: the first list contains the support levels, and the second list contains
+             the resistance levels. Both lists contain float values.
+    """
+    try:
+        from sklearn.cluster import KMeans
+    except ImportError:
+        print(f"Please install sklearn: `pip install -U scikit-learn` to use Clustering")
+        return [], []
+    data = data.copy(deep=True)
+
+    def find_optimal_clusters(data: np.ndarray, max_clusters: int) -> int:
+        """
+        Find the optimal quantity of centroids for support and resistance methods using the elbow method.
+
+        :param data: A numpy array with the data to analyze.
+        :param max_clusters: Maximum number of clusters to consider.
+        :return: The optimal number of clusters (centroids) as an integer.
+        """
+
+        inertia = []
+        for n_clusters in tqdm(range(1, max_clusters + 1)):
+            kmeans = KMeans(n_clusters=n_clusters, n_init=10, random_state=0).fit(data)
+            inertia.append(kmeans.inertia_)
+        return np.argmin(np.gradient(np.gradient(inertia))) + 1
+
+    buy_prices = data.loc[data['Buyer was maker'] == False, 'Price'].values.reshape(-1, 1)
+    sell_prices = data.loc[data['Buyer was maker'] == True, 'Price'].values.reshape(-1, 1)
+
+    if len(buy_prices) == 0 and len(sell_prices) == 0:
+        print("There is not enough trade data to calculate support and resistance levels.")
+        return [], []
+    print("Clustering data...")
+    optimal_buy_clusters = find_optimal_clusters(buy_prices, max_clusters)
+    optimal_sell_clusters = find_optimal_clusters(sell_prices, max_clusters)
+
+    print(f"Found {optimal_buy_clusters} support levels from buys and {optimal_sell_clusters} resistance levels from sells.")
+
+    kmeans_buy = KMeans(n_clusters=optimal_buy_clusters, n_init=10).fit(buy_prices)
+    kmeans_sell = KMeans(n_clusters=optimal_sell_clusters, n_init=10).fit(sell_prices)
+
+    support_levels = np.sort(kmeans_buy.cluster_centers_, axis=0)
+    resistance_levels = np.sort(kmeans_sell.cluster_centers_, axis=0)
+
+    return support_levels.flatten().tolist(), resistance_levels.flatten().tolist()
