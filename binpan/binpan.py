@@ -3386,8 +3386,8 @@ class Symbol(object):
         if hasattr(ta, name):
             # Obtener el atributo y llamarlo con los argumentos de 'kwargs'
             indicator_func = getattr(ta, name)
-            print(f"This indicator should be plotted manually with the plotting module. "
-                  f"Check docs for candles_ta or candles_ta functions and pass it as an indicator serie.")
+            print(f"This indicator should be plotted manually with the plotting module. Check docs for candles_ta functions and pass it "
+                  f"as an indicator serie. Example: handlers.plotting.candles_ta(data=btcusdt.df, indicators_series=[rsi])")
             return indicator_func(**kwargs)
         else:
             raise ValueError(f"Indicator '{name}' not found in the 'pandas_ta' module.")

@@ -364,7 +364,7 @@ def deploy_traces(annotations: list,
 ###################
 
 def candles_ta(data: pd.DataFrame,
-               indicators_series: list = None,
+               indicators_series: list or pd.DataFrame= None,
                rows_pos=None,
                indicator_names=None,
                indicators_colors=None,
@@ -402,7 +402,7 @@ def candles_ta(data: pd.DataFrame,
        Beware of zeros or values in a different scale when plotting overlapped over candles, that can break the scale of the graph.
 
     :param pd.DataFrame data: a DataFrame that at least contains the columns: Open Close High Low Volume
-    :param list indicators_series: a list of pandas series with float values as indicators.
+    :param list or pd.DataFrame indicators_series: a list of pandas series with float values as indicators.
     :param list rows_pos: 1 means over the candles. Other numbers mean subsequent subplots under the candles.
     :param list indicator_names: Names to show in the plot. Defaults to series name.
     :param list indicators_colors: Color can be forced to anyone from the plotly colors list.
@@ -498,8 +498,15 @@ def candles_ta(data: pd.DataFrame,
     if rows_pos is None:
         rows_pos = []
 
+    if type(indicators_series) == pd.DataFrame:
+        plot_logger.info(f"Splitting indicators dataframe columns as series: {list(indicators_series.columns)}")
+        indicators_series = [indicators_series[c] for c in indicators_series.columns]
+    elif type(indicators_series) == pd.Series:
+        indicators_series = [indicators_series]
+
     if not indicators_color_filled and indicators_series:
         indicators_color_filled = {i.name: None for i in indicators_series}
+
     elif type(indicators_color_filled) == list:
         indicators_color_filled = {s.name: indicators_color_filled[i] for i, s in enumerate(indicators_series)}
 
@@ -530,12 +537,29 @@ def candles_ta(data: pd.DataFrame,
 
     if not indicators_colors:
         indicators_colors = [choice(plotly_colors) for _ in range(len(indicators_series))]
+        plot_logger.info(f"Indicators random colors:  indicators_colors={indicators_colors}")
 
     if not indicator_names:
         try:
             indicator_names = [i.name for i in indicators_series]
         except Exception:
             indicator_names = [f'Indicator {i}' for i in range(len(indicators_series))]
+    if not rows_pos:
+        rows_pos = [2 for _ in indicators_series]
+        plot_logger.info(f"Inferred positions, sent all to bottom subplot: rows_pos={rows_pos}")
+
+    # length control
+    try:
+        assert len(indicators_series) == len(indicators_colors), f"Indicators:{len(indicators_series)} mismatch colors" \
+                                                                 f":{len(indicators_colors)}"
+        assert len(indicators_series) == len(indicator_names), f"Indicators:{len(indicators_series)} mismatch names" \
+                                                               f":{len(indicator_names)}"
+        assert len(indicators_series) == len(rows_pos), f"Indicators:{len(indicators_series)} mismatch positions" \
+                                                        f":{len(rows_pos)}"
+    except AssertionError as exc:
+        msg = f"BinPan Exception: {exc}"
+        plot_logger.error(msg)
+        raise AssertionError(msg)
 
     if plot_volume:
         extra_rows = len(set(rows_pos)) + 1
@@ -977,7 +1001,8 @@ def candles_tagged(data: pd.DataFrame,
             assert len(markers_labels) == len(marker_legend_names)
 
         except Exception as exc:
-            raise BinPanException(f"Function candles_tagged: Plotting labels, annotation colors or names not consistent with markers list length -> {exc}")
+            raise BinPanException(
+                f"Function candles_tagged: Plotting labels, annotation colors or names not consistent with markers list length -> {exc}")
         labels_locator = list(markers_labels.keys())
     else:
         markers_labels = dict()
