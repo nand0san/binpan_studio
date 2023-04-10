@@ -6,7 +6,7 @@ BinPan own indicators and utils.
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
-from typing import Tuple
+# from typing import Tuple
 import pytz
 
 from handlers.time_helper import convert_milliseconds_to_time_zone_datetime
@@ -107,6 +107,7 @@ def ker(close: pd.Series,
     :return pd.Series: Results.
     """
     direction = close.diff(window).abs()
+    # noinspection PyUnresolvedReferences
     volatility = pd.rolling_sum(close.diff().abs(), window)
     return direction / volatility
 
@@ -421,7 +422,6 @@ def reversal_candles(trades: pd.DataFrame,
 
 
 def repeat_prices_by_quantity(data: pd.DataFrame, epsilon_quantity: float) -> np.ndarray:
-
     repeated_prices = []
     for price, quantity in data[['Price', 'Quantity']].values:
         repeat_count = int(-(quantity // -epsilon_quantity))  # ceil division
@@ -437,14 +437,13 @@ def support_resistance_levels(data: pd.DataFrame, max_clusters: int = 10, by_qua
     .. image:: images/indicators/support_resistance.png
            :width: 1000
 
-    :param data: A pandas DataFrame with trade data, containing a 'Price' column and a 'Buyer was maker' column.
+    :param data: A pandas DataFrame with trade data, containing a 'Price', 'Quantity' columns and a 'Buyer was maker' column.
     :param max_clusters: Maximum number of clusters to consider for finding the optimal number of centroids.
-    :return: A tuple containing two lists: the first list contains the support levels, and the second list contains
-             the resistance levels. Both lists contain float values.
     :param float by_quantity: Count each price as many times the quantity contains a float of a the passed amount.
         Example: If a price 0.001 has a quantity of 100 and by_quantity is 0.1, quantity/by_quantity = 100/0.1 = 1000, then this prices
         is taken into account 1000 times instead of 1.
-
+        :return: A tuple containing two lists: the first list contains the support levels, and the second list contains
+             the resistance levels. Both lists contain float values.
     """
     try:
         from sklearn.cluster import KMeans
@@ -494,3 +493,73 @@ def support_resistance_levels(data: pd.DataFrame, max_clusters: int = 10, by_qua
 
     return support_levels.flatten().tolist(), resistance_levels.flatten().tolist()
 
+
+def repeat_timestamps_by_quantity(data: pd.DataFrame, epsilon_quantity: float) -> np.ndarray:
+    repeated_prices = []
+    for price, quantity, timestamp in data[['Price', 'Quantity', 'Timestamp']].values:
+        repeat_count = int(-(quantity // -epsilon_quantity))  # ceil division
+        repeated_prices.extend([timestamp] * repeat_count)
+    return np.array(repeated_prices).reshape(-1, 1)
+
+
+def time_active_zones(data: pd.DataFrame, max_clusters: int = 10, by_quantity: float = None) -> tuple:
+    """
+    Calculate active points in time by clustering timestamps of trades.
+
+    .. image:: images/indicators/support_resistance.png
+           :width: 1000
+
+    :param data: A pandas DataFrame with trade data, containing a 'Price', 'Timestamp', 'Quantity' columns and a 'Buyer was maker' column.
+    :param max_clusters: Maximum number of clusters to consider for finding the optimal number of centroids.
+    :param float by_quantity: Count each price as many times the quantity contains a float of a the passed amount.
+        Example: If a price 0.001 has a quantity of 100 and by_quantity is 0.1, quantity/by_quantity = 100/0.1 = 1000, then this prices
+        is taken into account 1000 times instead of 1.
+    :return: A tuple containing the most traded centroides timestamps..
+    """
+    try:
+        from sklearn.cluster import KMeans
+    except ImportError:
+        print(f"Please install sklearn: `pip install -U scikit-learn` to use Clustering")
+        return [], []
+    data = data.copy(deep=True)
+
+    def find_optimal_clusters(data: np.ndarray, max_clusters: int) -> int:
+        """
+        Find the optimal quantity of centroids for support and resistance methods using the elbow method.
+
+        :param data: A numpy array with the data to analyze.
+        :param max_clusters: Maximum number of clusters to consider.
+        :return: The optimal number of clusters (centroids) as an integer.
+        """
+
+        inertia = []
+        for n_clusters in tqdm(range(1, max_clusters + 1)):
+            kmeans = KMeans(n_clusters=n_clusters, n_init=10, random_state=0).fit(data)
+            inertia.append(kmeans.inertia_)
+        return np.argmin(np.gradient(np.gradient(inertia))) + 1
+
+    buy_data = data.loc[data['Buyer was maker'] == False]
+    sell_data = data.loc[data['Buyer was maker'] == True]
+    if by_quantity:
+        buy_timestamps = repeat_timestamps_by_quantity(data=buy_data, epsilon_quantity=by_quantity)
+        sell_timestamps = repeat_timestamps_by_quantity(data=buy_data, epsilon_quantity=by_quantity)
+    else:
+        buy_timestamps = buy_data['Timestamp'].values.reshape(-1, 1)
+        sell_timestamps = sell_data['Timestamp'].values.reshape(-1, 1)
+
+    if len(buy_timestamps) == 0 and len(sell_timestamps) == 0:
+        print("There is not enough trade data to calculate time activity clusters.")
+        return [], []
+    print("Clustering data...")
+    optimal_buy_clusters = find_optimal_clusters(buy_timestamps, max_clusters)
+    optimal_sell_clusters = find_optimal_clusters(sell_timestamps, max_clusters)
+
+    print(f"Found {optimal_buy_clusters} clusters from buys and {optimal_sell_clusters} clusters from sells.")
+
+    kmeans_buy = KMeans(n_clusters=optimal_buy_clusters, n_init=10).fit(buy_timestamps)
+    kmeans_sell = KMeans(n_clusters=optimal_sell_clusters, n_init=10).fit(sell_timestamps)
+
+    support_levels = np.sort(kmeans_buy.cluster_centers_, axis=0)
+    resistance_levels = np.sort(kmeans_sell.cluster_centers_, axis=0)
+
+    return support_levels.flatten().tolist(), resistance_levels.flatten().tolist()
