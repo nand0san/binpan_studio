@@ -6,6 +6,7 @@ BinPan own indicators and utils.
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
+from typing import Tuple
 
 from handlers.time_helper import convert_milliseconds_to_time_zone_datetime
 from handlers.time_helper import pandas_freq_tick_interval
@@ -412,7 +413,17 @@ def reversal_candles(trades: pd.DataFrame,
     return klines
 
 
-def support_resistance_levels(data: pd.DataFrame, max_clusters: int = 10) -> tuple:
+def repeat_prices_by_quantity(data: pd.DataFrame, epsilon_quantity: float) -> np.ndarray:
+
+    repeated_prices = []
+    for price, quantity in data[['Price', 'Quantity']].values:
+        repeat_count = int(-(quantity // -epsilon_quantity))  # ceil division
+        repeated_prices.extend([price] * repeat_count)
+
+    return np.array(repeated_prices).reshape(-1, 1)
+
+
+def support_resistance_levels(data: pd.DataFrame, max_clusters: int = 10, by_quantity: float = None) -> tuple:
     """
     Calculate support and resistance levels for a given set of trades using K-means clustering.
 
@@ -423,6 +434,10 @@ def support_resistance_levels(data: pd.DataFrame, max_clusters: int = 10) -> tup
     :param max_clusters: Maximum number of clusters to consider for finding the optimal number of centroids.
     :return: A tuple containing two lists: the first list contains the support levels, and the second list contains
              the resistance levels. Both lists contain float values.
+    :param float by_quantity: Count each price as many times the quantity contains a float of a the passed amount.
+        Example: If a price 0.001 has a quantity of 100 and by_quantity is 0.1, quantity/by_quantity = 100/0.1 = 1000, then this prices
+        is taken into account 1000 times instead of 1.
+
     """
     try:
         from sklearn.cluster import KMeans
@@ -446,8 +461,14 @@ def support_resistance_levels(data: pd.DataFrame, max_clusters: int = 10) -> tup
             inertia.append(kmeans.inertia_)
         return np.argmin(np.gradient(np.gradient(inertia))) + 1
 
-    buy_prices = data.loc[data['Buyer was maker'] == False, 'Price'].values.reshape(-1, 1)
-    sell_prices = data.loc[data['Buyer was maker'] == True, 'Price'].values.reshape(-1, 1)
+    buy_data = data.loc[data['Buyer was maker'] == False]
+    sell_data = data.loc[data['Buyer was maker'] == True]
+    if by_quantity:
+        buy_prices = repeat_prices_by_quantity(data=buy_data, epsilon_quantity=by_quantity)
+        sell_prices = repeat_prices_by_quantity(data=buy_data, epsilon_quantity=by_quantity)
+    else:
+        buy_prices = buy_data['Price'].values.reshape(-1, 1)
+        sell_prices = sell_data['Price'].values.reshape(-1, 1)
 
     if len(buy_prices) == 0 and len(sell_prices) == 0:
         print("There is not enough trade data to calculate support and resistance levels.")
@@ -465,3 +486,4 @@ def support_resistance_levels(data: pd.DataFrame, max_clusters: int = 10) -> tup
     resistance_levels = np.sort(kmeans_sell.cluster_centers_, axis=0)
 
     return support_levels.flatten().tolist(), resistance_levels.flatten().tolist()
+
