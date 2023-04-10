@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 from typing import Tuple
+import pytz
 
 from handlers.time_helper import convert_milliseconds_to_time_zone_datetime
 from handlers.time_helper import pandas_freq_tick_interval
@@ -21,7 +22,7 @@ def ichimoku(data: pd.DataFrame,
              kijun: int = 26,
              chikou_span: int = 26,
              senkou_cloud_base: int = 52,
-             suffix: str = ''
+             suffix: str = '',
              ) -> pd.DataFrame:
     """
     The Ichimoku Cloud is a collection of technical indicators that show support and resistance levels, as well as momentum and trend
@@ -55,14 +56,20 @@ def ichimoku(data: pd.DataFrame,
 
     """
     df = data.copy(deep=True)
-
+    my_timezone = df.index.name.split()[-1]
     tick_interval = df.index.name.split()[1]
-    df = df.asfreq(pandas_freq_tick_interval[tick_interval])
+
+    if df.index.tz is None:
+        df.index = df.index.tz_localize(pytz.UTC, ambiguous='infer')
+    else:
+        df.index = df.index.tz_convert("UTC")
+
+    if not df.index.freq:
+        df = df.asfreq(pandas_freq_tick_interval[tick_interval])
 
     high = df['High']
     low = df['Low']
     close = df['Close']
-    # freq = pd.infer_freq(df.index)
 
     tenkan_sen = (high.rolling(window=tenkan).max() + low.rolling(window=tenkan).min()) / 2
     kijun_sen = (high.rolling(window=kijun).max() + low.rolling(window=kijun).min()) / 2
@@ -76,6 +83,7 @@ def ichimoku(data: pd.DataFrame,
     senkou_span_b = arr_b.shift(periods=chikou_span, freq='infer')
 
     ret = pd.DataFrame([tenkan_sen, kijun_sen, chikou_span_serie, senkou_span_a, senkou_span_b]).T
+    ret.index = ret.index.tz_convert(my_timezone)
 
     if suffix:
         suffix = '_' + suffix
@@ -85,7 +93,6 @@ def ichimoku(data: pd.DataFrame,
                    f"Ichimoku_chikou_span{chikou_span}" + suffix,
                    f"Ichimoku_cloud_{tenkan}_{kijun}" + suffix,
                    f"Ichimoku_cloud_{senkou_cloud_base}" + suffix]
-    # return ret.dropna(how='all', inplace=True)
     return ret
 
 
