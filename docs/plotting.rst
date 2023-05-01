@@ -70,6 +70,8 @@ Analysis Plots
 
 .. autofunction:: bar_plot
 
+.. autofunction:: plot_orderbook_value
+
 
 Plot Tools
 ----------

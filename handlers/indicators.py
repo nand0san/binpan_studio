@@ -442,8 +442,8 @@ def support_resistance_levels(data: pd.DataFrame, max_clusters: int = 10, by_qua
     :param float by_quantity: Count each price as many times the quantity contains a float of a the passed amount.
         Example: If a price 0.001 has a quantity of 100 and by_quantity is 0.1, quantity/by_quantity = 100/0.1 = 1000, then this prices
         is taken into account 1000 times instead of 1.
-        :return: A tuple containing two lists: the first list contains the support levels, and the second list contains
-             the resistance levels. Both lists contain float values.
+    :return: A tuple containing two lists: the first list contains the support levels, and the second list contains
+        the resistance levels. Both lists contain float values.
     """
     try:
         from sklearn.cluster import KMeans
@@ -479,6 +479,7 @@ def support_resistance_levels(data: pd.DataFrame, max_clusters: int = 10, by_qua
     if len(buy_prices) == 0 and len(sell_prices) == 0:
         print("There is not enough trade data to calculate support and resistance levels.")
         return [], []
+
     print("Clustering data...")
     optimal_buy_clusters = find_optimal_clusters(buy_prices, max_clusters)
     optimal_sell_clusters = find_optimal_clusters(sell_prices, max_clusters)

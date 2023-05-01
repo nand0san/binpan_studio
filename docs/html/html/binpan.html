@@ -162,6 +162,7 @@ html.dark {
 <li><a class="reference internal" href="#binpan.binpan.Symbol.get_dates"><code class="docutils literal notranslate"><span class="pre">Symbol.get_dates()</span></code></a></li>
 <li><a class="reference internal" href="#binpan.binpan.Symbol.get_agg_trades"><code class="docutils literal notranslate"><span class="pre">Symbol.get_agg_trades()</span></code></a></li>
 <li><a class="reference internal" href="#binpan.binpan.Symbol.get_atomic_trades"><code class="docutils literal notranslate"><span class="pre">Symbol.get_atomic_trades()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.binpan.Symbol.get_orderbook_value"><code class="docutils literal notranslate"><span class="pre">Symbol.get_orderbook_value()</span></code></a></li>
 <li><a class="reference internal" href="#binpan.binpan.Symbol.is_new"><code class="docutils literal notranslate"><span class="pre">Symbol.is_new()</span></code></a></li>
 <li><a class="reference internal" href="#binpan.binpan.Symbol.get_reversal_agg_candles"><code class="docutils literal notranslate"><span class="pre">Symbol.get_reversal_agg_candles()</span></code></a></li>
 <li><a class="reference internal" href="#binpan.binpan.Symbol.get_reversal_atomic_candles"><code class="docutils literal notranslate"><span class="pre">Symbol.get_reversal_atomic_candles()</span></code></a></li>
@@ -181,6 +182,7 @@ html.dark {
 <li><a class="reference internal" href="#binpan.binpan.Symbol.plot_trades_scatter"><code class="docutils literal notranslate"><span class="pre">Symbol.plot_trades_scatter()</span></code></a></li>
 <li><a class="reference internal" href="#binpan.binpan.Symbol.plot_orderbook"><code class="docutils literal notranslate"><span class="pre">Symbol.plot_orderbook()</span></code></a></li>
 <li><a class="reference internal" href="#binpan.binpan.Symbol.plot_orderbook_density"><code class="docutils literal notranslate"><span class="pre">Symbol.plot_orderbook_density()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.binpan.Symbol.plot_orderbook_value"><code class="docutils literal notranslate"><span class="pre">Symbol.plot_orderbook_value()</span></code></a></li>
 <li><a class="reference internal" href="#binpan.binpan.Symbol.get_order_filters"><code class="docutils literal notranslate"><span class="pre">Symbol.get_order_filters()</span></code></a></li>
 <li><a class="reference internal" href="#binpan.binpan.Symbol.get_order_types"><code class="docutils literal notranslate"><span class="pre">Symbol.get_order_types()</span></code></a></li>
 <li><a class="reference internal" href="#binpan.binpan.Symbol.get_permissions"><code class="docutils literal notranslate"><span class="pre">Symbol.get_permissions()</span></code></a></li>
@@ -494,62 +496,68 @@ Also a string with filename can be used.</p></li>
 <tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.get_atomic_trades" title="binpan.binpan.Symbol.get_atomic_trades"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_atomic_trades</span></code></a>([hours, minutes, ...])</p></td>
 <td><p>Calls the API and creates another dataframe included in the object with the atomic trades from API for the period of the created object.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.is_new" title="binpan.binpan.Symbol.is_new"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_new</span></code></a>(source_data[, suffix])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.get_orderbook_value" title="binpan.binpan.Symbol.get_orderbook_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_orderbook_value</span></code></a>([multiples, percentage])</p></td>
+<td><p>Get orderbook data from redis instance.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.is_new" title="binpan.binpan.Symbol.is_new"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_new</span></code></a>(source_data[, suffix])</p></td>
 <td><p>Verify if indicator columns are previously created to avoid allocating new rows and colors etc.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.get_reversal_agg_candles" title="binpan.binpan.Symbol.get_reversal_agg_candles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_reversal_agg_candles</span></code></a>([min_height, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.get_reversal_agg_candles" title="binpan.binpan.Symbol.get_reversal_agg_candles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_reversal_agg_candles</span></code></a>([min_height, ...])</p></td>
 <td><p>Resamples aggregated API trades or REDIS trades aggregated trades to reversal klines:</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.get_reversal_atomic_candles" title="binpan.binpan.Symbol.get_reversal_atomic_candles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_reversal_atomic_candles</span></code></a>([min_height, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.get_reversal_atomic_candles" title="binpan.binpan.Symbol.get_reversal_atomic_candles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_reversal_atomic_candles</span></code></a>([min_height, ...])</p></td>
 <td><p>Resamples API atomic trades or REDIS atomic trades to reversal klines:</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_plot_row" title="binpan.binpan.Symbol.set_plot_row"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_row</span></code></a>([indicator_column, row_position])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_plot_row" title="binpan.binpan.Symbol.set_plot_row"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_row</span></code></a>([indicator_column, row_position])</p></td>
 <td><p>Internal control formatting plots.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_plot_color" title="binpan.binpan.Symbol.set_plot_color"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_color</span></code></a>([indicator_column, color])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_plot_color" title="binpan.binpan.Symbol.set_plot_color"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_color</span></code></a>([indicator_column, color])</p></td>
 <td><p>Internal control formatting plots.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_plot_color_fill" title="binpan.binpan.Symbol.set_plot_color_fill"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_color_fill</span></code></a>([indicator_column, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_plot_color_fill" title="binpan.binpan.Symbol.set_plot_color_fill"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_color_fill</span></code></a>([indicator_column, ...])</p></td>
 <td><p>Internal control formatting plots.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_plot_filled_mode" title="binpan.binpan.Symbol.set_plot_filled_mode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_filled_mode</span></code></a>([indicator_column, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_plot_filled_mode" title="binpan.binpan.Symbol.set_plot_filled_mode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_filled_mode</span></code></a>([indicator_column, ...])</p></td>
 <td><p>Internal control formatting plots.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_plot_axis_group" title="binpan.binpan.Symbol.set_plot_axis_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_axis_group</span></code></a>([indicator_column, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_plot_axis_group" title="binpan.binpan.Symbol.set_plot_axis_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_axis_group</span></code></a>([indicator_column, ...])</p></td>
 <td><p>Internal control formatting plots.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_plot_splitted_serie_couple" title="binpan.binpan.Symbol.set_plot_splitted_serie_couple"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_splitted_serie_couple</span></code></a>([...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.set_plot_splitted_serie_couple" title="binpan.binpan.Symbol.set_plot_splitted_serie_couple"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_splitted_serie_couple</span></code></a>([...])</p></td>
 <td><p>Modify the control for splitted series in plots with colored area in two colors by relative position.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.plot" title="binpan.binpan.Symbol.plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code></a>([width, height, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.plot" title="binpan.binpan.Symbol.plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code></a>([width, height, ...])</p></td>
 <td><p>Plots a candles figure for the object.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.plot_agg_trades_size" title="binpan.binpan.Symbol.plot_agg_trades_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_agg_trades_size</span></code></a>([max_size, height, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.plot_agg_trades_size" title="binpan.binpan.Symbol.plot_agg_trades_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_agg_trades_size</span></code></a>([max_size, height, ...])</p></td>
 <td><p>It plots a time series graph plotting aggregated trades sized by quantity and color if taker or maker buyer.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.plot_atomic_trades_size" title="binpan.binpan.Symbol.plot_atomic_trades_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_atomic_trades_size</span></code></a>([max_size, height, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.plot_atomic_trades_size" title="binpan.binpan.Symbol.plot_atomic_trades_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_atomic_trades_size</span></code></a>([max_size, height, ...])</p></td>
 <td><p>It plots a time series graph plotting atomic trades sized by quantity and color if taker or maker buyer.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.plot_reversal" title="binpan.binpan.Symbol.plot_reversal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_reversal</span></code></a>([min_height, min_reversal, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.plot_reversal" title="binpan.binpan.Symbol.plot_reversal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_reversal</span></code></a>([min_height, min_reversal, ...])</p></td>
 <td><p>Plots reversal candles.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.plot_trades_pie" title="binpan.binpan.Symbol.plot_trades_pie"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_trades_pie</span></code></a>([categories, logarithmic, title])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.plot_trades_pie" title="binpan.binpan.Symbol.plot_trades_pie"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_trades_pie</span></code></a>([categories, logarithmic, title])</p></td>
 <td><p>Plots a pie chart.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.plot_aggression_sizes" title="binpan.binpan.Symbol.plot_aggression_sizes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_aggression_sizes</span></code></a>([bins, hist_funct, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.plot_aggression_sizes" title="binpan.binpan.Symbol.plot_aggression_sizes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_aggression_sizes</span></code></a>([bins, hist_funct, ...])</p></td>
 <td><p>Binance fees can be cheaper for maker orders, many times when big traders, like whales, are operating .</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.plot_market_profile" title="binpan.binpan.Symbol.plot_market_profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_market_profile</span></code></a>([bins, hours, minutes, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.plot_market_profile" title="binpan.binpan.Symbol.plot_market_profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_market_profile</span></code></a>([bins, hours, minutes, ...])</p></td>
 <td><p>Plots volume histogram by prices segregated aggressive buyers from sellers.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.plot_trades_scatter" title="binpan.binpan.Symbol.plot_trades_scatter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_trades_scatter</span></code></a>([x, y, dot_symbol, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.plot_trades_scatter" title="binpan.binpan.Symbol.plot_trades_scatter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_trades_scatter</span></code></a>([x, y, dot_symbol, ...])</p></td>
 <td><p>A scatter plot showing each price level volume or trades.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.plot_orderbook" title="binpan.binpan.Symbol.plot_orderbook"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_orderbook</span></code></a>([accumulated, title, height, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.plot_orderbook" title="binpan.binpan.Symbol.plot_orderbook"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_orderbook</span></code></a>([accumulated, title, height, ...])</p></td>
 <td><p>Plots orderbook depth.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.plot_orderbook_density" title="binpan.binpan.Symbol.plot_orderbook_density"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_orderbook_density</span></code></a>([x_col, color, bins, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.plot_orderbook_density" title="binpan.binpan.Symbol.plot_orderbook_density"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_orderbook_density</span></code></a>([x_col, color, bins, ...])</p></td>
 <td><p>Plot a distribution plot for a dataframe column.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.plot_orderbook_value" title="binpan.binpan.Symbol.plot_orderbook_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_orderbook_value</span></code></a>()</p></td>
+<td><p>Plots orderbook value from redis.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.get_order_filters" title="binpan.binpan.Symbol.get_order_filters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_order_filters</span></code></a>()</p></td>
 <td><p>Get exchange info about the symbol for order filters.</p></td>
@@ -1114,6 +1122,22 @@ API weight and can take a sleep to wait until API weight returns to a low value.
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="binpan.binpan.Symbol.get_orderbook_value">
+<span class="sig-name descname"><span class="pre">get_orderbook_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">multiples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'0.001'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#binpan.binpan.Symbol.get_orderbook_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get orderbook data from redis instance. Expected standard BinPan Cache format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>multiples</strong> (<em>int</em>) – Multiples in stream.</p></li>
+<li><p><strong>percentage</strong> (<em>str</em>) – Fraction for multiples.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return list<span class="colon">:</span></dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="binpan.binpan.Symbol.is_new">
 <span class="sig-name descname"><span class="pre">is_new</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#binpan.binpan.Symbol.is_new" title="Permalink to this definition">¶</a></dt>
 <dd><p>Verify if indicator columns are previously created to avoid allocating new rows and colors etc.</p>
@@ -1507,6 +1531,13 @@ makers.</p>
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.binpan.Symbol.plot_orderbook_value">
+<span class="sig-name descname"><span class="pre">plot_orderbook_value</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#binpan.binpan.Symbol.plot_orderbook_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots orderbook value from redis.</p>
+<a class="reference internal image-reference" href="_images/plot_orderbook_value.png"><img alt="_images/plot_orderbook_value.png" src="_images/plot_orderbook_value.png" style="width: 1000px;" /></a>
 </dd></dl>
 
 <dl class="py method">
@@ -2165,7 +2196,7 @@ It can be any color from plotly library or a number in the list of those. Defaul
 
 <dl class="py method">
 <dt class="sig sig-object py" id="binpan.binpan.Symbol.support_resistance">
-<span class="sig-name descname"><span class="pre">support_resistance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_atomic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_aggregated</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_clusters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#binpan.binpan.Symbol.support_resistance" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">support_resistance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_atomic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_aggregated</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_clusters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by_quantity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#binpan.binpan.Symbol.support_resistance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate support and resistance levels for the Symbol based on either atomic trades or aggregated trades.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -2173,6 +2204,7 @@ It can be any color from plotly library or a number in the list of those. Defaul
 <li><p><strong>from_atomic</strong> (<em>bool</em>) – If True, support and resistance levels will be calculated using atomic trades.</p></li>
 <li><p><strong>from_aggregated</strong> (<em>bool</em>) – If True, support and resistance levels will be calculated using aggregated trades.</p></li>
 <li><p><strong>max_clusters</strong> (<em>int</em>) – If passed, fixes count of levels of support and resistance. Default is 10.</p></li>
+<li><p><strong>by_quantity</strong> (<em>float</em>) – It takes each price into account by how many times the specified quantity appears in “Quantity” column.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>

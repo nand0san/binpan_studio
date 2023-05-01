@@ -145,6 +145,7 @@ html.dark {
 <li><a class="reference internal" href="#handlers.plotting.orderbook_depth"><code class="docutils literal notranslate"><span class="pre">orderbook_depth()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.plotting.dist_plot"><code class="docutils literal notranslate"><span class="pre">dist_plot()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.plotting.bar_plot"><code class="docutils literal notranslate"><span class="pre">bar_plot()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.plotting.plot_orderbook_value"><code class="docutils literal notranslate"><span class="pre">plot_orderbook_value()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#plot-tools">Plot Tools</a><ul>
@@ -216,7 +217,7 @@ subplot and the rest in row subplots. Several indicators can be plotted in the s
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>pd.DataFrame</em>) – a DataFrame that at least contains the columns: Open Close High Low Volume</p></li>
-<li><p><strong>indicators_series</strong> (<em>list</em>) – a list of pandas series with float values as indicators.</p></li>
+<li><p><strong>indicators_series</strong> (<em>list</em><em> or </em><em>pd.DataFrame</em>) – a list of pandas series with float values as indicators.</p></li>
 <li><p><strong>rows_pos</strong> (<em>list</em>) – 1 means over the candles. Other numbers mean subsequent subplots under the candles.</p></li>
 <li><p><strong>indicator_names</strong> (<em>list</em>) – Names to show in the plot. Defaults to series name.</p></li>
 <li><p><strong>indicators_colors</strong> (<em>list</em>) – <p>Color can be forced to anyone from the plotly colors list.</p>
@@ -732,6 +733,22 @@ the smallest to the largest, that is, the smallest values will be divided into s
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.plotting.plot_orderbook_value">
+<span class="sig-prename descclassname"><span class="pre">handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">plot_orderbook_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ask_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bid_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">close_prices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.plotting.plot_orderbook_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots orderbook levels quantities.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ask_data</strong> (<em>list</em>) – Quantities in a list of tuples with level quantities and a timestamp.</p></li>
+<li><p><strong>bid_data</strong> (<em>list</em>) – Quantities in a list of tuples with level quantities and a timestamp.</p></li>
+<li><p><strong>close_prices</strong> – Close prices with time index.</p></li>
+</ul>
+</dd>
+</dl>
+<a class="reference internal image-reference" href="_images/plot_orderbook_value.png"><img alt="_images/plot_orderbook_value.png" src="_images/plot_orderbook_value.png" style="width: 1000px;" /></a>
 </dd></dl>
 
 </section>

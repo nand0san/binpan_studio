@@ -45,6 +45,8 @@ Parsing
 
 .. autofunction:: redis_klines_parser
 
+.. autofunction:: orderbook_value_to_dataframe
+
 
 Utils
 -----

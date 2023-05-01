@@ -130,6 +130,7 @@ html.dark {
     <ul>
 <li><a class="reference internal" href="#parsing">Parsing</a><ul>
 <li><a class="reference internal" href="#handlers.redis_fetch.redis_klines_parser"><code class="docutils literal notranslate"><span class="pre">redis_klines_parser()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.redis_fetch.orderbook_value_to_dataframe"><code class="docutils literal notranslate"><span class="pre">orderbook_value_to_dataframe()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#utils">Utils</a><ul>
@@ -225,6 +226,20 @@ html.dark {
 </dd>
 <dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
 <dd class="field-even"><p>A BinPan dataframe.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.redis_fetch.orderbook_value_to_dataframe">
+<span class="sig-prename descclassname"><span class="pre">handlers.redis_fetch.</span></span><span class="sig-name descname"><span class="pre">orderbook_value_to_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.redis_fetch.orderbook_value_to_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a Dataframe with redis data from orderbook_values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>list</em>) – Orderbook, redis_raw_data.</p>
+</dd>
+<dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dataframe sorted.</p>
 </dd>
 </dl>
 </dd></dl>
