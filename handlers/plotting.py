@@ -10,6 +10,9 @@ import plotly.figure_factory as ff
 import pandas as pd
 import numpy as np
 from random import choice
+from datetime import datetime
+from typing import List, Tuple
+
 from .logs import Logs
 from .exceptions import BinPanException
 
@@ -364,7 +367,7 @@ def deploy_traces(annotations: list,
 ###################
 
 def candles_ta(data: pd.DataFrame,
-               indicators_series: list or pd.DataFrame= None,
+               indicators_series: list or pd.DataFrame = None,
                rows_pos=None,
                indicator_names=None,
                indicators_colors=None,
@@ -1548,6 +1551,57 @@ def bar_plot(df: pd.DataFrame,
     if legend_names:
         # fig.for_each_trace(lambda t: print(t.name))
         fig.for_each_trace(lambda t: t.update(name=legend_names[t.name]))
+    fig.show()
+
+
+def plot_orderbook_value(ask_data: List[Tuple[List, float]], bid_data: List[Tuple[List, float]], close_prices: pd.Series):
+    """
+    Plots orderbook levels quantities.
+
+    :param list ask_data: Quantities in a list of tuples with level quantities and a timestamp.
+    :param list bid_data: Quantities in a list of tuples with level quantities and a timestamp.
+    :param close_prices: Close prices with time index.
+
+    .. image:: images/plotting/plot_orderbook_value.png
+        :width: 1000
+
+    """
+    # Extraer las listas de los datos y cambiar el signo de bid_data
+    ask_lists = [entry[0] for entry in ask_data]
+    bid_lists = [[-value for value in entry[0]] for entry in bid_data]
+
+    # Transponer las listas para que cada índice tenga su propia lista
+    transposed_ask_lists = list(map(list, zip(*ask_lists)))
+    transposed_bid_lists = list(map(list, zip(*bid_lists)))
+
+    # Crear un objeto Figure de Plotly
+    fig = go.Figure()
+
+    # Añadir una línea para cada índice de ask_data
+    for index, sublist in enumerate(transposed_ask_lists):
+        fig.add_trace(
+            go.Scatter(x=[datetime.fromtimestamp(entry[1] / 1000) for entry in ask_data], y=sublist, name=f"Ask Index {index}", yaxis="y1"))
+
+    # Añadir una línea para cada índice de bid_data
+    for index, sublist in enumerate(transposed_bid_lists):
+        fig.add_trace(
+            go.Scatter(x=[datetime.fromtimestamp(entry[1] / 1000) for entry in bid_data], y=sublist, name=f"Bid Index {index}", yaxis="y1"))
+
+    # Añadir el precio de cierre al gráfico
+    fig.add_trace(go.Scatter(x=close_prices.index, y=close_prices, name="Close Price", yaxis="y2"))
+
+    # Configurar los ejes y el título del gráfico
+    fig.update_layout(
+        title="Evolución de los índices en los datos",
+        xaxis_title="Timestamp",
+        yaxis_title="Value",
+        yaxis=dict(domain=[0, 1], side="left", title="Value"),
+        yaxis2=dict(title="Close Price", overlaying="y", side="left", showgrid=False, anchor="free", position=0.05),
+    )
+    # # Invertir el eje y si se solicita
+    # if invert_y_axis:
+    #     fig.update_yaxes(autorange="reversed", secondary_y=False)
+    # Mostrar el gráfico
     fig.show()
 
 

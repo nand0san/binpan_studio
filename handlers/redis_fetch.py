@@ -1,5 +1,3 @@
-from typing import List
-
 import handlers.market
 from .time_helper import convert_utc_ms_column_to_time_zone, convert_datetime_to_string, convert_milliseconds_to_utc_string, \
     convert_milliseconds_to_time_zone_datetime, convert_milliseconds_to_str, open_from_milliseconds, next_open_by_milliseconds
@@ -10,6 +8,7 @@ from .logs import Logs
 from redis import StrictRedis
 from time import sleep, time
 import numpy as np
+from typing import Tuple, List
 
 redis_logger = Logs(filename='./logs/redis_fetch.log', name='redis_fetch', info_level='INFO')
 
@@ -77,6 +76,59 @@ def redis_klines_parser(json_list: List[str],
     df.index.name = index_name
     return df[['Open time', 'Open', 'High', 'Low', 'Close', 'Volume', 'Close time', 'Quote volume', 'Trades', 'Taker buy base volume',
                'Taker buy quote volume', 'Ignore', 'Open timestamp', 'Close timestamp']]
+
+
+def orderbook_value_to_dataframe(data: list):
+    """
+    Build a Dataframe with redis data from orderbook_values.
+
+    :param list data: Orderbook, redis_raw_data.
+    :return pd.DataFrame: Dataframe sorted.
+    """
+    try:
+        json_data = [(json.loads(d), t,) for d, t in data]
+    except TypeError:
+        json_data = [(json.loads(d.decode('utf-8')), t,) for d, t in data]
+
+    all_data = []
+
+    for row, timestamp in json_data:
+        ask_data = [{"Price": float(price), "Quantity": float(quantity), "Side": "ask", "Timestamp": timestamp} for price, quantity in
+                    row["ask_value"].items()]
+        bid_data = [{"Price": float(price), "Quantity": float(quantity), "Side": "bid", "Timestamp": timestamp} for price, quantity in
+                    row["bid_value"].items()]
+        all_data += ask_data + bid_data
+
+    df = pd.DataFrame(all_data)
+    return df.sort_values(["Timestamp", "Price"], ascending=[True, False]).reset_index(drop=True)
+
+
+def extract_orderbook_value_quantities(data: list) -> Tuple[List, List]:
+    """
+    Prepares data for plotting.
+
+    :param data: Redis raw data.
+    :return: ask_value_quantities, bid_value_quantities
+    """
+    # Decodifica los datos en formato JSON
+    decoded_data = [(json.loads(entry), timestamp,) for entry, timestamp in data]
+
+    # Inicializa listas vacías para almacenar las cantidades de ask_value y bid_value
+    ask_value_quantities = []
+    bid_value_quantities = []
+
+    # Extrae las cantidades de ask_value y bid_value y las añade a las listas correspondientes
+    for entry, timestamp in decoded_data:
+        ask_value = entry["ask_value"]
+        bid_value = entry["bid_value"]
+
+        ask_value_quantity = [float(quantity) for quantity in ask_value.values()]
+        bid_value_quantity = [float(quantity) for quantity in bid_value.values()]
+
+        ask_value_quantities.append((ask_value_quantity, timestamp,))
+        bid_value_quantities.append((bid_value_quantity, timestamp,))
+
+    return ask_value_quantities, bid_value_quantities
 
 
 ###############
@@ -205,6 +257,23 @@ def redis_baliza(redis_client: StrictRedis,
 # Redis Zsets #
 ###############
 
+def decode_zset_data(data_list: list) -> list:
+    """
+    Checks type and if bytes type, convert to dict.
+
+    :param data_list: Data from zset.
+    :return list: Str type list.
+    """
+    my_type = type(data_list[0])
+    if my_type == tuple:
+        my_type_2 = type(data_list[0][0])
+        if my_type_2 == bytes:
+            return [(d.decode('utf-8'), t,) for d, t in data_list]
+    elif my_type == bytes:
+        return [d.decode('utf-8') for d, t in data_list]
+    return data_list
+
+
 def push_to_ordered_set(redisClient: StrictRedis,
                         key: str,
                         mapping: dict,
@@ -286,7 +355,7 @@ def fetch_zset_range(redisClient: StrictRedis,
     """
     if not key:
         key = f"{symbol}@kline_{tick_interval}"
-    return redisClient.zrange(name=key, start=start_index, end=end_index, withscores=with_scores)
+    return decode_zset_data(redisClient.zrange(name=key, start=start_index, end=end_index, withscores=with_scores))
 
 
 def fetch_zset_timestamps(redisClient: StrictRedis,
@@ -347,7 +416,7 @@ def fetch_zset_timestamps(redisClient: StrictRedis,
                                     min=start_timestamp,
                                     max=end_timestamp,
                                     withscores=with_scores)
-    return ret
+    return decode_zset_data(ret)
 
 
 def fetch_set_and_parse(redisClient: StrictRedis,

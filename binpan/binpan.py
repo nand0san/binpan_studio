@@ -223,6 +223,8 @@ class Symbol(object):
                  display_width=320,
                  from_csv: bool or str = False):
 
+        self.orderbook_value = None
+        self.redis_orderbook_value =None
         self.s_lines = None  # support levels from trades
         self.r_lines = None  # support levels from trades
 
@@ -567,16 +569,6 @@ class Symbol(object):
         if self.atomic_trades.empty:
             binpan_logger.info(empty_atomic_trades_msg)
         return self.atomic_trades
-
-    # def tick(self) -> str:
-    #     """
-    #     Returns the minimum tick value.
-    #
-    #     self
-    #
-    #     :return:
-    #     """
-    #     # self.tickSize = self.info_dic[self.symbol]['filters']['tickSize']
 
     def symbol(self):
         """
@@ -1351,6 +1343,25 @@ class Symbol(object):
                                                                                       time_index=self.time_index,
                                                                                       drop_dupes='Trade Id')
         return self.atomic_trades
+
+    def get_orderbook_value(self, multiples=10, percentage='0.001') -> list:
+        """
+        Get orderbook data from redis instance. Expected standard BinPan Cache format.
+
+        :param int multiples: Multiples in stream.
+        :param str percentage: Fraction for multiples.
+        :return list:
+        """
+        stream = f"{self.symbol.lower()}@orderbook_value_{multiples}_{percentage}"
+        if self.from_redis:
+            ob_data = handlers.redis_fetch.fetch_zset_range(redisClient=self.from_redis, key=stream, with_scores=True)
+            # TODO: acrotar por timestamps y revisar en caso de que falte importar los datos
+            self.redis_orderbook_value = ob_data
+            self.orderbook_value = handlers.redis_fetch.orderbook_value_to_dataframe(ob_data)
+            return self.orderbook_value
+        else:
+            raise handlers.exceptions.BinPanException(
+                f"BinPan Exception: no from_redis instance, cannot get data for get_orderbook_value()")
 
     def is_new(self,
                source_data: pd.Series or pd.DataFrame,
@@ -2195,6 +2206,19 @@ class Symbol(object):
                                     height=height,
                                     title=title,
                                     **update_layout_kwargs)
+
+    def plot_orderbook_value(self):
+        """
+        Plots orderbook value from redis.
+
+        .. image:: images/plotting/plot_orderbook_value.png
+            :width: 1000
+
+        """
+        data = self.redis_orderbook_value
+        close = self.df['Close']
+        ask_value_quantities, bid_value_quantities = handlers.redis_fetch.extract_orderbook_value_quantities(data)
+        handlers.plotting.plot_orderbook_value(ask_data=ask_value_quantities, bid_data=bid_value_quantities, close_prices=close)
 
     #################
     # Exchange data #
