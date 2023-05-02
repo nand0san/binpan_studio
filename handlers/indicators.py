@@ -166,6 +166,55 @@ def fractal_w(data: pd.DataFrame,
         return pd.DataFrame([merged, values]).T
 
 
+def support_resistance_volume(df, num_bins=100, price_col='Close', volume_col='Volume', threshold=90):
+    """
+    Calculate support and resistance levels based on volume and prices in the given dataframe.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The dataframe containing price and volume data.
+    num_bins : int, optional
+        The number of bins to use for accumulating volume, by default 100.
+    price_col : str, optional
+        The name of the column containing price data, by default 'Close'.
+    volume_col : str, optional
+        The name of the column containing volume data, by default 'Volume'.
+    threshold : int
+        Percentil to show most traded levels. Default is 90.
+
+    Returns
+    -------
+    list
+        A sorted list of support and resistance levels.
+    """
+
+    # Calculate the price range
+    max_price = df[price_col].max()
+    min_price = df[price_col].min()
+    price_range = max_price - min_price
+
+    # Create bins for accumulating volume
+    bins = np.linspace(min_price, max_price, num=num_bins + 1)
+    bin_volumes = np.zeros(num_bins)
+
+    # Accumulate volume in each bin
+    for _, row in df.iterrows():
+        price = row[price_col]
+        volume = row[volume_col]
+        bin_index = int((price - min_price) // (price_range / num_bins))
+        bin_volumes[bin_index] += volume
+
+    # Find the support and resistance levels
+    support_resistance_levels = []
+    for idx, volume in enumerate(bin_volumes):
+        if volume >= np.percentile(bin_volumes, threshold):  # Customize the threshold according to preference
+            level = (bins[idx] + bins[idx + 1]) / 2
+            support_resistance_levels.append(level)
+
+    return sorted(support_resistance_levels)
+
+
 ####################
 # INDICATORS UTILS #
 ####################

@@ -237,6 +237,7 @@ def get_candles_by_time_stamps(symbol: str,
                       'limit': limit}
             params = {k: v for k, v in params.items() if v}
             check_weight(1, endpoint=endpoint)
+            market_logger.info(f"API request: {symbol} {start} to {end}")
             response = get_response(url=endpoint, params=params)
 
         raw_candles += response
