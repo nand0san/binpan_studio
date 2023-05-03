@@ -18,7 +18,7 @@ try:
     encoded_chat_id = secret.encoded_chat_id
     encoded_telegram_bot_id = secret.encoded_telegram_bot_id
 except Exception as exc:
-    msg = "WARNING: No Telegram bot API Key or chat id."
+    msg = "No Telegram bot API Key or chat id.\n"
     msg_logger.warning(msg)
     encoded_telegram_bot_id = ''
     encoded_chat_id = ''
