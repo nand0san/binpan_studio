@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>BinPan Module - BinPan 0.4.14 documentation</title>
+      <title>BinPan Module - BinPan 0.4.16 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Aggregations Module" href="aggregations.html" /><link rel="prev" title="Welcome to BinPan’s documentation!" href="index.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -358,7 +358,7 @@ because daily time saving changes.</p>
 <li><p><strong>time_index</strong> (<em>bool</em>) – Shows human-readable index in the dataframe. Set to False shows numeric index. default is True.</p></li>
 <li><p><strong>closed</strong> (<em>bool</em>) – The last candle is a closed one in the moment of the creation, instead of a running candle not closed yet.</p></li>
 <li><p><strong>from_redis</strong> (<em>bool</em><em> or </em><em>StrictRedis</em>) – If enabled, BinPan will look for a secret file with the redis ip, port and any other parameter in a map.
-But can be passed a StrictRedis client object previously configured.
+But can be passed a StrictRedis client object previously configured. Also supports passing a redis client instance.
 secret.py file map example: redis_conf = {‘host’:’192.168.1.5’,’port’: 6379,’db’: 0,’decode_responses’: True}</p></li>
 <li><p><strong>from_redis_agg_trades</strong> (<em>bool</em><em> or </em><em>StrictRedis</em>) – If enabled, BinPan will look for aggregated trades to a redis client in a similar way
 than from_redis.</p></li>
@@ -1483,6 +1483,7 @@ makers.</p>
 </ul>
 </dd>
 </dl>
+<a class="reference internal image-reference" href="_images/market_profile.png"><img alt="_images/market_profile.png" src="_images/market_profile.png" style="width: 1000px;" /></a>
 </dd></dl>
 
 <dl class="py method">

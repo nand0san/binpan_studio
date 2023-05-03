@@ -6,11 +6,10 @@ BinPan own indicators and utils.
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
-# from typing import Tuple
 import pytz
 
-from handlers.time_helper import convert_milliseconds_to_time_zone_datetime
-from handlers.time_helper import pandas_freq_tick_interval
+from .time_helper import convert_milliseconds_to_time_zone_datetime
+from .time_helper import pandas_freq_tick_interval
 
 
 ##############
@@ -461,7 +460,7 @@ def reversal_candles(trades: pd.DataFrame,
     date_index = klines['Timestamp'].apply(convert_milliseconds_to_time_zone_datetime, timezoned=time_zone)
     klines.set_index(date_index, inplace=True)
 
-    repair_decimals = np.float(10 ** -decimal_positions)
+    repair_decimals = float(10 ** -decimal_positions)
     klines['High'] *= repair_decimals
     klines['Low'] *= repair_decimals
     klines['Open'] *= repair_decimals

@@ -10,6 +10,32 @@ from cpuinfo import get_cpu_info
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 import sys
+import os
+import importlib
+import re
+
+
+def import_secret_module():
+    current_dir = os.path.abspath(os.curdir)
+
+    while True:
+        try:
+            secret_module = importlib.import_module('secret')
+            regex = r"(?<=\\Users\\)([^\\]+)"
+            obfuscated_path = re.sub(regex, "XXXX", current_dir)
+            print("SECRET module found: ", obfuscated_path)
+            return secret_module
+        except ModuleNotFoundError:
+            # Si no se encuentra el módulo, sube un nivel en el directorio
+            parent_dir = os.path.dirname(current_dir)
+
+            # Si ya estamos en la raíz del sistema de archivos, detener la búsqueda
+            if parent_dir == current_dir:
+                print("SECRET module not found!")
+                return None
+
+            current_dir = parent_dir
+            sys.path.insert(0, current_dir)
 
 
 class AesCipher(object):
@@ -75,22 +101,10 @@ def get_exchange_limits() -> dict:
     except KeyError:
         print(response)
         print(response.keys())
-        limits = [{'rateLimitType': 'REQUEST_WEIGHT',
-                   'interval': 'MINUTE',
-                   'intervalNum': 1,
-                   'limit': 1200},
-                  {'rateLimitType': 'ORDERS',
-                   'interval': 'SECOND',
-                   'intervalNum': 10,
-                   'limit': 50},
-                  {'rateLimitType': 'ORDERS',
-                   'interval': 'DAY',
-                   'intervalNum': 1,
-                   'limit': 160000},
-                  {'rateLimitType': 'RAW_REQUESTS',
-                   'interval': 'MINUTE',
-                   'intervalNum': 5,
-                   'limit': 6100}]
+        limits = [{'rateLimitType': 'REQUEST_WEIGHT', 'interval': 'MINUTE', 'intervalNum': 1, 'limit': 1200},
+                  {'rateLimitType': 'ORDERS', 'interval': 'SECOND', 'intervalNum': 10, 'limit': 50},
+                  {'rateLimitType': 'ORDERS', 'interval': 'DAY', 'intervalNum': 1, 'limit': 160000},
+                  {'rateLimitType': 'RAW_REQUESTS', 'interval': 'MINUTE', 'intervalNum': 5, 'limit': 6100}]
 
     limits_dict = {}
     for limit in limits:
@@ -105,28 +119,6 @@ def get_exchange_limits() -> dict:
         else:
             msg = f"BinPan error: Unknown limit from API: {limit}"
             raise Exception(msg)
-    #
-    #
-    #
-    # for i in limits:
-    #     if i['rateLimitType'].upper() == 'ORDERS':
-    #         k1 = f"x-mbx-order-count-{i['intervalNum']}{i['interval'][0].lower()}"
-    #         k2 = f"x-mbx-order-count-{i['intervalNum']}{i['interval'][0].lower()}"
-    #
-    #     elif i['rateLimitType'].upper() == 'REQUEST_WEIGHT':
-    #         k1 = f"x-mbx-used-weight-{i['intervalNum']}{i['interval'][0].lower()}"
-    #         k2 = f"X-SAPI-USED-IP-WEIGHT-{i['intervalNum']}{i['interval'][0].upper()}"
-    #
-    #     elif i['rateLimitType'].upper() == 'RAW_REQUESTS':
-    #         k1 = "x-mbx-used-weight"
-    #         k2 = "x-mbx-used-weight"
-    #     else:
-    #         raise Exception("BinPan Rate Limit not parsed")
-    #
-    #     v = i['limit']
-    #
-    #     limits_dict[k1] = v
-    #     limits_dict[k2] = v
 
     return limits_dict
 
@@ -138,4 +130,4 @@ def is_python_version_numba_supported() -> bool:
     min_version = (3, 7)
     max_version = (3, 10)
     current_version = sys.version_info
-    return min_version <= current_version < max_version
+    return min_version <= current_version <= max_version

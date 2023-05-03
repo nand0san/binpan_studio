@@ -3,23 +3,17 @@ Data Aggregation.
 """
 import pandas as pd
 import numpy as np
-from tqdm import tqdm
-from typing import Tuple, List, Dict
+from typing import Tuple
 
-import handlers.market
-# from .time_helper import pandas_freq_tick_interval
 
 from .exceptions import BinPanException
 from .starters import is_python_version_numba_supported
 
 if is_python_version_numba_supported():
-    from .stat_tests import ema_numpy, sma_numpy, ema_numba, sma_numba
+    from .stat_tests import ema_numba, sma_numba
 else:
     from .stat_tests import ema_numpy as ema_numba
     from .stat_tests import sma_numpy as sma_numba
-
-
-# from .market import atomic_trades_columns_from_redis, atomic_trades_columns_from_binance, agg_trades_columns_from_binance, agg_trades_columns_from_redis
 
 
 # TODO: add documentation

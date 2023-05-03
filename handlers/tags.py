@@ -9,9 +9,9 @@ from typing import Tuple
 
 from .exchange import get_info_dic, get_bases_dic, get_quotes_dic
 from .market import get_candles_by_time_stamps, parse_candles_to_dataframe
-import handlers.logs
+from .logs import Logs
 
-logger = handlers.logs.Logs(filename='./logs/tags.log', name='tags', info_level='INFO')
+logger = Logs(filename='./logs/tags.log', name='tags', info_level='INFO')
 
 
 def tag_value(serie: pd.Series,
@@ -206,23 +206,15 @@ def clean_in_out(serie: pd.Series,
     :param out_tag: Tag for out tags. Default is -1.
     :return pd.Series: Clean serie with ech in with next out.
     """
-
     ret = pd.Series(index=serie.index)
-
     last_tag = np.nan
-
-    for idx, value in serie.iteritems():
-
+    for idx, value in serie.items():
         if value == out_tag and last_tag != out_tag:
             ret[idx] = value
             last_tag = value
-
         elif value == in_tag and last_tag != in_tag:
             ret[idx] = value
-
-        if value == in_tag or value == out_tag:
             last_tag = value
-
     return ret
 
 

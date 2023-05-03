@@ -10,9 +10,13 @@ pandas-ta>=0.3.14b0
 scipy>=1.7.3
 requests==2.29.0
 setuptools==67.7.2
+typing
+
 # python-dotenv==0.21.0
 # numba # no version for python 3.11 yet, required version between 3.7 and 3.10
-sphinx==7.0.0
-autodocsumm
-shibuya>=0.2.10
 scikit-learn>=0.24.0  # optional for kmeans with support and resistance levels
+
+# docs
+sphinx==7.0.0
+autodocsumm==0.2.11
+shibuya>=0.2.10

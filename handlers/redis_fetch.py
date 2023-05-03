@@ -1,14 +1,15 @@
-import handlers.market
-from .time_helper import convert_utc_ms_column_to_time_zone, convert_datetime_to_string, convert_milliseconds_to_utc_string, \
-    convert_milliseconds_to_time_zone_datetime, convert_milliseconds_to_str, open_from_milliseconds, next_open_by_milliseconds
-from .market import tick_seconds
 import pandas as pd
 import json
-from .logs import Logs
 from redis import StrictRedis
 from time import sleep, time
 import numpy as np
-from typing import Tuple, List
+from typing import Tuple, List, Union, Dict
+
+from .logs import Logs
+from .market import convert_to_numeric, tick_seconds
+from .time_helper import convert_ms_column_to_datetime_with_zone, convert_datetime_to_string, convert_milliseconds_to_utc_string, \
+    convert_milliseconds_to_time_zone_datetime, convert_milliseconds_to_str, open_from_milliseconds, next_open_by_milliseconds
+
 
 redis_logger = Logs(filename='./logs/redis_fetch.log', name='redis_fetch', info_level='INFO')
 
@@ -25,6 +26,57 @@ klines_columns = {"t": "Open timestamp",
                   "Q": "Taker buy quote volume",
                   "B": "Ignore"}
 
+
+def redis_client(ip: str = '127.0.0.1', port: int = 6379, db: int = 0, decode_responses: bool = True, **kwargs):
+    """
+    A redis consumer client creator for the Redis module.
+
+    :param str ip: Redis host ip. Default is localhost.
+    :param int port: Default is 6379
+    :param int db: Default is 0.
+    :param bool decode_responses: It decodes responses from redis, avoiding bytes objects to be returned. Default is True.
+    :param kwargs: If passed, object is instantiated exclusively with kwargs, discarding any passed parameter.
+    :return object: A redis client.
+    """
+    from redis import StrictRedis
+
+    if kwargs:
+        return StrictRedis(**kwargs)
+    else:
+        # noinspection PyTypeChecker
+        return StrictRedis(host=ip, port=port, db=db, decode_responses=decode_responses)
+
+
+def manage_redis(redis_args: Union[bool, Dict, StrictRedis], redis_conf: dict = None):
+    """
+    Sets the redis client.
+    :param redis_args: Can be a dict with redis conf, a bool to use passed conf or a Strict Redis object.
+    :param redis_conf: Optional dict with configuration. Example: redis_conf = {'host': '192.168.89.241', 'port': 6379, 'db': 0, 'decode_responses': True}
+    :return:
+    """
+    if redis_args:
+        if type(redis_args) == bool:
+            try:
+                return redis_client(**redis_conf)
+            except Exception as exc:
+                msg = f"BinPan error: Redis parameters misconfiguration in secret.py -> {exc}"
+                redis_logger.warning(msg)
+                raise Exception(msg)
+        elif type(redis_args) == dict:
+            try:
+                return redis_client(**redis_args)
+            except Exception as exc:
+                msg = f"BinPan error: Redis parameters misconfiguration: {redis_args} -> {exc}"
+                redis_logger.warning(msg)
+                raise Exception(msg)
+        elif type(redis_args) == StrictRedis:
+            return redis_args
+        else:
+            msg = f"BinPan error: Redis parameters misconfiguration: {redis_args}"
+            redis_logger.warning(msg)
+            raise Exception(msg)
+    else:
+        return None
 
 ##########
 # Parser #
@@ -53,7 +105,7 @@ def redis_klines_parser(json_list: List[str],
     df = pd.DataFrame(data=dicts_data)
     df.rename(columns=klines_columns, inplace=True)
 
-    df = handlers.market.convert_to_numeric(data=df)
+    df = convert_to_numeric(data=df)
     # for col in df.columns:
     #     df[col] = pd.to_numeric(arg=df[col], downcast='integer')
 
@@ -62,7 +114,7 @@ def redis_klines_parser(json_list: List[str],
 
     if time_zone != 'UTC':  # converts to time zone the time columns
         for col in time_cols:
-            df.loc[:, col] = convert_utc_ms_column_to_time_zone(df, col, time_zone=time_zone)
+            df.loc[:, col] = convert_ms_column_to_datetime_with_zone(df, col, time_zone=time_zone)
             df.loc[:, col] = df[col].apply(lambda x: convert_datetime_to_string(x))
     else:
         for col in time_cols:
