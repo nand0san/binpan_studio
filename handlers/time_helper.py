@@ -2,10 +2,8 @@ from datetime import datetime
 import pandas as pd
 import pytz
 from time import time
-
 from typing import Tuple
 
-# from .quest import get_server_time
 from .logs import Logs
 
 time_logger = Logs(filename='./logs/time_helpers.log', name='time_helpers', info_level='INFO')
@@ -34,17 +32,8 @@ tick_interval_values = ['1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '6h', 
 
 # time control functions
 
-# def convert_utc_ms_column_to_time_zone(df: pd.DataFrame, col: str, time_zone='Europe/Madrid') -> pd.Series:
-#     """
-#     Replace a column from milliseconds to datetime with time zone.
-#     :param df: A pandas dataframe.
-#     :param col: Name of the column to replace.
-#     :param time_zone: A time zone like 'Europe/Madrid'
-#     :return: Modified dataframe.
-#     """
-#     df[col] = pd.to_datetime(df[col], unit='ms')
-#     return df[col].dt.tz_localize('utc').dt.tz_convert(time_zone)
-def convert_utc_ms_column_to_time_zone(df: pd.DataFrame, col: str, time_zone='Europe/Madrid', ambiguous='infer') -> pd.Series:
+
+def convert_ms_column_to_datetime_with_zone(df: pd.DataFrame, col: str, time_zone='Europe/Madrid', ambiguous='infer') -> pd.Series:
     """
     Replace a column from milliseconds to datetime with time zone.
     :param df: A pandas dataframe.
@@ -147,7 +136,7 @@ def utc_start_of_day_ms() -> int:
     return int(convert_datetime_to_milliseconds(dt))
 
 
-def utc_ms_day_begin_end(ts: int) -> (int, int):
+def ms_day_begin_end(ts: int) -> (int, int):
     """Calcula en horario utc el timestamp del comienzo del dia y su final del timestamp pasado como argumento."""
     day_ini_df = convert_milliseconds_to_utc_datetime(ts).replace(hour=0, minute=0, second=0, microsecond=0)
     day_ini_ms = convert_utc_datetime_to_milliseconds(day_ini_df)
@@ -158,8 +147,8 @@ def utc_ms_day_begin_end(ts: int) -> (int, int):
 def split_time_interval_in_full_days(ts_ini: int, ts_end: int) -> list:
     """Dado un intervalo mediante dos timestamps, devuelve un alista de tuplas con el inicio y final de cada día completo
      tocado por el intervalo input."""
-    ini_first_day, end_first_day_ = utc_ms_day_begin_end(ts_ini)
-    ini_last_day_, end_last_day = utc_ms_day_begin_end(ts_end)
+    ini_first_day, end_first_day_ = ms_day_begin_end(ts_ini)
+    ini_last_day_, end_last_day = ms_day_begin_end(ts_end)
     day_ms = 24 * 60 * 60 * 1000
     days = int(ceil_division((end_last_day - ini_first_day), day_ms))
     ret = []
@@ -188,7 +177,6 @@ def time_interval(tick_interval: str,
     """
     total_interval_ms = int(tick_seconds[tick_interval] * 1000 * limit)
     if not start_time and not end_time:
-        # end_time = utc()
         end_time = int(time()*1000)
         start_time = end_time - total_interval_ms
     elif not end_time and start_time:
@@ -275,17 +263,15 @@ def check_tick_interval(tick_interval: str) -> str:
     """
     Checks if argument is a Binance valid tick interval for candles.
 
+    Assumed 1 month is not usually used "1M"
+
     :param str tick_interval: A string, maybe, binance tick interval well formatted.
 
     """
-    if not (tick_interval.lower() in tick_interval_values):
-        if not (tick_interval.upper() in tick_interval_values):
-            raise Exception(f"BinPan Error on tick_interval: {tick_interval} not in "
-                            f"expected API intervals.\n{tick_interval_values}")
-        else:
-            return tick_interval.upper()
-    else:
-        return tick_interval.lower()
+    if not tick_interval in tick_interval_values:
+        raise Exception(f"BinPan Error on tick_interval: {tick_interval} not in "
+                        f"expected API intervals.\n{tick_interval_values}")
+    return tick_interval
 
 
 def detect_tick_interval(data: pd.DataFrame) -> str:

@@ -8,21 +8,15 @@ import numpy as np
 
 from .starters import is_python_version_numba_supported
 
-try:
-    if is_python_version_numba_supported():
-        from numba import jit
+if is_python_version_numba_supported():
+    from numba import jit
+else:
+    msg = "Cannot import numba: only Python versions >=3.7,<3.11 are supported. Using Numpy."
 
-    else:
-        msg = "Cannot import numba; only Python versions >=3.7,<3.11 are supported."
-        raise ImportError(msg)
-except ImportError as e:
-    print(e)
-
-    # Define a no-op decorator to replace @nb.jit
     def jit(*args, **kwargs):
+        # Define a no-op decorator to replace @nb.jit
         def decorator(func):
             return func
-
         return decorator
 
 

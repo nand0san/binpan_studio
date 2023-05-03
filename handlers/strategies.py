@@ -1,5 +1,6 @@
 import pandas as pd
 from random import sample
+
 from .logs import Logs
 
 
@@ -10,7 +11,7 @@ def random_strategy(data: pd.DataFrame,
                     buys_qty: int = 10,
                     sells_qty: int = 10,
                     new_actions_col: str = 'actions',
-                    labels: dict = {'buy': 1, 'sell': -1},
+                    labels: dict = None,
                     fill: str = None):
     """
     Creates a random buy and sell tag in a column of a dataframe.
@@ -24,6 +25,9 @@ def random_strategy(data: pd.DataFrame,
     :return: pd.DataFrame
 
     """
+    if labels is None:
+        labels = {'buy': 1, 'sell': -1}
+
     df = data.copy(deep=True)
     buys = sample(list(df.index), buys_qty)
     sells = sample(list(df.index), sells_qty)

@@ -21,8 +21,8 @@ class BinPanException(Exception):
 
     :param str msg: A message for the Exception message.
     """
-    def __init__(self,
-                 msg: str):
+
+    def __init__(self, msg: str):
         self.message = msg
         self.internal_msg = f"BinPan Exception {hostname}: {msg}"
         exceptions_logger.error(msg)
@@ -32,27 +32,26 @@ class BinPanException(Exception):
         return self.message
 
 
-class MissingApiData(Exception):
+class MissingBinanceApiData(Exception):
     """
     Exception for errors from missing data in an API request.
     """
+
     def __init__(self, message):
         self.message = message
-        self.msg = f"""No Binance API Key or API Secret. API key would be needed for personal API calls. Any other calls will work.
+        self.msg = f"No Binance API Key or API Secret found. Exception: {self.message}"
 
-        Adding example:
+    def __str__(self):
+        return self.msg
 
-            from binpan import handlers
-    
-            handlers.files.add_api_key("xxxx")
-            handlers.files.add_api_secret("xxxx")
 
-        API keys will be added to a file called secret.py in an encrypted way. API keys in memory stay encrypted except in the API call instant.
-
-        Create API keys: https://www.binance.com/en/support/faq/360002502072
-        
-        Exception: {self.message}
-        """
+class MissingTelegramApiData(Exception):
+    """
+    Exception for errors from missing data for telegram.
+    """
+    def __init__(self, message):
+        self.message = message
+        self.msg = f"No Telegram bot key or chat-id found. Exception: {self.message}"
 
     def __str__(self):
         return self.msg

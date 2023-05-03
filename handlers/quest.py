@@ -5,11 +5,6 @@ API requests module.
 
 """
 from typing import List, Tuple
-
-from .logs import Logs
-from .exceptions import BinanceAPIException, BinanceRequestException
-from .starters import AesCipher, get_exchange_limits
-
 from urllib.parse import urljoin, urlencode
 import requests
 import hmac
@@ -17,6 +12,9 @@ import hashlib
 import copy
 from time import sleep
 
+from .logs import Logs
+from .exceptions import BinanceAPIException, BinanceRequestException
+from .starters import AesCipher, get_exchange_limits
 
 float_api_items = ['price', 'origQty', 'executedQty', 'cummulativeQuoteQty', 'stopLimitPrice', 'stopPrice', 'commission', 'qty',
                    'origQuoteOrderQty', 'makerCommission', 'takerCommission']

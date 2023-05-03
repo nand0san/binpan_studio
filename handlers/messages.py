@@ -1,39 +1,24 @@
 """
 Telegram and messages control.
 """
-from .starters import AesCipher
+from pandas import DataFrame
+import requests
+from .starters import AesCipher, import_secret_module
 from .logs import Logs
 from .time_helper import convert_milliseconds_to_str
 from .wallet import get_spot_balances_df, get_spot_balances_total_value
 
-from pandas import DataFrame
-import requests
 
 msg_logger = Logs(filename='./logs/msg_logger.log', name='msg_logger', info_level='INFO')
 
 cipher_object = AesCipher()
 
 try:
-    from secret import encoded_chat_id, encoded_telegram_bot_id
-
+    secret = import_secret_module()
+    encoded_chat_id = secret.encoded_chat_id
+    encoded_telegram_bot_id = secret.encoded_telegram_bot_id
 except Exception as exc:
-    msg = """\n\n-------------------------------------------------------------
-WARNING: No Telegram API Key or API Secret
-    
-Not found telegram bot key or chat key for the telegram message module.
-
-Example adding bot key and chat id:
-
-    from binpan import handlers
-
-    # from @BotFather, get the bot api key
-    handlers.files.add_any_key(key="xxxxxxxxxx", key_name="encoded_telegram_bot_id")
-
-    # write to your bot and then get your chat id from https://api.telegram.org/bot<YourBOTToken>/getUpdates
-    handlers.files.add_any_key(key="xxxxxxxxxx", key_name="encoded_chat_id")
-    
-    
-"""
+    msg = "WARNING: No Telegram bot API Key or chat id."
     msg_logger.warning(msg)
     encoded_telegram_bot_id = ''
     encoded_chat_id = ''
