@@ -8,13 +8,18 @@ from plotly.subplots import make_subplots
 import plotly.express as px
 import plotly.figure_factory as ff
 import pandas as pd
-import numpy as np
 from random import choice
 from datetime import datetime
 from typing import List, Tuple, Literal
 
 from .logs import Logs
 from .exceptions import BinPanException
+
+# google colab
+try:
+    import numpy as np
+except ImportError:
+    print(f"Numpy was not correctly imported from BinPan.")
 
 plot_logger = Logs(filename='./logs/plotting.log', name='plotting', info_level='INFO')
 

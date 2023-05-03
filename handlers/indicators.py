@@ -3,7 +3,6 @@
 BinPan own indicators and utils.
 
 """
-import numpy as np
 import pandas as pd
 from tqdm import tqdm
 import pytz
@@ -11,6 +10,11 @@ import pytz
 from .time_helper import convert_milliseconds_to_time_zone_datetime
 from .time_helper import pandas_freq_tick_interval
 
+# google colab
+try:
+    import numpy as np
+except ImportError:
+    print(f"Numpy was not correctly imported from BinPan.")
 
 ##############
 # INDICATORS #

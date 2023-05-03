@@ -3,13 +3,18 @@ BinPan Classes Main Module
 """
 
 import pandas as pd
-import numpy as np
 from datetime import datetime
 from decimal import Decimal as dd
 
 from .market import get_prices_dic
 from .quest import api_raw_get, api_raw_signed_get, check_weight
 from .logs import Logs
+
+# google colab
+try:
+    import numpy as np
+except ImportError:
+    print(f"Numpy was not correctly imported from BinPan.")
 
 base_url = 'https://api.binance.com'
 

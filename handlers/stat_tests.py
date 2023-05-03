@@ -4,9 +4,14 @@ Statistical tests and tools.
 
 from scipy.stats import jarque_bera
 import pandas as pd
-import numpy as np
 
 from .starters import is_python_version_numba_supported
+
+# google colab
+try:
+    import numpy as np
+except ImportError:
+    print(f"Numpy was not correctly imported from BinPan.")
 
 if is_python_version_numba_supported():
     from numba import jit

@@ -2,9 +2,8 @@
 Data Aggregation.
 """
 import pandas as pd
-import numpy as np
+# import numpy as np
 from typing import Tuple
-
 
 from .exceptions import BinPanException
 from .starters import is_python_version_numba_supported
@@ -14,6 +13,12 @@ if is_python_version_numba_supported():
 else:
     from .stat_tests import ema_numpy as ema_numba
     from .stat_tests import sma_numpy as sma_numba
+
+# google colab
+try:
+    import numpy as np
+except ImportError:
+    print(f"Numpy was not correctly imported from BinPan.")
 
 
 # TODO: add documentation
@@ -409,15 +414,8 @@ class ImbalanceBars(object):
     :param bool adjust_threshold: If true, threshold will be multiplied by first price. Ca be useful with volume bars.
     """
 
-    def __init__(self,
-                 trades: pd.DataFrame,
-                 bar_type: str,
-                 method: str = 'ema',
-                 fixed_imbalance_threshold: int = 1000,
-                 window: int = 21,
-                 boot_trades: int = 1000,
-                 verbose: bool = False,
-                 adjust_threshold: bool = False):
+    def __init__(self, trades: pd.DataFrame, bar_type: str, method: str = 'ema', fixed_imbalance_threshold: int = 1000, window: int = 21,
+                 boot_trades: int = 1000, verbose: bool = False, adjust_threshold: bool = False):
         """
         Initialize the ImbalanceBars object with the given parameters.
         """
@@ -454,7 +452,7 @@ class ImbalanceBars(object):
 
         if self.method == 'fix':
             if self.adjust_threshold:
-                print(f"Threshold adjusted by price: {self.threshold} ---> {self.threshold*self.trades.iloc[0]['Price']}")
+                print(f"Threshold adjusted by price: {self.threshold} ---> {self.threshold * self.trades.iloc[0]['Price']}")
                 self.expected_imbalance = self.threshold * self.trades.iloc[0]['Price']
             else:
                 self.expected_imbalance = self.threshold
@@ -466,12 +464,10 @@ class ImbalanceBars(object):
                 current_probability = self.trades.iloc[:self.boot_trades]['sign'].sum()
 
             elif self.bar_type == "volume":
-                current_probability = (self.trades.iloc[:self.boot_trades]['sign'] * self.trades.iloc[:self.boot_trades][
-                    'Quantity']).sum()
+                current_probability = (self.trades.iloc[:self.boot_trades]['sign'] * self.trades.iloc[:self.boot_trades]['Quantity']).sum()
 
             elif self.bar_type == "dollar":
-                current_probability = (self.trades.iloc[:self.boot_trades]['sign'] *
-                                       self.trades.iloc[:self.boot_trades]['Quantity'] *
+                current_probability = (self.trades.iloc[:self.boot_trades]['sign'] * self.trades.iloc[:self.boot_trades]['Quantity'] *
                                        self.trades.iloc[:self.boot_trades]['Price']).sum()
             else:
                 raise BinPanException(f"Bar type implementation error: {self.bar_type}")
@@ -634,9 +630,8 @@ def imbalance_bars_divergent(trades: pd.DataFrame, starting_imbalance: float) ->
         if abs(current_imbalance) >= expected_imbalance:
             bar_counter += 1
             # just previous values for now, weighted expected values will diverge too.
-            print(
-                f"Current imbalance:{current_imbalance} trades:{current_trades_qty} pos_trades:{positive_qty} prob:{prob} expected_imbalance"
-                f":{abs(current_trades_qty * prob)}")
+            print(f"Current imbalance:{current_imbalance} trades:{current_trades_qty} pos_trades:{positive_qty} prob:{prob} expected_imbalance"
+                  f":{abs(current_trades_qty * prob)}")
             expected_imbalance = abs(current_trades_qty * prob)
             current_trades_qty = 0
             current_imbalance = 0
@@ -706,9 +701,8 @@ def imbalance_bars_fixed(trades: pd.DataFrame, imbalance: float) -> pd.DataFrame
         if abs(current_imbalance) >= imbalance:
             bar_counter += 1
             # just previous values for now
-            print(
-                f"Current imbalance:{current_imbalance} trades:{current_trades_qty} pos_trades:{positive_qty} prob:{prob} expected_imbalance"
-                f":{abs(current_trades_qty * prob)}")
+            print(f"Current imbalance:{current_imbalance} trades:{current_trades_qty} pos_trades:{positive_qty} prob:{prob} expected_imbalance"
+                  f":{abs(current_trades_qty * prob)}")
             current_trades_qty = 0
             current_imbalance = 0
             positive_qty = 0

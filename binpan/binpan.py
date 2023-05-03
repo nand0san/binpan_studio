@@ -8,7 +8,6 @@ __version__ = "0.4.16"
 import os
 from sys import path
 import pandas as pd
-import numpy as np
 from redis import StrictRedis
 from typing import Tuple, List
 import pandas_ta as ta
@@ -22,12 +21,25 @@ from handlers.market import agg_trades_columns_from_binance, agg_trades_columns_
 
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 
+# google colab
+try:
+    import numpy as np
+except ImportError:
+    print(f"Numpy was not correctly imported from BinPan.")
+
 try:
     # several redis servers can be configured in secret.py
     secret = handlers.starters.import_secret_module()
     redis_conf = secret.redis_conf
-    redis_conf_trades = secret.redis_conf_trades
-    redis_conf_atomic_trades = secret.redis_conf_atomic_trades
+    try:
+        redis_conf_trades = secret.redis_conf_trades
+    except Exception:
+        redis_conf_trades = redis_conf
+    try:
+        redis_conf_atomic_trades = secret.redis_conf_atomic_trades
+    except Exception:
+        redis_conf_atomic_trades = redis_conf
+
 except Exception as exc:
     msg = """
     WARNING: No REDIS configuration in SECRET.
@@ -192,16 +204,16 @@ class Symbol(object):
         self.redis_orderbook_value = None
         self.s_lines = None  # support levels from trades
         self.r_lines = None  # support levels from trades
-
-        try:
-            secret = handlers.starters.import_secret_module()
-            self.api_key = secret.api_key
-            self.api_secret = secret.api_secret
-        except Exception:
-            msg = "WARNING: No Binance API Key or API Secret."
-            binpan_logger.warning(msg)
-            self.api_key = "INSERT API KEY"
-            self.api_secret = "INSERT API KEY"
+        #
+        # try:
+        #     secret = handlers.starters.import_secret_module()
+        #     self.api_key = secret.api_key
+        #     self.api_secret = secret.api_secret
+        # except Exception:
+        #     msg = "WARNING: No Binance API Key or API Secret."
+        #     binpan_logger.warning(msg)
+        #     self.api_key = "INSERT API KEY"
+        #     self.api_secret = "INSERT API KEY"
 
         # symbol verification
         if not symbol and not from_csv:
