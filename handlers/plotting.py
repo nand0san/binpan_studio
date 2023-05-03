@@ -11,15 +11,11 @@ import pandas as pd
 from random import choice
 from datetime import datetime
 from typing import List, Tuple, Literal
+import numpy as np
 
 from .logs import Logs
 from .exceptions import BinPanException
 
-# google colab
-try:
-    import numpy as np
-except ImportError:
-    print(f"Numpy was not correctly imported from BinPan.")
 
 plot_logger = Logs(filename='./logs/plotting.log', name='plotting', info_level='INFO')
 

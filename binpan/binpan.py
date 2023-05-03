@@ -3,7 +3,7 @@
 This is the main classes file.
 
 """
-__version__ = "0.4.16"
+__version__ = "0.4.17"
 
 import os
 from sys import path
@@ -14,6 +14,7 @@ import pandas_ta as ta
 from random import choice
 import importlib
 from time import time
+import numpy as np
 
 import handlers
 from handlers.market import agg_trades_columns_from_binance, agg_trades_columns_from_redis, atomic_trades_columns_from_binance, \
@@ -21,11 +22,6 @@ from handlers.market import agg_trades_columns_from_binance, agg_trades_columns_
 
 binpan_logger = handlers.logs.Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 
-# google colab
-try:
-    import numpy as np
-except ImportError:
-    print(f"Numpy was not correctly imported from BinPan.")
 
 try:
     # several redis servers can be configured in secret.py

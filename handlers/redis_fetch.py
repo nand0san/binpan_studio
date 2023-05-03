@@ -3,17 +3,13 @@ import json
 from redis import StrictRedis
 from time import sleep, time
 from typing import Tuple, List, Union, Dict
+import numpy as n
 
 from .logs import Logs
 from .market import convert_to_numeric, tick_seconds
 from .time_helper import convert_ms_column_to_datetime_with_zone, convert_datetime_to_string, convert_milliseconds_to_utc_string, \
     convert_milliseconds_to_time_zone_datetime, convert_milliseconds_to_str, open_from_milliseconds, next_open_by_milliseconds
 
-# google colab
-try:
-    import numpy as np
-except ImportError:
-    print(f"Numpy was not correctly imported from BinPan.")
 
 redis_logger = Logs(filename='./logs/redis_fetch.log', name='redis_fetch', info_level='INFO')
 

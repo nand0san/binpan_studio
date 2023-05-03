@@ -5,18 +5,13 @@ Tagging utils.
 """
 import pandas as pd
 from typing import Tuple
+import numpy as np
 
 from .exchange import get_info_dic, get_bases_dic, get_quotes_dic
 from .market import get_candles_by_time_stamps, parse_candles_to_dataframe
 from .logs import Logs
 
 logger = Logs(filename='./logs/tags.log', name='tags', info_level='INFO')
-
-# google colab
-try:
-    import numpy as np
-except ImportError:
-    print(f"Numpy was not correctly imported from BinPan.")
 
 
 def tag_value(serie: pd.Series,

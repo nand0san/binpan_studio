@@ -2,7 +2,7 @@
 Data Aggregation.
 """
 import pandas as pd
-# import numpy as np
+import numpy as np
 from typing import Tuple
 
 from .exceptions import BinPanException
@@ -13,12 +13,6 @@ if is_python_version_numba_supported():
 else:
     from .stat_tests import ema_numpy as ema_numba
     from .stat_tests import sma_numpy as sma_numba
-
-# google colab
-try:
-    import numpy as np
-except ImportError:
-    print(f"Numpy was not correctly imported from BinPan.")
 
 
 # TODO: add documentation
