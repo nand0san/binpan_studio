@@ -200,16 +200,9 @@ class Symbol(object):
         self.redis_orderbook_value = None
         self.s_lines = None  # support levels from trades
         self.r_lines = None  # support levels from trades
-        #
-        # try:
-        #     secret = handlers.starters.import_secret_module()
-        #     self.api_key = secret.api_key
-        #     self.api_secret = secret.api_secret
-        # except Exception:
-        #     msg = "WARNING: No Binance API Key or API Secret."
-        #     binpan_logger.warning(msg)
-        #     self.api_key = "INSERT API KEY"
-        #     self.api_secret = "INSERT API KEY"
+
+        self.api_key = secret.api_key
+        self.api_secret = secret.api_secret
 
         # symbol verification
         if not symbol and not from_csv:
