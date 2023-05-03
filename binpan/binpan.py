@@ -201,8 +201,8 @@ class Symbol(object):
         self.s_lines = None  # support levels from trades
         self.r_lines = None  # support levels from trades
 
-        self.api_key = secret.api_key
-        self.api_secret = secret.api_secret
+        self.api_key = api_key
+        self.api_secret = api_secret
 
         # symbol verification
         if not symbol and not from_csv:

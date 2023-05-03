@@ -3,7 +3,7 @@ import json
 from redis import StrictRedis
 from time import sleep, time
 from typing import Tuple, List, Union, Dict
-import numpy as n
+import numpy as np
 
 from .logs import Logs
 from .market import convert_to_numeric, tick_seconds
@@ -58,15 +58,20 @@ def manage_redis(redis_args: Union[bool, Dict, StrictRedis], redis_conf: dict = 
         if type(redis_args) == bool:
             try:
                 return redis_client(**redis_conf)
-            except Exception as exc:
-                msg = f"BinPan error: Redis parameters misconfiguration in secret.py -> {exc}"
-                redis_logger.warning(msg)
-                raise Exception(msg)
+            except Exception as _:
+                if not redis_conf:
+                    msg = f"BinPan error: Redis missing parameters"
+                    redis_logger.error(msg)
+                    raise Exception(msg)
+                else:
+                    msg = f"BinPan error: Redis parameters misconfiguration in secret.py"
+                    redis_logger.warning(msg)
+                    raise Exception(msg)
         elif type(redis_args) == dict:
             try:
                 return redis_client(**redis_args)
-            except Exception as exc:
-                msg = f"BinPan error: Redis parameters misconfiguration: {redis_args} -> {exc}"
+            except Exception as _:
+                msg = f"BinPan error: Redis parameters misconfiguration: {redis_args}"
                 redis_logger.warning(msg)
                 raise Exception(msg)
         elif type(redis_args) == StrictRedis:
