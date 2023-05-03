@@ -41,16 +41,13 @@ https://nand0san.github.io/binpan_studio/
 
 Hope you find it useful breaking the market!!!
 
-Python Version and Google Colab
+Google Colab
 -------------------------------
 
-Please install in google colab with: `!pip install binpan`, then push restart runtime button and import library as usual.
-
-Recommended Python version: ```3.7```
-
-Google Colab can throw some errors when pip installing BinPan, but a reset to the runtime should fix it.
-
-![](https://raw.githubusercontent.com/nand0san/binpan_studio/main/docs/images/colab.png)
+Google Colab is not available for the Binance API. Maybe Colab's IP are restricted in the binance API.
+```
+BinanceAPIException: APIError(code=0): Service unavailable from a restricted location according to 'b. Eligibility' in https://www.binance.com/en/terms. Please contact customer service if you believe you received this message in error.
+```
 
 GitHub repo
 -----------
