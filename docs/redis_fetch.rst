@@ -3,13 +3,6 @@ Redis Module
 
 This module can manage Redis database data from Binance API with its original Binance format.
 
-To import this module:
-
-.. code-block::
-
-   from handlers import redis_fetch
-
-.. automodule:: handlers.redis_fetch
 
 Redis recommended type is **Sorted Sets**. Check: https://redis.io/docs/manual/data-types/
 
@@ -40,76 +33,11 @@ Example of an expected data response:
          '{"t": 1658766600000, "o": "0.04998000", "h": "0.05010000", "l": "0.04996000", "c": "0.05002000", "v": "402674.00000000", "T": 1658766899999, "q": "20162.97689000", "n": 68, "V": "154895.00000000", "Q": "7753.09416000", "B": "0"}']
 
 
-Parsing
--------
 
-.. autofunction:: redis_klines_parser
+Module Info
+-----------
 
-.. autofunction:: orderbook_value_to_dataframe
-
-
-Utils
------
-
-.. autofunction:: fetch_keys
-
-.. autofunction:: klines_continuity
-
-.. autofunction:: klines_ohlc_to_numpy
-
-.. autofunction:: redis_baliza
-
-
-Fetching Redis Ordered Sets
----------------------------
-It is expected to use as scoring, the "Open timestamp" or "timestamp", of each element in set.
-
-.. autofunction:: push_to_ordered_set
-
-.. autofunction:: fetch_zset_range
-
-.. autofunction:: fetch_zset_timestamps
-
-.. autofunction:: fetch_set_and_parse
-
-.. autofunction:: zset_length_between_scores
-
-.. autofunction:: zset_length
-
-
-Fetching Redis lists
---------------------
-
-.. autofunction:: push_line_to_redis
-
-.. autofunction:: fetch_list
-
-.. autofunction:: fetch_data_in_list
-
-.. autofunction:: insert_line_before_index_in_list
-
-.. autofunction:: find_row_index_in_redis_key
-
-.. autofunction:: fetch_list_filter_query
-
-
-Pipelines
----------
-
-.. autofunction:: execute_pipeline
-
-.. autofunction:: flush_pipeline
-
-.. autofunction:: pipe_buffer_ordered_set
-
-.. autofunction:: pipe_zset_timestamps
-
-.. autofunction:: pipe_time_interval_bulk_ohlc_data
-
-
-
-
-
-
-
-
+.. automodule:: handlers.redis_fetch
+   :members:
+   :undoc-members:
+   :show-inheritance:

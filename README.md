@@ -33,9 +33,12 @@ Be careful out there!
 
 Documentation
 -------------
+
 Take a look to the basic **tutorial**. Find it in the Jupyter Notebook file **tutorial.ipynb**
 
-Also, can be found Sphinx documentation at: 
+There are many more tutorials in Jupyter Notebooks at https://github.com/nand0san/binpan_studio
+
+Also, full documentation can be found at: 
 
 https://nand0san.github.io/binpan_studio/
 

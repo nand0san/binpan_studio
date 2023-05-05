@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Redis Module - BinPan 0.4.18 documentation</title>
+      <title>Redis Module - BinPan 0.4.19 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Requests Module" href="quest.html" /><link rel="prev" title="Plotting Module" href="plotting.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -107,6 +107,7 @@ html.dark {
 <li class="toctree-l1"><a class="reference internal" href="indicators.html">Indicators Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="messages.html">Messages Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="messages.html#module-handlers.messages">Exceptions Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Redis Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quest.html">Requests Module</a></li>
@@ -128,40 +129,34 @@ html.dark {
   <div class="localtoc">
     <h3>Table of Contents</h3>
     <ul>
-<li><a class="reference internal" href="#parsing">Parsing</a><ul>
+<li><a class="reference internal" href="#module-handlers.redis_fetch">Module Info</a><ul>
+<li><a class="reference internal" href="#handlers.redis_fetch.redis_client"><code class="docutils literal notranslate"><span class="pre">redis_client()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.redis_fetch.manage_sentinel"><code class="docutils literal notranslate"><span class="pre">manage_sentinel()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.redis_fetch.manage_redis"><code class="docutils literal notranslate"><span class="pre">manage_redis()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.redis_fetch.redis_klines_parser"><code class="docutils literal notranslate"><span class="pre">redis_klines_parser()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.redis_fetch.orderbook_value_to_dataframe"><code class="docutils literal notranslate"><span class="pre">orderbook_value_to_dataframe()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#utils">Utils</a><ul>
+<li><a class="reference internal" href="#handlers.redis_fetch.redis_extract_orderbook_value_quantities"><code class="docutils literal notranslate"><span class="pre">redis_extract_orderbook_value_quantities()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.redis_fetch.fetch_keys"><code class="docutils literal notranslate"><span class="pre">fetch_keys()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.redis_fetch.klines_continuity"><code class="docutils literal notranslate"><span class="pre">klines_continuity()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.redis_fetch.klines_ohlc_to_numpy"><code class="docutils literal notranslate"><span class="pre">klines_ohlc_to_numpy()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.redis_fetch.redis_baliza"><code class="docutils literal notranslate"><span class="pre">redis_baliza()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#fetching-redis-ordered-sets">Fetching Redis Ordered Sets</a><ul>
+<li><a class="reference internal" href="#handlers.redis_fetch.decode_zset_data"><code class="docutils literal notranslate"><span class="pre">decode_zset_data()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.redis_fetch.push_to_ordered_set"><code class="docutils literal notranslate"><span class="pre">push_to_ordered_set()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.redis_fetch.fetch_zset_range"><code class="docutils literal notranslate"><span class="pre">fetch_zset_range()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.redis_fetch.fetch_zset_timestamps"><code class="docutils literal notranslate"><span class="pre">fetch_zset_timestamps()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.redis_fetch.fetch_set_and_parse"><code class="docutils literal notranslate"><span class="pre">fetch_set_and_parse()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.redis_fetch.zset_length_between_scores"><code class="docutils literal notranslate"><span class="pre">zset_length_between_scores()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.redis_fetch.zset_length"><code class="docutils literal notranslate"><span class="pre">zset_length()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#fetching-redis-lists">Fetching Redis lists</a><ul>
 <li><a class="reference internal" href="#handlers.redis_fetch.push_line_to_redis"><code class="docutils literal notranslate"><span class="pre">push_line_to_redis()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.redis_fetch.fetch_list"><code class="docutils literal notranslate"><span class="pre">fetch_list()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.redis_fetch.fetch_data_in_list"><code class="docutils literal notranslate"><span class="pre">fetch_data_in_list()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.redis_fetch.insert_line_before_index_in_list"><code class="docutils literal notranslate"><span class="pre">insert_line_before_index_in_list()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.redis_fetch.find_row_index_in_redis_key"><code class="docutils literal notranslate"><span class="pre">find_row_index_in_redis_key()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.redis_fetch.fetch_list_filter_query"><code class="docutils literal notranslate"><span class="pre">fetch_list_filter_query()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#pipelines">Pipelines</a><ul>
 <li><a class="reference internal" href="#handlers.redis_fetch.execute_pipeline"><code class="docutils literal notranslate"><span class="pre">execute_pipeline()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.redis_fetch.flush_pipeline"><code class="docutils literal notranslate"><span class="pre">flush_pipeline()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.redis_fetch.pipe_buffer_ordered_set"><code class="docutils literal notranslate"><span class="pre">pipe_buffer_ordered_set()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.redis_fetch.pipe_zset_range"><code class="docutils literal notranslate"><span class="pre">pipe_zset_range()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.redis_fetch.pipe_zset_timestamps"><code class="docutils literal notranslate"><span class="pre">pipe_zset_timestamps()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.redis_fetch.pipe_time_interval_bulk_ohlc_data"><code class="docutils literal notranslate"><span class="pre">pipe_time_interval_bulk_ohlc_data()</span></code></a></li>
 </ul>
@@ -180,11 +175,7 @@ html.dark {
           <section id="redis-module">
 <h1>Redis Module<a class="headerlink" href="#redis-module" title="Permalink to this heading">¶</a></h1>
 <p>This module can manage Redis database data from Binance API with its original Binance format.</p>
-<p>To import this module:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="kn">from</span> <span class="nn">handlers</span> <span class="kn">import</span> <span class="n">redis_fetch</span>
-</span></pre></div>
-</div>
-<span class="target" id="module-handlers.redis_fetch"></span><p>Redis recommended type is <strong>Sorted Sets</strong>. Check: <a class="reference external" href="https://redis.io/docs/manual/data-types/">https://redis.io/docs/manual/data-types/</a></p>
+<p>Redis recommended type is <strong>Sorted Sets</strong>. Check: <a class="reference external" href="https://redis.io/docs/manual/data-types/">https://redis.io/docs/manual/data-types/</a></p>
 <p>Each element is expected to be indexed or <strong>scored</strong> (Redis call index number “score”).</p>
 <p>Example of an expected data response:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="kn">from</span> <span class="nn">binpan</span> <span class="kn">import</span> <span class="n">binpan</span>
@@ -208,8 +199,164 @@ html.dark {
 </span><span id="1-19">     <span class="s1">&#39;{&quot;t&quot;: 1658766600000, &quot;o&quot;: &quot;0.04998000&quot;, &quot;h&quot;: &quot;0.05010000&quot;, &quot;l&quot;: &quot;0.04996000&quot;, &quot;c&quot;: &quot;0.05002000&quot;, &quot;v&quot;: &quot;402674.00000000&quot;, &quot;T&quot;: 1658766899999, &quot;q&quot;: &quot;20162.97689000&quot;, &quot;n&quot;: 68, &quot;V&quot;: &quot;154895.00000000&quot;, &quot;Q&quot;: &quot;7753.09416000&quot;, &quot;B&quot;: &quot;0&quot;}&#39;</span><span class="p">]</span>
 </span></pre></div>
 </div>
-<section id="parsing">
-<h2>Parsing<a class="headerlink" href="#parsing" title="Permalink to this heading">¶</a></h2>
+<section id="module-handlers.redis_fetch">
+<span id="module-info"></span><h2>Module Info<a class="headerlink" href="#module-handlers.redis_fetch" title="Permalink to this heading">¶</a></h2>
+<p><strong>Functions:</strong></p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.redis_fetch.redis_client" title="handlers.redis_fetch.redis_client"><code class="xref py py-obj docutils literal notranslate"><span class="pre">redis_client</span></code></a>([ip, port, db, decode_responses])</p></td>
+<td><p>A redis consumer client creator for the Redis module.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.redis_fetch.manage_sentinel" title="handlers.redis_fetch.manage_sentinel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">manage_sentinel</span></code></a>(sentinel_redis)</p></td>
+<td><p>Manage the Redis Sentinel configuration and return a StrictRedis instance.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.redis_fetch.manage_redis" title="handlers.redis_fetch.manage_redis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">manage_redis</span></code></a>(redis_args)</p></td>
+<td><p>Manage the Redis configuration and return a StrictRedis instance or None.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.redis_fetch.redis_klines_parser" title="handlers.redis_fetch.redis_klines_parser"><code class="xref py py-obj docutils literal notranslate"><span class="pre">redis_klines_parser</span></code></a>(json_list, symbol, ...)</p></td>
+<td><p>Parses redis klines list to a BinPan Dataframe.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.redis_fetch.orderbook_value_to_dataframe" title="handlers.redis_fetch.orderbook_value_to_dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orderbook_value_to_dataframe</span></code></a>(data)</p></td>
+<td><p>Build a Dataframe with redis data from orderbook_values.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.redis_fetch.redis_extract_orderbook_value_quantities" title="handlers.redis_fetch.redis_extract_orderbook_value_quantities"><code class="xref py py-obj docutils literal notranslate"><span class="pre">redis_extract_orderbook_value_quantities</span></code></a>(data)</p></td>
+<td><p>Prepares data for plotting.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.redis_fetch.fetch_keys" title="handlers.redis_fetch.fetch_keys"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fetch_keys</span></code></a>(redisClient[, ...])</p></td>
+<td><p>Fetch all keys in redis database.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.redis_fetch.klines_continuity" title="handlers.redis_fetch.klines_continuity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">klines_continuity</span></code></a>(klines, tick_interval)</p></td>
+<td><p>Check klines missing.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.redis_fetch.klines_ohlc_to_numpy" title="handlers.redis_fetch.klines_ohlc_to_numpy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">klines_ohlc_to_numpy</span></code></a>(klines)</p></td>
+<td><p>Extract open, high, low and close numpy arrays from raw klines (list of json strings).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.redis_fetch.redis_baliza" title="handlers.redis_fetch.redis_baliza"><code class="xref py py-obj docutils literal notranslate"><span class="pre">redis_baliza</span></code></a>(redis_client, symbol, tick_interval)</p></td>
+<td><p>Returns when Redis data available waiting until the next open timestamp appears.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.redis_fetch.decode_zset_data" title="handlers.redis_fetch.decode_zset_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">decode_zset_data</span></code></a>(data_list)</p></td>
+<td><p>Checks type and if bytes type, convert to dict.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.redis_fetch.push_to_ordered_set" title="handlers.redis_fetch.push_to_ordered_set"><code class="xref py py-obj docutils literal notranslate"><span class="pre">push_to_ordered_set</span></code></a>(redisClient, key, mapping)</p></td>
+<td><p>Pushes elements to the ordered set with a score as index.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.redis_fetch.fetch_zset_range" title="handlers.redis_fetch.fetch_zset_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fetch_zset_range</span></code></a>(redisClient[, key, symbol, ...])</p></td>
+<td><p>Fetch a redis ordered set by its key name and start end indexes.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.redis_fetch.fetch_zset_timestamps" title="handlers.redis_fetch.fetch_zset_timestamps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fetch_zset_timestamps</span></code></a>(redisClient, key, ...)</p></td>
+<td><p>Fetch a redis ordered set by its key name and start end scores.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.redis_fetch.fetch_set_and_parse" title="handlers.redis_fetch.fetch_set_and_parse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fetch_set_and_parse</span></code></a>(redisClient, key)</p></td>
+<td><p>Fetch a websocket channel from redis and parses to a BinPan dataframe.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.redis_fetch.zset_length_between_scores" title="handlers.redis_fetch.zset_length_between_scores"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zset_length_between_scores</span></code></a>(redisClient, ...)</p></td>
+<td><p>Returns count of elements between start score and end score (including elements with score equal to min or max).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.redis_fetch.zset_length" title="handlers.redis_fetch.zset_length"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zset_length</span></code></a>(redisClient, name)</p></td>
+<td><p>Returns count of elements in a set.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.redis_fetch.push_line_to_redis" title="handlers.redis_fetch.push_line_to_redis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">push_line_to_redis</span></code></a>(redisClient, key, data)</p></td>
+<td><p>Pushes another line to the end of a list key in redis database.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.redis_fetch.fetch_list" title="handlers.redis_fetch.fetch_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fetch_list</span></code></a>(redisClient, key[, start_index, ...])</p></td>
+<td><p>Fetch list entries in a redis list key from start index to end.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.redis_fetch.fetch_data_in_list" title="handlers.redis_fetch.fetch_data_in_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fetch_data_in_list</span></code></a>(redisClient, key[, ...])</p></td>
+<td><p>Fetch data from redis for a given key.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.redis_fetch.insert_line_before_index_in_list" title="handlers.redis_fetch.insert_line_before_index_in_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert_line_before_index_in_list</span></code></a>(...)</p></td>
+<td><p>Inserts data before an existing string in a redis list.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.redis_fetch.find_row_index_in_redis_key" title="handlers.redis_fetch.find_row_index_in_redis_key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_row_index_in_redis_key</span></code></a>(redisClient, ...)</p></td>
+<td><p>It founds in a redis stream the most accurate row with greater timestamp than the passed timestamp row and returns its index by iteration.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.redis_fetch.fetch_list_filter_query" title="handlers.redis_fetch.fetch_list_filter_query"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fetch_list_filter_query</span></code></a>(redisClient[, ...])</p></td>
+<td><p>Fetch from redis all keys for a time interval.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.redis_fetch.execute_pipeline" title="handlers.redis_fetch.execute_pipeline"><code class="xref py py-obj docutils literal notranslate"><span class="pre">execute_pipeline</span></code></a>(pipeline)</p></td>
+<td><p>Executes a pipeline buffer.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.redis_fetch.flush_pipeline" title="handlers.redis_fetch.flush_pipeline"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flush_pipeline</span></code></a>(pipeline)</p></td>
+<td><p>Flush pipeline buffered commands.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.redis_fetch.pipe_buffer_ordered_set" title="handlers.redis_fetch.pipe_buffer_ordered_set"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pipe_buffer_ordered_set</span></code></a>(pipeline, key, mapping)</p></td>
+<td><p>Fills a pipeline buffer to &quot;pipeline.execute()&quot; later with commands of pushes of elements to an ordered set with a score as index.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.redis_fetch.pipe_zset_range" title="handlers.redis_fetch.pipe_zset_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pipe_zset_range</span></code></a>(pipeline, key[, ...])</p></td>
+<td><p>Pipe a request for an ordered set by index for a redis existing key.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.redis_fetch.pipe_zset_timestamps" title="handlers.redis_fetch.pipe_zset_timestamps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pipe_zset_timestamps</span></code></a>(pipeline, key, ...[, ...])</p></td>
+<td><p>Puts into pipeline buffer a redis ordered set by its key name and start end scores.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.redis_fetch.pipe_time_interval_bulk_ohlc_data" title="handlers.redis_fetch.pipe_time_interval_bulk_ohlc_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pipe_time_interval_bulk_ohlc_data</span></code></a>(pipeline, ...)</p></td>
+<td><p>Pipes to redis, check time integrity and parse in a list of tuples with stream and open, high, low, close arrays.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.redis_fetch.redis_client">
+<span class="sig-prename descclassname"><span class="pre">handlers.redis_fetch.</span></span><span class="sig-name descname"><span class="pre">redis_client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'127.0.0.1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">6379</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decode_responses</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.redis_fetch.redis_client" title="Permalink to this definition">¶</a></dt>
+<dd><p>A redis consumer client creator for the Redis module.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ip</strong> (<em>str</em>) – Redis host ip. Default is localhost.</p></li>
+<li><p><strong>port</strong> (<em>int</em>) – Default is 6379</p></li>
+<li><p><strong>db</strong> (<em>int</em>) – Default is 0.</p></li>
+<li><p><strong>decode_responses</strong> (<em>bool</em>) – It decodes responses from redis, avoiding bytes objects to be returned. Default is True.</p></li>
+<li><p><strong>kwargs</strong> – If passed, object is instantiated exclusively with kwargs, discarding any passed parameter.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return object<span class="colon">:</span></dt>
+<dd class="field-even"><p>A redis client.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.redis_fetch.manage_sentinel">
+<span class="sig-prename descclassname"><span class="pre">handlers.redis_fetch.</span></span><span class="sig-name descname"><span class="pre">manage_sentinel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sentinel_redis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Redis</span></span></span><a class="headerlink" href="#handlers.redis_fetch.manage_sentinel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Manage the Redis Sentinel configuration and return a StrictRedis instance.</p>
+<p>This function takes a sentinel_redis parameter, which can be a dictionary or a boolean. If it is a dictionary, the function expects the keys ‘hosts’, ‘sentinel_service_name’, and ‘password’ (optional) to be present. If it is a boolean, the function imports the sentinel_data from the secret module.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sentinel_redis</strong> (<em>Union</em><em>[</em><em>dict</em><em>, </em><em>bool</em><em>]</em>) – A dictionary containing the Redis Sentinel configuration or a boolean to use the secret module for configuration.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A StrictRedis instance configured with the provided Sentinel settings.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>StrictRedis</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="exceptions.html#handlers.exceptions.RedisConfigError" title="handlers.exceptions.RedisConfigError"><strong>RedisConfigError</strong></a> – If the sentinel_redis parameter is a dictionary and the ‘hosts’ key is not present.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.redis_fetch.manage_redis">
+<span class="sig-prename descclassname"><span class="pre">handlers.redis_fetch.</span></span><span class="sig-name descname"><span class="pre">manage_redis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">redis_args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Redis</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Redis</span></span></span><a class="headerlink" href="#handlers.redis_fetch.manage_redis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Manage the Redis configuration and return a StrictRedis instance or None.</p>
+<p>This function takes a redis_args parameter, which can be a dictionary, a boolean, or a StrictRedis object. If it is a dictionary, the function expects the Redis configuration keys to be present. If it is a boolean, the function imports the redis_conf from the secret module. If it is a StrictRedis object, the function returns the object as is.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>redis_args</strong> (<em>Union</em><em>[</em><em>bool</em><em>, </em><em>Dict</em><em>, </em><em>StrictRedis</em><em>]</em>) – A dictionary containing the Redis configuration, a boolean to use the passed configuration, or a StrictRedis object.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A StrictRedis instance configured with the provided settings or None if no configuration is provided.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Union[StrictRedis, None]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="exceptions.html#handlers.exceptions.RedisConfigError" title="handlers.exceptions.RedisConfigError"><strong>RedisConfigError</strong></a> – If there is a misconfiguration in the Redis settings or the ‘redis_conf’ key is not found in the secret.py module.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.redis_fetch.redis_klines_parser">
 <span class="sig-prename descclassname"><span class="pre">handlers.redis_fetch.</span></span><span class="sig-name descname"><span class="pre">redis_klines_parser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Europe/madrid'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.redis_fetch.redis_klines_parser" title="Permalink to this definition">¶</a></dt>
@@ -244,9 +391,20 @@ html.dark {
 </dl>
 </dd></dl>
 
-</section>
-<section id="utils">
-<h2>Utils<a class="headerlink" href="#utils" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.redis_fetch.redis_extract_orderbook_value_quantities">
+<span class="sig-prename descclassname"><span class="pre">handlers.redis_fetch.</span></span><span class="sig-name descname"><span class="pre">redis_extract_orderbook_value_quantities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#handlers.redis_fetch.redis_extract_orderbook_value_quantities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepares data for plotting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> – Redis raw data.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>ask_value_quantities, bid_value_quantities</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.redis_fetch.fetch_keys">
 <span class="sig-prename descclassname"><span class="pre">handlers.redis_fetch.</span></span><span class="sig-name descname"><span class="pre">fetch_keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">redisClient</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Redis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_tick_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_quote</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.redis_fetch.fetch_keys" title="Permalink to this definition">¶</a></dt>
@@ -320,10 +478,20 @@ html.dark {
 </dl>
 </dd></dl>
 
-</section>
-<section id="fetching-redis-ordered-sets">
-<h2>Fetching Redis Ordered Sets<a class="headerlink" href="#fetching-redis-ordered-sets" title="Permalink to this heading">¶</a></h2>
-<p>It is expected to use as scoring, the “Open timestamp” or “timestamp”, of each element in set.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.redis_fetch.decode_zset_data">
+<span class="sig-prename descclassname"><span class="pre">handlers.redis_fetch.</span></span><span class="sig-name descname"><span class="pre">decode_zset_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.redis_fetch.decode_zset_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks type and if bytes type, convert to dict.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data_list</strong> – Data from zset.</p>
+</dd>
+<dt class="field-even">Return list<span class="colon">:</span></dt>
+<dd class="field-even"><p>Str type list.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.redis_fetch.push_to_ordered_set">
 <span class="sig-prename descclassname"><span class="pre">handlers.redis_fetch.</span></span><span class="sig-name descname"><span class="pre">push_to_ordered_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">redisClient</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Redis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapping</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">LT</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">XX</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">NX</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">GT</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">CH</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">INCR</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.redis_fetch.push_to_ordered_set" title="Permalink to this definition">¶</a></dt>
@@ -515,9 +683,6 @@ Example of data in one score of the zset:</p>
 </dl>
 </dd></dl>
 
-</section>
-<section id="fetching-redis-lists">
-<h2>Fetching Redis lists<a class="headerlink" href="#fetching-redis-lists" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.redis_fetch.push_line_to_redis">
 <span class="sig-prename descclassname"><span class="pre">handlers.redis_fetch.</span></span><span class="sig-name descname"><span class="pre">push_line_to_redis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">redisClient</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Redis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.redis_fetch.push_line_to_redis" title="Permalink to this definition">¶</a></dt>
@@ -643,9 +808,6 @@ index by iteration.</p>
 </dl>
 </dd></dl>
 
-</section>
-<section id="pipelines">
-<h2>Pipelines<a class="headerlink" href="#pipelines" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.redis_fetch.execute_pipeline">
 <span class="sig-prename descclassname"><span class="pre">handlers.redis_fetch.</span></span><span class="sig-name descname"><span class="pre">execute_pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pipeline</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.redis_fetch.execute_pipeline" title="Permalink to this definition">¶</a></dt>
@@ -699,6 +861,28 @@ Note: The GT, LT and NX options are mutually exclusive.</p></li>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>redis feedback info.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.redis_fetch.pipe_zset_range">
+<span class="sig-prename descclassname"><span class="pre">handlers.redis_fetch.</span></span><span class="sig-name descname"><span class="pre">pipe_zset_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pipeline</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pipeline</span></span></span><a class="headerlink" href="#handlers.redis_fetch.pipe_zset_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pipe a request for an ordered set by index for a redis existing key.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pipeline</strong> (<em>StrictRedis.pipeline</em>) – Pipeline object.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – Key to pipe wanted data.</p></li>
+<li><p><strong>start_index</strong> (<em>int</em>) – Starting index of data. If ordered by scoring timestamps, starting values are older than ending values.
+Default 0</p></li>
+<li><p><strong>end_index</strong> (<em>int</em>) – Ending index of data. If ordered by scoring timestamps, starting values are older than ending values.
+Default -1</p></li>
+<li><p><strong>with_scores</strong> (<em>bool</em>) – Pipes for a list of tuples with data and score.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return StrictRedis.pipeline<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pipeline object.</p>
 </dd>
 </dl>
 </dd></dl>

@@ -2888,7 +2888,7 @@ class Symbol(object):
 
         return ichimoku_data
 
-    def fractal_w(self, period: int = 2, inplace: bool = True, suffix: str = '', colors: list = None):
+    def fractal_w(self, period: int = 5, inplace: bool = True, suffix: str = '', colors: list = None):
         """
         The fractal indicator is based on a simple price pattern that is frequently seen in financial markets. Outside of trading, a fractal
         is a recurring geometric pattern that is repeated on all time frames. From this concept, the fractal indicator was devised.
@@ -2908,8 +2908,8 @@ class Symbol(object):
 
         """
         if not colors:
-            colors = ['orange', 'skyblue']
-        fractal = fractal_w(data=self.df, period=period, suffix=suffix)
+            colors = ['black', 'black']
+        fractal = fractal_w(data=self.df, period=period, suffix=suffix, fill_with_zero=True)
 
         if inplace and self.is_new(fractal):
 

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Messages Module - BinPan 0.4.18 documentation</title>
+      <title>Messages Module - BinPan 0.4.19 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Plotting Module" href="plotting.html" /><link rel="prev" title="Market Module" href="market.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -107,8 +107,10 @@ html.dark {
 <li class="toctree-l1"><a class="reference internal" href="indicators.html">Indicators Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Messages Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#module-handlers.messages">Exceptions Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_fetch.html#id1">Redis Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quest.html">Requests Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stat_tests.html">Statistical Tests and Tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
@@ -127,21 +129,14 @@ html.dark {
     <div class="sy-scrollbar px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4">
   <div class="localtoc">
     <h3>Table of Contents</h3>
-    <ul>
-<li><a class="reference internal" href="#telegram-messages">Telegram Messages</a><ul>
+    </li>
+<li><a class="reference internal" href="#module-handlers.messages">Exceptions Module</a><ul>
 <li><a class="reference internal" href="#handlers.messages.telegram_bot_send_text"><code class="docutils literal notranslate"><span class="pre">telegram_bot_send_text()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#parsers">Parsers</a><ul>
 <li><a class="reference internal" href="#handlers.messages.telegram_parse_dict"><code class="docutils literal notranslate"><span class="pre">telegram_parse_dict()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.messages.tab_str"><code class="docutils literal notranslate"><span class="pre">tab_str()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.messages.telegram_parse_dataframe_markdown"><code class="docutils literal notranslate"><span class="pre">telegram_parse_dataframe_markdown()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.messages.telegram_parse_order_markdown"><code class="docutils literal notranslate"><span class="pre">telegram_parse_order_markdown()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#utils">Utils</a><ul>
 <li><a class="reference internal" href="#handlers.messages.send_balances"><code class="docutils literal notranslate"><span class="pre">send_balances()</span></code></a></li>
-</ul>
-</li>
 </ul>
 
 
@@ -155,14 +150,35 @@ html.dark {
         <article class="yue" role="main">
           <section id="messages-module">
 <h1>Messages Module<a class="headerlink" href="#messages-module" title="Permalink to this heading">¶</a></h1>
-<p>This module can send messages through Telegram API for your bot and chat id.</p>
-<p>To import this module:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="kn">from</span> <span class="nn">handlers</span> <span class="kn">import</span> <span class="n">messages</span>
-</span></pre></div>
+</section>
+<section id="module-handlers.messages">
+<span id="exceptions-module"></span><h1>Exceptions Module<a class="headerlink" href="#module-handlers.messages" title="Permalink to this heading">¶</a></h1>
+<p>Telegram and messages control.</p>
+<p><strong>Functions:</strong></p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.messages.telegram_bot_send_text" title="handlers.messages.telegram_bot_send_text"><code class="xref py py-obj docutils literal notranslate"><span class="pre">telegram_bot_send_text</span></code></a>(msg[, parse_mode, ...])</p></td>
+<td><p>Sends a telegram message.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.messages.telegram_parse_dict" title="handlers.messages.telegram_parse_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">telegram_parse_dict</span></code></a>(msg_data[, timezone])</p></td>
+<td><p>Parses a dict and downcast types.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.messages.tab_str" title="handlers.messages.tab_str"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tab_str</span></code></a>(text[, indentation])</p></td>
+<td><p>Indentation for telegram messages.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.messages.telegram_parse_dataframe_markdown" title="handlers.messages.telegram_parse_dataframe_markdown"><code class="xref py py-obj docutils literal notranslate"><span class="pre">telegram_parse_dataframe_markdown</span></code></a>(data[, ...])</p></td>
+<td><p>Parses a Dataframe in telegrams message format.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.messages.telegram_parse_order_markdown" title="handlers.messages.telegram_parse_order_markdown"><code class="xref py py-obj docutils literal notranslate"><span class="pre">telegram_parse_order_markdown</span></code></a>(...[, timezoned])</p></td>
+<td><p>Parses API order response to telegram string.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.messages.send_balances" title="handlers.messages.send_balances"><code class="xref py py-obj docutils literal notranslate"><span class="pre">send_balances</span></code></a>(decimal_mode, api_key, api_secret)</p></td>
+<td><p>Sends telegram message with total value of spot wallet in selected coin.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
-<span class="target" id="module-handlers.messages"></span><p>Telegram and messages control.</p>
-<section id="telegram-messages">
-<h2>Telegram Messages<a class="headerlink" href="#telegram-messages" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.messages.telegram_bot_send_text">
 <span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">telegram_bot_send_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parse_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Markdown&amp;text'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_notification</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alt_enc_bot_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alt_chat_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.messages.telegram_bot_send_text" title="Permalink to this definition">¶</a></dt>
@@ -196,9 +212,6 @@ variable names <em>encoded_chat_id</em>, <em>encoded_telegram_bot_id</em>.</p>
 </dl>
 </dd></dl>
 
-</section>
-<section id="parsers">
-<h2>Parsers<a class="headerlink" href="#parsers" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.messages.telegram_parse_dict">
 <span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">telegram_parse_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'UTC'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.messages.telegram_parse_dict" title="Permalink to this definition">¶</a></dt>
@@ -214,6 +227,15 @@ variable names <em>encoded_chat_id</em>, <em>encoded_telegram_bot_id</em>.</p>
 <dd class="field-even"><p>A markdown v1 parsed telegram string.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.messages.tab_str">
+<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">tab_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indentation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.messages.tab_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Indentation for telegram messages.
+:param str text: A message with spaces to insert tabulations in.
+:param int indentation: The spaces quantity to insert.
+:return str: Tabulated message.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -254,9 +276,6 @@ variable names <em>encoded_chat_id</em>, <em>encoded_telegram_bot_id</em>.</p>
 </dl>
 </dd></dl>
 
-</section>
-<section id="utils">
-<h2>Utils<a class="headerlink" href="#utils" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.messages.send_balances">
 <span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">send_balances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BUSD'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.messages.send_balances" title="Permalink to this definition">¶</a></dt>
@@ -269,7 +288,6 @@ variable names <em>encoded_chat_id</em>, <em>encoded_telegram_bot_id</em>.</p>
 :return float: total value of wallet.</p>
 </dd></dl>
 
-</section>
 </section>
 
         </article>
