@@ -15,7 +15,6 @@ import importlib
 from time import time
 import numpy as np
 
-# import handlers
 from handlers.exceptions import MissingBinanceApiData, BinPanException
 
 from handlers.exchange import get_decimal_positions, get_info_dic, get_precision, get_orderTypes_and_permissions, \
@@ -234,7 +233,7 @@ class Symbol(object):
 
         # symbol verification
         if not symbol and not from_csv:
-            raise Exception(f"BinPan symbol Error: symbol needed")
+            raise BinPanException(f"BinPan symbol Error: symbol needed")
         if not from_csv and not symbol.isalnum():
             binpan_logger.error(f"BinPan error: Ilegal characters in symbol.")
 

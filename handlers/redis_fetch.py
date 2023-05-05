@@ -1,8 +1,9 @@
-import pandas as pd
+
 import json
-from redis import StrictRedis
 from time import sleep, time
 from typing import Tuple, List, Union, Dict
+from redis import StrictRedis
+import pandas as pd
 import numpy as np
 
 from .logs import Logs
@@ -101,6 +102,7 @@ def manage_redis(redis_args: Union[bool, Dict, StrictRedis]) -> StrictRedis or N
 
     :raises RedisConfigError: If there is a misconfiguration in the Redis settings or the 'redis_conf' key is not found in the secret.py module.
     """
+
     if redis_args:
         if type(redis_args) == bool:
             try:
@@ -114,6 +116,7 @@ def manage_redis(redis_args: Union[bool, Dict, StrictRedis]) -> StrictRedis or N
                 return redis_client(**redis_args)
             except Exception:
                 raise RedisConfigError(f"BinPan error: Redis parameters misconfiguration: {redis_args}")
+
         elif type(redis_args) == StrictRedis:
             return redis_args
         else:
@@ -143,7 +146,6 @@ def redis_klines_parser(json_list: List[str],
     :return pd.DataFrame: A BinPan dataframe.
 
     """
-
     time_cols = ['Open time', 'Close time']
     dicts_data = [json.loads(i) for i in json_list]
     df = pd.DataFrame(data=dicts_data)
@@ -197,7 +199,6 @@ def orderbook_value_to_dataframe(data: list):
                     price, quantity in
                     row["bid_value"].items()]
         all_data += ask_data + bid_data
-
     df = pd.DataFrame(all_data)
     return df.sort_values(["Timestamp", "Price"], ascending=[True, False]).reset_index(drop=True)
 

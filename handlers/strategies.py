@@ -1,5 +1,5 @@
-import pandas as pd
 from random import sample
+import pandas as pd
 
 from .logs import Logs
 

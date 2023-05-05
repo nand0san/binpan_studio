@@ -1,8 +1,9 @@
 """
 Telegram and messages control.
 """
-from pandas import DataFrame
 import requests
+import pandas as pd
+
 from .starters import AesCipher, import_secret_module
 from .logs import Logs
 from .time_helper import convert_milliseconds_to_str
@@ -137,7 +138,7 @@ def tab_str(text: str, indentation=8) -> str:
     return ret
 
 
-def telegram_parse_dataframe_markdown(data: DataFrame,
+def telegram_parse_dataframe_markdown(data: pd.DataFrame,
                                       indentation: int = 6,
                                       title: str = "Balances") -> str:
     """

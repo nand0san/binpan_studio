@@ -12,7 +12,7 @@ from Crypto.Util.Padding import pad, unpad
 import sys
 import os
 import importlib
-import re
+# import re
 
 
 def import_secret_module():
@@ -21,9 +21,9 @@ def import_secret_module():
     while True:
         try:
             secret_module = importlib.import_module('secret')
-            regex = r"(?<=\\Users\\)([^\\]+)"
-            obfuscated_path = re.sub(regex, "XXXX", current_dir)
-            print("SECRET module found: ", obfuscated_path)
+            # regex = r"(?<=\\Users\\)([^\\]+)"
+            # obfuscated_path = re.sub(regex, "XXXX", current_dir)
+            # print("SECRET module found: ", obfuscated_path)
             return secret_module
         except ModuleNotFoundError:
             # Si no se encuentra el módulo, sube un nivel en el directorio
@@ -36,6 +36,38 @@ def import_secret_module():
 
             current_dir = parent_dir
             sys.path.insert(0, current_dir)
+
+
+def import_if_not_exists_(module_name: str):
+    """
+    Import a Python module if it hasn't been imported yet.
+
+    This function takes a module_name parameter, which is the name of the module you want to import. If the module is not already present in sys.modules, it attempts to import the module using importlib.import_module().
+
+    :param module_name: The name of the module to be imported.
+    :type module_name: str
+
+    :raises ImportError: If the specified module cannot be imported.
+
+    :return: The imported module object if the module is successfully imported or if it is already present in sys.modules.
+    :rtype: ModuleType
+
+    :example:
+
+    .. code-block:: python
+
+        math_module = import_if_not_exists("math")
+        print(math_module.sqrt(4))  # Prints "2.0"
+
+    """
+    if module_name not in sys.modules:
+        try:
+            importlib.import_module(module_name)
+            print(f"Module {module_name} imported successfully.")
+        except ImportError:
+            raise Exception(f"Failed to import module {module_name}.")
+    else:
+        print(f"Module {module_name} already imported.")
 
 
 class AesCipher(object):

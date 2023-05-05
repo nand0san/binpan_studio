@@ -1,8 +1,9 @@
 from datetime import datetime
-import pandas as pd
 import pytz
 from time import time
 from typing import Tuple
+
+import pandas as pd
 
 from .logs import Logs
 
