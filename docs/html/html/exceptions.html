@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Exceptions Module - BinPan 0.4.18 documentation</title>
+      <title>Exceptions Module - BinPan 0.4.19 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Exchange Module" href="exchange.html" /><link rel="prev" title="Aggregations Module" href="aggregations.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -107,8 +107,10 @@ html.dark {
 <li class="toctree-l1"><a class="reference internal" href="indicators.html">Indicators Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="messages.html">Messages Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="messages.html#module-handlers.messages">Exceptions Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_fetch.html#id1">Redis Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quest.html">Requests Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stat_tests.html">Statistical Tests and Tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
@@ -129,8 +131,18 @@ html.dark {
     <h3>Table of Contents</h3>
     <ul>
 <li><a class="reference internal" href="#handlers.exceptions.BinPanException"><code class="docutils literal notranslate"><span class="pre">BinPanException</span></code></a></li>
+<li><a class="reference internal" href="#handlers.exceptions.MissingBinanceApiData"><code class="docutils literal notranslate"><span class="pre">MissingBinanceApiData</span></code></a></li>
+<li><a class="reference internal" href="#handlers.exceptions.MissingTelegramApiData"><code class="docutils literal notranslate"><span class="pre">MissingTelegramApiData</span></code></a></li>
+<li><a class="reference internal" href="#handlers.exceptions.RedisConfigError"><code class="docutils literal notranslate"><span class="pre">RedisConfigError</span></code></a></li>
 <li><a class="reference internal" href="#handlers.exceptions.BinanceAPIException"><code class="docutils literal notranslate"><span class="pre">BinanceAPIException</span></code></a></li>
 <li><a class="reference internal" href="#handlers.exceptions.BinanceRequestException"><code class="docutils literal notranslate"><span class="pre">BinanceRequestException</span></code></a></li>
+<li><a class="reference internal" href="#handlers.exceptions.BinanceOrderException"><code class="docutils literal notranslate"><span class="pre">BinanceOrderException</span></code></a></li>
+<li><a class="reference internal" href="#handlers.exceptions.BinanceOrderMinAmountException"><code class="docutils literal notranslate"><span class="pre">BinanceOrderMinAmountException</span></code></a></li>
+<li><a class="reference internal" href="#handlers.exceptions.BinanceOrderMinPriceException"><code class="docutils literal notranslate"><span class="pre">BinanceOrderMinPriceException</span></code></a></li>
+<li><a class="reference internal" href="#handlers.exceptions.BinanceOrderMinTotalException"><code class="docutils literal notranslate"><span class="pre">BinanceOrderMinTotalException</span></code></a></li>
+<li><a class="reference internal" href="#handlers.exceptions.BinanceOrderUnknownSymbolException"><code class="docutils literal notranslate"><span class="pre">BinanceOrderUnknownSymbolException</span></code></a></li>
+<li><a class="reference internal" href="#handlers.exceptions.BinanceOrderInactiveSymbolException"><code class="docutils literal notranslate"><span class="pre">BinanceOrderInactiveSymbolException</span></code></a></li>
+<li><a class="reference internal" href="#handlers.exceptions.NotImplementedException"><code class="docutils literal notranslate"><span class="pre">NotImplementedException</span></code></a></li>
 </ul>
 
 
@@ -142,36 +154,149 @@ html.dark {
     <div class="flex flex-col break-words justify-between">
       <div class="min-w-0 max-w-6xl px-6 pb-6 pt-6 xl:px-12">
         <article class="yue" role="main">
-          <section id="exceptions-module">
-<h1>Exceptions Module<a class="headerlink" href="#exceptions-module" title="Permalink to this heading">¶</a></h1>
-<p>This module manage exceptions from Binance API.</p>
-<p>Exceptions from <a class="reference external" href="https://github.com/sammchardy/python-binance">https://github.com/sammchardy/python-binance</a></p>
-<p>Can be imported this way:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="kn">from</span> <span class="nn">handlers</span> <span class="kn">import</span> <span class="n">exceptions</span>
-</span></pre></div>
+          <section id="module-handlers.exceptions">
+<span id="exceptions-module"></span><h1>Exceptions Module<a class="headerlink" href="#module-handlers.exceptions" title="Permalink to this heading">¶</a></h1>
+<p>Exceptions control.</p>
+<p><strong>Exceptions:</strong></p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.exceptions.BinPanException" title="handlers.exceptions.BinPanException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BinPanException</span></code></a>([message])</p></td>
+<td><p>BinPan exception with custom message.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.exceptions.MissingBinanceApiData" title="handlers.exceptions.MissingBinanceApiData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MissingBinanceApiData</span></code></a>([message])</p></td>
+<td><p>Exception for errors from missing data in an API request.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.exceptions.MissingTelegramApiData" title="handlers.exceptions.MissingTelegramApiData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MissingTelegramApiData</span></code></a>([message])</p></td>
+<td><p>Exception for errors from missing data for telegram.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.exceptions.RedisConfigError" title="handlers.exceptions.RedisConfigError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RedisConfigError</span></code></a>([message])</p></td>
+<td><p>Exception for errors from missing data for redis.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.exceptions.BinanceAPIException" title="handlers.exceptions.BinanceAPIException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BinanceAPIException</span></code></a>(response, status_code, text)</p></td>
+<td><p>Extract exception from response.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.exceptions.BinanceRequestException" title="handlers.exceptions.BinanceRequestException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BinanceRequestException</span></code></a>(message)</p></td>
+<td><p>Request methods exceptions.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.exceptions.BinanceOrderException" title="handlers.exceptions.BinanceOrderException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BinanceOrderException</span></code></a>(code, message)</p></td>
+<td><p>Orders exceptions from API.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.exceptions.BinanceOrderMinAmountException" title="handlers.exceptions.BinanceOrderMinAmountException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BinanceOrderMinAmountException</span></code></a>(value)</p></td>
+<td><p>Symbol filter exceptions: Minimum Amount</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.exceptions.BinanceOrderMinPriceException" title="handlers.exceptions.BinanceOrderMinPriceException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BinanceOrderMinPriceException</span></code></a>(value)</p></td>
+<td><p>Symbol filter exceptions: Minimum Price</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.exceptions.BinanceOrderMinTotalException" title="handlers.exceptions.BinanceOrderMinTotalException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BinanceOrderMinTotalException</span></code></a>(value)</p></td>
+<td><p>Symbol filter exceptions: Minimum Total</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.exceptions.BinanceOrderUnknownSymbolException" title="handlers.exceptions.BinanceOrderUnknownSymbolException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BinanceOrderUnknownSymbolException</span></code></a>(value)</p></td>
+<td><p>Unknown symbol.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.exceptions.BinanceOrderInactiveSymbolException" title="handlers.exceptions.BinanceOrderInactiveSymbolException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BinanceOrderInactiveSymbolException</span></code></a>(value)</p></td>
+<td><p>Order interactive exception.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.exceptions.NotImplementedException" title="handlers.exceptions.NotImplementedException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NotImplementedException</span></code></a>(value)</p></td>
+<td><p>Not implemented.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
-<span class="target" id="module-handlers.exceptions"></span><p>Exceptions control.</p>
-<dl class="py class">
+<dl class="py exception">
 <dt class="sig sig-object py" id="handlers.exceptions.BinPanException">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.exceptions.</span></span><span class="sig-name descname"><span class="pre">BinPanException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.exceptions.BinPanException" title="Permalink to this definition">¶</a></dt>
-<dd><p>BinPan exception with custom message.</p>
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.exceptions.</span></span><span class="sig-name descname"><span class="pre">BinPanException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.exceptions.BinPanException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>BinPan exception with custom message.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>msg</strong> (<em>str</em>) – A message for the Exception message.</p>
+<dd class="field-odd"><p><strong>message</strong> (<em>str</em>) – A message for the Exception message.</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py class">
-<dt class="sig sig-object py" id="handlers.exceptions.BinanceAPIException">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.exceptions.</span></span><span class="sig-name descname"><span class="pre">BinanceAPIException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.exceptions.BinanceAPIException" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extract exception from response.</p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="handlers.exceptions.MissingBinanceApiData">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.exceptions.</span></span><span class="sig-name descname"><span class="pre">MissingBinanceApiData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.exceptions.MissingBinanceApiData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exception for errors from missing data in an API request.</p>
 </dd></dl>
 
-<dl class="py class">
+<dl class="py exception">
+<dt class="sig sig-object py" id="handlers.exceptions.MissingTelegramApiData">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.exceptions.</span></span><span class="sig-name descname"><span class="pre">MissingTelegramApiData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.exceptions.MissingTelegramApiData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exception for errors from missing data for telegram.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="handlers.exceptions.RedisConfigError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.exceptions.</span></span><span class="sig-name descname"><span class="pre">RedisConfigError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.exceptions.RedisConfigError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exception for errors from missing data for redis.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="handlers.exceptions.BinanceAPIException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.exceptions.</span></span><span class="sig-name descname"><span class="pre">BinanceAPIException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.exceptions.BinanceAPIException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Extract exception from response.</p>
+</dd></dl>
+
+<dl class="py exception">
 <dt class="sig sig-object py" id="handlers.exceptions.BinanceRequestException">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.exceptions.</span></span><span class="sig-name descname"><span class="pre">BinanceRequestException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.exceptions.BinanceRequestException" title="Permalink to this definition">¶</a></dt>
-<dd><p>Request methods exceptions.</p>
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.exceptions.</span></span><span class="sig-name descname"><span class="pre">BinanceRequestException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.exceptions.BinanceRequestException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Request methods exceptions.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="handlers.exceptions.BinanceOrderException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.exceptions.</span></span><span class="sig-name descname"><span class="pre">BinanceOrderException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.exceptions.BinanceOrderException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Orders exceptions from API.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="handlers.exceptions.BinanceOrderMinAmountException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.exceptions.</span></span><span class="sig-name descname"><span class="pre">BinanceOrderMinAmountException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.exceptions.BinanceOrderMinAmountException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#handlers.exceptions.BinanceOrderException" title="handlers.exceptions.BinanceOrderException"><code class="xref py py-class docutils literal notranslate"><span class="pre">BinanceOrderException</span></code></a></p>
+<p>Symbol filter exceptions: Minimum Amount</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="handlers.exceptions.BinanceOrderMinPriceException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.exceptions.</span></span><span class="sig-name descname"><span class="pre">BinanceOrderMinPriceException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.exceptions.BinanceOrderMinPriceException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#handlers.exceptions.BinanceOrderException" title="handlers.exceptions.BinanceOrderException"><code class="xref py py-class docutils literal notranslate"><span class="pre">BinanceOrderException</span></code></a></p>
+<p>Symbol filter exceptions: Minimum Price</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="handlers.exceptions.BinanceOrderMinTotalException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.exceptions.</span></span><span class="sig-name descname"><span class="pre">BinanceOrderMinTotalException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.exceptions.BinanceOrderMinTotalException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#handlers.exceptions.BinanceOrderException" title="handlers.exceptions.BinanceOrderException"><code class="xref py py-class docutils literal notranslate"><span class="pre">BinanceOrderException</span></code></a></p>
+<p>Symbol filter exceptions: Minimum Total</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="handlers.exceptions.BinanceOrderUnknownSymbolException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.exceptions.</span></span><span class="sig-name descname"><span class="pre">BinanceOrderUnknownSymbolException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.exceptions.BinanceOrderUnknownSymbolException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#handlers.exceptions.BinanceOrderException" title="handlers.exceptions.BinanceOrderException"><code class="xref py py-class docutils literal notranslate"><span class="pre">BinanceOrderException</span></code></a></p>
+<p>Unknown symbol.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="handlers.exceptions.BinanceOrderInactiveSymbolException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.exceptions.</span></span><span class="sig-name descname"><span class="pre">BinanceOrderInactiveSymbolException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.exceptions.BinanceOrderInactiveSymbolException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#handlers.exceptions.BinanceOrderException" title="handlers.exceptions.BinanceOrderException"><code class="xref py py-class docutils literal notranslate"><span class="pre">BinanceOrderException</span></code></a></p>
+<p>Order interactive exception.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="handlers.exceptions.NotImplementedException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.exceptions.</span></span><span class="sig-name descname"><span class="pre">NotImplementedException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.exceptions.NotImplementedException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Not implemented.</p>
 </dd></dl>
 
 </section>

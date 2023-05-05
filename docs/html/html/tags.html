@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Tags &amp; Backtesting Module - BinPan 0.4.18 documentation</title>
+      <title>Tags &amp; Backtesting Module - BinPan 0.4.19 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Wallet Module" href="wallet.html" /><link rel="prev" title="Strategies Module" href="strategies.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -107,8 +107,10 @@ html.dark {
 <li class="toctree-l1"><a class="reference internal" href="indicators.html">Indicators Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="messages.html">Messages Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="messages.html#module-handlers.messages">Exceptions Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_fetch.html#id1">Redis Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quest.html">Requests Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stat_tests.html">Statistical Tests and Tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
@@ -128,27 +130,19 @@ html.dark {
   <div class="localtoc">
     <h3>Table of Contents</h3>
     <ul>
-<li><a class="reference internal" href="#tags-cross">Tags &amp; Cross</a><ul>
 <li><a class="reference internal" href="#handlers.tags.tag_value"><code class="docutils literal notranslate"><span class="pre">tag_value()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.tags.tag_comparison"><code class="docutils literal notranslate"><span class="pre">tag_comparison()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.tags.tag_cross"><code class="docutils literal notranslate"><span class="pre">tag_cross()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.tags.tag_column_to_strategy_group"><code class="docutils literal notranslate"><span class="pre">tag_column_to_strategy_group()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#merge-series">Merge Series</a><ul>
 <li><a class="reference internal" href="#handlers.tags.merge_series"><code class="docutils literal notranslate"><span class="pre">merge_series()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.tags.clean_in_out"><code class="docutils literal notranslate"><span class="pre">clean_in_out()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#backtesting">Backtesting</a><ul>
 <li><a class="reference internal" href="#handlers.tags.buy_base_backtesting"><code class="docutils literal notranslate"><span class="pre">buy_base_backtesting()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.tags.sell_base_backtesting"><code class="docutils literal notranslate"><span class="pre">sell_base_backtesting()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.tags.evaluate_wallets"><code class="docutils literal notranslate"><span class="pre">evaluate_wallets()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.tags.check_action_labels_for_backtesting"><code class="docutils literal notranslate"><span class="pre">check_action_labels_for_backtesting()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.tags.simple_backtesting"><code class="docutils literal notranslate"><span class="pre">simple_backtesting()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.tags.backtesting"><code class="docutils literal notranslate"><span class="pre">backtesting()</span></code></a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#handlers.tags.backtesting_short"><code class="docutils literal notranslate"><span class="pre">backtesting_short()</span></code></a></li>
 </ul>
 
 
@@ -160,17 +154,55 @@ html.dark {
     <div class="flex flex-col break-words justify-between">
       <div class="min-w-0 max-w-6xl px-6 pb-6 pt-6 xl:px-12">
         <article class="yue" role="main">
-          <section id="tags-backtesting-module">
-<h1>Tags &amp; Backtesting Module<a class="headerlink" href="#tags-backtesting-module" title="Permalink to this heading">¶</a></h1>
-<p>This module can tag values, compare and extract relations between indicators or any Serie of data. Also can backtest
-any strategy.</p>
-<p>To import this module:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="kn">from</span> <span class="nn">handlers</span> <span class="kn">import</span> <span class="n">tags</span>
-</span></pre></div>
+          <section id="module-handlers.tags">
+<span id="tags-backtesting-module"></span><h1>Tags &amp; Backtesting Module<a class="headerlink" href="#module-handlers.tags" title="Permalink to this heading">¶</a></h1>
+<p>Tagging utils.</p>
+<p><strong>Functions:</strong></p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.tags.tag_value" title="handlers.tags.tag_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tag_value</span></code></a>(serie, value[, gt, ge, eq, le, ...])</p></td>
+<td><p>It tags values of a serie compared to one value and a gt,ge,eq,le,lt condition.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.tags.tag_comparison" title="handlers.tags.tag_comparison"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tag_comparison</span></code></a>(serie_a, serie_b[, gt, ge, ...])</p></td>
+<td><p>It tags values of a serie compared to other serie by methods gt,ge,eq,le,lt condition.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.tags.tag_cross" title="handlers.tags.tag_cross"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tag_cross</span></code></a>(serie_a, serie_b[, echo, ...])</p></td>
+<td><p>It tags points where serie_a crosses over serie_b or optionally below.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.tags.tag_column_to_strategy_group" title="handlers.tags.tag_column_to_strategy_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tag_column_to_strategy_group</span></code></a>(column, group, ...)</p></td>
+<td><p>Tags a columns as part of Strategy group of columns.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.tags.merge_series" title="handlers.tags.merge_series"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_series</span></code></a>(predominant, other)</p></td>
+<td><p>Predominant serie will be filled nans with values, if existing, from the other serie.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.tags.clean_in_out" title="handlers.tags.clean_in_out"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clean_in_out</span></code></a>(serie[, in_tag, out_tag])</p></td>
+<td><p>Balance from in tag to first out tag and discards any other tag until next in tag.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.tags.buy_base_backtesting" title="handlers.tags.buy_base_backtesting"><code class="xref py py-obj docutils literal notranslate"><span class="pre">buy_base_backtesting</span></code></a>(row, price, base, quote)</p></td>
+<td><p>A simple backtesting buy function.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.tags.sell_base_backtesting" title="handlers.tags.sell_base_backtesting"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sell_base_backtesting</span></code></a>(row, price, base, quote)</p></td>
+<td><p>A simple backtesting sell function.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.tags.evaluate_wallets" title="handlers.tags.evaluate_wallets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">evaluate_wallets</span></code></a>(df_, base_serie, ...[, ...])</p></td>
+<td><p>Obtains total wallet values in a quote value through time.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.tags.check_action_labels_for_backtesting" title="handlers.tags.check_action_labels_for_backtesting"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_action_labels_for_backtesting</span></code></a>(actions, ...)</p></td>
+<td><p>This function verify labels in actions series, if labels for in actions and labels for out actions are or not the specified ones. Also</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.tags.simple_backtesting" title="handlers.tags.simple_backtesting"><code class="xref py py-obj docutils literal notranslate"><span class="pre">simple_backtesting</span></code></a>(df, actions[, base, ...])</p></td>
+<td><p>Returns two pandas series as base wallet and quote wallet over time.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.tags.backtesting" title="handlers.tags.backtesting"><code class="xref py py-obj docutils literal notranslate"><span class="pre">backtesting</span></code></a>(df, actions_column, ...[, ...])</p></td>
+<td><p>Returns two pandas series as base wallet and quote wallet over time.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.tags.backtesting_short" title="handlers.tags.backtesting_short"><code class="xref py py-obj docutils literal notranslate"><span class="pre">backtesting_short</span></code></a>(df, actions_column, ...[, ...])</p></td>
+<td><p>Returns two pandas series as base wallet and quote wallet over time.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
-<span class="target" id="module-handlers.tags"></span><p>Tagging utils.</p>
-<section id="tags-cross">
-<h2>Tags &amp; Cross<a class="headerlink" href="#tags-cross" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.tags.tag_value">
 <span class="sig-prename descclassname"><span class="pre">handlers.tags.</span></span><span class="sig-name descname"><span class="pre">tag_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">serie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ge</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">le</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mismatch_tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_numeric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="headerlink" href="#handlers.tags.tag_value" title="Permalink to this definition">¶</a></dt>
@@ -261,9 +293,6 @@ any strategy.</p>
 </dl>
 </dd></dl>
 
-</section>
-<section id="merge-series">
-<h2>Merge Series<a class="headerlink" href="#merge-series" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.tags.merge_series">
 <span class="sig-prename descclassname"><span class="pre">handlers.tags.</span></span><span class="sig-name descname"><span class="pre">merge_series</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">predominant</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="headerlink" href="#handlers.tags.merge_series" title="Permalink to this definition">¶</a></dt>
@@ -300,9 +329,6 @@ any strategy.</p>
 </dl>
 </dd></dl>
 
-</section>
-<section id="backtesting">
-<h2>Backtesting<a class="headerlink" href="#backtesting" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.tags.buy_base_backtesting">
 <span class="sig-prename descclassname"><span class="pre">handlers.tags.</span></span><span class="sig-name descname"><span class="pre">buy_base_backtesting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">price</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quote</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fee</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#handlers.tags.buy_base_backtesting" title="Permalink to this definition">¶</a></dt>
@@ -452,7 +478,44 @@ By ins and out I mean buys or sells, shorts and repays, etc.</p>
 </dl>
 </dd></dl>
 
-</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.tags.backtesting_short">
+<span class="sig-prename descclassname"><span class="pre">handlers.tags.</span></span><span class="sig-name descname"><span class="pre">backtesting_short</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actions_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_loss_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entry_filter_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priced_actions_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Open'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixed_target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixed_stop_loss</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quote</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fee</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evaluating_quote</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.tags.backtesting_short" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns two pandas series as base wallet and quote wallet over time. Its expected a serie with numbers like 1 for ins and -1 for outs.
+By ins and out I mean buys or sells, shorts and repays, etc.</p>
+<dl class="simple">
+<dt>If it is available a column with the exact price of the actions, can be passed in actions_col parameter by column name or a pandas</dt><dd><p>series, if not, Open price column can be a good approximation because operations start at the next candle of the tagged one.</p>
+</dd>
+</dl>
+<p>All actions will be considered to buy all base as possible or to sell all base as posible.</p>
+<p>It supports just long positions backtesting yet.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – A BinPan dataframe.</p></li>
+<li><p><strong>actions_column</strong> (<em>pd.Series</em><em> or </em><em>str</em>) – A pandas series with buy or sell strings for simulate actions.</p></li>
+<li><p><strong>target_column</strong> (<em>pd.Series</em><em> or </em><em>str</em>) – Column with data for operation target values.</p></li>
+<li><p><strong>stop_loss_column</strong> (<em>pd.Series</em><em> or </em><em>str</em>) – Column with data for operation stop loss values.</p></li>
+<li><p><strong>entry_filter_column</strong> (<em>pd.Series</em><em> or </em><em>str</em>) – A serie or colum with ones or zeros to allow or avoid entries.</p></li>
+<li><p><strong>priced_actions_col</strong> (<em>pd.Series</em><em> or </em><em>str</em>) – Column with the prices for the action emulation.</p></li>
+<li><p><strong>fixed_target</strong> (<em>bool</em>) – Target for any operation will be calculated and fixed at the beginning of the operation.</p></li>
+<li><p><strong>fixed_stop_loss</strong> (<em>bool</em>) – Stop loss for any operation will be calculated and fixed at the beginning of the operation.</p></li>
+<li><p><strong>base</strong> (<em>float</em>) – A starting quantity of symbol’s base.</p></li>
+<li><p><strong>quote</strong> (<em>float</em>) – A starting quantity of symbol’s quote.</p></li>
+<li><p><strong>fee</strong> (<em>float</em>) – Binance applicable fee for trading. DEfault is 0.001.</p></li>
+<li><p><strong>label_in</strong> (<em>str</em><em> or </em><em>int</em>) – A label consider as trade in trigger.</p></li>
+<li><p><strong>label_out</strong> (<em>str</em><em> or </em><em>int</em>) – A label consider as trade out trigger.</p></li>
+<li><p><strong>evaluating_quote</strong> (<em>str</em>) – a Binance valid quote to evaluate operations.</p></li>
+<li><p><strong>info_dic</strong> (<em>dict</em>) – BinPan exchange info dict to extract information about quotes and bases of symbols.</p></li>
+<li><p><strong>suffix</strong> (<em>str</em>) – A suffix for the names of the columns.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return tuple<span class="colon">:</span></dt>
+<dd class="field-even"><p>Two series with the base wallet and quote wallet funds in time.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
         </article>

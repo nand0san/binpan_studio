@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Requests Module - BinPan 0.4.18 documentation</title>
+      <title>Requests Module - BinPan 0.4.19 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Statistical Tests and Tools" href="stat_tests.html" /><link rel="prev" title="Redis Module" href="redis_fetch.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -107,8 +107,10 @@ html.dark {
 <li class="toctree-l1"><a class="reference internal" href="indicators.html">Indicators Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="messages.html">Messages Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="messages.html#module-handlers.messages">Exceptions Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_fetch.html#id1">Redis Module</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Requests Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stat_tests.html">Statistical Tests and Tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
@@ -128,14 +130,10 @@ html.dark {
   <div class="localtoc">
     <h3>Table of Contents</h3>
     <ul>
-<li><a class="reference internal" href="#tools">Tools</a><ul>
 <li><a class="reference internal" href="#handlers.quest.add_header_for_endpoint"><code class="docutils literal notranslate"><span class="pre">add_header_for_endpoint()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.quest.update_weights"><code class="docutils literal notranslate"><span class="pre">update_weights()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.quest.check_weight"><code class="docutils literal notranslate"><span class="pre">check_weight()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.quest.get_server_time"><code class="docutils literal notranslate"><span class="pre">get_server_time()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#requests">Requests</a><ul>
 <li><a class="reference internal" href="#handlers.quest.convert_response_type"><code class="docutils literal notranslate"><span class="pre">convert_response_type()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.quest.get_response"><code class="docutils literal notranslate"><span class="pre">get_response()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.quest.post_response"><code class="docutils literal notranslate"><span class="pre">post_response()</span></code></a></li>
@@ -147,14 +145,9 @@ html.dark {
 <li><a class="reference internal" href="#handlers.quest.get_semi_signed_request"><code class="docutils literal notranslate"><span class="pre">get_semi_signed_request()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.quest.post_signed_request"><code class="docutils literal notranslate"><span class="pre">post_signed_request()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.quest.delete_signed_request"><code class="docutils literal notranslate"><span class="pre">delete_signed_request()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#request-shortcuts">Request Shortcuts</a><ul>
 <li><a class="reference internal" href="#handlers.quest.api_raw_get"><code class="docutils literal notranslate"><span class="pre">api_raw_get()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.quest.api_raw_signed_get"><code class="docutils literal notranslate"><span class="pre">api_raw_signed_get()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.quest.api_raw_signed_post"><code class="docutils literal notranslate"><span class="pre">api_raw_signed_post()</span></code></a></li>
-</ul>
-</li>
 </ul>
 
 
@@ -166,16 +159,70 @@ html.dark {
     <div class="flex flex-col break-words justify-between">
       <div class="min-w-0 max-w-6xl px-6 pb-6 pt-6 xl:px-12">
         <article class="yue" role="main">
-          <section id="requests-module">
-<h1>Requests Module<a class="headerlink" href="#requests-module" title="Permalink to this heading">¶</a></h1>
-<p>This module manage requests and weight for API interactions.</p>
-<p>To import this module:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="kn">from</span> <span class="nn">handlers</span> <span class="kn">import</span> <span class="n">quest</span>
-</span></pre></div>
+          <section id="module-handlers.quest">
+<span id="requests-module"></span><h1>Requests Module<a class="headerlink" href="#module-handlers.quest" title="Permalink to this heading">¶</a></h1>
+<p>API requests module.</p>
+<p><strong>Functions:</strong></p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.quest.add_header_for_endpoint" title="handlers.quest.add_header_for_endpoint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_header_for_endpoint</span></code></a>(endpoint, header)</p></td>
+<td><p>Adds API headers response info for weight control.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.quest.update_weights" title="handlers.quest.update_weights"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_weights</span></code></a>(headers, father_url)</p></td>
+<td><p>Update weights on headers weight control global dictionary, used in control of pauses in API requests to avoid bans.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.quest.check_weight" title="handlers.quest.check_weight"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_weight</span></code></a>(weight, endpoint)</p></td>
+<td><p>Verify what weight will result before requesting API and compare to API limits.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.quest.get_server_time" title="handlers.quest.get_server_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_server_time</span></code></a>()</p></td>
+<td><p>Get time from server.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.quest.convert_response_type" title="handlers.quest.convert_response_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_response_type</span></code></a>(response_data, ...)</p></td>
+<td><p>Infers types into api response and changes those.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.quest.get_response" title="handlers.quest.get_response"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_response</span></code></a>(url[, params, headers])</p></td>
+<td><p>Requests GET to API.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.quest.post_response" title="handlers.quest.post_response"><code class="xref py py-obj docutils literal notranslate"><span class="pre">post_response</span></code></a>(url[, params, headers])</p></td>
+<td><p>Requests POST to API.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.quest.delete_response" title="handlers.quest.delete_response"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delete_response</span></code></a>(url[, params, headers])</p></td>
+<td><p>Requests DELETE to API.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.quest.handle_api_response" title="handlers.quest.handle_api_response"><code class="xref py py-obj docutils literal notranslate"><span class="pre">handle_api_response</span></code></a>(response)</p></td>
+<td><p>Raises if there is any problem with the server response or returns the raw json.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.quest.hashed_signature" title="handlers.quest.hashed_signature"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hashed_signature</span></code></a>(url_params, api_secret)</p></td>
+<td><p>Hashes params of a request with encoded API secret.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.quest.sign_request" title="handlers.quest.sign_request"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sign_request</span></code></a>(params, recvWindow, api_key, ...)</p></td>
+<td><p>Add signature to the request.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.quest.get_signed_request" title="handlers.quest.get_signed_request"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_signed_request</span></code></a>(url, decimal_mode, ...[, ...])</p></td>
+<td><p>It does a signed get to a url along with a dictionary of parameters.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.quest.get_semi_signed_request" title="handlers.quest.get_semi_signed_request"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_semi_signed_request</span></code></a>(url, decimal_mode, ...)</p></td>
+<td><p>Requests GET with api key header and params.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.quest.post_signed_request" title="handlers.quest.post_signed_request"><code class="xref py py-obj docutils literal notranslate"><span class="pre">post_signed_request</span></code></a>(url, decimal_mode, ...)</p></td>
+<td><p>Makes a signed POST to a url along with a dictionary of parameters.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.quest.delete_signed_request" title="handlers.quest.delete_signed_request"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delete_signed_request</span></code></a>(url, decimal_mode, ...)</p></td>
+<td><p>Makes a signed DELETE to a url along with a dictionary of parameters.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.quest.api_raw_get" title="handlers.quest.api_raw_get"><code class="xref py py-obj docutils literal notranslate"><span class="pre">api_raw_get</span></code></a>(endpoint, weight[, base_url, ...])</p></td>
+<td><p>Shortcut to request GET to API.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.quest.api_raw_signed_get" title="handlers.quest.api_raw_signed_get"><code class="xref py py-obj docutils literal notranslate"><span class="pre">api_raw_signed_get</span></code></a>(endpoint, decimal_mode, ...)</p></td>
+<td><p>Shortcut to request signed GET to API.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.quest.api_raw_signed_post" title="handlers.quest.api_raw_signed_post"><code class="xref py py-obj docutils literal notranslate"><span class="pre">api_raw_signed_post</span></code></a>(endpoint, decimal_mode, ...)</p></td>
+<td><p>Shortcut to request signed POST to API.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
-<span class="target" id="module-handlers.quest"></span><p>API requests module.</p>
-<section id="tools">
-<h2>Tools<a class="headerlink" href="#tools" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.quest.add_header_for_endpoint">
 <span class="sig-prename descclassname"><span class="pre">handlers.quest.</span></span><span class="sig-name descname"><span class="pre">add_header_for_endpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.quest.add_header_for_endpoint" title="Permalink to this definition">¶</a></dt>
@@ -238,9 +285,6 @@ html.dark {
 </dl>
 </dd></dl>
 
-</section>
-<section id="requests">
-<h2>Requests<a class="headerlink" href="#requests" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.quest.convert_response_type">
 <span class="sig-prename descclassname"><span class="pre">handlers.quest.</span></span><span class="sig-name descname"><span class="pre">convert_response_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.quest.convert_response_type" title="Permalink to this definition">¶</a></dt>
@@ -445,9 +489,6 @@ it is also useful sending parameters that have the same name with several values
 </dl>
 </dd></dl>
 
-</section>
-<section id="request-shortcuts">
-<h2>Request Shortcuts<a class="headerlink" href="#request-shortcuts" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.quest.api_raw_get">
 <span class="sig-prename descclassname"><span class="pre">handlers.quest.</span></span><span class="sig-name descname"><span class="pre">api_raw_get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.quest.api_raw_get" title="Permalink to this definition">¶</a></dt>
@@ -512,7 +553,6 @@ it is also useful sending parameters that have the same name with several values
 </dl>
 </dd></dl>
 
-</section>
 </section>
 
         </article>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Files Module - BinPan 0.4.18 documentation</title>
+      <title>Files Module - BinPan 0.4.19 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Indicators Module" href="indicators.html" /><link rel="prev" title="Exchange Module" href="exchange.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -107,8 +107,10 @@ html.dark {
 <li class="toctree-l1"><a class="reference internal" href="indicators.html">Indicators Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="messages.html">Messages Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="messages.html#module-handlers.messages">Exceptions Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_fetch.html#id1">Redis Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quest.html">Requests Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stat_tests.html">Statistical Tests and Tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
@@ -128,7 +130,6 @@ html.dark {
   <div class="localtoc">
     <h3>Table of Contents</h3>
     <ul>
-<li><a class="reference internal" href="#files-and-folders">Files and Folders</a><ul>
 <li><a class="reference internal" href="#handlers.files.create_dir"><code class="docutils literal notranslate"><span class="pre">create_dir()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.files.save_dataframe_to_csv"><code class="docutils literal notranslate"><span class="pre">save_dataframe_to_csv()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.files.append_dataframe_to_csv"><code class="docutils literal notranslate"><span class="pre">append_dataframe_to_csv()</span></code></a></li>
@@ -137,14 +138,10 @@ html.dark {
 <li><a class="reference internal" href="#handlers.files.read_csv_to_dataframe"><code class="docutils literal notranslate"><span class="pre">read_csv_to_dataframe()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.files.read_file"><code class="docutils literal notranslate"><span class="pre">read_file()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.files.save_file"><code class="docutils literal notranslate"><span class="pre">save_file()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#secrets-archive">Secrets Archive</a><ul>
+<li><a class="reference internal" href="#handlers.files.select_file"><code class="docutils literal notranslate"><span class="pre">select_file()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.files.add_api_key"><code class="docutils literal notranslate"><span class="pre">add_api_key()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.files.add_api_secret"><code class="docutils literal notranslate"><span class="pre">add_api_secret()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.files.add_any_key"><code class="docutils literal notranslate"><span class="pre">add_any_key()</span></code></a></li>
-</ul>
-</li>
 </ul>
 
 
@@ -159,12 +156,49 @@ html.dark {
           <section id="files-module">
 <h1>Files Module<a class="headerlink" href="#files-module" title="Permalink to this heading">¶</a></h1>
 <p>This module can manage files and API keys in an encrypted API keys and secrets file called <em>secret.py</em>.</p>
-<p>Can be imported this way:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="kn">from</span> <span class="nn">handlers</span> <span class="kn">import</span> <span class="n">files</span>
-</span></pre></div>
+<span class="target" id="module-handlers.files"></span><p><strong>Functions:</strong></p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.files.create_dir" title="handlers.files.create_dir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_dir</span></code></a>(my_path)</p></td>
+<td><p>Create a folder at the designated path if it doesn't exist.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.files.save_dataframe_to_csv" title="handlers.files.save_dataframe_to_csv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_dataframe_to_csv</span></code></a>(filename, data[, ...])</p></td>
+<td><p>Save a dataframe in a csv with a separator between columns.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.files.append_dataframe_to_csv" title="handlers.files.append_dataframe_to_csv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append_dataframe_to_csv</span></code></a>(filename, data[, ...])</p></td>
+<td><p>Add lines to a csv with separator to choose, a dataframe.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.files.find_csvs_in_path" title="handlers.files.find_csvs_in_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_csvs_in_path</span></code></a>([files_path, extension])</p></td>
+<td><p>Locate all files with desired extension.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.files.move_old_csvs" title="handlers.files.move_old_csvs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">move_old_csvs</span></code></a>([files_path, extension])</p></td>
+<td><p>Move all existing files in a path with desired extension to a folder called &quot;old&quot;.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.files.read_csv_to_dataframe" title="handlers.files.read_csv_to_dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_csv_to_dataframe</span></code></a>(filename[, col_sep, ...])</p></td>
+<td><p>Creates a csv file from a dataframe.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.files.read_file" title="handlers.files.read_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_file</span></code></a>(filename)</p></td>
+<td><p>Read a file to a list of strings each line.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.files.save_file" title="handlers.files.save_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_file</span></code></a>(filename, data[, mode])</p></td>
+<td><p>Save a new file from a list of lists each line.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.files.select_file" title="handlers.files.select_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">select_file</span></code></a>([path, extension])</p></td>
+<td><p>Selects from files in the path with the extension passed.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.files.add_api_key" title="handlers.files.add_api_key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_api_key</span></code></a>(api_key_value)</p></td>
+<td><p>Checks if exists in secret.py file and if not, then adds a line with the API key (not secret API key) encrypted value for working with the package.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.files.add_api_secret" title="handlers.files.add_api_secret"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_api_secret</span></code></a>(api_secret_value)</p></td>
+<td><p>Checks if exists in secret.py file and if not, then adds a line with the API secret encrypted value for working with the package.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.files.add_any_key" title="handlers.files.add_any_key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_any_key</span></code></a>(key, key_name)</p></td>
+<td><p>Checks if exists in a file and if not, then adds a line with the api key value for working with the package.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
-<span class="target" id="module-handlers.files"></span><section id="files-and-folders">
-<h2>Files and Folders<a class="headerlink" href="#files-and-folders" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.files.create_dir">
 <span class="sig-prename descclassname"><span class="pre">handlers.files.</span></span><span class="sig-name descname"><span class="pre">create_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">my_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.files.create_dir" title="Permalink to this definition">¶</a></dt>
@@ -285,10 +319,23 @@ html.dark {
 </dl>
 </dd></dl>
 
-</section>
-<section id="secrets-archive">
-<h2>Secrets Archive<a class="headerlink" href="#secrets-archive" title="Permalink to this heading">¶</a></h2>
-<p>To add encrypted data to secret.py file.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.files.select_file">
+<span class="sig-prename descclassname"><span class="pre">handlers.files.</span></span><span class="sig-name descname"><span class="pre">select_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'csv'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.files.select_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Selects from files in the path with the extension passed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – Path to search files.</p></li>
+<li><p><strong>extension</strong> (<em>str</em>) – Extension of interesting files to select.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return str<span class="colon">:</span></dt>
+<dd class="field-even"><p>a filename.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.files.add_api_key">
 <span class="sig-prename descclassname"><span class="pre">handlers.files.</span></span><span class="sig-name descname"><span class="pre">add_api_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api_key_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#handlers.files.add_api_key" title="Permalink to this definition">¶</a></dt>
@@ -335,7 +382,6 @@ with the package.</p>
 </div></blockquote>
 </dd></dl>
 
-</section>
 </section>
 
         </article>

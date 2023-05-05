@@ -5,14 +5,7 @@ This module can manage plots.
 
 Plots made with Plotly library: https://plotly.com/
 
-To import this module:
 
-.. code-block::
-
-   from handlers import plotting
-
-
-.. automodule:: handlers.plotting
 
 Colors
 ------
@@ -42,46 +35,11 @@ Colors can be picked with the name of the color or the index number from this li
                      "slateblue", "slategray", "slategrey", "snow", "springgreen", "steelblue", "tan", "teal", "thistle",
                      "tomato", "turquoise", "violet", "wheat", "white", "whitesmoke", "yellow", "yellowgreen"]
 
-Candles Plots
--------------
 
-.. autofunction:: candles_ta
+Module Info
+-----------
 
-.. autofunction:: candles_tagged
-
-Trades Plots
-------------
-
-.. autofunction:: plot_trades
-
-
-Analysis Plots
---------------
-
-.. autofunction:: plot_pie
-
-.. autofunction:: plot_scatter
-
-.. autofunction:: plot_hists_vs
-
-.. autofunction:: orderbook_depth
-
-.. autofunction:: dist_plot
-
-.. autofunction:: bar_plot
-
-.. autofunction:: plot_orderbook_value
-
-
-Plot Tools
-----------
-
-.. autofunction:: normalize
-
-.. autofunction:: find_step_for_bins
-
-.. autofunction:: group_slot
-
-
-
-
+.. automodule:: handlers.plotting
+   :members:
+   :undoc-members:
+   :show-inheritance:

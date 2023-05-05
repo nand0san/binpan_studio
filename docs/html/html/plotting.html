@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Plotting Module - BinPan 0.4.18 documentation</title>
+      <title>Plotting Module - BinPan 0.4.19 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Redis Module" href="redis_fetch.html" /><link rel="prev" title="Messages Module" href="messages.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -107,6 +107,7 @@ html.dark {
 <li class="toctree-l1"><a class="reference internal" href="indicators.html">Indicators Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="messages.html">Messages Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="messages.html#module-handlers.messages">Exceptions Module</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Plotting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quest.html">Requests Module</a></li>
@@ -129,16 +130,22 @@ html.dark {
     <h3>Table of Contents</h3>
     <ul>
 <li><a class="reference internal" href="#colors">Colors</a></li>
-<li><a class="reference internal" href="#candles-plots">Candles Plots</a><ul>
+<li><a class="reference internal" href="#module-handlers.plotting">Module Info</a><ul>
+<li><a class="reference internal" href="#handlers.plotting.set_color"><code class="docutils literal notranslate"><span class="pre">set_color()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.plotting.set_subplots"><code class="docutils literal notranslate"><span class="pre">set_subplots()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.plotting.set_candles"><code class="docutils literal notranslate"><span class="pre">set_candles()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.plotting.set_volume_series"><code class="docutils literal notranslate"><span class="pre">set_volume_series()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.plotting.set_ta_scatter"><code class="docutils literal notranslate"><span class="pre">set_ta_scatter()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.plotting.set_ta_line"><code class="docutils literal notranslate"><span class="pre">set_ta_line()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.plotting.fill_missing"><code class="docutils literal notranslate"><span class="pre">fill_missing()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.plotting.set_arrows"><code class="docutils literal notranslate"><span class="pre">set_arrows()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.plotting.add_traces"><code class="docutils literal notranslate"><span class="pre">add_traces()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.plotting.set_layout_format"><code class="docutils literal notranslate"><span class="pre">set_layout_format()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.plotting.update_names"><code class="docutils literal notranslate"><span class="pre">update_names()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.plotting.deploy_traces"><code class="docutils literal notranslate"><span class="pre">deploy_traces()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.plotting.candles_ta"><code class="docutils literal notranslate"><span class="pre">candles_ta()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.plotting.candles_tagged"><code class="docutils literal notranslate"><span class="pre">candles_tagged()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#trades-plots">Trades Plots</a><ul>
 <li><a class="reference internal" href="#handlers.plotting.plot_trades"><code class="docutils literal notranslate"><span class="pre">plot_trades()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#analysis-plots">Analysis Plots</a><ul>
 <li><a class="reference internal" href="#handlers.plotting.plot_pie"><code class="docutils literal notranslate"><span class="pre">plot_pie()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.plotting.plot_scatter"><code class="docutils literal notranslate"><span class="pre">plot_scatter()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.plotting.plot_hists_vs"><code class="docutils literal notranslate"><span class="pre">plot_hists_vs()</span></code></a></li>
@@ -146,9 +153,6 @@ html.dark {
 <li><a class="reference internal" href="#handlers.plotting.dist_plot"><code class="docutils literal notranslate"><span class="pre">dist_plot()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.plotting.bar_plot"><code class="docutils literal notranslate"><span class="pre">bar_plot()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.plotting.plot_orderbook_value"><code class="docutils literal notranslate"><span class="pre">plot_orderbook_value()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#plot-tools">Plot Tools</a><ul>
 <li><a class="reference internal" href="#handlers.plotting.normalize"><code class="docutils literal notranslate"><span class="pre">normalize()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.plotting.find_step_for_bins"><code class="docutils literal notranslate"><span class="pre">find_step_for_bins()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.plotting.group_slot"><code class="docutils literal notranslate"><span class="pre">group_slot()</span></code></a></li>
@@ -169,11 +173,6 @@ html.dark {
 <h1>Plotting Module<a class="headerlink" href="#plotting-module" title="Permalink to this heading">¶</a></h1>
 <p>This module can manage plots.</p>
 <p>Plots made with Plotly library: <a class="reference external" href="https://plotly.com/">https://plotly.com/</a></p>
-<p>To import this module:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="kn">from</span> <span class="nn">handlers</span> <span class="kn">import</span> <span class="n">plotting</span>
-</span></pre></div>
-</div>
-<span class="target" id="module-handlers.plotting"></span><p>This is the plotting module.</p>
 <section id="colors">
 <h2>Colors<a class="headerlink" href="#colors" title="Permalink to this heading">¶</a></h2>
 <p>Colors can be picked with the name of the color or the index number from this list:</p>
@@ -200,8 +199,295 @@ html.dark {
 </span></pre></div>
 </div>
 </section>
-<section id="candles-plots">
-<h2>Candles Plots<a class="headerlink" href="#candles-plots" title="Permalink to this heading">¶</a></h2>
+<section id="module-handlers.plotting">
+<span id="module-info"></span><h2>Module Info<a class="headerlink" href="#module-handlers.plotting" title="Permalink to this heading">¶</a></h2>
+<p>This is the plotting module.</p>
+<p><strong>Functions:</strong></p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.plotting.set_color" title="handlers.plotting.set_color"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_color</span></code></a>()</p></td>
+<td><p>Choose a random color from plotly colors.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.plotting.set_subplots" title="handlers.plotting.set_subplots"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_subplots</span></code></a>(extra_rows[, ...])</p></td>
+<td><p>Define rows and columns for subplots in plotting engine.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.plotting.set_candles" title="handlers.plotting.set_candles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_candles</span></code></a>(df[, x_labels])</p></td>
+<td><p>Put candles and axis into a tuple.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.plotting.set_volume_series" title="handlers.plotting.set_volume_series"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_volume_series</span></code></a>(df[, win, green_color, ...])</p></td>
+<td><p>Sets or unsets volume histogram.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.plotting.set_ta_scatter" title="handlers.plotting.set_ta_scatter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_ta_scatter</span></code></a>(df, serie[, annotations, ...])</p></td>
+<td><p>Plot a scatter plot for an indicator.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.plotting.set_ta_line" title="handlers.plotting.set_ta_line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_ta_line</span></code></a>(df_index, serie[, color, name, ...])</p></td>
+<td><p>Plot a line plot for an indicator.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.plotting.fill_missing" title="handlers.plotting.fill_missing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fill_missing</span></code></a>(data_list, expected_length)</p></td>
+<td><p>Fills until expected length iterating with the existing values.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.plotting.set_arrows" title="handlers.plotting.set_arrows"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_arrows</span></code></a>(annotations[, name, tag, ...])</p></td>
+<td><p>Sets arrows.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.plotting.add_traces" title="handlers.plotting.add_traces"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_traces</span></code></a>(fig, list_of_plots, rows, cols)</p></td>
+<td><p>Put traces into the figure.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.plotting.set_layout_format" title="handlers.plotting.set_layout_format"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_layout_format</span></code></a>(fig, axis_q, title, ...)</p></td>
+<td><p>It updates layout of the set plot.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.plotting.update_names" title="handlers.plotting.update_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_names</span></code></a>(fig, names)</p></td>
+<td><p>Update legend names.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.plotting.deploy_traces" title="handlers.plotting.deploy_traces"><code class="xref py py-obj docutils literal notranslate"><span class="pre">deploy_traces</span></code></a>(annotations, colors, markers, ...)</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">param annotations<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.plotting.candles_ta" title="handlers.plotting.candles_ta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">candles_ta</span></code></a>(data[, indicators_series, ...])</p></td>
+<td><p>Data needs to be a DataFrame that at least contains the columns: Open Close High Low Volume</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.plotting.candles_tagged" title="handlers.plotting.candles_tagged"><code class="xref py py-obj docutils literal notranslate"><span class="pre">candles_tagged</span></code></a>(data[, width, height, ...])</p></td>
+<td><p>This is a shortcut from candles_ta.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.plotting.plot_trades" title="handlers.plotting.plot_trades"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_trades</span></code></a>(data[, max_size, height, ...])</p></td>
+<td><p>Plots scatter plot from trades quantity and trades sizes.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.plotting.plot_pie" title="handlers.plotting.plot_pie"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pie</span></code></a>(serie[, categories, title, logarithmic])</p></td>
+<td><p>Plots a pie chart from a column.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.plotting.plot_scatter" title="handlers.plotting.plot_scatter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_scatter</span></code></a>(df, x_col, y_col[, symbol, ...])</p></td>
+<td><p>Plot scatter plots with a column of values in X axis and other in Y axis.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.plotting.plot_hists_vs" title="handlers.plotting.plot_hists_vs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_hists_vs</span></code></a>(x0, x1[, x0_name, x1_name, ...])</p></td>
+<td><p>Plots two histograms with same x scale to campare distributions of values.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.plotting.orderbook_depth" title="handlers.plotting.orderbook_depth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orderbook_depth</span></code></a>(df[, accumulated, title, ...])</p></td>
+<td><p>Plots orderbook from a BinPan orderbook dataframe.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.plotting.dist_plot" title="handlers.plotting.dist_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dist_plot</span></code></a>(df[, x_col, color, bins, ...])</p></td>
+<td><p>Plot a distribution plot for a dataframe column.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.plotting.bar_plot" title="handlers.plotting.bar_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bar_plot</span></code></a>(df, x_col_to_bars, y_col[, ...])</p></td>
+<td><p>Plot a bar plot for a dataframe column with optional segments based on the 'bar_segments' column.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.plotting.plot_orderbook_value" title="handlers.plotting.plot_orderbook_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_orderbook_value</span></code></a>(ask_data, bid_data, ...)</p></td>
+<td><p>Plots orderbook levels quantities.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.plotting.normalize" title="handlers.plotting.normalize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">normalize</span></code></a>(max_value, min_value, data)</p></td>
+<td><p>Normalize data from minimum as 0 to maximum as 1.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.plotting.find_step_for_bins" title="handlers.plotting.find_step_for_bins"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_step_for_bins</span></code></a>(data, master_column[, ...])</p></td>
+<td><p>Find precision for getting a target number of bins intervals for values in master column.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.plotting.group_slot" title="handlers.plotting.group_slot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">group_slot</span></code></a>(data, master_column[, bins])</p></td>
+<td><p>Get what vertical slot size results for a number of bins.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.plotting.set_color">
+<span class="sig-prename descclassname"><span class="pre">handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">set_color</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#handlers.plotting.set_color" title="Permalink to this definition">¶</a></dt>
+<dd><p>Choose a random color from plotly colors.
+:return:</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.plotting.set_subplots">
+<span class="sig-prename descclassname"><span class="pre">handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">set_subplots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extra_rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">candles_ta_height_ratio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vertical_spacing</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.plotting.set_subplots" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define rows and columns for subplots in plotting engine.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>extra_rows</strong> (<em>int</em>) – </p></li>
+<li><p><strong>candles_ta_height_ratio</strong> (<em>float</em>) – </p></li>
+<li><p><strong>vertical_spacing</strong> (<em>float</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.plotting.set_candles">
+<span class="sig-prename descclassname"><span class="pre">handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">set_candles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#handlers.plotting.set_candles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Put candles and axis into a tuple.
+:param pd.DataFrame df: Dataframe OHLC type.
+:param list x_labels: Labels to replace in x axis plotting.
+:return:</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.plotting.set_volume_series">
+<span class="sig-prename descclassname"><span class="pre">handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">set_volume_series</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">win</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">21</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">green_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rgba(70,</span> <span class="pre">197,</span> <span class="pre">74,</span> <span class="pre">1)'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">red_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rgba(197,</span> <span class="pre">79,</span> <span class="pre">70,</span> <span class="pre">1)'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#handlers.plotting.set_volume_series" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets or unsets volume histogram.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> – A binpan’s dataframe.</p></li>
+<li><p><strong>win</strong> – Window for volume average line.</p></li>
+<li><p><strong>green_color</strong> (<em>str</em>) – An rgba color string like: ‘rgba(144,194,178,255)’</p></li>
+<li><p><strong>red_color</strong> – An rgba color string like: ‘rgba(242,149,149,255)’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple with several figures.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.plotting.set_ta_scatter">
+<span class="sig-prename descclassname"><span class="pre">handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">set_ta_scatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'blue'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Indicator'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_position</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bottom</span> <span class="pre">center'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.plotting.set_ta_scatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot a scatter plot for an indicator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – A binpan’s dataframe just for the index.</p></li>
+<li><p><strong>serie</strong> (<em>pd.Series</em>) – data to plot.</p></li>
+<li><p><strong>annotations</strong> (<em>list</em>) – Text for annotations over the plotted data.</p></li>
+<li><p><strong>color</strong> (<em>str</em>) – A plotly color.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name for the plot.</p></li>
+<li><p><strong>text_position</strong> (<em>str</em>) – A position from plotly documented annotation positions.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.plotting.set_ta_line">
+<span class="sig-prename descclassname"><span class="pre">handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">set_ta_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_index:</span> <span class="pre">&lt;pandas._libs.properties.AxisProperty</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x0000022CCCABDC30&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serie:</span> <span class="pre">~pandas.core.series.Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color='blue'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name='Indicator'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_width:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_color:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_mode:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'none'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yaxis:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'y'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_legend=True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.plotting.set_ta_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot a line plot for an indicator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df_index</strong> (<em>pd.DataFrame.index</em>) – A binpan’s dataframe just for the index.</p></li>
+<li><p><strong>serie</strong> (<em>pd.Series</em>) – data to plot.</p></li>
+<li><p><strong>color</strong> (<em>str</em>) – A plotly color.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name for the plot.</p></li>
+<li><p><strong>line_width</strong> (<em>float</em>) – Line width size.</p></li>
+<li><p><strong>fill_color</strong> (<em>str</em><em> or </em><em>None</em>) – Color to fill areas in the plot.</p></li>
+<li><p><strong>fill_mode</strong> (<em>str</em>) – Mode to fill for, like to x axis or to next plot, etc.</p></li>
+<li><p><strong>yaxis</strong> (<em>str</em>) – Axis name for plotting.</p></li>
+<li><p><strong>show_legend</strong> (<em>bool</em>) – Shows it or not.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.plotting.fill_missing">
+<span class="sig-prename descclassname"><span class="pre">handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">fill_missing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.plotting.fill_missing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fills until expected length iterating with the existing values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_list</strong> (<em>list</em>) – </p></li>
+<li><p><strong>expected_length</strong> (<em>int</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Filled list.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.plotting.set_arrows">
+<span class="sig-prename descclassname"><span class="pre">handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">set_arrows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">annotations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">textposition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'top</span> <span class="pre">center'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'markers+text'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker_symbol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'arrow-bar-down'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'orange'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker_line_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'black'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker_line_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">12</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.plotting.set_arrows" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets arrows.</p>
+<p>Style info at <a class="reference external" href="https://plotly.com/python/marker-style/">https://plotly.com/python/marker-style/</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.plotting.add_traces">
+<span class="sig-prename descclassname"><span class="pre">handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">add_traces</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list_of_plots</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cols</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.plotting.add_traces" title="Permalink to this definition">¶</a></dt>
+<dd><p>Put traces into the figure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fig</strong> – Figure to set.</p></li>
+<li><p><strong>list_of_plots</strong> – Plot objects to insert into the figure.</p></li>
+<li><p><strong>rows</strong> (<em>list</em>) – A list with row positions each plot.</p></li>
+<li><p><strong>cols</strong> (<em>list</em>) – A list with column positions each plot.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Set figure.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.plotting.set_layout_format">
+<span class="sig-prename descclassname"><span class="pre">handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">set_layout_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis_q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yaxis_title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range_slider</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.plotting.set_layout_format" title="Permalink to this definition">¶</a></dt>
+<dd><p>It updates layout of the set plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fig</strong> – Figure object.</p></li>
+<li><p><strong>axis_q</strong> (<em>int</em>) – Y axis count.</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – A title for the layout.</p></li>
+<li><p><strong>yaxis_title</strong> (<em>str</em>) – Y axis title.</p></li>
+<li><p><strong>width</strong> (<em>int</em>) – Layout size.</p></li>
+<li><p><strong>height</strong> (<em>int</em>) – Layout height.</p></li>
+<li><p><strong>range_slider</strong> (<em>bool</em>) – enabled or not.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.plotting.update_names">
+<span class="sig-prename descclassname"><span class="pre">handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">update_names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.plotting.update_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update legend names.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fig</strong> – Figure object.</p></li>
+<li><p><strong>names</strong> – dict of names.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Updated figure.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.plotting.deploy_traces">
+<span class="sig-prename descclassname"><span class="pre">handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">deploy_traces</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">annotations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_positions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mark_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.plotting.deploy_traces" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>annotations</strong> – </p></li>
+<li><p><strong>colors</strong> – </p></li>
+<li><p><strong>markers</strong> – </p></li>
+<li><p><strong>text_positions</strong> – </p></li>
+<li><p><strong>mark_names</strong> – </p></li>
+<li><p><strong>tags</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.plotting.candles_ta">
 <span class="sig-prename descclassname"><span class="pre">handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">candles_ta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indicators_series</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rows_pos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indicator_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indicators_colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indicators_color_filled</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indicators_filled_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis_groups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_splitted_serie_couple</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1800</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range_slider</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">candles_ta_height_ratio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Candlesticks,</span> <span class="pre">indicators,</span> <span class="pre">and</span> <span class="pre">Volume</span> <span class="pre">plot'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yaxis_title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Symbol</span> <span class="pre">Price'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotation_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_positions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotation_colors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotation_legend_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_bgcolor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vol_up_color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vol_down_color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.plotting.candles_ta" title="Permalink to this definition">¶</a></dt>
@@ -498,9 +784,6 @@ string name will be a color filled one. Used just if actions column passed. Chec
 </dl>
 </dd></dl>
 
-</section>
-<section id="trades-plots">
-<h2>Trades Plots<a class="headerlink" href="#trades-plots" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.plotting.plot_trades">
 <span class="sig-prename descclassname"><span class="pre">handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">plot_trades</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">60</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logarithmic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap_prices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shifted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs_update_layout</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.plotting.plot_trades" title="Permalink to this definition">¶</a></dt>
@@ -539,9 +822,6 @@ using Maker buyer or Taker buyer discrete colors. Usually red and blue.</p>
 </dl>
 </dd></dl>
 
-</section>
-<section id="analysis-plots">
-<h2>Analysis Plots<a class="headerlink" href="#analysis-plots" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.plotting.plot_pie">
 <span class="sig-prename descclassname"><span class="pre">handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">plot_pie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">serie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">categories</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Size</span> <span class="pre">trade</span> <span class="pre">categories'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logarithmic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.plotting.plot_pie" title="Permalink to this definition">¶</a></dt>
@@ -752,9 +1032,6 @@ the smallest to the largest, that is, the smallest values will be divided into s
 <a class="reference internal image-reference" href="_images/plot_orderbook_value.png"><img alt="_images/plot_orderbook_value.png" src="_images/plot_orderbook_value.png" style="width: 1000px;" /></a>
 </dd></dl>
 
-</section>
-<section id="plot-tools">
-<h2>Plot Tools<a class="headerlink" href="#plot-tools" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.plotting.normalize">
 <span class="sig-prename descclassname"><span class="pre">handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">normalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.plotting.normalize" title="Permalink to this definition">¶</a></dt>

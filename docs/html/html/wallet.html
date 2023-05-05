@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Wallet Module - BinPan 0.4.18 documentation</title>
+      <title>Wallet Module - BinPan 0.4.19 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="Tags &amp; Backtesting Module" href="tags.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -107,8 +107,10 @@ html.dark {
 <li class="toctree-l1"><a class="reference internal" href="indicators.html">Indicators Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="messages.html">Messages Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="messages.html#module-handlers.messages">Exceptions Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_fetch.html#id1">Redis Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quest.html">Requests Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stat_tests.html">Statistical Tests and Tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
@@ -128,41 +130,27 @@ html.dark {
   <div class="localtoc">
     <h3>Table of Contents</h3>
     <ul>
-<li><a class="reference internal" href="#wallet-snapshots">Wallet snapshots</a><ul>
+<li><a class="reference internal" href="#handlers.wallet.convert_str_date_to_ms"><code class="docutils literal notranslate"><span class="pre">convert_str_date_to_ms()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.wallet.daily_account_snapshot"><code class="docutils literal notranslate"><span class="pre">daily_account_snapshot()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.wallet.assets_convertible_dust"><code class="docutils literal notranslate"><span class="pre">assets_convertible_dust()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#trades">Trades</a><ul>
 <li><a class="reference internal" href="#handlers.wallet.get_fills_price"><code class="docutils literal notranslate"><span class="pre">get_fills_price()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.wallet.get_fills_qty"><code class="docutils literal notranslate"><span class="pre">get_fills_qty()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.wallet.get_spot_trades_list"><code class="docutils literal notranslate"><span class="pre">get_spot_trades_list()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.wallet.get_margin_trades_list"><code class="docutils literal notranslate"><span class="pre">get_margin_trades_list()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#spot-balances">Spot Balances</a><ul>
 <li><a class="reference internal" href="#handlers.wallet.get_spot_account_info"><code class="docutils literal notranslate"><span class="pre">get_spot_account_info()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.wallet.get_spot_free_balances"><code class="docutils literal notranslate"><span class="pre">get_spot_free_balances()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.wallet.get_spot_locked_balances"><code class="docutils literal notranslate"><span class="pre">get_spot_locked_balances()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.wallet.get_coins_with_balance"><code class="docutils literal notranslate"><span class="pre">get_coins_with_balance()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.wallet.get_spot_balances_df"><code class="docutils literal notranslate"><span class="pre">get_spot_balances_df()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.wallet.get_spot_balances_total_value"><code class="docutils literal notranslate"><span class="pre">get_spot_balances_total_value()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#margin-balances">Margin Balances</a><ul>
 <li><a class="reference internal" href="#handlers.wallet.get_margin_account_details"><code class="docutils literal notranslate"><span class="pre">get_margin_account_details()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.wallet.get_margin_balances"><code class="docutils literal notranslate"><span class="pre">get_margin_balances()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.wallet.get_margin_free_balances"><code class="docutils literal notranslate"><span class="pre">get_margin_free_balances()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.wallet.get_margin_locked_balances"><code class="docutils literal notranslate"><span class="pre">get_margin_locked_balances()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.wallet.get_margin_borrowed_balances"><code class="docutils literal notranslate"><span class="pre">get_margin_borrowed_balances()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.wallet.get_margin_interest_balances"><code class="docutils literal notranslate"><span class="pre">get_margin_interest_balances()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.wallet.get_margin_netAsset_balances"><code class="docutils literal notranslate"><span class="pre">get_margin_netAsset_balances()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.wallet.get_margin_balances_total_value"><code class="docutils literal notranslate"><span class="pre">get_margin_balances_total_value()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#helper">Helper</a><ul>
-<li><a class="reference internal" href="#handlers.wallet.convert_str_date_to_ms"><code class="docutils literal notranslate"><span class="pre">convert_str_date_to_ms()</span></code></a></li>
-</ul>
-</li>
 </ul>
 
 
@@ -174,15 +162,96 @@ html.dark {
     <div class="flex flex-col break-words justify-between">
       <div class="min-w-0 max-w-6xl px-6 pb-6 pt-6 xl:px-12">
         <article class="yue" role="main">
-          <section id="wallet-module">
-<h1>Wallet Module<a class="headerlink" href="#wallet-module" title="Permalink to this heading">¶</a></h1>
-<p>This module can manage wallet data from Binance API.</p>
-<p>To import this module:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="kn">from</span> <span class="nn">handlers</span> <span class="kn">import</span> <span class="n">wallet</span>
-</span></pre></div>
+          <section id="module-handlers.wallet">
+<span id="wallet-module"></span><h1>Wallet Module<a class="headerlink" href="#module-handlers.wallet" title="Permalink to this heading">¶</a></h1>
+<p><strong>Functions:</strong></p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.wallet.convert_str_date_to_ms" title="handlers.wallet.convert_str_date_to_ms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_str_date_to_ms</span></code></a>(date, time_zone)</p></td>
+<td><p>Converts dates strings formatted as &quot;2022-05-11 06:45:42&quot; to timestamp in milliseconds.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.wallet.daily_account_snapshot" title="handlers.wallet.daily_account_snapshot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">daily_account_snapshot</span></code></a>(account_type, ...[, ...])</p></td>
+<td><p>The query time period must be inside the previous 30 days.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.wallet.assets_convertible_dust" title="handlers.wallet.assets_convertible_dust"><code class="xref py py-obj docutils literal notranslate"><span class="pre">assets_convertible_dust</span></code></a>(decimal_mode, ...)</p></td>
+<td><p>Assets dust that can be converted to BNB.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.wallet.get_fills_price" title="handlers.wallet.get_fills_price"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_fills_price</span></code></a>(original_order_dict, ...)</p></td>
+<td><p>Obtain averaged price from order API response or claims last trade.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.wallet.get_fills_qty" title="handlers.wallet.get_fills_qty"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_fills_qty</span></code></a>(original_order_dict, api_key, ...)</p></td>
+<td><p>Extracts order quantity from an order response or checks a trade from API.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.wallet.get_spot_trades_list" title="handlers.wallet.get_spot_trades_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_spot_trades_list</span></code></a>(symbol, decimal_mode, ...)</p></td>
+<td><p>Get trades for a specific account and symbol.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.wallet.get_margin_trades_list" title="handlers.wallet.get_margin_trades_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_margin_trades_list</span></code></a>(symbol, decimal_mode, ...)</p></td>
+<td><p>Get margin trades for a specific account and symbol.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.wallet.get_spot_account_info" title="handlers.wallet.get_spot_account_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_spot_account_info</span></code></a>(decimal_mode, api_key, ...)</p></td>
+<td><p>Get current account information.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.wallet.get_spot_free_balances" title="handlers.wallet.get_spot_free_balances"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_spot_free_balances</span></code></a>(decimal_mode, ...[, ...])</p></td>
+<td><p>Parses available balances from account info.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.wallet.get_spot_locked_balances" title="handlers.wallet.get_spot_locked_balances"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_spot_locked_balances</span></code></a>(decimal_mode, ...)</p></td>
+<td><p>Parses locked in order balances from account info.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.wallet.get_coins_with_balance" title="handlers.wallet.get_coins_with_balance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_coins_with_balance</span></code></a>(decimal_mode, ...)</p></td>
+<td><p>Get the non-zero balances of an account, free or locked ones.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.wallet.get_spot_balances_df" title="handlers.wallet.get_spot_balances_df"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_spot_balances_df</span></code></a>(decimal_mode, api_key, ...)</p></td>
+<td><p>Create a dataframe with the free or blocked amounts of the spot wallet.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.wallet.get_spot_balances_total_value" title="handlers.wallet.get_spot_balances_total_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_spot_balances_total_value</span></code></a>(decimal_mode, ...)</p></td>
+<td><p>Returns total value expressed in a quote coin.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.wallet.get_margin_account_details" title="handlers.wallet.get_margin_account_details"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_margin_account_details</span></code></a>(decimal_mode, ...)</p></td>
+<td><p>Query Cross Margin Account Details (USER_DATA)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.wallet.get_margin_balances" title="handlers.wallet.get_margin_balances"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_margin_balances</span></code></a>(decimal_mode, api_key, ...)</p></td>
+<td><p>Collects balances in the margin account that are not null.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.wallet.get_margin_free_balances" title="handlers.wallet.get_margin_free_balances"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_margin_free_balances</span></code></a>(decimal_mode, ...)</p></td>
+<td><p>Just returns free existing balances.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.wallet.get_margin_locked_balances" title="handlers.wallet.get_margin_locked_balances"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_margin_locked_balances</span></code></a>(decimal_mode, ...)</p></td>
+<td><p>Just returns locked existing balances.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.wallet.get_margin_borrowed_balances" title="handlers.wallet.get_margin_borrowed_balances"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_margin_borrowed_balances</span></code></a>(decimal_mode, ...)</p></td>
+<td><p>Just returns borrowed existing balances.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.wallet.get_margin_interest_balances" title="handlers.wallet.get_margin_interest_balances"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_margin_interest_balances</span></code></a>(decimal_mode, ...)</p></td>
+<td><p>Just returns interest existing balances.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.wallet.get_margin_netAsset_balances" title="handlers.wallet.get_margin_netAsset_balances"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_margin_netAsset_balances</span></code></a>(decimal_mode, ...)</p></td>
+<td><p>Just returns netAsset existing balances.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.wallet.get_margin_balances_total_value" title="handlers.wallet.get_margin_balances_total_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_margin_balances_total_value</span></code></a>(...[, ...])</p></td>
+<td><p>Returns total value expressed in a quote coin.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
-<span class="target" id="module-handlers.wallet"></span><section id="wallet-snapshots">
-<h2>Wallet snapshots<a class="headerlink" href="#wallet-snapshots" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.wallet.convert_str_date_to_ms">
+<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">convert_str_date_to_ms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.wallet.convert_str_date_to_ms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts dates strings formatted as “2022-05-11 06:45:42” to timestamp in milliseconds. If timestamp passed
+it returns the timestamp.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>date</strong> (<em>str</em><em> or </em><em>int</em>) – Date to check format.</p></li>
+<li><p><strong>time_zone</strong> – A time zone like ‘Europe/Madrid’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return int<span class="colon">:</span></dt>
+<dd class="field-even"><p>Milliseconds of timestamp.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.wallet.daily_account_snapshot">
 <span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">daily_account_snapshot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">account_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.wallet.daily_account_snapshot" title="Permalink to this definition">¶</a></dt>
@@ -246,9 +315,6 @@ Weight(IP): 1</p>
 </div>
 </dd></dl>
 
-</section>
-<section id="trades">
-<h2>Trades<a class="headerlink" href="#trades" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.wallet.get_fills_price">
 <span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_fills_price</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_order_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isBuyer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operation_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.wallet.get_fills_price" title="Permalink to this definition">¶</a></dt>
@@ -540,9 +606,6 @@ most recent trades are returned.</p></li>
 </div></blockquote>
 </dd></dl>
 
-</section>
-<section id="spot-balances">
-<h2>Spot Balances<a class="headerlink" href="#spot-balances" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.wallet.get_spot_account_info">
 <span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_spot_account_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recvWindow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.wallet.get_spot_account_info" title="Permalink to this definition">¶</a></dt>
@@ -691,9 +754,6 @@ most recent trades are returned.</p></li>
 </dl>
 </dd></dl>
 
-</section>
-<section id="margin-balances">
-<h2>Margin Balances<a class="headerlink" href="#margin-balances" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.wallet.get_margin_account_details">
 <span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_margin_account_details</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.wallet.get_margin_account_details" title="Permalink to this definition">¶</a></dt>
@@ -808,6 +868,25 @@ most recent trades are returned.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="handlers.wallet.get_margin_locked_balances">
+<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_margin_locked_balances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">balances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.wallet.get_margin_locked_balances" title="Permalink to this definition">¶</a></dt>
+<dd><p>Just returns locked existing balances. It is optional to avoid an API call.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>decimal_mode</strong> (<em>bool</em>) – Fixes Decimal return type.</p></li>
+<li><p><strong>api_key</strong> (<em>str</em>) – A BinPan encrypted in BinPan’s way api key. Do not use unencrypted api values, import it from  secret.py file.</p></li>
+<li><p><strong>api_secret</strong> (<em>str</em>) – A BinPan encrypted in BinPan’s way api secret. Do not use unencrypted api values, import it from  secret.py file.</p></li>
+<li><p><strong>balances</strong> (<em>dict</em>) – Returns dict with assets as keys and a float value for not null quantities.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dict with float values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="handlers.wallet.get_margin_borrowed_balances">
 <span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">get_margin_borrowed_balances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">balances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.wallet.get_margin_borrowed_balances" title="Permalink to this definition">¶</a></dt>
 <dd><p>Just returns borrowed existing balances. It is optional to avoid an API call.</p>
@@ -884,28 +963,6 @@ most recent trades are returned.</p></li>
 </dl>
 </dd></dl>
 
-</section>
-<section id="helper">
-<h2>Helper<a class="headerlink" href="#helper" title="Permalink to this heading">¶</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="handlers.wallet.convert_str_date_to_ms">
-<span class="sig-prename descclassname"><span class="pre">handlers.wallet.</span></span><span class="sig-name descname"><span class="pre">convert_str_date_to_ms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.wallet.convert_str_date_to_ms" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts dates strings formatted as “2022-05-11 06:45:42” to timestamp in milliseconds. If timestamp passed
-it returns the timestamp.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>date</strong> (<em>str</em><em> or </em><em>int</em>) – Date to check format.</p></li>
-<li><p><strong>time_zone</strong> – A time zone like ‘Europe/Madrid’</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return int<span class="colon">:</span></dt>
-<dd class="field-even"><p>Milliseconds of timestamp.</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
 </section>
 
         </article>

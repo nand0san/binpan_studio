@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Exchange Module - BinPan 0.4.18 documentation</title>
+      <title>Exchange Module - BinPan 0.4.19 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Files Module" href="files.html" /><link rel="prev" title="Exceptions Module" href="exceptions.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -107,8 +107,10 @@ html.dark {
 <li class="toctree-l1"><a class="reference internal" href="indicators.html">Indicators Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="messages.html">Messages Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="messages.html#module-handlers.messages">Exceptions Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_fetch.html#id1">Redis Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quest.html">Requests Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stat_tests.html">Statistical Tests and Tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
@@ -128,34 +130,20 @@ html.dark {
   <div class="localtoc">
     <h3>Table of Contents</h3>
     <ul>
-<li><a class="reference internal" href="#exchange-general-data">Exchange General Data</a><ul>
 <li><a class="reference internal" href="#handlers.exchange.get_exchange_info"><code class="docutils literal notranslate"><span class="pre">get_exchange_info()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.exchange.get_info_dic"><code class="docutils literal notranslate"><span class="pre">get_info_dic()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#account">Account</a><ul>
 <li><a class="reference internal" href="#handlers.exchange.get_account_status"><code class="docutils literal notranslate"><span class="pre">get_account_status()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#weight-api-control">Weight API control</a><ul>
+<li><a class="reference internal" href="#handlers.exchange.get_margin_bnb_interest_status"><code class="docutils literal notranslate"><span class="pre">get_margin_bnb_interest_status()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.exchange.get_exchange_limits"><code class="docutils literal notranslate"><span class="pre">get_exchange_limits()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#symbols-trading-filters">Symbols Trading Filters</a><ul>
+<li><a class="reference internal" href="#handlers.exchange.flatten_filter"><code class="docutils literal notranslate"><span class="pre">flatten_filter()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.exchange.get_symbols_filters"><code class="docutils literal notranslate"><span class="pre">get_symbols_filters()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.exchange.get_filters"><code class="docutils literal notranslate"><span class="pre">get_filters()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#symbol-characteristics-filtering">Symbol Characteristics Filtering</a><ul>
 <li><a class="reference internal" href="#handlers.exchange.filter_tradeable"><code class="docutils literal notranslate"><span class="pre">filter_tradeable()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.exchange.filter_spot"><code class="docutils literal notranslate"><span class="pre">filter_spot()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.exchange.filter_margin"><code class="docutils literal notranslate"><span class="pre">filter_margin()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.exchange.filter_not_margin"><code class="docutils literal notranslate"><span class="pre">filter_not_margin()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.exchange.filter_leveraged_tokens"><code class="docutils literal notranslate"><span class="pre">filter_leveraged_tokens()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.exchange.filter_legal"><code class="docutils literal notranslate"><span class="pre">filter_legal()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#symbol-operative-data">Symbol Operative Data</a><ul>
 <li><a class="reference internal" href="#handlers.exchange.get_precision"><code class="docutils literal notranslate"><span class="pre">get_precision()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.exchange.get_orderTypes_and_permissions"><code class="docutils literal notranslate"><span class="pre">get_orderTypes_and_permissions()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.exchange.get_fees_dict"><code class="docutils literal notranslate"><span class="pre">get_fees_dict()</span></code></a></li>
@@ -174,10 +162,10 @@ html.dark {
 <li><a class="reference internal" href="#handlers.exchange.not_iterative_coin_conversion"><code class="docutils literal notranslate"><span class="pre">not_iterative_coin_conversion()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.exchange.convert_to_other_coin"><code class="docutils literal notranslate"><span class="pre">convert_to_other_coin()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.exchange.convert_symbol_base_to_other_coin"><code class="docutils literal notranslate"><span class="pre">convert_symbol_base_to_other_coin()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.exchange.convert_utc_milliseconds"><code class="docutils literal notranslate"><span class="pre">convert_utc_milliseconds()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.exchange.statistics_24h"><code class="docutils literal notranslate"><span class="pre">statistics_24h()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.exchange.get_top_gainers"><code class="docutils literal notranslate"><span class="pre">get_top_gainers()</span></code></a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#handlers.exchange.get_decimal_positions"><code class="docutils literal notranslate"><span class="pre">get_decimal_positions()</span></code></a></li>
 </ul>
 
 
@@ -193,12 +181,122 @@ html.dark {
 <h1>Exchange Module<a class="headerlink" href="#exchange-module" title="Permalink to this heading">¶</a></h1>
 <p>This module manage exchange data from Binance API.</p>
 <p>Can be imported this way:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="kn">from</span> <span class="nn">handlers</span> <span class="kn">import</span> <span class="n">exchange</span>
-</span></pre></div>
-</div>
 <span class="target" id="module-handlers.exchange"></span><p>BinPan Classes Main Module</p>
-<section id="exchange-general-data">
-<h2>Exchange General Data<a class="headerlink" href="#exchange-general-data" title="Permalink to this heading">¶</a></h2>
+<p><strong>Functions:</strong></p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.exchange.get_exchange_info" title="handlers.exchange.get_exchange_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_exchange_info</span></code></a>()</p></td>
+<td><p>Returns general exchange info from /api/v3/exchangeInfo endpoint.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.exchange.get_info_dic" title="handlers.exchange.get_info_dic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_info_dic</span></code></a>()</p></td>
+<td><p>Get the dictionary of each symbol with its information from the exchange.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.exchange.get_account_status" title="handlers.exchange.get_account_status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_account_status</span></code></a>(decimal_mode, api_key, ...)</p></td>
+<td><p>Fetch account status detail.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.exchange.get_margin_bnb_interest_status" title="handlers.exchange.get_margin_bnb_interest_status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_margin_bnb_interest_status</span></code></a>(decimal_mode, ...)</p></td>
+<td><p>Get BNB Burn Status (USER_DATA)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.exchange.get_exchange_limits" title="handlers.exchange.get_exchange_limits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_exchange_limits</span></code></a>([info_dict])</p></td>
+<td><p>Binance manage several limits: RAW_REQUESTS, REQUEST_WEIGHT, and ORDERS rate limits.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.exchange.flatten_filter" title="handlers.exchange.flatten_filter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flatten_filter</span></code></a>(filters)</p></td>
+<td><p>It flattens a dict to one level dictionary.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.exchange.get_symbols_filters" title="handlers.exchange.get_symbols_filters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_symbols_filters</span></code></a>([info_dic])</p></td>
+<td><p>Example:</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.exchange.get_filters" title="handlers.exchange.get_filters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_filters</span></code></a>(symbol[, info_dic])</p></td>
+<td><p>For a symbol, get exchange filter conditions.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.exchange.filter_tradeable" title="handlers.exchange.filter_tradeable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter_tradeable</span></code></a>(info_dic)</p></td>
+<td><p>Returns, from BinPan exchange info dictionary currently trading symbols.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.exchange.filter_spot" title="handlers.exchange.filter_spot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter_spot</span></code></a>(info_dic)</p></td>
+<td><p>Returns, from BinPan exchange info dictionary currently SPOT symbols.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.exchange.filter_margin" title="handlers.exchange.filter_margin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter_margin</span></code></a>(info_dic)</p></td>
+<td><p>Returns, from BinPan exchange info dictionary currently MARGIN symbols.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.exchange.filter_not_margin" title="handlers.exchange.filter_not_margin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter_not_margin</span></code></a>([symbols, info_dic])</p></td>
+<td><p>Returns, from BinPan exchange info dictionary currently NOT MARGIN symbols.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.exchange.filter_leveraged_tokens" title="handlers.exchange.filter_leveraged_tokens"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter_leveraged_tokens</span></code></a>(info_dic)</p></td>
+<td><p>Returns, from BinPan exchange info dictionary currently NOT LEVERAGED symbols.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.exchange.filter_legal" title="handlers.exchange.filter_legal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter_legal</span></code></a>(legal_coins, info_dic)</p></td>
+<td><p>Returns, from BinPan exchange info dictionary currently trading symbols not using legal Fiat money.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.exchange.get_precision" title="handlers.exchange.get_precision"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_precision</span></code></a>([info_dic])</p></td>
+<td><p>Gets a dictionary with decimal positions each symbol.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.exchange.get_orderTypes_and_permissions" title="handlers.exchange.get_orderTypes_and_permissions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_orderTypes_and_permissions</span></code></a>([info_dic])</p></td>
+<td><p>Gets a dictionary with a list of order types suppoerted each symbol.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.exchange.get_fees_dict" title="handlers.exchange.get_fees_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_fees_dict</span></code></a>(decimal_mode, api_key, api_secret)</p></td>
+<td><p>Returns fees for a symbol or for every symbol if not passed a symbol.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.exchange.get_fees" title="handlers.exchange.get_fees"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_fees</span></code></a>(decimal_mode, api_key, api_secret)</p></td>
+<td><p>Returns fees for a symbol or for every symbol if not passed.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.exchange.get_system_status" title="handlers.exchange.get_system_status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_system_status</span></code></a>()</p></td>
+<td><p>Fetch system status.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.exchange.get_coins_and_networks_info" title="handlers.exchange.get_coins_and_networks_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_coins_and_networks_info</span></code></a>(decimal_mode, ...)</p></td>
+<td><p>Get information of coins (available for deposit and withdraw) for user.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.exchange.get_coins_info_list" title="handlers.exchange.get_coins_info_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_coins_info_list</span></code></a>(decimal_mode, api_key, ...)</p></td>
+<td><p>Bring all coins exchange info in a list if no one is specified.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.exchange.get_coins_info_dic" title="handlers.exchange.get_coins_info_dic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_coins_info_dic</span></code></a>(decimal_mode, api_key, ...)</p></td>
+<td><p>Useful managing coins info in a big dictionary with coins as keys.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.exchange.get_legal_coins" title="handlers.exchange.get_legal_coins"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_legal_coins</span></code></a>(decimal_mode, api_key, ...)</p></td>
+<td><p>Fetch coins containing isLegalMoney=true</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.exchange.get_leveraged_coins" title="handlers.exchange.get_leveraged_coins"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_leveraged_coins</span></code></a>(decimal_mode, api_key, ...)</p></td>
+<td><p>Search for Binance leveraged coins by searching UP or DOWN before an existing coin, examples:</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.exchange.get_leveraged_symbols" title="handlers.exchange.get_leveraged_symbols"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_leveraged_symbols</span></code></a>(decimal_mode, api_key, ...)</p></td>
+<td><p>Search for Binance symbols based on leveraged coins by searching UP or DOWN before an existing coin in symbol, leveraged coins examples are:</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.exchange.get_quotes_dic" title="handlers.exchange.get_quotes_dic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_quotes_dic</span></code></a>([info_dic])</p></td>
+<td><p>Get quote coin each symbol.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.exchange.get_bases_dic" title="handlers.exchange.get_bases_dic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_bases_dic</span></code></a>([info_dic])</p></td>
+<td><p>Get base coin each symbol.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.exchange.exchange_status" title="handlers.exchange.exchange_status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">exchange_status</span></code></a>(decimal_mode, api_key, ...)</p></td>
+<td><p>It returns a lot of results: bases_dic, quotes_dic, legal_coins, not_legal_pairs, symbol_filters, filtered_pairs</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.exchange.get_24h_statistics" title="handlers.exchange.get_24h_statistics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_24h_statistics</span></code></a>([symbol])</p></td>
+<td><p>GET /api/v3/ticker/24hr</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.exchange.not_iterative_coin_conversion" title="handlers.exchange.not_iterative_coin_conversion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">not_iterative_coin_conversion</span></code></a>(coin, decimal_mode)</p></td>
+<td><p>Converts any coin quantity value to a reference coin.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.exchange.convert_to_other_coin" title="handlers.exchange.convert_to_other_coin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_to_other_coin</span></code></a>(coin, decimal_mode[, ...])</p></td>
+<td><p>Convert value of a quantity of coins to value in other coin.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.exchange.convert_symbol_base_to_other_coin" title="handlers.exchange.convert_symbol_base_to_other_coin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_symbol_base_to_other_coin</span></code></a>(decimal_mode)</p></td>
+<td><p>Convert value of a quantity of coins to value in other coin.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.exchange.convert_utc_milliseconds" title="handlers.exchange.convert_utc_milliseconds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_utc_milliseconds</span></code></a>(ms)</p></td>
+<td><p>Converts milliseconds timestamp to formatted string.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.exchange.statistics_24h" title="handlers.exchange.statistics_24h"><code class="xref py py-obj docutils literal notranslate"><span class="pre">statistics_24h</span></code></a>(decimal_mode, api_key, api_secret)</p></td>
+<td><p>Generates a dataframe with the filters to apply with the statistics of the last 24 hours.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.exchange.get_top_gainers" title="handlers.exchange.get_top_gainers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_top_gainers</span></code></a>(decimal_mode, api_key, ...)</p></td>
+<td><p>Generates a dataframe for symbols against a quote with the filters to apply with the statistics of the last 24 hours.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.exchange.get_decimal_positions" title="handlers.exchange.get_decimal_positions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_decimal_positions</span></code></a>(num)</p></td>
+<td><p>Count decimal positions for a value.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.exchange.get_exchange_info">
 <span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_exchange_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.exchange.get_exchange_info" title="Permalink to this definition">¶</a></dt>
@@ -334,9 +432,6 @@ html.dark {
 </div>
 </dd></dl>
 
-</section>
-<section id="account">
-<h2>Account<a class="headerlink" href="#account" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.exchange.get_account_status">
 <span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_account_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.exchange.get_account_status" title="Permalink to this definition">¶</a></dt>
@@ -353,9 +448,25 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 </div>
 </dd></dl>
 
-</section>
-<section id="weight-api-control">
-<h2>Weight API control<a class="headerlink" href="#weight-api-control" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.exchange.get_margin_bnb_interest_status">
+<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_margin_bnb_interest_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.exchange.get_margin_bnb_interest_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get BNB Burn Status (USER_DATA)</p>
+<p>GET /sapi/v1/bnbBurn (HMAC SHA256)</p>
+<p>Weight(IP): 1</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return dict<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Example</p>
+</dd>
+</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="p">{</span>
+</span><span id="1-2">    <span class="s2">&quot;spotBNBBurn&quot;</span><span class="p">:</span><span class="n">true</span><span class="p">,</span>
+</span><span id="1-3">    <span class="s2">&quot;interestBNBBurn&quot;</span><span class="p">:</span> <span class="n">false</span>
+</span><span id="1-4"> <span class="p">}</span>
+</span></pre></div>
+</div>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.exchange.get_exchange_limits">
 <span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_exchange_limits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.exchange.get_exchange_limits" title="Permalink to this definition">¶</a></dt>
@@ -382,9 +493,20 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 </dl>
 </dd></dl>
 
-</section>
-<section id="symbols-trading-filters">
-<h2>Symbols Trading Filters<a class="headerlink" href="#symbols-trading-filters" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.exchange.flatten_filter">
+<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">flatten_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.exchange.flatten_filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>It flattens a dict to one level dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filters</strong> (<em>list</em>) – A dict with API filter data.</p>
+</dd>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
+<dd class="field-even"><p>A one level flattened dict with keys expanded with original sub-dicts.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.exchange.get_symbols_filters">
 <span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_symbols_filters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.exchange.get_symbols_filters" title="Permalink to this definition">¶</a></dt>
@@ -473,9 +595,6 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 </div>
 </dd></dl>
 
-</section>
-<section id="symbol-characteristics-filtering">
-<h2>Symbol Characteristics Filtering<a class="headerlink" href="#symbol-characteristics-filtering" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.exchange.filter_tradeable">
 <span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">filter_tradeable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.exchange.filter_tradeable" title="Permalink to this definition">¶</a></dt>
@@ -566,9 +685,6 @@ check the reason and the duration by using the [/sapi/v1/account/status] endpoin
 </dl>
 </dd></dl>
 
-</section>
-<section id="symbol-operative-data">
-<h2>Symbol Operative Data<a class="headerlink" href="#symbol-operative-data" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.exchange.get_precision">
 <span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_precision</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.exchange.get_precision" title="Permalink to this definition">¶</a></dt>
@@ -935,6 +1051,20 @@ leveraged coins examples are:</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="handlers.exchange.convert_utc_milliseconds">
+<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">convert_utc_milliseconds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.exchange.convert_utc_milliseconds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts milliseconds timestamp to formatted string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ms</strong> (<em>int</em>) – Milliseconds linux timestamp from epoch.</p>
+</dd>
+<dt class="field-even">Return str<span class="colon">:</span></dt>
+<dd class="field-even"><p>Formatted date.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="handlers.exchange.statistics_24h">
 <span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">statistics_24h</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tradeable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin_required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_legal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_leveraged</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stablecoin_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'BUSD'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_by</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'priceChangePercent'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.exchange.statistics_24h" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates a dataframe with the filters to apply with the statistics of the last 24 hours. Optionally, you can generate the column to
@@ -1014,7 +1144,20 @@ Optionally, you can generate the column to convert the volume to USDT.</p>
 </div>
 </dd></dl>
 
-</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.exchange.get_decimal_positions">
+<span class="sig-prename descclassname"><span class="pre">handlers.exchange.</span></span><span class="sig-name descname"><span class="pre">get_decimal_positions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.exchange.get_decimal_positions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Count decimal positions for a value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>num</strong> (<em>float</em><em> or </em><em>dd</em>) – Input.</p>
+</dd>
+<dt class="field-even">Return int<span class="colon">:</span></dt>
+<dd class="field-even"><p>Count decimal positions.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
         </article>

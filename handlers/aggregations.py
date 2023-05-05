@@ -11,8 +11,7 @@ from .starters import is_python_version_numba_supported
 if is_python_version_numba_supported():
     from .stat_tests import ema_numba, sma_numba
 else:
-    from .stat_tests import ema_numpy as ema_numba
-    from .stat_tests import sma_numpy as sma_numba
+    from .stat_tests import ema_numpy as ema_numba, sma_numpy as sma_numba
 
 
 # TODO: add documentation
@@ -57,7 +56,7 @@ def ohlc_group(data: pd.DataFrame, column_to_ohlc: str, group_column: str) -> pd
     return df
 
 
-def sum_split_by_boolean_column_and_group(data: pd.DataFrame, column_to_split_sum: str = "Qunantity", bool_col: str = "Buyer was maker",
+def sum_split_by_boolean_column_and_group(data: pd.DataFrame, column_to_split_sum: str = "Quantity", bool_col: str = "Buyer was maker",
                                           group_column: str = "group") -> pd.DataFrame:
     """
     Splits the sum of a numeric column into two new columns based on a boolean column and groups the data using another column.

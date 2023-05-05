@@ -9,8 +9,11 @@ from time import time
 import pandas as pd
 import json
 from decimal import Decimal as dd
+
+# from redis import StrictRedis
+from typing import List, Dict, Union
+
 from redis import StrictRedis
-from typing import List, Dict, Union, Literal
 
 from .starters import import_secret_module
 from .exceptions import BinPanException
@@ -199,6 +202,7 @@ def get_candles_by_time_stamps(symbol: str, tick_interval: str, start_time: int 
         end = r[1]
 
         if redis_client:
+            from redis import StrictRedis
             if type(redis_client) == dict:
                 try:
                     redis_client = StrictRedis(**redis_client)
@@ -386,23 +390,16 @@ def basic_dataframe(data: pd.DataFrame, exceptions: list = None, actions_col='ac
             return df_[['Open', 'High', 'Low', 'Close', 'Volume', actions_col]].copy(deep=True)
 
 
-def convert_to_numeric(data: pd.DataFrame, mode: Literal['ignore', 'raise', 'coerce'] = 'raise') -> pd.DataFrame:
+def convert_to_numeric(data: pd.DataFrame) -> pd.DataFrame:
     """
     Converts to numeric all posible columns for a given Dataframe.
 
     :param pd.DataFrame data: A dataframe with columns
-    :param str mode: Mode for exceptions. DEfault is 'raise'.
     :return pd.DataFrame: A dataframe with numeric values in each column that can be numeric.
     """
     df = data.copy(deep=True)
     for col in df.columns:
         df[col] = pd.to_numeric(arg=df[col], downcast='integer', errors='ignore')
-    # for col in df.columns:
-    #     try:
-    #         df.loc[:, col] = pd.to_numeric(arg=df[col], downcast='integer', errors=mode)
-    #     except Exception as exc:
-    #         print(f"Passing convert_to_numeric: {exc}")
-    #         pass
     return df
 
 

@@ -3,21 +3,23 @@ Statistical tests and tools.
 """
 
 from scipy.stats import jarque_bera
+
 import pandas as pd
 import numpy as np
 
 from .starters import is_python_version_numba_supported
-
 
 if is_python_version_numba_supported():
     from numba import jit
 else:
     msg = "Cannot import numba: only Python versions >=3.7,<3.11 are supported. Using Numpy."
 
+    # noinspection PyUnusedLocal
     def jit(*args, **kwargs):
         # Define a no-op decorator to replace @nb.jit
         def decorator(func):
             return func
+
         return decorator
 
 

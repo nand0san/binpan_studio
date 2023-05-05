@@ -115,6 +115,7 @@ def fractal_w(data: pd.DataFrame,
               period=2,
               merged: bool = True,
               suffix: str = '',
+              fill_with_zero: bool = None,
               ) -> pd.DataFrame:
     """
     The fractal indicator is based on a simple price pattern that is frequently seen in financial markets. Outside of trading, a fractal
@@ -129,6 +130,7 @@ def fractal_w(data: pd.DataFrame,
     :param int period: Default is 2. Count of neighbour candles to match max or min tags.
     :param bool merged: If True, values are merged into one pd.Serie. minimums overwrite maximums in case of coincidence.
     :param str suffix: A decorative suffix for the name of the column created.
+    :param bool fill_with_zero: If true fills nans with zeros. Its better to plot with binpan.
     :return pd.Series: A serie with 1 or -1 for local max or local min to tag.
     """
     window = 2 * period + 1  # default 5
@@ -138,7 +140,8 @@ def fractal_w(data: pd.DataFrame,
 
     mins = mins.replace({0: np.nan})
     maxs = maxs.replace({0: np.nan})
-    maxs.loc[:] = maxs * -1
+    # maxs.loc[:] = maxs * -1
+    mins.loc[:] = mins * -1
 
     # return mins, maxs
     if suffix:
@@ -156,12 +159,17 @@ def fractal_w(data: pd.DataFrame,
     values.name = f"Fractal_W_{period}_values" + suffix
 
     if not merged:
+        if fill_with_zero:
+            mins.fillna(0, inplace=True)
+            maxs.fillna(0, inplace=True)
         return pd.DataFrame([mins, maxs, values]).T
 
     else:
         merged = mins
         merged.fillna(maxs, inplace=True)
         merged.name = f"Fractal_W_{period}" + suffix
+        if fill_with_zero:
+            merged.fillna(0, inplace=True)
         return pd.DataFrame([merged, values]).T
 
 
@@ -308,7 +316,8 @@ def zoom_cloud_indicators(plot_splitted_serie_couples: dict,
     try:
         assert start_idx < end_idx <= len(main_index)
     except AssertionError:
-        raise Exception(f"BinPan Plot Error: Zoom index not valid. Not start={start_idx} < end={end_idx} < len={len(main_index)}")
+        raise Exception(
+            f"BinPan Plot Error: Zoom index not valid. Not start={start_idx} < end={end_idx} < len={len(main_index)}")
 
     ret = {}
     my_start = main_index[start_idx]
@@ -532,7 +541,8 @@ def support_resistance_levels(data: pd.DataFrame, max_clusters: int = 10, by_qua
     optimal_buy_clusters = find_optimal_clusters(buy_prices, max_clusters)
     optimal_sell_clusters = find_optimal_clusters(sell_prices, max_clusters)
 
-    print(f"Found {optimal_buy_clusters} support levels from buys and {optimal_sell_clusters} resistance levels from sells.")
+    print(
+        f"Found {optimal_buy_clusters} support levels from buys and {optimal_sell_clusters} resistance levels from sells.")
 
     kmeans_buy = KMeans(n_clusters=optimal_buy_clusters, n_init=10).fit(buy_prices)
     kmeans_sell = KMeans(n_clusters=optimal_sell_clusters, n_init=10).fit(sell_prices)

@@ -13,11 +13,11 @@ Can be imported this way:
 Symbol Class
 ------------
 
-This class can manage klines, trades and many more data.
+This class can manage klines, trades, and many more data.
 
-Also include technical indicators, make plots, and get some exchange data.
+Also includes technical indicators, makes plots, and gets some exchange data.
 
-There is a tutorial in a Jupyter Notebook file in https://github.com/nand0san/binpan_studio
+There are tutorials in a Jupyter Notebook file at https://github.com/nand0san/binpan_studio
 
 .. autoclass:: Symbol
    :members:
@@ -26,9 +26,9 @@ There is a tutorial in a Jupyter Notebook file in https://github.com/nand0san/bi
 Exchange Class
 --------------
 
-This class is oriented in managing data from exchange, like Symbols status, coins networks etc.
+This class is oriented towards managing data from exchanges, like Symbols status, coins networks, etc.
 
-There is a tutorial in a Jupyter Notebook file in https://github.com/nand0san/binpan_studio
+There is a tutorial in a Jupyter Notebook file at https://github.com/nand0san/binpan_studio
 
 .. autoclass:: Exchange
    :members:
@@ -37,7 +37,7 @@ There is a tutorial in a Jupyter Notebook file in https://github.com/nand0san/bi
 Wallet Class
 ------------
 
-This class can show wallet data for you. Free assets, locked assets or wallet snapshots for
+This class can show wallet data for you. Free assets, locked assets, or wallet snapshots for
 performance analysis.
 
 .. autoclass:: Wallet
@@ -46,7 +46,10 @@ performance analysis.
 Jupyter Import Problems Troubleshooting
 ---------------------------------------
 
-When working with Jupyter, you may encounter import errors while trying to import packages such as BinPan. These errors can be caused by various reasons such as package installation order, virtual environment issues, etc. To resolve such errors, you can try installing the required modules directly to the Jupyter Notebook kernel by following the steps below:
+When working with Jupyter, you may encounter import errors while trying to import packages such as BinPan.
+These errors can be caused by various reasons such as package installation order, virtual environment issues, etc.
+To resolve such errors, you can try installing the required modules directly to the Jupyter Notebook kernel by
+following the steps below:
 
 First, import the sys module in your Jupyter notebook.
 
@@ -74,7 +77,8 @@ the packages:
     secure
     !{sys.executable} -m pip install pycryptodome
 
-Note that the crypto and pycryptodome packages are used for encryption/decryption purposes and it is recommended to use the more secure pycryptodome package.
+Note that the crypto and pycryptodome packages are used for encryption/decryption purposes,
+and it is recommended to use the more secure pycryptodome package.
 
 Finally, install any other required packages using the following command:
 
