@@ -7,8 +7,12 @@ import numpy as np
 
 from .logs import Logs
 from .market import convert_to_numeric, tick_seconds
-from .time_helper import convert_ms_column_to_datetime_with_zone, convert_datetime_to_string, convert_milliseconds_to_utc_string, \
-    convert_milliseconds_to_time_zone_datetime, convert_milliseconds_to_str, open_from_milliseconds, next_open_by_milliseconds
+from .time_helper import convert_ms_column_to_datetime_with_zone, convert_datetime_to_string, \
+    convert_milliseconds_to_utc_string, \
+    convert_milliseconds_to_time_zone_datetime, convert_milliseconds_to_str, open_from_milliseconds, \
+    next_open_by_milliseconds
+from .starters import import_secret_module
+from .exceptions import RedisConfigError
 
 
 redis_logger = Logs(filename='./logs/redis_fetch.log', name='redis_fetch', info_level='INFO')
@@ -47,41 +51,76 @@ def redis_client(ip: str = '127.0.0.1', port: int = 6379, db: int = 0, decode_re
         return StrictRedis(host=ip, port=port, db=db, decode_responses=decode_responses)
 
 
-def manage_redis(redis_args: Union[bool, Dict, StrictRedis], redis_conf: dict = None):
+def manage_sentinel(sentinel_redis: Union[dict, bool]) -> StrictRedis:
     """
-    Sets the redis client.
-    :param redis_args: Can be a dict with redis conf, a bool to use passed conf or a Strict Redis object.
-    :param redis_conf: Optional dict with configuration. Example: redis_conf = {'host': '192.168.89.241', 'port': 6379, 'db': 0, 'decode_responses': True}
-    :return:
+    Manage the Redis Sentinel configuration and return a StrictRedis instance.
+
+    This function takes a sentinel_redis parameter, which can be a dictionary or a boolean. If it is a dictionary, the function expects the keys 'hosts', 'sentinel_service_name', and 'password' (optional) to be present. If it is a boolean, the function imports the sentinel_data from the secret module.
+
+    :param sentinel_redis: A dictionary containing the Redis Sentinel configuration or a boolean to use the secret module for configuration.
+    :type sentinel_redis: Union[dict, bool]
+    :return: A StrictRedis instance configured with the provided Sentinel settings.
+    :rtype: StrictRedis
+
+    :raises RedisConfigError: If the sentinel_redis parameter is a dictionary and the 'hosts' key is not present.
+    """
+    from redis.sentinel import Sentinel
+
+    if type(sentinel_redis) == dict:
+        if not 'hosts' in sentinel_redis.keys():
+            raise RedisConfigError()
+
+    elif type(sentinel_redis) == bool:
+        secret = import_secret_module()
+        sentinel_redis = secret.sentinel_data
+
+    # client config
+    if not 'sentinel_service_name' in sentinel_redis.keys():
+        sentinel_redis['name'] = 'mymaster'
+    if not 'password' in sentinel_redis.keys():
+        sentinel_redis['password'] = None
+
+    sentinel = Sentinel(sentinels=sentinel_redis['hosts'],
+                        password=sentinel_redis['password'])
+
+    return sentinel.master_for(service_name=sentinel_redis['name'],
+                               redis_class=StrictRedis,
+                               password=sentinel_redis['password'])
+
+
+def manage_redis(redis_args: Union[bool, Dict, StrictRedis]) -> StrictRedis or None:
+    """
+    Manage the Redis configuration and return a StrictRedis instance or None.
+
+    This function takes a redis_args parameter, which can be a dictionary, a boolean, or a StrictRedis object. If it is a dictionary, the function expects the Redis configuration keys to be present. If it is a boolean, the function imports the redis_conf from the secret module. If it is a StrictRedis object, the function returns the object as is.
+
+    :param redis_args: A dictionary containing the Redis configuration, a boolean to use the passed configuration, or a StrictRedis object.
+    :type redis_args: Union[bool, Dict, StrictRedis]
+    :return: A StrictRedis instance configured with the provided settings or None if no configuration is provided.
+    :rtype: Union[StrictRedis, None]
+
+    :raises RedisConfigError: If there is a misconfiguration in the Redis settings or the 'redis_conf' key is not found in the secret.py module.
     """
     if redis_args:
         if type(redis_args) == bool:
             try:
+                secret = import_secret_module()
+                redis_conf = secret.redis_conf
                 return redis_client(**redis_conf)
-            except Exception as _:
-                if not redis_conf:
-                    msg = f"BinPan error: Redis missing parameters"
-                    redis_logger.error(msg)
-                    raise Exception(msg)
-                else:
-                    msg = f"BinPan error: Redis parameters misconfiguration in secret.py"
-                    redis_logger.warning(msg)
-                    raise Exception(msg)
+            except Exception:
+                raise RedisConfigError("Redis config not found in secret.py module.")
         elif type(redis_args) == dict:
             try:
                 return redis_client(**redis_args)
-            except Exception as _:
-                msg = f"BinPan error: Redis parameters misconfiguration: {redis_args}"
-                redis_logger.warning(msg)
-                raise Exception(msg)
+            except Exception:
+                raise RedisConfigError(f"BinPan error: Redis parameters misconfiguration: {redis_args}")
         elif type(redis_args) == StrictRedis:
             return redis_args
         else:
-            msg = f"BinPan error: Redis parameters misconfiguration: {redis_args}"
-            redis_logger.warning(msg)
-            raise Exception(msg)
+            raise RedisConfigError(f"BinPan error: Redis parameters misconfiguration: {redis_args}")
     else:
         return None
+
 
 ##########
 # Parser #
@@ -131,7 +170,8 @@ def redis_klines_parser(json_list: List[str],
 
     index_name = f"{symbol.upper()} {tick_interval} {time_zone}"
     df.index.name = index_name
-    return df[['Open time', 'Open', 'High', 'Low', 'Close', 'Volume', 'Close time', 'Quote volume', 'Trades', 'Taker buy base volume',
+    return df[['Open time', 'Open', 'High', 'Low', 'Close', 'Volume', 'Close time', 'Quote volume', 'Trades',
+               'Taker buy base volume',
                'Taker buy quote volume', 'Ignore', 'Open timestamp', 'Close timestamp']]
 
 
@@ -150,9 +190,11 @@ def orderbook_value_to_dataframe(data: list):
     all_data = []
 
     for row, timestamp in json_data:
-        ask_data = [{"Price": float(price), "Quantity": float(quantity), "Side": "ask", "Timestamp": timestamp} for price, quantity in
+        ask_data = [{"Price": float(price), "Quantity": float(quantity), "Side": "ask", "Timestamp": timestamp} for
+                    price, quantity in
                     row["ask_value"].items()]
-        bid_data = [{"Price": float(price), "Quantity": float(quantity), "Side": "bid", "Timestamp": timestamp} for price, quantity in
+        bid_data = [{"Price": float(price), "Quantity": float(quantity), "Side": "bid", "Timestamp": timestamp} for
+                    price, quantity in
                     row["bid_value"].items()]
         all_data += ask_data + bid_data
 
@@ -160,7 +202,7 @@ def orderbook_value_to_dataframe(data: list):
     return df.sort_values(["Timestamp", "Price"], ascending=[True, False]).reset_index(drop=True)
 
 
-def extract_orderbook_value_quantities(data: list) -> Tuple[List, List]:
+def redis_extract_orderbook_value_quantities(data: list) -> Tuple[List, List]:
     """
     Prepares data for plotting.
 
@@ -837,7 +879,8 @@ def pipe_time_interval_bulk_ohlc_data(pipeline: StrictRedis.pipeline,
                 redis_logger.info(f"No continuity for {k}")
 
     if my_keys:
-        redis_logger.debug(f"From {len(my_keys)} keys, valid: {len(ohlc_arrays)} - pct: {100 * len(ohlc_arrays) / len(my_keys):.2f}")
+        redis_logger.debug(
+            f"From {len(my_keys)} keys, valid: {len(ohlc_arrays)} - pct: {100 * len(ohlc_arrays) / len(my_keys):.2f}")
     else:
         redis_logger.info("No keys fetched!!!")
     return ohlc_arrays
