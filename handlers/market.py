@@ -120,8 +120,13 @@ def get_prices_dic(decimal_mode: bool) -> dict:
 # Candles #
 ###########
 
-def get_candles_by_time_stamps(symbol: str, tick_interval: str, start_time: int = None, end_time: int = None, limit=1000,
-                               time_zone='Europe/Madrid', redis_client: Union[StrictRedis, Dict] = None) -> list:
+def get_candles_by_time_stamps(symbol: str,
+                               tick_interval: str,
+                               start_time: int = None,
+                               end_time: int = None,
+                               limit=1000,
+                               time_zone='Europe/Madrid',
+                               redis_client: Union[StrictRedis, Dict] = None) -> list:
     """
     Calls API for a candles list using one or two timestamps, starting and ending.
 
@@ -176,7 +181,9 @@ def get_candles_by_time_stamps(symbol: str, tick_interval: str, start_time: int 
     start_string = convert_milliseconds_to_str(ms=start_time, timezoned=time_zone)
     end_string = convert_milliseconds_to_str(ms=end_time, timezoned=time_zone)
 
-    market_logger.debug(f"get_candles_by_time_stamps -> symbol={symbol} tick_interval={tick_interval} start={start_string} end={end_string}")
+    chan = f"{symbol.lower()}@kline_{tick_interval}"
+    market_logger.info(f"get_candles_by_time_stamps -> symbol={symbol} tick_interval={tick_interval} start={start_string} end={end_string} "
+                       f"channel:{chan}")
 
     tick_milliseconds = int(tick_seconds[tick_interval] * 1000)
 
@@ -215,7 +222,7 @@ def get_candles_by_time_stamps(symbol: str, tick_interval: str, start_time: int 
                 market_logger.error(msg)
                 raise Exception(msg)
 
-            ret = redis_client.zrangebyscore(name=f"{symbol.lower()}@kline_{tick_interval}", min=start, max=end, withscores=False)
+            ret = redis_client.zrangebyscore(name=chan, min=start, max=end, withscores=False)
             if not ret:
                 continue
             response = [json.loads(i) for i in ret]
