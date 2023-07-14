@@ -28,11 +28,7 @@ def create_dir(my_path: str):
         makedirs(my_path)
 
 
-def save_dataframe_to_csv(filename: str,
-                          data: pd.DataFrame,
-                          col_sep=',',
-                          index=False,
-                          timestamp=True) -> None:
+def save_dataframe_to_csv(filename: str, data: pd.DataFrame, col_sep=',', index=False, timestamp=True) -> None:
     """
     Save a dataframe in a csv with a separator between columns. Each field of each column will be enclosed in double quotes.
 
@@ -105,9 +101,7 @@ def move_old_csvs(files_path: str = '.', extension='csv'):
         replace(file, dst)
 
 
-def read_csv_to_dataframe(filename: str,
-                          col_sep: str = ',',
-                          index_col: bool = None) -> pd.DataFrame:
+def read_csv_to_dataframe(filename: str, col_sep: str = ',', index_col: bool = None) -> pd.DataFrame:
     """
     Creates a csv file from a dataframe.
 
@@ -116,8 +110,7 @@ def read_csv_to_dataframe(filename: str,
     :param bool index_col: If False, index is dropped. Default is False.
     :return pd.DataFrame: A dataframe with data in columns using file rows header.
     """
-    return pd.read_csv(filepath_or_buffer=filename, sep=col_sep, index_col=index_col, skip_blank_lines=True,
-                       quoting=QUOTE_ALL)
+    return pd.read_csv(filepath_or_buffer=filename, sep=col_sep, index_col=index_col, skip_blank_lines=True, quoting=QUOTE_ALL)
 
 
 def read_file(filename: str) -> list:
@@ -149,8 +142,7 @@ def save_file(filename: str, data: list, mode='w') -> None:
             f.write(str(line) + '\n')
 
 
-def select_file(path='.',
-                extension='csv') -> str:
+def select_file(path='.', extension='csv') -> str:
     """
     Selects from files in the path with the extension passed.
 
@@ -165,6 +157,7 @@ def select_file(path='.',
     selection = input("Insert file number: ")
 
     return files[int(selection)]
+
 
 ###################
 # API AND SECRETS #
@@ -183,9 +176,9 @@ def add_api_key(api_key_value: str) -> None:
     lines = []
     for line in saved_data:
         if not line.startswith('api_key') and line:
-            lines.append(line)
+            lines.append(line + "\n")
     encryptor = cipher_object.encrypt(api_key_value)
-    lines.append(f'\napi_key = "{encryptor}"')
+    lines.append(f'api_key = "{encryptor}"\n')
     save_file(filename=filename, data=lines)
 
 
@@ -197,9 +190,9 @@ def add_api_secret(api_secret_value: str) -> None:
     """
     filename = "secret.py"
     saved_data = read_file(filename=filename)
-    lines = [line for line in saved_data if (not line.startswith('api_secret')) and line]
+    lines = [line + '\n' for line in saved_data if (not line.startswith('api_secret')) and line]
     encryptor = cipher_object.encrypt(api_secret_value)
-    lines.append(f'\napi_secret = "{encryptor}"')
+    lines.append(f'api_secret = "{encryptor}"\n')
     save_file(filename=filename, data=lines)
 
 
@@ -227,7 +220,7 @@ def add_any_key(key: str, key_name: str) -> None:
     for line in saved_data:
         if line:
             if not line.startswith(key_name):
-                lines.append(line)
+                lines.append(line + '\n')
     encryptor = cipher_object.encrypt(key)
-    lines.append(f'\n{key_name} = "{encryptor}"')
+    lines.append(f'{key_name} = "{encryptor}"\n')
     save_file(filename=filename, data=lines)
