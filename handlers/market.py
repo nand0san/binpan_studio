@@ -1038,7 +1038,6 @@ def get_orderbook_tickers(symbol: str = None, decimal_mode: bool = False) -> dic
     """
     Symbol Order Book Ticker
 
-
     GET /api/v3/ticker/bookTicker
 
     Best price/qty on the order book for a symbol or symbols.
@@ -1064,6 +1063,7 @@ def get_orderbook_tickers(symbol: str = None, decimal_mode: bool = False) -> dic
     :return: Api response is:
 
         .. code-block::
+
             Response:
 
             {

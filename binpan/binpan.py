@@ -3,7 +3,7 @@
 This is the main classes file.
 
 """
-__version__ = "0.4.20"
+__version__ = "0.4.21"
 
 import os
 from sys import path
@@ -167,6 +167,8 @@ class Symbol(object):
     :param int display_width:       Display width in the dataframe display. Convenient to adjust in jupyter notebooks.
     :param bool or str from_csv:    If True, gets data from a csv file by selecting interactively from csv files found.
      Also a string with filename can be used.
+    :param dict info_dic:               Sometimes, for iterative processes, info_dic can be passed to avoid calling API for it. Its
+     weight is heavy.
 
     Examples:
 
@@ -212,7 +214,8 @@ class Symbol(object):
                  display_rows: int = 10,
                  display_min_rows: int = 25,
                  display_width: int = 320,
-                 from_csv: Union[bool, str] = False):
+                 from_csv: Union[bool, str] = False,
+                 info_dic: dict = None):
 
         self.orderbook_value = None
         self.redis_orderbook_value = None
@@ -439,7 +442,11 @@ class Symbol(object):
         self.len = len(self.df)
 
         # exchange data and tick size
-        self.info_dic = get_info_dic()
+        if not info_dic:  # for loop operations can be passed to avoid api weight overcome
+            self.info_dic = get_info_dic()
+        else:
+            assert type(info_dic) == dict
+            assert len(info_dic) > 0
         self.tickSize = self.info_dic[self.symbol]['filters'][0]['tickSize']
         self.decimals = get_decimal_positions(self.tickSize)
         self.pip = self.tickSize

@@ -16,6 +16,15 @@ import importlib
 
 
 def import_secret_module():
+    """
+    Importa el módulo 'secret' desde cualquier lugar en la jerarquía de directorios del proyecto.
+
+    La función busca el módulo 'secret' en el directorio actual y todos los directorios superiores hasta que lo encuentra
+    o llega a la raíz del sistema de archivos.
+
+    :return: El módulo 'secret' si se encuentra, None en caso contrario.
+    :rtype: Module or None
+    """
     current_dir = os.path.abspath(os.curdir)
 
     while True:
