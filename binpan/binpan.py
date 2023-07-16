@@ -447,6 +447,8 @@ class Symbol(object):
         else:
             assert type(info_dic) == dict
             assert len(info_dic) > 0
+            self.info_dic = info_dic
+
         self.tickSize = self.info_dic[self.symbol]['filters'][0]['tickSize']
         self.decimals = get_decimal_positions(self.tickSize)
         self.pip = self.tickSize
