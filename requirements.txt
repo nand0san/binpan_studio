@@ -12,6 +12,7 @@ scipy>=1.7.3
 setuptools==67.8.0
 tqdm==4.65.0
 typing
+kaleido==0.2.1.post1
 
 # python-dotenv==0.21.0
 # numba # no version for python 3.11 yet, required version between 3.7 and 3.10

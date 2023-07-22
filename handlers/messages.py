@@ -111,8 +111,13 @@ def telegram_parse_dict(msg_data: dict, timezone='UTC'):
             row = f"*{k}* : \n{telegram_parse_dict(msg_data=fv2, timezone=timezone)} \n"
         else:
             if 'time' in k and k != 'timeInForce' and k != 'time_zone':
-                date = convert_milliseconds_to_str(ms=fv2, timezoned=timezone)
-                row = f"*{k}* : {date} \n"
+                try:
+                    date = convert_milliseconds_to_str(ms=fv2, timezoned=timezone)
+                    row = f"*{k}* : {date} \n"
+                except TypeError:
+                    row = f"*{k}* : {fv2} \n"
+                except ValueError:
+                    row = f"*{k}* : {fv2} \n"
             else:
                 row = f"*{k}* : {fv2} \n"
         parsed_msg += row
@@ -138,9 +143,7 @@ def tab_str(text: str, indentation=8) -> str:
     return ret
 
 
-def telegram_parse_dataframe_markdown(data: pd.DataFrame,
-                                      indentation: int = 6,
-                                      title: str = "Balances") -> str:
+def telegram_parse_dataframe_markdown(data: pd.DataFrame, indentation: int = 10, title: str = "Balances") -> str:
     """
     Parses a Dataframe in telegrams message format.
 
@@ -149,14 +152,35 @@ def telegram_parse_dataframe_markdown(data: pd.DataFrame,
     :param str title: a header or title to the result.
     :return str: String parsed with tabulations.
     """
-    ret = f"*{title}*: \n"
+    ret = f"*{title}* *{list(data.columns)}*: \n"
     cols = data.columns
     ret += "```\n"
     for idx, row in data.iterrows():
         data_row = row.tolist()
-        str_row = f" {idx} " + ''.join([f"{cols[i]}: {d:.8f} " for i, d in enumerate(data_row)])
+        str_row = f" {idx} " + ''.join([f"{cols[i]}: {d} " for i, d in enumerate(data_row)])
         ret += str(tab_str(str_row, indentation=indentation)) + "\n"
     return ret + "```"
+
+
+# def telegram_parse_dataframe_markdown(data: pd.DataFrame,
+#                                       indentation: int = 6,
+#                                       title: str = "Balances") -> str:
+#     """
+#     Parses a Dataframe in telegrams message format.
+#
+#     :param DataFrame data: A dataframe
+#     :param int indentation: Spaces to insert each tabulation.
+#     :param str title: a header or title to the result.
+#     :return str: String parsed with tabulations.
+#     """
+#     ret = f"*{title}*: \n"
+#     cols = data.columns
+#     ret += "```\n"
+#     for idx, row in data.iterrows():
+#         data_row = row.tolist()
+#         str_row = f" {idx} " + ''.join([f"{cols[i]}: {d:.8f} " for i, d in enumerate(data_row)])
+#         ret += str(tab_str(str_row, indentation=indentation)) + "\n"
+#     return ret + "```"
 
 
 def telegram_parse_order_markdown(original_order: dict,

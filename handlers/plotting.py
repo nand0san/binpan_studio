@@ -7,6 +7,8 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import plotly.express as px
 import plotly.figure_factory as ff
+import plotly.io as pio
+
 from random import choice
 from datetime import datetime
 from typing import List, Tuple, Literal
@@ -644,6 +646,7 @@ def candles_ta(data: pd.DataFrame, indicators_series: list or pd.DataFrame = Non
         fig.update_layout(plot_bgcolor=plot_bgcolor)
 
     fig.show()
+    pio.write_image(fig, 'last.png')
 
 
 def candles_tagged(data: pd.DataFrame, width=1800, height=1000, candles_ta_height_ratio=0.5, plot_volume=True,
@@ -1095,6 +1098,7 @@ def plot_pie(serie: pd.Series, categories: int = 15, title=f"Size trade categori
                  hover_name=serie.name)
     # category_orders=orders)
     fig.show()
+    pio.write_image(fig, 'last.png')
 
 
 def plot_scatter(df: pd.DataFrame, x_col: str, y_col: str, symbol: str = None, color: str = None, marginal: bool = True,
@@ -1144,6 +1148,7 @@ def plot_scatter(df: pd.DataFrame, x_col: str, y_col: str, symbol: str = None, c
     else:
         fig = px.scatter(df, x=x_col, y=y_col, symbol=symbol, color=color, title=title, height=height, **kwargs)
     fig.show()
+    pio.write_image(fig, 'last.png')
 
 
 def plot_hists_vs(x0: pd.Series, x1: pd.Series, x0_name: str = None, x1_name: str = None, bins: int = 50,
@@ -1211,6 +1216,7 @@ def plot_hists_vs(x0: pd.Series, x1: pd.Series, x0_name: str = None, x1_name: st
 
     fig.update_traces(opacity=0.75)
     fig.show()
+    pio.write_image(fig, 'last.png')
 
 
 def orderbook_depth(df: pd.DataFrame, accumulated=True, title='Depth orderbook plot', height=500, plot_y="Quantity",
@@ -1254,6 +1260,7 @@ def orderbook_depth(df: pd.DataFrame, accumulated=True, title='Depth orderbook p
 
     fig = px.line(ob, x="Price", y=plot_y, color='Side', height=height, title=title, **kwargs)
     fig.show()
+    pio.write_image(fig, 'last.png')
 
 
 def dist_plot(df: pd.DataFrame, x_col: str = 'Price', color: str = 'Side', bins: int = 300, histnorm: str = 'density',
@@ -1287,6 +1294,7 @@ def dist_plot(df: pd.DataFrame, x_col: str = 'Price', color: str = 'Side', bins:
     fig.update_layout(height=height, title=title, yaxis3={"overlaying": "y", "side": "right"}, showlegend=True,
                       **update_layout_kwargs)
     fig.show()
+    pio.write_image(fig, 'last.png')
 
 
 def bar_plot(df: pd.DataFrame,
@@ -1346,6 +1354,7 @@ def bar_plot(df: pd.DataFrame,
     #     fig.for_each_trace(lambda t: t.update(name=legend_names[t.name]))
 
     fig.show()
+    pio.write_image(fig, 'last.png')
 
 
 def plot_orderbook_value(ask_data: List[Tuple[List, float]], bid_data: List[Tuple[List, float]],
@@ -1393,6 +1402,7 @@ def plot_orderbook_value(ask_data: List[Tuple[List, float]], bid_data: List[Tupl
                                   position=0.05), )
 
     fig.show()
+    pio.write_image(fig, 'last.png')
 
 
 ##############

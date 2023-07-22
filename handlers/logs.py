@@ -31,7 +31,7 @@ class Logs:
         # Create handlers
         self.screen_handler = logging.StreamHandler()
         # self.file_handler = logging.FileHandler(self.log_file)
-        self.file_handler = RotatingFileHandler(self.log_file, maxBytes=max_log_size_mb * 1024 * 1024, backupCount=backup_count)
+        self.file_handler = RotatingFileHandler(self.log_file, maxBytes=max_log_size_mb * 1024 * 1024, backupCount=backup_count, encoding='utf-8')
 
         self.line_format = '%(asctime)s %(levelname)8s %(message)s'
         self.screen_format = logging.Formatter(self.line_format, datefmt='%Y-%m-%d\t %H:%M:%S')
