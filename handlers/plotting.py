@@ -1245,11 +1245,23 @@ def dist_plot(df: pd.DataFrame, x_col: str = 'Price', color: str = 'Side', bins:
     return os.path.join(os.getcwd(), "last_plot.png")
 
 
-def bar_plot(df: pd.DataFrame, x_col_to_bars: str, y_col: str, bar_segments: str = 'Buyer was maker', split_colors: bool = False,
-             bins: int = 100, aggregation: Literal['sum', 'mean'] = 'sum', height: int = 800, title: str = "Bar Plot",
-             y_axis_title: str = None, **update_layout_kwargs):
+def bar_plot(df: pd.DataFrame,
+             x_col_to_bars: str,
+             y_col: str,
+             bar_segments: str = 'Buyer was maker',
+             split_colors: bool = False,
+             bins: int = 100,
+             aggregation: Literal['sum', 'mean'] = 'sum',
+             height: int = 800,
+             title: str = "Bar Plot",
+             y_axis_title: str = None,
+             horizontal_bars: bool = False,
+             **update_layout_kwargs):
     """
     Plot a bar plot for a dataframe column with optional segments based on the 'bar_segments' column.
+
+    .. image:: images/plotting/bar_plot.png
+        :width: 1000
 
     :param pd.DataFrame df: A DataFrame like orderbook, candles, trades or any other.
     :param str x_col_to_bars: A column name to group values into x bars, like in example, price.
@@ -1261,9 +1273,7 @@ def bar_plot(df: pd.DataFrame, x_col_to_bars: str, y_col: str, bar_segments: str
     :param int height: Plot sizing.
     :param str title: A title string
     :param str y_axis_title: Title for y axis plot.
-
-    .. image:: images/plotting/bar_plot.png
-        :width: 1000
+    :param horizontal_bars: Flips graph with horizontal bars.
 
     """
     # Create bins
@@ -1281,11 +1291,16 @@ def bar_plot(df: pd.DataFrame, x_col_to_bars: str, y_col: str, bar_segments: str
 
     if split_colors:
         for segment_value in grouped_data.columns:
-            fig.add_trace(go.Bar(x=grouped_data.index.astype(str), y=grouped_data[
-                segment_value].values, name=f"{bar_segments}: {segment_value}"))
+            if not horizontal_bars:
+                fig.add_trace(go.Bar(x=grouped_data.index.astype(str), y=grouped_data[segment_value].values, name=f"{bar_segments}: {segment_value}"))
+            else:
+                fig.add_trace(go.Bar(y=grouped_data.index.astype(str), x=grouped_data[segment_value].values, orientation='h',  name=f"{bar_segments}: {segment_value}"))
         fig.update_layout(barmode='stack')
     else:
-        fig.add_trace(go.Bar(x=grouped_data.index.astype(str), y=grouped_data[y_col].values))
+        if not horizontal_bars:
+            fig.add_trace(go.Bar(x=grouped_data.index.astype(str), y=grouped_data[y_col].values))
+        else:
+            fig.add_trace(go.Bar(y=grouped_data.index.astype(str), x=grouped_data[y_col].values, orientation='h'))
 
     # Customize plot appearance
     fig.update_layout(title=title, height=height, yaxis_title=y_axis_title, **update_layout_kwargs)

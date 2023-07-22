@@ -1727,7 +1727,7 @@ class Symbol(object):
                 _df = _df[_df['Timestamp'] >= startTime]
             if endTime:
                 _df = _df[_df['Timestamp'] <= endTime]
-            return bar_plot(df=_df, x_col_to_bars='Price', y_col='Quantity', bar_segments='Buyer was maker', split_colors=True, bins=bins, title=title, height=height, y_axis_title='Buy takers VS Buy makers', **kwargs_update_layout)
+            return bar_plot(df=_df, x_col_to_bars='Price', y_col='Quantity', bar_segments='Buyer was maker', split_colors=True, bins=bins, title=title, height=height, y_axis_title='Buy takers VS Buy makers', horizontal_bars=True,**kwargs_update_layout)
         elif from_atomic_trades:
             title += f' Atomic {self.symbol}'
             _df = self.atomic_trades.copy(deep=True)
@@ -1735,7 +1735,7 @@ class Symbol(object):
                 _df = _df[_df['Timestamp'] >= startTime]
             if endTime:
                 _df = _df[_df['Timestamp'] <= endTime]
-            return bar_plot(df=_df, x_col_to_bars='Price', y_col='Quantity', bar_segments='Buyer was maker', split_colors=True, bins=bins, title=title, height=height, y_axis_title='Buy takers VS Buy makers', **kwargs_update_layout)
+            return bar_plot(df=_df, x_col_to_bars='Price', y_col='Quantity', bar_segments='Buyer was maker', split_colors=True, bins=bins, title=title, height=height, y_axis_title='Buy takers VS Buy makers', horizontal_bars=True, **kwargs_update_layout)
         else:
             _df = self.df.copy(deep=True)
             if startTime:
@@ -1746,7 +1746,7 @@ class Symbol(object):
             # todo: market_profile sacado de las velas
             profile = market_profile(data=_df)
             profile.reset_index(inplace=True)
-            return bar_plot(df=profile, x_col_to_bars='Market_Profile', y_col='Volume', bar_segments='Is_Maker', split_colors=True, bins=bins, title=title+" from klines", height=height, y_axis_title='Buy takers VS Buy makers', **kwargs_update_layout)
+            return bar_plot(df=profile, x_col_to_bars='Market_Profile', y_col='Volume', bar_segments='Is_Maker', split_colors=True, bins=bins, title=title+" from klines", height=height, y_axis_title='Buy takers VS Buy makers', horizontal_bars=True, **kwargs_update_layout)
 
     def plot_trades_scatter(self, x: str = None, y: str = None, dot_symbol='Buyer was maker', color: str = None, marginal=True,
                             from_trades=True, height=1000, color_referenced_to_y=True,
