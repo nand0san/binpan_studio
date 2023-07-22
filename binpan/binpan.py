@@ -2849,346 +2849,10 @@ class Symbol(object):
         else:
             raise ValueError(f"Indicator '{name}' not found in the 'pandas_ta' module.")
 
-    # @staticmethod
-    # def pandas_ta_indicator(name: str,
-    #                         **kwargs):
-    #     """
-    #     Calls any indicator in pandas_ta library with function name as first argument and any kwargs the function will use.
-    #
-    #     Generic calls are not added to object, just returned.
-    #
-    #     More info: https://github.com/twopirllc/pandas-ta
-    #
-    #     :param str name: A function name. In example: 'massi' for Mass Index or 'rsi' for RSI indicator.
-    #     :param kwargs: Arguments for the requested indicator. Review pandas_ta info: https://github.com/twopirllc/pandas-ta#features
-    #     :return: Whatever returns pandas_ta
-    #
-    #     Example:
-    #
-    #     .. code-block::
-    #
-    #       sym = binpan.Symbol(symbol='LUNCBUSD', tick_interval='1m')
-    #
-    #       sym.pandas_ta_indicator(name='ichimoku', **{
-    #                                                 'high': sym.df['High'],
-    #                                                 'low': sym.df['Low'],
-    #                                                 'close': sym.df['Close'],
-    #                                                 'tenkan': 9,
-    #                                                 'kijun ': 26,
-    #                                                 'senkou ': 52})
-    #
-    #
-    #             (                              ISA_9    ISB_26     ITS_9    IKS_26    ICS_26
-    #              LUNCBUSD 1m UTC
-    #              2022-10-06 23:27:00+00:00       NaN       NaN       NaN       NaN  0.000285
-    #              2022-10-06 23:28:00+00:00       NaN       NaN       NaN       NaN  0.000285
-    #              2022-10-06 23:29:00+00:00       NaN       NaN       NaN       NaN  0.000285
-    #              2022-10-06 23:30:00+00:00       NaN       NaN       NaN       NaN  0.000285
-    #              2022-10-06 23:31:00+00:00       NaN       NaN       NaN       NaN  0.000285
-    #              ...                             ...       ...       ...       ...       ...
-    #              2022-10-07 16:01:00+00:00  0.000292  0.000293  0.000291  0.000291       NaN
-    #              2022-10-07 16:02:00+00:00  0.000292  0.000293  0.000292  0.000291       NaN
-    #              2022-10-07 16:03:00+00:00  0.000292  0.000293  0.000292  0.000291       NaN
-    #              2022-10-07 16:04:00+00:00  0.000292  0.000293  0.000292  0.000291       NaN
-    #              2022-10-07 16:05:00+00:00  0.000292  0.000293  0.000292  0.000291       NaN
-    #
-    #              [999 rows x 5 columns],
-    #                                            ISA_9    ISB_26
-    #              2022-10-10 16:05:00+00:00  0.000292  0.000293
-    #              2022-10-11 16:05:00+00:00  0.000292  0.000293
-    #              2022-10-12 16:05:00+00:00  0.000292  0.000293
-    #              2022-10-13 16:05:00+00:00  0.000292  0.000293
-    #              2022-10-14 16:05:00+00:00  0.000292  0.000293
-    #              ...                             ...       ...
-    #              2022-11-08 16:05:00+00:00  0.000291  0.000292
-    #              2022-11-09 16:05:00+00:00  0.000291  0.000292
-    #              2022-11-10 16:05:00+00:00  0.000292  0.000292
-    #              2022-11-11 16:05:00+00:00  0.000292  0.000292
-    #              2022-11-14 16:05:00+00:00  0.000292  0.000292
-    #
-    #              [26 rows x 2 columns])
-    #
-    #     """
-    #     if name == "ebsw":
-    #         return ta.ebsw(**kwargs)
-    #     elif name == "ao":
-    #         return ta.ao(**kwargs)
-    #     elif name == "apo":
-    #         return ta.apo(**kwargs)
-    #     elif name == "bias":
-    #         return ta.bias(**kwargs)
-    #     elif name == "bop":
-    #         return ta.bop(**kwargs)
-    #     elif name == "brar":
-    #         return ta.brar(**kwargs)
-    #     elif name == "cci":
-    #         return ta.cci(**kwargs)
-    #     elif name == "cfo":
-    #         return ta.cfo(**kwargs)
-    #     elif name == "cg":
-    #         return ta.cg(**kwargs)
-    #     elif name == "cmo":
-    #         return ta.cmo(**kwargs)
-    #     elif name == "coppock":
-    #         return ta.coppock(**kwargs)
-    #     elif name == "cti":
-    #         return ta.cti(**kwargs)
-    #     elif name == "dm":
-    #         return ta.dm(**kwargs)
-    #     elif name == "er":
-    #         return ta.er(**kwargs)
-    #     elif name == "eri":
-    #         return ta.eri(**kwargs)
-    #     elif name == "fisher":
-    #         return ta.fisher(**kwargs)
-    #     elif name == "inertia":
-    #         return ta.inertia(**kwargs)
-    #     elif name == "kdj":
-    #         return ta.kdj(**kwargs)
-    #     elif name == "kst":
-    #         return ta.kst(**kwargs)
-    #     elif name == "macd":
-    #         return ta.macd(**kwargs)
-    #     elif name == "mom":
-    #         return ta.mom(**kwargs)
-    #     elif name == "pgo":
-    #         return ta.pgo(**kwargs)
-    #     elif name == "ppo":
-    #         return ta.ppo(**kwargs)
-    #     elif name == "psl":
-    #         return ta.psl(**kwargs)
-    #     elif name == "pvo":
-    #         return ta.pvo(**kwargs)
-    #     elif name == "qqe":
-    #         return ta.qqe(**kwargs)
-    #     elif name == "roc":
-    #         return ta.roc(**kwargs)
-    #     elif name == "rsi":
-    #         return ta.rsi(**kwargs)
-    #     elif name == "rsx":
-    #         return ta.rsx(**kwargs)
-    #     elif name == "rvgi":
-    #         return ta.rvgi(**kwargs)
-    #     elif name == "stc":
-    #         return ta.stc(**kwargs)
-    #     elif name == "slope":
-    #         return ta.slope(**kwargs)
-    #     elif name == "squeeze":
-    #         return ta.squeeze(**kwargs)
-    #     elif name == "squeeze_pro":
-    #         return ta.squeeze_pro(**kwargs)
-    #     elif name == "stoch":
-    #         return ta.stoch(**kwargs)
-    #     elif name == "stochrsi":
-    #         return ta.stochrsi(**kwargs)
-    #     elif name == "td_seq":
-    #         return ta.td_seq(**kwargs)
-    #     elif name == "trix":
-    #         return ta.trix(**kwargs)
-    #     elif name == "tsi":
-    #         return ta.tsi(**kwargs)
-    #     elif name == "uo":
-    #         return ta.uo(**kwargs)
-    #     elif name == "willr":
-    #         return ta.willr(**kwargs)
-    #     elif name == "alma":
-    #         return ta.alma(**kwargs)
-    #     elif name == "dema":
-    #         return ta.dema(**kwargs)
-    #     elif name == "ema":
-    #         return ta.ema(**kwargs)
-    #     elif name == "fwma":
-    #         return ta.fwma(**kwargs)
-    #     elif name == "hilo":
-    #         return ta.hilo(**kwargs)
-    #     elif name == "hl2":
-    #         return ta.hl2(**kwargs)
-    #     elif name == "hlc3":
-    #         return ta.hlc3(**kwargs)
-    #     elif name == "hma":
-    #         return ta.hma(**kwargs)
-    #     elif name == "hwma":
-    #         return ta.hwma(**kwargs)
-    #     elif name == "ichimoku":
-    #         return ta.ichimoku(**kwargs)
-    #     elif name == "jma":
-    #         return ta.jma(**kwargs)
-    #     elif name == "kama":
-    #         return ta.kama(**kwargs)
-    #     elif name == "linreg":
-    #         return ta.linreg(**kwargs)
-    #     elif name == "mcgd":
-    #         return ta.mcgd(**kwargs)
-    #     elif name == "midpoint":
-    #         return ta.midpoint(**kwargs)
-    #     elif name == "midprice":
-    #         return ta.midprice(**kwargs)
-    #     elif name == "ohlc4":
-    #         return ta.ohlc4(**kwargs)
-    #     elif name == "pwma":
-    #         return ta.pwma(**kwargs)
-    #     elif name == "rma":
-    #         return ta.rma(**kwargs)
-    #     elif name == "sinwma":
-    #         return ta.sinwma(**kwargs)
-    #     elif name == "sma":
-    #         return ta.sma(**kwargs)
-    #     elif name == "ssf":
-    #         return ta.ssf(**kwargs)
-    #     elif name == "supertrend":
-    #         return ta.supertrend(**kwargs)
-    #     elif name == "swma":
-    #         return ta.swma(**kwargs)
-    #     elif name == "t3":
-    #         return ta.t3(**kwargs)
-    #     elif name == "tema":
-    #         return ta.tema(**kwargs)
-    #     elif name == "trima":
-    #         return ta.trima(**kwargs)
-    #     elif name == "vidya":
-    #         return ta.vidya(**kwargs)
-    #     elif name == "vwap":
-    #         return ta.vwap(**kwargs)
-    #     elif name == "vwma":
-    #         return ta.vwma(**kwargs)
-    #     elif name == "wcp":
-    #         return ta.wcp(**kwargs)
-    #     elif name == "wma":
-    #         return ta.wma(**kwargs)
-    #     elif name == "zlma":
-    #         return ta.zlma(**kwargs)
-    #     elif name == "drawdown":
-    #         return ta.drawdown(**kwargs)
-    #     elif name == "log_return":
-    #         return ta.log_return(**kwargs)
-    #     elif name == "percent_return":
-    #         return ta.percent_return(**kwargs)
-    #     elif name == "entropy":
-    #         return ta.entropy(**kwargs)
-    #     elif name == "kurtosis":
-    #         return ta.kurtosis(**kwargs)
-    #     elif name == "mad":
-    #         return ta.mad(**kwargs)
-    #     elif name == "median":
-    #         return ta.median(**kwargs)
-    #     elif name == "quantile":
-    #         return ta.quantile(**kwargs)
-    #     elif name == "skew":
-    #         return ta.skew(**kwargs)
-    #     elif name == "stdev":
-    #         return ta.stdev(**kwargs)
-    #     elif name == "tos_stdevall":
-    #         return ta.tos_stdevall(**kwargs)
-    #     elif name == "variance":
-    #         return ta.variance(**kwargs)
-    #     elif name == "zscore":
-    #         return ta.zscore(**kwargs)
-    #     elif name == "adx":
-    #         return ta.adx(**kwargs)
-    #     elif name == "amat":
-    #         return ta.amat(**kwargs)
-    #     elif name == "aroon":
-    #         return ta.aroon(**kwargs)
-    #     elif name == "chop":
-    #         return ta.chop(**kwargs)
-    #     elif name == "cksp":
-    #         return ta.cksp(**kwargs)
-    #     elif name == "decay":
-    #         return ta.decay(**kwargs)
-    #     elif name == "decreasing":
-    #         return ta.decreasing(**kwargs)
-    #     elif name == "dpo":
-    #         return ta.dpo(**kwargs)
-    #     elif name == "increasing":
-    #         return ta.increasing(**kwargs)
-    #     elif name == "long_run":
-    #         return ta.long_run(**kwargs)
-    #     elif name == "psar":
-    #         return ta.psar(**kwargs)
-    #     elif name == "qstick":
-    #         return ta.qstick(**kwargs)
-    #     elif name == "short_run":
-    #         return ta.short_run(**kwargs)
-    #     elif name == "tsignals":
-    #         return ta.tsignals(**kwargs)
-    #     elif name == "ttm_trend":
-    #         return ta.ttm_trend(**kwargs)
-    #     elif name == "vhf":
-    #         return ta.vhf(**kwargs)
-    #     elif name == "vortex":
-    #         return ta.vortex(**kwargs)
-    #     elif name == "xsignals":
-    #         return ta.xsignals(**kwargs)
-    #     elif name == "above":
-    #         return ta.above(**kwargs)
-    #     elif name == "above_value":
-    #         return ta.above_value(**kwargs)
-    #     elif name == "below":
-    #         return ta.below(**kwargs)
-    #     elif name == "below_value":
-    #         return ta.below_value(**kwargs)
-    #     elif name == "cross":
-    #         return ta.cross(**kwargs)
-    #     elif name == "aberration":
-    #         return ta.aberration(**kwargs)
-    #     elif name == "accbands":
-    #         return ta.accbands(**kwargs)
-    #     elif name == "atr":
-    #         return ta.atr(**kwargs)
-    #     elif name == "bbands":
-    #         return ta.bbands(**kwargs)
-    #     elif name == "donchian":
-    #         return ta.donchian(**kwargs)
-    #     elif name == "hwc":
-    #         return ta.hwc(**kwargs)
-    #     elif name == "kc":
-    #         return ta.kc(**kwargs)
-    #     elif name == "massi":
-    #         return ta.massi(**kwargs)
-    #     elif name == "natr":
-    #         return ta.natr(**kwargs)
-    #     elif name == "pdist":
-    #         return ta.pdist(**kwargs)
-    #     elif name == "rvi":
-    #         return ta.rvi(**kwargs)
-    #     elif name == "thermo":
-    #         return ta.thermo(**kwargs)
-    #     elif name == "true_range":
-    #         return ta.true_range(**kwargs)
-    #     elif name == "ui":
-    #         return ta.ui(**kwargs)
-    #     elif name == "ad":
-    #         return ta.ad(**kwargs)
-    #     elif name == "adosc":
-    #         return ta.adosc(**kwargs)
-    #     elif name == "aobv":
-    #         return ta.aobv(**kwargs)
-    #     elif name == "cmf":
-    #         return ta.cmf(**kwargs)
-    #     elif name == "efi":
-    #         return ta.efi(**kwargs)
-    #     elif name == "eom":
-    #         return ta.eom(**kwargs)
-    #     elif name == "kvo":
-    #         return ta.kvo(**kwargs)
-    #     elif name == "mfi":
-    #         return ta.mfi(**kwargs)
-    #     elif name == "nvi":
-    #         return ta.nvi(**kwargs)
-    #     elif name == "obv":
-    #         return ta.obv(**kwargs)
-    #     elif name == "pvi":
-    #         return ta.pvi(**kwargs)
-    #     elif name == "pvol":
-    #         return ta.pvol(**kwargs)
-    #     elif name == "pvr":
-    #         return ta.pvr(**kwargs)
-    #     elif name == "pvt":
-    #         return ta.pvt(**kwargs)
-    #     elif name == "vp":
-    #         return ta.vp(**kwargs)
-
-    def support_resistance(self, from_atomic: bool = True, from_aggregated: bool = False, max_clusters: int = 10,
+    def support_resistance(self,
+                           from_atomic: bool = False,
+                           from_aggregated: bool = False,
+                           max_clusters: int = 10,
                            by_quantity: float = None) -> Tuple[List[float], List[float]]:
         """
         Calculate support and resistance levels for the Symbol based on either atomic trades or aggregated trades.
@@ -3199,16 +2863,28 @@ class Symbol(object):
         :param float by_quantity: It takes each price into account by how many times the specified quantity appears in "Quantity" column.
         :return: A tuple containing two lists: the first list contains support levels, and the second list contains resistance levels.
         """
+
         if from_atomic:
             if self.atomic_trades.empty:
                 print(f"Please add atomic trades first: my_symbol.get_atomic_trades()")
             else:
+                if not by_quantity:
+                    by_quantity = np.mean(self.atomic_trades['Quantity'].values)
                 self.s_lines, self.r_lines = support_resistance_levels(self.atomic_trades, max_clusters=max_clusters, by_quantity=by_quantity)
         elif from_aggregated:
             if self.agg_trades.empty:
                 print(f"Please add aggregated trades first: my_symbol.get_agg_trades()")
             else:
+                if not by_quantity:
+                    by_quantity = np.mean(self.agg_trades['Quantity'].values)
                 self.s_lines, self.r_lines = support_resistance_levels(self.agg_trades, max_clusters=max_clusters, by_quantity=by_quantity)
+        else:  # with klines
+            if not by_quantity:
+                by_quantity = np.mean(self.df['Volume'].values)
+            self.s_lines, self.r_lines = support_resistance_levels(self.df,
+                                                                   max_clusters=max_clusters,
+                                                                   by_quantity=by_quantity,
+                                                                   by_klines=True)
         return self.s_lines, self.r_lines
 
     #############

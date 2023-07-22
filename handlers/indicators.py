@@ -478,27 +478,31 @@ def reversal_candles(trades: pd.DataFrame,
     return klines
 
 
-def repeat_prices_by_quantity(data: pd.DataFrame, epsilon_quantity: float) -> np.ndarray:
+def repeat_prices_by_quantity(data: pd.DataFrame,
+                              epsilon_quantity: float,
+                              price_col="Prices",
+                              qty_col='Quantity') -> np.ndarray:
     repeated_prices = []
-    for price, quantity in data[['Price', 'Quantity']].values:
+    for price, quantity in data[[price_col, qty_col]].values:
         repeat_count = int(-(quantity // -epsilon_quantity))  # ceil division
         repeated_prices.extend([price] * repeat_count)
 
     return np.array(repeated_prices).reshape(-1, 1)
 
 
-def support_resistance_levels(data: pd.DataFrame, max_clusters: int = 10, by_quantity: float = None) -> tuple:
+def support_resistance_levels(data: pd.DataFrame, max_clusters: int = 10, by_quantity: float = None, by_klines=True) -> tuple:
     """
     Calculate support and resistance levels for a given set of trades using K-means clustering.
 
     .. image:: images/indicators/support_resistance.png
            :width: 1000
 
-    :param data: A pandas DataFrame with trade data, containing a 'Price', 'Quantity' columns and a 'Buyer was maker' column.
+    :param data: A pandas DataFrame with trade data or klines, containing a 'Price', 'Quantity' columns and a 'Buyer was maker' column.
     :param max_clusters: Maximum number of clusters to consider for finding the optimal number of centroids.
     :param float by_quantity: Count each price as many times the quantity contains a float of a the passed amount.
         Example: If a price 0.001 has a quantity of 100 and by_quantity is 0.1, quantity/by_quantity = 100/0.1 = 1000, then this prices
         is taken into account 1000 times instead of 1.
+    :param bool by_klines: If true, use market profile from klines.
     :return: A tuple containing two lists: the first list contains the support levels, and the second list contains
         the resistance levels. Both lists contain float values.
     """
@@ -524,11 +528,20 @@ def support_resistance_levels(data: pd.DataFrame, max_clusters: int = 10, by_qua
             inertia.append(kmeans.inertia_)
         return np.argmin(np.gradient(np.gradient(inertia))) + 1
 
-    buy_data = data.loc[data['Buyer was maker'] == False]
-    sell_data = data.loc[data['Buyer was maker'] == True]
-    if by_quantity:
+    if not by_klines:
+        buy_data = data.loc[data['Buyer was maker'] == False]
+        sell_data = data.loc[data['Buyer was maker'] == True]
+    else:
+        profile = market_profile(data=data).reset_index()
+        buy_data = profile.loc[profile['Is_Maker'] == True]
+        sell_data = profile.loc[profile['Is_Maker'] == False]
+
+    if by_quantity and not by_klines:
         buy_prices = repeat_prices_by_quantity(data=buy_data, epsilon_quantity=by_quantity)
-        sell_prices = repeat_prices_by_quantity(data=buy_data, epsilon_quantity=by_quantity)
+        sell_prices = repeat_prices_by_quantity(data=sell_data, epsilon_quantity=by_quantity)
+    elif by_quantity and by_klines:
+        buy_prices = repeat_prices_by_quantity(data=buy_data, epsilon_quantity=by_quantity, price_col="Market_Profile", qty_col="Volume")
+        sell_prices = repeat_prices_by_quantity(data=sell_data, epsilon_quantity=by_quantity, price_col="Market_Profile", qty_col="Volume")
     else:
         buy_prices = buy_data['Price'].values.reshape(-1, 1)
         sell_prices = sell_data['Price'].values.reshape(-1, 1)
