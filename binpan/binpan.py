@@ -24,7 +24,7 @@ from handlers.exchange import get_decimal_positions, get_info_dic, get_precision
 from handlers.files import select_file, read_csv_to_dataframe, save_dataframe_to_csv
 
 from handlers.indicators import df_splitter, reversal_candles, zoom_cloud_indicators, ichimoku, fractal_w, support_resistance_levels, \
-    ffill_indicator, shift_indicator
+    ffill_indicator, shift_indicator, market_profile
 
 from handlers.logs import Logs
 
@@ -247,7 +247,7 @@ class Symbol(object):
                                          'T': "Timestamp", 'm': "Buyer was maker", 'M': "Best price match"}
 
         # updated from binpan cache modificados para el parser
-        self.atomic_trades_columns_redis = {'t': "Trade Id", 'p': 'Price', 'q': 'Quantity', # quote qty missing in atomic trades websockets
+        self.atomic_trades_columns_redis = {'t': "Trade Id", 'p': 'Price', 'q': 'Quantity',  # quote qty missing in atomic trades websockets
                                             'b': "Buyer Order Id", 'a': "Seller Order Id", 'T': "Timestamp", 'm': "Buyer was maker",
                                             'M': "Best price match"}
 
@@ -1743,7 +1743,10 @@ class Symbol(object):
             if endTime:
                 _df = _df[_df['Timestamp'] <= endTime]
             binpan_logger.info(f"Using klines data. For deeper info add trades data, example: my_symbol.get_agg_trades()")
-            return bar_plot(df=_df, x_col_to_bars='Close', y_col='Volume', y_axis_title=f'Volume {self.symbol}', split_colors=False, bins=bins, title=title, height=height, **kwargs_update_layout)
+            # todo: market_profile sacado de las velas
+            profile = market_profile(data=_df)
+            profile.reset_index(inplace=True)
+            return bar_plot(df=profile, x_col_to_bars='Market_Profile', y_col='Volume', bar_segments='Is_Maker', split_colors=True, bins=bins, title=title+" from klines", height=height, y_axis_title='Buy takers VS Buy makers', **kwargs_update_layout)
 
     def plot_trades_scatter(self, x: str = None, y: str = None, dot_symbol='Buyer was maker', color: str = None, marginal=True,
                             from_trades=True, height=1000, color_referenced_to_y=True,

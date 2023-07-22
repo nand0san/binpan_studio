@@ -964,10 +964,12 @@ def plot_trades(data: pd.DataFrame, max_size: int = 60, height: int = 1000, loga
         if shifted:
             title = f"{title} with High and Low Prices (shifted {shifted} candle to the right)"
             inferred_overlap = infer_frequency_and_set_index(data=overlap_prices, timestamp_column="Open timestamp")
-            # plot_data = overlap_prices[
-            #     (overlap_prices['Open timestamp'] >= start) & (overlap_prices['Open timestamp'] <= end)].shift(1, freq='infer')
-            plot_data = inferred_overlap[
-                (inferred_overlap['Open timestamp'] >= start) & (inferred_overlap['Open timestamp'] <= end)].shift(1, freq='infer')
+            try:
+                plot_data = inferred_overlap[
+                    (inferred_overlap['Open timestamp'] >= start) & (inferred_overlap['Open timestamp'] <= end)].shift(1, freq='infer')
+            except ValueError:
+                plot_data = overlap_prices[
+                    (overlap_prices['Open timestamp'] >= start) & (overlap_prices['Open timestamp'] <= end)].shift(1)
         else:
             title = f"{title} with High and Low Prices"
             plot_data = overlap_prices[(overlap_prices['Open timestamp'] >= start) & (overlap_prices['Open timestamp'] <= end)]

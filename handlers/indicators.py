@@ -622,3 +622,50 @@ def time_active_zones(data: pd.DataFrame, max_clusters: int = 10, by_quantity: f
     resistance_levels = np.sort(kmeans_sell.cluster_centers_, axis=0)
 
     return support_levels.flatten().tolist(), resistance_levels.flatten().tolist()
+
+
+# def market_profile(data: pd.DataFrame):
+#     """
+#     Calculate the market profile for a given OHLC data. The function calculates the average price for each candle
+#     (high + low + close) / 3, and then calculates the 'maker' and 'taker' volumes for each average price.
+#
+#     :param data: A pandas DataFrame with the OHLC data. It should contain 'High', 'Low', 'Close', 'Volume', and
+#                'Taker buy base volume' columns.
+#     :return: A pandas DataFrame grouped by the average price ('Market_Profile') with the sum of 'Taker buy base volume'
+#              and 'Maker_Volume' for each average price.
+#     """
+#     df = data.copy(deep=True)
+#     df['Market_Profile'] = (df['High'] + df['Low'] + df['Close']) / 3
+#     df['Maker buy base volume'] = df['Volume'] - df['Taker buy base volume']
+#     df_grouped = df.groupby('Market_Profile').agg({'Taker buy base volume': 'sum', 'Maker buy base volume': 'sum'})
+#     df_grouped['Volume'] = df_grouped['Taker buy base volume'] + df_grouped['Maker buy base volume']
+#     return df_grouped.sort_index()
+def market_profile(data: pd.DataFrame):
+    """
+    Calculate the market profile for a given OHLC data. The function calculates the average price for each candle
+    (high + low + close) / 3, and then calculates the 'maker' and 'taker' volumes for each average price.
+
+    :param data: A pandas DataFrame with the OHLC data. It should contain 'High', 'Low', 'Close', 'Volume', and
+               'Taker buy base volume' columns.
+    :return: A pandas DataFrame grouped by the average price ('Market_Profile') with the sum of 'Taker buy base volume'
+             and 'Maker_Volume' for each average price.
+    """
+    df = data.copy(deep=True)
+    df['Market_Profile'] = (df['High'] + df['Low'] + df['Close']) / 3
+    df['Maker buy base volume'] = df['Volume'] - df['Taker buy base volume']
+
+    # Rename the existing 'Volume' column
+    df.rename(columns={'Volume': 'Total_Volume'}, inplace=True)
+
+    # Melt the dataframe to unpivot the volume columns
+    df_melt = df.melt(id_vars='Market_Profile', value_vars=['Taker buy base volume', 'Maker buy base volume'],
+                      var_name='Is_Maker', value_name='Volume')
+
+    # Convert the 'Is_Maker' column to boolean
+    df_melt['Is_Maker'] = df_melt['Is_Maker'] == 'Maker buy base volume'
+
+    # Group by 'Market_Profile' and 'Is_Maker' and sum the volumes
+    df_grouped = df_melt.groupby(['Market_Profile', 'Is_Maker']).agg({'Volume': 'sum'})
+
+    return df_grouped.sort_index()
+
