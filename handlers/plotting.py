@@ -18,6 +18,7 @@ import numpy as np
 
 from .logs import Logs
 from .exceptions import BinPanException
+from .time_helper import infer_frequency_and_set_index
 
 plot_logger = Logs(filename='./logs/plotting.log', name='plotting', info_level='INFO')
 
@@ -962,8 +963,11 @@ def plot_trades(data: pd.DataFrame, max_size: int = 60, height: int = 1000, loga
         # shift added for more reality viewing trades effect on klines
         if shifted:
             title = f"{title} with High and Low Prices (shifted {shifted} candle to the right)"
-            plot_data = overlap_prices[
-                (overlap_prices['Open timestamp'] >= start) & (overlap_prices['Open timestamp'] <= end)].shift(1, freq='infer')
+            inferred_overlap = infer_frequency_and_set_index(data=overlap_prices, timestamp_column="Open timestamp")
+            # plot_data = overlap_prices[
+            #     (overlap_prices['Open timestamp'] >= start) & (overlap_prices['Open timestamp'] <= end)].shift(1, freq='infer')
+            plot_data = inferred_overlap[
+                (inferred_overlap['Open timestamp'] >= start) & (inferred_overlap['Open timestamp'] <= end)].shift(1, freq='infer')
         else:
             title = f"{title} with High and Low Prices"
             plot_data = overlap_prices[(overlap_prices['Open timestamp'] >= start) & (overlap_prices['Open timestamp'] <= end)]

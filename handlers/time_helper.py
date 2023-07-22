@@ -31,7 +31,9 @@ pandas_freq_tick_interval = {'1m': '1T',
 tick_interval_values = ['1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '6h', '8h', '12h', '1d', '3d', '1w', '1M']
 
 
-# time control functions
+##########################
+# time control functions #
+##########################
 
 
 def convert_ms_column_to_datetime_with_zone(df: pd.DataFrame, col: str, time_zone='Europe/Madrid', ambiguous='infer') -> pd.Series:
@@ -329,9 +331,45 @@ def calculate_iterations(start_time: int, end_time: int, tick_interval_ms: int, 
     :param int end_time: End timestamp (milliseconds) of the time range.
     :param int tick_interval_ms: Kline tick interval in milliseconds.
     :param int limit: API limit for the number of klines in a single request (default: 1000).
-    :return: The number of iterations required to retrieve data within the given time range.
-    :rtype: int
+    :return int: The number of iterations required to retrieve data within the given time range.
     """
     total_intervals = (end_time - start_time) // tick_interval_ms
     iterations = (total_intervals + limit - 1) // limit
     return iterations
+
+
+def infer_frequency_and_set_index(data: pd.DataFrame, timestamp_column: str = 'Open timestamp',
+                                  timezone: str = None) -> pd.DataFrame:
+    """
+    Infers the frequency of the DataFrame based on the 'Open timestamp' column and sets it as the DataFrame index.
+
+    :param pd.DataFrame data: Input DataFrame with a column containing timestamps in milliseconds.
+    :param str timestamp_column: Name of the column in the DataFrame that contains the timestamps. Default is 'Open timestamp'.
+    :param str timezone: The timezone to use when converting timestamps to datetime. Default is None to get from the dataframe data.
+    :return pd.DataFrame: DataFrame with the timestamp column set as the index and the frequency inferred and set.
+    :raises ValueError: If the DataFrame index is not of type datetime.
+    """
+    timezone_from_data = data.index.name.split()[-1]
+    if not timezone:
+        timezone = timezone_from_data
+
+    df = data.copy(deep=True)
+    # Convertir el timestamp de milisegundos a datetime y establecerlo como índice
+    df = df.set_index(pd.to_datetime(df[timestamp_column], unit='ms').dt.tz_localize('UTC').dt.tz_convert(timezone))
+
+    # Verificar que el índice es de tipo datetime
+    if not isinstance(df.index, pd.DatetimeIndex):
+        raise ValueError("El índice del DataFrame debe ser de tipo datetime.")
+    # Inferir la frecuencia
+    inferred_freq = pd.infer_freq(df.index)
+
+    # Si se pudo inferir una frecuencia, establecerla en el índice
+    if inferred_freq:
+        df = df.asfreq(inferred_freq)
+    else:
+        print("No se pudo inferir una frecuencia para el índice.")
+    return df
+
+
+
+
