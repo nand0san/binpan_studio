@@ -176,7 +176,7 @@ html.dark {
 <td><p>The fractal indicator is based on a simple price pattern that is frequently seen in financial markets.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.support_resistance_volume" title="handlers.indicators.support_resistance_volume"><code class="xref py py-obj docutils literal notranslate"><span class="pre">support_resistance_volume</span></code></a>(df[, num_bins, ...])</p></td>
-<td><p>Calculate support and resistance levels based on volume and prices in the given dataframe.</p></td>
+<td><p>Calculates support and resistance levels based on volume and prices in the given dataframe.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.split_serie_by_position" title="handlers.indicators.split_serie_by_position"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_serie_by_position</span></code></a>(serie, splitter_serie)</p></td>
 <td><p>Splits a serie by values of other serie in four series by relative positions for plotting colored clouds with plotly.</p></td>
@@ -234,6 +234,7 @@ indicator, the most period needed, the most volatile price.</p>
 that points.</p>
 </dd>
 </dl>
+<a class="reference internal image-reference" href="_images/fractal_w.png"><img alt="_images/fractal_w.png" src="_images/fractal_w.png" style="width: 1000px;" /></a>
 </dd></dl>
 
 <dl class="py function">
@@ -253,6 +254,7 @@ that points.</p>
 <dd class="field-even"><p>Max min diffs mean and Min diffs mean.</p>
 </dd>
 </dl>
+<a class="reference internal image-reference" href="_images/fractal_w.png"><img alt="_images/fractal_w.png" src="_images/fractal_w.png" style="width: 1000px;" /></a>
 </dd></dl>
 
 <dl class="py function">
@@ -331,34 +333,27 @@ The indicator isolates potential turning points on a price chart. It then draws 
 that points.</p>
 </dd>
 </dl>
+<a class="reference internal image-reference" href="_images/fractal_w.png"><img alt="_images/fractal_w.png" src="_images/fractal_w.png" style="width: 1000px;" /></a>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.indicators.support_resistance_volume">
 <span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">support_resistance_volume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">price_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Close'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">volume_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Volume'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">90</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.indicators.support_resistance_volume" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate support and resistance levels based on volume and prices in the given dataframe.</p>
-<section id="parameters">
-<h2>Parameters<a class="headerlink" href="#parameters" title="Permalink to this heading">¶</a></h2>
-<dl class="simple">
-<dt>df<span class="classifier">pandas.DataFrame</span></dt><dd><p>The dataframe containing price and volume data.</p>
+<dd><p>Calculates support and resistance levels based on volume and prices in the given dataframe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – The dataframe containing price and volume data.</p></li>
+<li><p><strong>num_bins</strong> (<em>int</em>) – Optional. The number of bins to use for accumulating volume. Default is 100.</p></li>
+<li><p><strong>price_col</strong> (<em>str</em>) – Optional. The name of the column containing price data. Default is ‘Close’.</p></li>
+<li><p><strong>volume_col</strong> (<em>str</em>) – Optional. The name of the column containing volume data. Default is ‘Volume’.</p></li>
+<li><p><strong>threshold</strong> (<em>int</em>) – Percentil to show most traded levels. Default is 90.</p></li>
+</ul>
 </dd>
-<dt>num_bins<span class="classifier">int, optional</span></dt><dd><p>The number of bins to use for accumulating volume, by default 100.</p>
-</dd>
-<dt>price_col<span class="classifier">str, optional</span></dt><dd><p>The name of the column containing price data, by default ‘Close’.</p>
-</dd>
-<dt>volume_col<span class="classifier">str, optional</span></dt><dd><p>The name of the column containing volume data, by default ‘Volume’.</p>
-</dd>
-<dt>threshold<span class="classifier">int</span></dt><dd><p>Percentil to show most traded levels. Default is 90.</p>
-</dd>
-</dl>
-</section>
-<section id="returns">
-<h2>Returns<a class="headerlink" href="#returns" title="Permalink to this heading">¶</a></h2>
-<dl class="simple">
-<dt>list</dt><dd><p>A sorted list of support and resistance levels.</p>
+<dt class="field-even">Return list<span class="colon">:</span></dt>
+<dd class="field-even"><p>A sorted list of support and resistance levels.</p>
 </dd>
 </dl>
-</section>
 </dd></dl>
 
 <dl class="py function">

@@ -30,6 +30,9 @@ def alternating_fractal_indicator(df: pd.DataFrame, max_period: int = None, suff
     :param str suffix: A decorative suffix for the name of the column created.
     :return pd.DataFrame: A dataframe with two columns, one with 1 or -1 for local max or local min to tag, and other with price values for
      that points.
+
+    .. image:: images/indicators/fractal_w.png
+        :width: 1000
     """
     fractal = None
     if not max_period:
@@ -54,6 +57,8 @@ def fractal_trend_indicator(df: pd.DataFrame, period: int = None, fractal: pd.Da
     :param str suffix: A decorative suffix for the name of the column created.
     :return tuple: Max min diffs mean and Min diffs mean.
 
+    .. image:: images/indicators/fractal_w.png
+        :width: 1000
     """
     if not period:
         period = len(df)
@@ -171,6 +176,9 @@ def fractal_w_indicator(data: pd.DataFrame, period=2, merged: bool = True, suffi
     :param bool fill_with_zero: If true fills nans with zeros. Its better to plot with binpan.
     :return pd.DataFrame: A dataframe with two columns, one with 1 or -1 for local max or local min to tag, and other with price values for
      that points.
+
+    .. image:: images/indicators/fractal_w.png
+        :width: 1000
     """
     window = 2 * period + 1  # default 5
 
@@ -214,25 +222,14 @@ def fractal_w_indicator(data: pd.DataFrame, period=2, merged: bool = True, suffi
 
 def support_resistance_volume(df, num_bins=100, price_col='Close', volume_col='Volume', threshold=90):
     """
-    Calculate support and resistance levels based on volume and prices in the given dataframe.
+    Calculates support and resistance levels based on volume and prices in the given dataframe.
 
-    Parameters
-    ----------
-    df : pandas.DataFrame
-        The dataframe containing price and volume data.
-    num_bins : int, optional
-        The number of bins to use for accumulating volume, by default 100.
-    price_col : str, optional
-        The name of the column containing price data, by default 'Close'.
-    volume_col : str, optional
-        The name of the column containing volume data, by default 'Volume'.
-    threshold : int
-        Percentil to show most traded levels. Default is 90.
-
-    Returns
-    -------
-    list
-        A sorted list of support and resistance levels.
+    :param pd.DataFrame df: The dataframe containing price and volume data.
+    :param int num_bins: Optional. The number of bins to use for accumulating volume. Default is 100.
+    :param str price_col: Optional. The name of the column containing price data. Default is 'Close'.
+    :param str volume_col: Optional. The name of the column containing volume data. Default is 'Volume'.
+    :param int threshold: Percentil to show most traded levels. Default is 90.
+    :return list: A sorted list of support and resistance levels.
     """
 
     # Calculate the price range
