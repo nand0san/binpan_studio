@@ -10,19 +10,67 @@ import numpy as np
 
 from .time_helper import convert_milliseconds_to_time_zone_datetime
 from .time_helper import pandas_freq_tick_interval
+from .tags import is_alternating
 
 
 ##############
 # INDICATORS #
 ##############
 
-def ichimoku(data: pd.DataFrame,
-             tenkan: int = 9,
-             kijun: int = 26,
-             chikou_span: int = 26,
-             senkou_cloud_base: int = 52,
-             suffix: str = '',
-             ) -> pd.DataFrame:
+def alternating_fractal_indicator(df: pd.DataFrame, max_period: int = None, suffix: str = "") -> pd.DataFrame or None:
+    """
+    Obtains the minim value for fractal_w periods as fractal is pure alternating max to mins. In other words, max and mins alternates
+    in regular rhythm without any tow max or two mins consecutively.
+
+    This custom indicator shows the minimum period in finding a pure alternating fractal. It is some kind of volatility in price
+    indicator, the most period needed, the most volatile price.
+
+    :param pd.DataFrame df: BinPan Symbol dataframe.
+    :param int max_period: Default is len of df. This method will check from 2 to the max period value to find a puer alternating max to mins.
+    :param str suffix: A decorative suffix for the name of the column created.
+    :return pd.DataFrame: A dataframe with two columns, one with 1 or -1 for local max or local min to tag, and other with price values for
+     that points.
+    """
+    fractal = None
+    if not max_period:
+        max_period = len(df)
+    for i in tqdm(range(2, max_period)):
+        fractal = fractal_w_indicator(data=df, period=i, suffix=suffix, fill_with_zero=True)
+        max_min = fractal[f"Fractal_W_{i}"].fillna(0)
+        if is_alternating(lst=max_min.tolist()):
+            break
+        else:
+            fractal = None
+    return fractal
+
+
+def fractal_trend_indicator(df: pd.DataFrame, period: int = None, fractal: pd.DataFrame = None, suffix: str = "") -> tuple or None:
+    """
+    Obtains the trend of the fractal_w indicator. It will return maximums diff mean and minimums diff mean also in a tuple.
+
+    :param pd.DataFrame df: BinPan Symbol dataframe.
+    :param int period: Period to obtain fractal_w. Default is len df.
+    :param pd.DataFrame fractal: Optional. If not provided, it will be calculated.
+    :param str suffix: A decorative suffix for the name of the column created.
+    :return tuple: Max min diffs mean and Min diffs mean.
+
+    """
+    if not period:
+        period = len(df)
+    if type(fractal) != pd.DataFrame:
+        fractal = alternating_fractal_indicator(df=df, max_period=period, suffix=suffix)
+    if type(fractal) != pd.DataFrame:
+        return
+    max_min_col, values_col = fractal.columns[0], fractal.columns[1]
+    max_prices = fractal.loc[fractal[max_min_col] == 1, values_col].reindex(df.index).ffill()
+    min_prices = fractal.loc[fractal[max_min_col] == -1, values_col].reindex(df.index).ffill()
+    max_trend = max_prices.diff().dropna().mean()
+    min_trend = min_prices.diff().dropna().mean()
+    return max_trend, min_trend
+
+
+def ichimoku(data: pd.DataFrame, tenkan: int = 9, kijun: int = 26, chikou_span: int = 26, senkou_cloud_base: int = 52,
+             suffix: str = '', ) -> pd.DataFrame:
     """
     The Ichimoku Cloud is a collection of technical indicators that show support and resistance levels, as well as momentum and trend
     direction. It does this by taking multiple averages and plotting them on a chart. It also uses these figures to compute a “cloud”
@@ -87,17 +135,12 @@ def ichimoku(data: pd.DataFrame,
     if suffix:
         suffix = '_' + suffix
 
-    ret.columns = [f"Ichimoku_tenkan_{tenkan}" + suffix,
-                   f"Ichimoku_kijun_{kijun}" + suffix,
-                   f"Ichimoku_chikou_span{chikou_span}" + suffix,
-                   f"Ichimoku_cloud_{tenkan}_{kijun}" + suffix,
-                   f"Ichimoku_cloud_{senkou_cloud_base}" + suffix]
+    ret.columns = [f"Ichimoku_tenkan_{tenkan}" + suffix, f"Ichimoku_kijun_{kijun}" + suffix, f"Ichimoku_chikou_span{chikou_span}" + suffix,
+                   f"Ichimoku_cloud_{tenkan}_{kijun}" + suffix, f"Ichimoku_cloud_{senkou_cloud_base}" + suffix]
     return ret
 
 
-def ker(close: pd.Series,
-        window: int,
-        ) -> pd.Series:
+def ker(close: pd.Series, window: int, ) -> pd.Series:
     """
     Kaufman's Efficiency Ratio based in: https://stackoverflow.com/questions/36980238/calculating-kaufmans-efficiency-ratio-in-python-with-pandas
 
@@ -111,27 +154,23 @@ def ker(close: pd.Series,
     return direction / volatility
 
 
-def fractal_w(data: pd.DataFrame,
-              period=2,
-              merged: bool = True,
-              suffix: str = '',
-              fill_with_zero: bool = None,
-              ) -> pd.DataFrame:
+def fractal_w_indicator(data: pd.DataFrame, period=2, merged: bool = True, suffix: str = '', fill_with_zero: bool = None, ) -> pd.DataFrame:
     """
     The fractal indicator is based on a simple price pattern that is frequently seen in financial markets. Outside of trading, a fractal
     is a recurring geometric pattern that is repeated on all time frames. From this concept, the fractal indicator was devised.
     The indicator isolates potential turning points on a price chart. It then draws arrows to indicate the existence of a pattern.
 
-    https://www.investopedia.com/terms/f/fractal.asp
+        https://www.investopedia.com/terms/f/fractal.asp
 
-    From: https://codereview.stackexchange.com/questions/259703/william-fractal-technical-indicator-implementation
+        From: https://codereview.stackexchange.com/questions/259703/william-fractal-technical-indicator-implementation
 
     :param pd.DataFrame data: BinPan dataframe with High prices.
     :param int period: Default is 2. Count of neighbour candles to match max or min tags.
     :param bool merged: If True, values are merged into one pd.Serie. minimums overwrite maximums in case of coincidence.
     :param str suffix: A decorative suffix for the name of the column created.
     :param bool fill_with_zero: If true fills nans with zeros. Its better to plot with binpan.
-    :return pd.Series: A serie with 1 or -1 for local max or local min to tag.
+    :return pd.DataFrame: A dataframe with two columns, one with 1 or -1 for local max or local min to tag, and other with price values for
+     that points.
     """
     window = 2 * period + 1  # default 5
 
@@ -226,9 +265,7 @@ def support_resistance_volume(df, num_bins=100, price_col='Close', volume_col='V
 # INDICATORS UTILS #
 ####################
 
-def split_serie_by_position(serie: pd.Series,
-                            splitter_serie: pd.Series,
-                            fill_with_zeros: bool = True) -> pd.DataFrame:
+def split_serie_by_position(serie: pd.Series, splitter_serie: pd.Series, fill_with_zeros: bool = True) -> pd.DataFrame:
     """
     Splits a serie by values of other serie in four series by relative positions for plotting colored clouds with plotly.
 
@@ -300,10 +337,7 @@ def df_splitter(data: pd.DataFrame, up_column: str, down_column: str) -> list:
     return dfs
 
 
-def zoom_cloud_indicators(plot_splitted_serie_couples: dict,
-                          main_index: list,
-                          start_idx: int,
-                          end_idx: int) -> dict:
+def zoom_cloud_indicators(plot_splitted_serie_couples: dict, main_index: list, start_idx: int, end_idx: int) -> dict:
     """
     It zooms the cloud indicators in an index interval for a plot zoom.
 
@@ -316,8 +350,7 @@ def zoom_cloud_indicators(plot_splitted_serie_couples: dict,
     try:
         assert start_idx < end_idx <= len(main_index)
     except AssertionError:
-        raise Exception(
-            f"BinPan Plot Error: Zoom index not valid. Not start={start_idx} < end={end_idx} < len={len(main_index)}")
+        raise Exception(f"BinPan Plot Error: Zoom index not valid. Not start={start_idx} < end={end_idx} < len={len(main_index)}")
 
     ret = {}
     my_start = main_index[start_idx]
@@ -362,10 +395,7 @@ def ffill_indicator(serie: pd.Series, window: int = 1):
 # From trades #
 ###############
 
-def reversal_candles(trades: pd.DataFrame,
-                     decimal_positions: int,
-                     time_zone: str,
-                     min_height: int = 7,
+def reversal_candles(trades: pd.DataFrame, decimal_positions: int, time_zone: str, min_height: int = 7,
                      min_reversal: int = 4) -> pd.DataFrame:
     """
     Generate reversal candles for reversal charts:
@@ -463,8 +493,8 @@ def reversal_candles(trades: pd.DataFrame,
 
     ret = pd.concat(data, axis=1, keys=[s.name for s in data])
 
-    klines = ret.groupby(['Candle']).agg(
-        {'Open': 'first', 'High': 'last', 'Low': 'last', 'Close': 'last', 'Quantity': 'sum', 'Timestamp': 'first'})
+    klines = ret.groupby(['Candle']).agg({'Open': 'first', 'High': 'last', 'Low': 'last', 'Close': 'last', 'Quantity': 'sum',
+                                          'Timestamp': 'first'})
 
     date_index = klines['Timestamp'].apply(convert_milliseconds_to_time_zone_datetime, timezoned=time_zone)
     klines.set_index(date_index, inplace=True)
@@ -478,10 +508,7 @@ def reversal_candles(trades: pd.DataFrame,
     return klines
 
 
-def repeat_prices_by_quantity(data: pd.DataFrame,
-                              epsilon_quantity: float,
-                              price_col="Prices",
-                              qty_col='Quantity') -> np.ndarray:
+def repeat_prices_by_quantity(data: pd.DataFrame, epsilon_quantity: float, price_col="Prices", qty_col='Quantity') -> np.ndarray:
     repeated_prices = []
     for price, quantity in data[[price_col, qty_col]].values:
         repeat_count = int(-(quantity // -epsilon_quantity))  # ceil division
@@ -554,8 +581,7 @@ def support_resistance_levels(data: pd.DataFrame, max_clusters: int = 10, by_qua
     optimal_buy_clusters = find_optimal_clusters(buy_prices, max_clusters)
     optimal_sell_clusters = find_optimal_clusters(sell_prices, max_clusters)
 
-    print(
-        f"Found {optimal_buy_clusters} support levels from buys and {optimal_sell_clusters} resistance levels from sells.")
+    print(f"Found {optimal_buy_clusters} support levels from buys and {optimal_sell_clusters} resistance levels from sells.")
 
     kmeans_buy = KMeans(n_clusters=optimal_buy_clusters, n_init=10).fit(buy_prices)
     kmeans_sell = KMeans(n_clusters=optimal_sell_clusters, n_init=10).fit(sell_prices)
@@ -653,6 +679,7 @@ def time_active_zones(data: pd.DataFrame, max_clusters: int = 10, by_quantity: f
 #     df_grouped = df.groupby('Market_Profile').agg({'Taker buy base volume': 'sum', 'Maker buy base volume': 'sum'})
 #     df_grouped['Volume'] = df_grouped['Taker buy base volume'] + df_grouped['Maker buy base volume']
 #     return df_grouped.sort_index()
+
 def market_profile(data: pd.DataFrame):
     """
     Calculate the market profile for a given OHLC data. The function calculates the average price for each candle
@@ -671,8 +698,8 @@ def market_profile(data: pd.DataFrame):
     df.rename(columns={'Volume': 'Total_Volume'}, inplace=True)
 
     # Melt the dataframe to unpivot the volume columns
-    df_melt = df.melt(id_vars='Market_Profile', value_vars=['Taker buy base volume', 'Maker buy base volume'],
-                      var_name='Is_Maker', value_name='Volume')
+    df_melt = df.melt(id_vars='Market_Profile', value_vars=['Taker buy base volume',
+                                                            'Maker buy base volume'], var_name='Is_Maker', value_name='Volume')
 
     # Convert the 'Is_Maker' column to boolean
     df_melt['Is_Maker'] = df_melt['Is_Maker'] == 'Maker buy base volume'
@@ -681,4 +708,3 @@ def market_profile(data: pd.DataFrame):
     df_grouped = df_melt.groupby(['Market_Profile', 'Is_Maker']).agg({'Volume': 'sum'})
 
     return df_grouped.sort_index()
-

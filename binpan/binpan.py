@@ -23,8 +23,8 @@ from handlers.exchange import get_decimal_positions, get_info_dic, get_precision
 
 from handlers.files import select_file, read_csv_to_dataframe, save_dataframe_to_csv
 
-from handlers.indicators import df_splitter, reversal_candles, zoom_cloud_indicators, ichimoku, fractal_w, support_resistance_levels, \
-    ffill_indicator, shift_indicator, market_profile
+from handlers.indicators import df_splitter, reversal_candles, zoom_cloud_indicators, ichimoku, fractal_w_indicator, support_resistance_levels, \
+    ffill_indicator, shift_indicator, market_profile, alternating_fractal_indicator, fractal_trend_indicator
 
 from handlers.logs import Logs
 
@@ -44,7 +44,7 @@ from handlers.time_helper import tick_seconds, pandas_freq_tick_interval, check_
     convert_milliseconds_to_str
 
 from handlers.tags import tag_column_to_strategy_group, backtesting, backtesting_short, tag_comparison, tag_cross, merge_series, \
-    clean_in_out
+    clean_in_out, is_alternating
 
 from handlers.wallet import convert_str_date_to_ms, convert_coin, get_margin_balances, daily_account_snapshot, get_spot_balances_df
 
@@ -795,9 +795,15 @@ class Symbol(object):
             binpan_logger.error(msg)
             raise Exception(msg)
 
-    def insert_indicator(self, source_data: pd.Series or pd.DataFrame or np.ndarray or list, strategy_group: str = None, row: str = None,
-                         rows: list = None, color: str = 'blue', colors: list = None, color_fills: list = None, name: str = None,
-                         names: list = None, suffix: str = '') -> pd.DataFrame or None:
+    def insert_indicator(self, source_data: pd.Series or pd.DataFrame or np.ndarray or list,
+                         strategy_group: str = None, row: str = None,
+                         rows: list = None,
+                         color: str = 'blue',
+                         colors: list = None,
+                         color_fills: list = None,
+                         name: str = None,
+                         names: list = None,
+                         suffix: str = '') -> pd.DataFrame or None:
         """
         Adds indicator to dataframe. It always do inplace.
 
@@ -1217,7 +1223,7 @@ class Symbol(object):
 
         for gen_col in generated_columns:
             if gen_col in self.df.columns:
-                binpan_logger.info(f"Existing column: {gen_col} No data added to instance.")
+                binpan_logger.info(f"Existing column: {gen_col} -> No data added to instance.")
                 return False
             else:
                 binpan_logger.info(f"New column: {gen_col}")
@@ -2010,7 +2016,11 @@ class Symbol(object):
         :return float: Resulting return of inversion.
         """
         if not column:
-            column = [i for i in self.df.columns if i.startswith('Eval')][-1]
+            column = [i for i in self.df.columns if i.startswith('Eval')]
+            if not column:
+                column = "Close"
+            else:
+                column = column[-1]
             print(f"Auto selected column {column}")
 
         my_column = self.df[column].copy(deep=True)
@@ -2023,7 +2033,7 @@ class Symbol(object):
         ms = self.df['Close timestamp'].dropna().iloc[-1] - self.df['Open timestamp'].dropna().iloc[0]
         hours = ms / (1000 * 60 * 60)
 
-        print(f"Total profit for {column}: {profit}")
+        print(f"Total profit for {column}: {profit} with ratio {profit / hours} per hour.")
 
         return profit / hours
 
@@ -2740,7 +2750,60 @@ class Symbol(object):
 
         return ichimoku_data
 
-    def fractal_w(self, period: int = 5, inplace: bool = True, suffix: str = '', colors: list = None):
+    def alternating_fractal(self, max_period: int = None, inplace: bool = True, overlap_plot=True, with_trend: bool = True, suffix: str = '', colors: list = None):
+        """
+        Obtains the minim value for fractal_w periods as fractal is pure alternating max to mins. In other words, max and mins alternates
+        in regular rhythm without any tow max or two mins consecutively.
+
+        This custom indicator shows the minimum period in finding a pure alternating fractal. It is some kind of volatility in price
+        indicator, the most period needed, the most volatile price.
+
+        :param int max_period: Default is len of dataframe. This method will check from 2 to the max period value to find a alternating max to mins.
+        :param bool inplace: Make it permanent in the instance or not.
+        :param bool overlap_plot: If True, it will overlap the indicator plot with the price plot.
+        :param bool with_trend: If true, it will return maximums diff mean and minimums diff mean also.
+        :param str suffix: A decorative suffix for the name of the column created.
+        :param list colors: A list of colors for the indicator dataframe columns. Is the color to show when plotting.
+            It can be any color from plotly library or a number in the list of those. Default colors defined.
+            https://community.plotly.com/t/plotly-colours-list/11730
+        :return pd.DataFrame: A dataframe with two columns, one with 1 or -1 for local max or local min to tag,
+        and other with price values for that points. Alternatively, maximums and minimums diff mean will be returned.
+
+        """
+        fractal = alternating_fractal_indicator(self.df, suffix=suffix, max_period=max_period)
+        max_mean, min_mean = None, None
+        if type(fractal) != pd.DataFrame:
+            binpan_logger.warning(f'No pure alternating fractal found for {max_period} periods')
+            return
+        if with_trend:
+            max_mean, min_mean = fractal_trend_indicator(df =self.df, period=max_period, fractal=fractal, suffix=suffix)
+            binpan_logger.info(f"Max mean: {max_mean} Min mean: {min_mean}")
+        if not colors:
+            colors = ['black', 'black']
+
+        if inplace and self.is_new(fractal):
+            binpan_logger.debug(fractal.columns)
+
+            for i, column_name in enumerate(fractal.columns):
+                self.row_counter += 1
+                if overlap_plot and i > 0:
+                    col_data = fractal[column_name].ffill()
+                else:
+                    col_data = fractal[column_name]
+                self.df.loc[:, column_name] = col_data
+                self.set_plot_color(indicator_column=column_name, color=colors[i])
+                self.set_plot_color_fill(indicator_column=column_name, color_fill=False)
+                # self.set_plot_row(indicator_column=str(column_name), row_position=self.row_counter)
+                if overlap_plot and i > 0:
+                    self.set_plot_row(indicator_column=str(column_name), row_position=1)  # overlaps are one
+                else:
+                    self.set_plot_row(indicator_column=str(column_name), row_position=self.row_counter)
+
+        if not max_mean or not min_mean:
+            return fractal
+        return fractal, max_mean, min_mean
+
+    def fractal_w(self, period: int = 5, inplace: bool = True, overlap_plot=True, suffix: str = '', colors: list = None):
         """
         The fractal indicator is based on a simple price pattern that is frequently seen in financial markets. Outside of trading, a fractal
         is a recurring geometric pattern that is repeated on all time frames. From this concept, the fractal indicator was devised.
@@ -2751,17 +2814,19 @@ class Symbol(object):
         From: https://codereview.stackexchange.com/questions/259703/william-fractal-technical-indicator-implementation
 
         :param int period: Default is 2. Count of neighbour candles to match max or min tags.
-        :return pd.Series: A serie with 1 or -1 for local max or local min to tag.
         :param bool inplace: Make it permanent in the instance or not.
+        :param bool overlap_plot: If True, it will overlap the indicator plot with the price plot.
         :param str suffix: A decorative suffix for the name of the column created.
         :param list colors: A list of colors for the indicator dataframe columns. Is the color to show when plotting.
             It can be any color from plotly library or a number in the list of those. Default colors defined.
             https://community.plotly.com/t/plotly-colours-list/11730
 
+        :return pd.Series: A serie with 1 or -1 for local max or local min to tag.
+
         """
         if not colors:
             colors = ['black', 'black']
-        fractal = fractal_w(data=self.df, period=period, suffix=suffix, fill_with_zero=True)
+        fractal = fractal_w_indicator(data=self.df, period=period, suffix=suffix, fill_with_zero=True)
 
         if inplace and self.is_new(fractal):
 
@@ -2770,13 +2835,19 @@ class Symbol(object):
             for i, column_name in enumerate(fractal.columns):
                 self.row_counter += 1
 
-                col_data = fractal[column_name]
+                if overlap_plot and i > 0:
+                    col_data = fractal[column_name].ffill()
+                else:
+                    col_data = fractal[column_name]
 
                 self.df.loc[:, column_name] = col_data
 
                 self.set_plot_color(indicator_column=column_name, color=colors[i])
                 self.set_plot_color_fill(indicator_column=column_name, color_fill=False)
-                self.set_plot_row(indicator_column=str(column_name), row_position=self.row_counter)
+                if overlap_plot and i > 0:
+                    self.set_plot_row(indicator_column=str(column_name), row_position=1)  # overlaps are one
+                else:
+                    self.set_plot_row(indicator_column=str(column_name), row_position=self.row_counter)
 
         return fractal
 
