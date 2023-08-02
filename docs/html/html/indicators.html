@@ -141,7 +141,9 @@ html.dark {
 <li><a class="reference internal" href="#handlers.indicators.support_resistance_levels"><code class="docutils literal notranslate"><span class="pre">support_resistance_levels()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.indicators.repeat_timestamps_by_quantity"><code class="docutils literal notranslate"><span class="pre">repeat_timestamps_by_quantity()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.indicators.time_active_zones"><code class="docutils literal notranslate"><span class="pre">time_active_zones()</span></code></a></li>
-<li><a class="reference internal" href="#handlers.indicators.market_profile"><code class="docutils literal notranslate"><span class="pre">market_profile()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.indicators.market_profile_from_klines_melt"><code class="docutils literal notranslate"><span class="pre">market_profile_from_klines_melt()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.indicators.market_profile_from_klines_grouped"><code class="docutils literal notranslate"><span class="pre">market_profile_from_klines_grouped()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.indicators.market_profile_from_trades_grouped"><code class="docutils literal notranslate"><span class="pre">market_profile_from_trades_grouped()</span></code></a></li>
 </ul>
 
 
@@ -208,8 +210,14 @@ html.dark {
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.time_active_zones" title="handlers.indicators.time_active_zones"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time_active_zones</span></code></a>(data[, max_clusters, ...])</p></td>
 <td><p>Calculate active points in time by clustering timestamps of trades.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.market_profile" title="handlers.indicators.market_profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">market_profile</span></code></a>(data)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.market_profile_from_klines_melt" title="handlers.indicators.market_profile_from_klines_melt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">market_profile_from_klines_melt</span></code></a>(data)</p></td>
 <td><p>Calculate the market profile for a given OHLC data.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.market_profile_from_klines_grouped" title="handlers.indicators.market_profile_from_klines_grouped"><code class="xref py py-obj docutils literal notranslate"><span class="pre">market_profile_from_klines_grouped</span></code></a>(data[, ...])</p></td>
+<td><p>Calculate the market profile for a given OHLC data.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.market_profile_from_trades_grouped" title="handlers.indicators.market_profile_from_trades_grouped"><code class="xref py py-obj docutils literal notranslate"><span class="pre">market_profile_from_trades_grouped</span></code></a>(data[, ...])</p></td>
+<td><p>Calculate the market profile for a given trades data.</p></td>
 </tr>
 </tbody>
 </table>
@@ -551,8 +559,8 @@ is taken into account 1000 times instead of 1.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="handlers.indicators.market_profile">
-<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">market_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.indicators.market_profile" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="handlers.indicators.market_profile_from_klines_melt">
+<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">market_profile_from_klines_melt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.indicators.market_profile_from_klines_melt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the market profile for a given OHLC data. The function calculates the average price for each candle
 (high + low + close) / 3, and then calculates the ‘maker’ and ‘taker’ volumes for each average price.</p>
 <dl class="field-list simple">
@@ -563,6 +571,45 @@ is taken into account 1000 times instead of 1.</p></li>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A pandas DataFrame grouped by the average price (‘Market_Profile’) with the sum of ‘Taker buy base volume’
 and ‘Maker_Volume’ for each average price.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.indicators.market_profile_from_klines_grouped">
+<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">market_profile_from_klines_grouped</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_bins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.indicators.market_profile_from_klines_grouped" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the market profile for a given OHLC data. The function calculates the average price for each candle
+(high + low + close) / 3, and then calculates the ‘maker’ and ‘taker’ volumes for each average price.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – A pandas DataFrame with the OHLC data. It should contain ‘High’, ‘Low’, ‘Close’, ‘Volume’, and
+‘Taker buy base volume’ columns.</p></li>
+<li><p><strong>num_bins</strong> (<em>int</em>) – Number of bins to use for the market profile.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pandas DataFrame grouped by the average price (‘Market_Profile’) with the sum of ‘Taker buy base volume’
+and ‘Maker_Volume’ for each average price.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.indicators.market_profile_from_trades_grouped">
+<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">market_profile_from_trades_grouped</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_bins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.indicators.market_profile_from_trades_grouped" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the market profile for a given trades data. The function calculates the average price for each trade
+and then calculates the ‘maker’ and ‘taker’ volumes for each average price.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – A pandas DataFrame with the trades data. It should contain ‘Price’, ‘Quantity’, ‘Buyer was maker’ columns.</p></li>
+<li><p><strong>num_bins</strong> – The number of bins to use for the market profile.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pandas DataFrame grouped by the average price (‘Price_Bin’) with the sum of ‘Taker buy base volume’
+and ‘Maker buy base volume’ for each average price.</p>
 </dd>
 </dl>
 </dd></dl>

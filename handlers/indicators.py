@@ -67,11 +67,15 @@ def fractal_trend_indicator(df: pd.DataFrame, period: int = None, fractal: pd.Da
     if type(fractal) != pd.DataFrame:
         return
     max_min_col, values_col = fractal.columns[0], fractal.columns[1]
-    max_prices = fractal.loc[fractal[max_min_col] == 1, values_col].reindex(df.index).ffill()
-    min_prices = fractal.loc[fractal[max_min_col] == -1, values_col].reindex(df.index).ffill()
-    max_trend = max_prices.diff().dropna().mean()
-    min_trend = min_prices.diff().dropna().mean()
-    return max_trend, min_trend
+    max_prices = fractal.loc[fractal[max_min_col] == 1][values_col].reindex(df.index).ffill()
+    min_prices = fractal.loc[fractal[max_min_col] == -1][values_col].reindex(df.index).ffill()
+    max_trend = max_prices.diff().replace(0, np.nan)
+    min_trend = min_prices.diff().replace(0, np.nan)
+    print(f"Maximum_max_diff={max_trend.max()}")
+    print(f"Minimum_max_diff={max_trend.min()}")
+    print(f"Maximum_min_diff={min_trend.max()}")
+    print(f"Minimum_min_diff={min_trend.min()}")
+    return max_trend.mean(), min_trend.mean()
 
 
 def ichimoku(data: pd.DataFrame, tenkan: int = 9, kijun: int = 26, chikou_span: int = 26, senkou_cloud_base: int = 52,
@@ -556,7 +560,7 @@ def support_resistance_levels(data: pd.DataFrame, max_clusters: int = 10, by_qua
         buy_data = data.loc[data['Buyer was maker'] == False]
         sell_data = data.loc[data['Buyer was maker'] == True]
     else:
-        profile = market_profile(data=data).reset_index()
+        profile = market_profile_from_klines_melt(data=data).reset_index()
         buy_data = profile.loc[profile['Is_Maker'] == True]
         sell_data = profile.loc[profile['Is_Maker'] == False]
 
@@ -677,7 +681,7 @@ def time_active_zones(data: pd.DataFrame, max_clusters: int = 10, by_quantity: f
 #     df_grouped['Volume'] = df_grouped['Taker buy base volume'] + df_grouped['Maker buy base volume']
 #     return df_grouped.sort_index()
 
-def market_profile(data: pd.DataFrame):
+def market_profile_from_klines_melt(data: pd.DataFrame):
     """
     Calculate the market profile for a given OHLC data. The function calculates the average price for each candle
     (high + low + close) / 3, and then calculates the 'maker' and 'taker' volumes for each average price.
@@ -704,4 +708,52 @@ def market_profile(data: pd.DataFrame):
     # Group by 'Market_Profile' and 'Is_Maker' and sum the volumes
     df_grouped = df_melt.groupby(['Market_Profile', 'Is_Maker']).agg({'Volume': 'sum'})
 
-    return df_grouped.sort_index()
+    return df_grouped.sort_index(level='Market_Profile')
+
+
+def market_profile_from_klines_grouped(data: pd.DataFrame, num_bins: int = 100) -> pd.DataFrame:
+    """
+    Calculate the market profile for a given OHLC data. The function calculates the average price for each candle
+    (high + low + close) / 3, and then calculates the 'maker' and 'taker' volumes for each average price.
+
+    :param data: A pandas DataFrame with the OHLC data. It should contain 'High', 'Low', 'Close', 'Volume', and
+               'Taker buy base volume' columns.
+    :param int num_bins: Number of bins to use for the market profile.
+    :return: A pandas DataFrame grouped by the average price ('Market_Profile') with the sum of 'Taker buy base volume'
+             and 'Maker_Volume' for each average price.
+    """
+    df = data.copy(deep=True)
+    df['Maker buy base volume'] = df['Volume'] - df['Taker buy base volume']
+    df['Market_Profile'] = (df['High'] + df['Low'] + df['Close']) / 3
+    df['Price_Bin'] = pd.cut(df['Market_Profile'], bins=num_bins)
+    volume_by_price_bin = df.groupby('Price_Bin').agg({'Taker buy base volume': 'sum', 'Maker buy base volume': 'sum'})
+    # Convertir el índice a un IntervalIndex
+    volume_by_price_bin.index = pd.IntervalIndex(volume_by_price_bin.index)
+    # Ordenar por el límite inferior de cada intervalo
+    volume_by_price_bin = volume_by_price_bin.sort_index(key=lambda x: x.left)
+    volume_by_price_bin.index.name += f"_{df.index.name}_Klines"
+    return volume_by_price_bin
+
+
+def market_profile_from_trades_grouped(data: pd.DataFrame, num_bins: int = 100) -> pd.DataFrame:
+    """
+    Calculate the market profile for a given trades data. The function calculates the average price for each trade
+    and then calculates the 'maker' and 'taker' volumes for each average price.
+
+    :param data: A pandas DataFrame with the trades data. It should contain 'Price', 'Quantity', 'Buyer was maker' columns.
+    :param num_bins: The number of bins to use for the market profile.
+    :return: A pandas DataFrame grouped by the average price ('Price_Bin') with the sum of 'Taker buy base volume'
+             and 'Maker buy base volume' for each average price.
+    """
+    df = data.copy(deep=True)
+    df['Taker buy base volume'] = df['Quantity'].where(~df['Buyer was maker'], 0)
+    df['Maker buy base volume'] = df['Quantity'].where(df['Buyer was maker'], 0)
+
+    df['Price_Bin'] = pd.cut(df['Price'], bins=num_bins)
+    volume_by_price_bin = df.groupby('Price_Bin').agg({'Taker buy base volume': 'sum', 'Maker buy base volume': 'sum'})
+    # Convert the index to an IntervalIndex
+    volume_by_price_bin.index = pd.IntervalIndex(volume_by_price_bin.index)
+    # Sort by the lower bound of each interval
+    volume_by_price_bin = volume_by_price_bin.sort_index(key=lambda x: x.left)
+    volume_by_price_bin.index.name += f"_{df.index.name}_Trades"
+    return volume_by_price_bin

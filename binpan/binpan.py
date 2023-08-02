@@ -23,8 +23,9 @@ from handlers.exchange import get_decimal_positions, get_info_dic, get_precision
 
 from handlers.files import select_file, read_csv_to_dataframe, save_dataframe_to_csv
 
-from handlers.indicators import df_splitter, reversal_candles, zoom_cloud_indicators, ichimoku, fractal_w_indicator, support_resistance_levels, \
-    ffill_indicator, shift_indicator, market_profile, alternating_fractal_indicator, fractal_trend_indicator
+from handlers.indicators import df_splitter, reversal_candles, zoom_cloud_indicators, ichimoku, fractal_w_indicator, \
+    support_resistance_levels, ffill_indicator, shift_indicator, market_profile_from_klines_melt, alternating_fractal_indicator, \
+    fractal_trend_indicator, market_profile_from_klines_grouped, market_profile_from_trades_grouped
 
 from handlers.logs import Logs
 
@@ -44,7 +45,7 @@ from handlers.time_helper import tick_seconds, pandas_freq_tick_interval, check_
     convert_milliseconds_to_str
 
 from handlers.tags import tag_column_to_strategy_group, backtesting, backtesting_short, tag_comparison, tag_cross, merge_series, \
-    clean_in_out, is_alternating
+    clean_in_out
 
 from handlers.wallet import convert_str_date_to_ms, convert_coin, get_margin_balances, daily_account_snapshot, get_spot_balances_df
 
@@ -423,6 +424,7 @@ class Symbol(object):
         self.order_types = self.get_order_types()
         self.permissions = self.get_permissions()
         self.precision = self.get_precision()
+        self.market_profile_df = pd.DataFrame()
 
     def __repr__(self):
         return str(self.df)
@@ -795,15 +797,9 @@ class Symbol(object):
             binpan_logger.error(msg)
             raise Exception(msg)
 
-    def insert_indicator(self, source_data: pd.Series or pd.DataFrame or np.ndarray or list,
-                         strategy_group: str = None, row: str = None,
-                         rows: list = None,
-                         color: str = 'blue',
-                         colors: list = None,
-                         color_fills: list = None,
-                         name: str = None,
-                         names: list = None,
-                         suffix: str = '') -> pd.DataFrame or None:
+    def insert_indicator(self, source_data: pd.Series or pd.DataFrame or np.ndarray or list, strategy_group: str = None, row: str = None,
+                         rows: list = None, color: str = 'blue', colors: list = None, color_fills: list = None, name: str = None,
+                         names: list = None, suffix: str = '') -> pd.DataFrame or None:
         """
         Adds indicator to dataframe. It always do inplace.
 
@@ -1459,13 +1455,7 @@ class Symbol(object):
         else:
             zoomed_plot_splitted_serie_couples = self.plot_splitted_serie_couples
 
-        return candles_tagged(data=temp_df, width=width, height=height, candles_ta_height_ratio=candles_ta_height_ratio, plot_volume=volume,
-                              title=title, yaxis_title=yaxis_title, on_candles_indicator=overlapped_indicators,
-                              priced_actions_col=priced_actions_col, actions_col=actions_col, indicator_series=indicators_series,
-                              indicator_names=indicator_names, indicator_colors=indicators_colors, fill_control=self.color_fill_control,
-                              indicators_filled_mode=self.indicators_filled_mode, axis_groups=self.axis_groups,
-                              plot_splitted_serie_couple=zoomed_plot_splitted_serie_couples, rows_pos=rows_pos,
-                              markers_labels=marker_labels, plot_bgcolor=background_color, markers=markers, marker_colors=marker_colors)
+        return candles_tagged(data=temp_df, width=width, height=height, candles_ta_height_ratio=candles_ta_height_ratio, plot_volume=volume, title=title, yaxis_title=yaxis_title, on_candles_indicator=overlapped_indicators, priced_actions_col=priced_actions_col, actions_col=actions_col, indicator_series=indicators_series, indicator_names=indicator_names, indicator_colors=indicators_colors, fill_control=self.color_fill_control, indicators_filled_mode=self.indicators_filled_mode, axis_groups=self.axis_groups, plot_splitted_serie_couple=zoomed_plot_splitted_serie_couples, rows_pos=rows_pos, markers_labels=marker_labels, plot_bgcolor=background_color, markers=markers, marker_colors=marker_colors)
 
     def plot_agg_trades_size(self, max_size: int = 60, height: int = 1000, logarithmic: bool = False, overlap_prices: bool = True,
                              group_big_data: int = None, shifted: int = 1, title: str = None):
@@ -1733,7 +1723,7 @@ class Symbol(object):
                 _df = _df[_df['Timestamp'] >= startTime]
             if endTime:
                 _df = _df[_df['Timestamp'] <= endTime]
-            return bar_plot(df=_df, x_col_to_bars='Price', y_col='Quantity', bar_segments='Buyer was maker', split_colors=True, bins=bins, title=title, height=height, y_axis_title='Buy takers VS Buy makers', horizontal_bars=True,**kwargs_update_layout)
+            return bar_plot(df=_df, x_col_to_bars='Price', y_col='Quantity', bar_segments='Buyer was maker', split_colors=True, bins=bins, title=title, height=height, y_axis_title='Buy takers VS Buy makers', horizontal_bars=True, **kwargs_update_layout)
         elif from_atomic_trades:
             title += f' Atomic {self.symbol}'
             _df = self.atomic_trades.copy(deep=True)
@@ -1750,9 +1740,9 @@ class Symbol(object):
                 _df = _df[_df['Timestamp'] <= endTime]
             binpan_logger.info(f"Using klines data. For deeper info add trades data, example: my_symbol.get_agg_trades()")
             # todo: market_profile sacado de las velas
-            profile = market_profile(data=_df)
+            profile = market_profile_from_klines_melt(data=_df)
             profile.reset_index(inplace=True)
-            return bar_plot(df=profile, x_col_to_bars='Market_Profile', y_col='Volume', bar_segments='Is_Maker', split_colors=True, bins=bins, title=title+" from klines", height=height, y_axis_title='Buy takers VS Buy makers', horizontal_bars=True, **kwargs_update_layout)
+            return bar_plot(df=profile, x_col_to_bars='Market_Profile', y_col='Volume', bar_segments='Is_Maker', split_colors=True, bins=bins, title=title + " from klines", height=height, y_axis_title='Buy takers VS Buy makers', horizontal_bars=True, **kwargs_update_layout)
 
     def plot_trades_scatter(self, x: str = None, y: str = None, dot_symbol='Buyer was maker', color: str = None, marginal=True,
                             from_trades=True, height=1000, color_referenced_to_y=True,
@@ -2750,7 +2740,8 @@ class Symbol(object):
 
         return ichimoku_data
 
-    def alternating_fractal(self, max_period: int = None, inplace: bool = True, overlap_plot=True, with_trend: bool = True, suffix: str = '', colors: list = None):
+    def alternating_fractal(self, max_period: int = None, inplace: bool = True, overlap_plot=True, with_trend: bool = True,
+                            suffix: str = '', colors: list = None):
         """
         Obtains the minim value for fractal_w periods as fractal is pure alternating max to mins. In other words, max and mins alternates
         in regular rhythm without any tow max or two mins consecutively.
@@ -2767,7 +2758,7 @@ class Symbol(object):
             It can be any color from plotly library or a number in the list of those. Default colors defined.
             https://community.plotly.com/t/plotly-colours-list/11730
         :return pd.DataFrame: A dataframe with two columns, one with 1 or -1 for local max or local min to tag,
-        and other with price values for that points. Alternatively, maximums and minimums diff mean will be returned.
+         and other with price values for that points. Alternatively, maximums and minimums diff mean will be returned.
 
         """
         fractal = alternating_fractal_indicator(self.df, suffix=suffix, max_period=max_period)
@@ -2776,7 +2767,18 @@ class Symbol(object):
             binpan_logger.warning(f'No pure alternating fractal found for {max_period} periods')
             return
         if with_trend:
-            max_mean, min_mean = fractal_trend_indicator(df =self.df, period=max_period, fractal=fractal, suffix=suffix)
+            max_mean, min_mean = fractal_trend_indicator(df=self.df, period=max_period, fractal=fractal, suffix=suffix)
+            if max_mean > 0 and min_mean > 0:
+                binpan_logger.info(f"Increasing maxima and increasing minima. uptrend")
+            elif max_mean < 0 and min_mean < 0:
+                binpan_logger.info(f"Decreasing maxima and decreasing minima. downtrend")
+            elif max_mean < 0 < min_mean:
+                binpan_logger.info(f"Decreasing maxima and increasing minima. waiting for trend")
+            elif max_mean > 0 > min_mean:
+                binpan_logger.info(f"Increasing maxima and decreasing minima. waiting for trend")
+            else:
+                binpan_logger.info(f"No trend detected")
+
             binpan_logger.info(f"Max mean: {max_mean} Min mean: {min_mean}")
         if not colors:
             colors = ['black', 'black']
@@ -2799,7 +2801,7 @@ class Symbol(object):
                 else:
                     self.set_plot_row(indicator_column=str(column_name), row_position=self.row_counter)
 
-        if not max_mean or not min_mean:
+        if max_mean is None or min_mean is None:
             return fractal
         return fractal, max_mean, min_mean
 
@@ -2850,6 +2852,77 @@ class Symbol(object):
                     self.set_plot_row(indicator_column=str(column_name), row_position=self.row_counter)
 
         return fractal
+
+    def market_profile(self, bins: int = 100, hours: int = None, minutes: int = None, startTime: int or str = None,
+                       endTime: int or str = None, from_agg_trades=False, from_atomic_trades=False,
+                       title: str = 'Market Profile', time_zone: str = None) -> pd.DataFrame or None:
+        """
+        Generates a market profile dataframe from trade or kline data. The market profile is a histogram of trading
+        volumes at different price levels.
+
+        :param bins: The number of price levels (bins) to include in the market profile.
+        :param hours: If specified, only the last 'hours' hours of data are used to generate the market profile.
+        :param minutes: If specified, only the last 'minutes' minutes of data are used to generate the market profile.
+        :param startTime: If specified, only data after this timestamp or date (in format %Y-%m-%d %H:%M:%S) are used.
+        :param endTime: If specified, only data before this timestamp or date (in format %Y-%m-%d %H:%M:%S) are used.
+        :param from_agg_trades: If True, aggregated trades data are used to generate the market profile.
+        :param from_atomic_trades: If True, atomic trades data are used to generate the market profile.
+        :param title: The title of the resulting plot (if plotting).
+        :param time_zone: The time zone to use for time index conversion (e.g., "Europe/Madrid").
+
+        :return: A DataFrame representing the market profile, or None if no suitable data are available.
+        """
+        try:
+            assert not (from_agg_trades and from_atomic_trades)
+        except AssertionError:
+            raise BinPanException(f"Please specify just one source of data, atomic trades or aggregated, not both.")
+
+        if self.market_profile_df.empty:
+            if time_zone:
+                self.time_zone = time_zone
+            if startTime:
+                convert_str_date_to_ms(date=startTime, time_zone=self.time_zone)
+            if endTime:
+                convert_str_date_to_ms(date=endTime, time_zone=self.time_zone)
+            if hours:
+                startTime = int(time() * 1000) - (1000 * 60 * 60 * hours)
+            elif minutes:
+                startTime = int(time() * 1000) - (1000 * 60 * minutes)
+
+            if from_agg_trades:
+                if self.agg_trades.empty:
+                    binpan_logger.info(empty_agg_trades_msg)
+                    return
+            if from_atomic_trades:
+                if self.atomic_trades.empty:
+                    binpan_logger.info(empty_atomic_trades_msg)
+                    return
+
+            if from_agg_trades:
+                title += f' Aggregated {self.symbol}'
+                _df = self.agg_trades.copy(deep=True)
+                if startTime:
+                    _df = _df[_df['Timestamp'] >= startTime]
+                if endTime:
+                    _df = _df[_df['Timestamp'] <= endTime]
+                self.market_profile_df = market_profile_from_trades_grouped(data=_df, num_bins=bins)
+            elif from_atomic_trades:
+                title += f' Atomic {self.symbol}'
+                _df = self.atomic_trades.copy(deep=True)
+                if startTime:
+                    _df = _df[_df['Timestamp'] >= startTime]
+                if endTime:
+                    _df = _df[_df['Timestamp'] <= endTime]
+                self.market_profile_df = market_profile_from_trades_grouped(data=_df, num_bins=bins)
+            else:
+                _df = self.df.copy(deep=True)
+                if startTime:
+                    _df = _df[_df['Timestamp'] >= startTime]
+                if endTime:
+                    _df = _df[_df['Timestamp'] <= endTime]
+                binpan_logger.info(f"Using klines data. For deeper info add trades data, example: my_symbol.get_agg_trades()")
+                self.market_profile_df = market_profile_from_klines_grouped(data=_df, num_bins=bins)
+        return self.market_profile_df
 
     @staticmethod
     def pandas_ta_indicator(name: str, **kwargs):
@@ -2920,10 +2993,7 @@ class Symbol(object):
         else:
             raise ValueError(f"Indicator '{name}' not found in the 'pandas_ta' module.")
 
-    def support_resistance(self,
-                           from_atomic: bool = False,
-                           from_aggregated: bool = False,
-                           max_clusters: int = 10,
+    def support_resistance(self, from_atomic: bool = False, from_aggregated: bool = False, max_clusters: int = 10,
                            by_quantity: float = None) -> Tuple[List[float], List[float]]:
         """
         Calculate support and resistance levels for the Symbol based on either atomic trades or aggregated trades.
@@ -2952,10 +3022,7 @@ class Symbol(object):
         else:  # with klines
             if not by_quantity:
                 by_quantity = np.mean(self.df['Volume'].values)
-            self.s_lines, self.r_lines = support_resistance_levels(self.df,
-                                                                   max_clusters=max_clusters,
-                                                                   by_quantity=by_quantity,
-                                                                   by_klines=True)
+            self.s_lines, self.r_lines = support_resistance_levels(self.df, max_clusters=max_clusters, by_quantity=by_quantity, by_klines=True)
         return self.s_lines, self.r_lines
 
     #############

@@ -209,6 +209,7 @@ html.dark {
 <li><a class="reference internal" href="#binpan.binpan.Symbol.ichimoku"><code class="docutils literal notranslate"><span class="pre">Symbol.ichimoku()</span></code></a></li>
 <li><a class="reference internal" href="#binpan.binpan.Symbol.alternating_fractal"><code class="docutils literal notranslate"><span class="pre">Symbol.alternating_fractal()</span></code></a></li>
 <li><a class="reference internal" href="#binpan.binpan.Symbol.fractal_w"><code class="docutils literal notranslate"><span class="pre">Symbol.fractal_w()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.binpan.Symbol.market_profile"><code class="docutils literal notranslate"><span class="pre">Symbol.market_profile()</span></code></a></li>
 <li><a class="reference internal" href="#binpan.binpan.Symbol.pandas_ta_indicator"><code class="docutils literal notranslate"><span class="pre">Symbol.pandas_ta_indicator()</span></code></a></li>
 <li><a class="reference internal" href="#binpan.binpan.Symbol.support_resistance"><code class="docutils literal notranslate"><span class="pre">Symbol.support_resistance()</span></code></a></li>
 <li><a class="reference internal" href="#binpan.binpan.Symbol.tag"><code class="docutils literal notranslate"><span class="pre">Symbol.tag()</span></code></a></li>
@@ -656,31 +657,34 @@ weight is heavy.</p></li>
 <tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.fractal_w" title="binpan.binpan.Symbol.fractal_w"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fractal_w</span></code></a>([period, inplace, overlap_plot, ...])</p></td>
 <td><p>The fractal indicator is based on a simple price pattern that is frequently seen in financial markets.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.pandas_ta_indicator" title="binpan.binpan.Symbol.pandas_ta_indicator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas_ta_indicator</span></code></a>(name, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.market_profile" title="binpan.binpan.Symbol.market_profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">market_profile</span></code></a>([bins, hours, minutes, ...])</p></td>
+<td><p>Generates a market profile dataframe from trade or kline data.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.pandas_ta_indicator" title="binpan.binpan.Symbol.pandas_ta_indicator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas_ta_indicator</span></code></a>(name, **kwargs)</p></td>
 <td><p>Calls any indicator in pandas_ta library with function name as first argument and any kwargs the function will use.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.support_resistance" title="binpan.binpan.Symbol.support_resistance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">support_resistance</span></code></a>([from_atomic, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.support_resistance" title="binpan.binpan.Symbol.support_resistance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">support_resistance</span></code></a>([from_atomic, ...])</p></td>
 <td><p>Calculate support and resistance levels for the Symbol based on either atomic trades or aggregated trades.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.tag" title="binpan.binpan.Symbol.tag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tag</span></code></a>(column, reference[, relation, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.tag" title="binpan.binpan.Symbol.tag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tag</span></code></a>(column, reference[, relation, ...])</p></td>
 <td><p>It tags values of a column/serie compared to other serie or value by methods gt,ge,eq,le,lt as condition.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.cross" title="binpan.binpan.Symbol.cross"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cross</span></code></a>(slow[, fast, cross_over_tag, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.cross" title="binpan.binpan.Symbol.cross"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cross</span></code></a>(slow[, fast, cross_over_tag, ...])</p></td>
 <td><p>It tags crossing values from a column/serie (fast) over a serie or value (slow).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.shift" title="binpan.binpan.Symbol.shift"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shift</span></code></a>(column[, window, strategy_group, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.shift" title="binpan.binpan.Symbol.shift"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shift</span></code></a>(column[, window, strategy_group, ...])</p></td>
 <td><p>It shifts a candle ahead by the window argument value (or backwards if negative)</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.merge_columns" title="binpan.binpan.Symbol.merge_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_columns</span></code></a>(main_column, other_column[, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.merge_columns" title="binpan.binpan.Symbol.merge_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_columns</span></code></a>(main_column, other_column[, ...])</p></td>
 <td><p>Predominant serie will be filled nans with values, if existing, from the other serie.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.clean_in_out" title="binpan.binpan.Symbol.clean_in_out"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clean_in_out</span></code></a>(column[, in_tag, out_tag, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.clean_in_out" title="binpan.binpan.Symbol.clean_in_out"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clean_in_out</span></code></a>(column[, in_tag, out_tag, ...])</p></td>
 <td><p>Predominant serie will be filled nans with values, if existing, from the other serie.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.strategy_from_tags_crosses" title="binpan.binpan.Symbol.strategy_from_tags_crosses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">strategy_from_tags_crosses</span></code></a>([columns, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.strategy_from_tags_crosses" title="binpan.binpan.Symbol.strategy_from_tags_crosses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">strategy_from_tags_crosses</span></code></a>([columns, ...])</p></td>
 <td><p>Checks where all tags and cross columns get value &quot;1&quot; at the same time.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.ffill" title="binpan.binpan.Symbol.ffill"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ffill</span></code></a>(column[, window, inplace, replace, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.ffill" title="binpan.binpan.Symbol.ffill"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ffill</span></code></a>(column[, window, inplace, replace, ...])</p></td>
 <td><p>It forward fills a value through nans through a window ahead.</p></td>
 </tr>
 </tbody>
@@ -2142,10 +2146,10 @@ It can be any color from plotly library or a number in the list of those. Defaul
 </ul>
 </dd>
 <dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
-<dd class="field-even"><p>A dataframe with two columns, one with 1 or -1 for local max or local min to tag,</p>
+<dd class="field-even"><p>A dataframe with two columns, one with 1 or -1 for local max or local min to tag,
+and other with price values for that points. Alternatively, maximums and minimums diff mean will be returned.</p>
 </dd>
 </dl>
-<p>and other with price values for that points. Alternatively, maximums and minimums diff mean will be returned.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2170,6 +2174,31 @@ It can be any color from plotly library or a number in the list of those. Defaul
 </dd>
 <dt class="field-even">Return pd.Series<span class="colon">:</span></dt>
 <dd class="field-even"><p>A serie with 1 or -1 for local max or local min to tag.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.binpan.Symbol.market_profile">
+<span class="sig-name descname"><span class="pre">market_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hours</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minutes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_agg_trades</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_atomic_trades</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Market</span> <span class="pre">Profile'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#binpan.binpan.Symbol.market_profile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a market profile dataframe from trade or kline data. The market profile is a histogram of trading
+volumes at different price levels.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bins</strong> – The number of price levels (bins) to include in the market profile.</p></li>
+<li><p><strong>hours</strong> – If specified, only the last ‘hours’ hours of data are used to generate the market profile.</p></li>
+<li><p><strong>minutes</strong> – If specified, only the last ‘minutes’ minutes of data are used to generate the market profile.</p></li>
+<li><p><strong>startTime</strong> – If specified, only data after this timestamp or date (in format %Y-%m-%d %H:%M:%S) are used.</p></li>
+<li><p><strong>endTime</strong> – If specified, only data before this timestamp or date (in format %Y-%m-%d %H:%M:%S) are used.</p></li>
+<li><p><strong>from_agg_trades</strong> – If True, aggregated trades data are used to generate the market profile.</p></li>
+<li><p><strong>from_atomic_trades</strong> – If True, atomic trades data are used to generate the market profile.</p></li>
+<li><p><strong>title</strong> – The title of the resulting plot (if plotting).</p></li>
+<li><p><strong>time_zone</strong> – The time zone to use for time index conversion (e.g., “Europe/Madrid”).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A DataFrame representing the market profile, or None if no suitable data are available.</p>
 </dd>
 </dl>
 </dd></dl>
