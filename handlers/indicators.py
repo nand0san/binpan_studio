@@ -10,19 +10,76 @@ import numpy as np
 
 from .time_helper import convert_milliseconds_to_time_zone_datetime
 from .time_helper import pandas_freq_tick_interval
+from .tags import is_alternating
 
 
 ##############
 # INDICATORS #
 ##############
 
-def ichimoku(data: pd.DataFrame,
-             tenkan: int = 9,
-             kijun: int = 26,
-             chikou_span: int = 26,
-             senkou_cloud_base: int = 52,
-             suffix: str = '',
-             ) -> pd.DataFrame:
+def alternating_fractal_indicator(df: pd.DataFrame, max_period: int = None, suffix: str = "") -> pd.DataFrame or None:
+    """
+    Obtains the minim value for fractal_w periods as fractal is pure alternating max to mins. In other words, max and mins alternates
+    in regular rhythm without any tow max or two mins consecutively.
+
+    This custom indicator shows the minimum period in finding a pure alternating fractal. It is some kind of volatility in price
+    indicator, the most period needed, the most volatile price.
+
+    :param pd.DataFrame df: BinPan Symbol dataframe.
+    :param int max_period: Default is len of df. This method will check from 2 to the max period value to find a puer alternating max to mins.
+    :param str suffix: A decorative suffix for the name of the column created.
+    :return pd.DataFrame: A dataframe with two columns, one with 1 or -1 for local max or local min to tag, and other with price values for
+     that points.
+
+    .. image:: images/indicators/fractal_w.png
+        :width: 1000
+    """
+    fractal = None
+    if not max_period:
+        max_period = len(df)
+    for i in tqdm(range(2, max_period)):
+        fractal = fractal_w_indicator(data=df, period=i, suffix=suffix, fill_with_zero=True)
+        max_min = fractal[f"Fractal_W_{i}"].fillna(0)
+        if is_alternating(lst=max_min.tolist()):
+            break
+        else:
+            fractal = None
+    return fractal
+
+
+def fractal_trend_indicator(df: pd.DataFrame, period: int = None, fractal: pd.DataFrame = None, suffix: str = "") -> tuple or None:
+    """
+    Obtains the trend of the fractal_w indicator. It will return maximums diff mean and minimums diff mean also in a tuple.
+
+    :param pd.DataFrame df: BinPan Symbol dataframe.
+    :param int period: Period to obtain fractal_w. Default is len df.
+    :param pd.DataFrame fractal: Optional. If not provided, it will be calculated.
+    :param str suffix: A decorative suffix for the name of the column created.
+    :return tuple: Max min diffs mean and Min diffs mean.
+
+    .. image:: images/indicators/fractal_w.png
+        :width: 1000
+    """
+    if not period:
+        period = len(df)
+    if type(fractal) != pd.DataFrame:
+        fractal = alternating_fractal_indicator(df=df, max_period=period, suffix=suffix)
+    if type(fractal) != pd.DataFrame:
+        return
+    max_min_col, values_col = fractal.columns[0], fractal.columns[1]
+    max_prices = fractal.loc[fractal[max_min_col] == 1][values_col].reindex(df.index).ffill()
+    min_prices = fractal.loc[fractal[max_min_col] == -1][values_col].reindex(df.index).ffill()
+    max_trend = max_prices.diff().replace(0, np.nan)
+    min_trend = min_prices.diff().replace(0, np.nan)
+    print(f"Maximum_max_diff={max_trend.max()}")
+    print(f"Minimum_max_diff={max_trend.min()}")
+    print(f"Maximum_min_diff={min_trend.max()}")
+    print(f"Minimum_min_diff={min_trend.min()}")
+    return max_trend.mean(), min_trend.mean()
+
+
+def ichimoku(data: pd.DataFrame, tenkan: int = 9, kijun: int = 26, chikou_span: int = 26, senkou_cloud_base: int = 52,
+             suffix: str = '', ) -> pd.DataFrame:
     """
     The Ichimoku Cloud is a collection of technical indicators that show support and resistance levels, as well as momentum and trend
     direction. It does this by taking multiple averages and plotting them on a chart. It also uses these figures to compute a “cloud”
@@ -87,17 +144,12 @@ def ichimoku(data: pd.DataFrame,
     if suffix:
         suffix = '_' + suffix
 
-    ret.columns = [f"Ichimoku_tenkan_{tenkan}" + suffix,
-                   f"Ichimoku_kijun_{kijun}" + suffix,
-                   f"Ichimoku_chikou_span{chikou_span}" + suffix,
-                   f"Ichimoku_cloud_{tenkan}_{kijun}" + suffix,
-                   f"Ichimoku_cloud_{senkou_cloud_base}" + suffix]
+    ret.columns = [f"Ichimoku_tenkan_{tenkan}" + suffix, f"Ichimoku_kijun_{kijun}" + suffix, f"Ichimoku_chikou_span{chikou_span}" + suffix,
+                   f"Ichimoku_cloud_{tenkan}_{kijun}" + suffix, f"Ichimoku_cloud_{senkou_cloud_base}" + suffix]
     return ret
 
 
-def ker(close: pd.Series,
-        window: int,
-        ) -> pd.Series:
+def ker(close: pd.Series, window: int, ) -> pd.Series:
     """
     Kaufman's Efficiency Ratio based in: https://stackoverflow.com/questions/36980238/calculating-kaufmans-efficiency-ratio-in-python-with-pandas
 
@@ -111,27 +163,26 @@ def ker(close: pd.Series,
     return direction / volatility
 
 
-def fractal_w(data: pd.DataFrame,
-              period=2,
-              merged: bool = True,
-              suffix: str = '',
-              fill_with_zero: bool = None,
-              ) -> pd.DataFrame:
+def fractal_w_indicator(data: pd.DataFrame, period=2, merged: bool = True, suffix: str = '', fill_with_zero: bool = None, ) -> pd.DataFrame:
     """
     The fractal indicator is based on a simple price pattern that is frequently seen in financial markets. Outside of trading, a fractal
     is a recurring geometric pattern that is repeated on all time frames. From this concept, the fractal indicator was devised.
     The indicator isolates potential turning points on a price chart. It then draws arrows to indicate the existence of a pattern.
 
-    https://www.investopedia.com/terms/f/fractal.asp
+        https://www.investopedia.com/terms/f/fractal.asp
 
-    From: https://codereview.stackexchange.com/questions/259703/william-fractal-technical-indicator-implementation
+        From: https://codereview.stackexchange.com/questions/259703/william-fractal-technical-indicator-implementation
 
     :param pd.DataFrame data: BinPan dataframe with High prices.
     :param int period: Default is 2. Count of neighbour candles to match max or min tags.
     :param bool merged: If True, values are merged into one pd.Serie. minimums overwrite maximums in case of coincidence.
     :param str suffix: A decorative suffix for the name of the column created.
     :param bool fill_with_zero: If true fills nans with zeros. Its better to plot with binpan.
-    :return pd.Series: A serie with 1 or -1 for local max or local min to tag.
+    :return pd.DataFrame: A dataframe with two columns, one with 1 or -1 for local max or local min to tag, and other with price values for
+     that points.
+
+    .. image:: images/indicators/fractal_w.png
+        :width: 1000
     """
     window = 2 * period + 1  # default 5
 
@@ -175,25 +226,14 @@ def fractal_w(data: pd.DataFrame,
 
 def support_resistance_volume(df, num_bins=100, price_col='Close', volume_col='Volume', threshold=90):
     """
-    Calculate support and resistance levels based on volume and prices in the given dataframe.
+    Calculates support and resistance levels based on volume and prices in the given dataframe.
 
-    Parameters
-    ----------
-    df : pandas.DataFrame
-        The dataframe containing price and volume data.
-    num_bins : int, optional
-        The number of bins to use for accumulating volume, by default 100.
-    price_col : str, optional
-        The name of the column containing price data, by default 'Close'.
-    volume_col : str, optional
-        The name of the column containing volume data, by default 'Volume'.
-    threshold : int
-        Percentil to show most traded levels. Default is 90.
-
-    Returns
-    -------
-    list
-        A sorted list of support and resistance levels.
+    :param pd.DataFrame df: The dataframe containing price and volume data.
+    :param int num_bins: Optional. The number of bins to use for accumulating volume. Default is 100.
+    :param str price_col: Optional. The name of the column containing price data. Default is 'Close'.
+    :param str volume_col: Optional. The name of the column containing volume data. Default is 'Volume'.
+    :param int threshold: Percentil to show most traded levels. Default is 90.
+    :return list: A sorted list of support and resistance levels.
     """
 
     # Calculate the price range
@@ -226,9 +266,7 @@ def support_resistance_volume(df, num_bins=100, price_col='Close', volume_col='V
 # INDICATORS UTILS #
 ####################
 
-def split_serie_by_position(serie: pd.Series,
-                            splitter_serie: pd.Series,
-                            fill_with_zeros: bool = True) -> pd.DataFrame:
+def split_serie_by_position(serie: pd.Series, splitter_serie: pd.Series, fill_with_zeros: bool = True) -> pd.DataFrame:
     """
     Splits a serie by values of other serie in four series by relative positions for plotting colored clouds with plotly.
 
@@ -300,10 +338,7 @@ def df_splitter(data: pd.DataFrame, up_column: str, down_column: str) -> list:
     return dfs
 
 
-def zoom_cloud_indicators(plot_splitted_serie_couples: dict,
-                          main_index: list,
-                          start_idx: int,
-                          end_idx: int) -> dict:
+def zoom_cloud_indicators(plot_splitted_serie_couples: dict, main_index: list, start_idx: int, end_idx: int) -> dict:
     """
     It zooms the cloud indicators in an index interval for a plot zoom.
 
@@ -316,8 +351,7 @@ def zoom_cloud_indicators(plot_splitted_serie_couples: dict,
     try:
         assert start_idx < end_idx <= len(main_index)
     except AssertionError:
-        raise Exception(
-            f"BinPan Plot Error: Zoom index not valid. Not start={start_idx} < end={end_idx} < len={len(main_index)}")
+        raise Exception(f"BinPan Plot Error: Zoom index not valid. Not start={start_idx} < end={end_idx} < len={len(main_index)}")
 
     ret = {}
     my_start = main_index[start_idx]
@@ -362,10 +396,7 @@ def ffill_indicator(serie: pd.Series, window: int = 1):
 # From trades #
 ###############
 
-def reversal_candles(trades: pd.DataFrame,
-                     decimal_positions: int,
-                     time_zone: str,
-                     min_height: int = 7,
+def reversal_candles(trades: pd.DataFrame, decimal_positions: int, time_zone: str, min_height: int = 7,
                      min_reversal: int = 4) -> pd.DataFrame:
     """
     Generate reversal candles for reversal charts:
@@ -463,8 +494,8 @@ def reversal_candles(trades: pd.DataFrame,
 
     ret = pd.concat(data, axis=1, keys=[s.name for s in data])
 
-    klines = ret.groupby(['Candle']).agg(
-        {'Open': 'first', 'High': 'last', 'Low': 'last', 'Close': 'last', 'Quantity': 'sum', 'Timestamp': 'first'})
+    klines = ret.groupby(['Candle']).agg({'Open': 'first', 'High': 'last', 'Low': 'last', 'Close': 'last', 'Quantity': 'sum',
+                                          'Timestamp': 'first'})
 
     date_index = klines['Timestamp'].apply(convert_milliseconds_to_time_zone_datetime, timezoned=time_zone)
     klines.set_index(date_index, inplace=True)
@@ -478,10 +509,7 @@ def reversal_candles(trades: pd.DataFrame,
     return klines
 
 
-def repeat_prices_by_quantity(data: pd.DataFrame,
-                              epsilon_quantity: float,
-                              price_col="Prices",
-                              qty_col='Quantity') -> np.ndarray:
+def repeat_prices_by_quantity(data: pd.DataFrame, epsilon_quantity: float, price_col="Prices", qty_col='Quantity') -> np.ndarray:
     repeated_prices = []
     for price, quantity in data[[price_col, qty_col]].values:
         repeat_count = int(-(quantity // -epsilon_quantity))  # ceil division
@@ -532,7 +560,7 @@ def support_resistance_levels(data: pd.DataFrame, max_clusters: int = 10, by_qua
         buy_data = data.loc[data['Buyer was maker'] == False]
         sell_data = data.loc[data['Buyer was maker'] == True]
     else:
-        profile = market_profile(data=data).reset_index()
+        profile = market_profile_from_klines_melt(data=data).reset_index()
         buy_data = profile.loc[profile['Is_Maker'] == True]
         sell_data = profile.loc[profile['Is_Maker'] == False]
 
@@ -554,8 +582,7 @@ def support_resistance_levels(data: pd.DataFrame, max_clusters: int = 10, by_qua
     optimal_buy_clusters = find_optimal_clusters(buy_prices, max_clusters)
     optimal_sell_clusters = find_optimal_clusters(sell_prices, max_clusters)
 
-    print(
-        f"Found {optimal_buy_clusters} support levels from buys and {optimal_sell_clusters} resistance levels from sells.")
+    print(f"Found {optimal_buy_clusters} support levels from buys and {optimal_sell_clusters} resistance levels from sells.")
 
     kmeans_buy = KMeans(n_clusters=optimal_buy_clusters, n_init=10).fit(buy_prices)
     kmeans_sell = KMeans(n_clusters=optimal_sell_clusters, n_init=10).fit(sell_prices)
@@ -653,7 +680,8 @@ def time_active_zones(data: pd.DataFrame, max_clusters: int = 10, by_quantity: f
 #     df_grouped = df.groupby('Market_Profile').agg({'Taker buy base volume': 'sum', 'Maker buy base volume': 'sum'})
 #     df_grouped['Volume'] = df_grouped['Taker buy base volume'] + df_grouped['Maker buy base volume']
 #     return df_grouped.sort_index()
-def market_profile(data: pd.DataFrame):
+
+def market_profile_from_klines_melt(data: pd.DataFrame):
     """
     Calculate the market profile for a given OHLC data. The function calculates the average price for each candle
     (high + low + close) / 3, and then calculates the 'maker' and 'taker' volumes for each average price.
@@ -671,8 +699,8 @@ def market_profile(data: pd.DataFrame):
     df.rename(columns={'Volume': 'Total_Volume'}, inplace=True)
 
     # Melt the dataframe to unpivot the volume columns
-    df_melt = df.melt(id_vars='Market_Profile', value_vars=['Taker buy base volume', 'Maker buy base volume'],
-                      var_name='Is_Maker', value_name='Volume')
+    df_melt = df.melt(id_vars='Market_Profile', value_vars=['Taker buy base volume',
+                                                            'Maker buy base volume'], var_name='Is_Maker', value_name='Volume')
 
     # Convert the 'Is_Maker' column to boolean
     df_melt['Is_Maker'] = df_melt['Is_Maker'] == 'Maker buy base volume'
@@ -680,5 +708,52 @@ def market_profile(data: pd.DataFrame):
     # Group by 'Market_Profile' and 'Is_Maker' and sum the volumes
     df_grouped = df_melt.groupby(['Market_Profile', 'Is_Maker']).agg({'Volume': 'sum'})
 
-    return df_grouped.sort_index()
+    return df_grouped.sort_index(level='Market_Profile')
 
+
+def market_profile_from_klines_grouped(data: pd.DataFrame, num_bins: int = 100) -> pd.DataFrame:
+    """
+    Calculate the market profile for a given OHLC data. The function calculates the average price for each candle
+    (high + low + close) / 3, and then calculates the 'maker' and 'taker' volumes for each average price.
+
+    :param data: A pandas DataFrame with the OHLC data. It should contain 'High', 'Low', 'Close', 'Volume', and
+               'Taker buy base volume' columns.
+    :param int num_bins: Number of bins to use for the market profile.
+    :return: A pandas DataFrame grouped by the average price ('Market_Profile') with the sum of 'Taker buy base volume'
+             and 'Maker_Volume' for each average price.
+    """
+    df = data.copy(deep=True)
+    df['Maker buy base volume'] = df['Volume'] - df['Taker buy base volume']
+    df['Market_Profile'] = (df['High'] + df['Low'] + df['Close']) / 3
+    df['Price_Bin'] = pd.cut(df['Market_Profile'], bins=num_bins)
+    volume_by_price_bin = df.groupby('Price_Bin').agg({'Taker buy base volume': 'sum', 'Maker buy base volume': 'sum'})
+    # Convertir el índice a un IntervalIndex
+    volume_by_price_bin.index = pd.IntervalIndex(volume_by_price_bin.index)
+    # Ordenar por el límite inferior de cada intervalo
+    volume_by_price_bin = volume_by_price_bin.sort_index(key=lambda x: x.left)
+    volume_by_price_bin.index.name += f"_{df.index.name}_Klines"
+    return volume_by_price_bin
+
+
+def market_profile_from_trades_grouped(data: pd.DataFrame, num_bins: int = 100) -> pd.DataFrame:
+    """
+    Calculate the market profile for a given trades data. The function calculates the average price for each trade
+    and then calculates the 'maker' and 'taker' volumes for each average price.
+
+    :param data: A pandas DataFrame with the trades data. It should contain 'Price', 'Quantity', 'Buyer was maker' columns.
+    :param num_bins: The number of bins to use for the market profile.
+    :return: A pandas DataFrame grouped by the average price ('Price_Bin') with the sum of 'Taker buy base volume'
+             and 'Maker buy base volume' for each average price.
+    """
+    df = data.copy(deep=True)
+    df['Taker buy base volume'] = df['Quantity'].where(~df['Buyer was maker'], 0)
+    df['Maker buy base volume'] = df['Quantity'].where(df['Buyer was maker'], 0)
+
+    df['Price_Bin'] = pd.cut(df['Price'], bins=num_bins)
+    volume_by_price_bin = df.groupby('Price_Bin').agg({'Taker buy base volume': 'sum', 'Maker buy base volume': 'sum'})
+    # Convert the index to an IntervalIndex
+    volume_by_price_bin.index = pd.IntervalIndex(volume_by_price_bin.index)
+    # Sort by the lower bound of each interval
+    volume_by_price_bin = volume_by_price_bin.sort_index(key=lambda x: x.left)
+    volume_by_price_bin.index.name += f"_{df.index.name}_Trades"
+    return volume_by_price_bin

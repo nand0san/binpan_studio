@@ -101,16 +101,16 @@ def move_old_csvs(files_path: str = '.', extension='csv'):
         replace(file, dst)
 
 
-def read_csv_to_dataframe(filename: str, col_sep: str = ',', index_col: bool = None) -> pd.DataFrame:
+def read_csv_to_dataframe(filename: str, col_sep: str = ',', keep_index_col: bool = None) -> pd.DataFrame:
     """
     Creates a csv file from a dataframe.
 
     :param str filename: The file name with or without path.
     :param str col_sep: Column separator. DEfault is ","
-    :param bool index_col: If False, index is dropped. Default is False.
+    :param bool keep_index_col: If False, index is dropped. Default is False.
     :return pd.DataFrame: A dataframe with data in columns using file rows header.
     """
-    return pd.read_csv(filepath_or_buffer=filename, sep=col_sep, index_col=index_col, skip_blank_lines=True, quoting=QUOTE_ALL)
+    return pd.read_csv(filepath_or_buffer=filename, sep=col_sep, index_col=keep_index_col, skip_blank_lines=True, quoting=QUOTE_ALL)
 
 
 def read_file(filename: str) -> list:
@@ -154,7 +154,7 @@ def select_file(path='.', extension='csv') -> str:
     files = [i for i in files if i.lower().endswith(extension.lower())]
     for i, file in enumerate(files):
         print(f"{i}: {file}")
-    selection = input("Insert file number: ")
+    selection = input("Insert file menu number: ")
 
     return files[int(selection)]
 

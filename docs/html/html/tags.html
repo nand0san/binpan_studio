@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Tags &amp; Backtesting Module - BinPan 0.4.30 documentation</title>
+      <title>Tags &amp; Backtesting Module - BinPan 0.4.31 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Wallet Module" href="wallet.html" /><link rel="prev" title="Strategies Module" href="strategies.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -138,6 +138,8 @@ html.dark {
 <li><a class="reference internal" href="#handlers.tags.simple_backtesting"><code class="docutils literal notranslate"><span class="pre">simple_backtesting()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.tags.backtesting"><code class="docutils literal notranslate"><span class="pre">backtesting()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.tags.backtesting_short"><code class="docutils literal notranslate"><span class="pre">backtesting_short()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.tags.add_future_index_threshold_label"><code class="docutils literal notranslate"><span class="pre">add_future_index_threshold_label()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.tags.is_alternating"><code class="docutils literal notranslate"><span class="pre">is_alternating()</span></code></a></li>
 </ul>
 
 
@@ -194,6 +196,12 @@ html.dark {
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.tags.backtesting_short" title="handlers.tags.backtesting_short"><code class="xref py py-obj docutils literal notranslate"><span class="pre">backtesting_short</span></code></a>(df, actions_column, ...[, ...])</p></td>
 <td><p>Returns two pandas series as base wallet and quote wallet over time.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.tags.add_future_index_threshold_label" title="handlers.tags.add_future_index_threshold_label"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_future_index_threshold_label</span></code></a>(data[, ...])</p></td>
+<td><p>Adds next indices for each kline touching prices percentage thresholds as usable target labels for a given threshold to a DataFrame.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.tags.is_alternating" title="handlers.tags.is_alternating"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_alternating</span></code></a>(lst)</p></td>
+<td><p>Verify if a list is alternating 1 to -1 or -1 to 1 alternatively.</p></td>
 </tr>
 </tbody>
 </table>
@@ -509,6 +517,35 @@ By ins and out I mean buys or sells, shorts and repays, etc.</p>
 <dd class="field-even"><p>Two series with the base wallet and quote wallet funds in time.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.tags.add_future_index_threshold_label">
+<span class="sig-prename descclassname"><span class="pre">handlers.tags.</span></span><span class="sig-name descname"><span class="pre">add_future_index_threshold_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thresholds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[0.002,</span> <span class="pre">-0.002,</span> <span class="pre">0.006,</span> <span class="pre">-0.006]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_lookahead</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.tags.add_future_index_threshold_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds next indices for each kline touching prices percentage thresholds as usable target labels for a given threshold to a DataFrame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – DataFrame containing the OHLC (Open, High, Low, Close) price data.</p></li>
+<li><p><strong>thresholds</strong> – List of thresholds for which to create future action labels. Positive values indicate a
+price increase, negative values indicate a price decrease.</p></li>
+<li><p><strong>max_lookahead</strong> – Maximum number of bars to look ahead to determine if a threshold is met. Default is 30.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>DataFrame with additional columns for each threshold. Each column contains the number of bars until
+the price change defined by the threshold is met. If the price change is not met within max_lookahead
+bars, the value is NaN.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.tags.is_alternating">
+<span class="sig-prename descclassname"><span class="pre">handlers.tags.</span></span><span class="sig-name descname"><span class="pre">is_alternating</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lst</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#handlers.tags.is_alternating" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify if a list is alternating 1 to -1 or -1 to 1 alternatively.
+:param lst: A list of integers.
+:return:</p>
 </dd></dl>
 
 </section>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>BinPan Module - BinPan 0.4.30 documentation</title>
+      <title>BinPan Module - BinPan 0.4.31 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Aggregations Module" href="aggregations.html" /><link rel="prev" title="Welcome to BinPan’s documentation!" href="index.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -207,7 +207,9 @@ html.dark {
 <li><a class="reference internal" href="#binpan.binpan.Symbol.bbands"><code class="docutils literal notranslate"><span class="pre">Symbol.bbands()</span></code></a></li>
 <li><a class="reference internal" href="#binpan.binpan.Symbol.stoch"><code class="docutils literal notranslate"><span class="pre">Symbol.stoch()</span></code></a></li>
 <li><a class="reference internal" href="#binpan.binpan.Symbol.ichimoku"><code class="docutils literal notranslate"><span class="pre">Symbol.ichimoku()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.binpan.Symbol.alternating_fractal"><code class="docutils literal notranslate"><span class="pre">Symbol.alternating_fractal()</span></code></a></li>
 <li><a class="reference internal" href="#binpan.binpan.Symbol.fractal_w"><code class="docutils literal notranslate"><span class="pre">Symbol.fractal_w()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.binpan.Symbol.market_profile"><code class="docutils literal notranslate"><span class="pre">Symbol.market_profile()</span></code></a></li>
 <li><a class="reference internal" href="#binpan.binpan.Symbol.pandas_ta_indicator"><code class="docutils literal notranslate"><span class="pre">Symbol.pandas_ta_indicator()</span></code></a></li>
 <li><a class="reference internal" href="#binpan.binpan.Symbol.support_resistance"><code class="docutils literal notranslate"><span class="pre">Symbol.support_resistance()</span></code></a></li>
 <li><a class="reference internal" href="#binpan.binpan.Symbol.tag"><code class="docutils literal notranslate"><span class="pre">Symbol.tag()</span></code></a></li>
@@ -649,8 +651,14 @@ weight is heavy.</p></li>
 <tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.ichimoku" title="binpan.binpan.Symbol.ichimoku"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ichimoku</span></code></a>([tenkan, kijun, chikou_span, ...])</p></td>
 <td><p>The Ichimoku Cloud is a collection of technical indicators that show support and resistance levels, as well as momentum and trend direction.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.fractal_w" title="binpan.binpan.Symbol.fractal_w"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fractal_w</span></code></a>([period, inplace, suffix, colors])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.alternating_fractal" title="binpan.binpan.Symbol.alternating_fractal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">alternating_fractal</span></code></a>([max_period, inplace, ...])</p></td>
+<td><p>Obtains the minim value for fractal_w periods as fractal is pure alternating max to mins.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.fractal_w" title="binpan.binpan.Symbol.fractal_w"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fractal_w</span></code></a>([period, inplace, overlap_plot, ...])</p></td>
 <td><p>The fractal indicator is based on a simple price pattern that is frequently seen in financial markets.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.market_profile" title="binpan.binpan.Symbol.market_profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">market_profile</span></code></a>([bins, hours, minutes, ...])</p></td>
+<td><p>Generates a market profile dataframe from trade or kline data.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#binpan.binpan.Symbol.pandas_ta_indicator" title="binpan.binpan.Symbol.pandas_ta_indicator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas_ta_indicator</span></code></a>(name, **kwargs)</p></td>
 <td><p>Calls any indicator in pandas_ta library with function name as first argument and any kwargs the function will use.</p></td>
@@ -2118,8 +2126,35 @@ It can be any color from plotly library or a number in the list of those. Defaul
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="binpan.binpan.Symbol.alternating_fractal">
+<span class="sig-name descname"><span class="pre">alternating_fractal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_period</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_trend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.binpan.Symbol.alternating_fractal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Obtains the minim value for fractal_w periods as fractal is pure alternating max to mins. In other words, max and mins alternates
+in regular rhythm without any tow max or two mins consecutively.</p>
+<p>This custom indicator shows the minimum period in finding a pure alternating fractal. It is some kind of volatility in price
+indicator, the most period needed, the most volatile price.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>max_period</strong> (<em>int</em>) – Default is len of dataframe. This method will check from 2 to the max period value to find a alternating max to mins.</p></li>
+<li><p><strong>inplace</strong> (<em>bool</em>) – Make it permanent in the instance or not.</p></li>
+<li><p><strong>overlap_plot</strong> (<em>bool</em>) – If True, it will overlap the indicator plot with the price plot.</p></li>
+<li><p><strong>with_trend</strong> (<em>bool</em>) – If true, it will return maximums diff mean and minimums diff mean also.</p></li>
+<li><p><strong>suffix</strong> (<em>str</em>) – A decorative suffix for the name of the column created.</p></li>
+<li><p><strong>colors</strong> (<em>list</em>) – A list of colors for the indicator dataframe columns. Is the color to show when plotting.
+It can be any color from plotly library or a number in the list of those. Default colors defined.
+<a class="reference external" href="https://community.plotly.com/t/plotly-colours-list/11730">https://community.plotly.com/t/plotly-colours-list/11730</a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dataframe with two columns, one with 1 or -1 for local max or local min to tag,
+and other with price values for that points. Alternatively, maximums and minimums diff mean will be returned.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="binpan.binpan.Symbol.fractal_w">
-<span class="sig-name descname"><span class="pre">fractal_w</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">period</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.binpan.Symbol.fractal_w" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">fractal_w</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">period</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.binpan.Symbol.fractal_w" title="Permalink to this definition">¶</a></dt>
 <dd><p>The fractal indicator is based on a simple price pattern that is frequently seen in financial markets. Outside of trading, a fractal
 is a recurring geometric pattern that is repeated on all time frames. From this concept, the fractal indicator was devised.
 The indicator isolates potential turning points on a price chart. It then draws arrows to indicate the existence of a pattern.</p>
@@ -2130,6 +2165,7 @@ The indicator isolates potential turning points on a price chart. It then draws 
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>period</strong> (<em>int</em>) – Default is 2. Count of neighbour candles to match max or min tags.</p></li>
 <li><p><strong>inplace</strong> (<em>bool</em>) – Make it permanent in the instance or not.</p></li>
+<li><p><strong>overlap_plot</strong> (<em>bool</em>) – If True, it will overlap the indicator plot with the price plot.</p></li>
 <li><p><strong>suffix</strong> (<em>str</em>) – A decorative suffix for the name of the column created.</p></li>
 <li><p><strong>colors</strong> (<em>list</em>) – A list of colors for the indicator dataframe columns. Is the color to show when plotting.
 It can be any color from plotly library or a number in the list of those. Default colors defined.
@@ -2138,6 +2174,31 @@ It can be any color from plotly library or a number in the list of those. Defaul
 </dd>
 <dt class="field-even">Return pd.Series<span class="colon">:</span></dt>
 <dd class="field-even"><p>A serie with 1 or -1 for local max or local min to tag.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.binpan.Symbol.market_profile">
+<span class="sig-name descname"><span class="pre">market_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hours</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minutes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_agg_trades</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_atomic_trades</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Market</span> <span class="pre">Profile'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#binpan.binpan.Symbol.market_profile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a market profile dataframe from trade or kline data. The market profile is a histogram of trading
+volumes at different price levels.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bins</strong> – The number of price levels (bins) to include in the market profile.</p></li>
+<li><p><strong>hours</strong> – If specified, only the last ‘hours’ hours of data are used to generate the market profile.</p></li>
+<li><p><strong>minutes</strong> – If specified, only the last ‘minutes’ minutes of data are used to generate the market profile.</p></li>
+<li><p><strong>startTime</strong> – If specified, only data after this timestamp or date (in format %Y-%m-%d %H:%M:%S) are used.</p></li>
+<li><p><strong>endTime</strong> – If specified, only data before this timestamp or date (in format %Y-%m-%d %H:%M:%S) are used.</p></li>
+<li><p><strong>from_agg_trades</strong> – If True, aggregated trades data are used to generate the market profile.</p></li>
+<li><p><strong>from_atomic_trades</strong> – If True, atomic trades data are used to generate the market profile.</p></li>
+<li><p><strong>title</strong> – The title of the resulting plot (if plotting).</p></li>
+<li><p><strong>time_zone</strong> – The time zone to use for time index conversion (e.g., “Europe/Madrid”).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A DataFrame representing the market profile, or None if no suitable data are available.</p>
 </dd>
 </dl>
 </dd></dl>

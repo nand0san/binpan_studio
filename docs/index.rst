@@ -38,14 +38,21 @@ Hope you find it useful breaking the market!!!
 
 Documentation
 -------------
-Take a look to the basic **tutorial**. Find it in the Jupyter Notebook file **tutorial.ipynb**
+
+Full documentation can be found at:
 
 https://nand0san.github.io/binpan_studio/
+
+Take a look to the basic **tutorial**. Find it in the Jupyter Notebook file **tutorial.ipynb**
+
+There are many more tutorials in Jupyter Notebooks at https://github.com/nand0san/binpan_studio
+
+Hope you find it useful breaking the market!!!
 
 Google Colab
 -------------------------------
 
-Google Colab is not available for the Binance API. Maybe Colab's IP are restricted in the binance API.
+Google Colab is not available for the Binance API. Maybe Colab's IPs are restricted in the binance API.
 
 .. code-block::
 
