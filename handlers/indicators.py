@@ -6,6 +6,7 @@ BinPan own indicators and utils.
 import pandas as pd
 import pytz
 import numpy as np
+from typing import Tuple
 
 from .starters import is_running_in_jupyter
 from .time_helper import convert_milliseconds_to_time_zone_datetime
@@ -526,7 +527,7 @@ def repeat_prices_by_quantity(data: pd.DataFrame, epsilon_quantity: float, price
     return np.array(repeated_prices).reshape(-1, 1)
 
 
-def support_resistance_levels(df: pd.DataFrame, max_clusters: int = 5, by_quantity: float = None, by_klines=True) -> tuple:
+def support_resistance_levels(df: pd.DataFrame, max_clusters: int = 5, by_quantity: float = None, by_klines=True, quiet=False) -> Tuple[list, list]:
     """
     Calculate support and resistance levels for a given set of trades using K-means clustering.
 
@@ -540,6 +541,7 @@ def support_resistance_levels(df: pd.DataFrame, max_clusters: int = 5, by_quanti
         Example: If a price 0.001 has a quantity of 100 and by_quantity is 0.1, quantity/by_quantity = 100/0.1 = 1000, then this prices
         is taken into account 1000 times instead of 1.
     :param bool by_klines: If true, use market profile from klines.
+    :param bool quiet: If true, do not print progress bar.
     :return: A tuple containing two lists: the first list contains the support levels, and the second list contains
         the resistance levels. Both lists contain float values.
     """
@@ -552,17 +554,22 @@ def support_resistance_levels(df: pd.DataFrame, max_clusters: int = 5, by_quanti
     # copy data to avoid side effects
     df_ = df.copy(deep=True)
 
-    def find_optimal_clusters(data: np.ndarray, max_clusters: int) -> int:
+    def find_optimal_clusters(data: np.ndarray, max_clusters: int, quiet: bool) -> int:
         """
         Find the optimal quantity of centroids for support and resistance methods using the elbow method.
 
         :param data: A numpy array with the data to analyze.
         :param max_clusters: Maximum number of clusters to consider.
+        :param bool quiet: If true, do not print progress bar.
         :return: The optimal number of clusters (centroids) as an integer.
         """
 
         inertia = []
-        for n_clusters in tqdm(range(1, max_clusters + 1)):
+        if quiet:
+            pbar = range(1, max_clusters + 1)
+        else:
+            pbar = tqdm(range(1, max_clusters + 1))
+        for n_clusters in pbar:
             kmeans = KMeans(n_clusters=n_clusters, n_init=10, random_state=0).fit(data)
             inertia.append(kmeans.inertia_)
         return np.argmin(np.gradient(np.gradient(inertia))) + 1
@@ -572,7 +579,6 @@ def support_resistance_levels(df: pd.DataFrame, max_clusters: int = 5, by_quanti
         buy_data = df_.loc[df_['Buyer was maker'] == False]
         sell_data = df_.loc[df_['Buyer was maker'] == True]
     else:
-        # fixme: aqui hay un fallo cuando usamos aggtrades
         profile = market_profile_from_klines_melt(df=df_).reset_index()
         buy_data = profile.loc[profile['Is_Maker'] == True]
         sell_data = profile.loc[profile['Is_Maker'] == False]
@@ -590,12 +596,12 @@ def support_resistance_levels(df: pd.DataFrame, max_clusters: int = 5, by_quanti
     if len(buy_prices) == 0 and len(sell_prices) == 0:
         print("There is not enough trade data to calculate support and resistance levels.")
         return [], []
-
-    print("Clustering data...")
-    optimal_buy_clusters = find_optimal_clusters(buy_prices, max_clusters)
-    optimal_sell_clusters = find_optimal_clusters(sell_prices, max_clusters)
-
-    print(f"Found {optimal_buy_clusters} support levels from buys and {optimal_sell_clusters} resistance levels from sells.")
+    if not quiet:
+        print("Clustering data...")
+    optimal_buy_clusters = find_optimal_clusters(buy_prices, max_clusters, quiet=quiet)
+    optimal_sell_clusters = find_optimal_clusters(sell_prices, max_clusters, quiet=quiet)
+    if not quiet:
+        print(f"Found {optimal_buy_clusters} support levels from buys and {optimal_sell_clusters} resistance levels from sells.")
 
     kmeans_buy = KMeans(n_clusters=optimal_buy_clusters, n_init=10).fit(buy_prices)
     kmeans_sell = KMeans(n_clusters=optimal_sell_clusters, n_init=10).fit(sell_prices)
@@ -705,7 +711,6 @@ def market_profile_from_klines_melt(df: pd.DataFrame):
              and 'Maker_Volume' for each average price.
     """
     df_ = df.copy(deep=True)
-
     df_['Market_Profile'] = (df_['High'] + df_['Low'] + df_['Close']) / 3
     df_['Maker buy base volume'] = df_['Volume'] - df_['Taker buy base volume']
 
