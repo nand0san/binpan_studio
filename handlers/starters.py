@@ -174,15 +174,14 @@ def is_python_version_numba_supported() -> bool:
     return min_version <= current_version <= max_version
 
 
-def is_running_in_jupyter() -> bool:
-    """
-    Verify if the code is running in a Jupyter notebook.
-    """
+def is_running_in_jupyter():
     try:
-        from IPython import get_ipython
-        if 'ipykernel' in get_ipython().config:  # Check if 'ipykernel' is in the config dict
+        ipython = get_ipython()
+        if ipython is None:
+            return False
+        if 'ipykernel' in ipython.config:  # Check if 'ipykernel' is in the config dict
             return True
-    except (NameError, ImportError):
-        pass
-    return False
-
+        else:
+            return False
+    except NameError:
+        return False

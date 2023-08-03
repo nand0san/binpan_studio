@@ -3,7 +3,7 @@
 This is the main classes file.
 
 """
-__version__ = "0.4.31"
+__version__ = "0.4.32"
 
 import os
 from sys import path
@@ -3229,7 +3229,8 @@ class Symbol(object):
                                    colors: list = None) -> pd.DataFrame or None:
         """
         Calculate support and resistance levels for the Symbol based on either atomic trades or aggregated trades in a rolling window.
-         It returns a pandas dataframe with each column representing ordered levels from higher to lower for support and resistance. The
+
+        It returns a pandas dataframe with each column representing ordered levels from higher to lower for support and resistance. The
          function iterates in steps of a minutes quantity.
 
         :param int minutes_window: A rolling window of time in minutes. Whe using trades, it will calculate window by time index.
@@ -3241,8 +3242,9 @@ class Symbol(object):
         :param bool inplace: If True, it will replace the current dataframe with the new one. Default is True.
         :param list colors: A list of colors for the indicator dataframe columns. Is the color to show when plotting.
          It can be any color from plotly library or a number in the list of those. Default colors defined.
-          https://community.plotly.com/t/plotly-colours-list/11730
+         https://community.plotly.com/t/plotly-colours-list/11730
         :return pd.DataFrame: A pandas dataframe with each column representing ordered levels from higher to lower for support and resistance.
+
         """
         binpan_logger.info(f"Each {time_steps_minutes} minutes, support and resistance will be calculated with the last {minutes_window} minutes  data")
         by_klines = False
