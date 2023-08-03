@@ -1,7 +1,7 @@
 from datetime import datetime
 import pytz
 from time import time
-from typing import Tuple
+from typing import Tuple, List
 
 import pandas as pd
 
@@ -371,5 +371,49 @@ def infer_frequency_and_set_index(data: pd.DataFrame, timestamp_column: str = 'O
     return df
 
 
+def get_dataframe_time_index_ranges(data: pd.DataFrame, interval='30T') -> List[tuple]:
+    """
+    Divides a DataFrame into time ranges of a specified interval. Complete intervals are used, but the first interval is the one with
+     the rest.
+
+    :param pd.DataFrame data: A dataframe with a datetime index.
+    :param interval: Interval expressed as a Pandas frequency string. Default is '30T' (30 minutes).
+    :return list: A list of tuples containing the start and end time of each interval.
+    """
+    df_ = data.sort_index(ascending=False)  # reversed order
+    start_time = df_.index.min()
+    end_time = df_.index.max()
+    time_ranges = []
+
+    current_time = end_time
+
+    while current_time > start_time:
+        range_start = max(current_time - pd.Timedelta(interval), start_time)
+        time_ranges.append((range_start, current_time))
+        current_time -= pd.Timedelta(interval)
+
+    return sorted(time_ranges)
 
 
+def remove_initial_included_ranges(time_ranges, initial_minutes) -> List[tuple]:
+    """
+    Remove the time ranges that are completely included in the initial period.
+    :param time_ranges: A list of tuples containing the start and end time of each interval.
+    :param initial_minutes: A quantity of minutes that defines the initial period.
+    :return: A list of tuples containing the start and end time of each interval, without the ranges that are completely included in the initial period.
+    """
+    if not time_ranges:
+        return []
+
+    initial_end_time = time_ranges[0][0] + pd.Timedelta(minutes=initial_minutes)
+
+    modified_time_ranges = [next((start_time, end_time) for start_time, end_time in time_ranges if end_time > initial_end_time)]
+
+    for start_time, end_time in time_ranges[1:]:
+        # Si el tiempo de inicio del rango de tiempo actual es anterior al tiempo de finalización del último rango de tiempo en la lista modificada,
+        # entonces el rango de tiempo actual está completamente incluido en un rango de tiempo desde el comienzo del primer intervalo que aparece,
+        # por lo que lo saltamos
+        if start_time < modified_time_ranges[-1][1]:
+            continue
+        modified_time_ranges.append((start_time, end_time))
+    return modified_time_ranges

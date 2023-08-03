@@ -273,14 +273,13 @@ def deploy_traces(annotations: list, colors: list, markers: list, text_positions
     annotations_traces = []  # lista de series con anotaciones
     if tags:
         for idx, an in enumerate(annotations):
-            annotations_traces.append(set_arrows(annotations=an, textposition=text_positions[idx], mode="markers+text",
-                                                 marker_symbol=markers[idx], marker_color=colors[idx], name=mark_names[idx],
-                                                 marker_line_color='black', marker_line_width=0.5, marker_size=15, tag=tags[idx]))
+            annotations_traces.append(set_arrows(annotations=an, textposition=text_positions[idx], mode="markers+text", marker_symbol=
+            markers[idx], marker_color=colors[idx], name=mark_names[
+                idx], marker_line_color='black', marker_line_width=0.5, marker_size=15, tag=tags[idx]))
     else:
         for idx, an in enumerate(annotations):
-            annotations_traces.append(set_arrows(annotations=an, textposition=text_positions[idx],
-                                                 mode="markers+text", marker_symbol=markers[idx], marker_color=colors[idx],
-                                                 name=mark_names[idx], marker_line_color='black', marker_line_width=0.5, marker_size=15))
+            annotations_traces.append(set_arrows(annotations=an, textposition=text_positions[idx], mode="markers+text", marker_symbol=
+            markers[idx], marker_color=colors[idx], name=mark_names[idx], marker_line_color='black', marker_line_width=0.5, marker_size=15))
     return annotations_traces
 
 
@@ -543,8 +542,8 @@ def candles_ta(data: pd.DataFrame, indicators_series: list or pd.DataFrame = Non
                               f"{indicator_column_up, indicator_column_down, splitted_dfs, color_up, color_down}")
 
             tas.append(set_ta_line(df_index=df_plot.index,  # linea para delimitación
-                                   serie=indicator, color=indicators_colors[i], name=indicator_names[i], line_width=1,
-                                   fill_mode='none', fill_color=None, yaxis=my_axis))
+                                   serie=indicator, color=indicators_colors[i], name=indicator_names[
+                    i], line_width=1, fill_mode='none', fill_color=None, yaxis=my_axis))
 
             # cambio de función
 
@@ -890,27 +889,12 @@ def candles_tagged(data: pd.DataFrame, width=1800, height=1000, candles_ta_heigh
                 except:
                     indicator_names.append(f'Indicator_{i}')
 
-    return candles_ta(data_, width=width,
-                      height=height,
-                      range_slider=False,
-                      candles_ta_height_ratio=candles_ta_height_ratio,
-                      plot_volume=plot_volume,
-                      title=title,
-                      yaxis_title=yaxis_title,
-                      annotation_values=annotations_values,
-                      markers=[markers[k] for k in labels_locator],
-                      labels=[markers_labels[k] for k in labels_locator],
-                      annotation_colors=[marker_colors[k] for k in labels_locator],
-                      annotation_legend_names=[marker_legend_names[k] for k in labels_locator],
-                      rows_pos=rows_pos_final,
-                      indicators_series=indicator_series,
-                      indicator_names=indicator_names,
-                      indicators_colors=indicator_colors,
-                      indicators_color_filled=fill_control,
-                      indicators_filled_mode=indicators_filled_mode,
-                      axis_groups=axis_groups,
-                      plot_splitted_serie_couple=plot_splitted_serie_couple,
-                      plot_bgcolor=plot_bgcolor)
+    return candles_ta(data_, width=width, height=height, range_slider=False, candles_ta_height_ratio=candles_ta_height_ratio, plot_volume=plot_volume, title=title, yaxis_title=yaxis_title, annotation_values=annotations_values, markers=[
+        markers[k] for k in labels_locator], labels=[markers_labels[k] for k in labels_locator], annotation_colors=[marker_colors[k] for k
+                                                                                                                    in
+                                                                                                                    labels_locator], annotation_legend_names=[
+        marker_legend_names[k] for k in
+        labels_locator], rows_pos=rows_pos_final, indicators_series=indicator_series, indicator_names=indicator_names, indicators_colors=indicator_colors, indicators_color_filled=fill_control, indicators_filled_mode=indicators_filled_mode, axis_groups=axis_groups, plot_splitted_serie_couple=plot_splitted_serie_couple, plot_bgcolor=plot_bgcolor)
 
 
 ################
@@ -968,8 +952,7 @@ def plot_trades(data: pd.DataFrame, max_size: int = 60, height: int = 1000, loga
                 plot_data = inferred_overlap[
                     (inferred_overlap['Open timestamp'] >= start) & (inferred_overlap['Open timestamp'] <= end)].shift(1, freq='infer')
             except ValueError:
-                plot_data = overlap_prices[
-                    (overlap_prices['Open timestamp'] >= start) & (overlap_prices['Open timestamp'] <= end)].shift(1)
+                plot_data = overlap_prices[(overlap_prices['Open timestamp'] >= start) & (overlap_prices['Open timestamp'] <= end)].shift(1)
         else:
             title = f"{title} with High and Low Prices"
             plot_data = overlap_prices[(overlap_prices['Open timestamp'] >= start) & (overlap_prices['Open timestamp'] <= end)]
@@ -1227,6 +1210,8 @@ def dist_plot(df: pd.DataFrame, x_col: str = 'Price', color: str = 'Side', bins:
         https://plotly.github.io/plotly.py-docs/generated/plotly.express.histogram.html
     :param int height: Plot sizing.
     :param str title: A title string
+    :param update_layout_kwargs: Additional kwargs for plotly update_layout method.
+    :param update_layout_kwargs: Additional kwargs for plotly update_layout method.
 
     Example from binpan Symbol plot_orderbook_density method.
 
@@ -1245,18 +1230,9 @@ def dist_plot(df: pd.DataFrame, x_col: str = 'Price', color: str = 'Side', bins:
     return os.path.join(os.getcwd(), "last_plot.png")
 
 
-def bar_plot(df: pd.DataFrame,
-             x_col_to_bars: str,
-             y_col: str,
-             bar_segments: str = 'Buyer was maker',
-             split_colors: bool = False,
-             bins: int = 100,
-             aggregation: Literal['sum', 'mean'] = 'sum',
-             height: int = 800,
-             title: str = "Bar Plot",
-             y_axis_title: str = None,
-             horizontal_bars: bool = False,
-             **update_layout_kwargs):
+def bar_plot(df: pd.DataFrame, x_col_to_bars: str, y_col: str, bar_segments: str = 'Buyer was maker', split_colors: bool = False,
+             bins: int = 100, aggregation: Literal['sum', 'mean'] = 'sum', height: int = 800, title: str = "Bar Plot",
+             y_axis_title: str = None, horizontal_bars: bool = False, **update_layout_kwargs):
     """
     Plot a bar plot for a dataframe column with optional segments based on the 'bar_segments' column.
 
@@ -1274,7 +1250,7 @@ def bar_plot(df: pd.DataFrame,
     :param str title: A title string
     :param str y_axis_title: Title for y axis plot.
     :param horizontal_bars: Flips graph with horizontal bars.
-
+    :param update_layout_kwargs: Additional kwargs for plotly update_layout method.
     """
     # Create bins
     bin_edges = np.linspace(df[x_col_to_bars].min(), df[x_col_to_bars].max(), bins + 1)
@@ -1292,9 +1268,11 @@ def bar_plot(df: pd.DataFrame,
     if split_colors:
         for segment_value in grouped_data.columns:
             if not horizontal_bars:
-                fig.add_trace(go.Bar(x=grouped_data.index.astype(str), y=grouped_data[segment_value].values, name=f"{bar_segments}: {segment_value}"))
+                fig.add_trace(go.Bar(x=grouped_data.index.astype(str), y=grouped_data[
+                    segment_value].values, name=f"{bar_segments}: {segment_value}"))
             else:
-                fig.add_trace(go.Bar(y=grouped_data.index.astype(str), x=grouped_data[segment_value].values, orientation='h',  name=f"{bar_segments}: {segment_value}"))
+                fig.add_trace(go.Bar(y=grouped_data.index.astype(str), x=grouped_data[
+                    segment_value].values, orientation='h', name=f"{bar_segments}: {segment_value}"))
         fig.update_layout(barmode='stack')
     else:
         if not horizontal_bars:
@@ -1308,6 +1286,42 @@ def bar_plot(df: pd.DataFrame,
     # if legend_names:
     #     fig.for_each_trace(lambda t: t.update(name=legend_names[t.name]))
 
+    fig.show()
+    fig.write_image("last_plot.png")
+    return os.path.join(os.getcwd(), "last_plot.png")
+
+
+def profile_plot(serie: pd.Series, title: str = "Profile Plot", x_axis_title: str = None, y_axis_title: str = None,
+                 vertical_bar: float = None, color: str = 'blue', height: int = 800, width: int = 400, **update_layout_kwargs) -> str:
+    """
+    This function generates a horizontal bar chart from a pandas series.
+
+    :param pd.Series serie: The pandas series to be plotted.
+    :param str title: The title of the plot. Default is "Profile Plot".
+    :param str x_axis_title: The title for the x-axis. Default is None.
+    :param str y_axis_title: The title for the y-axis. Default is None.
+    :param float vertical_bar: A vertical line to be drawn in the plot. Default is None.
+    :param str color: The color of the bars in the plot. Default is 'blue'.
+    :param int height: The height of the plot. Default is 800.
+    :param int width: The width of the plot. Default is None, which lets Plotly auto-size the plot.
+    :param update_layout_kwargs: Additional arguments for customizing the appearance of the plot.
+    :return str: The path to the image file of the generated plot.
+    """
+
+    s = serie.copy(deep=True)
+    s = s.fillna(0)
+
+    # noinspection PyTypeChecker
+    fig = go.Figure(go.Bar(y=s.index.astype(str),  # Usa los índices de la serie como etiquetas en el eje y
+                           x=s.values,  # Usa los valores de la serie como longitudes de las barras
+                           orientation='h',  # Esto hace que las barras sean horizontales
+                           marker_color=color  # Color de las barras
+                           ))
+
+    if vertical_bar is not None:
+        fig.add_shape(type="line", x0=vertical_bar, y0=0, x1=vertical_bar, y1=1, yref="paper", xref="x", line=dict(color="red", width=3, ))
+
+    fig.update_layout(title=title, height=height, width=width, xaxis_title=x_axis_title, yaxis_title=y_axis_title, **update_layout_kwargs)
     fig.show()
     fig.write_image("last_plot.png")
     return os.path.join(os.getcwd(), "last_plot.png")
@@ -1350,13 +1364,8 @@ def plot_orderbook_value(ask_data: List[Tuple[List, float]], bid_data: List[Tupl
     fig.add_trace(go.Scatter(x=close_prices.index, y=close_prices, name="Close Price", yaxis="y2"))
 
     # Configurar los ejes y el título del gráfico
-    fig.update_layout(title="Evolución de los índices en los datos",
-                      xaxis_title="Timestamp",
-                      yaxis_title="Value",
-                      yaxis=dict(domain=[0, 1],
-                                 side="left",
-                                 title="Value"),
-                      yaxis2=dict(title="Close Price", overlaying="y", side="left", showgrid=False, anchor="free", position=0.05), )
+    fig.update_layout(title="Evolución de los índices en los datos", xaxis_title="Timestamp", yaxis_title="Value", yaxis=dict(domain=[0,
+                                                                                                                                      1], side="left", title="Value"), yaxis2=dict(title="Close Price", overlaying="y", side="left", showgrid=False, anchor="free", position=0.05), )
 
     fig.show()
     fig.write_image("last_plot.png")

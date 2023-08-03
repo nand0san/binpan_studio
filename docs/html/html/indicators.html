@@ -142,6 +142,7 @@ html.dark {
 <li><a class="reference internal" href="#handlers.indicators.repeat_timestamps_by_quantity"><code class="docutils literal notranslate"><span class="pre">repeat_timestamps_by_quantity()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.indicators.time_active_zones"><code class="docutils literal notranslate"><span class="pre">time_active_zones()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.indicators.market_profile_from_klines_melt"><code class="docutils literal notranslate"><span class="pre">market_profile_from_klines_melt()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.indicators.taker_maker_profile_from_klines_melt"><code class="docutils literal notranslate"><span class="pre">taker_maker_profile_from_klines_melt()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.indicators.market_profile_from_klines_grouped"><code class="docutils literal notranslate"><span class="pre">market_profile_from_klines_grouped()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.indicators.market_profile_from_trades_grouped"><code class="docutils literal notranslate"><span class="pre">market_profile_from_trades_grouped()</span></code></a></li>
 </ul>
@@ -174,7 +175,7 @@ html.dark {
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.ker" title="handlers.indicators.ker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ker</span></code></a>(close, window)</p></td>
 <td><p>Kaufman's Efficiency Ratio based in: <a class="reference external" href="https://stackoverflow.com/questions/36980238/calculating-kaufmans-efficiency-ratio-in-python-with-pandas">https://stackoverflow.com/questions/36980238/calculating-kaufmans-efficiency-ratio-in-python-with-pandas</a></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.fractal_w_indicator" title="handlers.indicators.fractal_w_indicator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fractal_w_indicator</span></code></a>(data[, period, merged, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.fractal_w_indicator" title="handlers.indicators.fractal_w_indicator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fractal_w_indicator</span></code></a>(df[, period, merged, ...])</p></td>
 <td><p>The fractal indicator is based on a simple price pattern that is frequently seen in financial markets.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.support_resistance_volume" title="handlers.indicators.support_resistance_volume"><code class="xref py py-obj docutils literal notranslate"><span class="pre">support_resistance_volume</span></code></a>(df[, num_bins, ...])</p></td>
@@ -201,7 +202,7 @@ html.dark {
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.repeat_prices_by_quantity" title="handlers.indicators.repeat_prices_by_quantity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat_prices_by_quantity</span></code></a>(data, epsilon_quantity)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.support_resistance_levels" title="handlers.indicators.support_resistance_levels"><code class="xref py py-obj docutils literal notranslate"><span class="pre">support_resistance_levels</span></code></a>(data[, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.support_resistance_levels" title="handlers.indicators.support_resistance_levels"><code class="xref py py-obj docutils literal notranslate"><span class="pre">support_resistance_levels</span></code></a>(df[, ...])</p></td>
 <td><p>Calculate support and resistance levels for a given set of trades using K-means clustering.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.repeat_timestamps_by_quantity" title="handlers.indicators.repeat_timestamps_by_quantity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat_timestamps_by_quantity</span></code></a>(data, ...)</p></td>
@@ -210,13 +211,16 @@ html.dark {
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.time_active_zones" title="handlers.indicators.time_active_zones"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time_active_zones</span></code></a>(data[, max_clusters, ...])</p></td>
 <td><p>Calculate active points in time by clustering timestamps of trades.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.market_profile_from_klines_melt" title="handlers.indicators.market_profile_from_klines_melt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">market_profile_from_klines_melt</span></code></a>(data)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.market_profile_from_klines_melt" title="handlers.indicators.market_profile_from_klines_melt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">market_profile_from_klines_melt</span></code></a>(df)</p></td>
 <td><p>Calculate the market profile for a given OHLC data.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.market_profile_from_klines_grouped" title="handlers.indicators.market_profile_from_klines_grouped"><code class="xref py py-obj docutils literal notranslate"><span class="pre">market_profile_from_klines_grouped</span></code></a>(data[, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.taker_maker_profile_from_klines_melt" title="handlers.indicators.taker_maker_profile_from_klines_melt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">taker_maker_profile_from_klines_melt</span></code></a>(df)</p></td>
+<td><p>Calculate the ratio of taker and maker volume for a given OHLC data.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.market_profile_from_klines_grouped" title="handlers.indicators.market_profile_from_klines_grouped"><code class="xref py py-obj docutils literal notranslate"><span class="pre">market_profile_from_klines_grouped</span></code></a>(df[, ...])</p></td>
 <td><p>Calculate the market profile for a given OHLC data.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.market_profile_from_trades_grouped" title="handlers.indicators.market_profile_from_trades_grouped"><code class="xref py py-obj docutils literal notranslate"><span class="pre">market_profile_from_trades_grouped</span></code></a>(data[, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.market_profile_from_trades_grouped" title="handlers.indicators.market_profile_from_trades_grouped"><code class="xref py py-obj docutils literal notranslate"><span class="pre">market_profile_from_trades_grouped</span></code></a>(df[, ...])</p></td>
 <td><p>Calculate the market profile for a given trades data.</p></td>
 </tr>
 </tbody>
@@ -318,7 +322,7 @@ before Default: 26.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.indicators.fractal_w_indicator">
-<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">fractal_w_indicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">merged</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_with_zero</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.indicators.fractal_w_indicator" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">fractal_w_indicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">merged</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_with_zero</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.indicators.fractal_w_indicator" title="Permalink to this definition">¶</a></dt>
 <dd><p>The fractal indicator is based on a simple price pattern that is frequently seen in financial markets. Outside of trading, a fractal
 is a recurring geometric pattern that is repeated on all time frames. From this concept, the fractal indicator was devised.
 The indicator isolates potential turning points on a price chart. It then draws arrows to indicate the existence of a pattern.</p>
@@ -329,7 +333,7 @@ The indicator isolates potential turning points on a price chart. It then draws 
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>pd.DataFrame</em>) – BinPan dataframe with High prices.</p></li>
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – BinPan dataframe with High prices.</p></li>
 <li><p><strong>period</strong> (<em>int</em>) – Default is 2. Count of neighbour candles to match max or min tags.</p></li>
 <li><p><strong>merged</strong> (<em>bool</em>) – If True, values are merged into one pd.Serie. minimums overwrite maximums in case of coincidence.</p></li>
 <li><p><strong>suffix</strong> (<em>str</em>) – A decorative suffix for the name of the column created.</p></li>
@@ -355,7 +359,9 @@ that points.</p>
 <li><p><strong>num_bins</strong> (<em>int</em>) – Optional. The number of bins to use for accumulating volume. Default is 100.</p></li>
 <li><p><strong>price_col</strong> (<em>str</em>) – Optional. The name of the column containing price data. Default is ‘Close’.</p></li>
 <li><p><strong>volume_col</strong> (<em>str</em>) – Optional. The name of the column containing volume data. Default is ‘Volume’.</p></li>
-<li><p><strong>threshold</strong> (<em>int</em>) – Percentil to show most traded levels. Default is 90.</p></li>
+<li><p><strong>threshold</strong> (<em>int</em>) – Percentil to show most traded levels. Default is 90. The threshold variable filters the volume levels
+considered when calculating support and resistance levels. A higher threshold results in fewer levels, based on higher transaction
+volumes, while a lower threshold yields more levels, based on a broader range of transaction volumes.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return list<span class="colon">:</span></dt>
@@ -506,23 +512,25 @@ that points.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.indicators.repeat_prices_by_quantity">
-<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">repeat_prices_by_quantity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon_quantity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">price_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Prices'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qty_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Quantity'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#handlers.indicators.repeat_prices_by_quantity" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">repeat_prices_by_quantity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon_quantity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">price_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Price'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qty_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Quantity'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#handlers.indicators.repeat_prices_by_quantity" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.indicators.support_resistance_levels">
-<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">support_resistance_levels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_clusters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by_quantity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by_klines</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#handlers.indicators.support_resistance_levels" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">support_resistance_levels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_clusters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by_quantity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by_klines</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#handlers.indicators.support_resistance_levels" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate support and resistance levels for a given set of trades using K-means clustering.</p>
 <a class="reference internal image-reference" href="_images/support_resistance.png"><img alt="_images/support_resistance.png" src="_images/support_resistance.png" style="width: 1000px;" /></a>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> – A pandas DataFrame with trade data or klines, containing a ‘Price’, ‘Quantity’ columns and a ‘Buyer was maker’ column.</p></li>
-<li><p><strong>max_clusters</strong> – Maximum number of clusters to consider for finding the optimal number of centroids.</p></li>
+<li><p><strong>df</strong> – A pandas DataFrame with trades or klines, containing a ‘Price’, ‘Quantity’ columns and a ‘Buyer was maker’ column,
+if trades passed, else “Close”, “Volume” and “Taker buy base volume”</p></li>
+<li><p><strong>max_clusters</strong> – Maximum number of clusters to consider for finding the optimal number of centroids. Default: 5.</p></li>
 <li><p><strong>by_quantity</strong> (<em>float</em>) – Count each price as many times the quantity contains a float of a the passed amount.
 Example: If a price 0.001 has a quantity of 100 and by_quantity is 0.1, quantity/by_quantity = 100/0.1 = 1000, then this prices
 is taken into account 1000 times instead of 1.</p></li>
 <li><p><strong>by_klines</strong> (<em>bool</em>) – If true, use market profile from klines.</p></li>
+<li><p><strong>quiet</strong> (<em>bool</em>) – If true, do not print progress bar.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -560,12 +568,28 @@ is taken into account 1000 times instead of 1.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.indicators.market_profile_from_klines_melt">
-<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">market_profile_from_klines_melt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.indicators.market_profile_from_klines_melt" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">market_profile_from_klines_melt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.indicators.market_profile_from_klines_melt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the market profile for a given OHLC data. The function calculates the average price for each candle
 (high + low + close) / 3, and then calculates the ‘maker’ and ‘taker’ volumes for each average price.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>data</strong> – A pandas DataFrame with the OHLC data. It should contain ‘High’, ‘Low’, ‘Close’, ‘Volume’, and
+<dd class="field-odd"><p><strong>df</strong> – A pandas DataFrame with the OHLC data. It should contain ‘High’, ‘Low’, ‘Close’, ‘Volume’, and
+‘Taker buy base volume’ columns.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pandas DataFrame grouped by the average price (‘Market_Profile’) with the sum of ‘Taker buy base volume’
+and ‘Maker_Volume’ for each average price.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.indicators.taker_maker_profile_from_klines_melt">
+<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">taker_maker_profile_from_klines_melt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.indicators.taker_maker_profile_from_klines_melt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the ratio of taker and maker volume for a given OHLC data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>df</strong> – A pandas DataFrame with the OHLC data. It should contain ‘High’, ‘Low’, ‘Close’, ‘Volume’, and
 ‘Taker buy base volume’ columns.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -577,13 +601,13 @@ and ‘Maker_Volume’ for each average price.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.indicators.market_profile_from_klines_grouped">
-<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">market_profile_from_klines_grouped</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_bins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.indicators.market_profile_from_klines_grouped" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">market_profile_from_klines_grouped</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_bins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.indicators.market_profile_from_klines_grouped" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the market profile for a given OHLC data. The function calculates the average price for each candle
 (high + low + close) / 3, and then calculates the ‘maker’ and ‘taker’ volumes for each average price.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> – A pandas DataFrame with the OHLC data. It should contain ‘High’, ‘Low’, ‘Close’, ‘Volume’, and
+<li><p><strong>df</strong> – A pandas DataFrame with the OHLC data. It should contain ‘High’, ‘Low’, ‘Close’, ‘Volume’, and
 ‘Taker buy base volume’ columns.</p></li>
 <li><p><strong>num_bins</strong> (<em>int</em>) – Number of bins to use for the market profile.</p></li>
 </ul>
@@ -597,13 +621,13 @@ and ‘Maker_Volume’ for each average price.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.indicators.market_profile_from_trades_grouped">
-<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">market_profile_from_trades_grouped</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_bins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.indicators.market_profile_from_trades_grouped" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">market_profile_from_trades_grouped</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_bins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.indicators.market_profile_from_trades_grouped" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the market profile for a given trades data. The function calculates the average price for each trade
 and then calculates the ‘maker’ and ‘taker’ volumes for each average price.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> – A pandas DataFrame with the trades data. It should contain ‘Price’, ‘Quantity’, ‘Buyer was maker’ columns.</p></li>
+<li><p><strong>df</strong> – A pandas DataFrame with the trades data. It should contain ‘Price’, ‘Quantity’, ‘Buyer was maker’ columns.</p></li>
 <li><p><strong>num_bins</strong> – The number of bins to use for the market profile.</p></li>
 </ul>
 </dd>

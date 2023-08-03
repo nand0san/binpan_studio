@@ -148,6 +148,7 @@ html.dark {
 <li><a class="reference internal" href="#handlers.plotting.orderbook_depth"><code class="docutils literal notranslate"><span class="pre">orderbook_depth()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.plotting.dist_plot"><code class="docutils literal notranslate"><span class="pre">dist_plot()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.plotting.bar_plot"><code class="docutils literal notranslate"><span class="pre">bar_plot()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.plotting.profile_plot"><code class="docutils literal notranslate"><span class="pre">profile_plot()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.plotting.plot_orderbook_value"><code class="docutils literal notranslate"><span class="pre">plot_orderbook_value()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.plotting.normalize"><code class="docutils literal notranslate"><span class="pre">normalize()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.plotting.find_step_for_bins"><code class="docutils literal notranslate"><span class="pre">find_step_for_bins()</span></code></a></li>
@@ -269,16 +270,19 @@ html.dark {
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.plotting.bar_plot" title="handlers.plotting.bar_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bar_plot</span></code></a>(df, x_col_to_bars, y_col[, ...])</p></td>
 <td><p>Plot a bar plot for a dataframe column with optional segments based on the 'bar_segments' column.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.plotting.plot_orderbook_value" title="handlers.plotting.plot_orderbook_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_orderbook_value</span></code></a>(ask_data, bid_data, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.plotting.profile_plot" title="handlers.plotting.profile_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">profile_plot</span></code></a>(serie[, title, x_axis_title, ...])</p></td>
+<td><p>This function generates a horizontal bar chart from a pandas series.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.plotting.plot_orderbook_value" title="handlers.plotting.plot_orderbook_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_orderbook_value</span></code></a>(ask_data, bid_data, ...)</p></td>
 <td><p>Plots orderbook levels quantities.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.plotting.normalize" title="handlers.plotting.normalize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">normalize</span></code></a>(max_value, min_value, data)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.plotting.normalize" title="handlers.plotting.normalize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">normalize</span></code></a>(max_value, min_value, data)</p></td>
 <td><p>Normalize data from minimum as 0 to maximum as 1.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.plotting.find_step_for_bins" title="handlers.plotting.find_step_for_bins"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_step_for_bins</span></code></a>(data, master_column[, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.plotting.find_step_for_bins" title="handlers.plotting.find_step_for_bins"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_step_for_bins</span></code></a>(data, master_column[, ...])</p></td>
 <td><p>Find precision for getting a target number of bins intervals for values in master column.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.plotting.group_slot" title="handlers.plotting.group_slot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">group_slot</span></code></a>(data, master_column[, bins])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.plotting.group_slot" title="handlers.plotting.group_slot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">group_slot</span></code></a>(data, master_column[, bins])</p></td>
 <td><p>Get what vertical slot size results for a number of bins.</p></td>
 </tr>
 </tbody>
@@ -360,7 +364,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.plotting.set_ta_line">
-<span class="sig-prename descclassname"><span class="pre">handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">set_ta_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_index:</span> <span class="pre">&lt;pandas._libs.properties.AxisProperty</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x0000021896A348B0&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serie:</span> <span class="pre">~pandas.core.series.Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color='blue'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name='Indicator'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_width:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_color:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_mode:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'none'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yaxis:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'y'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_legend=True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.plotting.set_ta_line" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">set_ta_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_index:</span> <span class="pre">&lt;pandas._libs.properties.AxisProperty</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x000001471C8CE170&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serie:</span> <span class="pre">~pandas.core.series.Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color='blue'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name='Indicator'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_width:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_color:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_mode:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'none'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yaxis:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'y'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_legend=True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.plotting.set_ta_line" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot a line plot for an indicator.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -982,6 +986,8 @@ the smallest to the largest, that is, the smallest values will be divided into s
 <a class="reference external" href="https://plotly.github.io/plotly.py-docs/generated/plotly.express.histogram.html">https://plotly.github.io/plotly.py-docs/generated/plotly.express.histogram.html</a></p></li>
 <li><p><strong>height</strong> (<em>int</em>) – Plot sizing.</p></li>
 <li><p><strong>title</strong> (<em>str</em>) – A title string</p></li>
+<li><p><strong>update_layout_kwargs</strong> – Additional kwargs for plotly update_layout method.</p></li>
+<li><p><strong>update_layout_kwargs</strong> – Additional kwargs for plotly update_layout method.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1008,7 +1014,32 @@ the smallest to the largest, that is, the smallest values will be divided into s
 <li><p><strong>title</strong> (<em>str</em>) – A title string</p></li>
 <li><p><strong>y_axis_title</strong> (<em>str</em>) – Title for y axis plot.</p></li>
 <li><p><strong>horizontal_bars</strong> – Flips graph with horizontal bars.</p></li>
+<li><p><strong>update_layout_kwargs</strong> – Additional kwargs for plotly update_layout method.</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.plotting.profile_plot">
+<span class="sig-prename descclassname"><span class="pre">handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">profile_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">serie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Profile</span> <span class="pre">Plot'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_axis_title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_axis_title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vertical_bar</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'blue'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">800</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">400</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">update_layout_kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.plotting.profile_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function generates a horizontal bar chart from a pandas series.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>serie</strong> (<em>pd.Series</em>) – The pandas series to be plotted.</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – The title of the plot. Default is “Profile Plot”.</p></li>
+<li><p><strong>x_axis_title</strong> (<em>str</em>) – The title for the x-axis. Default is None.</p></li>
+<li><p><strong>y_axis_title</strong> (<em>str</em>) – The title for the y-axis. Default is None.</p></li>
+<li><p><strong>vertical_bar</strong> (<em>float</em>) – A vertical line to be drawn in the plot. Default is None.</p></li>
+<li><p><strong>color</strong> (<em>str</em>) – The color of the bars in the plot. Default is ‘blue’.</p></li>
+<li><p><strong>height</strong> (<em>int</em>) – The height of the plot. Default is 800.</p></li>
+<li><p><strong>width</strong> (<em>int</em>) – The width of the plot. Default is None, which lets Plotly auto-size the plot.</p></li>
+<li><p><strong>update_layout_kwargs</strong> – Additional arguments for customizing the appearance of the plot.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return str<span class="colon">:</span></dt>
+<dd class="field-even"><p>The path to the image file of the generated plot.</p>
 </dd>
 </dl>
 </dd></dl>

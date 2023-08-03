@@ -4,13 +4,19 @@ BinPan own indicators and utils.
 
 """
 import pandas as pd
-from tqdm import tqdm
 import pytz
 import numpy as np
+from typing import Tuple
 
+from .starters import is_running_in_jupyter
 from .time_helper import convert_milliseconds_to_time_zone_datetime
 from .time_helper import pandas_freq_tick_interval
 from .tags import is_alternating
+
+if is_running_in_jupyter():
+    from tqdm.notebook import tqdm
+else:
+    from tqdm import tqdm
 
 
 ##############
@@ -38,7 +44,7 @@ def alternating_fractal_indicator(df: pd.DataFrame, max_period: int = None, suff
     if not max_period:
         max_period = len(df)
     for i in tqdm(range(2, max_period)):
-        fractal = fractal_w_indicator(data=df, period=i, suffix=suffix, fill_with_zero=True)
+        fractal = fractal_w_indicator(df=df, period=i, suffix=suffix, fill_with_zero=True)
         max_min = fractal[f"Fractal_W_{i}"].fillna(0)
         if is_alternating(lst=max_min.tolist()):
             break
@@ -163,7 +169,7 @@ def ker(close: pd.Series, window: int, ) -> pd.Series:
     return direction / volatility
 
 
-def fractal_w_indicator(data: pd.DataFrame, period=2, merged: bool = True, suffix: str = '', fill_with_zero: bool = None, ) -> pd.DataFrame:
+def fractal_w_indicator(df: pd.DataFrame, period=2, merged: bool = True, suffix: str = '', fill_with_zero: bool = None, ) -> pd.DataFrame:
     """
     The fractal indicator is based on a simple price pattern that is frequently seen in financial markets. Outside of trading, a fractal
     is a recurring geometric pattern that is repeated on all time frames. From this concept, the fractal indicator was devised.
@@ -173,7 +179,7 @@ def fractal_w_indicator(data: pd.DataFrame, period=2, merged: bool = True, suffi
 
         From: https://codereview.stackexchange.com/questions/259703/william-fractal-technical-indicator-implementation
 
-    :param pd.DataFrame data: BinPan dataframe with High prices.
+    :param pd.DataFrame df: BinPan dataframe with High prices.
     :param int period: Default is 2. Count of neighbour candles to match max or min tags.
     :param bool merged: If True, values are merged into one pd.Serie. minimums overwrite maximums in case of coincidence.
     :param str suffix: A decorative suffix for the name of the column created.
@@ -184,10 +190,11 @@ def fractal_w_indicator(data: pd.DataFrame, period=2, merged: bool = True, suffi
     .. image:: images/indicators/fractal_w.png
         :width: 1000
     """
+    df = df.copy(deep=True)
     window = 2 * period + 1  # default 5
 
-    mins = data['Low'].rolling(window, center=True).apply(lambda x: x[period] == min(x), raw=True)
-    maxs = data['High'].rolling(window, center=True).apply(lambda x: x[period] == max(x), raw=True)
+    mins = df['Low'].rolling(window, center=True).apply(lambda x: x[period] == min(x), raw=True)
+    maxs = df['High'].rolling(window, center=True).apply(lambda x: x[period] == max(x), raw=True)
 
     mins = mins.replace({0: np.nan})
     maxs = maxs.replace({0: np.nan})
@@ -204,9 +211,9 @@ def fractal_w_indicator(data: pd.DataFrame, period=2, merged: bool = True, suffi
     min_idx = mins.dropna().index
     max_idx = maxs.dropna().index
 
-    values = pd.Series(np.nan, index=data.index)
-    values.loc[min_idx] = data['Low']
-    values.loc[max_idx] = data['High']
+    values = pd.Series(np.nan, index=df.index)
+    values.loc[min_idx] = df['Low']
+    values.loc[max_idx] = df['High']
     values.name = f"Fractal_W_{period}_values" + suffix
 
     if not merged:
@@ -232,7 +239,9 @@ def support_resistance_volume(df, num_bins=100, price_col='Close', volume_col='V
     :param int num_bins: Optional. The number of bins to use for accumulating volume. Default is 100.
     :param str price_col: Optional. The name of the column containing price data. Default is 'Close'.
     :param str volume_col: Optional. The name of the column containing volume data. Default is 'Volume'.
-    :param int threshold: Percentil to show most traded levels. Default is 90.
+    :param int threshold: Percentil to show most traded levels. Default is 90. The threshold variable filters the volume levels
+     considered when calculating support and resistance levels. A higher threshold results in fewer levels, based on higher transaction
+     volumes, while a lower threshold yields more levels, based on a broader range of transaction volumes.
     :return list: A sorted list of support and resistance levels.
     """
 
@@ -509,7 +518,7 @@ def reversal_candles(trades: pd.DataFrame, decimal_positions: int, time_zone: st
     return klines
 
 
-def repeat_prices_by_quantity(data: pd.DataFrame, epsilon_quantity: float, price_col="Prices", qty_col='Quantity') -> np.ndarray:
+def repeat_prices_by_quantity(data: pd.DataFrame, epsilon_quantity: float, price_col="Price", qty_col='Quantity') -> np.ndarray:
     repeated_prices = []
     for price, quantity in data[[price_col, qty_col]].values:
         repeat_count = int(-(quantity // -epsilon_quantity))  # ceil division
@@ -518,19 +527,22 @@ def repeat_prices_by_quantity(data: pd.DataFrame, epsilon_quantity: float, price
     return np.array(repeated_prices).reshape(-1, 1)
 
 
-def support_resistance_levels(data: pd.DataFrame, max_clusters: int = 10, by_quantity: float = None, by_klines=True) -> tuple:
+def support_resistance_levels(df: pd.DataFrame, max_clusters: int = 5, by_quantity: float = None, by_klines=True, quiet=False) -> Tuple[
+    list, list]:
     """
     Calculate support and resistance levels for a given set of trades using K-means clustering.
 
     .. image:: images/indicators/support_resistance.png
            :width: 1000
 
-    :param data: A pandas DataFrame with trade data or klines, containing a 'Price', 'Quantity' columns and a 'Buyer was maker' column.
-    :param max_clusters: Maximum number of clusters to consider for finding the optimal number of centroids.
+    :param df: A pandas DataFrame with trades or klines, containing a 'Price', 'Quantity' columns and a 'Buyer was maker' column,
+     if trades passed, else "Close", "Volume" and "Taker buy base volume"
+    :param max_clusters: Maximum number of clusters to consider for finding the optimal number of centroids. Default: 5.
     :param float by_quantity: Count each price as many times the quantity contains a float of a the passed amount.
         Example: If a price 0.001 has a quantity of 100 and by_quantity is 0.1, quantity/by_quantity = 100/0.1 = 1000, then this prices
         is taken into account 1000 times instead of 1.
     :param bool by_klines: If true, use market profile from klines.
+    :param bool quiet: If true, do not print progress bar.
     :return: A tuple containing two lists: the first list contains the support levels, and the second list contains
         the resistance levels. Both lists contain float values.
     """
@@ -539,34 +551,42 @@ def support_resistance_levels(data: pd.DataFrame, max_clusters: int = 10, by_qua
     except ImportError:
         print(f"Please install sklearn: `pip install -U scikit-learn` to use Clustering")
         return [], []
-    data = data.copy(deep=True)
 
-    def find_optimal_clusters(data: np.ndarray, max_clusters: int) -> int:
+    # copy data to avoid side effects
+    df_ = df.copy(deep=True)
+
+    def find_optimal_clusters(data: np.ndarray, max_clusters: int, quiet: bool) -> int:
         """
         Find the optimal quantity of centroids for support and resistance methods using the elbow method.
 
         :param data: A numpy array with the data to analyze.
         :param max_clusters: Maximum number of clusters to consider.
+        :param bool quiet: If true, do not print progress bar.
         :return: The optimal number of clusters (centroids) as an integer.
         """
 
         inertia = []
-        for n_clusters in tqdm(range(1, max_clusters + 1)):
+        if quiet:
+            pbar = range(1, max_clusters + 1)
+        else:
+            pbar = tqdm(range(1, max_clusters + 1))
+        for n_clusters in pbar:
             kmeans = KMeans(n_clusters=n_clusters, n_init=10, random_state=0).fit(data)
             inertia.append(kmeans.inertia_)
         return np.argmin(np.gradient(np.gradient(inertia))) + 1
 
+    # function core starts here
     if not by_klines:
-        buy_data = data.loc[data['Buyer was maker'] == False]
-        sell_data = data.loc[data['Buyer was maker'] == True]
+        buy_data = df_.loc[df_['Buyer was maker'] == False]
+        sell_data = df_.loc[df_['Buyer was maker'] == True]
     else:
-        profile = market_profile_from_klines_melt(data=data).reset_index()
+        profile = market_profile_from_klines_melt(df=df_).reset_index()
         buy_data = profile.loc[profile['Is_Maker'] == True]
         sell_data = profile.loc[profile['Is_Maker'] == False]
 
     if by_quantity and not by_klines:
-        buy_prices = repeat_prices_by_quantity(data=buy_data, epsilon_quantity=by_quantity)
-        sell_prices = repeat_prices_by_quantity(data=sell_data, epsilon_quantity=by_quantity)
+        buy_prices = repeat_prices_by_quantity(data=buy_data, epsilon_quantity=by_quantity, price_col="Price", qty_col="Quantity")
+        sell_prices = repeat_prices_by_quantity(data=sell_data, epsilon_quantity=by_quantity, price_col="Price", qty_col="Quantity")
     elif by_quantity and by_klines:
         buy_prices = repeat_prices_by_quantity(data=buy_data, epsilon_quantity=by_quantity, price_col="Market_Profile", qty_col="Volume")
         sell_prices = repeat_prices_by_quantity(data=sell_data, epsilon_quantity=by_quantity, price_col="Market_Profile", qty_col="Volume")
@@ -577,12 +597,12 @@ def support_resistance_levels(data: pd.DataFrame, max_clusters: int = 10, by_qua
     if len(buy_prices) == 0 and len(sell_prices) == 0:
         print("There is not enough trade data to calculate support and resistance levels.")
         return [], []
-
-    print("Clustering data...")
-    optimal_buy_clusters = find_optimal_clusters(buy_prices, max_clusters)
-    optimal_sell_clusters = find_optimal_clusters(sell_prices, max_clusters)
-
-    print(f"Found {optimal_buy_clusters} support levels from buys and {optimal_sell_clusters} resistance levels from sells.")
+    if not quiet:
+        print("Clustering data...")
+    optimal_buy_clusters = find_optimal_clusters(buy_prices, max_clusters, quiet=quiet)
+    optimal_sell_clusters = find_optimal_clusters(sell_prices, max_clusters, quiet=quiet)
+    if not quiet:
+        print(f"Found {optimal_buy_clusters} support levels from buys and {optimal_sell_clusters} resistance levels from sells.")
 
     kmeans_buy = KMeans(n_clusters=optimal_buy_clusters, n_init=10).fit(buy_prices)
     kmeans_sell = KMeans(n_clusters=optimal_sell_clusters, n_init=10).fit(sell_prices)
@@ -681,26 +701,26 @@ def time_active_zones(data: pd.DataFrame, max_clusters: int = 10, by_quantity: f
 #     df_grouped['Volume'] = df_grouped['Taker buy base volume'] + df_grouped['Maker buy base volume']
 #     return df_grouped.sort_index()
 
-def market_profile_from_klines_melt(data: pd.DataFrame):
+def market_profile_from_klines_melt(df: pd.DataFrame):
     """
     Calculate the market profile for a given OHLC data. The function calculates the average price for each candle
     (high + low + close) / 3, and then calculates the 'maker' and 'taker' volumes for each average price.
 
-    :param data: A pandas DataFrame with the OHLC data. It should contain 'High', 'Low', 'Close', 'Volume', and
+    :param df: A pandas DataFrame with the OHLC data. It should contain 'High', 'Low', 'Close', 'Volume', and
                'Taker buy base volume' columns.
     :return: A pandas DataFrame grouped by the average price ('Market_Profile') with the sum of 'Taker buy base volume'
              and 'Maker_Volume' for each average price.
     """
-    df = data.copy(deep=True)
-    df['Market_Profile'] = (df['High'] + df['Low'] + df['Close']) / 3
-    df['Maker buy base volume'] = df['Volume'] - df['Taker buy base volume']
+    df_ = df.copy(deep=True)
+    df_['Market_Profile'] = (df_['High'] + df_['Low'] + df_['Close']) / 3
+    df_['Maker buy base volume'] = df_['Volume'] - df_['Taker buy base volume']
 
     # Rename the existing 'Volume' column
-    df.rename(columns={'Volume': 'Total_Volume'}, inplace=True)
+    df_.rename(columns={'Volume': 'Total_Volume'}, inplace=True)
 
     # Melt the dataframe to unpivot the volume columns
-    df_melt = df.melt(id_vars='Market_Profile', value_vars=['Taker buy base volume',
-                                                            'Maker buy base volume'], var_name='Is_Maker', value_name='Volume')
+    df_melt = df_.melt(id_vars='Market_Profile', value_vars=['Taker buy base volume',
+                                                             'Maker buy base volume'], var_name='Is_Maker', value_name='Volume')
 
     # Convert the 'Is_Maker' column to boolean
     df_melt['Is_Maker'] = df_melt['Is_Maker'] == 'Maker buy base volume'
@@ -711,49 +731,79 @@ def market_profile_from_klines_melt(data: pd.DataFrame):
     return df_grouped.sort_index(level='Market_Profile')
 
 
-def market_profile_from_klines_grouped(data: pd.DataFrame, num_bins: int = 100) -> pd.DataFrame:
+def taker_maker_profile_from_klines_melt(df: pd.DataFrame):
+    """
+    Calculate the ratio of taker and maker volume for a given OHLC data.
+
+    :param df: A pandas DataFrame with the OHLC data. It should contain 'High', 'Low', 'Close', 'Volume', and
+               'Taker buy base volume' columns.
+    :return: A pandas DataFrame grouped by the average price ('Market_Profile') with the sum of 'Taker buy base volume'
+             and 'Maker_Volume' for each average price.
+    """
+    df_ = df.copy(deep=True)
+
+    df_['Maker buy base volume'] = df_['Volume'] - df_['Taker buy base volume']
+    df_['Ratio_Profile'] = df_['Taker buy base volume'] / df_["Volume"]
+
+    # Rename the existing 'Volume' column
+    df_.rename(columns={'Volume': 'Total_Volume'}, inplace=True)
+
+    # Melt the dataframe to unpivot the volume columns
+    df_melt = df_.melt(id_vars='Ratio_Profile', value_vars=['Taker buy base volume',
+                                                            'Maker buy base volume'], var_name='Is_Maker', value_name='Volume')
+
+    # Convert the 'Is_Maker' column to boolean
+    df_melt['Is_Maker'] = df_melt['Is_Maker'] == 'Maker buy base volume'
+
+    # Group by 'Market_Profile' and 'Is_Maker' and sum the volumes
+    df_grouped = df_melt.groupby(['Ratio_Profile', 'Is_Maker']).agg({'Volume': 'sum'})
+
+    return df_grouped.sort_index(level='Ratio_Profile')
+
+
+def market_profile_from_klines_grouped(df: pd.DataFrame, num_bins: int = 100) -> pd.DataFrame:
     """
     Calculate the market profile for a given OHLC data. The function calculates the average price for each candle
     (high + low + close) / 3, and then calculates the 'maker' and 'taker' volumes for each average price.
 
-    :param data: A pandas DataFrame with the OHLC data. It should contain 'High', 'Low', 'Close', 'Volume', and
+    :param df: A pandas DataFrame with the OHLC data. It should contain 'High', 'Low', 'Close', 'Volume', and
                'Taker buy base volume' columns.
     :param int num_bins: Number of bins to use for the market profile.
     :return: A pandas DataFrame grouped by the average price ('Market_Profile') with the sum of 'Taker buy base volume'
              and 'Maker_Volume' for each average price.
     """
-    df = data.copy(deep=True)
-    df['Maker buy base volume'] = df['Volume'] - df['Taker buy base volume']
-    df['Market_Profile'] = (df['High'] + df['Low'] + df['Close']) / 3
-    df['Price_Bin'] = pd.cut(df['Market_Profile'], bins=num_bins)
-    volume_by_price_bin = df.groupby('Price_Bin').agg({'Taker buy base volume': 'sum', 'Maker buy base volume': 'sum'})
+    df_ = df.copy(deep=True)
+    df_['Maker buy base volume'] = df_['Volume'] - df_['Taker buy base volume']
+    df_['Market_Profile'] = (df_['High'] + df_['Low'] + df_['Close']) / 3
+    df_['Price_Bin'] = pd.cut(df_['Market_Profile'], bins=num_bins)
+    volume_by_price_bin = df_.groupby('Price_Bin').agg({'Taker buy base volume': 'sum', 'Maker buy base volume': 'sum'})
     # Convertir el índice a un IntervalIndex
     volume_by_price_bin.index = pd.IntervalIndex(volume_by_price_bin.index)
     # Ordenar por el límite inferior de cada intervalo
     volume_by_price_bin = volume_by_price_bin.sort_index(key=lambda x: x.left)
-    volume_by_price_bin.index.name += f"_{df.index.name}_Klines"
+    volume_by_price_bin.index.name += f"_{df_.index.name}_Klines"
     return volume_by_price_bin
 
 
-def market_profile_from_trades_grouped(data: pd.DataFrame, num_bins: int = 100) -> pd.DataFrame:
+def market_profile_from_trades_grouped(df: pd.DataFrame, num_bins: int = 100) -> pd.DataFrame:
     """
     Calculate the market profile for a given trades data. The function calculates the average price for each trade
     and then calculates the 'maker' and 'taker' volumes for each average price.
 
-    :param data: A pandas DataFrame with the trades data. It should contain 'Price', 'Quantity', 'Buyer was maker' columns.
+    :param df: A pandas DataFrame with the trades data. It should contain 'Price', 'Quantity', 'Buyer was maker' columns.
     :param num_bins: The number of bins to use for the market profile.
     :return: A pandas DataFrame grouped by the average price ('Price_Bin') with the sum of 'Taker buy base volume'
              and 'Maker buy base volume' for each average price.
     """
-    df = data.copy(deep=True)
-    df['Taker buy base volume'] = df['Quantity'].where(~df['Buyer was maker'], 0)
-    df['Maker buy base volume'] = df['Quantity'].where(df['Buyer was maker'], 0)
+    df_ = df.copy(deep=True)
+    df_['Taker buy base volume'] = df_['Quantity'].where(~df_['Buyer was maker'], 0)
+    df_['Maker buy base volume'] = df_['Quantity'].where(df_['Buyer was maker'], 0)
 
-    df['Price_Bin'] = pd.cut(df['Price'], bins=num_bins)
-    volume_by_price_bin = df.groupby('Price_Bin').agg({'Taker buy base volume': 'sum', 'Maker buy base volume': 'sum'})
+    df_['Price_Bin'] = pd.cut(df_['Price'], bins=num_bins)
+    volume_by_price_bin = df_.groupby('Price_Bin').agg({'Taker buy base volume': 'sum', 'Maker buy base volume': 'sum'})
     # Convert the index to an IntervalIndex
     volume_by_price_bin.index = pd.IntervalIndex(volume_by_price_bin.index)
     # Sort by the lower bound of each interval
     volume_by_price_bin = volume_by_price_bin.sort_index(key=lambda x: x.left)
-    volume_by_price_bin.index.name += f"_{df.index.name}_Trades"
+    volume_by_price_bin.index.name += f"_{df_.index.name}_Trades"
     return volume_by_price_bin
