@@ -3,7 +3,7 @@
 This is the main classes file.
 
 """
-__version__ = "0.4.30"
+__version__ = "0.4.31"
 
 import os
 from sys import path
@@ -42,7 +42,7 @@ from handlers.redis_fetch import manage_redis, manage_sentinel, orderbook_value_
 from handlers.starters import import_secret_module
 
 from handlers.time_helper import tick_seconds, pandas_freq_tick_interval, check_tick_interval, open_from_milliseconds, time_interval, \
-    convert_milliseconds_to_str
+    convert_milliseconds_to_str, get_dataframe_time_index_ranges, remove_initial_included_ranges
 
 from handlers.tags import tag_column_to_strategy_group, backtesting, backtesting_short, tag_comparison, tag_cross, merge_series, \
     clean_in_out
@@ -425,6 +425,7 @@ class Symbol(object):
         self.permissions = self.get_permissions()
         self.precision = self.get_precision()
         self.market_profile_df = pd.DataFrame()
+        self.moving_support_resistance = pd.DataFrame()
 
     def __repr__(self):
         return str(self.df)
@@ -1740,7 +1741,7 @@ class Symbol(object):
                 _df = _df[_df['Timestamp'] <= endTime]
             binpan_logger.info(f"Using klines data. For deeper info add trades data, example: my_symbol.get_agg_trades()")
             # todo: market_profile sacado de las velas
-            profile = market_profile_from_klines_melt(data=_df)
+            profile = market_profile_from_klines_melt(df=_df)
             profile.reset_index(inplace=True)
             return bar_plot(df=profile, x_col_to_bars='Market_Profile', y_col='Volume', bar_segments='Is_Maker', split_colors=True, bins=bins, title=title + " from klines", height=height, y_axis_title='Buy takers VS Buy makers', horizontal_bars=True, **kwargs_update_layout)
 
@@ -2828,7 +2829,7 @@ class Symbol(object):
         """
         if not colors:
             colors = ['black', 'black']
-        fractal = fractal_w_indicator(data=self.df, period=period, suffix=suffix, fill_with_zero=True)
+        fractal = fractal_w_indicator(df=self.df, period=period, suffix=suffix, fill_with_zero=True)
 
         if inplace and self.is_new(fractal):
 
@@ -2854,8 +2855,8 @@ class Symbol(object):
         return fractal
 
     def market_profile(self, bins: int = 100, hours: int = None, minutes: int = None, startTime: int or str = None,
-                       endTime: int or str = None, from_agg_trades=False, from_atomic_trades=False,
-                       title: str = 'Market Profile', time_zone: str = None) -> pd.DataFrame or None:
+                       endTime: int or str = None, from_agg_trades=False, from_atomic_trades=False, title: str = 'Market Profile',
+                       time_zone: str = None) -> pd.DataFrame or None:
         """
         Generates a market profile dataframe from trade or kline data. The market profile is a histogram of trading
         volumes at different price levels.
@@ -2905,7 +2906,7 @@ class Symbol(object):
                     _df = _df[_df['Timestamp'] >= startTime]
                 if endTime:
                     _df = _df[_df['Timestamp'] <= endTime]
-                self.market_profile_df = market_profile_from_trades_grouped(data=_df, num_bins=bins)
+                self.market_profile_df = market_profile_from_trades_grouped(df=_df, num_bins=bins)
             elif from_atomic_trades:
                 title += f' Atomic {self.symbol}'
                 _df = self.atomic_trades.copy(deep=True)
@@ -2913,7 +2914,7 @@ class Symbol(object):
                     _df = _df[_df['Timestamp'] >= startTime]
                 if endTime:
                     _df = _df[_df['Timestamp'] <= endTime]
-                self.market_profile_df = market_profile_from_trades_grouped(data=_df, num_bins=bins)
+                self.market_profile_df = market_profile_from_trades_grouped(df=_df, num_bins=bins)
             else:
                 _df = self.df.copy(deep=True)
                 if startTime:
@@ -2921,7 +2922,7 @@ class Symbol(object):
                 if endTime:
                     _df = _df[_df['Timestamp'] <= endTime]
                 binpan_logger.info(f"Using klines data. For deeper info add trades data, example: my_symbol.get_agg_trades()")
-                self.market_profile_df = market_profile_from_klines_grouped(data=_df, num_bins=bins)
+                self.market_profile_df = market_profile_from_klines_grouped(df=_df, num_bins=bins)
         return self.market_profile_df
 
     @staticmethod
@@ -2993,14 +2994,14 @@ class Symbol(object):
         else:
             raise ValueError(f"Indicator '{name}' not found in the 'pandas_ta' module.")
 
-    def support_resistance(self, from_atomic: bool = False, from_aggregated: bool = False, max_clusters: int = 10,
+    def support_resistance(self, from_atomic: bool = False, from_aggregated: bool = False, max_clusters: int = 5,
                            by_quantity: float = None) -> Tuple[List[float], List[float]]:
         """
         Calculate support and resistance levels for the Symbol based on either atomic trades or aggregated trades.
 
         :param bool from_atomic: If True, support and resistance levels will be calculated using atomic trades.
         :param bool from_aggregated: If True, support and resistance levels will be calculated using aggregated trades.
-        :param int max_clusters: If passed, fixes count of levels of support and resistance. Default is 10.
+        :param int max_clusters: If passed, fixes count of levels of support and resistance. Default is 5.
         :param float by_quantity: It takes each price into account by how many times the specified quantity appears in "Quantity" column.
         :return: A tuple containing two lists: the first list contains support levels, and the second list contains resistance levels.
         """
@@ -3024,6 +3025,69 @@ class Symbol(object):
                 by_quantity = np.mean(self.df['Volume'].values)
             self.s_lines, self.r_lines = support_resistance_levels(self.df, max_clusters=max_clusters, by_quantity=by_quantity, by_klines=True)
         return self.s_lines, self.r_lines
+
+    def rolling_support_resistance(self, minutes_window: int = 60,
+                                   time_steps_minutes: int = 10, from_atomic: bool = False,
+                                   from_aggregated: bool = False, max_clusters: int = 5,
+                                   by_quantity: float = True) -> pd.DataFrame or None:
+        """
+        Calculate support and resistance levels for the Symbol based on either atomic trades or aggregated trades in a rolling window.
+         It returns a pandas dataframe with each column representing ordered levels from higher to lower for support and resistance. The
+         function iterates in steps of a minutes quantity.
+
+        :param int minutes_window: A rolling window of time in minutes. Whe using trades, it will calculate window by time index.
+        :param int time_steps_minutes: Loop steps in minutes. Default is 10. Each step will calculate a new window data.
+        :param bool from_atomic: If True, support and resistance levels will be calculated using atomic trades.
+        :param bool from_aggregated: If True, support and resistance levels will be calculated using aggregated trades.
+        :param int max_clusters: If passed, fixes count of levels of support and resistance. Default is 5.
+        :param float by_quantity: It takes each price into account by how many times the specified quantity appears in "Quantity" column.
+        :return pd.DataFrame: A pandas dataframe with each column representing ordered levels from higher to lower for support and resistance.
+        """
+        by_klines = False
+
+        if from_atomic:
+            # generar columnas de minutos pasados
+            df = self.atomic_trades.copy(deep=True)
+        elif from_aggregated:
+            df = self.agg_trades.copy(deep=True)
+        else:
+            df = self.df.copy(deep=True)
+            by_klines = True
+
+        try:
+            assert isinstance(df.index, pd.DatetimeIndex), "Index is not DatetimeIndex"
+        except AssertionError as e:
+            binpan_logger.error(f"rolling_support_resistance error: {e}")
+            return None
+
+        result = pd.DataFrame(index=df.index)
+        result.index.name = f"Rolling support resistance {df.index.name}"
+
+        delta_window = f"{minutes_window}T"
+        delta_step = f"{time_steps_minutes}T"
+
+        # rangos de actualización de tiempo
+        update_time_ranges = get_dataframe_time_index_ranges(data=df, interval=delta_step)
+        update_time_ranges = remove_initial_included_ranges(time_ranges=update_time_ranges, initial_minutes=delta_window)
+
+        sup_cols = [f"Support_{max_clusters-k}" for k in range(max_clusters)]
+        res_cols = [f"Resistance_{k+1}" for k in range(max_clusters)]
+
+        # loop por cada ventana de tiempo
+        for start, end in update_time_ranges:
+            # calcula al principio de cada intervalo de actualización la ventana necesaria para scar los datos
+            df_window = df.loc[start - pd.Timedelta(delta_window): start]
+
+            # Aplica la función hipotética al fragmento del DataFrame
+            s_lines, r_lines = support_resistance_levels(df=df_window, max_clusters=max_clusters, by_quantity=by_quantity, by_klines=by_klines)
+
+            for k, sup in enumerate(s_lines):
+                result.loc[start:end, sup_cols[k]] = sup
+            for k, res in enumerate(r_lines):
+                result.loc[start:end, sup_cols[k]] = res
+
+        self.moving_support_resistance = result
+        return self.moving_support_resistance
 
     #############
     # Relations #
