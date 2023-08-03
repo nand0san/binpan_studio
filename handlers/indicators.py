@@ -527,7 +527,8 @@ def repeat_prices_by_quantity(data: pd.DataFrame, epsilon_quantity: float, price
     return np.array(repeated_prices).reshape(-1, 1)
 
 
-def support_resistance_levels(df: pd.DataFrame, max_clusters: int = 5, by_quantity: float = None, by_klines=True, quiet=False) -> Tuple[list, list]:
+def support_resistance_levels(df: pd.DataFrame, max_clusters: int = 5, by_quantity: float = None, by_klines=True, quiet=False) -> Tuple[
+    list, list]:
     """
     Calculate support and resistance levels for a given set of trades using K-means clustering.
 
@@ -728,6 +729,36 @@ def market_profile_from_klines_melt(df: pd.DataFrame):
     df_grouped = df_melt.groupby(['Market_Profile', 'Is_Maker']).agg({'Volume': 'sum'})
 
     return df_grouped.sort_index(level='Market_Profile')
+
+
+def taker_maker_profile_from_klines_melt(df: pd.DataFrame):
+    """
+    Calculate the ratio of taker and maker volume for a given OHLC data.
+
+    :param df: A pandas DataFrame with the OHLC data. It should contain 'High', 'Low', 'Close', 'Volume', and
+               'Taker buy base volume' columns.
+    :return: A pandas DataFrame grouped by the average price ('Market_Profile') with the sum of 'Taker buy base volume'
+             and 'Maker_Volume' for each average price.
+    """
+    df_ = df.copy(deep=True)
+
+    df_['Maker buy base volume'] = df_['Volume'] - df_['Taker buy base volume']
+    df_['Ratio_Profile'] = df_['Taker buy base volume'] / df_["Volume"]
+
+    # Rename the existing 'Volume' column
+    df_.rename(columns={'Volume': 'Total_Volume'}, inplace=True)
+
+    # Melt the dataframe to unpivot the volume columns
+    df_melt = df_.melt(id_vars='Ratio_Profile', value_vars=['Taker buy base volume',
+                                                            'Maker buy base volume'], var_name='Is_Maker', value_name='Volume')
+
+    # Convert the 'Is_Maker' column to boolean
+    df_melt['Is_Maker'] = df_melt['Is_Maker'] == 'Maker buy base volume'
+
+    # Group by 'Market_Profile' and 'Is_Maker' and sum the volumes
+    df_grouped = df_melt.groupby(['Ratio_Profile', 'Is_Maker']).agg({'Volume': 'sum'})
+
+    return df_grouped.sort_index(level='Ratio_Profile')
 
 
 def market_profile_from_klines_grouped(df: pd.DataFrame, num_bins: int = 100) -> pd.DataFrame:

@@ -25,7 +25,7 @@ from handlers.files import select_file, read_csv_to_dataframe, save_dataframe_to
 
 from handlers.indicators import df_splitter, reversal_candles, zoom_cloud_indicators, ichimoku, fractal_w_indicator, \
     support_resistance_levels, ffill_indicator, shift_indicator, market_profile_from_klines_melt, alternating_fractal_indicator, \
-    fractal_trend_indicator, market_profile_from_klines_grouped, market_profile_from_trades_grouped
+    fractal_trend_indicator, market_profile_from_klines_grouped, market_profile_from_trades_grouped, taker_maker_profile_from_klines_melt
 
 from handlers.logs import Logs
 
@@ -34,7 +34,7 @@ from handlers.market import agg_trades_columns_from_binance, agg_trades_columns_
     get_historical_agg_trades, parse_agg_trades_to_dataframe, get_historical_atomic_trades, parse_atomic_trades_to_dataframe, get_order_book
 
 from handlers.plotting import plotly_colors, plot_trades, candles_ta, plot_pie, plot_hists_vs, candles_tagged, bar_plot, plot_scatter, \
-    orderbook_depth, dist_plot, plot_orderbook_value
+    orderbook_depth, dist_plot, plot_orderbook_value, profile_plot
 
 from handlers.redis_fetch import manage_redis, manage_sentinel, orderbook_value_to_dataframe, fetch_zset_range, \
     redis_extract_orderbook_value_quantities
@@ -825,9 +825,10 @@ class Symbol(object):
             self.df.drop(c, axis=1, inplace=True)
         return self.df
 
-    def insert_indicator(self, source_data: pd.Series or pd.DataFrame or np.ndarray or list, strategy_group: str = None, plotting_row: str = None,
-                         plotting_rows: list = None, color: str = 'blue', no_overlapped_plot_rows: bool = True, colors: list = None, color_fills: list = None, name: str = None,
-                         names: list = None, suffix: str = '') -> pd.DataFrame or None:
+    def insert_indicator(self, source_data: pd.Series or pd.DataFrame or np.ndarray or list, strategy_group: str = None,
+                         plotting_row: str = None, plotting_rows: list = None, color: str = 'blue', no_overlapped_plot_rows: bool = True,
+                         colors: list = None, color_fills: list = None, name: str = None, names: list = None,
+                         suffix: str = '') -> pd.DataFrame or None:
         """
         Adds indicator to dataframe. It always do inplace.
 
@@ -849,10 +850,10 @@ class Symbol(object):
         :return pd.DataFrame or None: Instance candles dataframe.
 
         """
-        try:
-            assert plotting_row or plotting_rows
-        except AssertionError:
-            binpan_logger.error(f"BinPan Exception: plotting_row or plotting_rows must be passed")
+        # try:
+        #     assert plotting_row or plotting_rows
+        # except AssertionError:
+        #     binpan_logger.error(f"BinPan Exception: plotting_row or plotting_rows must be passed")
         if type(source_data) == list:
             data_qty = len(source_data)
         elif type(source_data) == pd.DataFrame:
@@ -944,8 +945,8 @@ class Symbol(object):
                 else:
                     current_name = names[element_idx]
 
-                self.insert_indicator(source_data=data, plotting_rows=[plotting_rows[element_idx]], colors=[colors[element_idx]], color_fills=[
-                    color_fills[element_idx]], names=[current_name], suffix=suffix)
+                self.insert_indicator(source_data=data, plotting_rows=[plotting_rows[element_idx]], colors=[
+                    colors[element_idx]], color_fills=[color_fills[element_idx]], names=[current_name], suffix=suffix)
             return self.df
 
         else:
@@ -1744,8 +1745,8 @@ class Symbol(object):
         return plot_hists_vs(x0=aggressive_sellers, x1=aggressive_byers, x0_name="Aggressive sellers", x1_name='Aggressive byers', bins=bins, hist_funct=hist_funct, height=height, title=title, **kwargs_update_layout)
 
     def plot_market_profile(self, bins: int = 100, hours: int = None, minutes: int = None, startTime: int or str = None,
-                            endTime: int or str = None, height=900, from_agg_trades=False, from_atomic_trades=False,
-                            title: str = None, time_zone: str = None, **kwargs_update_layout):
+                            endTime: int or str = None, height=900, from_agg_trades=False, from_atomic_trades=False, title: str = None,
+                            time_zone: str = None, **kwargs_update_layout):
         """
         Plots volume histogram by prices segregated aggressive buyers from sellers.
 
@@ -1925,6 +1926,38 @@ class Symbol(object):
         close = self.df['Close']
         ask_value_quantities, bid_value_quantities = redis_extract_orderbook_value_quantities(data)
         return plot_orderbook_value(ask_data=ask_value_quantities, bid_data=bid_value_quantities, close_prices=close)
+
+    def plot_taker_maker_ratio_profile(self, bins: int = 100, hours: int = None, minutes: int = None, startTime: int or str = None,
+                                       endTime: int or str = None, from_agg_trades=False, from_atomic_trades=False, time_zone: str = None,
+                                       title: str = "Taker Buy Ratio Profile", height=1200, width=800, **kwargs_update_layout):
+        """
+        Plots taker vs maker ratio profile.
+
+        :param int bins: How many bars.
+        :param int hours: If passed, it use just last passed hours for the plot.
+        :param int minutes: If passed, it use just last passed minutes for the plot.
+        :param int or str startTime: If passed, it use just from the timestamp or date in format
+         (%Y-%m-%d %H:%M:%S: **2022-05-11 06:45:42**)) for the plot.
+        :param int or str endTime: If passed, it use just until the timestamp or date in format
+         (%Y-%m-%d %H:%M:%S: **2022-05-11 06:45:42**)) for the plot.
+        :param height: Height of the graph.
+        :param width: Width of the graph.
+        :param from_agg_trades: Requieres grabbing aggregated trades before.
+        :param from_atomic_trades: Requieres grabbing atomic trades before.
+        :param title: A title.
+        :param str time_zone: A time zone for time index conversion. Example: "Europe/Madrid"
+        :param kwargs_update_layout: Optional
+
+        .. image:: images/plotting/taker_ratio_profile.png
+            :width: 1000
+
+        """
+        profile = self.get_taker_maker_ratio_profile(bins=bins, hours=hours, minutes=minutes, startTime=startTime, endTime=endTime,
+                                                     from_agg_trades=from_agg_trades, from_atomic_trades=from_atomic_trades,
+                                                     time_zone=time_zone)
+        return profile_plot(serie=profile, title=title, height=height, width=width,
+                            x_axis_title="Price Buckets", y_axis_title="Taker/Maker ratio",
+                            vertical_bar=0.5, **kwargs_update_layout)
 
     #################
     # Exchange data #
@@ -2316,7 +2349,7 @@ class Symbol(object):
             self.row_counter += 1
 
             self.global_axis_group -= 1
-            axis_identifier = f"y{self.global_axis_group}"
+            axis_identifier = f"y{self.global_axis_group}"  # for filling plots?
 
             for i, column_name in enumerate(macd.columns):
                 col = macd[column_name]
@@ -2936,7 +2969,7 @@ class Symbol(object):
         return fractal
 
     def get_market_profile(self, bins: int = 100, hours: int = None, minutes: int = None, startTime: int or str = None,
-                           endTime: int or str = None, from_agg_trades=False, from_atomic_trades=False, title: str = 'Market Profile',
+                           endTime: int or str = None, from_agg_trades=False, from_atomic_trades=False,
                            time_zone: str = None) -> pd.DataFrame or None:
         """
         Generates a market profile dataframe from trade or kline data. The market profile is a histogram of trading
@@ -2949,7 +2982,6 @@ class Symbol(object):
         :param endTime: If specified, only data before this timestamp or date (in format %Y-%m-%d %H:%M:%S) are used.
         :param from_agg_trades: If True, aggregated trades data are used to generate the market profile.
         :param from_atomic_trades: If True, atomic trades data are used to generate the market profile.
-        :param title: The title of the resulting plot (if plotting).
         :param time_zone: The time zone to use for time index conversion (e.g., "Europe/Madrid").
 
         :return: A DataFrame representing the market profile, or None if no suitable data are available.
@@ -2984,7 +3016,6 @@ class Symbol(object):
                 return
 
         if from_agg_trades:
-            title += f' Aggregated {self.symbol}'
             _df = self.agg_trades.copy(deep=True)
             if startTime:
                 _df = _df[_df['Timestamp'] >= startTime]
@@ -2992,7 +3023,6 @@ class Symbol(object):
                 _df = _df[_df['Timestamp'] <= endTime]
             self.market_profile_df = market_profile_from_trades_grouped(df=_df, num_bins=bins)
         elif from_atomic_trades:
-            title += f' Atomic {self.symbol}'
             _df = self.atomic_trades.copy(deep=True)
             if startTime:
                 _df = _df[_df['Timestamp'] >= startTime]
@@ -3008,6 +3038,61 @@ class Symbol(object):
             binpan_logger.info(f"Using klines data. For deeper info add trades data, example: my_symbol.get_agg_trades()")
             self.market_profile_df = market_profile_from_klines_grouped(df=_df, num_bins=bins)
         return self.market_profile_df
+
+    def get_maker_taker_buy_ratios(self, window: int = 14, inplace=True, colors: list = None, suffix: str = "") -> pd.DataFrame:
+        """
+        Generates the makers versus makers+takers volume ratio by each_kline. Also adds a moving average of the ratio.
+
+        :param int window: The window of the moving average.
+        :param bool inplace: Permanent or not. Default is false, because of some testing required sometimes.
+        :param str suffix: A string to decorate resulting Pandas series name.
+        :param str or int colors: A colors list. Default is ["orange", "skyblue"].
+        :return: A pandas series with the ratio and the moving average.
+        """
+
+        df = self.df.copy(deep=True)
+        df = df.sort_index(ascending=True)
+
+        ratios = df['Taker buy base volume'] / df["Volume"]
+        ratios.name = "Ratio_Taker/Maker_buy" + suffix
+
+        ema = ratios.ewm(span=window, adjust=False, min_periods=window).mean()
+        ema.name = f"Ratio_Taker/Maker_buy_EMA_{window}" + suffix
+
+        if inplace and self.is_new(ratios):
+            if not colors:
+                colors = ["orange", "skyblue"]
+            self.row_counter += 1
+
+            for i, new_col in enumerate([ratios, ema]):
+                column_name = str(new_col.name)
+                self.set_plot_color(indicator_column=column_name, color=colors[i])
+                self.set_plot_color_fill(indicator_column=column_name, color_fill=None)
+                self.set_plot_row(indicator_column=str(column_name), row_position=self.row_counter)
+                self.df.loc[:, column_name] = new_col
+
+        return pd.DataFrame({ratios.name: ratios, ema.name: ema}, index=self.df.index).sort_index(ascending=False)
+
+    def get_taker_maker_ratio_profile(self, bins: int = 100, hours: int = None, minutes: int = None, startTime: int or str = None,
+                                      endTime: int or str = None, from_agg_trades=False, from_atomic_trades=False,
+                                      time_zone: str = None) -> pd.DataFrame or None:
+        """
+        Generates a market profile of the makers versus makers+takers volume ratio by each_kline.
+
+        :param bins: The number of price levels (bins) to include in the market profile.
+        :param hours: If specified, only the last 'hours' hours of data are used to generate the market profile.
+        :param minutes: If specified, only the last 'minutes' minutes of data are used to generate the market profile.
+        :param startTime: If specified, only data after this timestamp or date (in format %Y-%m-%d %H:%M:%S) are used.
+        :param endTime: If specified, only data before this timestamp or date (in format %Y-%m-%d %H:%M:%S) are used.
+        :param from_agg_trades: If True, aggregated trades data are used to generate the market profile.
+        :param from_atomic_trades: If True, atomic trades data are used to generate the market profile.
+        :param time_zone: The time zone to use for time index conversion (e.g., "Europe/Madrid").
+        :return: A DataFrame representing the market profile, or None if no suitable data are available.
+        """
+        if self.market_profile_df.empty:
+            self.market_profile_df = self.get_market_profile(bins=bins, hours=hours, minutes=minutes, startTime=startTime, endTime=endTime, from_agg_trades=from_agg_trades, from_atomic_trades=from_atomic_trades, time_zone=time_zone)
+        return self.market_profile_df['Taker buy base volume'] / (
+                self.market_profile_df['Taker buy base volume'] + self.market_profile_df['Maker buy base volume'])
 
     @staticmethod
     def pandas_ta_indicator(name: str, **kwargs):
