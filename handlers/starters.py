@@ -169,19 +169,19 @@ def is_python_version_numba_supported() -> bool:
     Verify if python version is numba supported.
     """
     min_version = (3, 7)
-    max_version = (3, 10)
-    current_version = sys.version_info
-    return min_version <= current_version <= max_version
+    max_version = (3, 11)  # Numba supports up to Python 3.10, so we set the maximum version to 3.11
+    current_version = sys.version_info[:2]  # Get the first two elements of the version info tuple
+    return min_version <= current_version < max_version
 
 
 def is_running_in_jupyter():
+    """
+    Check if the code is running in a Jupyter notebook.
+    :return bool: True if running in Jupyter, False otherwise.
+    """
     try:
-        ipython = get_ipython()
-        if ipython is None:
-            return False
-        if 'ipykernel' in ipython.config:  # Check if 'ipykernel' is in the config dict
-            return True
-        else:
-            return False
-    except NameError:
+        from ipykernel import connect
+        return True
+    except ImportError:
         return False
+
