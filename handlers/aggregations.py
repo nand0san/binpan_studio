@@ -10,7 +10,11 @@ from .starters import is_python_version_numba_supported
 from .time_helper import pandas_freq_tick_interval
 
 if is_python_version_numba_supported():
-    from .stat_tests import ema_numba, sma_numba
+    try:
+        from .stat_tests import ema_numba, sma_numba
+    except Exception as e:
+        print(f"BinPan Warning: Numba import error, using numpy -> {e}")
+        from .stat_tests import ema_numpy as ema_numba, sma_numpy as sma_numba
 else:
     from .stat_tests import ema_numpy as ema_numba, sma_numpy as sma_numba
 

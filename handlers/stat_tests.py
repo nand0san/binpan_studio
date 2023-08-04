@@ -10,9 +10,22 @@ import numpy as np
 from .starters import is_python_version_numba_supported
 
 if is_python_version_numba_supported():
-    from numba import jit
+    try:
+        from numba import jit
+    except Exception as e:
+        msg = "Cannot import numba: only Python versions >=3.7,<3.11 are supported. Using Numpy."
+        print(msg)
+
+        # noinspection PyUnusedLocal
+        def jit(*args, **kwargs):
+            # Define a no-op decorator to replace @nb.jit
+            def decorator(func):
+                return func
+
+            return decorator
 else:
     msg = "Cannot import numba: only Python versions >=3.7,<3.11 are supported. Using Numpy."
+    print(msg)
 
     # noinspection PyUnusedLocal
     def jit(*args, **kwargs):
