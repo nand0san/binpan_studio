@@ -3,7 +3,7 @@
 This is the main classes file.
 
 """
-__version__ = "0.4.32"
+__version__ = "0.4.33"
 
 import os
 from sys import path
@@ -288,8 +288,8 @@ class Symbol(object):
             self.symbol = symbol
             tick_interval = filename.split()[1]
             self.tick_interval = tick_interval
-            start_time = int(filename.split()[3])
-            end_time = int(filename.split()[4].split('.')[0])
+            start_time = int(filename.split()[-2])
+            end_time = int(filename.split()[-1].split('.')[0])
             time_zone = filename.split()[2].replace('-', '/')
             index_name = f"{symbol} {tick_interval} {time_zone}"
             self.time_zone = time_zone
@@ -1113,11 +1113,12 @@ class Symbol(object):
             else:
                 filename = select_file(path=self.cwd, extension='csv')
             # load and to numeric types
-            df_ = read_csv_to_dataframe(filename=filename)
+            df_ = read_csv_to_dataframe(filename=filename, index_col="Timestamp", symbol=self.symbol, index_time_zone=self.time_zone)
             # check columns
             for col in df_.columns:
                 if not col in agg_trades_columns_from_redis and not col in agg_trades_columns_from_binance:
                     raise BinPanException(f"File do not seems to be Aggregated Trades File!")
+            self.agg_trades = df_
         else:
             try:
                 self.raw_agg_trades = get_historical_agg_trades(symbol=self.symbol, startTime=curr_startTime, endTime=curr_endTime, redis_client_trades=self.from_redis)
@@ -1191,13 +1192,12 @@ class Symbol(object):
             else:
                 filename = select_file(path=self.cwd, extension='csv')
             # load and to numeric types
-            df_ = read_csv_to_dataframe(filename=filename)
-
+            df_ = read_csv_to_dataframe(filename=filename, index_col="Timestamp", symbol=self.symbol, index_time_zone=self.time_zone)
             # check columns
             for col in df_.columns:
                 if not col in atomic_trades_columns_from_redis and not col in atomic_trades_columns_from_binance:
                     raise BinPanException(f"File do not seems to be Atomic Trades File!")
-
+            self.atomic_trades = df_
         else:
             try:
                 self.raw_atomic_trades = get_historical_atomic_trades(symbol=self.symbol, startTime=curr_startTime, endTime=curr_endTime, redis_client_trades=self.from_redis)

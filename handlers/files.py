@@ -101,16 +101,25 @@ def move_old_csvs(files_path: str = '.', extension='csv'):
         replace(file, dst)
 
 
-def read_csv_to_dataframe(filename: str, col_sep: str = ',', keep_index_col: bool = None) -> pd.DataFrame:
+def read_csv_to_dataframe(filename: str, col_sep: str = ',', index_col: str = None, index_time_zone: str = None, symbol:str=None) -> pd.DataFrame:
     """
     Creates a csv file from a dataframe.
 
     :param str filename: The file name with or without path.
-    :param str col_sep: Column separator. DEfault is ","
-    :param bool keep_index_col: If False, index is dropped. Default is False.
+    :param str col_sep: Column separator. Default is ","
+    :param bool index_col: Name of the column to use as index. Default is None.
+    :param str index_time_zone: Time zone to use in index. Default is None.
+    :param str symbol: Symbol to use in index name. Default is None.
     :return pd.DataFrame: A dataframe with data in columns using file rows header.
     """
-    return pd.read_csv(filepath_or_buffer=filename, sep=col_sep, index_col=keep_index_col, skip_blank_lines=True, quoting=QUOTE_ALL)
+    df_ = pd.read_csv(filepath_or_buffer=filename, sep=col_sep, skip_blank_lines=True, quoting=QUOTE_ALL)
+    if index_col:
+        df_.set_index(index_col, inplace=True, drop=False)
+        if index_time_zone:
+            df_.index = pd.to_datetime(df_.index, unit='ms')
+            df_.index = df_.index.tz_localize(index_time_zone).tz_convert(index_time_zone)
+            df_.index.name = f"{symbol} {index_time_zone}"
+    return df_
 
 
 def read_file(filename: str) -> list:
@@ -150,6 +159,7 @@ def select_file(path='.', extension='csv') -> str:
     :param str extension: Extension of interesting files to select.
     :return str: a filename.
     """
+    print("File selection menu:")
     files = find_csvs_in_path(files_path=path, extension=extension)
     files = [i for i in files if i.lower().endswith(extension.lower())]
     for i, file in enumerate(files):
