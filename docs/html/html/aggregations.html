@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Aggregations Module - BinPan 0.4.31 documentation</title>
+      <title>Aggregations Module - BinPan 0.4.33 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Exceptions Module" href="exceptions.html" /><link rel="prev" title="BinPan Module" href="binpan.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -131,6 +131,7 @@ html.dark {
 <li><a class="reference internal" href="#handlers.aggregations.count_trues_cumulative"><code class="docutils literal notranslate"><span class="pre">count_trues_cumulative()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.aggregations.drop_aggregated"><code class="docutils literal notranslate"><span class="pre">drop_aggregated()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.aggregations.tag_by_accumulation"><code class="docutils literal notranslate"><span class="pre">tag_by_accumulation()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.aggregations.resample_klines"><code class="docutils literal notranslate"><span class="pre">resample_klines()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.aggregations.time_index_from_timestamps"><code class="docutils literal notranslate"><span class="pre">time_index_from_timestamps()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.aggregations.columns_restriction"><code class="docutils literal notranslate"><span class="pre">columns_restriction()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.aggregations.generate_volume_column"><code class="docutils literal notranslate"><span class="pre">generate_volume_column()</span></code></a></li>
@@ -188,37 +189,40 @@ html.dark {
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.aggregations.tag_by_accumulation" title="handlers.aggregations.tag_by_accumulation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tag_by_accumulation</span></code></a>(trades, threshold[, ...])</p></td>
 <td><p>Creates integer sequence by column value threshold accumulation.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.aggregations.time_index_from_timestamps" title="handlers.aggregations.time_index_from_timestamps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time_index_from_timestamps</span></code></a>(data[, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.aggregations.resample_klines" title="handlers.aggregations.resample_klines"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resample_klines</span></code></a>(data, tick_interval)</p></td>
+<td><p>Resamples a DataFrame of klines to a different frequency.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.aggregations.time_index_from_timestamps" title="handlers.aggregations.time_index_from_timestamps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time_index_from_timestamps</span></code></a>(data[, ...])</p></td>
 <td><p>Assumes existing timestamp column or at least Open timestamp column.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.aggregations.columns_restriction" title="handlers.aggregations.columns_restriction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">columns_restriction</span></code></a>(data, mode[, extra])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.aggregations.columns_restriction" title="handlers.aggregations.columns_restriction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">columns_restriction</span></code></a>(data, mode[, extra])</p></td>
 <td><p>Filter columns by preset.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.aggregations.generate_volume_column" title="handlers.aggregations.generate_volume_column"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_volume_column</span></code></a>(data, add_cols[, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.aggregations.generate_volume_column" title="handlers.aggregations.generate_volume_column"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_volume_column</span></code></a>(data, add_cols[, ...])</p></td>
 <td><p>Add two columns to generate volume of base.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.aggregations.sign_of_price" title="handlers.aggregations.sign_of_price"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sign_of_price</span></code></a>(data[, col_name])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.aggregations.sign_of_price" title="handlers.aggregations.sign_of_price"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sign_of_price</span></code></a>(data[, col_name])</p></td>
 <td><p>Creates a new dataframe with a column with the sign of the price by each trade.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.aggregations.tick_bars" title="handlers.aggregations.tick_bars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tick_bars</span></code></a>(trades, size)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.aggregations.tick_bars" title="handlers.aggregations.tick_bars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tick_bars</span></code></a>(trades, size)</p></td>
 <td><p>Creates Tick Bars OHLC bars from trades-</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.aggregations.volume_bars" title="handlers.aggregations.volume_bars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">volume_bars</span></code></a>(trades, threshold)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.aggregations.volume_bars" title="handlers.aggregations.volume_bars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">volume_bars</span></code></a>(trades, threshold)</p></td>
 <td><p>Creates Volume Bars OHLC bars from trades.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.aggregations.dollar_bars" title="handlers.aggregations.dollar_bars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dollar_bars</span></code></a>(trades, threshold)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.aggregations.dollar_bars" title="handlers.aggregations.dollar_bars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dollar_bars</span></code></a>(trades, threshold)</p></td>
 <td><p>Creates Dollar (or quote) Bars OHLC bars from trades.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.aggregations.ohlc_bars" title="handlers.aggregations.ohlc_bars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ohlc_bars</span></code></a>(rows_with_bar_counter, index[, mode])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.aggregations.ohlc_bars" title="handlers.aggregations.ohlc_bars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ohlc_bars</span></code></a>(rows_with_bar_counter, index[, mode])</p></td>
 <td><p>Generate an OHLC dataframe from a trades dataframe with a column containing sampled numeric tags for each bar's aggregation.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.aggregations.imbalance_bars_divergent" title="handlers.aggregations.imbalance_bars_divergent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">imbalance_bars_divergent</span></code></a>(trades, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.aggregations.imbalance_bars_divergent" title="handlers.aggregations.imbalance_bars_divergent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">imbalance_bars_divergent</span></code></a>(trades, ...)</p></td>
 <td><p>Generates candles by grouping each accumulated imbalance defined by:</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.aggregations.imbalance_bars_fixed" title="handlers.aggregations.imbalance_bars_fixed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">imbalance_bars_fixed</span></code></a>(trades, imbalance)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.aggregations.imbalance_bars_fixed" title="handlers.aggregations.imbalance_bars_fixed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">imbalance_bars_fixed</span></code></a>(trades, imbalance)</p></td>
 <td><p>Generates candles by grouping each accumulated fixed imbalance threshold defined by:</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.aggregations.tick_imbalance_bars_chat_gpt" title="handlers.aggregations.tick_imbalance_bars_chat_gpt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tick_imbalance_bars_chat_gpt</span></code></a>(trades[, window])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.aggregations.tick_imbalance_bars_chat_gpt" title="handlers.aggregations.tick_imbalance_bars_chat_gpt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tick_imbalance_bars_chat_gpt</span></code></a>(trades[, window])</p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -349,6 +353,26 @@ of the specified numeric column for each group and filling the remaining cells w
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.aggregations.resample_klines">
+<span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">resample_klines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.aggregations.resample_klines" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resamples a DataFrame of klines to a different frequency.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>pd.DataFrame</em>) – The original DataFrame of klines. The index must be a DatetimeIndex.</p></li>
+<li><p><strong>tick_interval</strong> (<em>str</em>) – The new frequency for the klines. This can be any Binance frequency.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A new DataFrame with the resampled klines.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame resampled klines.</p>
 </dd>
 </dl>
 </dd></dl>

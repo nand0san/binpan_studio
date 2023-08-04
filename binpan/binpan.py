@@ -3,7 +3,7 @@
 This is the main classes file.
 
 """
-__version__ = "0.4.32"
+__version__ = "0.4.33"
 
 import os
 from sys import path
@@ -42,12 +42,14 @@ from handlers.redis_fetch import manage_redis, manage_sentinel, orderbook_value_
 from handlers.starters import import_secret_module, is_running_in_jupyter
 
 from handlers.time_helper import tick_seconds, pandas_freq_tick_interval, check_tick_interval, open_from_milliseconds, time_interval, \
-    convert_milliseconds_to_str, get_dataframe_time_index_ranges, remove_initial_included_ranges
+    convert_milliseconds_to_str, get_dataframe_time_index_ranges, remove_initial_included_ranges, tick_interval_values
 
 from handlers.tags import tag_column_to_strategy_group, backtesting, backtesting_short, tag_comparison, tag_cross, merge_series, \
     clean_in_out
 
 from handlers.wallet import convert_str_date_to_ms, convert_coin, get_margin_balances, daily_account_snapshot, get_spot_balances_df
+
+from handlers.aggregations import resample_klines
 
 if is_running_in_jupyter():
     from tqdm.notebook import tqdm
@@ -286,8 +288,8 @@ class Symbol(object):
             self.symbol = symbol
             tick_interval = filename.split()[1]
             self.tick_interval = tick_interval
-            start_time = int(filename.split()[3])
-            end_time = int(filename.split()[4].split('.')[0])
+            start_time = int(filename.split()[-2])
+            end_time = int(filename.split()[-1].split('.')[0])
             time_zone = filename.split()[2].replace('-', '/')
             index_name = f"{symbol} {tick_interval} {time_zone}"
             self.time_zone = time_zone
@@ -1111,11 +1113,12 @@ class Symbol(object):
             else:
                 filename = select_file(path=self.cwd, extension='csv')
             # load and to numeric types
-            df_ = read_csv_to_dataframe(filename=filename)
+            df_ = read_csv_to_dataframe(filename=filename, index_col="Timestamp", symbol=self.symbol, index_time_zone=self.time_zone)
             # check columns
             for col in df_.columns:
                 if not col in agg_trades_columns_from_redis and not col in agg_trades_columns_from_binance:
                     raise BinPanException(f"File do not seems to be Aggregated Trades File!")
+            self.agg_trades = df_
         else:
             try:
                 self.raw_agg_trades = get_historical_agg_trades(symbol=self.symbol, startTime=curr_startTime, endTime=curr_endTime, redis_client_trades=self.from_redis)
@@ -1189,13 +1192,12 @@ class Symbol(object):
             else:
                 filename = select_file(path=self.cwd, extension='csv')
             # load and to numeric types
-            df_ = read_csv_to_dataframe(filename=filename)
-
+            df_ = read_csv_to_dataframe(filename=filename, index_col="Timestamp", symbol=self.symbol, index_time_zone=self.time_zone)
             # check columns
             for col in df_.columns:
                 if not col in atomic_trades_columns_from_redis and not col in atomic_trades_columns_from_binance:
                     raise BinPanException(f"File do not seems to be Atomic Trades File!")
-
+            self.atomic_trades = df_
         else:
             try:
                 self.raw_atomic_trades = get_historical_atomic_trades(symbol=self.symbol, startTime=curr_startTime, endTime=curr_endTime, redis_client_trades=self.from_redis)
@@ -1311,6 +1313,21 @@ class Symbol(object):
         if self.reversal_atomic_klines.empty or min_height or min_reversal:
             self.reversal_atomic_klines = reversal_candles(trades=self.atomic_trades, decimal_positions=self.decimals, time_zone=self.time_zone, min_height=self.min_height, min_reversal=self.min_reversal)
         return self.reversal_atomic_klines
+
+    def resample(self, tick_interval: str):
+        """
+        Resample trades to a different tick interval. Tick interval must be higher.
+        :param str tick_interval: A binance tick interval. Must be higher than current tick interval.
+        :return pd.DataFrame: Resampled klines.
+        """
+        new_index = tick_interval_values.index(tick_interval)
+        current_index = tick_interval_values.index(self.tick_interval)
+        try:
+            assert new_index > current_index
+        except Exception as e:
+            binpan_logger.error(f"BinPan error: resample must use higher interval: {new_index} not > {current_index}")
+            return
+        return resample_klines(data=self.df, tick_interval=tick_interval)
 
     ################
     # Plots
