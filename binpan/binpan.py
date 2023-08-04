@@ -42,12 +42,14 @@ from handlers.redis_fetch import manage_redis, manage_sentinel, orderbook_value_
 from handlers.starters import import_secret_module, is_running_in_jupyter
 
 from handlers.time_helper import tick_seconds, pandas_freq_tick_interval, check_tick_interval, open_from_milliseconds, time_interval, \
-    convert_milliseconds_to_str, get_dataframe_time_index_ranges, remove_initial_included_ranges
+    convert_milliseconds_to_str, get_dataframe_time_index_ranges, remove_initial_included_ranges, tick_interval_values
 
 from handlers.tags import tag_column_to_strategy_group, backtesting, backtesting_short, tag_comparison, tag_cross, merge_series, \
     clean_in_out
 
 from handlers.wallet import convert_str_date_to_ms, convert_coin, get_margin_balances, daily_account_snapshot, get_spot_balances_df
+
+from handlers.aggregations import resample_klines
 
 if is_running_in_jupyter():
     from tqdm.notebook import tqdm
@@ -1311,6 +1313,21 @@ class Symbol(object):
         if self.reversal_atomic_klines.empty or min_height or min_reversal:
             self.reversal_atomic_klines = reversal_candles(trades=self.atomic_trades, decimal_positions=self.decimals, time_zone=self.time_zone, min_height=self.min_height, min_reversal=self.min_reversal)
         return self.reversal_atomic_klines
+
+    def resample(self, tick_interval: str):
+        """
+        Resample trades to a different tick interval. Tick interval must be higher.
+        :param str tick_interval: A binance tick interval. Must be higher than current tick interval.
+        :return pd.DataFrame: Resampled klines.
+        """
+        new_index = tick_interval_values.index(tick_interval)
+        current_index = tick_interval_values.index(self.tick_interval)
+        try:
+            assert new_index > current_index
+        except Exception as e:
+            binpan_logger.error(f"BinPan error: resample must use higher interval: {new_index} not > {current_index}")
+            return
+        return resample_klines(data=self.df, tick_interval=tick_interval)
 
     ################
     # Plots

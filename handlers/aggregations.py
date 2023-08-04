@@ -7,6 +7,7 @@ from typing import Tuple
 
 from .exceptions import BinPanException
 from .starters import is_python_version_numba_supported
+from .time_helper import pandas_freq_tick_interval
 
 if is_python_version_numba_supported():
     from .stat_tests import ema_numba, sma_numba
@@ -181,6 +182,39 @@ def tag_by_accumulation(trades: pd.DataFrame, threshold: int, agg_column: str = 
 ############
 # df utils #
 ############
+
+def resample_klines(data: pd.DataFrame, tick_interval: str) -> pd.DataFrame:
+    """
+    Resamples a DataFrame of klines to a different frequency.
+
+    :param pd.DataFrame data: The original DataFrame of klines. The index must be a DatetimeIndex.
+    :param str tick_interval: The new frequency for the klines. This can be any Binance frequency.
+    :return: A new DataFrame with the resampled klines.
+    :rtype: pd.DataFrame resampled klines.
+    """
+    assert isinstance(data.index, pd.DatetimeIndex), "The index must be a DatetimeIndex."
+    df = data.copy(deep=True)
+    interval = pandas_freq_tick_interval[tick_interval]
+    df_resampled = df.resample(interval).agg({
+        'Open time': 'first',
+        'Open': 'first',
+        'High': 'max',
+        'Low': 'min',
+        'Close': 'last',
+        'Volume': 'sum',
+        'Close time': 'last',
+        'Quote volume': 'sum',
+        'Trades': 'sum',
+        'Taker buy base volume': 'sum',
+        'Taker buy quote volume': 'sum',
+        'Ignore': 'last',
+        'Open timestamp': 'first',
+        'Close timestamp': 'last'
+    })
+    new_name_split = str(data.index.name).split()
+    new_name_split[1] = tick_interval
+    df_resampled.index.name = ' '.join(new_name_split)
+    return df_resampled
 
 
 def time_index_from_timestamps(data: pd.DataFrame, index_name: str = None, timezone: str = 'Europe/Madrid', drop_col: bool = False, ):
