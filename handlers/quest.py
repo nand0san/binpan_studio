@@ -263,6 +263,7 @@ def handle_api_response(response) -> dict or list:
 
     :return: API response in dict or list format.
     """
+    quest_logger.debug(response)
     if not (200 <= response.status_code < 300):
         quest_logger.error(response)
         raise BinanceAPIException(response, response.status_code, response.text)

@@ -7,6 +7,7 @@ import pandas as pd
 
 from .starters import AesCipher
 from .logs import Logs
+from. exceptions import BinPanException
 
 files_logger = Logs(filename='./logs/files_logger.log', name='files_logger', info_level='INFO')
 
@@ -101,24 +102,124 @@ def move_old_csvs(files_path: str = '.', extension='csv'):
         replace(file, dst)
 
 
-def read_csv_to_dataframe(filename: str, col_sep: str = ',', index_col: str = None, index_time_zone: str = None, symbol:str=None) -> pd.DataFrame:
+def extract_filename_metadata(filename: str, expected_data_type: str, expected_symbol: str = None, expected_interval: str = None, expected_timezone: str = None) -> tuple:
+    """
+    Extract metadata from a filename. Symbol, tick interval, timezone and start timestamp and end timestamp. Also data type like atomic trades or klines.
+
+    :param filename: A filename with expected format. Example: LTCBTC 1m Europe-Madrid optionalcomment klines 1691332020000 1691391959999.csv
+    :param str expected_data_type: Expected data type. Example: "klines" or "aggTrades" or "atomicTrades"
+    :param str expected_interval: Expected tick interval. Example: "1m" or "1h".
+    :param str expected_symbol: Expected symbol. Example: "LTCBTC"
+    :param str expected_timezone: Expected timezone. Example: "Europe/Madrid"
+    :return: A dict with metadata.
+    """
+    filename = str(path.basename(filename))
+
+    try:
+        assert expected_data_type in ['klines', 'aggTrades',
+                                      'atomicTrades'], f'Expected data type is not valid. Expected "klines" or "aggTrades" or "atomicTrades". Received {expected_data_type}'
+    except AssertionError as e:
+        files_logger.error(f"BinPan Exception: {e}")
+        raise e
+
+    symbol = filename.split(' ')[0]
+
+    if expected_data_type == 'klines':
+        tick_interval = filename.split(' ')[1]
+        time_zone = filename.split(' ')[2].replace("-", "/")
+    else:
+        tick_interval = None
+        time_zone = filename.split(' ')[1].replace("-", "/")
+
+    # comments can go before timezone
+    data_type = filename.split(' ')[-3]
+    start_timestamp = filename.split(' ')[-2]
+    end_timestamp = filename.split(' ')[-1].replace('.csv', '')
+
+    if expected_symbol:
+        try:
+            assert symbol == expected_symbol, f'Expected symbol is not valid. Expected {expected_symbol}. Received {symbol}'
+        except AssertionError as e:
+            files_logger.error(f"BinPan Exception: {e}")
+            raise e
+    if expected_interval:
+        try:
+            assert tick_interval == expected_interval, f'Expected tick interval is not valid. Expected {expected_interval}. Received {tick_interval}'
+        except AssertionError as e:
+            files_logger.error(f"BinPan Exception: {e}")
+            raise e
+    if expected_timezone:
+        try:
+            assert time_zone == expected_timezone, f'Expected timezone is not valid. Expected {expected_timezone}. Received {time_zone}'
+        except AssertionError as e:
+            files_logger.error(f"BinPan Exception: {e}")
+            raise e
+    return symbol, tick_interval, time_zone, data_type, start_timestamp, end_timestamp
+
+
+# def read_csv_to_dataframe(filename: str, col_sep: str = ',', index_col: str = None, index_time_zone: str = None,
+#                           symbol: str = None) -> pd.DataFrame:
+#     """
+#     Creates a csv file from a dataframe.
+#
+#     :param str filename: The file name with or without path.
+#     :param str col_sep: Column separator. Default is ","
+#     :param bool index_col: Name of the column to use as index. Default is None.
+#     :param str index_time_zone: Time zone to use in index. Default is None.
+#     :param str symbol: Symbol to use in index name. Default is None.
+#     :return pd.DataFrame: A dataframe with data in columns using file rows header.
+#     """
+#     df_ = pd.read_csv(filepath_or_buffer=filename, sep=col_sep, skip_blank_lines=True, quoting=QUOTE_ALL)
+#     if index_col:
+#         df_.set_index(index_col, inplace=True, drop=False)
+#         if index_time_zone:
+#             df_.index = pd.to_datetime(df_.index, unit='ms')
+#             print(df_.index)
+#             if not df_.index.tz:
+#                 print("index_time_zone", index_time_zone)
+#                 df_.index = df_.index.tz_localize(tz=index_time_zone)
+#             df_.index = df_.index.tz_convert(index_time_zone)
+#             df_.index.name = f"{symbol} {index_time_zone}"
+#
+#         if symbol:
+#             df_.index.name = f"{symbol} {index_time_zone}"
+#     return df_
+
+def read_csv_to_dataframe(filename: str, col_sep: str = ',', index_col: str = None, index_time_zone: str = None,
+                          symbol: str = None, secondary_index_col: str = None) -> pd.DataFrame:
     """
     Creates a csv file from a dataframe.
 
     :param str filename: The file name with or without path.
     :param str col_sep: Column separator. Default is ","
     :param bool index_col: Name of the column to use as index. Default is None.
+    :param str secondary_index_col: In case of duplicated index, it will be used as secondary criterio for sorting data.
     :param str index_time_zone: Time zone to use in index. Default is None.
     :param str symbol: Symbol to use in index name. Default is None.
     :return pd.DataFrame: A dataframe with data in columns using file rows header.
     """
     df_ = pd.read_csv(filepath_or_buffer=filename, sep=col_sep, skip_blank_lines=True, quoting=QUOTE_ALL)
     if index_col:
+        # verifica si hay duplicados en el index_col
+        if df_.index.duplicated().any():
+            files_logger.warning(f"BinPan Warning: Duplicated index in {filename}")
+            # apply sort criterion with second index
+            if secondary_index_col:
+                df_.sort_values(by=[index_col, secondary_index_col], inplace=True)
+            else:
+                raise BinPanException(f"BinPan Exception: Duplicated index in {filename} and no secondary index provided")
+
         df_.set_index(index_col, inplace=True, drop=False)
+
         if index_time_zone:
             df_.index = pd.to_datetime(df_.index, unit='ms')
-            df_.index = df_.index.tz_localize(index_time_zone).tz_convert(index_time_zone)
-            df_.index.name = f"{symbol} {index_time_zone}"
+            if not df_.index.tz:
+                df_.index = df_.index.tz_localize(tz='UTC')
+                df_.index = df_.index.tz_convert(index_time_zone)
+            else:
+                df_.index = df_.index.tz_convert(index_time_zone)
+            if symbol:
+                df_.index.name = f"{symbol} {index_time_zone}"
     return df_
 
 

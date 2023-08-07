@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Files Module - BinPan 0.4.33 documentation</title>
+      <title>Files Module - BinPan 0.4.36 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Indicators Module" href="indicators.html" /><link rel="prev" title="Exchange Module" href="exchange.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -130,6 +130,7 @@ html.dark {
 <li><a class="reference internal" href="#handlers.files.append_dataframe_to_csv"><code class="docutils literal notranslate"><span class="pre">append_dataframe_to_csv()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.files.find_csvs_in_path"><code class="docutils literal notranslate"><span class="pre">find_csvs_in_path()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.files.move_old_csvs"><code class="docutils literal notranslate"><span class="pre">move_old_csvs()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.files.extract_filename_metadata"><code class="docutils literal notranslate"><span class="pre">extract_filename_metadata()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.files.read_csv_to_dataframe"><code class="docutils literal notranslate"><span class="pre">read_csv_to_dataframe()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.files.read_file"><code class="docutils literal notranslate"><span class="pre">read_file()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.files.save_file"><code class="docutils literal notranslate"><span class="pre">save_file()</span></code></a></li>
@@ -170,25 +171,28 @@ html.dark {
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.files.move_old_csvs" title="handlers.files.move_old_csvs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">move_old_csvs</span></code></a>([files_path, extension])</p></td>
 <td><p>Move all existing files in a path with desired extension to a folder called &quot;old&quot;.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.files.read_csv_to_dataframe" title="handlers.files.read_csv_to_dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_csv_to_dataframe</span></code></a>(filename[, col_sep, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.files.extract_filename_metadata" title="handlers.files.extract_filename_metadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extract_filename_metadata</span></code></a>(filename, ...[, ...])</p></td>
+<td><p>Extract metadata from a filename.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.files.read_csv_to_dataframe" title="handlers.files.read_csv_to_dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_csv_to_dataframe</span></code></a>(filename[, col_sep, ...])</p></td>
 <td><p>Creates a csv file from a dataframe.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.files.read_file" title="handlers.files.read_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_file</span></code></a>(filename)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.files.read_file" title="handlers.files.read_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_file</span></code></a>(filename)</p></td>
 <td><p>Read a file to a list of strings each line.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.files.save_file" title="handlers.files.save_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_file</span></code></a>(filename, data[, mode])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.files.save_file" title="handlers.files.save_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_file</span></code></a>(filename, data[, mode])</p></td>
 <td><p>Save a new file from a list of lists each line.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.files.select_file" title="handlers.files.select_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">select_file</span></code></a>([path, extension])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.files.select_file" title="handlers.files.select_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">select_file</span></code></a>([path, extension])</p></td>
 <td><p>Selects from files in the path with the extension passed.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.files.add_api_key" title="handlers.files.add_api_key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_api_key</span></code></a>(api_key_value)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.files.add_api_key" title="handlers.files.add_api_key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_api_key</span></code></a>(api_key_value)</p></td>
 <td><p>Checks if exists in secret.py file and if not, then adds a line with the API key (not secret API key) encrypted value for working with the package.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.files.add_api_secret" title="handlers.files.add_api_secret"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_api_secret</span></code></a>(api_secret_value)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.files.add_api_secret" title="handlers.files.add_api_secret"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_api_secret</span></code></a>(api_secret_value)</p></td>
 <td><p>Checks if exists in secret.py file and if not, then adds a line with the API secret encrypted value for working with the package.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.files.add_any_key" title="handlers.files.add_any_key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_any_key</span></code></a>(key, key_name)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.files.add_any_key" title="handlers.files.add_any_key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_any_key</span></code></a>(key, key_name)</p></td>
 <td><p>Checks if exists in a file and if not, then adds a line with the api key value for working with the package.</p></td>
 </tr>
 </tbody>
@@ -271,8 +275,28 @@ html.dark {
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="handlers.files.extract_filename_metadata">
+<span class="sig-prename descclassname"><span class="pre">handlers.files.</span></span><span class="sig-name descname"><span class="pre">extract_filename_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected_data_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected_symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected_timezone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#handlers.files.extract_filename_metadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract metadata from a filename. Symbol, tick interval, timezone and start timestamp and end timestamp. Also data type like atomic trades or klines.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> – A filename with expected format. Example: LTCBTC 1m Europe-Madrid optionalcomment klines 1691332020000 1691391959999.csv</p></li>
+<li><p><strong>expected_data_type</strong> (<em>str</em>) – Expected data type. Example: “klines” or “aggTrades” or “atomicTrades”</p></li>
+<li><p><strong>expected_interval</strong> (<em>str</em>) – Expected tick interval. Example: “1m” or “1h”.</p></li>
+<li><p><strong>expected_symbol</strong> (<em>str</em>) – Expected symbol. Example: “LTCBTC”</p></li>
+<li><p><strong>expected_timezone</strong> (<em>str</em>) – Expected timezone. Example: “Europe/Madrid”</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dict with metadata.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="handlers.files.read_csv_to_dataframe">
-<span class="sig-prename descclassname"><span class="pre">handlers.files.</span></span><span class="sig-name descname"><span class="pre">read_csv_to_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_sep</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">','</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_time_zone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.files.read_csv_to_dataframe" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.files.</span></span><span class="sig-name descname"><span class="pre">read_csv_to_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_sep</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">','</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_time_zone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secondary_index_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.files.read_csv_to_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a csv file from a dataframe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -280,6 +304,7 @@ html.dark {
 <li><p><strong>filename</strong> (<em>str</em>) – The file name with or without path.</p></li>
 <li><p><strong>col_sep</strong> (<em>str</em>) – Column separator. Default is “,”</p></li>
 <li><p><strong>index_col</strong> (<em>bool</em>) – Name of the column to use as index. Default is None.</p></li>
+<li><p><strong>secondary_index_col</strong> (<em>str</em>) – In case of duplicated index, it will be used as secondary criterio for sorting data.</p></li>
 <li><p><strong>index_time_zone</strong> (<em>str</em>) – Time zone to use in index. Default is None.</p></li>
 <li><p><strong>symbol</strong> (<em>str</em>) – Symbol to use in index name. Default is None.</p></li>
 </ul>

@@ -3,7 +3,7 @@
 This is the main classes file.
 
 """
-__version__ = "0.4.35"
+__version__ = "0.4.36"
 
 import os
 from sys import path
@@ -21,11 +21,11 @@ from handlers.exchange import get_decimal_positions, get_info_dic, get_precision
     get_coins_and_networks_info, get_leveraged_coins, get_symbols_filters, get_bases_dic, get_quotes_dic, get_coins_info_dic, \
     get_leveraged_symbols, get_system_status
 
-from handlers.files import select_file, read_csv_to_dataframe, save_dataframe_to_csv
+from handlers.files import select_file, read_csv_to_dataframe, save_dataframe_to_csv, extract_filename_metadata
 
 from handlers.indicators import df_splitter, reversal_candles, zoom_cloud_indicators, ichimoku, fractal_w_indicator, \
     support_resistance_levels, ffill_indicator, shift_indicator, market_profile_from_klines_melt, alternating_fractal_indicator, \
-    fractal_trend_indicator, market_profile_from_klines_grouped, market_profile_from_trades_grouped, taker_maker_profile_from_klines_melt
+    fractal_trend_indicator, market_profile_from_klines_grouped, market_profile_from_trades_grouped
 
 from handlers.logs import Logs
 
@@ -60,7 +60,7 @@ binpan_logger = Logs(filename='./logs/binpan.log', name='binpan', info_level='IN
 
 plotly_colors = plotly_colors
 tick_seconds = tick_seconds
-pandas_freq_tick_interval = pandas_freq_tick_interval
+# pandas_freq_tick_interval = pandas_freq_tick_interval
 
 pd.set_option('display.max_columns', 20)
 pd.set_option('display.width', 250)
@@ -270,6 +270,10 @@ class Symbol(object):
         self.cwd = os.getcwd()
         path.append(self.cwd)
 
+        self.symbol = symbol
+        self.tick_interval = tick_interval
+        self.time_zone = time_zone
+
         if from_csv:
             if type(from_csv) == str:
                 filename = from_csv
@@ -279,33 +283,38 @@ class Symbol(object):
             binpan_logger.info(f"Loading {filename}")
 
             # load and to numeric types
-            df_ = read_csv_to_dataframe(filename=filename)
+            df_ = read_csv_to_dataframe(filename=filename, index_col="Open timestamp", index_time_zone=self.time_zone)
             df_ = convert_to_numeric(data=df_)
 
             # basic metadata
-            filename = str(os.path.basename(filename))
-            symbol = filename.split()[0]
+            symbol, tick_interval, time_zone, data_type, startime_, endtime_ = extract_filename_metadata(filename=filename,
+                                                                                                         expected_data_type="klines",
+                                                                                                         expected_symbol=self.symbol,
+                                                                                                         expected_interval=self.tick_interval,
+                                                                                                         expected_timezone=self.time_zone)
             self.symbol = symbol
-            tick_interval = filename.split()[1]
             self.tick_interval = tick_interval
-            start_time = int(filename.split()[-2])
-            end_time = int(filename.split()[-1].split('.')[0])
-            time_zone = filename.split()[2].replace('-', '/')
-            index_name = f"{symbol} {tick_interval} {time_zone}"
             self.time_zone = time_zone
+            self.start_time = startime_
+            self.end_time = endtime_
+            index_name = f"{symbol} {tick_interval} {time_zone}"
+            df_.index.name = index_name
 
             if time_index:
-                df_.sort_values('Open timestamp', inplace=True)
-                idx = pd.DatetimeIndex(pd.to_datetime(df_['Open timestamp'], unit='ms')).tz_localize('UTC').tz_convert(self.time_zone)
-                df_.index = idx
-                df_ = df_.asfreq(pandas_freq_tick_interval[self.tick_interval])  # this adds freq, infer will not work if API blackout
+                if not isinstance(df_.index, pd.DatetimeIndex):
+                    idx = pd.DatetimeIndex(pd.to_datetime(df_['Open timestamp'], unit='ms')).tz_localize('UTC').tz_convert(self.time_zone)
+                    df_.index = idx
+                my_pandas_freq = pandas_freq_tick_interval.get(self.tick_interval)
+                prev_len = len(df_)
+                df_ = df_.asfreq(my_pandas_freq)  # this adds freq, will add nans if missing api data in the middle
+                if prev_len != len(df_):
+                    filled_data_by_freq = df_[df_.isna().all(axis=1)]
+                    binpan_logger.warning(f"Missing data in {filename} for {self.symbol} {self.tick_interval} {self.time_zone}: \n Filled data automatically: \n{filled_data_by_freq}")
                 # period
                 self.df = df_
-                # drops API blackout periods, but throw errors upwards with some indicators because freq=None before drop.
-                # self.df.dropna(how='all', inplace=True)
                 self.time_index = True
 
-            self.df.index.name = index_name
+            # self.df.index.name = index_name
             self.limit = len(self.df)
 
             last_timestamp_ind_df = self.df.iloc[-1]['Close timestamp']
@@ -318,7 +327,7 @@ class Symbol(object):
             self.symbol = symbol.upper()
             self.tick_interval = tick_interval
             self.limit = limit
-            self.time_zone = time_zone
+            # self.time_zone = time_zone
             self.time_index = time_index
             self.closed = closed
 
@@ -616,9 +625,9 @@ class Symbol(object):
         df_ = self.atomic_trades
         if timestamped:
             start, end = self.get_timestamps()
-            filename = f"{df_.index.name.replace('/', '-')} atomic trades {start} {end}.csv"
+            filename = f"{df_.index.name.replace('/', '-')} atomicTrades {start} {end}.csv"
         else:
-            filename = f"{df_.index.name.replace('/', '-')} atomic trades.csv"
+            filename = f"{df_.index.name.replace('/', '-')} atomicTrades.csv"
 
         save_dataframe_to_csv(filename=filename, data=df_, timestamp=not timestamped)
         binpan_logger.info(f"Saved file {filename}")
@@ -635,9 +644,9 @@ class Symbol(object):
         df_ = self.agg_trades
         if timestamped:
             start, end = self.get_timestamps()
-            filename = f"{df_.index.name.replace('/', '-')} agg trades {start} {end}.csv"
+            filename = f"{df_.index.name.replace('/', '-')} aggTrades {start} {end}.csv"
         else:
-            filename = f"{df_.index.name.replace('/', '-')} agg trades.csv"
+            filename = f"{df_.index.name.replace('/', '-')} aggTrades.csv"
 
         save_dataframe_to_csv(filename=filename, data=df_, timestamp=not timestamped)
         binpan_logger.info(f"Saved file {filename}")
@@ -828,7 +837,7 @@ class Symbol(object):
         return self.df
 
     def insert_indicator(self, source_data: pd.Series or pd.DataFrame or np.ndarray or list, strategy_group: str = None,
-                         plotting_row: str = None, plotting_rows: list = None, color: str = 'blue', no_overlapped_plot_rows: bool = True,
+                         plotting_row: str = None, plotting_rows: list = None, color: str = None, no_overlapped_plot_rows: bool = True,
                          colors: list = None, color_fills: list = None, name: str = None, names: list = None,
                          suffix: str = '') -> pd.DataFrame or None:
         """
@@ -1022,12 +1031,13 @@ class Symbol(object):
 
         """
         start = self.df.iloc[0]['Open timestamp']
-        end = self.df.iloc[-1]['Close timestamp']
-        return start, end
+        # end = self.df.iloc[-1]['Close timestamp']
+        end = self.df.iloc[-1]['Open timestamp']
+        return int(start), int(end)
 
     def get_dates(self) -> Tuple[str, str]:
         """
-        Get the first Open timestamp and the last Close timestamp, and converts to timezoned dates.
+        Get the first Open timestamp and the last Open timestamp, and converts to timezoned dates.
 
         :return tuple(int, int): Start Open date and end close date
 
@@ -1112,8 +1122,12 @@ class Symbol(object):
                 filename = from_csv
             else:
                 filename = select_file(path=self.cwd, extension='csv')
+
+            # basic metadata
+                _, _, _, _, _, _ = extract_filename_metadata(filename=filename, expected_data_type="aggTrades", expected_symbol=self.symbol, expected_timezone=self.time_zone)
             # load and to numeric types
-            df_ = read_csv_to_dataframe(filename=filename, index_col="Timestamp", symbol=self.symbol, index_time_zone=self.time_zone)
+            df_ = read_csv_to_dataframe(filename=filename, index_col="Timestamp", secondary_index_col="Aggregate tradeId", symbol=self.symbol, index_time_zone=self.time_zone)
+
             # check columns
             for col in df_.columns:
                 if not col in agg_trades_columns_from_redis and not col in agg_trades_columns_from_binance:
@@ -1191,8 +1205,13 @@ class Symbol(object):
                 filename = from_csv
             else:
                 filename = select_file(path=self.cwd, extension='csv')
+
+            # basic metadata
+            _, _, _, _, _, _ = extract_filename_metadata(filename=filename, expected_data_type="atomicTrades", expected_symbol=self.symbol, expected_timezone=self.time_zone)
+
             # load and to numeric types
-            df_ = read_csv_to_dataframe(filename=filename, index_col="Timestamp", symbol=self.symbol, index_time_zone=self.time_zone)
+            df_ = read_csv_to_dataframe(filename=filename, index_col="Timestamp", secondary_index_col="Trade Id", symbol=self.symbol, index_time_zone=self.time_zone)
+
             # check columns
             for col in df_.columns:
                 if not col in atomic_trades_columns_from_redis and not col in atomic_trades_columns_from_binance:
@@ -1325,7 +1344,7 @@ class Symbol(object):
         try:
             assert new_index > current_index
         except Exception as e:
-            binpan_logger.error(f"BinPan error: resample must use higher interval: {new_index} not > {current_index}")
+            binpan_logger.error(f"BinPan error: resample must use higher interval: {new_index} not > {current_index} {e}")
             return
         return resample_klines(data=self.df, tick_interval=tick_interval)
 

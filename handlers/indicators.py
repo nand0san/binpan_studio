@@ -7,6 +7,9 @@ import pandas as pd
 import pytz
 import numpy as np
 from typing import Tuple
+import os
+import multiprocessing
+
 
 from .starters import is_running_in_jupyter
 from .time_helper import convert_milliseconds_to_time_zone_datetime
@@ -17,6 +20,10 @@ if is_running_in_jupyter():
     from tqdm.notebook import tqdm
 else:
     from tqdm import tqdm
+
+# this is to avoid the error: "RuntimeError: can't set attribute" when using multiprocessing
+cpus = multiprocessing.cpu_count() // 2
+os.environ["LOKY_MAX_CPU_COUNT"] = str(cpus)
 
 
 ##############
