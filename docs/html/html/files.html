@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Files Module - BinPan 0.4.36 documentation</title>
+      <title>Files Module - BinPan 0.4.37 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Indicators Module" href="indicators.html" /><link rel="prev" title="Exchange Module" href="exchange.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -183,7 +183,7 @@ html.dark {
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.files.save_file" title="handlers.files.save_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_file</span></code></a>(filename, data[, mode])</p></td>
 <td><p>Save a new file from a list of lists each line.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.files.select_file" title="handlers.files.select_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">select_file</span></code></a>([path, extension])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.files.select_file" title="handlers.files.select_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">select_file</span></code></a>([path, extension, symbol, ...])</p></td>
 <td><p>Selects from files in the path with the extension passed.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.files.add_api_key" title="handlers.files.add_api_key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_api_key</span></code></a>(api_key_value)</p></td>
@@ -343,13 +343,15 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.files.select_file">
-<span class="sig-prename descclassname"><span class="pre">handlers.files.</span></span><span class="sig-name descname"><span class="pre">select_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'csv'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.files.select_file" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.files.</span></span><span class="sig-name descname"><span class="pre">select_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'csv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.files.select_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Selects from files in the path with the extension passed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>path</strong> (<em>str</em>) – Path to search files.</p></li>
 <li><p><strong>extension</strong> (<em>str</em>) – Extension of interesting files to select.</p></li>
+<li><p><strong>symbol</strong> (<em>str</em>) – Symbol to filter files just to alert if file has other symbol.</p></li>
+<li><p><strong>tick_interval</strong> (<em>str</em>) – Tick interval to filter files just to alert if file has other tick interval.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return str<span class="colon">:</span></dt>
