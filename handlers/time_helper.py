@@ -379,6 +379,8 @@ def get_dataframe_time_index_ranges(data: pd.DataFrame, interval='30T') -> List[
     :param pd.DataFrame data: A dataframe with a datetime index.
     :param interval: Interval expressed as a Pandas frequency string. Default is '30T' (30 minutes).
     :return list: A list of tuples containing the start and end time of each interval.
+
+    Example:
     """
     df_ = data.sort_index(ascending=False)  # reversed order
     start_time = df_.index.min()
@@ -398,6 +400,7 @@ def get_dataframe_time_index_ranges(data: pd.DataFrame, interval='30T') -> List[
 def remove_initial_included_ranges(time_ranges, initial_minutes) -> List[tuple]:
     """
     Remove the time ranges that are completely included in the initial period.
+
     :param time_ranges: A list of tuples containing the start and end time of each interval.
     :param initial_minutes: A quantity of minutes that defines the initial period.
     :return: A list of tuples containing the start and end time of each interval, without the ranges that are completely included in the initial period.

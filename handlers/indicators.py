@@ -10,7 +10,6 @@ from typing import Tuple
 import os
 import multiprocessing
 
-
 from .starters import is_running_in_jupyter
 from .time_helper import convert_milliseconds_to_time_zone_datetime
 from .time_helper import pandas_freq_tick_interval
@@ -365,13 +364,17 @@ def zoom_cloud_indicators(plot_splitted_serie_couples: dict, main_index: list, s
     :return dict: All indicators cut.
     """
     try:
-        assert start_idx < end_idx <= len(main_index)
+        if end_idx:
+            assert start_idx < end_idx <= len(main_index)
     except AssertionError:
         raise Exception(f"BinPan Plot Error: Zoom index not valid. Not start={start_idx} < end={end_idx} < len={len(main_index)}")
 
     ret = {}
     my_start = main_index[start_idx]
-    my_end = main_index[end_idx]
+    if end_idx:
+        my_end = main_index[end_idx]
+    else:
+        my_end = None
     for k, v in plot_splitted_serie_couples.items():
         splits = v[2]
         cut_splits = []
@@ -534,8 +537,46 @@ def repeat_prices_by_quantity(data: pd.DataFrame, epsilon_quantity: float, price
     return np.array(repeated_prices).reshape(-1, 1)
 
 
-def support_resistance_levels(df: pd.DataFrame, max_clusters: int = 5, by_quantity: float = None, by_klines=True, quiet=False) -> Tuple[
-    list, list]:
+def kmeans_custom_init(data: np.ndarray, max_clusters: int):
+    """
+    Generate initial centroids for K-means clustering with equally spaced values between min and max values in data.
+    :param data: A data array.
+    :param max_clusters: Max clusters expected.
+    :return: A numpy array with initial centroids.
+    """
+
+    min_value = np.min(data)
+    max_value = np.max(data)
+    # Genera un array equidistante entre min_price y max_price con longitud max_clusters
+    initial_centroids = np.linspace(min_value, max_value, max_clusters).reshape(-1, 1)
+    return initial_centroids
+
+
+def find_optimal_clusters(KMeans_lib, data: np.ndarray, max_clusters: int, quiet: bool = False, initial_centroids: list = None) -> int:
+    """
+    Find the optimal quantity of centroids for support and resistance methods using the elbow method.
+
+    :param KMeans_lib: A KMeans library to use.
+    :param data: A numpy array with the data to analyze.
+    :param max_clusters: Maximum number of clusters to consider.
+    :param bool quiet: If true, do not print progress bar.
+    :param list initial_centroids: Initial centroids to use optionally for faster results.
+    :return: The optimal number of clusters (centroids) as an integer.
+    """
+
+    inertia = []
+    if quiet:
+        pbar = range(1, max_clusters + 1)
+    else:
+        pbar = tqdm(range(1, max_clusters + 1))
+    for n_clusters in pbar:
+        kmeans = KMeans_lib(n_clusters=n_clusters, n_init=10, random_state=0, init=initial_centroids).fit(data)
+        inertia.append(kmeans.inertia_)
+    return np.argmin(np.gradient(np.gradient(inertia))) + 1
+
+
+def support_resistance_levels(df: pd.DataFrame, max_clusters: int = 5, by_quantity: float = None, by_klines=True, quiet=False,
+                              optimize_clusters_qty: bool = False) -> Tuple:
     """
     Calculate support and resistance levels for a given set of trades using K-means clustering.
 
@@ -550,6 +591,7 @@ def support_resistance_levels(df: pd.DataFrame, max_clusters: int = 5, by_quanti
         is taken into account 1000 times instead of 1.
     :param bool by_klines: If true, use market profile from klines.
     :param bool quiet: If true, do not print progress bar.
+    :param bool optimize_clusters_qty: If true, find the optimal number of clusters to use for calculating support and resistance levels.
     :return: A tuple containing two lists: the first list contains the support levels, and the second list contains
         the resistance levels. Both lists contain float values.
     """
@@ -558,43 +600,25 @@ def support_resistance_levels(df: pd.DataFrame, max_clusters: int = 5, by_quanti
     except ImportError:
         print(f"Please install sklearn: `pip install -U scikit-learn` to use Clustering")
         return [], []
-
     # copy data to avoid side effects
     df_ = df.copy(deep=True)
-
-    def find_optimal_clusters(data: np.ndarray, max_clusters: int, quiet: bool) -> int:
-        """
-        Find the optimal quantity of centroids for support and resistance methods using the elbow method.
-
-        :param data: A numpy array with the data to analyze.
-        :param max_clusters: Maximum number of clusters to consider.
-        :param bool quiet: If true, do not print progress bar.
-        :return: The optimal number of clusters (centroids) as an integer.
-        """
-
-        inertia = []
-        if quiet:
-            pbar = range(1, max_clusters + 1)
-        else:
-            pbar = tqdm(range(1, max_clusters + 1))
-        for n_clusters in pbar:
-            kmeans = KMeans(n_clusters=n_clusters, n_init=10, random_state=0).fit(data)
-            inertia.append(kmeans.inertia_)
-        return np.argmin(np.gradient(np.gradient(inertia))) + 1
 
     # function core starts here
     if not by_klines:
         buy_data = df_.loc[df_['Buyer was maker'] == False]
         sell_data = df_.loc[df_['Buyer was maker'] == True]
+        initial_centroids = kmeans_custom_init(data=df_['Price'].values, max_clusters=max_clusters)
+
     else:
         profile = market_profile_from_klines_melt(df=df_).reset_index()
         buy_data = profile.loc[profile['Is_Maker'] == True]
         sell_data = profile.loc[profile['Is_Maker'] == False]
+        initial_centroids = kmeans_custom_init(data=df_['Close'].values, max_clusters=max_clusters)
 
     if by_quantity and not by_klines:
         buy_prices = repeat_prices_by_quantity(data=buy_data, epsilon_quantity=by_quantity, price_col="Price", qty_col="Quantity")
         sell_prices = repeat_prices_by_quantity(data=sell_data, epsilon_quantity=by_quantity, price_col="Price", qty_col="Quantity")
-    elif by_quantity and by_klines:
+    elif by_quantity and by_klines:  # asume data came from Market Profile
         buy_prices = repeat_prices_by_quantity(data=buy_data, epsilon_quantity=by_quantity, price_col="Market_Profile", qty_col="Volume")
         sell_prices = repeat_prices_by_quantity(data=sell_data, epsilon_quantity=by_quantity, price_col="Market_Profile", qty_col="Volume")
     else:
@@ -602,17 +626,23 @@ def support_resistance_levels(df: pd.DataFrame, max_clusters: int = 5, by_quanti
         sell_prices = sell_data['Price'].values.reshape(-1, 1)
 
     if len(buy_prices) == 0 and len(sell_prices) == 0:
-        print("There is not enough trade data to calculate support and resistance levels.")
+        print(f"There is no trade data to calculate support and resistance levels: {len(buy_prices)} buys and {len(sell_prices)} sells.")
         return [], []
+
     if not quiet:
         print("Clustering data...")
-    optimal_buy_clusters = find_optimal_clusters(buy_prices, max_clusters, quiet=quiet)
-    optimal_sell_clusters = find_optimal_clusters(sell_prices, max_clusters, quiet=quiet)
-    if not quiet:
-        print(f"Found {optimal_buy_clusters} support levels from buys and {optimal_sell_clusters} resistance levels from sells.")
 
-    kmeans_buy = KMeans(n_clusters=optimal_buy_clusters, n_init=10).fit(buy_prices)
-    kmeans_sell = KMeans(n_clusters=optimal_sell_clusters, n_init=10).fit(sell_prices)
+    if optimize_clusters_qty:
+        optimal_buy_clusters = find_optimal_clusters(KMeans_lib=KMeans, data=buy_prices, max_clusters=max_clusters, quiet=quiet, initial_centroids=initial_centroids)
+        optimal_sell_clusters = find_optimal_clusters(KMeans_lib=KMeans, data=sell_prices, max_clusters=max_clusters, quiet=quiet, initial_centroids=initial_centroids)
+        if not quiet:
+            print(f"Found {optimal_buy_clusters} support levels from buys and {optimal_sell_clusters} resistance levels from sells.")
+    else:
+        optimal_buy_clusters = max_clusters
+        optimal_sell_clusters = max_clusters
+
+    kmeans_buy = KMeans(n_clusters=optimal_buy_clusters, n_init=1, init=initial_centroids).fit(buy_prices)
+    kmeans_sell = KMeans(n_clusters=optimal_sell_clusters, n_init=1, init=initial_centroids).fit(sell_prices)
 
     support_levels = np.sort(kmeans_buy.cluster_centers_, axis=0)
     resistance_levels = np.sort(kmeans_sell.cluster_centers_, axis=0)
@@ -620,93 +650,177 @@ def support_resistance_levels(df: pd.DataFrame, max_clusters: int = 5, by_quanti
     return support_levels.flatten().tolist(), resistance_levels.flatten().tolist()
 
 
-def repeat_timestamps_by_quantity(data: pd.DataFrame, epsilon_quantity: float) -> np.ndarray:
-    repeated_prices = []
-    for price, quantity, timestamp in data[['Price', 'Quantity', 'Timestamp']].values:
-        repeat_count = int(-(quantity // -epsilon_quantity))  # ceil division
-        repeated_prices.extend([timestamp] * repeat_count)
-    return np.array(repeated_prices).reshape(-1, 1)
-
-
-def time_active_zones(data: pd.DataFrame, max_clusters: int = 10, by_quantity: float = None) -> tuple:
+def support_resistance_levels_merged(df: pd.DataFrame, by_klines: bool, max_clusters: int = 5, by_quantity: float = None,
+                                     optimize_clusters_qty: bool = False, quiet: bool = False):
     """
-    Calculate active points in time by clustering timestamps of trades.
-
-    .. image:: images/indicators/support_resistance.png
-           :width: 1000
-
-    :param data: A pandas DataFrame with trade data, containing a 'Price', 'Timestamp', 'Quantity' columns and a 'Buyer was maker' column.
-    :param max_clusters: Maximum number of clusters to consider for finding the optimal number of centroids.
-    :param float by_quantity: Count each price as many times the quantity contains a float of a the passed amount.
-        Example: If a price 0.001 has a quantity of 100 and by_quantity is 0.1, quantity/by_quantity = 100/0.1 = 1000, then this prices
-        is taken into account 1000 times instead of 1.
-    :return: A tuple containing the most traded centroides timestamps..
+    Calculate support and resistance levels merged for a given set of trades using K-means clustering.
+    :param df: A pandas DataFrame with trades or klines, containing a 'Price', 'Quantity' columns or "Close", "Volume".
+    :param by_klines: If true, use klines.
+    :param max_clusters: Quantity of clusters to consider initially. Default: 5.
+    :param by_quantity: If true, use quantity to repeat prices. It gives more importance to prices with more quantity.
+    :param optimize_clusters_qty: If true, find the optimal number of clusters to use for calculating support and resistance levels.
+    :param quiet: If true, do not print progress bar.
+    :return: A list containing the support and resistance levels merged. It would be just levels.
     """
     try:
         from sklearn.cluster import KMeans
     except ImportError:
         print(f"Please install sklearn: `pip install -U scikit-learn` to use Clustering")
         return [], []
-    data = data.copy(deep=True)
+    # copy data to avoid side effects
+    df_ = df.copy(deep=True)
 
-    def find_optimal_clusters(data: np.ndarray, max_clusters: int) -> int:
-        """
-        Find the optimal quantity of centroids for support and resistance methods using the elbow method.
-
-        :param data: A numpy array with the data to analyze.
-        :param max_clusters: Maximum number of clusters to consider.
-        :return: The optimal number of clusters (centroids) as an integer.
-        """
-
-        inertia = []
-        for n_clusters in tqdm(range(1, max_clusters + 1)):
-            kmeans = KMeans(n_clusters=n_clusters, n_init=10, random_state=0).fit(data)
-            inertia.append(kmeans.inertia_)
-        return np.argmin(np.gradient(np.gradient(inertia))) + 1
-
-    buy_data = data.loc[data['Buyer was maker'] == False]
-    sell_data = data.loc[data['Buyer was maker'] == True]
-    if by_quantity:
-        buy_timestamps = repeat_timestamps_by_quantity(data=buy_data, epsilon_quantity=by_quantity)
-        sell_timestamps = repeat_timestamps_by_quantity(data=buy_data, epsilon_quantity=by_quantity)
+    # function core starts here
+    if not by_klines:
+        initial_centroids = kmeans_custom_init(data=df_['Price'].values, max_clusters=max_clusters)
     else:
-        buy_timestamps = buy_data['Timestamp'].values.reshape(-1, 1)
-        sell_timestamps = sell_data['Timestamp'].values.reshape(-1, 1)
+        initial_centroids = kmeans_custom_init(data=df_['Close'].values, max_clusters=max_clusters)
+    if by_quantity and not by_klines:
+        repeated_prices = repeat_prices_by_quantity(data=df_, epsilon_quantity=by_quantity, price_col="Price", qty_col="Quantity")
+    elif by_quantity and by_klines:
+        repeated_prices = repeat_prices_by_quantity(data=df_, epsilon_quantity=by_quantity, price_col="Close", qty_col="Volume")
+    else:
+        repeated_prices = df_['Price'].values.reshape(-1, 1)
 
-    if len(buy_timestamps) == 0 and len(sell_timestamps) == 0:
-        print("There is not enough trade data to calculate time activity clusters.")
+    if len(repeated_prices) == 0:
+        print(f"There is no data to calculate support and resistance merged levels: {len(repeated_prices)}")
         return [], []
-    print("Clustering data...")
-    optimal_buy_clusters = find_optimal_clusters(buy_timestamps, max_clusters)
-    optimal_sell_clusters = find_optimal_clusters(sell_timestamps, max_clusters)
-
-    print(f"Found {optimal_buy_clusters} clusters from buys and {optimal_sell_clusters} clusters from sells.")
-
-    kmeans_buy = KMeans(n_clusters=optimal_buy_clusters, n_init=10).fit(buy_timestamps)
-    kmeans_sell = KMeans(n_clusters=optimal_sell_clusters, n_init=10).fit(sell_timestamps)
-
-    support_levels = np.sort(kmeans_buy.cluster_centers_, axis=0)
-    resistance_levels = np.sort(kmeans_sell.cluster_centers_, axis=0)
-
-    return support_levels.flatten().tolist(), resistance_levels.flatten().tolist()
+    if not quiet:
+        print("Clustering data...")
+    if optimize_clusters_qty:
+        optimal_clusters = find_optimal_clusters(KMeans_lib=KMeans, data=repeated_prices, max_clusters=max_clusters, quiet=quiet, initial_centroids=initial_centroids)
+        if not quiet:
+            print(f"Found {optimal_clusters} levels.")
+    else:
+        optimal_clusters = max_clusters
+    kmeans_result = KMeans(n_clusters=optimal_clusters, n_init=1, init=initial_centroids).fit(repeated_prices)
+    levels = np.sort(kmeans_result.cluster_centers_, axis=0)
+    return levels.flatten().tolist()
 
 
-# def market_profile(data: pd.DataFrame):
-#     """
-#     Calculate the market profile for a given OHLC data. The function calculates the average price for each candle
-#     (high + low + close) / 3, and then calculates the 'maker' and 'taker' volumes for each average price.
-#
-#     :param data: A pandas DataFrame with the OHLC data. It should contain 'High', 'Low', 'Close', 'Volume', and
-#                'Taker buy base volume' columns.
-#     :return: A pandas DataFrame grouped by the average price ('Market_Profile') with the sum of 'Taker buy base volume'
-#              and 'Maker_Volume' for each average price.
-#     """
-#     df = data.copy(deep=True)
-#     df['Market_Profile'] = (df['High'] + df['Low'] + df['Close']) / 3
-#     df['Maker buy base volume'] = df['Volume'] - df['Taker buy base volume']
-#     df_grouped = df.groupby('Market_Profile').agg({'Taker buy base volume': 'sum', 'Maker buy base volume': 'sum'})
-#     df_grouped['Volume'] = df_grouped['Taker buy base volume'] + df_grouped['Maker buy base volume']
-#     return df_grouped.sort_index()
+def repeat_timestamps_by_quantity(df: pd.DataFrame, epsilon_quantity: float, buy_maker: bool = None, buy_taker: bool = None) -> np.ndarray:
+    """
+    Repeat timestamps by quantity to give more importance to prices with more quantity. It detects if data is from trades or klines by column names.
+
+    :param df: A pandas DataFrame with trades or klines, containing a 'Price', 'Quantity' columns or "Close", "Volume" respectively.
+    :param epsilon_quantity: Quantity to repeat timestamps by.
+    :param buy_maker: If true, use maker side volume.
+    :param buy_taker: If true, use taker side volume.
+    :return:
+    """
+    data = df.copy()
+    repeated_timestamps = []
+    if 'Close' in data.columns:
+        if buy_maker:
+            data['Maker buy base volume'] = data['Volume'] - data['Taker buy base volume']
+            col = 'Maker buy base volume'
+        elif buy_taker:
+            col = 'Taker buy base volume'
+        else:
+            col = 'Volume'
+
+        for price, quantity, timestamp in data[['Close', col, 'Open timestamp']].values:
+            repeat_count = int(-(quantity // -epsilon_quantity))  # ceil division
+            repeated_timestamps.extend([timestamp] * repeat_count)
+    else:
+        if buy_maker:
+            data_filtered = data.loc[data['Buyer was maker'] == True]
+        elif buy_taker:
+            data_filtered = data.loc[data['Buyer was maker'] == False]
+        else:
+            data_filtered = data
+        for price, quantity, timestamp in data_filtered[['Price', 'Quantity', 'Timestamp']].values:
+            repeat_count = int(-(quantity // -epsilon_quantity))  # ceil division
+            repeated_timestamps.extend([timestamp] * repeat_count)
+    return np.array(repeated_timestamps).reshape(-1, 1)
+
+
+def time_active_zones(df: pd.DataFrame, max_clusters: int = 5, simple: bool = True, by_quantity: float = True, quiet=False,
+                      optimize_clusters_qty: bool = False) -> Tuple:
+    """
+    Calculate support and resistance levels timestamp centroids for a given set of trades using K-means clustering.
+
+
+    :param df: A pandas DataFrame with trades or klines, containing a 'Price', 'Quantity' columns and a 'Buyer was maker' column,
+     if trades passed, else "Close", "Volume" and "Taker buy base volume"
+    :param max_clusters: Maximum number of clusters to consider for finding the optimal number of centroids. Default: 5.
+    :param bool simple: If true, use all trades to calculate time activity clusters.
+    :param float by_quantity: Count each price as many times the quantity contains a float of a the passed amount.
+        Example: If a price 0.001 has a quantity of 100 and by_quantity is 0.1, quantity/by_quantity = 100/0.1 = 1000, then this prices
+        is taken into account 1000 times instead of 1.
+    :param bool quiet: If true, do not print progress bar.
+    :param bool optimize_clusters_qty: If true, find the optimal number of clusters to use for calculating support and resistance levels.
+    :return: A tuple containing two lists: the first list contains the support levels, and the second list contains
+        the resistance levels. Both lists contain float values.
+
+    .. image:: images/indicators/time_action.png
+           :width: 1000
+
+    """
+    try:
+        from sklearn.cluster import KMeans
+    except ImportError:
+        print(f"Please install sklearn: `pip install -U scikit-learn` to use Clustering")
+        return [], []
+
+    # copy data to avoid side effects
+    df_, my_timestamps, buy_timestamps, sell_timestamps = df.copy(deep=True), [], [], []
+
+    # function core starts here
+    if not 'Close' in df_.columns:
+        initial_centroids = kmeans_custom_init(data=df_['Timestamp'].values, max_clusters=max_clusters)
+        if not simple:
+            buy_data = df_.loc[df_['Buyer was maker'] == False]
+            sell_data = df_.loc[df_['Buyer was maker'] == True]
+            buy_timestamps = repeat_timestamps_by_quantity(df=buy_data, epsilon_quantity=by_quantity, buy_maker=False, buy_taker=True)
+            sell_timestamps = repeat_timestamps_by_quantity(df=sell_data, epsilon_quantity=by_quantity, buy_maker=True, buy_taker=False)
+        else:
+            my_timestamps = repeat_timestamps_by_quantity(df=df_, epsilon_quantity=by_quantity)  # tomara todo el quantity
+    else:
+        initial_centroids = kmeans_custom_init(data=df_['Open timestamp'].values, max_clusters=max_clusters)
+        assert by_quantity, "If simple is true, by_quantity must be true too because KMEANS from evenly spaced klines has no sense."
+        if not simple:
+            buy_timestamps = repeat_timestamps_by_quantity(df=df_, epsilon_quantity=by_quantity, buy_maker=False, buy_taker=True)
+            sell_timestamps = repeat_timestamps_by_quantity(df=df_, epsilon_quantity=by_quantity, buy_maker=True, buy_taker=False)
+        else:
+            my_timestamps = repeat_timestamps_by_quantity(df=df_, epsilon_quantity=by_quantity)  # tomara todo el volumen
+
+    if simple:
+        if len(my_timestamps) == 0:
+            print(f"There is not enough trade data to calculate time activity clusters: {len(my_timestamps)} timestamps.")
+            return [], []
+    else:
+        if len(buy_timestamps) == 0 and len(sell_timestamps) == 0:
+            print(f"There is not enough trade data to calculate time activity clusters: {len(buy_timestamps)} buys and {len(sell_timestamps)} sells.")
+            return [], []
+
+    if not quiet:
+        print("Clustering data...")
+    optimal_buy_clusters, optimal_sell_clusters, optimal_clusters = max_clusters, max_clusters, max_clusters
+    if optimize_clusters_qty and not simple:
+        optimal_buy_clusters = find_optimal_clusters(KMeans_lib=KMeans, data=buy_timestamps, max_clusters=max_clusters, quiet=quiet, initial_centroids=initial_centroids)
+        optimal_sell_clusters = find_optimal_clusters(KMeans_lib=KMeans, data=sell_timestamps, max_clusters=max_clusters, quiet=quiet, initial_centroids=initial_centroids)
+        print(f"Found {optimal_buy_clusters} clusters from buys timestamps and {optimal_sell_clusters} clusters from sells timestamps.")
+    elif optimize_clusters_qty and simple:
+        optimal_clusters = find_optimal_clusters(KMeans_lib=KMeans, data=my_timestamps, max_clusters=max_clusters, quiet=quiet, initial_centroids=initial_centroids)
+        print(f"Found {optimal_clusters} clusters from timestamps.")
+
+    n_init = 10
+    if initial_centroids is not None:
+        n_init = 1
+
+    if not simple:
+        kmeans_buy = KMeans(n_clusters=optimal_buy_clusters, n_init=n_init, init=initial_centroids).fit(buy_timestamps)
+        kmeans_sell = KMeans(n_clusters=optimal_sell_clusters, n_init=n_init, init=initial_centroids).fit(sell_timestamps)
+        support_levels = np.sort(kmeans_buy.cluster_centers_, axis=0)
+        resistance_levels = np.sort(kmeans_sell.cluster_centers_, axis=0)
+        return support_levels.flatten().tolist(), resistance_levels.flatten().tolist()
+
+    else:
+        kmeans_result = KMeans(n_clusters=optimal_clusters, n_init=n_init, init=initial_centroids).fit(my_timestamps)
+        support_levels = np.sort(kmeans_result.cluster_centers_, axis=0)
+        return support_levels.flatten().tolist(), []
+
 
 def market_profile_from_klines_melt(df: pd.DataFrame):
     """

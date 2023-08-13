@@ -154,7 +154,7 @@ def extract_filename_metadata(filename: str, expected_data_type: str, expected_s
         except AssertionError as e:
             files_logger.error(f"BinPan Exception: {e}")
             raise e
-    return symbol, tick_interval, time_zone, data_type, start_timestamp, end_timestamp
+    return symbol.upper(), tick_interval, time_zone, data_type, start_timestamp, end_timestamp
 
 
 # def read_csv_to_dataframe(filename: str, col_sep: str = ',', index_col: str = None, index_time_zone: str = None,
@@ -252,12 +252,14 @@ def save_file(filename: str, data: list, mode='w') -> None:
             f.write(str(line) + '\n')
 
 
-def select_file(path='.', extension='csv') -> str:
+def select_file(path='.', extension='csv', symbol: str = None, tick_interval: str = None) -> str:
     """
     Selects from files in the path with the extension passed.
 
     :param str path: Path to search files.
     :param str extension: Extension of interesting files to select.
+    :param str symbol: Symbol to filter files just to alert if file has other symbol.
+    :param str tick_interval: Tick interval to filter files just to alert if file has other tick interval.
     :return str: a filename.
     """
     print("File selection menu:")
@@ -266,7 +268,12 @@ def select_file(path='.', extension='csv') -> str:
     for i, file in enumerate(files):
         print(f"{i}: {file}")
     selection = input("Insert file menu number: ")
-
+    if symbol:
+        if symbol not in files[int(selection)]:
+            files_logger.warning(f"BinPan Warning: Selected file has not the expected symbol {symbol}")
+    if tick_interval:
+        if " " + tick_interval + " " not in files[int(selection)]:
+            files_logger.warning(f"BinPan Warning: Selected file has not the expected tick interval {tick_interval}")
     return files[int(selection)]
 
 

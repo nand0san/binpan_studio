@@ -3,7 +3,7 @@
 This is the main classes file.
 
 """
-__version__ = "0.4.36"
+__version__ = "0.4.37"
 
 import os
 from sys import path
@@ -23,9 +23,10 @@ from handlers.exchange import get_decimal_positions, get_info_dic, get_precision
 
 from handlers.files import select_file, read_csv_to_dataframe, save_dataframe_to_csv, extract_filename_metadata
 
-from handlers.indicators import df_splitter, reversal_candles, zoom_cloud_indicators, ichimoku, fractal_w_indicator, \
-    support_resistance_levels, ffill_indicator, shift_indicator, market_profile_from_klines_melt, alternating_fractal_indicator, \
-    fractal_trend_indicator, market_profile_from_klines_grouped, market_profile_from_trades_grouped
+from handlers.indicators import (df_splitter, reversal_candles, zoom_cloud_indicators, ichimoku, fractal_w_indicator, \
+                                 support_resistance_levels, ffill_indicator, shift_indicator, market_profile_from_klines_melt,
+                                 alternating_fractal_indicator, fractal_trend_indicator, market_profile_from_klines_grouped,
+                                 market_profile_from_trades_grouped, support_resistance_levels_merged, time_active_zones)
 
 from handlers.logs import Logs
 
@@ -232,6 +233,8 @@ class Symbol(object):
         # symbol verification
         if not symbol and not from_csv:
             raise BinPanException(f"BinPan symbol Error: symbol needed")
+        else:
+            symbol = symbol.upper()
         if not from_csv and not symbol.isalnum():
             binpan_logger.error(f"BinPan error: Ilegal characters in symbol.")
 
@@ -270,7 +273,7 @@ class Symbol(object):
         self.cwd = os.getcwd()
         path.append(self.cwd)
 
-        self.symbol = symbol
+        self.symbol = symbol.upper()
         self.tick_interval = tick_interval
         self.time_zone = time_zone
 
@@ -278,7 +281,7 @@ class Symbol(object):
             if type(from_csv) == str:
                 filename = from_csv
             else:
-                filename = select_file(path=self.cwd, extension='csv')
+                filename = select_file(path=self.cwd, extension='csv', symbol=self.symbol, tick_interval=self.tick_interval)
 
             binpan_logger.info(f"Loading {filename}")
 
@@ -292,7 +295,7 @@ class Symbol(object):
                                                                                                          expected_symbol=self.symbol,
                                                                                                          expected_interval=self.tick_interval,
                                                                                                          expected_timezone=self.time_zone)
-            self.symbol = symbol
+            self.symbol = symbol.upper()
             self.tick_interval = tick_interval
             self.time_zone = time_zone
             self.start_time = startime_
@@ -309,7 +312,8 @@ class Symbol(object):
                 df_ = df_.asfreq(my_pandas_freq)  # this adds freq, will add nans if missing api data in the middle
                 if prev_len != len(df_):
                     filled_data_by_freq = df_[df_.isna().all(axis=1)]
-                    binpan_logger.warning(f"Missing data in {filename} for {self.symbol} {self.tick_interval} {self.time_zone}: \n Filled data automatically: \n{filled_data_by_freq}")
+                    binpan_logger.warning(f"Missing data in {filename} for {self.symbol} {self.tick_interval} {self.time_zone}: \n Filled "
+                                          f"data automatically: \n{filled_data_by_freq}")
                 # period
                 self.df = df_
                 self.time_index = True
@@ -405,7 +409,8 @@ class Symbol(object):
                 start_time = end_time - (hours * 60 * 60 * 1000)
 
         # fill missing timestamps
-        self.start_time, self.end_time = time_interval(tick_interval=self.tick_interval, limit=self.limit, start_time=start_time, end_time=end_time)
+        self.start_time, self.end_time = time_interval(tick_interval=self.tick_interval, limit=self.limit, start_time=start_time,
+                                                       end_time=end_time)
         # discard not closed
         now = int(1000 * time())
         current_open = open_from_milliseconds(ms=now, tick_interval=self.tick_interval)
@@ -416,9 +421,12 @@ class Symbol(object):
         # query candles #
         #################
         if not from_csv:
-            self.raw = get_candles_by_time_stamps(symbol=self.symbol, tick_interval=self.tick_interval, start_time=self.start_time, end_time=self.end_time, limit=self.limit, redis_client=self.from_redis)
+            self.raw = get_candles_by_time_stamps(symbol=self.symbol, tick_interval=self.tick_interval, start_time=self.start_time,
+                                                  end_time=self.end_time, limit=self.limit, redis_client=self.from_redis)
 
-            dataframe = parse_candles_to_dataframe(raw_response=self.raw, columns=self.original_candles_cols, time_cols=self.time_cols, symbol=self.symbol, tick_interval=self.tick_interval, time_zone=self.time_zone, time_index=self.time_index)
+            dataframe = parse_candles_to_dataframe(raw_response=self.raw, columns=self.original_candles_cols, time_cols=self.time_cols,
+                                                   symbol=self.symbol, tick_interval=self.tick_interval, time_zone=self.time_zone,
+                                                   time_index=self.time_index)
             self.df = dataframe
 
         self.timestamps = self.get_timestamps()
@@ -447,6 +455,13 @@ class Symbol(object):
         self.precision = self.get_precision()
         self.market_profile_df = pd.DataFrame()
         self.rolling_support_resistance_df = pd.DataFrame()
+
+        # init vertical lines over candles
+        self.red_timestamps = []
+        self.blue_timestamps = []
+
+        # check api continuity data and notify to user
+        self.check_continuity()
 
     def __repr__(self):
         return str(self.df)
@@ -793,7 +808,8 @@ class Symbol(object):
                     else:
                         new_row_control.update({c: 1})  # not existing row for a line goes to 1 row
                 self.row_control = new_row_control
-                # self.row_control = {c: unique_rows_index[self.row_control[c]] if c in self.row_control.keys() else 1 for c in conserve_columns}
+                # self.row_control = {c: unique_rows_index[self.row_control[c]] if c in self.row_control.keys() else 1 for c in
+                # conserve_columns}
 
                 # clean plotting areas info
                 self.plot_splitted_serie_couples = {c: self.plot_splitted_serie_couples[c] for c in conserve_columns if
@@ -846,8 +862,10 @@ class Symbol(object):
         :param pd.Series or pd.DataFrame or np.ndarray or list source_data: Source data from pandas_ta or any other. Expected named series
            or list of names, or at least a suffix. If nothing passed, name will be autogenerated.
         :param int strategy_group: Optionally can be tagged into a strategy group when inserting data.
-        :param int plotting_row: When a single serie inserted, a plotting row for a single inserted object. 1 overlaps candles, other, gets own row.
-        :param list plotting_rows: mandatory. Rows position for autoplot each serie. 1 is overlap, ANY OTHER INTEGER will calculate row position.
+        :param int plotting_row: When a single serie inserted, a plotting row for a single inserted object. 1 overlaps candles, other,
+        gets own row.
+        :param list plotting_rows: mandatory. Rows position for autoplot each serie. 1 is overlap, ANY OTHER INTEGER will calculate row
+        position.
            Passing list of source data will put different row for each indicator added, ignoring same number in the list. Finally you can
            change assigned row with ``my_symbol.set_plot_row('New_column', 2)``
         :param str color: When a single serie inserted, a plotting color.
@@ -1070,19 +1088,31 @@ class Symbol(object):
 
             .. code-block::
 
-                                                  Aggregate tradeId     Price  Quantity  First tradeId  Last tradeId                 Date      Timestamp  Buyer was maker  Best price match
+                                                  Aggregate tradeId     Price  Quantity  First tradeId  Last tradeId                 Date
+                                                       Timestamp  Buyer was maker  Best price match
                 BTCBUSD Europe/Madrid
-                2022-11-20 14:11:36.763000+01:00          536009627  16524.58   0.21421      632568399     632568399  2022-11-20 14:11:36  1668949896763             True              True
-                2022-11-20 14:11:36.787000+01:00          536009628  16525.04   0.02224      632568400     632568400  2022-11-20 14:11:36  1668949896787             True              True
-                2022-11-20 14:11:36.794000+01:00          536009629  16525.04   0.01097      632568401     632568401  2022-11-20 14:11:36  1668949896794             True              True
-                2022-11-20 14:11:36.849000+01:00          536009630  16525.27   0.05260      632568402     632568403  2022-11-20 14:11:36  1668949896849            False              True
-                2022-11-20 14:11:36.849000+01:00          536009631  16525.28   0.00073      632568404     632568404  2022-11-20 14:11:36  1668949896849            False              True
-                ...                                             ...       ...       ...            ...           ...                  ...            ...              ...               ...
-                2022-11-20 15:10:57.928000+01:00          536083210  16556.75   0.01730      632653817     632653817  2022-11-20 15:10:57  1668953457928             True              True
-                2022-11-20 15:10:57.928000+01:00          536083211  16556.74   0.00851      632653818     632653819  2022-11-20 15:10:57  1668953457928             True              True
-                2022-11-20 15:10:57.950000+01:00          536083212  16558.48   0.00639      632653820     632653820  2022-11-20 15:10:57  1668953457950            False              True
-                2022-11-20 15:10:57.990000+01:00          536083213  16558.48   0.01242      632653821     632653821  2022-11-20 15:10:57  1668953457990             True              True
-                2022-11-20 15:10:58.020000+01:00          536083214  16558.49   0.00639      632653822     632653822  2022-11-20 15:10:58  1668953458020            False              True
+                2022-11-20 14:11:36.763000+01:00          536009627  16524.58   0.21421      632568399     632568399  2022-11-20 14:11:36
+                 1668949896763             True              True
+                2022-11-20 14:11:36.787000+01:00          536009628  16525.04   0.02224      632568400     632568400  2022-11-20 14:11:36
+                 1668949896787             True              True
+                2022-11-20 14:11:36.794000+01:00          536009629  16525.04   0.01097      632568401     632568401  2022-11-20 14:11:36
+                 1668949896794             True              True
+                2022-11-20 14:11:36.849000+01:00          536009630  16525.27   0.05260      632568402     632568403  2022-11-20 14:11:36
+                 1668949896849            False              True
+                2022-11-20 14:11:36.849000+01:00          536009631  16525.28   0.00073      632568404     632568404  2022-11-20 14:11:36
+                 1668949896849            False              True
+                ...                                             ...       ...       ...            ...           ...                  ...
+                           ...              ...               ...
+                2022-11-20 15:10:57.928000+01:00          536083210  16556.75   0.01730      632653817     632653817  2022-11-20 15:10:57
+                 1668953457928             True              True
+                2022-11-20 15:10:57.928000+01:00          536083211  16556.74   0.00851      632653818     632653819  2022-11-20 15:10:57
+                 1668953457928             True              True
+                2022-11-20 15:10:57.950000+01:00          536083212  16558.48   0.00639      632653820     632653820  2022-11-20 15:10:57
+                 1668953457950            False              True
+                2022-11-20 15:10:57.990000+01:00          536083213  16558.48   0.01242      632653821     632653821  2022-11-20 15:10:57
+                 1668953457990             True              True
+                2022-11-20 15:10:58.020000+01:00          536083214  16558.49   0.00639      632653822     632653822  2022-11-20 15:10:58
+                 1668953458020            False              True
                 [73588 rows x 9 columns]
 
         :param str from_csv: If set, loads from a file.
@@ -1123,10 +1153,12 @@ class Symbol(object):
             else:
                 filename = select_file(path=self.cwd, extension='csv')
 
-            # basic metadata
-                _, _, _, _, _, _ = extract_filename_metadata(filename=filename, expected_data_type="aggTrades", expected_symbol=self.symbol, expected_timezone=self.time_zone)
+                # basic metadata
+                _, _, _, _, _, _ = extract_filename_metadata(filename=filename, expected_data_type="aggTrades",
+                                                             expected_symbol=self.symbol, expected_timezone=self.time_zone)
             # load and to numeric types
-            df_ = read_csv_to_dataframe(filename=filename, index_col="Timestamp", secondary_index_col="Aggregate tradeId", symbol=self.symbol, index_time_zone=self.time_zone)
+            df_ = read_csv_to_dataframe(filename=filename, index_col="Timestamp", secondary_index_col="Aggregate tradeId",
+                                        symbol=self.symbol, index_time_zone=self.time_zone)
 
             # check columns
             for col in df_.columns:
@@ -1135,16 +1167,21 @@ class Symbol(object):
             self.agg_trades = df_
         else:
             try:
-                self.raw_agg_trades = get_historical_agg_trades(symbol=self.symbol, startTime=curr_startTime, endTime=curr_endTime, redis_client_trades=self.from_redis)
+                self.raw_agg_trades = get_historical_agg_trades(symbol=self.symbol, startTime=curr_startTime, endTime=curr_endTime,
+                                                                redis_client_trades=self.from_redis)
             except Exception as _:
                 msg = f"Error fetching raw_agg_trades, maybe missing API key in secret.py file!!!"
                 binpan_logger.error(msg)
                 self.raw_agg_trades = []
 
             if self.from_redis:
-                self.agg_trades = parse_agg_trades_to_dataframe(response=self.raw_agg_trades, columns=self.agg_trades_columns_redis, symbol=self.symbol, time_zone=self.time_zone, time_index=self.time_index, drop_dupes='Aggregate tradeId')
+                self.agg_trades = parse_agg_trades_to_dataframe(response=self.raw_agg_trades, columns=self.agg_trades_columns_redis,
+                                                                symbol=self.symbol, time_zone=self.time_zone, time_index=self.time_index,
+                                                                drop_dupes='Aggregate tradeId')
             else:
-                self.agg_trades = parse_agg_trades_to_dataframe(response=self.raw_agg_trades, columns=self.agg_trades_columns, symbol=self.symbol, time_zone=self.time_zone, time_index=self.time_index, drop_dupes='Aggregate tradeId')
+                self.agg_trades = parse_agg_trades_to_dataframe(response=self.raw_agg_trades, columns=self.agg_trades_columns,
+                                                                symbol=self.symbol, time_zone=self.time_zone, time_index=self.time_index,
+                                                                drop_dupes='Aggregate tradeId')
 
         self.agg_trades = convert_to_numeric(data=self.agg_trades)
 
@@ -1207,10 +1244,12 @@ class Symbol(object):
                 filename = select_file(path=self.cwd, extension='csv')
 
             # basic metadata
-            _, _, _, _, _, _ = extract_filename_metadata(filename=filename, expected_data_type="atomicTrades", expected_symbol=self.symbol, expected_timezone=self.time_zone)
+            _, _, _, _, _, _ = extract_filename_metadata(filename=filename, expected_data_type="atomicTrades",
+                                                         expected_symbol=self.symbol, expected_timezone=self.time_zone)
 
             # load and to numeric types
-            df_ = read_csv_to_dataframe(filename=filename, index_col="Timestamp", secondary_index_col="Trade Id", symbol=self.symbol, index_time_zone=self.time_zone)
+            df_ = read_csv_to_dataframe(filename=filename, index_col="Timestamp", secondary_index_col="Trade Id", symbol=self.symbol,
+                                        index_time_zone=self.time_zone)
 
             # check columns
             for col in df_.columns:
@@ -1219,16 +1258,23 @@ class Symbol(object):
             self.atomic_trades = df_
         else:
             try:
-                self.raw_atomic_trades = get_historical_atomic_trades(symbol=self.symbol, startTime=curr_startTime, endTime=curr_endTime, redis_client_trades=self.from_redis)
+                self.raw_atomic_trades = get_historical_atomic_trades(symbol=self.symbol, startTime=curr_startTime, endTime=curr_endTime,
+                                                                      redis_client_trades=self.from_redis)
             except Exception:
                 msg = f"Error fetching raw_atomic_trades, maybe missing API key in secret.py file!!!"
                 binpan_logger.error(msg)
                 self.raw_atomic_trades = []
 
             if self.from_redis:
-                self.atomic_trades = parse_atomic_trades_to_dataframe(response=self.raw_atomic_trades, columns=self.atomic_trades_columns_redis, symbol=self.symbol, time_zone=self.time_zone, time_index=self.time_index, drop_dupes='Trade Id')
+                self.atomic_trades = parse_atomic_trades_to_dataframe(response=self.raw_atomic_trades,
+                                                                      columns=self.atomic_trades_columns_redis, symbol=self.symbol,
+                                                                      time_zone=self.time_zone, time_index=self.time_index,
+                                                                      drop_dupes='Trade Id')
             else:
-                self.atomic_trades = parse_atomic_trades_to_dataframe(response=self.raw_atomic_trades, columns=self.atomic_trades_columns, symbol=self.symbol, time_zone=self.time_zone, time_index=self.time_index, drop_dupes='Trade Id')
+                self.atomic_trades = parse_atomic_trades_to_dataframe(response=self.raw_atomic_trades,
+                                                                      columns=self.atomic_trades_columns, symbol=self.symbol,
+                                                                      time_zone=self.time_zone, time_index=self.time_index,
+                                                                      drop_dupes='Trade Id')
         self.atomic_trades = convert_to_numeric(data=self.atomic_trades)
         return self.atomic_trades
 
@@ -1308,7 +1354,9 @@ class Symbol(object):
             self.min_reversal = min_reversal
 
         if self.reversal_agg_klines.empty or min_height or min_reversal:
-            self.reversal_agg_klines = reversal_candles(trades=self.agg_trades, decimal_positions=self.decimals, time_zone=self.time_zone, min_height=self.min_height, min_reversal=self.min_reversal)
+            self.reversal_agg_klines = reversal_candles(trades=self.agg_trades, decimal_positions=self.decimals,
+                                                        time_zone=self.time_zone, min_height=self.min_height,
+                                                        min_reversal=self.min_reversal)
         return self.reversal_agg_klines
 
     def get_reversal_atomic_candles(self, min_height: int = 7, min_reversal: int = 4) -> pd.DataFrame or None:
@@ -1330,7 +1378,9 @@ class Symbol(object):
             self.min_reversal = min_reversal
 
         if self.reversal_atomic_klines.empty or min_height or min_reversal:
-            self.reversal_atomic_klines = reversal_candles(trades=self.atomic_trades, decimal_positions=self.decimals, time_zone=self.time_zone, min_height=self.min_height, min_reversal=self.min_reversal)
+            self.reversal_atomic_klines = reversal_candles(trades=self.atomic_trades, decimal_positions=self.decimals,
+                                                           time_zone=self.time_zone, min_height=self.min_height,
+                                                           min_reversal=self.min_reversal)
         return self.reversal_atomic_klines
 
     def resample(self, tick_interval: str):
@@ -1431,7 +1481,8 @@ class Symbol(object):
         Internal control formatting plots. Can be used to change plot filling mode for pairs of indicators when.
 
         :param str indicator_column: column name
-        :param my_axis_group: Fill mode for indicator. Color can be forced to fill to zero line with "tozeroy" or between two indicators in same
+        :param my_axis_group: Fill mode for indicator. Color can be forced to fill to zero line with "tozeroy" or between two indicators
+        in same
            axis group with "tonexty".
         :return dict: columns with its assigned fill mode.
 
@@ -1565,11 +1616,19 @@ class Symbol(object):
                 indicators_colors += [resistance_lines_color]
 
         if zoom_start_idx is not None or zoom_end_idx is not None:
-            zoomed_plot_splitted_serie_couples = zoom_cloud_indicators(self.plot_splitted_serie_couples, main_index=list(self.df.index), start_idx=zoom_start_idx, end_idx=zoom_end_idx)
+            zoomed_plot_splitted_serie_couples = zoom_cloud_indicators(self.plot_splitted_serie_couples, main_index=list(self.df.index),
+                                                                       start_idx=zoom_start_idx, end_idx=zoom_end_idx)
         else:
             zoomed_plot_splitted_serie_couples = self.plot_splitted_serie_couples
-
-        return candles_tagged(data=temp_df, width=width, height=height, candles_ta_height_ratio=candles_ta_height_ratio, plot_volume=volume, title=title, yaxis_title=yaxis_title, on_candles_indicator=overlapped_indicators, priced_actions_col=priced_actions_col, actions_col=actions_col, indicator_series=indicators_series, indicator_names=indicator_names, indicator_colors=indicators_colors, fill_control=self.color_fill_control, indicators_filled_mode=self.indicators_filled_mode, axis_groups=self.axis_groups, plot_splitted_serie_couple=zoomed_plot_splitted_serie_couples, rows_pos=rows_pos, markers_labels=marker_labels, plot_bgcolor=background_color, markers=markers, marker_colors=marker_colors)
+        return candles_tagged(data=temp_df, width=width, height=height, candles_ta_height_ratio=candles_ta_height_ratio, plot_volume=volume,
+                              title=title, yaxis_title=yaxis_title, on_candles_indicator=overlapped_indicators,
+                              priced_actions_col=priced_actions_col, actions_col=actions_col, indicator_series=indicators_series,
+                              indicator_names=indicator_names, indicator_colors=indicators_colors, fill_control=self.color_fill_control,
+                              indicators_filled_mode=self.indicators_filled_mode, axis_groups=self.axis_groups,
+                              plot_splitted_serie_couple=zoomed_plot_splitted_serie_couples, rows_pos=rows_pos,
+                              markers_labels=marker_labels, plot_bgcolor=background_color, markers=markers,
+                              marker_colors=marker_colors, red_timestamps=self.red_timestamps,
+                              blue_timestamps=self.blue_timestamps)
 
     def plot_agg_trades_size(self, max_size: int = 60, height: int = 1000, logarithmic: bool = False, overlap_prices: bool = True,
                              group_big_data: int = None, shifted: int = 1, title: str = None):
@@ -1605,9 +1664,11 @@ class Symbol(object):
             overlap_prices = self.df
 
         if not group_big_data:
-            return plot_trades(data=managed_data, max_size=max_size, height=height, logarithmic=logarithmic, overlap_prices=overlap_prices, shifted=shifted, title=title)
+            return plot_trades(data=managed_data, max_size=max_size, height=height, logarithmic=logarithmic,
+                               overlap_prices=overlap_prices, shifted=shifted, title=title)
         else:
-            return plot_trades(data=managed_data, max_size=max_size, height=height, logarithmic=logarithmic, overlap_prices=overlap_prices, shifted=shifted, title=title)
+            return plot_trades(data=managed_data, max_size=max_size, height=height, logarithmic=logarithmic,
+                               overlap_prices=overlap_prices, shifted=shifted, title=title)
 
     def plot_atomic_trades_size(self, max_size: int = 60, height: int = 1000, logarithmic: bool = False, overlap_prices: bool = True,
                                 group_big_data: int = None, shifted: int = 1, title: str = None):
@@ -1639,9 +1700,11 @@ class Symbol(object):
             overlap_prices = self.df
 
         if not group_big_data:
-            return plot_trades(data=managed_data, max_size=max_size, height=height, logarithmic=logarithmic, overlap_prices=overlap_prices, shifted=shifted, title=title)
+            return plot_trades(data=managed_data, max_size=max_size, height=height, logarithmic=logarithmic,
+                               overlap_prices=overlap_prices, shifted=shifted, title=title)
         else:
-            return plot_trades(data=managed_data, max_size=max_size, height=height, logarithmic=logarithmic, overlap_prices=overlap_prices, shifted=shifted, title=title)
+            return plot_trades(data=managed_data, max_size=max_size, height=height, logarithmic=logarithmic,
+                               overlap_prices=overlap_prices, shifted=shifted, title=title)
 
     def plot_reversal(self, min_height: int = None, min_reversal: int = None, text_index: bool = True, from_atomic: bool = False, **kwargs):
         """
@@ -1741,12 +1804,14 @@ class Symbol(object):
 
 
         :param bins: How many bars.
-        :param hist_funct: The way graph data is showed. It can be 'mean', 'sum', 'percent', 'probability', 'density', or 'probability density'
+        :param hist_funct: The way graph data is showed. It can be 'mean', 'sum', 'percent', 'probability', 'density', or 'probability
+        density'
         :param height: Height of the graph.
         :param from_trades: Requieres grabbing trades before.
         :param title: A title.
         :param total_volume_column: The column with the total volume. It defaults automatically.
-        :param partial_vol_column: The column with the partial volume. It defaults automatically. API shows maker or taker separated volumes.
+        :param partial_vol_column: The column with the partial volume. It defaults automatically. API shows maker or taker separated
+        volumes.
         :param kwargs_update_layout: Optional
 
         """
@@ -1778,7 +1843,8 @@ class Symbol(object):
         if not title:
             title = f"Histogram for sizes in aggressive sellers vs aggressive byers {self.symbol} ({hist_funct})"
 
-        return plot_hists_vs(x0=aggressive_sellers, x1=aggressive_byers, x0_name="Aggressive sellers", x1_name='Aggressive byers', bins=bins, hist_funct=hist_funct, height=height, title=title, **kwargs_update_layout)
+        return plot_hists_vs(x0=aggressive_sellers, x1=aggressive_byers, x0_name="Aggressive sellers", x1_name='Aggressive byers',
+                             bins=bins, hist_funct=hist_funct, height=height, title=title, **kwargs_update_layout)
 
     def plot_market_profile(self, bins: int = 100, hours: int = None, minutes: int = None, startTime: int or str = None,
                             endTime: int or str = None, height=900, from_agg_trades=False, from_atomic_trades=False, title: str = None,
@@ -1839,7 +1905,9 @@ class Symbol(object):
                 _df = _df[_df['Timestamp'] >= startTime]
             if endTime:
                 _df = _df[_df['Timestamp'] <= endTime]
-            return bar_plot(df=_df, x_col_to_bars='Price', y_col='Quantity', bar_segments='Buyer was maker', split_colors=True, bins=bins, title=title, height=height, y_axis_title='Buy takers VS Buy makers', horizontal_bars=True, **kwargs_update_layout)
+            return bar_plot(df=_df, x_col_to_bars='Price', y_col='Quantity', bar_segments='Buyer was maker', split_colors=True,
+                            bins=bins, title=title, height=height, y_axis_title='Buy takers VS Buy makers', horizontal_bars=True,
+                            **kwargs_update_layout)
         elif from_atomic_trades:
             title += f' Atomic Trades'
             _df = self.atomic_trades.copy(deep=True)
@@ -1847,7 +1915,9 @@ class Symbol(object):
                 _df = _df[_df['Timestamp'] >= startTime]
             if endTime:
                 _df = _df[_df['Timestamp'] <= endTime]
-            return bar_plot(df=_df, x_col_to_bars='Price', y_col='Quantity', bar_segments='Buyer was maker', split_colors=True, bins=bins, title=title, height=height, y_axis_title='Buy takers VS Buy makers', horizontal_bars=True, **kwargs_update_layout)
+            return bar_plot(df=_df, x_col_to_bars='Price', y_col='Quantity', bar_segments='Buyer was maker', split_colors=True,
+                            bins=bins, title=title, height=height, y_axis_title='Buy takers VS Buy makers', horizontal_bars=True,
+                            **kwargs_update_layout)
         else:
             title += f' Klines'
             _df = self.df.copy(deep=True)
@@ -1859,7 +1929,10 @@ class Symbol(object):
             # todo: market_profile sacado de las velas en modo melt para plotly
             profile = market_profile_from_klines_melt(df=_df)
             profile.reset_index(inplace=True)
-            return bar_plot(df=profile, x_col_to_bars='Market_Profile', y_col='Volume', bar_segments='Is_Maker', split_colors=True, bins=bins, title=title + " from klines", height=height, y_axis_title='Buy takers VS Buy makers', horizontal_bars=True, **kwargs_update_layout)
+            return bar_plot(df=profile, x_col_to_bars='Market_Profile', y_col='Volume', bar_segments='Is_Maker', split_colors=True,
+                            bins=bins, title=title + " from klines", height=height, y_axis_title='Buy takers VS Buy makers',
+                            horizontal_bars=True,
+                            **kwargs_update_layout)
 
     def plot_trades_scatter(self, x: str = None, y: str = None, dot_symbol='Buyer was maker', color: str = None, marginal=True,
                             from_trades=True, height=1000, color_referenced_to_y=True,
@@ -1913,7 +1986,8 @@ class Symbol(object):
                 y = y[0]
                 color = color[0]
             title = f"Priced volume for {self.symbol} data obtained from historical trades."
-            return plot_scatter(df=data, x_col=x, y_col=y, symbol=dot_symbol, color=color, marginal=marginal, title=title, height=height, **kwargs)
+            return plot_scatter(df=data, x_col=x, y_col=y, symbol=dot_symbol, color=color, marginal=marginal, title=title, height=height,
+                                **kwargs)
 
     def plot_orderbook(self, accumulated=True, title='Depth orderbook plot', height=800, plot_y="Quantity", **kwargs):
         """
@@ -1946,7 +2020,8 @@ class Symbol(object):
         if not title:
             title = f"Distribution plot for order book {self.symbol}"
 
-        return dist_plot(df=self.orderbook, x_col=x_col, color=color, bins=bins, histnorm=histnorm, height=height, title=title, **update_layout_kwargs)
+        return dist_plot(df=self.orderbook, x_col=x_col, color=color, bins=bins, histnorm=histnorm, height=height, title=title,
+                         **update_layout_kwargs)
 
     def plot_orderbook_value(self):
         """
@@ -1991,9 +2066,8 @@ class Symbol(object):
         profile = self.get_taker_maker_ratio_profile(bins=bins, hours=hours, minutes=minutes, startTime=startTime, endTime=endTime,
                                                      from_agg_trades=from_agg_trades, from_atomic_trades=from_atomic_trades,
                                                      time_zone=time_zone)
-        return profile_plot(serie=profile, title=title, height=height, width=width,
-                            x_axis_title="Price Buckets", y_axis_title="Taker/Maker ratio",
-                            vertical_bar=0.5, **kwargs_update_layout)
+        return profile_plot(serie=profile, title=title, height=height, width=width, x_axis_title="Price Buckets",
+                            y_axis_title="Taker/Maker ratio", vertical_bar=0.5, **kwargs_update_layout)
 
     #################
     # Exchange data #
@@ -2106,9 +2180,19 @@ class Symbol(object):
             suffix = '_' + suffix
 
         if not short:
-            wallet_df = backtesting(df=self.df, actions_column=actions, target_column=target_column, stop_loss_column=stop_loss_column, entry_filter_column=entry_filter_column, priced_actions_col=priced_actions_col, fixed_target=fixed_target, fixed_stop_loss=fixed_stop_loss, base=base, quote=quote, fee=fee, label_in=label_in, label_out=label_out, suffix=suffix, evaluating_quote=evaluating_quote, info_dic=self.info_dic)
+            wallet_df = backtesting(df=self.df, actions_column=actions, target_column=target_column, stop_loss_column=stop_loss_column,
+                                    entry_filter_column=entry_filter_column, priced_actions_col=priced_actions_col,
+                                    fixed_target=fixed_target,
+                                    fixed_stop_loss=fixed_stop_loss, base=base, quote=quote, fee=fee, label_in=label_in,
+                                    label_out=label_out, suffix=suffix,
+                                    evaluating_quote=evaluating_quote, info_dic=self.info_dic)
         else:
-            wallet_df = backtesting_short(df=self.df, actions_column=actions, target_column=target_column, stop_loss_column=stop_loss_column, entry_filter_column=entry_filter_column, priced_actions_col=priced_actions_col, fixed_target=fixed_target, fixed_stop_loss=fixed_stop_loss, base=base, quote=quote, fee=fee, label_in=label_in, label_out=label_out, suffix=suffix, evaluating_quote=evaluating_quote, info_dic=self.info_dic)
+            wallet_df = backtesting_short(df=self.df, actions_column=actions, target_column=target_column,
+                                          stop_loss_column=stop_loss_column, entry_filter_column=entry_filter_column,
+                                          priced_actions_col=priced_actions_col,
+                                          fixed_target=fixed_target, fixed_stop_loss=fixed_stop_loss, base=base, quote=quote, fee=fee,
+                                          label_in=label_in,
+                                          label_out=label_out, suffix=suffix, evaluating_quote=evaluating_quote, info_dic=self.info_dic)
 
         if inplace and self.is_new(wallet_df):
             column_names = wallet_df.columns
@@ -2398,7 +2482,11 @@ class Symbol(object):
 
                     splitted_dfs = df_splitter(data=macd, up_column=column_name, down_column='zeros')
 
-                    self.set_plot_splitted_serie_couple(indicator_column_up=column_name, indicator_column_down='zeros', splitted_dfs=splitted_dfs, color_up='rgba(35, 152, 33, 0.5)', color_down='rgba(245, 63, 39, 0.5)')
+                    self.set_plot_splitted_serie_couple(indicator_column_up=column_name, indicator_column_down='zeros',
+                                                        splitted_dfs=splitted_dfs, color_up='rgba(35, 152, 33, 0.5)', color_down='rgba('
+                                                                                                                                 '245, '
+                                                                                                                                 '63, 39, '
+                                                                                                                                 '0.5)')
 
                 else:
                     self.set_plot_color_fill(indicator_column=column_name, color_fill=None)
@@ -2563,7 +2651,6 @@ class Symbol(object):
         .. image:: images/indicators/vwap.png
            :width: 1000
            :alt: Candles with some indicators
-
         """
 
         vwap = ta.vwap(high=self.df['High'], low=self.df['Low'], close=self.df['Close'], volume=self.df['Volume'], anchor=anchor, **kwargs)
@@ -2856,7 +2943,8 @@ class Symbol(object):
         """
         if not colors:
             colors = ['orange', 'skyblue', 'grey', 'green', 'red']
-        ichimoku_data = ichimoku(data=self.df, tenkan=tenkan, kijun=kijun, chikou_span=chikou_span, senkou_cloud_base=senkou_cloud_base, suffix=suffix)
+        ichimoku_data = ichimoku(data=self.df, tenkan=tenkan, kijun=kijun, chikou_span=chikou_span, senkou_cloud_base=senkou_cloud_base,
+                                 suffix=suffix)
 
         if inplace and self.is_new(ichimoku_data):
             self.global_axis_group -= 1
@@ -2887,7 +2975,11 @@ class Symbol(object):
 
                     splitted_dfs = df_splitter(data=ichimoku_data, up_column=pre_col_name, down_column=column_name)
 
-                    self.set_plot_splitted_serie_couple(indicator_column_up=pre_col_name, indicator_column_down=column_name, splitted_dfs=splitted_dfs, color_up='rgba(35, 152, 33, 0.5)', color_down='rgba(245, 63, 39, 0.5)')
+                    self.set_plot_splitted_serie_couple(indicator_column_up=pre_col_name, indicator_column_down=column_name,
+                                                        splitted_dfs=splitted_dfs, color_up='rgba(35, 152, 33, 0.5)', color_down='rgba('
+                                                                                                                                 '245, '
+                                                                                                                                 '63, 39, '
+                                                                                                                                 '0.5)')
 
         return ichimoku_data
 
@@ -2900,7 +2992,8 @@ class Symbol(object):
         This custom indicator shows the minimum period in finding a pure alternating fractal. It is some kind of volatility in price
         indicator, the most period needed, the most volatile price.
 
-        :param int max_period: Default is len of dataframe. This method will check from 2 to the max period value to find a alternating max to mins.
+        :param int max_period: Default is len of dataframe. This method will check from 2 to the max period value to find a alternating
+        max to mins.
         :param bool inplace: Make it permanent in the instance or not.
         :param bool overlap_plot: If True, it will overlap the indicator plot with the price plot.
         :param bool with_trend: If true, it will return maximums diff mean and minimums diff mean also.
@@ -3028,7 +3121,8 @@ class Symbol(object):
             raise BinPanException(f"Please specify just one source of data, atomic trades or aggregated, not both.")
 
         if not self.market_profile_df.empty:
-            binpan_logger.info(f"Market profile already generated. Updating data: startTime={startTime}, endTime={endTime}, hours={hours}, minutes={minutes}, bins={bins}, time_zone={time_zone}")
+            binpan_logger.info(f"Market profile already generated. Updating data: startTime={startTime}, endTime={endTime}, "
+                               f"hours={hours}, minutes={minutes}, bins={bins}, time_zone={time_zone}")
             del self.market_profile_df
 
         if time_zone:
@@ -3075,7 +3169,8 @@ class Symbol(object):
             self.market_profile_df = market_profile_from_klines_grouped(df=_df, num_bins=bins)
         return self.market_profile_df
 
-    def get_maker_taker_buy_ratios(self, window: int = 14, inplace=True, colors: list = None, suffix: str = "") -> pd.DataFrame:
+    def get_maker_taker_buy_ratios(self, window: int = 14, inplace=True, colors: list = None, suffix: str = "",
+                                   nans_to_zeros=True) -> pd.DataFrame:
         """
         Generates the makers versus makers+takers volume ratio by each_kline. Also adds a moving average of the ratio.
 
@@ -3083,6 +3178,7 @@ class Symbol(object):
         :param bool inplace: Permanent or not. Default is false, because of some testing required sometimes.
         :param str suffix: A string to decorate resulting Pandas series name.
         :param str or int colors: A colors list. Default is ["orange", "skyblue"].
+        :param bool nans_to_zeros: If True, NaNs are converted to zeros.
         :return: A pandas series with the ratio and the moving average.
         """
 
@@ -3090,6 +3186,13 @@ class Symbol(object):
         df = df.sort_index(ascending=True)
 
         ratios = df['Taker buy base volume'] / df["Volume"]
+
+        if nans_to_zeros:
+            binpan_logger.info(f"Maker vs Taker buy ratio: {ratios.isna().sum()} NaNs found. Converting to zeros.")
+            ratios.fillna(0, inplace=True)
+        else:
+            binpan_logger.info(f"Maker vs Taker buy ratio: {ratios.isna().sum()} NaNs found. Use nans_to_zeros=True to convert to zeros.")
+
         ratios.name = "Ratio_Taker/Maker_buy" + suffix
 
         ema = ratios.ewm(span=window, adjust=False, min_periods=window).mean()
@@ -3107,7 +3210,7 @@ class Symbol(object):
                 self.set_plot_row(indicator_column=str(column_name), row_position=self.row_counter)
                 self.df.loc[:, column_name] = new_col
 
-        return pd.DataFrame({ratios.name: ratios, ema.name: ema}, index=self.df.index).sort_index(ascending=False)
+        return pd.DataFrame({ratios.name: ratios, ema.name: ema}, index=self.df.index).sort_index(ascending=True)
 
     def get_taker_maker_ratio_profile(self, bins: int = 100, hours: int = None, minutes: int = None, startTime: int or str = None,
                                       endTime: int or str = None, from_agg_trades=False, from_atomic_trades=False,
@@ -3126,7 +3229,9 @@ class Symbol(object):
         :return: A DataFrame representing the market profile, or None if no suitable data are available.
         """
         if self.market_profile_df.empty:
-            self.market_profile_df = self.get_market_profile(bins=bins, hours=hours, minutes=minutes, startTime=startTime, endTime=endTime, from_agg_trades=from_agg_trades, from_atomic_trades=from_atomic_trades, time_zone=time_zone)
+            self.market_profile_df = self.get_market_profile(bins=bins, hours=hours, minutes=minutes, startTime=startTime,
+                                                             endTime=endTime, from_agg_trades=from_agg_trades,
+                                                             from_atomic_trades=from_atomic_trades, time_zone=time_zone)
         return self.market_profile_df['Taker buy base volume'] / (
                 self.market_profile_df['Taker buy base volume'] + self.market_profile_df['Maker buy base volume'])
 
@@ -3200,7 +3305,7 @@ class Symbol(object):
             raise ValueError(f"Indicator '{name}' not found in the 'pandas_ta' module.")
 
     def support_resistance(self, from_atomic: bool = False, from_aggregated: bool = False, max_clusters: int = 5, by_quantity: float = None,
-                           inplace=True, colors: list = None) -> Tuple[List[float], List[float]]:
+                           simple: bool = True, inplace=True, colors: list = None) -> Tuple[List[float], List[float]]:
         """
         Calculate support and resistance levels for the Symbol based on either atomic trades or aggregated trades.
 
@@ -3208,6 +3313,7 @@ class Symbol(object):
         :param bool from_aggregated: If True, support and resistance levels will be calculated using aggregated trades.
         :param int max_clusters: If passed, fixes count of levels of support and resistance. Default is 5.
         :param float by_quantity: It takes each price into account by how many times the specified quantity appears in "Quantity" column.
+        :param bool simple: If True, it will calculate support and resistance levels merged. Just levels. Default is True.
         :param bool inplace: If True, it will replace the current dataframe with the new one. Default is True.
         :param list colors: A list of colors for the indicator dataframe columns. Is the color to show when plotting.
          It can be any color from plotly library or a number in the list of those. Default colors defined.
@@ -3216,34 +3322,58 @@ class Symbol(object):
         """
 
         if from_atomic:
+            from_data = "atomic trades"
             if self.atomic_trades.empty:
                 print(f"Please add atomic trades first: my_symbol.get_atomic_trades()")
             else:
                 if not by_quantity:
                     by_quantity = np.mean(self.atomic_trades['Quantity'].values)
-                self.s_lines, self.r_lines = support_resistance_levels(self.atomic_trades, max_clusters=max_clusters, by_quantity=by_quantity, by_klines=False)
+                if simple:
+                    self.s_lines = support_resistance_levels_merged(self.atomic_trades, max_clusters=max_clusters,
+                                                                    by_quantity=by_quantity, by_klines=False)
+                    self.r_lines = []
+                else:
+                    self.s_lines, self.r_lines = support_resistance_levels(self.atomic_trades, max_clusters=max_clusters,
+                                                                           by_quantity=by_quantity, by_klines=False)
         elif from_aggregated:
+            from_data = "aggregated trades"
             if self.agg_trades.empty:
                 print(f"Please add aggregated trades first: my_symbol.get_agg_trades()")
             else:
                 if not by_quantity:
                     by_quantity = np.mean(self.agg_trades['Quantity'].values)
-                self.s_lines, self.r_lines = support_resistance_levels(self.agg_trades, max_clusters=max_clusters, by_quantity=by_quantity, by_klines=False)
+
+                if simple:
+                    self.s_lines = support_resistance_levels_merged(self.agg_trades, max_clusters=max_clusters, by_quantity=by_quantity,
+                                                                    by_klines=False)
+                    self.r_lines = []
+                else:
+                    self.s_lines, self.r_lines = support_resistance_levels(self.agg_trades, max_clusters=max_clusters,
+                                                                           by_quantity=by_quantity, by_klines=False)
         else:  # with klines
+            from_data = "klines"
             if not by_quantity:
-                by_quantity = np.mean(self.df['Volume'].values)
-            self.s_lines, self.r_lines = support_resistance_levels(self.df, max_clusters=max_clusters, by_quantity=by_quantity, by_klines=True)
+                by_quantity = np.mean(self.df['Volume'].values) * 0.25
+            if simple:
+                self.s_lines = support_resistance_levels_merged(self.df, max_clusters=max_clusters, by_quantity=by_quantity, by_klines=True)
+                self.r_lines = []
+            else:
+                self.s_lines, self.r_lines = support_resistance_levels(self.df, max_clusters=max_clusters, by_quantity=by_quantity,
+                                                                       by_klines=True)
 
         if inplace:
             # update data
-            binpan_logger.info(f"Updating support_resistance levels for {self.symbol}")
+            binpan_logger.info(f"Updating support_resistance levels for {self.symbol} from {from_data}")
             if [c for c in self.df.columns if "Support" in c]:
                 self.delete_indicator_family(indicator_name_root="Support")
             if [c for c in self.df.columns if "Resistance" in c]:
                 self.delete_indicator_family(indicator_name_root="Resistance")
-
-            sup_cols = [f"Support_{k + 1}" for k in range(len(self.s_lines))]
-            res_cols = [f"Resistance_{k + 1}" for k in range(len(self.r_lines))]
+            if simple:
+                sup_cols = [f"Support_Resistance_{k + 1}" for k in range(len(self.s_lines))]
+                res_cols = []
+            else:
+                sup_cols = [f"Support_{k + 1}" for k in range(len(self.s_lines))]
+                res_cols = [f"Resistance_{k + 1}" for k in range(len(self.r_lines))]
 
             for i, c in enumerate(sup_cols):
                 self.df.loc[:, c] = self.s_lines[i]
@@ -3261,8 +3391,8 @@ class Symbol(object):
         return self.s_lines, self.r_lines
 
     def rolling_support_resistance(self, minutes_window: int = 8 * 60, time_steps_minutes: int = 4 * 60, from_atomic: bool = False,
-                                   from_aggregated: bool = False, max_clusters: int = 5, by_quantity: float = True, inplace: bool = True,
-                                   colors: list = None) -> pd.DataFrame or None:
+                                   from_aggregated: bool = False, max_clusters: int = 5, by_quantity: float = True, simple: bool = True,
+                                   inplace: bool = True, colors: list = None) -> pd.DataFrame or None:
         """
         Calculate support and resistance levels for the Symbol based on either atomic trades or aggregated trades in a rolling window.
 
@@ -3275,14 +3405,17 @@ class Symbol(object):
         :param bool from_aggregated: If True, support and resistance levels will be calculated using aggregated trades.
         :param int max_clusters: If passed, fixes count of levels of support and resistance. Default is 5.
         :param float by_quantity: It takes each price into account by how many times the specified quantity appears in "Quantity" column.
+        :param bool simple: If True, it will calculate support and resistance levels merged. Just levels. Default is True.
         :param bool inplace: If True, it will replace the current dataframe with the new one. Default is True.
         :param list colors: A list of colors for the indicator dataframe columns. Is the color to show when plotting.
          It can be any color from plotly library or a number in the list of those. Default colors defined.
          https://community.plotly.com/t/plotly-colours-list/11730
-        :return pd.DataFrame: A pandas dataframe with each column representing ordered levels from higher to lower for support and resistance.
+        :return pd.DataFrame: A pandas dataframe with each column representing ordered levels from higher to lower for support and
+        resistance.
 
         """
-        binpan_logger.info(f"Each {time_steps_minutes} minutes, support and resistance will be calculated with the last {minutes_window} minutes  data")
+        binpan_logger.info(f"Each {time_steps_minutes} minutes, support and resistance will be calculated with the last {minutes_window} "
+                           f"minutes  data")
         by_klines = False
 
         if from_atomic:
@@ -3317,7 +3450,13 @@ class Symbol(object):
             df_window = df.loc[start - pd.Timedelta(delta_window): start]
 
             # Aplica la función hipotética al fragmento del DataFrame
-            s_lines, r_lines = support_resistance_levels(df=df_window, max_clusters=max_clusters, by_quantity=by_quantity, by_klines=by_klines, quiet=True)
+            if simple:
+                s_lines = support_resistance_levels_merged(df=df_window, max_clusters=max_clusters, by_quantity=by_quantity,
+                                                           by_klines=by_klines, quiet=True)
+                r_lines = []
+            else:
+                s_lines, r_lines = support_resistance_levels(df=df_window, max_clusters=max_clusters, by_quantity=by_quantity,
+                                                             by_klines=by_klines, quiet=True)
 
             for k, sup in enumerate(s_lines):
                 result.loc[start:end, sup_cols[k]] = sup
@@ -3326,7 +3465,7 @@ class Symbol(object):
 
         if inplace:
             # update data
-            binpan_logger.info(f"Updating rolling_support_resistance_df: {sup_cols}, {res_cols}")
+            binpan_logger.info(f"Updating rolling_support_resistance_df: {sup_cols}, {res_cols} in simple mode = {simple}")
             del self.rolling_support_resistance_df
             self.rolling_support_resistance_df = result  # before reindexing for klines integration. remember this can be from trades
 
@@ -3349,6 +3488,101 @@ class Symbol(object):
                 self.set_plot_row(indicator_column=str(column_name), row_position=1)  # overlaps are one
 
         return self.rolling_support_resistance_df
+
+    def time_action(self, from_atomic: bool = False, from_aggregated: bool = False, max_clusters: int = 5, by_quantity: float = None,
+                    simple: bool = True) -> Tuple[List[float], List[float]]:
+        """
+        Calculate centroids for timestamps of more activity in taker buys or takers sells.
+
+        :param bool from_atomic: If True, centroids will be calculated using atomic trades.
+        :param bool from_aggregated: If True, centroids will be calculated using aggregated trades.
+        :param int max_clusters: If passed, fixes count of levels of support and resistance. Default is 5.
+        :param float by_quantity: It takes each price into account by how many times the specified quantity appears in "Quantity" column.
+        :param bool simple: If True, it will calculate centroids merged. Just levels. Default is True.
+        :return: A tuple containing two lists: the first list contains buy centroids, and the second list contains sell centroids.
+
+        .. image:: images/indicators/time_action.png
+           :width: 1000
+
+        """
+
+        if from_atomic:
+            from_data = "atomic trades"
+            if self.atomic_trades.empty:
+                print(f"Please add atomic trades first: my_symbol.get_atomic_trades()")
+            else:
+                if not by_quantity:
+                    by_quantity = np.mean(self.atomic_trades['Quantity'].values)
+                if simple:
+                    self.blue_timestamps, self.red_timestamps = time_active_zones(self.atomic_trades, max_clusters=max_clusters,
+                                                                                  by_quantity=by_quantity,
+                                                                                  simple=simple)
+
+                else:
+                    self.blue_timestamps, self.red_timestamps = time_active_zones(self.atomic_trades, max_clusters=max_clusters,
+                                                                                  by_quantity=by_quantity, simple=simple)
+        elif from_aggregated:
+            from_data = "aggregated trades"
+            if self.agg_trades.empty:
+                print(f"Please add aggregated trades first: my_symbol.get_agg_trades()")
+            else:
+                if not by_quantity:
+                    by_quantity = np.mean(self.agg_trades['Quantity'].values)
+
+                if simple:
+                    self.blue_timestamps, self.red_timestamps = time_active_zones(self.agg_trades,
+                                                                                  max_clusters=max_clusters,
+                                                                                  by_quantity=by_quantity,
+                                                                                  simple=simple)
+
+                else:
+                    self.blue_timestamps, self.red_timestamps = time_active_zones(self.agg_trades,
+                                                                                  max_clusters=max_clusters,
+                                                                                  by_quantity=by_quantity, simple=simple)
+        else:  # with klines
+            from_data = "klines"
+            if not by_quantity:
+                by_quantity = np.mean(self.df['Volume'].values) * 0.25
+            if simple:
+                self.blue_timestamps, self.red_timestamps = time_active_zones(self.df,
+                                                                              max_clusters=max_clusters,
+                                                                              by_quantity=by_quantity,
+                                                                              simple=simple)
+
+            else:
+                self.blue_timestamps, self.red_timestamps = time_active_zones(self.df,
+                                                                              max_clusters=max_clusters,
+                                                                              by_quantity=by_quantity, simple=simple)
+        binpan_logger.info(f"Time centroids added from {from_data}")
+        # if inplace:
+        #     # update data
+        #     binpan_logger.info(f"Updating timestamp centroids for {self.symbol} from {from_data}")
+        #     if [c for c in self.df.columns if "Buys_time_centroid" in c]:
+        #         self.delete_indicator_family(indicator_name_root="Buys_time")
+        #     if [c for c in self.df.columns if "Sells_time_centroid" in c]:
+        #         self.delete_indicator_family(indicator_name_root="Sells_time")
+        #     if [c for c in self.df.columns if "Time_centroid" in c]:
+        #         self.delete_indicator_family(indicator_name_root="Time_centroid")
+        #     if simple:
+        #         sup_cols = [f"Time_centroid_{k + 1}" for k in range(len(self.blue_timestamps))]
+        #         res_cols = []
+        #     else:
+        #         sup_cols = [f"Buys_time_centroid{k + 1}" for k in range(len(self.blue_timestamps))]
+        #         res_cols = [f"Sells_time_centroid{k + 1}" for k in range(len(self.red_timestamps))]
+        # for i, c in enumerate(sup_cols):
+        #     self.df.loc[:, c] = self.blue_timestamps[i]
+        # for i, c in enumerate(res_cols):
+        #     self.df.loc[:, c] = self.red_timestamps[i]
+
+        # add plot info
+        # if not colors:
+        #     colors = ["blue" for _ in sup_cols] + ["red" for _ in res_cols]
+
+        # for i, column_name in enumerate(sup_cols + res_cols):
+        #     self.set_plot_color(indicator_column=column_name, color=colors[i])
+        #     self.set_plot_color_fill(indicator_column=column_name, color_fill=False)
+        #     self.set_plot_row(indicator_column=str(column_name), row_position=1)  # overlaps are one  # return self.df
+        return self.blue_timestamps, self.red_timestamps
 
     #############
     # Relations #
@@ -3432,7 +3666,8 @@ class Symbol(object):
             self.df.loc[:, column_name] = compared
 
         if strategy_group:
-            self.strategy_groups = tag_column_to_strategy_group(column=column_name, group=strategy_group, strategy_groups=self.strategy_groups)
+            self.strategy_groups = tag_column_to_strategy_group(column=column_name, group=strategy_group,
+                                                                strategy_groups=self.strategy_groups)
         return compared
 
     def cross(self, slow: str or int or float or pd.Series, fast: str or int or pd.Series = 'Close', cross_over_tag: str or int = 1,
@@ -3498,7 +3733,8 @@ class Symbol(object):
 
         column_name = f"Cross_{data_b.name}_{data_a.name}" + suffix
 
-        cross = tag_cross(serie_a=data_a, serie_b=data_b, echo=echo, cross_over_tag=cross_over_tag, cross_below_tag=cross_below_tag, name=column_name, non_zeros=non_zeros)
+        cross = tag_cross(serie_a=data_a, serie_b=data_b, echo=echo, cross_over_tag=cross_over_tag, cross_below_tag=cross_below_tag,
+                          name=column_name, non_zeros=non_zeros)
 
         if inplace and self.is_new(cross):
             self.row_counter += 1
@@ -3508,7 +3744,8 @@ class Symbol(object):
             self.df.loc[:, column_name] = cross
 
         if strategy_group:
-            self.strategy_groups = tag_column_to_strategy_group(column=column_name, group=strategy_group, strategy_groups=self.strategy_groups)
+            self.strategy_groups = tag_column_to_strategy_group(column=column_name, group=strategy_group,
+                                                                strategy_groups=self.strategy_groups)
         return cross
 
     def shift(self, column: str or int or pd.Series, window=1, strategy_group: str = '', inplace=True, suffix: str = '',
@@ -3553,7 +3790,8 @@ class Symbol(object):
             self.df.loc[:, column_name] = shift
 
         if strategy_group:
-            self.strategy_groups = tag_column_to_strategy_group(column=column_name, group=strategy_group, strategy_groups=self.strategy_groups)
+            self.strategy_groups = tag_column_to_strategy_group(column=column_name, group=strategy_group,
+                                                                strategy_groups=self.strategy_groups)
 
         return shift
 
@@ -3614,7 +3852,8 @@ class Symbol(object):
             self.df.loc[:, column_name] = merged
 
         if strategy_group:
-            self.strategy_groups = tag_column_to_strategy_group(column=column_name, group=strategy_group, strategy_groups=self.strategy_groups)
+            self.strategy_groups = tag_column_to_strategy_group(column=column_name, group=strategy_group,
+                                                                strategy_groups=self.strategy_groups)
         return merged
 
     def clean_in_out(self, column: str or int or pd.Series, in_tag=1, out_tag=-1, strategy_group: str = '', inplace=True, suffix: str = '',
@@ -3667,7 +3906,8 @@ class Symbol(object):
             self.df.loc[:, column_name] = clean
 
         if strategy_group:
-            self.strategy_groups = tag_column_to_strategy_group(column=column_name, group=strategy_group, strategy_groups=self.strategy_groups)
+            self.strategy_groups = tag_column_to_strategy_group(column=column_name, group=strategy_group,
+                                                                strategy_groups=self.strategy_groups)
         return clean
 
     def strategy_from_tags_crosses(self, columns: list = None, strategy_group: str = '', matching_tag=1, method: str = 'all',
@@ -3801,6 +4041,19 @@ class Symbol(object):
             self.df.loc[:, column_name] = my_ffill
         return my_ffill
 
+    def check_continuity(self):
+        """
+        Verify if the dataframe has continuity in klines by "Open timestamp" column.
+        """
+        dif = self.df['Open timestamp'].diff().dropna()  # Drop the NaN value for the first row
+        try:
+            assert len(dif.value_counts()) == 1, "BinPan Exception: Dataframe has gaps in klines continuity."
+        except AssertionError:
+            mask = (dif != dif.iloc[0]).reindex(self.df.index).fillna(False)
+            gaps = self.df.loc[mask, ['Open timestamp', 'Close timestamp']]
+            binpan_logger.warning(f"BinPan Warning: Dataframe has gaps in klines continuity: \n{gaps}")
+            binpan_logger.warning(f"\nTimestamp differences detected: \n{dif[mask]}")
+
 
 class Exchange(object):
     """
@@ -3840,7 +4093,8 @@ class Exchange(object):
         self.bases = get_bases_dic(info_dic=self.info_dic)
         self.quotes = get_quotes_dic(info_dic=self.info_dic)
         self.leveraged = get_leveraged_coins(coins_dic=self.coins_dic, decimal_mode=False, api_key=self.api_key, api_secret=self.api_secret)
-        self.leveraged_symbols = get_leveraged_symbols(info_dic=self.info_dic, leveraged_coins=self.leveraged, decimal_mode=False, api_key=self.api_key, api_secret=self.api_secret)
+        self.leveraged_symbols = get_leveraged_symbols(info_dic=self.info_dic, leveraged_coins=self.leveraged, decimal_mode=False,
+                                                       api_key=self.api_key, api_secret=self.api_secret)
 
         self.fees = get_fees(decimal_mode=False, api_key=self.api_key, api_secret=self.api_secret)
         self.filters = get_symbols_filters(info_dic=self.info_dic)
@@ -4012,7 +4266,14 @@ class Wallet(object):
             self.time_zone = time_zone
 
         self.spot_startTime = startTime
-        self.spot_snapshot = daily_account_snapshot(account_type='SPOT', startTime=convert_str_date_to_ms(date=startTime, time_zone=self.time_zone), endTime=convert_str_date_to_ms(date=endTime, time_zone=self.time_zone), limit=snapshot_days, time_zone=self.time_zone, decimal_mode=False, api_key=self.api_key, api_secret=self.api_secret)
+        self.spot_snapshot = daily_account_snapshot(account_type='SPOT', startTime=convert_str_date_to_ms(date=startTime,
+                                                                                                          time_zone=self.time_zone),
+                                                    endTime=convert_str_date_to_ms(
+                                                        date=endTime,
+                                                        time_zone=self.time_zone),
+                                                    limit=snapshot_days,
+                                                    time_zone=self.time_zone, decimal_mode=False, api_key=self.api_key,
+                                                    api_secret=self.api_secret)
         self.spot_endTime = endTime
         self.spot_requested_days = snapshot_days
 
@@ -4043,7 +4304,13 @@ class Wallet(object):
         if time_zone:
             self.time_zone = time_zone
 
-        self.spot = daily_account_snapshot(account_type='MARGIN', startTime=convert_str_date_to_ms(date=startTime, time_zone=self.time_zone), endTime=convert_str_date_to_ms(date=endTime, time_zone=self.time_zone), limit=snapshot_days, time_zone=self.time_zone, decimal_mode=False, api_key=self.api_key, api_secret=self.api_secret)
+        self.spot = daily_account_snapshot(account_type='MARGIN', startTime=convert_str_date_to_ms(date=startTime,
+                                                                                                   time_zone=self.time_zone),
+                                           endTime=convert_str_date_to_ms(
+                                               date=endTime,
+                                               time_zone=self.time_zone),
+                                           limit=snapshot_days,
+                                           time_zone=self.time_zone, decimal_mode=False, api_key=self.api_key, api_secret=self.api_secret)
         self.margin_startTime = startTime
         self.margin_endTime = endTime
         self.margin_requested_days = snapshot_days
@@ -4060,7 +4327,13 @@ class Wallet(object):
         :return float: Value increase or decrease with current value of convert_to coin.
         """
         if days != self.spot_requested_days or startTime != self.spot_startTime or endTime != self.spot_endTime:
-            self.spot = daily_account_snapshot(account_type='SPOT', startTime=convert_str_date_to_ms(date=startTime, time_zone=self.time_zone), endTime=convert_str_date_to_ms(date=endTime, time_zone=self.time_zone), limit=days, time_zone=self.time_zone, decimal_mode=False, api_key=self.api_key, api_secret=self.api_secret)
+            self.spot = daily_account_snapshot(account_type='SPOT', startTime=convert_str_date_to_ms(date=startTime,
+                                                                                                     time_zone=self.time_zone),
+                                               endTime=convert_str_date_to_ms(
+                                                   date=endTime,
+                                                   time_zone=self.time_zone), limit=days,
+                                               time_zone=self.time_zone, decimal_mode=False, api_key=self.api_key,
+                                               api_secret=self.api_secret)
             self.spot_startTime = startTime
             self.spot_endTime = endTime
             self.spot_requested_days = days
@@ -4086,7 +4359,14 @@ class Wallet(object):
         :return float: Value increase or decrease with current value of convert_to coin.
         """
         if days != self.margin_requested_days or startTime != self.margin_startTime or endTime != self.margin_endTime:
-            self.margin = daily_account_snapshot(account_type='MARGIN', startTime=convert_str_date_to_ms(date=startTime, time_zone=self.time_zone), endTime=convert_str_date_to_ms(date=endTime, time_zone=self.time_zone), limit=days, time_zone=self.time_zone, decimal_mode=False, api_key=self.api_key, api_secret=self.api_secret)
+            self.margin = daily_account_snapshot(account_type='MARGIN', startTime=convert_str_date_to_ms(date=startTime,
+                                                                                                         time_zone=self.time_zone),
+                                                 endTime=convert_str_date_to_ms(
+                                                     date=endTime,
+                                                     time_zone=self.time_zone),
+                                                 limit=days,
+                                                 time_zone=self.time_zone, decimal_mode=False, api_key=self.api_key,
+                                                 api_secret=self.api_secret)
             self.margin_startTime = startTime
             self.margin_endTime = endTime
             self.margin_requested_days = days
