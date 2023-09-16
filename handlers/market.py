@@ -149,7 +149,8 @@ def get_candles_by_time_stamps(symbol: str,
     :param int start_time: A timestamp in milliseconds from epoch.
     :param int end_time: A timestamp in milliseconds from epoch.
     :param int limit: Count of candles to ask for.
-    :param bool or StrictRedis or dict redis_client: A redis instance of a connector. Also can be passed a dictionary with redis client configuration. Example:
+    :param bool or StrictRedis or dict redis_client: A redis instance of a connector. Also can be passed a dictionary with redis client
+    configuration. Example:
 
         redis_client = {'host': '192.168.89.242', 'port': 6379, 'db': 0, 'decode_responses': True}
 
@@ -256,8 +257,8 @@ def get_candles_by_time_stamps(symbol: str,
     return raw_candles
 
 
-def get_historical_candles(symbol: str, tick_interval: str, start_time: int, end_time: int, tick_interval_ms: int,
-                           limit: int = 1000) -> list:
+def get_historical_candles_old(symbol: str, tick_interval: str, start_time: int, end_time: int, tick_interval_ms: int,
+                               limit: int = 1000) -> list:
     """
     Retrieve all kline data within the given time range considering the API limit.
 
@@ -277,7 +278,51 @@ def get_historical_candles(symbol: str, tick_interval: str, start_time: int, end
         current_start_time = start_time + i * limit * tick_interval_ms
         current_end_time = min(current_start_time + (limit - 1) * tick_interval_ms, end_time)
 
-        data = get_candles_by_time_stamps(symbol=symbol, tick_interval=tick_interval, start_time=current_start_time, end_time=current_end_time)
+        data = get_candles_by_time_stamps(symbol=symbol, tick_interval=tick_interval, start_time=current_start_time,
+                                          end_time=current_end_time)
+        all_data.extend(data)
+
+    return all_data
+
+
+def get_historical_candles(symbol: str,
+                           tick_interval: str,
+                           start_time: int,
+                           end_time: int,
+                           tick_interval_ms: int,
+                           limit: int = 1000,
+                           ignore_errors: bool = False) -> list:
+    """
+    Retrieve all kline data within the given time range considering the API limit.
+
+    :param str symbol: The trading pair symbol (e.g., "BTCUSDT").
+    :param str tick_interval: Kline tick interval (e.g., "1m", "3m", "1h").
+    :param int start_time: Start timestamp (milliseconds) of the time range.
+    :param int end_time: End timestamp (milliseconds) of the time range.
+    :param int tick_interval_ms: Kline tick interval in milliseconds.
+    :param int limit: API limit for the number of klines in a single request (default: 1000).
+    :param bool ignore_errors: If tru, just throw a warning on error. Recommended for redis filler.
+    :return: A list of klines data within the given time range.
+    :rtype: list
+    """
+    iterations = calculate_iterations(start_time, end_time, tick_interval_ms, limit)
+    all_data = []
+
+    for i in range(iterations):
+        current_start_time = start_time + i * limit * tick_interval_ms
+        current_end_time = min(current_start_time + (limit - 1) * tick_interval_ms, end_time)
+        if ignore_errors:
+            try:
+                data = get_candles_by_time_stamps(symbol=symbol,
+                                                  tick_interval=tick_interval,
+                                                  start_time=current_start_time,
+                                                  end_time=current_end_time)
+            except Exception as e:
+                market_logger.warning(f"{symbol} kline_{tick_interval} missing: {e}")
+                continue
+        else:
+            data = get_candles_by_time_stamps(symbol=symbol, tick_interval=tick_interval, start_time=current_start_time,
+                                              end_time=current_end_time)
         all_data.extend(data)
 
     return all_data
@@ -420,7 +465,8 @@ def get_last_agg_trades(symbol: str, limit=1000) -> list:
 
     GET /api/v3/aggTrades
 
-    Get compressed, aggregate trades. Trades that fill at the time, from the same order, with the same price will have the quantity aggregated.
+    Get compressed, aggregate trades. Trades that fill at the time, from the same order, with the same price will have the quantity
+    aggregated.
 
     Weight(IP): 1
 
@@ -460,7 +506,8 @@ def get_aggregated_trades(symbol: str, fromId: int = None, limit: int = None, de
 
     GET /api/v3/aggTrades
 
-    Get compressed, aggregate trades. Trades that fill at the time, from the same order, with the same price will have the quantity aggregated.
+    Get compressed, aggregate trades. Trades that fill at the time, from the same order, with the same price will have the quantity
+    aggregated.
 
     Weight(IP): 1
 
@@ -581,7 +628,8 @@ def get_historical_agg_trades(symbol: str,
         if startTime:
             while current_first_trade_time >= startTime:
                 requests_cnt += 1
-                market_logger.info(f"Requests API for aggregated trades searching STARTIME {symbol}: {requests_cnt} current_first_trade:{current_first_trade}")
+                market_logger.info(f"Requests API for aggregated trades searching STARTIME {symbol}: {requests_cnt} current_first_trade:"
+                                   f"{current_first_trade}")
                 fetched_older_trades = get_aggregated_trades(symbol=symbol, fromId=current_first_trade - 1000, limit=1000)
                 trades = fetched_older_trades + trades
                 current_first_trade_time = trades[0]['T']
@@ -594,7 +642,8 @@ def get_historical_agg_trades(symbol: str,
 
             while current_last_trade_time <= endTime:
                 requests_cnt += 1
-                market_logger.info(f"Requests API for aggregated trades searching ENDTIME {symbol}: {requests_cnt}  current_last_trade:{current_last_trade}")
+                market_logger.info(f"Requests API for aggregated trades searching ENDTIME {symbol}: "
+                                   f"{requests_cnt}  current_last_trade:{current_last_trade}")
                 fetched_newer_trades = get_aggregated_trades(symbol=symbol, fromId=current_last_trade, limit=1000)
                 trades += fetched_newer_trades
                 current_last_trade = trades[-1]['a']
@@ -788,7 +837,8 @@ def get_historical_atomic_trades(symbol: str, startTime: int = None, endTime: in
     :param int endTime: A timestamp in milliseconds from epoch.
     :param int start_trade_id: A trade id as first one (older).
     :param int end_trade_id: A trade id as last one (newer).
-    :param int limit: Limit for missing heads or tails of the interval requested with timestamps or trade ids. Ignored if  start and end passed.
+    :param int limit: Limit for missing heads or tails of the interval requested with timestamps or trade ids. Ignored if  start and end
+    passed.
     :param str symbol: A binance valid symbol.
     :param bool redis_client_trades: A redis instance of a connector. Must be a trades redis connector, usually different configuration
      from candles redis server.
@@ -851,7 +901,8 @@ def get_historical_atomic_trades(symbol: str, startTime: int = None, endTime: in
         if startTime:
             while current_first_trade_time >= startTime:
                 requests_cnt += 1
-                market_logger.info(f"Requests API for atomic trades searching STARTIME {symbol}: {requests_cnt} current_first_trade:{current_first_trade}")
+                market_logger.info(f"Requests API for atomic trades searching STARTIME {symbol}: {requests_cnt} current_first_trade:"
+                                   f"{current_first_trade}")
                 fetched_older_trades = get_atomic_trades(symbol=symbol, fromId=current_first_trade - 1000, limit=1000)
                 trades = fetched_older_trades + trades
                 current_first_trade_time = trades[0]['time']
@@ -864,7 +915,8 @@ def get_historical_atomic_trades(symbol: str, startTime: int = None, endTime: in
 
             while current_last_trade_time <= endTime:
                 requests_cnt += 1
-                market_logger.info(f"Requests API for atomic trades searching ENDTIME {symbol}: {requests_cnt} current_last_trade:{current_last_trade}")
+                market_logger.info(f"Requests API for atomic trades searching ENDTIME {symbol}: {requests_cnt} current_last_trade:"
+                                   f"{current_last_trade}")
                 fetched_newer_trades = get_atomic_trades(symbol=symbol, fromId=current_last_trade, limit=1000)
                 trades += fetched_newer_trades
                 current_last_trade = trades[-1]['id']
@@ -910,7 +962,11 @@ def get_historical_atomic_trades(symbol: str, startTime: int = None, endTime: in
     return response
 
 
-def parse_atomic_trades_to_dataframe(response: list, columns: dict, symbol: str, time_zone: str = None, time_index: bool = None,
+def parse_atomic_trades_to_dataframe(response: list,
+                                     columns: dict,
+                                     symbol: str,
+                                     time_zone: str = None,
+                                     time_index: bool = None,
                                      drop_dupes: str = None):
     """
     Parses the API response into a pandas dataframe.

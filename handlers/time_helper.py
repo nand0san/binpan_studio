@@ -54,7 +54,7 @@ def convert_ms_column_to_datetime_with_zone(df: pd.DataFrame, col: str, time_zon
         return df[col].dt.tz_convert(time_zone)
 
 
-def convert_datetime_to_string(dt: datetime) -> str:
+def convert_datetime_to_string(dt) -> str:
     """Convierte datetime tanto utc como local. No cambia zona horaria"""
     return dt.strftime("%Y-%m-%d %H:%M:%S")
 
@@ -265,8 +265,6 @@ def utc_datetime() -> datetime:
 def check_tick_interval(tick_interval: str) -> str:
     """
     Checks if argument is a Binance valid tick interval for candles.
-
-    Assumed 1 month is not usually used "1M"
 
     :param str tick_interval: A string, maybe, binance tick interval well formatted.
 

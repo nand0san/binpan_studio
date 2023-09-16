@@ -52,6 +52,8 @@ from handlers.wallet import convert_str_date_to_ms, convert_coin, get_margin_bal
 
 from handlers.aggregations import resample_klines
 
+from handlers.standards import *
+
 if is_running_in_jupyter():
     from tqdm.notebook import tqdm
 else:
@@ -242,31 +244,25 @@ class Symbol(object):
         if not from_csv:
             tick_interval = check_tick_interval(tick_interval)
 
-        self.original_candles_cols = ['Open time', 'Open', 'High', 'Low', 'Close', 'Volume', 'Close time', 'Quote volume', 'Trades',
-                                      'Taker buy base volume', 'Taker buy quote volume', 'Ignore', 'Open timestamp', 'Close timestamp']
+        # dataframe columns
+        self.original_candles_cols = original_candles_cols
+        self.presentation_columns = presentation_columns
 
-        self.presentation_columns = ['Open', 'High', 'Low', 'Close', 'Volume', 'Quote volume', 'Trades', 'Taker buy base volume',
-                                     'Taker buy quote volume']
-
-        self.agg_trades_columns = {'M': 'Best price match', 'm': 'Buyer was maker', 'T': 'Timestamp', 'l': 'Last tradeId',
-                                   'f': 'First tradeId', 'q': 'Quantity', 'p': 'Price', 'a': 'Aggregate tradeId'}
-
-        self.atomic_trades_columns = {'id': 'Trade Id', 'price': 'Price', 'qty': 'Quantity', 'quoteQty': 'Quote quantity',
-                                      'time': 'Timestamp', 'isBuyerMaker': 'Buyer was maker', 'isBestMatch': 'Best price match'}
+        # trades columns
+        self.agg_trades_columns = agg_trades_columns
+        self.atomic_trades_columns = atomic_trades_columns
 
         # updated from binpan cache modificados para el parser
-        self.agg_trades_columns_redis = {'a': "Aggregate tradeId", 'p': 'Price', 'q': 'Quantity', 'f': "First tradeId", 'l': "Last tradeId",
-                                         'T': "Timestamp", 'm': "Buyer was maker", 'M': "Best price match"}
+        self.agg_trades_columns_redis = agg_trades_columns_redis
 
         # updated from binpan cache modificados para el parser
-        self.atomic_trades_columns_redis = {'t': "Trade Id", 'p': 'Price', 'q': 'Quantity',  # quote qty missing in atomic trades websockets
-                                            'b': "Buyer Order Id", 'a': "Seller Order Id", 'T': "Timestamp", 'm': "Buyer was maker",
-                                            'M': "Best price match"}
+        self.atomic_trades_columns_redis = atomic_trades_columns_redis
 
-        self.reversal_columns = ['Open', 'High', 'Low', 'Close', 'Quantity', 'Timestamp']
+        self.reversal_columns = reversal_columns
 
-        self.time_cols = ['Open time', 'Close time']
-        self.dts_time_cols = ['Open timestamp', 'Close timestamp']
+        # time cols
+        self.time_cols = time_cols
+        self.dts_time_cols = dts_time_cols
 
         self.version = __version__
 
@@ -1266,12 +1262,14 @@ class Symbol(object):
 
             if self.from_redis:
                 self.atomic_trades = parse_atomic_trades_to_dataframe(response=self.raw_atomic_trades,
-                                                                      columns=self.atomic_trades_columns_redis, symbol=self.symbol,
+                                                                      columns=self.atomic_trades_columns_redis,
+                                                                      symbol=self.symbol,
                                                                       time_zone=self.time_zone, time_index=self.time_index,
                                                                       drop_dupes='Trade Id')
             else:
                 self.atomic_trades = parse_atomic_trades_to_dataframe(response=self.raw_atomic_trades,
-                                                                      columns=self.atomic_trades_columns, symbol=self.symbol,
+                                                                      columns=self.atomic_trades_columns,
+                                                                      symbol=self.symbol,
                                                                       time_zone=self.time_zone, time_index=self.time_index,
                                                                       drop_dupes='Trade Id')
         self.atomic_trades = convert_to_numeric(data=self.atomic_trades)
@@ -3432,7 +3430,7 @@ class Symbol(object):
         try:
             assert isinstance(df.index, pd.DatetimeIndex), "Index is not DatetimeIndex"
         except AssertionError as e:
-            binpan_logger.error(f"rolling_support_resistance error: {e}")
+            binpan_logger.error(f"BinPan rolling_support_resistance error: {e}")
             return None
 
         result = pd.DataFrame(index=df.index)
@@ -3459,7 +3457,6 @@ class Symbol(object):
             else:
                 s_lines, r_lines = support_resistance_levels(df=df_window, max_clusters=max_clusters, by_quantity=by_quantity,
                                                              by_klines=by_klines, quiet=True)
-
             for k, sup in enumerate(s_lines):
                 result.loc[start:end, sup_cols[k]] = sup
             for k, res in enumerate(r_lines):
