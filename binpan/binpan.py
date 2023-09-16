@@ -3,7 +3,7 @@
 This is the main classes file.
 
 """
-__version__ = "0.4.37"
+__version__ = "0.5.0"
 
 import os
 from sys import path
@@ -11,44 +11,40 @@ import pandas as pd
 from typing import Tuple, List, Union
 import pandas_ta as ta
 from random import choice
-import importlib
 from time import time
 import numpy as np
 
+from binpan.exchange_manager import Exchange
 from handlers.exceptions import MissingBinanceApiData, BinPanException
 
-from handlers.exchange import get_decimal_positions, get_info_dic, get_precision, get_orderTypes_and_permissions, get_fees, \
-    get_coins_and_networks_info, get_leveraged_coins, get_symbols_filters, get_bases_dic, get_quotes_dic, get_coins_info_dic, \
-    get_leveraged_symbols, get_system_status
-
+from handlers.exchange import (get_decimal_positions, get_info_dic, get_precision, get_orderTypes_and_permissions, get_fees,
+                               get_symbols_filters)
 from handlers.files import select_file, read_csv_to_dataframe, save_dataframe_to_csv, extract_filename_metadata
 
-from handlers.indicators import (df_splitter, reversal_candles, zoom_cloud_indicators, ichimoku, fractal_w_indicator, \
+from handlers.indicators import (df_splitter, reversal_candles, zoom_cloud_indicators, ichimoku, fractal_w_indicator,
                                  support_resistance_levels, ffill_indicator, shift_indicator, market_profile_from_klines_melt,
                                  alternating_fractal_indicator, fractal_trend_indicator, market_profile_from_klines_grouped,
                                  market_profile_from_trades_grouped, support_resistance_levels_merged, time_active_zones)
 
 from handlers.logs import Logs
 
-from handlers.market import agg_trades_columns_from_binance, agg_trades_columns_from_redis, atomic_trades_columns_from_binance, \
-    atomic_trades_columns_from_redis, get_candles_by_time_stamps, parse_candles_to_dataframe, convert_to_numeric, basic_dataframe, \
-    get_historical_agg_trades, parse_agg_trades_to_dataframe, get_historical_atomic_trades, parse_atomic_trades_to_dataframe, get_order_book
+from handlers.market import (agg_trades_columns_from_binance, atomic_trades_columns_from_binance, get_candles_by_time_stamps,
+                             parse_candles_to_dataframe, convert_to_numeric, basic_dataframe, get_historical_agg_trades,
+                             parse_agg_trades_to_dataframe, get_historical_atomic_trades, parse_atomic_trades_to_dataframe, get_order_book)
 
-from handlers.plotting import plotly_colors, plot_trades, candles_ta, plot_pie, plot_hists_vs, candles_tagged, bar_plot, plot_scatter, \
-    orderbook_depth, dist_plot, plot_orderbook_value, profile_plot
-
-from handlers.redis_fetch import manage_redis, manage_sentinel, orderbook_value_to_dataframe, fetch_zset_range, \
-    redis_extract_orderbook_value_quantities
+from handlers.plotting import (plotly_colors, plot_trades, candles_ta, plot_pie, plot_hists_vs, candles_tagged, bar_plot, plot_scatter,
+                               orderbook_depth, dist_plot, profile_plot)
 
 from handlers.starters import import_secret_module, is_running_in_jupyter
 
-from handlers.time_helper import tick_seconds, pandas_freq_tick_interval, check_tick_interval, open_from_milliseconds, time_interval, \
-    convert_milliseconds_to_str, get_dataframe_time_index_ranges, remove_initial_included_ranges, tick_interval_values
+from handlers.time_helper import (pandas_freq_tick_interval, check_tick_interval, open_from_milliseconds, time_interval,
+                                  convert_milliseconds_to_str, get_dataframe_time_index_ranges, remove_initial_included_ranges,
+                                  tick_interval_values)
 
 from handlers.tags import tag_column_to_strategy_group, backtesting, backtesting_short, tag_comparison, tag_cross, merge_series, \
     clean_in_out
 
-from handlers.wallet import convert_str_date_to_ms, convert_coin, get_margin_balances, daily_account_snapshot, get_spot_balances_df
+from handlers.wallet import convert_str_date_to_ms
 
 from handlers.aggregations import resample_klines
 
@@ -60,10 +56,6 @@ else:
     from tqdm import tqdm
 
 binpan_logger = Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
-
-plotly_colors = plotly_colors
-tick_seconds = tick_seconds
-# pandas_freq_tick_interval = pandas_freq_tick_interval
 
 pd.set_option('display.max_columns', 20)
 pd.set_option('display.width', 250)
@@ -152,26 +144,7 @@ class Symbol(object):
                         because daily time saving changes.
 
     :param bool time_index:  Shows human-readable index in the dataframe. Set to False shows numeric index. default is True.
-
     :param bool closed:      The last candle is a closed one in the moment of the creation, instead of a running candle not closed yet.
-    :param bool or dict or StrictRedis from_redis: If enabled, BinPan will look for a secret file with the redis ip,
-        port and any other parameter in a map. But can be passed a StrictRedis client object previously configured.
-        Also supports passing a redis client instance.
-
-        .. code-block::
-
-            # secret.py example:
-            redis_conf = {'host':'192.168.1.5','port': 6379,'db': 0,'decode_responses': True}
-
-    :param bool sentinel_redis: If True, checks for a variable called sentinel_data in the secret.py file. Also a dict
-        with data can be passed as argument like this:
-
-        .. code-block::
-
-            # secret.py example:
-            sentinel_data = {'hosts': [("192.168.89.241", 26379), ("192.168.89.242", 26379), ("192.168.89.243", 26379)],
-                             'password': None,'name': 'mymaster'}
-
     :param int display_columns:     Number of columns in the dataframe display. Convenient to adjust in jupyter notebooks.
     :param int display_rows:        Number of rows in the dataframe display. Convenient to adjust in jupyter notebooks.
     :param int display_width:       Display width in the dataframe display. Convenient to adjust in jupyter notebooks.
@@ -209,36 +182,33 @@ class Symbol(object):
 
     """
 
-    def __init__(self, symbol: str = None, tick_interval: str = None, start_time: int or str = None, end_time: int or str = None,
-                 limit: int = 1000, time_zone: str = 'Europe/Madrid', time_index: bool = True, closed: bool = True,
-                 from_redis: bool or object = None,  # ahorro un import si no pongo StrictRedis
-                 sentinel_redis: bool or dict = False, hours: int = None, display_columns: int = 25, display_rows: int = 10,
-                 display_min_rows: int = 25, display_width: int = 320, from_csv: Union[bool, str] = False, info_dic: dict = None):
+    def __init__(self,
+                 symbol: str = None,
+                 tick_interval: str = None,
+                 start_time: int or str = None,
+                 end_time: int or str = None,
+                 limit: int = 1000,
+                 time_zone: str = 'Europe/Madrid',
+                 time_index: bool = True,
+                 closed: bool = True,
+                 hours: int = None,
+                 display_columns: int = 25,
+                 display_rows: int = 10,
+                 display_min_rows: int = 25,
+                 display_width: int = 320,
+                 from_csv: Union[bool, str] = False,
+                 info_dic: dict = None):
 
         self.orderbook_value = None
-        self.redis_orderbook_value = None
         self.s_lines = None  # support levels from trades
         self.r_lines = None  # support levels from trades
 
-        # try:
-        #     secret = import_secret_module()
-        #     api_key = secret.api_key
-        #     api_secret = secret.api_secret
-        # except Exception as exc:
-        #     msg = "No Binance API Key or API Secret.\n"
-        #     binpan_logger.warning(msg)
-        #     api_key = ''
-        #     api_secret = ''
-        # self.api_key = api_key
-        # self.api_secret = api_secret
-
         # symbol verification
         if not symbol and not from_csv:
-            raise BinPanException(f"BinPan symbol Error: symbol needed")
-        else:
-            symbol = symbol.upper()
+            raise BinPanException(f"BinPan Exception: symbol needed")
+
         if not from_csv and not symbol.isalnum():
-            binpan_logger.error(f"BinPan error: Ilegal characters in symbol.")
+            binpan_logger.error(f"BinPan Exception: Ilegal characters in symbol.")
 
         # check correct tick interval passed
         if not from_csv:
@@ -252,12 +222,6 @@ class Symbol(object):
         self.agg_trades_columns = agg_trades_columns
         self.atomic_trades_columns = atomic_trades_columns
 
-        # updated from binpan cache modificados para el parser
-        self.agg_trades_columns_redis = agg_trades_columns_redis
-
-        # updated from binpan cache modificados para el parser
-        self.atomic_trades_columns_redis = atomic_trades_columns_redis
-
         self.reversal_columns = reversal_columns
 
         # time cols
@@ -266,9 +230,11 @@ class Symbol(object):
 
         self.version = __version__
 
+        # set de rutas
         self.cwd = os.getcwd()
         path.append(self.cwd)
 
+        # parámetros principales
         self.symbol = symbol.upper()
         self.tick_interval = tick_interval
         self.time_zone = time_zone
@@ -333,14 +299,6 @@ class Symbol(object):
 
         # self.fees = self.get_fees(symbol=self.symbol)
         self.fees = None
-
-        # redis
-        if sentinel_redis:
-            self.from_redis = manage_sentinel(sentinel_redis=sentinel_redis)
-        elif from_redis:
-            self.from_redis = manage_redis(redis_args=from_redis)
-        else:
-            self.from_redis = None
 
         self.display_columns = display_columns
         self.display_rows = display_rows
@@ -418,7 +376,7 @@ class Symbol(object):
         #################
         if not from_csv:
             self.raw = get_candles_by_time_stamps(symbol=self.symbol, tick_interval=self.tick_interval, start_time=self.start_time,
-                                                  end_time=self.end_time, limit=self.limit, redis_client=self.from_redis)
+                                                  end_time=self.end_time, limit=self.limit)
 
             dataframe = parse_candles_to_dataframe(raw_response=self.raw, columns=self.original_candles_cols, time_cols=self.time_cols,
                                                    symbol=self.symbol, tick_interval=self.tick_interval, time_zone=self.time_zone,
@@ -466,14 +424,6 @@ class Symbol(object):
     # Show variables #
     ##################
 
-    def df(self):
-        """
-        Returns candles dataframe.
-
-        :return pd.DataFrame:
-        """
-        return self.df
-
     def agg_trades(self):
         """
         Returns trades dataframe.
@@ -493,38 +443,6 @@ class Symbol(object):
         if self.atomic_trades.empty:
             binpan_logger.info(empty_atomic_trades_msg)
         return self.atomic_trades
-
-    def symbol(self):
-        """
-        Returns symbol.
-
-        :return str:
-        """
-        return self.symbol
-
-    def version(self):
-        """
-        Returns version on BinPan.
-
-        :return str:
-        """
-        return self.version
-
-    def fees(self):
-        """
-        Returns fees for symbol. API keys required.
-
-        :return dict:
-        """
-        return self.fees
-
-    def tick_interval(self):
-        """
-        Returns tick_interval for symbol.
-
-        :return str:
-        """
-        return self.tick_interval
 
     def set_strategy_groups(self, column: str, group: str, strategy_groups: dict = None):
         """
@@ -549,54 +467,6 @@ class Symbol(object):
 
         return [i for i in self.df.columns if i.lower().startswith('strategy')]
 
-    def start_time(self):
-        """
-        Returns start_time on instance.
-
-        :return int:
-        """
-        return self.start_time
-
-    def end_time(self):
-        """
-        Returns end_time on instance.
-
-        :return int:
-        """
-        return self.end_time
-
-    def limit(self):
-        """
-        Returns limit on instance.
-
-        :return int:
-        """
-        return self.limit
-
-    def time_zone(self):
-        """
-        Returns time_zone for symbol.
-
-        :return str:
-        """
-        return self.time_zone
-
-    def time_index(self):
-        """
-        Returns if time_index.
-
-        :return bool:
-        """
-        return self.time_index
-
-    def closed(self):
-        """
-        Returns if not closed candles were dropped when instantiated.
-
-        :return bool:
-        """
-        return self.closed
-
     def update_info_dic(self):
         """
         Returns exchangeInfo data when instantiated. It includes, filters, fees, and many other data for all symbols in the
@@ -607,59 +477,60 @@ class Symbol(object):
         self.info_dic = get_info_dic()
         return self.info_dic
 
-    def save_csv(self, timestamped: bool = True):
+    def save_csv(self, timestamped_filename: bool = True):
         """
         Saves current csv to a csv file.
 
-        :param bool timestamped: Adds start and end timestamps to the name.
+        :param bool timestamped_filename: Adds start and end timestamps to the name.
         :return:
         """
         df_ = self.df
-        if timestamped:
+        if timestamped_filename:
             start, end = self.get_timestamps()
             filename = f"{df_.index.name.replace('/', '-')} klines {start} {end}.csv"
         else:
             filename = f"{df_.index.name.replace('/', '-')} klines.csv"
 
-        save_dataframe_to_csv(filename=filename, data=df_, timestamp=not timestamped)
+        save_dataframe_to_csv(filename=filename, data=df_, timestamp=not timestamped_filename)
         binpan_logger.info(f"Saved file {filename}")
 
-    def save_atomic_trades_csv(self, timestamped: bool = True):
+    def save_atomic_trades_csv(self, timestamped_filename: bool = True):
         """
         Saves current atomic trades to a csv file.
 
-        :param bool timestamped: Adds start and end timestamps to the name.
+        :param bool timestamped_filename: Adds start and end timestamps to the name.
         :return:
         """
         if self.atomic_trades.empty:
             print(f"No atomic trades to save.")
-        df_ = self.atomic_trades
-        if timestamped:
-            start, end = self.get_timestamps()
-            filename = f"{df_.index.name.replace('/', '-')} atomicTrades {start} {end}.csv"
         else:
-            filename = f"{df_.index.name.replace('/', '-')} atomicTrades.csv"
+            df_ = self.atomic_trades
+            if timestamped_filename:
+                start, end = self.get_timestamps()
+                filename = f"{df_.index.name.replace('/', '-')} atomicTrades {start} {end}.csv"
+            else:
+                filename = f"{df_.index.name.replace('/', '-')} atomicTrades.csv"
 
-        save_dataframe_to_csv(filename=filename, data=df_, timestamp=not timestamped)
-        binpan_logger.info(f"Saved file {filename}")
+            save_dataframe_to_csv(filename=filename, data=df_, timestamp=not timestamped_filename)
+            binpan_logger.info(f"Saved file {filename}")
 
-    def save_agg_trades_csv(self, timestamped: bool = True):
+    def save_agg_trades_csv(self, timestamped_filename: bool = True):
         """
         Saves current aggregated trades to a csv file.
 
-        :param bool timestamped: Adds start and end timestamps to the name.
+        :param bool timestamped_filename: Adds start and end timestamps to the name.
         :return:
         """
         if self.agg_trades.empty:
             print(f"No aggregated trades to save.")
         df_ = self.agg_trades
-        if timestamped:
+        if timestamped_filename:
             start, end = self.get_timestamps()
             filename = f"{df_.index.name.replace('/', '-')} aggTrades {start} {end}.csv"
         else:
             filename = f"{df_.index.name.replace('/', '-')} aggTrades.csv"
 
-        save_dataframe_to_csv(filename=filename, data=df_, timestamp=not timestamped)
+        save_dataframe_to_csv(filename=filename, data=df_, timestamp=not timestamped_filename)
         binpan_logger.info(f"Saved file {filename}")
 
     ##################
@@ -730,21 +601,15 @@ class Symbol(object):
     ###########
     # methods #
     ###########
-    def basic(self, exceptions: list = None, actions_col='actions', inplace=False):
+    def basic(self, exceptions: list = None, actions_col='actions'):
         """
-        Shows just a basic selection of columns data in the dataframe. Any column can be excepted from been dropped.
+        Shows just a basic selection of columns data in the dataframe.
 
         :param list exceptions: Columns names to keep.
         :param str actions_col: Under development. To keep tags for buy or sell actions.
-        :param bool inplace: Keep in the object just the basic columns, loosing any other one.
         :return pd.DataFrame: Pandas DataFrame
         """
-        if inplace:
-            new_candles = basic_dataframe(data=self.df, exceptions=exceptions, actions_col=actions_col)
-            self.df = new_candles
-            return self.df
-        else:
-            return basic_dataframe(data=self.df, exceptions=exceptions, actions_col=actions_col)
+        return basic_dataframe(data=self.df, exceptions=exceptions, actions_col=actions_col)
 
     def drop(self, columns_to_drop=None, inplace=False) -> pd.DataFrame:
         """
@@ -848,9 +713,16 @@ class Symbol(object):
             self.df.drop(c, axis=1, inplace=True)
         return self.df
 
-    def insert_indicator(self, source_data: pd.Series or pd.DataFrame or np.ndarray or list, strategy_group: str = None,
-                         plotting_row: str = None, plotting_rows: list = None, color: str = None, no_overlapped_plot_rows: bool = True,
-                         colors: list = None, color_fills: list = None, name: str = None, names: list = None,
+    def insert_indicator(self,
+                         source_data: pd.Series or pd.DataFrame or np.ndarray or list,
+                         strategy_group: str = None,
+                         plotting_row: str = None,
+                         plotting_rows: list = None,
+                         color: str = None,
+                         no_overlapped_plot_rows: bool = True,
+                         colors: list = None,
+                         color_fills: list = None,
+                         name: str = None, names: list = None,
                          suffix: str = '') -> pd.DataFrame or None:
         """
         Adds indicator to dataframe. It always do inplace.
@@ -861,7 +733,8 @@ class Symbol(object):
         :param int plotting_row: When a single serie inserted, a plotting row for a single inserted object. 1 overlaps candles, other,
          gets own row.
         :param list plotting_rows: mandatory. Rows position for autoplot each serie. 1 is overlap, ANY OTHER INTEGER will calculate row
-         position. Passing list of source data will put different row for each indicator added, ignoring same number in the list. Finally you can
+         position. Passing list of source data will put different row for each indicator added, ignoring same number in the list. Finally
+         you can
          change assigned row with ``my_symbol.set_plot_row('New_column', 2)``
         :param str color: When a single serie inserted, a plotting color.
         :param bool no_overlapped_plot_rows: When a single serie inserted, a plotting color.
@@ -874,18 +747,10 @@ class Symbol(object):
         :return pd.DataFrame or None: Instance candles dataframe.
 
         """
-        # try:
-        #     assert plotting_row or plotting_rows
-        # except AssertionError:
-        #     binpan_logger.error(f"BinPan Exception: plotting_row or plotting_rows must be passed")
         if type(source_data) == list:
             data_qty = len(source_data)
         elif type(source_data) == pd.DataFrame:
             data_qty = len(source_data.columns)
-        # elif type(source_data) == pd.Series:
-        #     data_len = 1
-        # elif type(source_data) == np.ndarray:
-        #     data_len=1
         else:
             data_qty = 1
 
@@ -1046,6 +911,7 @@ class Symbol(object):
         start = self.df.iloc[0]['Open timestamp']
         # end = self.df.iloc[-1]['Close timestamp']
         end = self.df.iloc[-1]['Open timestamp']
+        binpan_logger.info(f"From first Open timestamp {start} to last Open timestamp {end}")
         return int(start), int(end)
 
     def get_dates(self) -> Tuple[str, str]:
@@ -1058,6 +924,7 @@ class Symbol(object):
         start, end = self.get_timestamps()
         ret_start = convert_milliseconds_to_str(ms=start, timezoned=self.time_zone)
         ret_end = convert_milliseconds_to_str(ms=end, timezoned=self.time_zone)
+        binpan_logger.info(f"From first Open date {ret_start} to last Open date {ret_end}")
         return ret_start, ret_end
 
     def get_agg_trades(self, hours: int = None, minutes: int = None, startTime: int or str = None, endTime: int or str = None,
@@ -1149,34 +1016,36 @@ class Symbol(object):
                 filename = select_file(path=self.cwd, extension='csv')
 
                 # basic metadata
-                _, _, _, _, _, _ = extract_filename_metadata(filename=filename, expected_data_type="aggTrades",
-                                                             expected_symbol=self.symbol, expected_timezone=self.time_zone)
+                _, _, _, _, _, _ = extract_filename_metadata(filename=filename,
+                                                             expected_data_type="aggTrades",
+                                                             expected_symbol=self.symbol,
+                                                             expected_timezone=self.time_zone)
             # load and to numeric types
-            df_ = read_csv_to_dataframe(filename=filename, index_col="Timestamp", secondary_index_col="Aggregate tradeId",
-                                        symbol=self.symbol, index_time_zone=self.time_zone)
+            df_ = read_csv_to_dataframe(filename=filename,
+                                        index_col="Timestamp",
+                                        secondary_index_col="Aggregate tradeId",
+                                        symbol=self.symbol,
+                                        index_time_zone=self.time_zone)
 
             # check columns
             for col in df_.columns:
-                if not col in agg_trades_columns_from_redis and not col in agg_trades_columns_from_binance:
+                if not col in agg_trades_columns_from_binance:
                     raise BinPanException(f"File do not seems to be Aggregated Trades File!")
             self.agg_trades = df_
         else:
             try:
-                self.raw_agg_trades = get_historical_agg_trades(symbol=self.symbol, startTime=curr_startTime, endTime=curr_endTime,
-                                                                redis_client_trades=self.from_redis)
+                self.raw_agg_trades = get_historical_agg_trades(symbol=self.symbol, startTime=curr_startTime, endTime=curr_endTime)
             except Exception as _:
                 msg = f"Error fetching raw_agg_trades, maybe missing API key in secret.py file!!!"
                 binpan_logger.error(msg)
                 self.raw_agg_trades = []
 
-            if self.from_redis:
-                self.agg_trades = parse_agg_trades_to_dataframe(response=self.raw_agg_trades, columns=self.agg_trades_columns_redis,
-                                                                symbol=self.symbol, time_zone=self.time_zone, time_index=self.time_index,
-                                                                drop_dupes='Aggregate tradeId')
-            else:
-                self.agg_trades = parse_agg_trades_to_dataframe(response=self.raw_agg_trades, columns=self.agg_trades_columns,
-                                                                symbol=self.symbol, time_zone=self.time_zone, time_index=self.time_index,
-                                                                drop_dupes='Aggregate tradeId')
+            self.agg_trades = parse_agg_trades_to_dataframe(response=self.raw_agg_trades,
+                                                            columns=self.agg_trades_columns,
+                                                            symbol=self.symbol,
+                                                            time_zone=self.time_zone,
+                                                            time_index=self.time_index,
+                                                            drop_dupes='Aggregate tradeId')
 
         self.agg_trades = convert_to_numeric(data=self.agg_trades)
 
@@ -1248,51 +1117,27 @@ class Symbol(object):
 
             # check columns
             for col in df_.columns:
-                if not col in atomic_trades_columns_from_redis and not col in atomic_trades_columns_from_binance:
+                if not col in atomic_trades_columns_from_binance:
                     raise BinPanException(f"File do not seems to be Atomic Trades File!")
             self.atomic_trades = df_
         else:
             try:
-                self.raw_atomic_trades = get_historical_atomic_trades(symbol=self.symbol, startTime=curr_startTime, endTime=curr_endTime,
-                                                                      redis_client_trades=self.from_redis)
+                self.raw_atomic_trades = get_historical_atomic_trades(symbol=self.symbol,
+                                                                      startTime=curr_startTime,
+                                                                      endTime=curr_endTime)
             except Exception:
                 msg = f"Error fetching raw_atomic_trades, maybe missing API key in secret.py file!!!"
                 binpan_logger.error(msg)
                 self.raw_atomic_trades = []
 
-            if self.from_redis:
-                self.atomic_trades = parse_atomic_trades_to_dataframe(response=self.raw_atomic_trades,
-                                                                      columns=self.atomic_trades_columns_redis,
-                                                                      symbol=self.symbol,
-                                                                      time_zone=self.time_zone, time_index=self.time_index,
-                                                                      drop_dupes='Trade Id')
-            else:
-                self.atomic_trades = parse_atomic_trades_to_dataframe(response=self.raw_atomic_trades,
-                                                                      columns=self.atomic_trades_columns,
-                                                                      symbol=self.symbol,
-                                                                      time_zone=self.time_zone, time_index=self.time_index,
-                                                                      drop_dupes='Trade Id')
+            self.atomic_trades = parse_atomic_trades_to_dataframe(response=self.raw_atomic_trades,
+                                                                  columns=self.atomic_trades_columns,
+                                                                  symbol=self.symbol,
+                                                                  time_zone=self.time_zone,
+                                                                  time_index=self.time_index,
+                                                                  drop_dupes='Trade Id')
         self.atomic_trades = convert_to_numeric(data=self.atomic_trades)
         return self.atomic_trades
-
-    def get_orderbook_value(self, multiples=10, percentage='0.001') -> list:
-        """
-        Get orderbook data from redis instance. Expected standard BinPan Cache format.
-
-        :param int multiples: Multiples in stream.
-        :param str percentage: Fraction for multiples.
-        :return list:
-        """
-        stream = f"{self.symbol.lower()}@orderbook_value_{multiples}_{percentage}"
-        if self.from_redis:
-            # noinspection PyTypeChecker
-            ob_data = fetch_zset_range(redisClient=self.from_redis, key=stream, with_scores=True)
-            ts, te = self.timestamps
-            self.redis_orderbook_value = [(d, t,) for d, t in ob_data if ts <= t <= te]
-            self.orderbook_value = orderbook_value_to_dataframe(ob_data)
-            return self.orderbook_value
-        else:
-            raise BinPanException(f"BinPan Exception: no from_redis instance, cannot get data for get_orderbook_value()")
 
     def is_new(self, source_data: pd.Series or pd.DataFrame, suffix: str = '') -> bool:
         """
@@ -1334,7 +1179,7 @@ class Symbol(object):
 
     def get_reversal_agg_candles(self, min_height: int = 7, min_reversal: int = 4) -> pd.DataFrame or None:
         """
-        Resamples aggregated API trades or REDIS trades aggregated trades to reversal klines:
+        Resamples aggregated API trades to reversal klines:
            https://atas.net/atas-possibilities/charts/how-to-set-reversal-charts-for-finding-the-market-reversal/
 
         :param min_height: Defaults to 7. Minimum reversal kline height to close a candle
@@ -1358,7 +1203,7 @@ class Symbol(object):
 
     def get_reversal_atomic_candles(self, min_height: int = 7, min_reversal: int = 4) -> pd.DataFrame or None:
         """
-        Resamples API atomic trades or REDIS atomic trades to reversal klines:
+        Resamples API atomic trades to reversal klines:
            https://atas.net/atas-possibilities/charts/how-to-set-reversal-charts-for-finding-the-market-reversal/
 
         :param min_height: Defaults to 7. Minimum reversal kline height to close a candle
@@ -1549,10 +1394,25 @@ class Symbol(object):
         if column in self.plot_splitted_serie_couples:
             del self.plot_splitted_serie_couples[column]
 
-    def plot(self, width: int = 1800, height: int = 1000, candles_ta_height_ratio: float = 0.75, volume: bool = True, title: str = None,
-             yaxis_title: str = 'Price', overlapped_indicators: list = None, priced_actions_col: str = 'Close', actions_col: str = None,
-             marker_labels: dict = None, markers: list = None, marker_colors: list = None, background_color=None, zoom_start_idx=None,
-             zoom_end_idx=None, support_lines: list = None, support_lines_color: str = 'darkblue', resistance_lines: list = None,
+    def plot(self,
+             width: int = 1800,
+             height: int = 1000,
+             candles_ta_height_ratio: float = 0.75,
+             volume: bool = True,
+             title: str = None,
+             yaxis_title: str = 'Price',
+             overlapped_indicators: list = None,
+             priced_actions_col: str = 'Close',
+             actions_col: str = None,
+             marker_labels: dict = None,
+             markers: list = None,
+             marker_colors: list = None,
+             background_color=None,
+             zoom_start_idx=None,
+             zoom_end_idx=None,
+             support_lines: list = None,
+             support_lines_color: str = 'darkblue',
+             resistance_lines: list = None,
              resistance_lines_color: str = 'darkred'):
         """
         Plots a candles figure for the object.
@@ -1616,14 +1476,29 @@ class Symbol(object):
                                                                        start_idx=zoom_start_idx, end_idx=zoom_end_idx)
         else:
             zoomed_plot_splitted_serie_couples = self.plot_splitted_serie_couples
-        return candles_tagged(data=temp_df, width=width, height=height, candles_ta_height_ratio=candles_ta_height_ratio, plot_volume=volume,
-                              title=title, yaxis_title=yaxis_title, on_candles_indicator=overlapped_indicators,
-                              priced_actions_col=priced_actions_col, actions_col=actions_col, indicator_series=indicators_series,
-                              indicator_names=indicator_names, indicator_colors=indicators_colors, fill_control=self.color_fill_control,
-                              indicators_filled_mode=self.indicators_filled_mode, axis_groups=self.axis_groups,
-                              plot_splitted_serie_couple=zoomed_plot_splitted_serie_couples, rows_pos=rows_pos,
-                              markers_labels=marker_labels, plot_bgcolor=background_color, markers=markers,
-                              marker_colors=marker_colors, red_timestamps=self.red_timestamps,
+        return candles_tagged(data=temp_df,
+                              width=width,
+                              height=height,
+                              candles_ta_height_ratio=candles_ta_height_ratio,
+                              plot_volume=volume,
+                              title=title,
+                              yaxis_title=yaxis_title,
+                              on_candles_indicator=overlapped_indicators,
+                              priced_actions_col=priced_actions_col,
+                              actions_col=actions_col,
+                              indicator_series=indicators_series,
+                              indicator_names=indicator_names,
+                              indicator_colors=indicators_colors,
+                              fill_control=self.color_fill_control,
+                              indicators_filled_mode=self.indicators_filled_mode,
+                              axis_groups=self.axis_groups,
+                              plot_splitted_serie_couple=zoomed_plot_splitted_serie_couples,
+                              rows_pos=rows_pos,
+                              markers_labels=marker_labels,
+                              plot_bgcolor=background_color,
+                              markers=markers,
+                              marker_colors=marker_colors,
+                              red_timestamps=self.red_timestamps,
                               blue_timestamps=self.blue_timestamps)
 
     def plot_agg_trades_size(self, max_size: int = 60, height: int = 1000, logarithmic: bool = False, overlap_prices: bool = True,
@@ -1660,11 +1535,21 @@ class Symbol(object):
             overlap_prices = self.df
 
         if not group_big_data:
-            return plot_trades(data=managed_data, max_size=max_size, height=height, logarithmic=logarithmic,
-                               overlap_prices=overlap_prices, shifted=shifted, title=title)
+            return plot_trades(data=managed_data,
+                               max_size=max_size,
+                               height=height,
+                               logarithmic=logarithmic,
+                               overlap_prices=overlap_prices,
+                               shifted=shifted,
+                               title=title)
         else:
-            return plot_trades(data=managed_data, max_size=max_size, height=height, logarithmic=logarithmic,
-                               overlap_prices=overlap_prices, shifted=shifted, title=title)
+            return plot_trades(data=managed_data,
+                               max_size=max_size,
+                               height=height,
+                               logarithmic=logarithmic,
+                               overlap_prices=overlap_prices,
+                               shifted=shifted,
+                               title=title)
 
     def plot_atomic_trades_size(self, max_size: int = 60, height: int = 1000, logarithmic: bool = False, overlap_prices: bool = True,
                                 group_big_data: int = None, shifted: int = 1, title: str = None):
@@ -1696,17 +1581,27 @@ class Symbol(object):
             overlap_prices = self.df
 
         if not group_big_data:
-            return plot_trades(data=managed_data, max_size=max_size, height=height, logarithmic=logarithmic,
-                               overlap_prices=overlap_prices, shifted=shifted, title=title)
+            return plot_trades(data=managed_data,
+                               max_size=max_size,
+                               height=height,
+                               logarithmic=logarithmic,
+                               overlap_prices=overlap_prices,
+                               shifted=shifted,
+                               title=title)
         else:
-            return plot_trades(data=managed_data, max_size=max_size, height=height, logarithmic=logarithmic,
-                               overlap_prices=overlap_prices, shifted=shifted, title=title)
+            return plot_trades(data=managed_data,
+                               max_size=max_size,
+                               height=height,
+                               logarithmic=logarithmic,
+                               overlap_prices=overlap_prices,
+                               shifted=shifted,
+                               title=title)
 
     def plot_reversal(self, min_height: int = None, min_reversal: int = None, text_index: bool = True, from_atomic: bool = False, **kwargs):
         """
         Plots reversal candles. It requires aggregated or atomic trades fetched previously.
 
-        BinPan manages aggregated trades from binance API or from your REDIS.
+        BinPan manages aggregated trades from binance API.
 
         :param int min_height: It defaults to previous set. Can be reset when plotting.
         :param min_reversal: It defaults to previous set. Can be reset when plotting.
@@ -2019,21 +1914,6 @@ class Symbol(object):
         return dist_plot(df=self.orderbook, x_col=x_col, color=color, bins=bins, histnorm=histnorm, height=height, title=title,
                          **update_layout_kwargs)
 
-    def plot_orderbook_value(self):
-        """
-        Plots orderbook value from redis.
-
-        .. image:: images/plotting/plot_orderbook_value.png
-            :width: 1000
-
-        """
-        data = self.redis_orderbook_value
-        if not data:
-            data = self.get_orderbook_value(multiples=10, percentage='0.001')
-        close = self.df['Close']
-        ask_value_quantities, bid_value_quantities = redis_extract_orderbook_value_quantities(data)
-        return plot_orderbook_value(ask_data=ask_value_quantities, bid_data=bid_value_quantities, close_prices=close)
-
     def plot_taker_maker_ratio_profile(self, bins: int = 100, hours: int = None, minutes: int = None, startTime: int or str = None,
                                        endTime: int or str = None, from_agg_trades=False, from_atomic_trades=False, time_zone: str = None,
                                        title: str = "Taker Buy Ratio Profile", height=1200, width=800, **kwargs_update_layout):
@@ -2133,10 +2013,22 @@ class Symbol(object):
     #         self.action_labels.update({indicator_column: {'label_in': label_in, 'label_out': label_out}})
     #     return self.action_labels
 
-    def backtesting(self, actions_col: str or int, target_column: str or pd.Series = None, stop_loss_column: str or pd.Series = None,
-                    entry_filter_column: str or pd.Series = None, fixed_target: bool = True, fixed_stop_loss: bool = True, base: float = 0,
-                    quote: float = 1000, priced_actions_col: str = 'Open', label_in=1, label_out=-1, fee: float = 0.001,
-                    evaluating_quote: str = None, short: bool = False, inplace=True, suffix: str = None,
+    def backtesting(self,
+                    actions_col: str or int,
+                    target_column: str or pd.Series = None,
+                    stop_loss_column: str or pd.Series = None,
+                    entry_filter_column: str or pd.Series = None,
+                    fixed_target: bool = True,
+                    fixed_stop_loss: bool = True,
+                    base: float = 0,
+                    quote: float = 1000,
+                    priced_actions_col: str = 'Open',
+                    label_in=1, label_out=-1,
+                    fee: float = 0.001,
+                    evaluating_quote: str = None,
+                    short: bool = False,
+                    inplace=True,
+                    suffix: str = None,
                     colors: list = None) -> pd.DataFrame or pd.Series:
         """
         Simulates buys and sells using labels in a tagged column with actions. Actions are considered before the tag, in the next
@@ -2982,11 +2874,11 @@ class Symbol(object):
     def alternating_fractal(self, max_period: int = None, inplace: bool = True, overlap_plot=True, with_trend: bool = True,
                             suffix: str = '', colors: list = None) -> Tuple[pd.Series or None, float or None, float or None]:
         """
-        Obtains the minim value for fractal_w periods as fractal is pure alternating max to mins. In other words, max and mins alternates
-        in regular rhythm without any tow max or two mins consecutively.
+        Obtains the minim value for fractal_w periods as fractal is pure alternating from max to min to max etc. In other words,
+        max and mins alternates in regular rhythm without any tow max or two mins consecutively.
 
-        This custom indicator shows the minimum period in finding a pure alternating fractal. It is some kind of volatility in price
-        indicator, the most period needed, the most volatile price.
+        This custom indicator shows the minimum period in finding a pure alternating fractal. It is some kind of rhythm in price
+        indicator, the most period needed, the slow price rhythm.
 
         :param int max_period: Default is len of dataframe. This method will check from 2 to the max period value to find a alternating
          max to mins.
@@ -2995,7 +2887,8 @@ class Symbol(object):
         :param bool with_trend: If true, it will return maximums diff mean and minimums diff mean also.
         :param str suffix: A decorative suffix for the name of the column created.
         :param list colors: A list of colors for the indicator dataframe columns. Is the color to show when plotting. It can be any color
-          from plotly library or a number in the list of those. Default colors defined. https://community.plotly.com/t/plotly-colours-list/11730
+          from plotly library or a number in the list of those. Default colors defined.
+          https://community.plotly.com/t/plotly-colours-list/11730
         :return pd.DataFrame: A dataframe with two columns, one with 1 or -1 for local max or local min to tag,
          and other with price values for that points. Alternatively, maximums and minimums diff mean will be returned.
 
@@ -3040,11 +2933,9 @@ class Symbol(object):
                 else:
                     self.set_plot_row(indicator_column=str(column_name), row_position=self.row_counter)
 
-        # if max_mean is None or min_mean is None:
-        #     return fractal
         return fractal, max_mean, min_mean
 
-    def fractal_w(self, period: int = 5, inplace: bool = True, overlap_plot=True, suffix: str = '', colors: list = None):
+    def fractal(self, period: int = 5, inplace: bool = True, overlap_plot=True, suffix: str = '', colors: list = None):
         """
         The fractal indicator is based on a simple price pattern that is frequently seen in financial markets. Outside of trading, a fractal
         is a recurring geometric pattern that is repeated on all time frames. From this concept, the fractal indicator was devised.
@@ -3299,8 +3190,14 @@ class Symbol(object):
         else:
             raise ValueError(f"Indicator '{name}' not found in the 'pandas_ta' module.")
 
-    def support_resistance(self, from_atomic: bool = False, from_aggregated: bool = False, max_clusters: int = 5, by_quantity: float = None,
-                           simple: bool = True, inplace=True, colors: list = None) -> Tuple[List[float], List[float]]:
+    def support_resistance(self,
+                           from_atomic: bool = False,
+                           from_aggregated: bool = False,
+                           max_clusters: int = 5,
+                           by_quantity: float = None,
+                           simple: bool = True,
+                           inplace=True,
+                           colors: list = None) -> Tuple[List[float], List[float]]:
         """
         Calculate support and resistance levels for the Symbol based on either atomic trades or aggregated trades.
 
@@ -3410,7 +3307,8 @@ class Symbol(object):
         :param bool simple: If True, it will calculate support and resistance levels merged. Just levels. Default is True.
         :param bool inplace: If True, it will replace the current dataframe with the new one. Default is True.
         :param list colors: A list of colors for the indicator dataframe columns. Is the color to show when plotting.
-         It can be any color from plotly library or a number in the list of those. Default colors defined. https://community.plotly.com/t/plotly-colours-list/11730
+         It can be any color from plotly library or a number in the list of those. Default colors defined.
+         https://community.plotly.com/t/plotly-colours-list/11730
         :return pd.DataFrame: A pandas dataframe with each column representing ordered levels from higher to lower for support and
          resistance.
         """
@@ -3488,8 +3386,12 @@ class Symbol(object):
 
         return self.rolling_support_resistance_df
 
-    def time_action(self, from_atomic: bool = False, from_aggregated: bool = False, max_clusters: int = 5, by_quantity: float = None,
-                    simple: bool = True) -> Tuple[List[float], List[float]]:
+    def time_centroids(self,
+                       from_atomic: bool = False,
+                       from_aggregated: bool = False,
+                       max_clusters: int = 5,
+                       by_quantity: float = None,
+                       simple: bool = True) -> Tuple[List[float], List[float]]:
         """
         Calculate centroids for timestamps of more activity in taker buys or takers sells.
 
@@ -3497,7 +3399,7 @@ class Symbol(object):
         :param bool from_aggregated: If True, centroids will be calculated using aggregated trades.
         :param int max_clusters: If passed, fixes count of levels of support and resistance. Default is 5.
         :param float by_quantity: It takes each price into account by how many times the specified quantity appears in "Quantity" column.
-        :param bool simple: If True, it will calculate centroids merged. Just levels. Default is True.
+        :param bool simple: If True, it will calculate centroids merged. Just levels, not buy or sell centroids. Default is True.
         :return: A tuple containing two lists: the first list contains buy centroids, and the second list contains sell centroids.
 
         .. image:: images/indicators/time_action.png
@@ -3587,8 +3489,14 @@ class Symbol(object):
     # Relations #
     #############
 
-    def tag(self, column: str or int or pd.Series, reference: str or int or float or pd.Series, relation: str = 'gt',
-            match_tag: str or int = 1, mismatch_tag: str or int = 0, strategy_group: str = '', inplace=True, suffix: str = '',
+    def tag(self,
+            column: str or int or pd.Series,
+            reference: str or int or float or pd.Series,
+            relation: str = 'gt',
+            match_tag: str or int = 1,
+            mismatch_tag: str or int = 0,
+            strategy_group: str = '',
+            inplace=True, suffix: str = '',
             color: str or int = 'green') -> pd.Series:
         """
         It tags values of a column/serie compared to other serie or value by methods gt,ge,eq,le,lt as condition.
@@ -3669,8 +3577,15 @@ class Symbol(object):
                                                                 strategy_groups=self.strategy_groups)
         return compared
 
-    def cross(self, slow: str or int or float or pd.Series, fast: str or int or pd.Series = 'Close', cross_over_tag: str or int = 1,
-              cross_below_tag: str or int = -1, echo=0, non_zeros: bool = True, strategy_group: str = None, inplace=True, suffix: str = '',
+    def cross(self,
+              slow: str or int or float or pd.Series,
+              fast: str or int or pd.Series = 'Close',
+              cross_over_tag: str or int = 1,
+              cross_below_tag: str or int = -1, echo=0,
+              non_zeros: bool = True,
+              strategy_group: str = None,
+              inplace=True,
+              suffix: str = '',
               color: str or int = 'green') -> pd.Series:
         """
         It tags crossing values from a column/serie (fast) over a serie or value (slow).
@@ -3747,7 +3662,10 @@ class Symbol(object):
                                                                 strategy_groups=self.strategy_groups)
         return cross
 
-    def shift(self, column: str or int or pd.Series, window=1, strategy_group: str = '', inplace=True, suffix: str = '',
+    def shift(self,
+              column: str or int or pd.Series, window=1,
+              strategy_group: str = '',
+              inplace=True, suffix: str = '',
               color: str or int = 'grey'):
         """
         It shifts a candle ahead by the window argument value (or backwards if negative)
@@ -3794,8 +3712,14 @@ class Symbol(object):
 
         return shift
 
-    def merge_columns(self, main_column: str or int or pd.Series, other_column: str or int or pd.Series, sign_other: dict = None,
-                      strategy_group: str = '', inplace=True, suffix: str = '', color: str or int = 'grey'):
+    def merge_columns(self,
+                      main_column: str or int or pd.Series,
+                      other_column: str or int or pd.Series,
+                      sign_other: dict = None,
+                      strategy_group: str = '',
+                      inplace=True,
+                      suffix: str = '',
+                      color: str or int = 'grey'):
         """
         Predominant serie will be filled nans with values, if existing, from the other serie.
 
@@ -3855,10 +3779,15 @@ class Symbol(object):
                                                                 strategy_groups=self.strategy_groups)
         return merged
 
-    def clean_in_out(self, column: str or int or pd.Series, in_tag=1, out_tag=-1, strategy_group: str = '', inplace=True, suffix: str = '',
+    def clean_in_out(self,
+                     column: str or int or pd.Series,
+                     in_tag=1,
+                     out_tag=-1,
+                     strategy_group: str = '',
+                     inplace=True, suffix: str = '',
                      color: str or int = 'grey'):
         """
-        Predominant serie will be filled nans with values, if existing, from the other serie.
+        It cleans a serie with in and out tags by eliminating in streaks and out streaks.
 
         Same kind of index needed.
 
@@ -3874,13 +3803,9 @@ class Symbol(object):
         if type(column) == str:
             data_a = self.df[column]
         elif type(column) == int:
-            data_a = self.df.iloc[:, column]
+            data_a = self.df.iloc[:, column].copy(deep=True)
         else:
             data_a = column.copy(deep=True)
-
-        # if data_a.name in self.action_labels.keys():
-        #     in_tag = self.action_labels[data_a.name]['label_in']
-        #     out_tag = self.action_labels[data_a.name]['label_out']
 
         clean = clean_in_out(serie=data_a, in_tag=in_tag, out_tag=out_tag)
         if suffix:
@@ -3909,8 +3834,15 @@ class Symbol(object):
                                                                 strategy_groups=self.strategy_groups)
         return clean
 
-    def strategy_from_tags_crosses(self, columns: list = None, strategy_group: str = '', matching_tag=1, method: str = 'all',
-                                   tag_reversed_match: bool = False, inplace=True, suffix: str = '', color: str or int = 'magenta',
+    def strategy_from_tags_crosses(self,
+                                   columns: list = None,
+                                   strategy_group: str = '',
+                                   matching_tag=1,
+                                   method: str = 'all',
+                                   tag_reversed_match: bool = False,
+                                   inplace=True,
+                                   suffix: str = '',
+                                   color: str or int = 'magenta',
                                    reversed_match=-1):
         """
         Checks where all tags and cross columns get value "1" at the same time. And also gets points where all tags gets value of "0" and
@@ -3999,10 +3931,15 @@ class Symbol(object):
 
         return ret
 
-    def ffill(self, column: str or int or pd.Series, window: int = 1, inplace=True, replace=False, suffix: str = '',
-              color: str or int = 'blue'):
+    def ffill_window(self,
+                     column: str or int or pd.Series,
+                     window: int = 1,
+                     inplace=True,
+                     replace=False,
+                     suffix: str = '',
+                     color: str or int = 'blue'):
         """
-        It forward fills a value through nans through a window ahead.
+        It forward fills a value through nans a window ahead.
 
         :param str or int or pd.Series column: A pandas Series.
         :param int window: Times values are shifted ahead. Default is 1.
@@ -4048,334 +3985,8 @@ class Symbol(object):
         try:
             assert len(dif.value_counts()) == 1, "BinPan Exception: Dataframe has gaps in klines continuity."
         except AssertionError:
-            mask = (dif != dif.iloc[0]).reindex(self.df.index).fillna(False)
+            # he añadido lo de pd series y podría fallar v0.5.0
+            mask = pd.Series(dif != dif.iloc[0]).reindex(self.df.index).fillna(False)
             gaps = self.df.loc[mask, ['Open timestamp', 'Close timestamp']]
             binpan_logger.warning(f"BinPan Warning: Dataframe has gaps in klines continuity: \n{gaps}")
             binpan_logger.warning(f"\nTimestamp differences detected: \n{dif[mask]}")
-
-
-class Exchange(object):
-    """
-    Exchange data.
-
-    Exchange data collected in class variables:
-
-    - **my_exchange_instance.info_dic**: A dictionary with all raw symbols info each.
-    - **my_exchange_instance.coins_dic**: A dictionary with all coins info.
-    - **my_exchange_instance.bases**: A dictionary with all bases for all symbols.
-    - **my_exchange_instance.quotes**: A dictionary with all quotes for all symbols.
-    - **my_exchange_instance.leveraged**: A list with all leveraged coins.
-    - **my_exchange_instance.leveraged_symbols**: A list with all leveraged symbols.
-    - **my_exchange_instance.fees**: dataframe with fees applied to the user requesting for every symbol.
-    - **my_exchange_instance.filters**: A dictionary with all trading filters detailed with all symbols.
-    - **my_exchange_instance.status**: API status can be normal o under maintenance.
-    - **my_exchange_instance.coins**: A dataframe with all the coin's data.
-    - **my_exchange_instance.networks**: A dataframe with info about every coin and its blockchain networks info.
-    - **my_exchange_instance.coins_list**: A list with all the coin's names.
-    - **my_exchange_instance.symbols**: A list with all the symbols names.
-    - **my_exchange_instance.df**: A dataframe with all the symbols info.
-    - **my_exchange_instance.order_types**: Dataframe with each symbol order types.
-
-    """
-
-    def __init__(self):
-        try:
-            secret_module = import_secret_module()
-            importlib.reload(secret_module)
-            self.api_key = secret_module.api_key
-            self.api_secret = secret_module.api_secret
-        except Exception:
-            raise MissingBinanceApiData(f"Binance Api key or Api Secret not found.")
-
-        self.info_dic = get_info_dic()
-        self.coins_dic = get_coins_info_dic(decimal_mode=False, api_key=self.api_key, api_secret=self.api_secret)
-        self.bases = get_bases_dic(info_dic=self.info_dic)
-        self.quotes = get_quotes_dic(info_dic=self.info_dic)
-        self.leveraged = get_leveraged_coins(coins_dic=self.coins_dic, decimal_mode=False, api_key=self.api_key, api_secret=self.api_secret)
-        self.leveraged_symbols = get_leveraged_symbols(info_dic=self.info_dic, leveraged_coins=self.leveraged, decimal_mode=False,
-                                                       api_key=self.api_key, api_secret=self.api_secret)
-
-        self.fees = get_fees(decimal_mode=False, api_key=self.api_key, api_secret=self.api_secret)
-        self.filters = get_symbols_filters(info_dic=self.info_dic)
-        self.status = get_system_status()
-        self.coins, self.networks = get_coins_and_networks_info(decimal_mode=False, api_key=self.api_key, api_secret=self.api_secret)
-        self.coins_list = list(self.coins.index)
-
-        self.symbols = self.get_symbols()
-        self.df = self.get_df()
-        self.order_types = self.get_order_types()
-
-    def __repr__(self):
-        return str(self.df)
-
-    def filter(self, symbol: str):
-        """
-        Returns exchange filters applied for orders with the selected symbol.
-
-        :param str symbol:
-        :return dict:
-        """
-        return self.filters[symbol.upper()]
-
-    def fee(self, symbol: str):
-        """
-        Returns exchange fees applied for orders with the selected symbol.
-
-        :param str symbol:
-        :return pd.Series:
-        """
-        return self.fees.loc[symbol.upper()]
-
-    def coin(self, coin: str):
-        """
-        Returns coin exchange info in a pandas serie.
-
-        :param str coin:
-        :return pd.Series:
-        """
-        return self.coins.loc[coin.upper()]
-
-    def network(self, coin: str):
-        """
-        Returns a dataframe with all exchange networks of one specified coin or every coin.
-
-        :param str coin:
-        :return pd.Series:
-        """
-        return self.networks.loc[coin.upper()]
-
-    def update_info(self, symbol: str = None):
-        """
-        Updates from API and returns a dict with all merged exchange info about a symbol.
-
-        :param str symbol:
-        :return dict:
-        """
-        self.info_dic = get_info_dic()
-        self.filters = get_symbols_filters(info_dic=self.info_dic)
-        self.bases = get_bases_dic(info_dic=self.info_dic)
-        self.quotes = get_quotes_dic(info_dic=self.info_dic)
-        self.fees = get_fees(decimal_mode=False, api_key=self.api_key, api_secret=self.api_secret)
-        self.status = get_system_status()
-        self.coins, self.networks = get_coins_and_networks_info(decimal_mode=False, api_key=self.api_key, api_secret=self.api_secret)
-        self.symbols = self.get_symbols()
-        self.df = self.get_df()
-        self.order_types = self.get_order_types()
-
-        if symbol:
-            return self.info_dic[symbol.upper()]
-        return self.info_dic
-
-    def get_symbols(self, coin: str = None, base: bool = True, quote: bool = True):
-        """
-        Return list of symbols for a coin. Can be selected symbols where it is base, or quote, or both.
-
-        :param str coin: An existing binance coin.
-        :param bool base: Activate return of symbols where coin is base.
-        :param bool quote: Activate return of symbols where coin is quote.
-        :return list: List of symbols where it is base, quote or both.
-        """
-        if not coin:
-            self.symbols = list(self.info_dic.keys())
-            return self.symbols
-
-        else:
-            ret = []
-            if base:
-                ret += [i for i in self.symbols if self.bases[i] == coin.upper()]
-            if quote:
-                ret += [i for i in self.symbols if self.quotes[i] == coin.upper()]
-            return ret
-
-    def get_df(self):
-        """
-        Extended symbols dataframe with exchange info about trading permissions, trading or blocked symbol, order types, margin allowed, etc
-
-        :return pd.DataFrame: An exchange dataframe with all symbols data.
-
-        """
-        df = pd.DataFrame(self.info_dic.values()).set_index('symbol', drop=True)
-        per_df = pd.DataFrame(data=df['permissions'].tolist(), index=df.index)
-        per_df.columns = per_df.value_counts().index[0]
-        self.df = pd.concat([df.drop('permissions', axis=1), per_df.astype(bool)], axis=1)
-        return self.df
-
-    def get_order_types(self):
-        """
-        Returns a dataframe with order types for symbol.
-
-        :return pd.DataFrame:
-        """
-        ord_df = pd.DataFrame(data=self.df['orderTypes'].tolist(), index=self.df.index)
-        ord_df.columns = ord_df.value_counts().index[0]
-        self.order_types = ord_df.astype(bool)
-        return self.order_types
-
-
-class Wallet(object):
-    """
-    Wallet is a BinPan Class that can give information about balances, in Spot or Margin trading.
-
-    Also can show snapshots of the account status days ago, or using timestamps.
-
-    """
-
-    def __init__(self, time_zone='UTC', snapshot_days: int = 30):
-        try:
-            secret_module = importlib.import_module('secret')
-            importlib.reload(secret_module)
-            self.api_key = secret_module.api_key
-            self.api_secret = secret_module.api_secret
-        except Exception:
-            raise MissingBinanceApiData(f"Binance Api key or Api Secret not found.")
-
-        self.time_zone = time_zone
-        self.spot = self.update_spot()
-        self.spot_snapshot = None
-        self.spot_startTime = None
-        self.spot_endTime = None
-        self.spot_requested_days = snapshot_days
-
-        self.margin = self.update_margin()
-        self.margin_snapshot = None
-        self.margin_startTime = None
-        self.margin_endTime = None
-        self.margin_requested_days = snapshot_days
-
-    def update_spot(self, decimal_mode=False):
-        """
-        Updates balances in the class object.
-        :param bool decimal_mode: Use of decimal objects instead of float.
-        :return dict: Wallet dictionary
-        """
-        self.spot = get_spot_balances_df(decimal_mode=decimal_mode, api_key=self.api_key, api_secret=self.api_secret)
-        return self.spot
-
-    def spot_snapshot(self, startTime: int or str = None, endTime: int or str = None, snapshot_days=30, time_zone=None):
-        """
-        Updates spot wallet snapshot.
-
-        :param int or str startTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
-        :param int or str endTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
-        :param int snapshot_days: Days to look if not start time or endtime passed.
-        :param str time_zone: A time zone for time index conversion. Example: "Europe/Madrid"
-        :return pd.DataFrame: Spot wallet snapshot for the time period requested.
-        """
-        if time_zone:
-            self.time_zone = time_zone
-
-        self.spot_startTime = startTime
-        self.spot_snapshot = daily_account_snapshot(account_type='SPOT', startTime=convert_str_date_to_ms(date=startTime,
-                                                                                                          time_zone=self.time_zone),
-                                                    endTime=convert_str_date_to_ms(
-                                                        date=endTime,
-                                                        time_zone=self.time_zone),
-                                                    limit=snapshot_days,
-                                                    time_zone=self.time_zone, decimal_mode=False, api_key=self.api_key,
-                                                    api_secret=self.api_secret)
-        self.spot_endTime = endTime
-        self.spot_requested_days = snapshot_days
-
-        return self.spot
-
-    def update_margin(self, decimal_mode=False):
-        """
-        Updates balances in the wallet class object.
-
-        :param bool decimal_mode: Use of decimal objects instead of float.
-        :return dict: Wallet dictionary
-        """
-        my_margin = get_margin_balances(decimal_mode=decimal_mode, api_key=self.api_key, api_secret=self.api_secret)
-        self.margin = pd.DataFrame(my_margin).T
-        self.margin.index.name = 'asset'
-        return self.margin
-
-    def margin_snapshot(self, startTime: int or str = None, endTime: int or str = None, snapshot_days=30, time_zone=None):
-        """
-        Updates margin wallet snapshot.
-
-        :param int or str startTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
-        :param int or str endTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
-        :param int snapshot_days: Days to look if not start time or endtime passed.
-        :param str time_zone: A time zone for time index conversion. Example: "Europe/Madrid"
-        :return pd.DataFrame: Spot wallet snapshot for the time period requested.
-        """
-        if time_zone:
-            self.time_zone = time_zone
-
-        self.spot = daily_account_snapshot(account_type='MARGIN', startTime=convert_str_date_to_ms(date=startTime,
-                                                                                                   time_zone=self.time_zone),
-                                           endTime=convert_str_date_to_ms(
-                                               date=endTime,
-                                               time_zone=self.time_zone),
-                                           limit=snapshot_days,
-                                           time_zone=self.time_zone, decimal_mode=False, api_key=self.api_key, api_secret=self.api_secret)
-        self.margin_startTime = startTime
-        self.margin_endTime = endTime
-        self.margin_requested_days = snapshot_days
-        return self.margin
-
-    def spot_wallet_performance(self, decimal_mode: bool, startTime=None, endTime=None, days: int = 30, convert_to: str = 'BUSD'):
-        """
-        Calculate difference between current wallet not locked values and days before.
-        :param bool decimal_mode: Fixes Decimal return type and operative.
-        :param int or str startTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
-        :param int or str endTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
-        :param int days: Days to compare balances.
-        :param str convert_to: Converts balances to a coin.
-        :return float: Value increase or decrease with current value of convert_to coin.
-        """
-        if days != self.spot_requested_days or startTime != self.spot_startTime or endTime != self.spot_endTime:
-            self.spot = daily_account_snapshot(account_type='SPOT', startTime=convert_str_date_to_ms(date=startTime,
-                                                                                                     time_zone=self.time_zone),
-                                               endTime=convert_str_date_to_ms(
-                                                   date=endTime,
-                                                   time_zone=self.time_zone), limit=days,
-                                               time_zone=self.time_zone, decimal_mode=False, api_key=self.api_key,
-                                               api_secret=self.api_secret)
-            self.spot_startTime = startTime
-            self.spot_endTime = endTime
-            self.spot_requested_days = days
-
-        if not self.spot.empty:
-            totalAssetOfBtc = self.spot['totalAssetOfBtc'].tolist()
-            performance = totalAssetOfBtc[-1] - totalAssetOfBtc[0]
-            if convert_to == 'BTC':
-                return performance
-            else:
-                return convert_coin(coin='BTC', convert_to=convert_to, coin_qty=performance, decimal_mode=decimal_mode)
-        else:
-            return 0
-
-    def margin_wallet_performance(self, decimal_mode: bool, startTime=None, endTime=None, days: int = 30, convert_to: str = 'BUSD'):
-        """
-        Calculate difference between current wallet not locked values and days before.
-        :param bool decimal_mode: Fixes Decimal return type and operative.
-        :param int or str startTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
-        :param int or str endTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
-        :param int days: Days to compare balances.
-        :param str convert_to: Converts balances to a coin.
-        :return float: Value increase or decrease with current value of convert_to coin.
-        """
-        if days != self.margin_requested_days or startTime != self.margin_startTime or endTime != self.margin_endTime:
-            self.margin = daily_account_snapshot(account_type='MARGIN', startTime=convert_str_date_to_ms(date=startTime,
-                                                                                                         time_zone=self.time_zone),
-                                                 endTime=convert_str_date_to_ms(
-                                                     date=endTime,
-                                                     time_zone=self.time_zone),
-                                                 limit=days,
-                                                 time_zone=self.time_zone, decimal_mode=False, api_key=self.api_key,
-                                                 api_secret=self.api_secret)
-            self.margin_startTime = startTime
-            self.margin_endTime = endTime
-            self.margin_requested_days = days
-
-        if not self.margin.empty:
-            totalAssetOfBtc = self.margin['totalAssetOfBtc'].tolist()
-            performance = totalAssetOfBtc[-1] - totalAssetOfBtc[0]
-            if convert_to == 'BTC':
-                return performance
-            else:
-                return convert_coin(coin='BTC', convert_to=convert_to, coin_qty=performance, decimal_mode=decimal_mode)
-        else:
-            return 0
