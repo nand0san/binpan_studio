@@ -18,3 +18,5 @@ from . import time_helper
 from . import wallet
 from . import indicators
 from . import tags
+
+from . import standards

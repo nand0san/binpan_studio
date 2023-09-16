@@ -49,10 +49,12 @@ def alternating_fractal_indicator(df: pd.DataFrame, max_period: int = None, suff
     fractal = None
     if not max_period:
         max_period = len(df)
+    print("Searching for pure alternating fractal...")
     for i in tqdm(range(2, max_period)):
         fractal = fractal_w_indicator(df=df, period=i, suffix=suffix, fill_with_zero=True)
         max_min = fractal[f"Fractal_W_{i}"].fillna(0)
         if is_alternating(lst=max_min.tolist()):
+            print(f"Pure alternating fractal found at period={i}")
             break
         else:
             fractal = None
@@ -675,6 +677,7 @@ def support_resistance_levels_merged(df: pd.DataFrame, by_klines: bool, max_clus
         initial_centroids = kmeans_custom_init(data=df_['Price'].values, max_clusters=max_clusters)
     else:
         initial_centroids = kmeans_custom_init(data=df_['Close'].values, max_clusters=max_clusters)
+
     if by_quantity and not by_klines:
         repeated_prices = repeat_prices_by_quantity(data=df_, epsilon_quantity=by_quantity, price_col="Price", qty_col="Quantity")
     elif by_quantity and by_klines:
@@ -687,12 +690,14 @@ def support_resistance_levels_merged(df: pd.DataFrame, by_klines: bool, max_clus
         return [], []
     if not quiet:
         print("Clustering data...")
+
     if optimize_clusters_qty:
         optimal_clusters = find_optimal_clusters(KMeans_lib=KMeans, data=repeated_prices, max_clusters=max_clusters, quiet=quiet, initial_centroids=initial_centroids)
         if not quiet:
             print(f"Found {optimal_clusters} levels.")
     else:
         optimal_clusters = max_clusters
+
     kmeans_result = KMeans(n_clusters=optimal_clusters, n_init=1, init=initial_centroids).fit(repeated_prices)
     levels = np.sort(kmeans_result.cluster_centers_, axis=0)
     return levels.flatten().tolist()

@@ -14,7 +14,6 @@ import os
 import sys
 from pathlib import Path
 import importlib.util
-# from dotenv import dotenv_values
 
 sys.path.insert(0, os.path.abspath('..'))
 
@@ -37,7 +36,7 @@ spec = importlib.util.spec_from_file_location("module.name", secret_path)
 my_secret = importlib.util.module_from_spec(spec)
 sys.modules["module.name"] = my_secret
 spec.loader.exec_module(my_secret)
-version = "0.4.37"
+version = "0.5.0"
 release = version
 
 # config = dotenv_values("version.env")

@@ -72,7 +72,7 @@ Usage
 Importing just like this:
 
 ```
-    from binpan import binpan
+    import binpan
 
     btcusdt = binpan.Symbol(symbol='btcusdt',
                             tick_interval='15m',

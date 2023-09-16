@@ -5,9 +5,9 @@ Can be imported this way:
 
 .. code-block::
 
-   from binpan import binpan
+   import binpan
 
-.. automodule:: binpan.binpan
+.. automodule:: binpan
 
 
 Symbol Class

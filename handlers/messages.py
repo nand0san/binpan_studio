@@ -4,7 +4,8 @@ Telegram and messages control.
 import requests
 import pandas as pd
 
-from .starters import AesCipher, import_secret_module
+from .starters import AesCipher
+from .files import get_encoded_telegram_secrets
 from .logs import Logs
 from .time_helper import convert_milliseconds_to_str
 from .wallet import get_spot_balances_df, get_spot_balances_total_value
@@ -14,15 +15,8 @@ msg_logger = Logs(filename='./logs/msg_logger.log', name='msg_logger', info_leve
 
 cipher_object = AesCipher()
 
-try:
-    secret = import_secret_module()
-    encoded_chat_id = secret.encoded_chat_id
-    encoded_telegram_bot_id = secret.encoded_telegram_bot_id
-except Exception as exc:
-    msg = "No Telegram bot API Key or chat id.\n"
-    msg_logger.warning(msg)
-    encoded_telegram_bot_id = ''
-    encoded_chat_id = ''
+
+encoded_telegram_bot_id, encoded_chat_id = get_encoded_telegram_secrets()
 
 
 def telegram_bot_send_text(msg: dict or str,
