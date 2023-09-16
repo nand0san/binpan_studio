@@ -79,13 +79,13 @@ Usage
 
 There is a tutorial in a Jupyter Notebook file in  the github repo.
 
-https://github.com/nand0san/binpan_studio/blob/main/tutorial.ipynb
+https://github.com/nand0san/binpan_studio/blob/main/basic%20tutorial.ipynb
 
 Importing just like this:
 
 .. code-block:: python
 
-    from binpan import binpan
+    import binpan
 
     btcusdt = binpan.Symbol(symbol='btcusdt',
                             tick_interval='15m',
@@ -120,11 +120,12 @@ Hope you find it useful breaking the market!!!
    market.rst
    messages.rst
    plotting.rst
-   redis_fetch.rst
    quest.rst
+   redis_fetch.rst
    stat_tests.rst
    strategies.rst
    tags.rst
+   time_helper.rst
    wallet.rst
 
 

@@ -96,7 +96,7 @@ First, import the sys module in your Jupyter notebook.
 
 Next, install the required packages using the following command:
 
-.. code-block:: python
+  .. code-block:: python
 
     import sys
 
