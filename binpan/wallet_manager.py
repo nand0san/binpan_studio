@@ -1,8 +1,6 @@
-import importlib
-
 import pandas as pd
 
-from handlers.exceptions import MissingBinanceApiData
+from handlers.files import get_encoded_secrets
 from handlers.market import convert_coin
 from handlers.wallet import get_spot_balances_df, daily_account_snapshot, convert_str_date_to_ms, get_margin_balances
 
@@ -16,13 +14,7 @@ class Wallet(object):
     """
 
     def __init__(self, time_zone='UTC', snapshot_days: int = 30):
-        try:
-            secret_module = importlib.import_module('secret')
-            importlib.reload(secret_module)
-            self.api_key = secret_module.api_key
-            self.api_secret = secret_module.api_secret
-        except Exception:
-            raise MissingBinanceApiData(f"Binance Api key or Api Secret not found.")
+        self.api_key, self.api_secret = get_encoded_secrets()
 
         self.time_zone = time_zone
         self.spot = self.update_spot()

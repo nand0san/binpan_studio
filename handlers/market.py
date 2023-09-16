@@ -4,73 +4,29 @@ Market functions
 
 """
 
-# from tqdm import tqdm
 from time import time
 import pandas as pd
 import json
 from decimal import Decimal as dd
 
-# from redis import StrictRedis
 from typing import List, Dict, Union
 
 from redis import StrictRedis
 
-from .starters import import_secret_module
 from .exceptions import BinPanException
 from .logs import Logs
 from .quest import check_weight, get_response, api_raw_get, get_semi_signed_request
-from .time_helper import tick_seconds, calculate_iterations, convert_milliseconds_to_str, convert_ms_column_to_datetime_with_zone, \
-    convert_milliseconds_to_utc_string, convert_datetime_to_string, open_from_milliseconds, next_open_by_milliseconds, \
-    convert_milliseconds_to_time_zone_datetime
+from .time_helper import (tick_seconds, calculate_iterations, convert_milliseconds_to_str, convert_ms_column_to_datetime_with_zone,
+                          convert_milliseconds_to_utc_string, convert_datetime_to_string, open_from_milliseconds, next_open_by_milliseconds,
+                          convert_milliseconds_to_time_zone_datetime)
+from .standards import (klines_columns, agg_trades_columns_from_binance, atomic_trades_columns_from_binance,
+                        atomic_trades_columns_from_redis)
+from .files import get_encoded_secrets
+
 
 market_logger = Logs(filename='./logs/market_logger.log', name='market_logger', info_level='INFO')
 
-try:
-    secret = import_secret_module()
-    api_key = secret.api_key
-    api_secret = secret.api_secret
-except Exception as exc:
-    msg = "WARNING: No Binance API Key or API Secret."
-    market_logger.warning(msg)
-    api_key = ''
-    api_secret = ''
-
-# try:
-#     from secret import api_key
-# except ImportError:
-#     api_key, api_secret = "PLEASE ADD API KEY", "PLEASE ADD API SECRET"
-#     msg = """\n\n-------------------------------------------------------------
-# WARNING: No Binance API Key or API Secret. API key would be needed for personal API calls. Any other calls will work.
-#
-# Adding example:
-#
-#     from binpan import handlers
-#
-#     handlers.files.add_api_key("xxxx")
-#     handlers.files.add_api_secret("xxxx")
-#
-# API keys will be added to a file called secret.py in an encrypted way. API keys in memory stay encrypted except in the API call instant.
-#
-# Create API keys: https://www.binance.com/en/support/faq/360002502072
-# """
-#     market_logger.warning(msg)
-
 base_url = 'https://api.binance.com'
-
-klines_columns = {"t": "Open time", "o": "Open", "h": "High", "l": "Low", "c": "Close", "v": "Volume", "T": "Close time",
-                  "q": "Quote volume", "n": "Trades", "V": "Taker buy base volume", "Q": "Taker buy quote volume", "B": "Ignore"}
-
-trades_columns = {'M': 'Best price match', 'm': 'Buyer was maker', 'T': 'Timestamp', 'l': 'Last tradeId', 'f': 'First tradeId',
-                  'q': 'Quantity', 'p': 'Price', 'a': 'Aggregate tradeId'}
-
-agg_trades_columns_from_binance = ['Aggregate tradeId', 'Price', 'Quantity', 'First tradeId', 'Last tradeId', 'Date', 'Timestamp',
-                                   'Buyer was maker', 'Best price match']
-agg_trades_columns_from_redis = ['Aggregate tradeId', 'Price', 'Quantity', 'First tradeId', 'Last tradeId', 'Date', 'Timestamp',
-                                 'Buyer was maker', 'Best price match']
-atomic_trades_columns_from_binance = ['Trade Id', 'Price', 'Quantity', 'Quote quantity', 'Date', 'Timestamp', 'Buyer was maker',
-                                      'Best price match']
-atomic_trades_columns_from_redis = ['Trade Id', 'Price', 'Quantity', 'Buyer Order Id', 'Seller Order Id', 'Date', 'Timestamp',
-                                    'Buyer was maker', 'Best price match']
 
 
 ##########
@@ -538,6 +494,11 @@ def get_aggregated_trades(symbol: str, fromId: int = None, limit: int = None, de
     endpoint = '/api/v3/aggTrades?'
     check_weight(1, endpoint=endpoint)
     query = {'symbol': symbol, 'limit': limit, 'fromId': fromId, 'recWindow': None}
+    try:
+        api_key, _ = get_encoded_secrets()
+    except Exception as e:
+        market_logger.error(f"Missing api_key: {e}")
+        raise e
     return get_semi_signed_request(url=endpoint, decimal_mode=decimal_mode, api_key=api_key, params=query)
 
 
@@ -823,6 +784,11 @@ def get_atomic_trades(symbol: str, fromId: int = None, limit: int = None, decima
     endpoint = '/api/v3/historicalTrades?'
     check_weight(5, endpoint=endpoint)
     query = {'symbol': symbol, 'limit': limit, 'fromId': fromId, 'recWindow': None}
+    try:
+        api_key, _ = get_encoded_secrets()
+    except Exception as e:
+        market_logger.error(f"Missing api_key: {e}")
+        raise e
     return get_semi_signed_request(url=endpoint, decimal_mode=decimal_mode, api_key=api_key, params=query)
 
 

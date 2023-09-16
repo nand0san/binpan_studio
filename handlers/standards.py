@@ -56,3 +56,20 @@ reversal_columns = ['Open', 'High', 'Low', 'Close', 'Quantity', 'Timestamp']
 time_cols = ['Open time', 'Close time']
 
 dts_time_cols = ['Open timestamp', 'Close timestamp']
+
+
+# market things
+klines_columns = {"t": "Open time", "o": "Open", "h": "High", "l": "Low", "c": "Close", "v": "Volume", "T": "Close time",
+                  "q": "Quote volume", "n": "Trades", "V": "Taker buy base volume", "Q": "Taker buy quote volume", "B": "Ignore"}
+
+trades_columns = {'M': 'Best price match', 'm': 'Buyer was maker', 'T': 'Timestamp', 'l': 'Last tradeId', 'f': 'First tradeId',
+                  'q': 'Quantity', 'p': 'Price', 'a': 'Aggregate tradeId'}
+
+agg_trades_columns_from_binance = ['Aggregate tradeId', 'Price', 'Quantity', 'First tradeId', 'Last tradeId', 'Date', 'Timestamp',
+                                   'Buyer was maker', 'Best price match']
+agg_trades_columns_from_redis = ['Aggregate tradeId', 'Price', 'Quantity', 'First tradeId', 'Last tradeId', 'Date', 'Timestamp',
+                                 'Buyer was maker', 'Best price match']
+atomic_trades_columns_from_binance = ['Trade Id', 'Price', 'Quantity', 'Quote quantity', 'Date', 'Timestamp', 'Buyer was maker',
+                                      'Best price match']
+atomic_trades_columns_from_redis = ['Trade Id', 'Price', 'Quantity', 'Buyer Order Id', 'Seller Order Id', 'Date', 'Timestamp',
+                                    'Buyer was maker', 'Best price match']

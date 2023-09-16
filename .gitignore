@@ -136,8 +136,8 @@ dmypy.json
 .pyre/
 
 # created by virtualenv automatically
-secret.py
-secret*
+secret_.py
+secret_.py
 .idea/
 
 *DS_Store*
@@ -158,12 +158,12 @@ pruebas*
 handlers/*backup.py
 ichimoku.ipynb
 deep data.ipynb
-AFML.ipynb
-AFML_lab.ipynb
-AFML_02.2.ipynb
+
+AFML*.ipynb
+
 orderbook cost.ipynb
 orderbook*.ipynb
 ltcusdt.*
 ltcbtc.*
 
-test
+test*

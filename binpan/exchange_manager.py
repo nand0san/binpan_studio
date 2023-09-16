@@ -1,11 +1,7 @@
-import importlib
-
 import pandas as pd
-
-from handlers.exceptions import MissingBinanceApiData
-from handlers.exchange import get_info_dic, get_coins_info_dic, get_bases_dic, get_quotes_dic, get_leveraged_coins, get_leveraged_symbols, \
-    get_fees, get_symbols_filters, get_system_status, get_coins_and_networks_info
-from handlers.starters import import_secret_module
+import handlers.files
+from handlers.exchange import (get_info_dic, get_coins_info_dic, get_bases_dic, get_quotes_dic, get_leveraged_coins,
+                               get_leveraged_symbols, get_fees, get_symbols_filters, get_system_status, get_coins_and_networks_info)
 
 
 class Exchange(object):
@@ -33,13 +29,7 @@ class Exchange(object):
     """
 
     def __init__(self):
-        try:
-            secret_module = import_secret_module()
-            importlib.reload(secret_module)
-            self.api_key = secret_module.api_key
-            self.api_secret = secret_module.api_secret
-        except Exception:
-            raise MissingBinanceApiData(f"Binance Api key or Api Secret not found.")
+        self.api_key, self.api_secret = handlers.files.get_encoded_secrets()
 
         self.info_dic = get_info_dic()
         self.coins_dic = get_coins_info_dic(decimal_mode=False, api_key=self.api_key, api_secret=self.api_secret)
