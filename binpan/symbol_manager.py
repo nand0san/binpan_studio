@@ -15,6 +15,8 @@ from time import time
 import numpy as np
 
 from binpan.exchange_manager import Exchange
+import auxiliar
+
 from handlers.exceptions import BinPanException
 
 from handlers.exchange import (get_decimal_positions, get_info_dic, get_precision, get_orderTypes_and_permissions, get_fees,
@@ -28,21 +30,20 @@ from handlers.indicators import (df_splitter, reversal_candles, zoom_cloud_indic
 
 from handlers.logs import Logs
 
-from handlers.market import (agg_trades_columns_from_binance, atomic_trades_columns_from_binance, get_candles_by_time_stamps,
-                             parse_candles_to_dataframe, convert_to_numeric, basic_dataframe, get_historical_agg_trades,
-                             parse_agg_trades_to_dataframe, get_historical_atomic_trades, parse_atomic_trades_to_dataframe, get_order_book)
+from handlers.market import (get_candles_by_time_stamps, parse_candles_to_dataframe, convert_to_numeric, basic_dataframe,
+                             get_historical_agg_trades, parse_agg_trades_to_dataframe, get_historical_atomic_trades,
+                             parse_atomic_trades_to_dataframe, get_order_book)
 
 from handlers.plotting import (plotly_colors, plot_trades, candles_ta, plot_pie, plot_hists_vs, candles_tagged, bar_plot, plot_scatter,
                                orderbook_depth, dist_plot, profile_plot)
 
-from handlers.starters import import_secret_module, is_running_in_jupyter
+from handlers.starters import is_running_in_jupyter
 
-from handlers.time_helper import (pandas_freq_tick_interval, check_tick_interval, open_from_milliseconds, time_interval,
-                                  convert_milliseconds_to_str, get_dataframe_time_index_ranges, remove_initial_included_ranges,
-                                  tick_interval_values)
+from handlers.time_helper import (check_tick_interval, convert_milliseconds_to_str, get_dataframe_time_index_ranges,
+                                  remove_initial_included_ranges, tick_interval_values)
 
-from handlers.tags import tag_column_to_strategy_group, backtesting, backtesting_short, tag_comparison, tag_cross, merge_series, \
-    clean_in_out
+from handlers.tags import (tag_column_to_strategy_group, backtesting, backtesting_short, tag_comparison, tag_cross, merge_series,
+                           clean_in_out)
 
 from handlers.wallet import convert_str_date_to_ms
 
@@ -77,9 +78,7 @@ class Symbol(object):
     The class provides several plotting methods for quick data visualization.
 
     :param str symbol:  It can be any symbol in the binance exchange, like BTCUSDT, ethbusd or any other. Capital letters doesn't matter.
-
     :param str tick_interval: Any candle's interval available in binance. Capital letters doesn't matter.
-
     :param int or str start_time:  It can be an integer in milliseconds from epoch (1970-01-01 00:00:00 UTC) or any string in the formats:
 
         - %Y-%m-%d %H:%M:%S.%f:       **2022-05-11 06:45:42.124567**
@@ -143,10 +142,9 @@ class Symbol(object):
                         Candles are ordered with the timestamp regardless of the index name, even if the index shows the hourly change
                         because daily time saving changes.
 
-    :param bool time_index:  Shows human-readable index in the dataframe. Set to False shows numeric index. default is True.
     :param bool closed:      The last candle is a closed one in the moment of the creation, instead of a running candle not closed yet.
     :param int display_columns:     Number of columns in the dataframe display. Convenient to adjust in jupyter notebooks.
-    :param int display_rows:        Number of rows in the dataframe display. Convenient to adjust in jupyter notebooks.
+    :param int display_max_rows:        Number of rows in the dataframe display. Convenient to adjust in jupyter notebooks.
     :param int display_width:       Display width in the dataframe display. Convenient to adjust in jupyter notebooks.
     :param bool or str from_csv:    If True, gets data from a csv file by selecting interactively from csv files found.
      Also a string with filename can be used.
@@ -189,21 +187,15 @@ class Symbol(object):
                  end_time: int or str = None,
                  limit: int = 1000,
                  time_zone: str = 'Europe/Madrid',
-                 time_index: bool = True,
                  closed: bool = True,
                  hours: int = None,
                  display_columns: int = 25,
-                 display_rows: int = 10,
+                 display_max_rows: int = 10,
                  display_min_rows: int = 25,
                  display_width: int = 320,
                  from_csv: Union[bool, str] = False,
                  info_dic: dict = None):
 
-        self.orderbook_value = None
-        self.s_lines = None  # support levels from trades
-        self.r_lines = None  # support levels from trades
-
-        # symbol verification
         if not symbol and not from_csv:
             raise BinPanException(f"BinPan Exception: symbol needed")
 
@@ -228,6 +220,7 @@ class Symbol(object):
         self.time_cols = time_cols
         self.dts_time_cols = dts_time_cols
 
+        # version
         self.version = __version__
 
         # set de rutas
@@ -239,78 +232,42 @@ class Symbol(object):
             self.symbol = symbol.upper()
         else:
             self.symbol = ""
-        self.tick_interval = tick_interval
-        self.time_zone = time_zone
 
         if from_csv:
-            if type(from_csv) == str:
-                filename = from_csv
-            else:
-                filename = select_file(path=self.cwd,
-                                       extension='csv',
-                                       symbol=self.symbol,
-                                       tick_interval=self.tick_interval,
-                                       name_filter='klines')
-
-            binpan_logger.info(f"Loading {filename}")
-
-            # load and to numeric types
-            df_ = read_csv_to_dataframe(filename=filename, index_col="Open timestamp", index_time_zone=self.time_zone)
-            df_ = convert_to_numeric(data=df_)
-
-            # basic metadata
-            symbol, tick_interval, time_zone, data_type, startime_, endtime_ = extract_filename_metadata(filename=filename,
-                                                                                                         expected_data_type="klines",
-                                                                                                         expected_symbol=self.symbol,
-                                                                                                         expected_interval=self.tick_interval,
-                                                                                                         expected_timezone=self.time_zone)
-            self.symbol = symbol.upper()
-            self.tick_interval = tick_interval
-            self.time_zone = time_zone
-            self.start_time = startime_
-            self.end_time = endtime_
-            index_name = f"{symbol} {tick_interval} {time_zone}"
-            df_.index.name = index_name
-
-            if time_index:
-                if not isinstance(df_.index, pd.DatetimeIndex):
-                    idx = pd.DatetimeIndex(pd.to_datetime(df_['Open timestamp'], unit='ms')).tz_localize('UTC').tz_convert(self.time_zone)
-                    df_.index = idx
-                my_pandas_freq = pandas_freq_tick_interval.get(self.tick_interval)
-                prev_len = len(df_)
-                df_ = df_.asfreq(my_pandas_freq)  # this adds freq, will add nans if missing api data in the middle
-                if prev_len != len(df_):
-                    filled_data_by_freq = df_[df_.isna().all(axis=1)]
-                    binpan_logger.warning(f"Missing data in {filename} for {self.symbol} {self.tick_interval} {self.time_zone}: \n Filled "
-                                          f"data automatically: \n{filled_data_by_freq}")
-                # period
-                self.df = df_
-                self.time_index = True
-
-            # self.df.index.name = index_name
-            self.limit = len(self.df)
-
-            last_timestamp_ind_df = self.df.iloc[-1]['Close timestamp']
-            if last_timestamp_ind_df >= int(time() * 1000):
-                self.closed = False
-            else:
-                self.closed = True
-
+            (self.df,
+             self.symbol,
+             self.tick_interval,
+             self.time_zone,
+             self.data_type,
+             self.start_time,
+             self.end_time,
+             self.closed,
+             self.limit) = auxiliar.csv_klines_setup(from_csv=from_csv,
+                                                     symbol=self.symbol,
+                                                     tick_interval=self.tick_interval,
+                                                     cwd=self.cwd,
+                                                     time_zone=self.time_zone)
         else:
             self.symbol = symbol.upper()
             self.tick_interval = tick_interval
+            self.time_zone = time_zone
             self.limit = limit
-            # self.time_zone = time_zone
-            self.time_index = time_index
             self.closed = closed
 
-        # self.fees = self.get_fees(symbol=self.symbol)
-        self.fees = None
-
+        # pandas visualization settings
         self.display_columns = display_columns
-        self.display_rows = display_rows
+        self.display_max_rows = display_max_rows
         self.display_min_rows = display_min_rows
         self.display_width = display_width
+        self.set_display_columns(display_columns)
+        self.set_display_width(display_width)
+        self.set_display_min_rows(display_min_rows)
+        self.set_display_max_rows(display_max_rows)
+
+        # indicators and relevant data initialization #
+
+        self.support_lines = None  # support levels from trades
+        self.resistance_lines = None  # support levels from trades
 
         self.raw_agg_trades = []
         self.agg_trades = pd.DataFrame(columns=list(self.agg_trades_columns.values()))
@@ -323,6 +280,7 @@ class Symbol(object):
         self.reversal_agg_klines = pd.DataFrame(columns=self.reversal_columns)
         self.reversal_atomic_klines = pd.DataFrame(columns=self.reversal_columns)
 
+        self.orderbook_value = None
         self.orderbook = pd.DataFrame(columns=['Price', 'Quantity', 'Side'])
 
         ################
@@ -338,72 +296,61 @@ class Symbol(object):
         self.strategies = 0
         self.row_counter = 1
         self.strategy_groups = dict()
-
-        self.set_display_columns()
-        self.set_display_width()
-        self.set_display_min_rows()
-        self.set_display_max_rows()
-
-        binpan_logger.debug(f"New instance of BinPan Symbol {self.version}: {self.symbol}, {self.tick_interval}, limit={self.limit},"
-                            f" start={start_time}, end={end_time}, {self.time_zone}, time_index={self.time_index}"
-                            f", closed_candles={self.closed}")
+        self.plot_splitted_serie_couples = {}
 
         ##############
         # timestamps #
         ##############
 
-        start_time = convert_str_date_to_ms(date=start_time, time_zone=time_zone)
-        end_time = convert_str_date_to_ms(date=end_time, time_zone=time_zone)
+        self.hours = hours
+        self.start_time, self.end_time = auxiliar.setup_startime_endtime(start_time=start_time,
+                                                                         end_time=end_time,
+                                                                         time_zone=self.time_zone,
+                                                                         hours=self.hours,
+                                                                         closed=self.closed,
+                                                                         tick_interval=self.tick_interval,
+                                                                         limit=self.limit)
 
-        # work with open timestamps
-        if start_time:
-            start_time = open_from_milliseconds(ms=start_time, tick_interval=self.tick_interval)
-
-        if end_time:
-            end_time = open_from_milliseconds(ms=end_time, tick_interval=self.tick_interval)
-
-        # limit by hours
-        if hours:
-            if not end_time:
-                end_time = int(time() * 1000)
-            if not start_time:
-                start_time = end_time - (hours * 60 * 60 * 1000)
-
-        # fill missing timestamps
-        self.start_time, self.end_time = time_interval(tick_interval=self.tick_interval, limit=self.limit, start_time=start_time,
-                                                       end_time=end_time)
-        # discard not closed
-        now = int(1000 * time())
-        current_open = open_from_milliseconds(ms=now, tick_interval=self.tick_interval)
-        if self.closed and self.end_time >= current_open:
-            self.end_time = current_open - 2000
+        binpan_logger.debug(f"New instance of BinPan Symbol {self.version}: {self.symbol},"
+                            f" {self.tick_interval}, limit={self.limit}, start={self.start_time},"
+                            f" end={self.end_time}, {self.time_zone}, closed_candles={self.closed}")
 
         #################
         # query candles #
         #################
+
         if not from_csv:
-            self.raw = get_candles_by_time_stamps(symbol=self.symbol, tick_interval=self.tick_interval, start_time=self.start_time,
-                                                  end_time=self.end_time, limit=self.limit)
+            self.raw = get_candles_by_time_stamps(symbol=self.symbol,
+                                                  tick_interval=self.tick_interval,
+                                                  start_time=self.start_time,
+                                                  end_time=self.end_time,
+                                                  limit=self.limit)
 
-            dataframe = parse_candles_to_dataframe(raw_response=self.raw, columns=self.original_candles_cols, time_cols=self.time_cols,
-                                                   symbol=self.symbol, tick_interval=self.tick_interval, time_zone=self.time_zone,
-                                                   time_index=self.time_index)
-            self.df = dataframe
+            self.df = parse_candles_to_dataframe(raw_response=self.raw,
+                                                 columns=self.original_candles_cols,
+                                                 time_cols=self.time_cols,
+                                                 symbol=self.symbol,
+                                                 tick_interval=self.tick_interval,
+                                                 time_zone=self.time_zone)
+        else:
+            self.raw = None
 
+        # update timestamps from data
         self.timestamps = self.get_timestamps()
         self.dates = self.get_dates()
-        # update timestamps from data
         self.start_time, self.end_time = self.timestamps
 
-        self.plot_splitted_serie_couples = {}
         self.len = len(self.df)
 
-        # exchange data and tick size
+        ##################
+        # exchange setup #
+        ##################
+
         if not info_dic:  # for loop operations can be passed to avoid api weight overcome
             self.info_dic = get_info_dic()
         else:
-            assert type(info_dic) == dict
-            assert len(info_dic) > 0
+            assert type(info_dic) == dict, "info_dic must be a dictionary"
+            assert len(info_dic) > 0, "info_dic must be a dictionary with data"
             self.info_dic = info_dic
 
         self.tickSize = self.info_dic[self.symbol]['filters'][0]['tickSize']
@@ -422,7 +369,7 @@ class Symbol(object):
         self.blue_timestamps = []
 
         # check api continuity data and notify to user
-        self.check_continuity()
+        auxiliar.check_continuity(df=self.df)
 
     def __repr__(self):
         return str(self.df)
@@ -430,26 +377,6 @@ class Symbol(object):
     ##################
     # Show variables #
     ##################
-
-    def agg_trades(self):
-        """
-        Returns trades dataframe.
-
-        :return pd.DataFrame:
-        """
-        if self.agg_trades.empty:
-            binpan_logger.info(empty_agg_trades_msg)
-        return self.agg_trades
-
-    def atomic_trades(self):
-        """
-        Returns atomic trades dataframe.
-
-        :return pd.DataFrame:
-        """
-        if self.atomic_trades.empty:
-            binpan_logger.info(empty_atomic_trades_msg)
-        return self.atomic_trades
 
     def set_strategy_groups(self, column: str, group: str, strategy_groups: dict = None):
         """
@@ -469,20 +396,10 @@ class Symbol(object):
     def get_strategy_columns(self) -> list:
         """
         Returns column names starting with "Strategy".
+
         :return dict: Updated strategy groups of columns.
         """
-
         return [i for i in self.df.columns if i.lower().startswith('strategy')]
-
-    def update_info_dic(self):
-        """
-        Returns exchangeInfo data when instantiated. It includes, filters, fees, and many other data for all symbols in the
-        exchange.
-
-        :return dict:
-        """
-        self.info_dic = get_info_dic()
-        return self.info_dic
 
     def save_csv(self, timestamped_filename: bool = True):
         """
@@ -509,7 +426,7 @@ class Symbol(object):
         :return:
         """
         if self.atomic_trades.empty:
-            print(f"No atomic trades to save.")
+            binpan_logger.info(f"No atomic trades to save.")
         else:
             df_ = self.atomic_trades
             if timestamped_filename:
@@ -529,16 +446,17 @@ class Symbol(object):
         :return:
         """
         if self.agg_trades.empty:
-            print(f"No aggregated trades to save.")
-        df_ = self.agg_trades
-        if timestamped_filename:
-            start, end = self.get_timestamps()
-            filename = f"{df_.index.name.replace('/', '-')} aggTrades {start} {end}.csv"
+            binpan_logger.info(f"No aggregated trades to save.")
         else:
-            filename = f"{df_.index.name.replace('/', '-')} aggTrades.csv"
+            df_ = self.agg_trades
+            if timestamped_filename:
+                start, end = self.get_timestamps()
+                filename = f"{df_.index.name.replace('/', '-')} aggTrades {start} {end}.csv"
+            else:
+                filename = f"{df_.index.name.replace('/', '-')} aggTrades.csv"
 
-        save_dataframe_to_csv(filename=filename, data=df_, timestamp=not timestamped_filename)
-        binpan_logger.info(f"Saved file {filename}")
+            save_dataframe_to_csv(filename=filename, data=df_, timestamp=not timestamped_filename)
+            binpan_logger.info(f"Saved file {filename}")
 
     ##################
     # pandas display #
@@ -552,22 +470,24 @@ class Symbol(object):
 
         """
         if display_columns:
+            self.display_columns = display_columns
             pd.set_option('display.max_columns', display_columns)
         else:
             pd.set_option('display.max_columns', self.display_columns)
 
-    def set_display_min_rows(self, display_rows=None):
+    def set_display_min_rows(self, display_min_rows=None):
         """
         Change the number of minimum rows shown in the display of the dataframe.
 
-        :param int display_rows: Integer
+        :param int display_min_rows: Integer
 
         """
-        if display_rows:
-            pd.set_option('display.min_rows', display_rows)
+        if display_min_rows:
+            self.display_min_rows = display_min_rows
+            pd.set_option('display.min_rows', display_min_rows)
 
         else:
-            pd.set_option('display.min_rows', self.display_rows)
+            pd.set_option('display.min_rows', self.display_min_rows)
 
     def set_display_max_rows(self, display_max_rows=None):
         """
@@ -577,10 +497,11 @@ class Symbol(object):
 
         """
         if display_max_rows:
+            self.display_max_rows = display_max_rows
             pd.set_option('display.max_rows', display_max_rows)
 
         else:
-            pd.set_option('display.max_rows', self.display_rows)
+            pd.set_option('display.max_rows', self.display_max_rows)
 
     def set_display_width(self, display_width: int = None):
         """
@@ -590,6 +511,7 @@ class Symbol(object):
 
         """
         if display_width:
+            self.display_width = display_width
             pd.set_option('display.width', display_width)
         else:
             pd.set_option('display.width', self.display_width)
@@ -608,6 +530,7 @@ class Symbol(object):
     ###########
     # methods #
     ###########
+
     def basic(self, exceptions: list = None, actions_col='actions'):
         """
         Shows just a basic selection of columns data in the dataframe.
@@ -934,8 +857,13 @@ class Symbol(object):
         binpan_logger.info(f"From first Open date {ret_start} to last Open date {ret_end}")
         return ret_start, ret_end
 
-    def get_agg_trades(self, hours: int = None, minutes: int = None, startTime: int or str = None, endTime: int or str = None,
-                       time_zone: str = None, from_csv: str = None) -> pd.DataFrame:
+    def get_agg_trades(self,
+                       hours: int = None,
+                       minutes: int = None,
+                       startTime: int or str = None,
+                       endTime: int or str = None,
+                       time_zone: str = None,
+                       from_csv: str = None) -> pd.DataFrame:
         """
         Calls the API and creates another dataframe included in the object with the aggregated trades from API for the period of the
         created object.
@@ -1051,7 +979,6 @@ class Symbol(object):
                                                             columns=self.agg_trades_columns,
                                                             symbol=self.symbol,
                                                             time_zone=self.time_zone,
-                                                            time_index=self.time_index,
                                                             drop_dupes='Aggregate tradeId')
 
         self.agg_trades = convert_to_numeric(data=self.agg_trades)
@@ -1141,7 +1068,6 @@ class Symbol(object):
                                                                   columns=self.atomic_trades_columns,
                                                                   symbol=self.symbol,
                                                                   time_zone=self.time_zone,
-                                                                  time_index=self.time_index,
                                                                   drop_dupes='Trade Id')
         self.atomic_trades = convert_to_numeric(data=self.atomic_trades)
         return self.atomic_trades
@@ -1620,7 +1546,7 @@ class Symbol(object):
 
             .. code-block:: python
 
-               from binpan import binpan
+               import binpan
 
                 ltc = binpan.Symbol(symbol='ltcbtc',
                                     tick_interval='5m',
@@ -1955,6 +1881,15 @@ class Symbol(object):
     #################
     # Exchange data #
     #################
+    def update_info_dic(self):
+        """
+        Returns exchangeInfo data when instantiated. It includes, filters, fees, and many other data for all symbols in the
+        exchange.
+
+        :return dict:
+        """
+        self.info_dic = get_info_dic()
+        return self.info_dic
 
     def get_order_filters(self) -> dict:
         """
@@ -2002,24 +1937,6 @@ class Symbol(object):
     # Backtesting #
     ###############
 
-    # def set_action_labels(self,
-    #                       indicator_column: str = None,
-    #                       label_in: str = 'buy',
-    #                       label_out: str = 'sell') -> dict:
-    #     """
-    #     Sets labels to use when backtesting over a column of actions. In means you obtain base, out means you obtain quote.
-    #
-    #     DEPRECATED, ACTION LABELS MUST BE -1 OR 1.
-    #
-    #     :param str indicator_column: A column name of a BinPan dataframe colum.
-    #     :param str label_in: A label to register a sell point.
-    #     :param str label_out: A label to register a buy point.
-    #     :return dict: Dictionary with action columns labels.
-    #     """
-    #     if indicator_column and label_in and label_out:
-    #         self.action_labels.update({indicator_column: {'label_in': label_in, 'label_out': label_out}})
-    #     return self.action_labels
-
     def backtesting(self,
                     actions_col: str or int,
                     target_column: str or pd.Series = None,
@@ -2061,10 +1978,6 @@ class Symbol(object):
         :return pd.DataFrame or pd.Series:
 
         """
-
-        # if self.symbol in self.action_labels.keys():
-        #     label_in = self.action_labels[self.symbol]['label_in']
-        #     label_out = self.action_labels[self.symbol]['label_out']
 
         if type(actions_col) == int:
             actions = self.df.iloc[:, actions_col]
@@ -3220,12 +3133,12 @@ class Symbol(object):
                 if not by_quantity:
                     by_quantity = np.mean(self.atomic_trades['Quantity'].values)
                 if simple:
-                    self.s_lines = support_resistance_levels_merged(self.atomic_trades, max_clusters=max_clusters,
-                                                                    by_quantity=by_quantity, by_klines=False)
-                    self.r_lines = []
+                    self.support_lines = support_resistance_levels_merged(self.atomic_trades, max_clusters=max_clusters,
+                                                                          by_quantity=by_quantity, by_klines=False)
+                    self.resistance_lines = []
                 else:
-                    self.s_lines, self.r_lines = support_resistance_levels(self.atomic_trades, max_clusters=max_clusters,
-                                                                           by_quantity=by_quantity, by_klines=False)
+                    self.support_lines, self.resistance_lines = support_resistance_levels(self.atomic_trades, max_clusters=max_clusters,
+                                                                                          by_quantity=by_quantity, by_klines=False)
         elif from_aggregated:
             from_data = "aggregated trades"
             if self.agg_trades.empty:
@@ -3235,22 +3148,25 @@ class Symbol(object):
                     by_quantity = np.mean(self.agg_trades['Quantity'].values)
 
                 if simple:
-                    self.s_lines = support_resistance_levels_merged(self.agg_trades, max_clusters=max_clusters, by_quantity=by_quantity,
-                                                                    by_klines=False)
-                    self.r_lines = []
+                    self.support_lines = support_resistance_levels_merged(self.agg_trades, max_clusters=max_clusters,
+                                                                          by_quantity=by_quantity,
+                                                                          by_klines=False)
+                    self.resistance_lines = []
                 else:
-                    self.s_lines, self.r_lines = support_resistance_levels(self.agg_trades, max_clusters=max_clusters,
-                                                                           by_quantity=by_quantity, by_klines=False)
+                    self.support_lines, self.resistance_lines = support_resistance_levels(self.agg_trades, max_clusters=max_clusters,
+                                                                                          by_quantity=by_quantity, by_klines=False)
         else:  # with klines
             from_data = "klines"
             if not by_quantity:
                 by_quantity = np.mean(self.df['Volume'].values) * 0.25
             if simple:
-                self.s_lines = support_resistance_levels_merged(self.df, max_clusters=max_clusters, by_quantity=by_quantity, by_klines=True)
-                self.r_lines = []
+                self.support_lines = support_resistance_levels_merged(self.df, max_clusters=max_clusters, by_quantity=by_quantity,
+                                                                      by_klines=True)
+                self.resistance_lines = []
             else:
-                self.s_lines, self.r_lines = support_resistance_levels(self.df, max_clusters=max_clusters, by_quantity=by_quantity,
-                                                                       by_klines=True)
+                self.support_lines, self.resistance_lines = support_resistance_levels(self.df, max_clusters=max_clusters,
+                                                                                      by_quantity=by_quantity,
+                                                                                      by_klines=True)
 
         if inplace:
             # update data
@@ -3260,16 +3176,16 @@ class Symbol(object):
             if [c for c in self.df.columns if "Resistance" in c]:
                 self.delete_indicator_family(indicator_name_root="Resistance")
             if simple:
-                sup_cols = [f"Support_Resistance_{k + 1}" for k in range(len(self.s_lines))]
+                sup_cols = [f"Support_Resistance_{k + 1}" for k in range(len(self.support_lines))]
                 res_cols = []
             else:
-                sup_cols = [f"Support_{k + 1}" for k in range(len(self.s_lines))]
-                res_cols = [f"Resistance_{k + 1}" for k in range(len(self.r_lines))]
+                sup_cols = [f"Support_{k + 1}" for k in range(len(self.support_lines))]
+                res_cols = [f"Resistance_{k + 1}" for k in range(len(self.resistance_lines))]
 
             for i, c in enumerate(sup_cols):
-                self.df.loc[:, c] = self.s_lines[i]
+                self.df.loc[:, c] = self.support_lines[i]
             for i, c in enumerate(res_cols):
-                self.df.loc[:, c] = self.r_lines[i]
+                self.df.loc[:, c] = self.resistance_lines[i]
 
             # add plot info
             if not colors:
@@ -3279,7 +3195,7 @@ class Symbol(object):
                 self.set_plot_color(indicator_column=column_name, color=colors[i])
                 self.set_plot_color_fill(indicator_column=column_name, color_fill=False)
                 self.set_plot_row(indicator_column=str(column_name), row_position=1)  # overlaps are one  # return self.df
-        return self.s_lines, self.r_lines
+        return self.support_lines, self.resistance_lines
 
     def rolling_support_resistance(self,
                                    minutes_window: int = 8 * 60,
@@ -3520,7 +3436,7 @@ class Symbol(object):
 
         .. code-block::
 
-           from binpan import binpan
+           import binpan
 
            sym = binpan.Symbol('btcbusd', '1m')
            sym.ema(window=200, color='darkgrey')
@@ -3604,7 +3520,7 @@ class Symbol(object):
 
         .. code-block::
 
-           from binpan import binpan
+           import binpan
 
            sym = binpan.Symbol(symbol='ethbusd', tick_interval='1m', limit=300, time_zone='Europe/Madrid')
            sym.ema(window=10, color='darkgrey')
@@ -3975,17 +3891,3 @@ class Symbol(object):
             self.set_plot_row(indicator_column=column_name, row_position=row_pos)
             self.df.loc[:, column_name] = my_ffill
         return my_ffill
-
-    def check_continuity(self):
-        """
-        Verify if the dataframe has continuity in klines by "Open timestamp" column.
-        """
-        dif = self.df['Open timestamp'].diff().dropna()  # Drop the NaN value for the first row
-        try:
-            assert len(dif.value_counts()) == 1, "BinPan Exception: Dataframe has gaps in klines continuity."
-        except AssertionError:
-            # he añadido lo de pd series y podría fallar v0.5.0
-            mask = pd.Series(dif != dif.iloc[0]).reindex(self.df.index).fillna(False)
-            gaps = self.df.loc[mask, ['Open timestamp', 'Close timestamp']]
-            binpan_logger.warning(f"BinPan Warning: Dataframe has gaps in klines continuity: \n{gaps}")
-            binpan_logger.warning(f"\nTimestamp differences detected: \n{dif[mask]}")

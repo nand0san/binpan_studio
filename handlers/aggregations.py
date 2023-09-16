@@ -9,6 +9,7 @@ from .exceptions import BinPanException
 from .starters import is_python_version_numba_supported
 from .time_helper import pandas_freq_tick_interval
 
+
 if is_python_version_numba_supported():
     try:
         from .stat_tests import ema_numba, sma_numba
@@ -510,7 +511,7 @@ class ImbalanceBars(object):
             print(f"Boot current_size: {self.boot_trades}")
             print(f"Boot expected_imbalance: {self.expected_imbalance}")
 
-    def get_expected_size(self) -> float:
+    def get_expected_size(self) -> float or np.ndarray:
         """
         Calculate the expected size of the imbalance bars using the chosen method.
         """
@@ -519,7 +520,7 @@ class ImbalanceBars(object):
         elif self.method == "sma":
             return sma_numba(self.sampled_sizes, window=self.window)[-1]
 
-    def get_expected_probability(self) -> float:
+    def get_expected_probability(self) -> float or np.ndarray:
         """
         Calculate the expected probability of the imbalance bars using the chosen method.
         """

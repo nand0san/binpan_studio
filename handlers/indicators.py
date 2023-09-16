@@ -114,7 +114,7 @@ def ichimoku(data: pd.DataFrame, tenkan: int = 9, kijun: int = 26, chikou_span: 
 
        .. code-block:: python
 
-            from binpan import binpan
+            import binpan
 
             sym = binpan.Symbol(symbol='LUNCBUSD', tick_interval='1m', limit=500)
             sym.ichimoku()
@@ -433,7 +433,7 @@ def reversal_candles(trades: pd.DataFrame, decimal_positions: int, time_zone: st
      Example:
         .. code-block:: python
 
-           from binpan import binpan
+           import binpan
 
             ltc = binpan.Symbol(symbol='ltcbtc',
                                 tick_interval='5m',

@@ -8,10 +8,9 @@ import numpy as np
 
 from .logs import Logs
 from .market import convert_to_numeric, tick_seconds
-from .time_helper import convert_ms_column_to_datetime_with_zone, convert_datetime_to_string, \
-    convert_milliseconds_to_utc_string, \
-    convert_milliseconds_to_time_zone_datetime, convert_milliseconds_to_str, open_from_milliseconds, \
-    next_open_by_milliseconds
+from .time_helper import (convert_ms_column_to_datetime_with_zone, convert_datetime_to_string, convert_milliseconds_to_utc_string,
+                          convert_milliseconds_to_time_zone_datetime, convert_milliseconds_to_str, open_from_milliseconds,
+                          next_open_by_milliseconds)
 from .starters import import_secret_module
 from .exceptions import RedisConfigError
 
@@ -432,7 +431,7 @@ def fetch_zset_range(redisClient: StrictRedis,
 
     .. code-block::
 
-        from binpan import binpan
+        import binpan
         from handlers import redis_fetch
         from random import choice
 
@@ -478,7 +477,7 @@ def fetch_zset_timestamps(redisClient: StrictRedis,
 
     .. code-block::
 
-        from binpan import binpan
+        import binpan
         from handlers import redis_fetch
         from random import choice
 

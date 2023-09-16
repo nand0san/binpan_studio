@@ -422,7 +422,7 @@ def candles_ta(data: pd.DataFrame, indicators_series: list or pd.DataFrame = Non
 
         .. code-block:: python
 
-            from binpan import binpan
+            import binpan
 
             ethbtc = binpan.Symbol(symbol='ethbtc', tick_interval='1h')
 
@@ -757,7 +757,7 @@ def candles_tagged(data: pd.DataFrame,
 
             .. code-block:: python
 
-                from binpan import binpan
+                import binpan
                 from handlers.strategies import random_strategy
 
                 bt = binpan.Symbol(symbol='btcusdt',
@@ -1040,7 +1040,7 @@ def plot_trades(data: pd.DataFrame, max_size: int = 60, height: int = 1000, loga
     Example:
         .. code-block:: python
 
-           from binpan import binpan
+           import binpan
 
            lunc = binpan.Symbol(symbol='luncbusd',
                                 tick_interval='5m',
@@ -1108,7 +1108,7 @@ def plot_pie(serie: pd.Series, categories: int = 15, title=f"Size trade categori
 
         .. code-block:: python
 
-           from binpan import binpan
+           import binpan
 
            lunc = binpan.Symbol(symbol='luncbusd',
                                 tick_interval='5m',
@@ -1176,7 +1176,7 @@ def plot_scatter(df: pd.DataFrame, x_col: str, y_col: str, symbol: str = None, c
 
     .. code-block::
 
-       from binpan import binpan
+       import binpan
 
        lunc = binpan.Symbol(symbol='luncbusd',
                             tick_interval='5m',
@@ -1230,7 +1230,7 @@ def plot_hists_vs(x0: pd.Series, x1: pd.Series, x0_name: str = None, x1_name: st
 
     .. code-block::
 
-       from binpan import binpan
+       import binpan
 
        lunc = binpan.Symbol(symbol='luncbusd',
                             tick_interval='5m',
@@ -1290,7 +1290,7 @@ def orderbook_depth(df: pd.DataFrame, accumulated=True, title='Depth orderbook p
 
     .. code-block::
 
-        from binpan import binpan
+        import binpan
 
         lunc = binpan.Symbol(symbol='luncbusd',
                             tick_interval='5m',

@@ -9,7 +9,7 @@ import pandas as pd
 import json
 from decimal import Decimal as dd
 
-from typing import List, Dict, Union
+from typing import List
 
 from redis import StrictRedis
 
@@ -278,8 +278,12 @@ def get_historical_candles(symbol: str,
     return all_data
 
 
-def parse_candles_to_dataframe(raw_response: list, symbol: str, tick_interval: str, columns: list = None, time_cols: list = None,
-                               time_zone: str or None = 'UTC', time_index=False) -> pd.DataFrame:
+def parse_candles_to_dataframe(raw_response: list,
+                               symbol: str,
+                               tick_interval: str,
+                               columns: list = None,
+                               time_cols: list = None,
+                               time_zone: str or None = 'UTC') -> pd.DataFrame:
     """
     Format a list of lists by changing the indicated time fields to string format.
 
@@ -295,7 +299,6 @@ def parse_candles_to_dataframe(raw_response: list, symbol: str, tick_interval: s
     :param list columns:         Column names. Default is BinPan dataframe columns.
     :param list time_cols:       Columns to take dates from.
     :param str or None time_zone: Optional. Time zone to convert dates in index.
-    :param bool time_index:      True gets dates index, False just numeric index.
     :return:                    Pandas DataFrame
 
     """
@@ -347,7 +350,8 @@ def parse_candles_to_dataframe(raw_response: list, symbol: str, tick_interval: s
         for col in time_cols:
             df.loc[:, col] = df[col].apply(lambda x: convert_milliseconds_to_utc_string(x))
 
-    if time_index and time_zone:
+    # if time_index and time_zone:
+    if time_zone:
         date_index = df['Open timestamp'].apply(convert_milliseconds_to_time_zone_datetime, timezoned=time_zone)
         df.set_index(date_index, inplace=True)
         index_name = f"{symbol} {tick_interval} {time_zone}"
