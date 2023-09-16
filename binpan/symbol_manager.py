@@ -378,29 +378,6 @@ class Symbol(object):
     # Show variables #
     ##################
 
-    def set_strategy_groups(self, column: str, group: str, strategy_groups: dict = None):
-        """
-        Returns strategy_groups for BinPan DataFrame.
-
-        :param str column: A column to tag with a strategy group.
-        :param str group: Name of the group.
-        :param str strategy_groups: The existing strategy groups.
-        :return dict: Updated strategy groups of columns.
-        """
-        if not strategy_groups:
-            strategy_groups = self.strategy_groups
-        if column and group:
-            self.strategy_groups = tag_column_to_strategy_group(column=column, group=group, strategy_groups=strategy_groups)
-        return self.strategy_groups
-
-    def get_strategy_columns(self) -> list:
-        """
-        Returns column names starting with "Strategy".
-
-        :return dict: Updated strategy groups of columns.
-        """
-        return [i for i in self.df.columns if i.lower().startswith('strategy')]
-
     def save_csv(self, timestamped_filename: bool = True):
         """
         Saves current csv to a csv file.
@@ -1927,7 +1904,7 @@ class Symbol(object):
         self.precision = precision[self.symbol]
         return self.precision
 
-    def get_status(self) -> str:
+    def get_api_status(self) -> str:
         """
         Return the symbol status, TRADING, BREAK, etc.
         """
@@ -3748,6 +3725,29 @@ class Symbol(object):
             self.strategy_groups = tag_column_to_strategy_group(column=column_name, group=strategy_group,
                                                                 strategy_groups=self.strategy_groups)
         return clean
+
+    def set_strategy_groups(self, column: str, group: str, strategy_groups: dict = None):
+        """
+        Returns strategy_groups for BinPan DataFrame.
+
+        :param str column: A column to tag with a strategy group.
+        :param str group: Name of the group.
+        :param str strategy_groups: The existing strategy groups.
+        :return dict: Updated strategy groups of columns.
+        """
+        if not strategy_groups:
+            strategy_groups = self.strategy_groups
+        if column and group:
+            self.strategy_groups = tag_column_to_strategy_group(column=column, group=group, strategy_groups=strategy_groups)
+        return self.strategy_groups
+
+    def get_strategy_columns(self) -> list:
+        """
+        Returns column names starting with "Strategy".
+
+        :return dict: Updated strategy groups of columns.
+        """
+        return [i for i in self.df.columns if i.lower().startswith('strategy')]
 
     def strategy_from_tags_crosses(self,
                                    columns: list = None,
