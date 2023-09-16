@@ -748,7 +748,10 @@ def get_last_atomic_trades(symbol: str, limit=1000) -> list:
     return get_response(url=endpoint, params=query)
 
 
-def get_atomic_trades(symbol: str, fromId: int = None, limit: int = None, decimal_mode: bool = False) -> list:
+def get_atomic_trades(symbol: str,
+                      fromId: int = None,
+                      limit: int = None,
+                      decimal_mode: bool = False) -> list:
     """
     Returns atomic (not aggregated) trades from id to limit or last trades if id not specified.
 

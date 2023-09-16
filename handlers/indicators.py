@@ -49,10 +49,12 @@ def alternating_fractal_indicator(df: pd.DataFrame, max_period: int = None, suff
     fractal = None
     if not max_period:
         max_period = len(df)
+    print("Searching for pure alternating fractal...")
     for i in tqdm(range(2, max_period)):
         fractal = fractal_w_indicator(df=df, period=i, suffix=suffix, fill_with_zero=True)
         max_min = fractal[f"Fractal_W_{i}"].fillna(0)
         if is_alternating(lst=max_min.tolist()):
+            print(f"Pure alternating fractal found at period={i}")
             break
         else:
             fractal = None

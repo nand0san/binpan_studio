@@ -66,19 +66,24 @@ def append_dataframe_to_csv(filename: str, data: pd.DataFrame, col_sep: str = ',
     data.to_csv(filename, sep=col_sep, header=header, encoding='utf-8', quoting=QUOTE_ALL, index=index, mode='a')
 
 
-def find_csvs_in_path(files_path: str = '.', extension='csv'):
+def find_csvs_in_path(files_path: str = '.', extension='csv', name_filter: str = None):
     """
     Locate all files with desired extension.
 
     :param str files_path: A path.
     :param str extension: A extension like "csv".
+    :param str name_filter: A filter to apply to files. Example: "klines" or "aggTrades" or "atomicTrades".
     :return:
     """
     ret = []
     for r in listdir(files_path):
         full_path = path.join(files_path, r)
         if path.isfile(full_path):
-            ret.append(full_path)
+            if name_filter:
+                if name_filter in full_path:
+                    ret.append(full_path)
+            else:
+                ret.append(full_path)
     return [f for f in ret if f.endswith(extension)]
 
 
@@ -229,7 +234,7 @@ def save_file(filename: str, data: list, mode='w') -> None:
             f.write(str(line) + '\n')
 
 
-def select_file(path='.', extension='csv', symbol: str = None, tick_interval: str = None) -> str:
+def select_file(path='.', extension='csv', symbol: str = None, tick_interval: str = None, name_filter: str = None) -> str:
     """
     Selects from files in the path with the extension passed.
 
@@ -237,10 +242,11 @@ def select_file(path='.', extension='csv', symbol: str = None, tick_interval: st
     :param str extension: Extension of interesting files to select.
     :param str symbol: Symbol to filter files just to alert if file has other symbol.
     :param str tick_interval: Tick interval to filter files just to alert if file has other tick interval.
+    :param str name_filter: Filter to apply to files. Example: "klines" or "aggTrades" or "atomicTrades".
     :return str: a filename.
     """
     print("File selection menu:")
-    files = find_csvs_in_path(files_path=path, extension=extension)
+    files = find_csvs_in_path(files_path=path, extension=extension, name_filter=name_filter)
     files = [i for i in files if i.lower().endswith(extension.lower())]
     for i, file in enumerate(files):
         print(f"{i}: {file}")

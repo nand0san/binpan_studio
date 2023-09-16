@@ -138,6 +138,7 @@ dmypy.json
 # created by virtualenv automatically
 secret_.py
 secret_.py
+secret*
 .idea/
 
 *DS_Store*
@@ -167,3 +168,4 @@ ltcusdt.*
 ltcbtc.*
 
 test*
+*redis*

@@ -235,7 +235,10 @@ class Symbol(object):
         path.append(self.cwd)
 
         # parámetros principales
-        self.symbol = symbol.upper()
+        if symbol:  # en csv no se pasa symbol y da error el upper
+            self.symbol = symbol.upper()
+        else:
+            self.symbol = ""
         self.tick_interval = tick_interval
         self.time_zone = time_zone
 
@@ -243,7 +246,11 @@ class Symbol(object):
             if type(from_csv) == str:
                 filename = from_csv
             else:
-                filename = select_file(path=self.cwd, extension='csv', symbol=self.symbol, tick_interval=self.tick_interval)
+                filename = select_file(path=self.cwd,
+                                       extension='csv',
+                                       symbol=self.symbol,
+                                       tick_interval=self.tick_interval,
+                                       name_filter='klines')
 
             binpan_logger.info(f"Loading {filename}")
 
@@ -1013,7 +1020,7 @@ class Symbol(object):
             if type(from_csv) == str:
                 filename = from_csv
             else:
-                filename = select_file(path=self.cwd, extension='csv')
+                filename = select_file(path=self.cwd, extension='csv', name_filter='aggTrades')
 
                 # basic metadata
                 _, _, _, _, _, _ = extract_filename_metadata(filename=filename,
@@ -1105,7 +1112,7 @@ class Symbol(object):
             if type(from_csv) == str:
                 filename = from_csv
             else:
-                filename = select_file(path=self.cwd, extension='csv')
+                filename = select_file(path=self.cwd, extension='csv', name_filter='atomicTrades')
 
             # basic metadata
             _, _, _, _, _, _ = extract_filename_metadata(filename=filename, expected_data_type="atomicTrades",
@@ -2891,15 +2898,17 @@ class Symbol(object):
         if with_trend:
             max_mean, min_mean = fractal_trend_indicator(df=self.df, period=max_period, fractal=fractal, suffix=suffix)
             if max_mean > 0 and min_mean > 0:
-                binpan_logger.info(f"Increasing maxima and increasing minima. uptrend")
+                msg = f"Increasing maxima and increasing minima. uptrend"
             elif max_mean < 0 and min_mean < 0:
-                binpan_logger.info(f"Decreasing maxima and decreasing minima. downtrend")
+                msg = f"Decreasing maxima and decreasing minima. downtrend"
             elif max_mean < 0 < min_mean:
-                binpan_logger.info(f"Decreasing maxima and increasing minima. waiting for trend")
+                msg = f"Decreasing maxima and increasing minima, not clear trend"
             elif max_mean > 0 > min_mean:
-                binpan_logger.info(f"Increasing maxima and decreasing minima. waiting for trend")
+                msg = f"Increasing maxima and decreasing minima, not clear trend"
             else:
-                binpan_logger.info(f"No trend detected")
+                msg = f"No trend detected"
+            binpan_logger.info(msg)
+            print(msg)
 
             binpan_logger.info(f"Max mean: {max_mean} Min mean: {min_mean}")
         if not colors:
