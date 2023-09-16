@@ -17,6 +17,7 @@ BinPan manages symbol objects that can do:
 - calculate technical indicators.
 - plot candles, histograms, indicators, etc in a very simple and beautiful way.
 - check applied fees.
+- review Exchange policies.
 
 An example of a plot for candles and indicators:
 
@@ -47,7 +48,7 @@ Hope you find it useful breaking the market!!!
 Google Colab
 -------------------------------
 
-Google Colab is not available for the Binance API. Maybe Colab's IPs are restricted in the binance API.
+Google Colab is not available for the Binance API. Maybe Colab's IPs are restricted in the Binance servers.
 ```
 BinanceAPIException: APIError(code=0): Service unavailable from a restricted location according to 'b. Eligibility' in https://www.binance.com/en/terms. Please contact customer service if you believe you received this message in error.
 ```
@@ -98,30 +99,6 @@ Next, install the required packages using the following command:
 .. code-block:: python
 
     import sys
-
-    !{sys.executable} -m pip install <package_name>
-
-Replace <package_name> with the name of the package that you want to install.
-
-Repeat step 2 for all the packages that you need to install.
-
-If you face import errors related to the crypto or pycryptodome packages, use the following commands to uninstall and reinstall
-the packages:
-
-.. code-block:: python
-
-    # insecure
-    !{sys.executable} -m pip uninstall crypto
-    !{sys.executable} -m pip uninstall pycryptodome
-
-    secure
-    !{sys.executable} -m pip install pycryptodome
-
-Note that the crypto and pycryptodome packages are used for encryption/decryption purposes and it is recommended to use the more secure pycryptodome package.
-
-Finally, install any other required packages using the following command:
-
-.. code-block:: python
 
     !{sys.executable} -m pip install <package_name>
 
