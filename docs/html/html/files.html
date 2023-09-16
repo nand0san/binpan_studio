@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Files Module - BinPan 0.4.37 documentation</title>
+      <title>Files Module - BinPan 0.5.0 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Indicators Module" href="indicators.html" /><link rel="prev" title="Exchange Module" href="exchange.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -135,6 +135,10 @@ html.dark {
 <li><a class="reference internal" href="#handlers.files.read_file"><code class="docutils literal notranslate"><span class="pre">read_file()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.files.save_file"><code class="docutils literal notranslate"><span class="pre">save_file()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.files.select_file"><code class="docutils literal notranslate"><span class="pre">select_file()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.files.get_encoded_secrets"><code class="docutils literal notranslate"><span class="pre">get_encoded_secrets()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.files.get_encoded_telegram_secrets"><code class="docutils literal notranslate"><span class="pre">get_encoded_telegram_secrets()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.files.fill_secrets_file"><code class="docutils literal notranslate"><span class="pre">fill_secrets_file()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.files.fill_telegram_secrets_file"><code class="docutils literal notranslate"><span class="pre">fill_telegram_secrets_file()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.files.add_api_key"><code class="docutils literal notranslate"><span class="pre">add_api_key()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.files.add_api_secret"><code class="docutils literal notranslate"><span class="pre">add_api_secret()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.files.add_any_key"><code class="docutils literal notranslate"><span class="pre">add_any_key()</span></code></a></li>
@@ -165,7 +169,7 @@ html.dark {
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.files.append_dataframe_to_csv" title="handlers.files.append_dataframe_to_csv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append_dataframe_to_csv</span></code></a>(filename, data[, ...])</p></td>
 <td><p>Add lines to a csv with separator to choose, a dataframe.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.files.find_csvs_in_path" title="handlers.files.find_csvs_in_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_csvs_in_path</span></code></a>([files_path, extension])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.files.find_csvs_in_path" title="handlers.files.find_csvs_in_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_csvs_in_path</span></code></a>([files_path, extension, ...])</p></td>
 <td><p>Locate all files with desired extension.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.files.move_old_csvs" title="handlers.files.move_old_csvs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">move_old_csvs</span></code></a>([files_path, extension])</p></td>
@@ -185,6 +189,18 @@ html.dark {
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.files.select_file" title="handlers.files.select_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">select_file</span></code></a>([path, extension, symbol, ...])</p></td>
 <td><p>Selects from files in the path with the extension passed.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.files.get_encoded_secrets" title="handlers.files.get_encoded_secrets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_encoded_secrets</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.files.get_encoded_telegram_secrets" title="handlers.files.get_encoded_telegram_secrets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_encoded_telegram_secrets</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.files.fill_secrets_file" title="handlers.files.fill_secrets_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fill_secrets_file</span></code></a>()</p></td>
+<td><p>Creates a file called secret.py or adds to it with the API key and API secret encrypted values.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.files.fill_telegram_secrets_file" title="handlers.files.fill_telegram_secrets_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fill_telegram_secrets_file</span></code></a>()</p></td>
+<td><p>Creates a file called secret.py or adds to it with the telegram bot_id and chat_id encrypted values.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.files.add_api_key" title="handlers.files.add_api_key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_api_key</span></code></a>(api_key_value)</p></td>
 <td><p>Checks if exists in secret.py file and if not, then adds a line with the API key (not secret API key) encrypted value for working with the package.</p></td>
@@ -245,13 +261,14 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.files.find_csvs_in_path">
-<span class="sig-prename descclassname"><span class="pre">handlers.files.</span></span><span class="sig-name descname"><span class="pre">find_csvs_in_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'csv'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.files.find_csvs_in_path" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.files.</span></span><span class="sig-name descname"><span class="pre">find_csvs_in_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'csv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.files.find_csvs_in_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Locate all files with desired extension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>files_path</strong> (<em>str</em>) – A path.</p></li>
 <li><p><strong>extension</strong> (<em>str</em>) – A extension like “csv”.</p></li>
+<li><p><strong>name_filter</strong> (<em>str</em>) – A filter to apply to files. Example: “klines” or “aggTrades” or “atomicTrades”.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -277,21 +294,19 @@ html.dark {
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.files.extract_filename_metadata">
 <span class="sig-prename descclassname"><span class="pre">handlers.files.</span></span><span class="sig-name descname"><span class="pre">extract_filename_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected_data_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected_symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected_timezone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#handlers.files.extract_filename_metadata" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extract metadata from a filename. Symbol, tick interval, timezone and start timestamp and end timestamp. Also data type like atomic trades or klines.</p>
+<dd><p>Extract metadata from a filename. Symbol, tick interval, timezone and start timestamp and end timestamp. Also data type like atomic
+trades or klines.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> – A filename with expected format. Example: LTCBTC 1m Europe-Madrid optionalcomment klines 1691332020000 1691391959999.csv</p></li>
-<li><p><strong>expected_data_type</strong> (<em>str</em>) – Expected data type. Example: “klines” or “aggTrades” or “atomicTrades”</p></li>
-<li><p><strong>expected_interval</strong> (<em>str</em>) – Expected tick interval. Example: “1m” or “1h”.</p></li>
-<li><p><strong>expected_symbol</strong> (<em>str</em>) – Expected symbol. Example: “LTCBTC”</p></li>
-<li><p><strong>expected_timezone</strong> (<em>str</em>) – Expected timezone. Example: “Europe/Madrid”</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A dict with metadata.</p>
+<dd class="field-odd"><p><strong>filename</strong> – A filename with expected format. Example: LTCBTC 1m Europe-Madrid optional comment klines 1691332020000</p>
 </dd>
 </dl>
+<p>1691391959999.csv
+:param str expected_data_type: Expected data type. Example: “klines” or “aggTrades” or “atomicTrades”
+:param str expected_interval: Expected tick interval. Example: “1m” or “1h”.
+:param str expected_symbol: Expected symbol. Example: “LTCBTC”
+:param str expected_timezone: Expected timezone. Example: “Europe/Madrid”
+:return: A dict with metadata.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -343,7 +358,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.files.select_file">
-<span class="sig-prename descclassname"><span class="pre">handlers.files.</span></span><span class="sig-name descname"><span class="pre">select_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'csv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.files.select_file" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.files.</span></span><span class="sig-name descname"><span class="pre">select_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'csv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.files.select_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Selects from files in the path with the extension passed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -352,10 +367,43 @@ html.dark {
 <li><p><strong>extension</strong> (<em>str</em>) – Extension of interesting files to select.</p></li>
 <li><p><strong>symbol</strong> (<em>str</em>) – Symbol to filter files just to alert if file has other symbol.</p></li>
 <li><p><strong>tick_interval</strong> (<em>str</em>) – Tick interval to filter files just to alert if file has other tick interval.</p></li>
+<li><p><strong>name_filter</strong> (<em>str</em>) – Filter to apply to files. Example: “klines” or “aggTrades” or “atomicTrades”.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return str<span class="colon">:</span></dt>
 <dd class="field-even"><p>a filename.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.files.get_encoded_secrets">
+<span class="sig-prename descclassname"><span class="pre">handlers.files.</span></span><span class="sig-name descname"><span class="pre">get_encoded_secrets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#handlers.files.get_encoded_secrets" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.files.get_encoded_telegram_secrets">
+<span class="sig-prename descclassname"><span class="pre">handlers.files.</span></span><span class="sig-name descname"><span class="pre">get_encoded_telegram_secrets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#handlers.files.get_encoded_telegram_secrets" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.files.fill_secrets_file">
+<span class="sig-prename descclassname"><span class="pre">handlers.files.</span></span><span class="sig-name descname"><span class="pre">fill_secrets_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#handlers.files.fill_secrets_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a file called secret.py or adds to it with the API key and API secret encrypted values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>api_key, api_secret</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.files.fill_telegram_secrets_file">
+<span class="sig-prename descclassname"><span class="pre">handlers.files.</span></span><span class="sig-name descname"><span class="pre">fill_telegram_secrets_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#handlers.files.fill_telegram_secrets_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a file called secret.py or adds to it with the telegram bot_id and chat_id encrypted values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>api_key, api_secret</p>
 </dd>
 </dl>
 </dd></dl>

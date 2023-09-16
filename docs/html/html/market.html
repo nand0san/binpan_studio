@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Market Module - BinPan 0.4.37 documentation</title>
+      <title>Market Module - BinPan 0.5.0 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Messages Module" href="messages.html" /><link rel="prev" title="Indicators Module" href="indicators.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -128,6 +128,7 @@ html.dark {
 <li><a class="reference internal" href="#handlers.market.get_last_price"><code class="docutils literal notranslate"><span class="pre">get_last_price()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.market.get_prices_dic"><code class="docutils literal notranslate"><span class="pre">get_prices_dic()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.market.get_candles_by_time_stamps"><code class="docutils literal notranslate"><span class="pre">get_candles_by_time_stamps()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.market.get_historical_candles_old"><code class="docutils literal notranslate"><span class="pre">get_historical_candles_old()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.market.get_historical_candles"><code class="docutils literal notranslate"><span class="pre">get_historical_candles()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.market.parse_candles_to_dataframe"><code class="docutils literal notranslate"><span class="pre">parse_candles_to_dataframe()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.market.basic_dataframe"><code class="docutils literal notranslate"><span class="pre">basic_dataframe()</span></code></a></li>
@@ -171,52 +172,55 @@ html.dark {
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.market.get_candles_by_time_stamps" title="handlers.market.get_candles_by_time_stamps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_candles_by_time_stamps</span></code></a>(symbol, tick_interval)</p></td>
 <td><p>Calls API for a candles list using one or two timestamps, starting and ending.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.market.get_historical_candles" title="handlers.market.get_historical_candles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_historical_candles</span></code></a>(symbol, ...[, limit])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.market.get_historical_candles_old" title="handlers.market.get_historical_candles_old"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_historical_candles_old</span></code></a>(symbol, ...[, limit])</p></td>
 <td><p>Retrieve all kline data within the given time range considering the API limit.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.market.parse_candles_to_dataframe" title="handlers.market.parse_candles_to_dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_candles_to_dataframe</span></code></a>(raw_response, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.market.get_historical_candles" title="handlers.market.get_historical_candles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_historical_candles</span></code></a>(symbol, ...[, limit, ...])</p></td>
+<td><p>Retrieve all kline data within the given time range considering the API limit.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.market.parse_candles_to_dataframe" title="handlers.market.parse_candles_to_dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_candles_to_dataframe</span></code></a>(raw_response, ...)</p></td>
 <td><p>Format a list of lists by changing the indicated time fields to string format.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.market.basic_dataframe" title="handlers.market.basic_dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">basic_dataframe</span></code></a>(data[, exceptions, actions_col])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.market.basic_dataframe" title="handlers.market.basic_dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">basic_dataframe</span></code></a>(data[, exceptions, actions_col])</p></td>
 <td><p>Delete all columns except: Open, High, Low, Close, Volume, actions.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.market.convert_to_numeric" title="handlers.market.convert_to_numeric"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_to_numeric</span></code></a>(data)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.market.convert_to_numeric" title="handlers.market.convert_to_numeric"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_to_numeric</span></code></a>(data)</p></td>
 <td><p>Converts to numeric all posible columns for a given Dataframe.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.market.get_last_agg_trades" title="handlers.market.get_last_agg_trades"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_last_agg_trades</span></code></a>(symbol[, limit])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.market.get_last_agg_trades" title="handlers.market.get_last_agg_trades"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_last_agg_trades</span></code></a>(symbol[, limit])</p></td>
 <td><p>Get just the last aggregated trades from API.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.market.get_aggregated_trades" title="handlers.market.get_aggregated_trades"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_aggregated_trades</span></code></a>(symbol[, fromId, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.market.get_aggregated_trades" title="handlers.market.get_aggregated_trades"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_aggregated_trades</span></code></a>(symbol[, fromId, ...])</p></td>
 <td><p>Returns aggregated trades from id to limit or last trades if id not specified.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.market.get_historical_agg_trades" title="handlers.market.get_historical_agg_trades"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_historical_agg_trades</span></code></a>(symbol[, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.market.get_historical_agg_trades" title="handlers.market.get_historical_agg_trades"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_historical_agg_trades</span></code></a>(symbol[, ...])</p></td>
 <td><p>Returns aggregated trades from id to limit or last trades if id not specified.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.market.parse_agg_trades_to_dataframe" title="handlers.market.parse_agg_trades_to_dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_agg_trades_to_dataframe</span></code></a>(response, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.market.parse_agg_trades_to_dataframe" title="handlers.market.parse_agg_trades_to_dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_agg_trades_to_dataframe</span></code></a>(response, ...)</p></td>
 <td><p>Parses the API response into a pandas dataframe.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.market.get_last_atomic_trades" title="handlers.market.get_last_atomic_trades"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_last_atomic_trades</span></code></a>(symbol[, limit])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.market.get_last_atomic_trades" title="handlers.market.get_last_atomic_trades"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_last_atomic_trades</span></code></a>(symbol[, limit])</p></td>
 <td><p>Returns recent atomic (not aggregated) trades.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.market.get_atomic_trades" title="handlers.market.get_atomic_trades"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_atomic_trades</span></code></a>(symbol[, fromId, limit, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.market.get_atomic_trades" title="handlers.market.get_atomic_trades"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_atomic_trades</span></code></a>(symbol[, fromId, limit, ...])</p></td>
 <td><p>Returns atomic (not aggregated) trades from id to limit or last trades if id not specified.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.market.get_historical_atomic_trades" title="handlers.market.get_historical_atomic_trades"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_historical_atomic_trades</span></code></a>(symbol[, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.market.get_historical_atomic_trades" title="handlers.market.get_historical_atomic_trades"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_historical_atomic_trades</span></code></a>(symbol[, ...])</p></td>
 <td><p>Returns atomic (not aggregated) trades between timestamps.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.market.parse_atomic_trades_to_dataframe" title="handlers.market.parse_atomic_trades_to_dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_atomic_trades_to_dataframe</span></code></a>(response, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.market.parse_atomic_trades_to_dataframe" title="handlers.market.parse_atomic_trades_to_dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_atomic_trades_to_dataframe</span></code></a>(response, ...)</p></td>
 <td><p>Parses the API response into a pandas dataframe.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.market.get_order_book" title="handlers.market.get_order_book"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_order_book</span></code></a>(symbol[, limit])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.market.get_order_book" title="handlers.market.get_order_book"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_order_book</span></code></a>(symbol[, limit])</p></td>
 <td><p>Returns a dictionary with timestamp, bids and asks.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.market.get_orderbook_tickers" title="handlers.market.get_orderbook_tickers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_orderbook_tickers</span></code></a>([symbol, decimal_mode])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.market.get_orderbook_tickers" title="handlers.market.get_orderbook_tickers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_orderbook_tickers</span></code></a>([symbol, decimal_mode])</p></td>
 <td><p>Symbol Order Book Ticker</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.market.intermediate_conversion" title="handlers.market.intermediate_conversion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">intermediate_conversion</span></code></a>(coin, decimal_mode)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.market.intermediate_conversion" title="handlers.market.intermediate_conversion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">intermediate_conversion</span></code></a>(coin, decimal_mode)</p></td>
 <td><p>Uses an intermediate symbol for conversion.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.market.convert_coin" title="handlers.market.convert_coin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_coin</span></code></a>(coin, decimal_mode[, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.market.convert_coin" title="handlers.market.convert_coin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_coin</span></code></a>(coin, decimal_mode[, ...])</p></td>
 <td><p>Calculates a coin quantity value converted to other coin with current exchange prices.</p></td>
 </tr>
 </tbody>
@@ -264,11 +268,17 @@ is open right in between the endtime timestamp.</p>
 <li><p><strong>start_time</strong> (<em>int</em>) – A timestamp in milliseconds from epoch.</p></li>
 <li><p><strong>end_time</strong> (<em>int</em>) – A timestamp in milliseconds from epoch.</p></li>
 <li><p><strong>limit</strong> (<em>int</em>) – Count of candles to ask for.</p></li>
-<li><p><strong>redis_client</strong> (<em>bool</em><em> or </em><em>StrictRedis</em><em> or </em><em>dict</em>) – <p>A redis instance of a connector. Also can be passed a dictionary with redis client configuration. Example:</p>
-<p>redis_client = {‘host’: ‘192.168.89.242’, ‘port’: 6379, ‘db’: 0, ‘decode_responses’: True}</p>
-</p></li>
-<li><p><strong>time_zone</strong> (<em>str</em>) – Just used for exception errors.</p></li>
+<li><p><strong>redis_client</strong> (<em>bool</em><em> or </em><em>StrictRedis</em><em> or </em><em>dict</em>) – A redis instance of a connector. Also can be passed a dictionary with redis client</p></li>
 </ul>
+</dd>
+</dl>
+<p>configuration. Example:</p>
+<blockquote>
+<div><p>redis_client = {‘host’: ‘192.168.89.242’, ‘port’: 6379, ‘db’: 0, ‘decode_responses’: True}</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>time_zone</strong> (<em>str</em>) – Just used for exception errors.</p>
 </dd>
 <dt class="field-even">Return list<span class="colon">:</span></dt>
 <dd class="field-even"><p>Returns a list from the Binance API</p>
@@ -295,8 +305,8 @@ is open right in between the endtime timestamp.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="handlers.market.get_historical_candles">
-<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_historical_candles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval_ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.market.get_historical_candles" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="handlers.market.get_historical_candles_old">
+<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_historical_candles_old</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval_ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.market.get_historical_candles_old" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve all kline data within the given time range considering the API limit.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -307,6 +317,31 @@ is open right in between the endtime timestamp.</p>
 <li><p><strong>end_time</strong> (<em>int</em>) – End timestamp (milliseconds) of the time range.</p></li>
 <li><p><strong>tick_interval_ms</strong> (<em>int</em>) – Kline tick interval in milliseconds.</p></li>
 <li><p><strong>limit</strong> (<em>int</em>) – API limit for the number of klines in a single request (default: 1000).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of klines data within the given time range.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.market.get_historical_candles">
+<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_historical_candles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval_ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_errors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.market.get_historical_candles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve all kline data within the given time range considering the API limit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>symbol</strong> (<em>str</em>) – The trading pair symbol (e.g., “BTCUSDT”).</p></li>
+<li><p><strong>tick_interval</strong> (<em>str</em>) – Kline tick interval (e.g., “1m”, “3m”, “1h”).</p></li>
+<li><p><strong>start_time</strong> (<em>int</em>) – Start timestamp (milliseconds) of the time range.</p></li>
+<li><p><strong>end_time</strong> (<em>int</em>) – End timestamp (milliseconds) of the time range.</p></li>
+<li><p><strong>tick_interval_ms</strong> (<em>int</em>) – Kline tick interval in milliseconds.</p></li>
+<li><p><strong>limit</strong> (<em>int</em>) – API limit for the number of klines in a single request (default: 1000).</p></li>
+<li><p><strong>ignore_errors</strong> (<em>bool</em>) – If tru, just throw a warning on error. Recommended for redis filler.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -382,7 +417,8 @@ is open right in between the endtime timestamp.</p>
 <span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_last_agg_trades</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.market.get_last_agg_trades" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get just the last aggregated trades from API.</p>
 <p>GET /api/v3/aggTrades</p>
-<p>Get compressed, aggregate trades. Trades that fill at the time, from the same order, with the same price will have the quantity aggregated.</p>
+<p>Get compressed, aggregate trades. Trades that fill at the time, from the same order, with the same price will have the quantity
+aggregated.</p>
 <p>Weight(IP): 1</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -418,7 +454,8 @@ is open right in between the endtime timestamp.</p>
 <dd><p>Returns aggregated trades from id to limit or last trades if id not specified.</p>
 <p>Limit applied in fromId mode defaults to 500. Maximum is 1000.</p>
 <p>GET /api/v3/aggTrades</p>
-<p>Get compressed, aggregate trades. Trades that fill at the time, from the same order, with the same price will have the quantity aggregated.</p>
+<p>Get compressed, aggregate trades. Trades that fill at the time, from the same order, with the same price will have the quantity
+aggregated.</p>
 <p>Weight(IP): 1</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -606,14 +643,19 @@ from candles redis server.</p></li>
 <li><p><strong>endTime</strong> (<em>int</em>) – A timestamp in milliseconds from epoch.</p></li>
 <li><p><strong>start_trade_id</strong> (<em>int</em>) – A trade id as first one (older).</p></li>
 <li><p><strong>end_trade_id</strong> (<em>int</em>) – A trade id as last one (newer).</p></li>
-<li><p><strong>limit</strong> (<em>int</em>) – Limit for missing heads or tails of the interval requested with timestamps or trade ids. Ignored if  start and end passed.</p></li>
-<li><p><strong>symbol</strong> (<em>str</em>) – A binance valid symbol.</p></li>
-<li><p><strong>redis_client_trades</strong> (<em>bool</em>) – A redis instance of a connector. Must be a trades redis connector, usually different configuration
-from candles redis server.</p></li>
+<li><p><strong>limit</strong> (<em>int</em>) – Limit for missing heads or tails of the interval requested with timestamps or trade ids. Ignored if  start and end</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return list<span class="colon">:</span></dt>
-<dd class="field-even"><p>Returns a list from the Binance API</p>
+</dl>
+<p>passed.
+:param str symbol: A binance valid symbol.
+:param bool redis_client_trades: A redis instance of a connector. Must be a trades redis connector, usually different configuration</p>
+<blockquote>
+<div><p>from candles redis server.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Return list<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns a list from the Binance API</p>
 </dd>
 </dl>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="n">Last</span> <span class="n">Trades</span> <span class="n">example</span><span class="p">:</span>

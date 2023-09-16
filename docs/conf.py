@@ -14,7 +14,6 @@ import os
 import sys
 from pathlib import Path
 import importlib.util
-# from dotenv import dotenv_values
 
 sys.path.insert(0, os.path.abspath('..'))
 
