@@ -81,8 +81,7 @@ def get_candles_by_time_stamps(symbol: str,
                                start_time: int = None,
                                end_time: int = None,
                                limit=1000,
-                               time_zone='Europe/Madrid',
-                               redis_client: Union[StrictRedis, Dict] = None) -> list:
+                               time_zone='Europe/Madrid') -> list:
     """
     Calls API for a candles list using one or two timestamps, starting and ending.
 
@@ -105,11 +104,6 @@ def get_candles_by_time_stamps(symbol: str,
     :param int start_time: A timestamp in milliseconds from epoch.
     :param int end_time: A timestamp in milliseconds from epoch.
     :param int limit: Count of candles to ask for.
-    :param bool or StrictRedis or dict redis_client: A redis instance of a connector. Also can be passed a dictionary with redis client
-    configuration. Example:
-
-        redis_client = {'host': '192.168.89.242', 'port': 6379, 'db': 0, 'decode_responses': True}
-
     :param str time_zone: Just used for exception errors.
     :return list: Returns a list from the Binance API
 
@@ -164,34 +158,34 @@ def get_candles_by_time_stamps(symbol: str,
     for r in ranges:
         start = r[0]
         end = r[1]
+        #
+        # if redis_client:
+        #     from redis import StrictRedis
+        #     if type(redis_client) == dict:
+        #         try:
+        #             redis_client = StrictRedis(**redis_client)
+        #         except Exception:
+        #             msg = f"BinPan exceptionRedis client error: arguments for client={redis_client}"
+        #             market_logger.error(msg)
+        #             raise Exception(msg)
+        #     elif type(redis_client) != StrictRedis:
+        #         msg = f"BinPan exceptionRedis client error: type passed={type(redis_client)}"
+        #         market_logger.error(msg)
+        #         raise Exception(msg)
+        #
+        #     ret = redis_client.zrangebyscore(name=chan, min=start, max=end, withscores=False)
+        #     if not ret:
+        #         continue
+        #     response = [json.loads(i) for i in ret]
+        # else:
+        params = {'symbol': symbol, 'interval': tick_interval, 'startTime': start, 'endTime': end, 'limit': limit}
+        params = {k: v for k, v in params.items() if v}
+        check_weight(1, endpoint=endpoint)
 
-        if redis_client:
-            from redis import StrictRedis
-            if type(redis_client) == dict:
-                try:
-                    redis_client = StrictRedis(**redis_client)
-                except Exception:
-                    msg = f"BinPan exceptionRedis client error: arguments for client={redis_client}"
-                    market_logger.error(msg)
-                    raise Exception(msg)
-            elif type(redis_client) != StrictRedis:
-                msg = f"BinPan exceptionRedis client error: type passed={type(redis_client)}"
-                market_logger.error(msg)
-                raise Exception(msg)
-
-            ret = redis_client.zrangebyscore(name=chan, min=start, max=end, withscores=False)
-            if not ret:
-                continue
-            response = [json.loads(i) for i in ret]
-        else:
-            params = {'symbol': symbol, 'interval': tick_interval, 'startTime': start, 'endTime': end, 'limit': limit}
-            params = {k: v for k, v in params.items() if v}
-            check_weight(1, endpoint=endpoint)
-
-            start_str = convert_milliseconds_to_str(start, timezoned=time_zone)
-            end_str = convert_milliseconds_to_str(min(end, int(1000 * time())), timezoned=time_zone)
-            market_logger.info(f"API request: {symbol} {start_str} to {end_str}")
-            response = get_response(url=endpoint, params=params)
+        start_str = convert_milliseconds_to_str(start, timezoned=time_zone)
+        end_str = convert_milliseconds_to_str(min(end, int(1000 * time())), timezoned=time_zone)
+        market_logger.info(f"API request: {symbol} {start_str} to {end_str}")
+        response = get_response(url=endpoint, params=params)
 
         raw_candles += response
 
@@ -796,7 +790,7 @@ def get_atomic_trades(symbol: str,
 
 
 def get_historical_atomic_trades(symbol: str, startTime: int = None, endTime: int = None, start_trade_id: int = None,
-                                 end_trade_id: int = None, limit: int = 1000, redis_client_trades: StrictRedis = None) -> List[dict]:
+                                 end_trade_id: int = None, limit: int = 1000) -> List[dict]:
     """
     Returns atomic (not aggregated) trades between timestamps. It iterates over limit 1000 intervals to adjust to API limit.
 
@@ -807,10 +801,8 @@ def get_historical_atomic_trades(symbol: str, startTime: int = None, endTime: in
     :param int start_trade_id: A trade id as first one (older).
     :param int end_trade_id: A trade id as last one (newer).
     :param int limit: Limit for missing heads or tails of the interval requested with timestamps or trade ids. Ignored if  start and end
-    passed.
+     passed.
     :param str symbol: A binance valid symbol.
-    :param bool redis_client_trades: A redis instance of a connector. Must be a trades redis connector, usually different configuration
-     from candles redis server.
     :return list: Returns a list from the Binance API
 
     .. code-block::
@@ -842,7 +834,7 @@ def get_historical_atomic_trades(symbol: str, startTime: int = None, endTime: in
     requests_cnt = 0
 
     # with trade ids, find start
-    if start_trade_id and end_trade_id and not redis_client_trades:
+    if start_trade_id and end_trade_id:
         current_first_trade = trades[0]['id']
         while current_first_trade > start_trade_id:
             requests_cnt += 1
@@ -863,7 +855,7 @@ def get_historical_atomic_trades(symbol: str, startTime: int = None, endTime: in
         return sorted(ret, key=lambda x: x['id'])
 
     # with timestamps or trade ids
-    if not redis_client_trades and (startTime or endTime):
+    if startTime or endTime:
         current_first_trade_time = trades[0]['time']
         current_first_trade = trades[0]['id']
 
@@ -902,33 +894,33 @@ def get_historical_atomic_trades(symbol: str, startTime: int = None, endTime: in
         return sorted(ret, key=lambda x: x['id'])
 
     # from redis
-    response = []
-    market_logger.info(f"Fetching atomic trades from redis server for {symbol}")
-
-    curr_trades = redis_client_trades.zrange(name=f"{symbol.lower()}@trade", start=0, end=-1, withscores=True)
-
-    curr_trades = [json.loads(i[0]) for i in curr_trades]
-    market_logger.debug(f"Fetched {len(curr_trades)} atomic trades for {symbol}")
-
-    if curr_trades:
-        timestamps_dict = {k['T']: k['t'] for k in curr_trades}  # associate timestamps with trade id
-        trade_ids = [i for t, i in timestamps_dict.items() if startTime <= t <= endTime]
-        market_logger.debug(f"List of atomic trades {len(trade_ids)} for {symbol}")
-
-        if trade_ids:
-            response = redis_client_trades.zrangebyscore(name=f"{symbol.lower()}@trade", min=trade_ids[0], max=trade_ids[
-                -1], withscores=False)
-            response = [json.loads(i) for i in response]
-        else:
-            response = []
-
-        market_logger.info(f"Clean atomic {len(response)} trades found for {symbol}")
-
-    if not response:
-        start_str = convert_milliseconds_to_utc_string(ms=startTime)
-        end_str = convert_milliseconds_to_utc_string(ms=endTime)
-        market_logger.info(f"No atomic trade IDs found for {symbol} for given interval {start_str} and {end_str} (UTC) in server.")
-    return response
+    # response = []
+    # market_logger.info(f"Fetching atomic trades from redis server for {symbol}")
+    #
+    # curr_trades = redis_client_trades.zrange(name=f"{symbol.lower()}@trade", start=0, end=-1, withscores=True)
+    #
+    # curr_trades = [json.loads(i[0]) for i in curr_trades]
+    # market_logger.debug(f"Fetched {len(curr_trades)} atomic trades for {symbol}")
+    #
+    # if curr_trades:
+    #     timestamps_dict = {k['T']: k['t'] for k in curr_trades}  # associate timestamps with trade id
+    #     trade_ids = [i for t, i in timestamps_dict.items() if startTime <= t <= endTime]
+    #     market_logger.debug(f"List of atomic trades {len(trade_ids)} for {symbol}")
+    #
+    #     if trade_ids:
+    #         response = redis_client_trades.zrangebyscore(name=f"{symbol.lower()}@trade", min=trade_ids[0], max=trade_ids[
+    #             -1], withscores=False)
+    #         response = [json.loads(i) for i in response]
+    #     else:
+    #         response = []
+    #
+    #     market_logger.info(f"Clean atomic {len(response)} trades found for {symbol}")
+    #
+    # if not response:
+    #     start_str = convert_milliseconds_to_utc_string(ms=startTime)
+    #     end_str = convert_milliseconds_to_utc_string(ms=endTime)
+    #     market_logger.info(f"No atomic trade IDs found for {symbol} for given interval {start_str} and {end_str} (UTC) in server.")
+    # return response
 
 
 def parse_atomic_trades_to_dataframe(response: list,

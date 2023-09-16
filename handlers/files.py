@@ -114,7 +114,7 @@ def extract_filename_metadata(filename: str, expected_data_type: str, expected_s
     trades or klines.
 
     :param filename: A filename with expected format. Example: LTCBTC 1m Europe-Madrid optional comment klines 1691332020000
-    1691391959999.csv
+     1691391959999.csv
     :param str expected_data_type: Expected data type. Example: "klines" or "aggTrades" or "atomicTrades"
     :param str expected_interval: Expected tick interval. Example: "1m" or "1h".
     :param str expected_symbol: Expected symbol. Example: "LTCBTC"

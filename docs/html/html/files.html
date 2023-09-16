@@ -298,15 +298,19 @@ html.dark {
 trades or klines.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>filename</strong> – A filename with expected format. Example: LTCBTC 1m Europe-Madrid optional comment klines 1691332020000</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> – A filename with expected format. Example: LTCBTC 1m Europe-Madrid optional comment klines 1691332020000
+1691391959999.csv</p></li>
+<li><p><strong>expected_data_type</strong> (<em>str</em>) – Expected data type. Example: “klines” or “aggTrades” or “atomicTrades”</p></li>
+<li><p><strong>expected_interval</strong> (<em>str</em>) – Expected tick interval. Example: “1m” or “1h”.</p></li>
+<li><p><strong>expected_symbol</strong> (<em>str</em>) – Expected symbol. Example: “LTCBTC”</p></li>
+<li><p><strong>expected_timezone</strong> (<em>str</em>) – Expected timezone. Example: “Europe/Madrid”</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dict with metadata.</p>
 </dd>
 </dl>
-<p>1691391959999.csv
-:param str expected_data_type: Expected data type. Example: “klines” or “aggTrades” or “atomicTrades”
-:param str expected_interval: Expected tick interval. Example: “1m” or “1h”.
-:param str expected_symbol: Expected symbol. Example: “LTCBTC”
-:param str expected_timezone: Expected timezone. Example: “Europe/Madrid”
-:return: A dict with metadata.</p>
 </dd></dl>
 
 <dl class="py function">

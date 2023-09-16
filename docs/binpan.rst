@@ -63,31 +63,6 @@ Next, install the required packages using the following command:
 
 Replace <package_name> with the name of the package that you want to install.
 
-Repeat step 2 for all the packages that you need to install.
-
-If you face import errors related to the crypto or pycryptodome packages, use the following commands to uninstall and reinstall
-the packages:
-
-.. code-block::
-
-    # insecure
-    !{sys.executable} -m pip uninstall crypto
-    !{sys.executable} -m pip uninstall pycryptodome
-
-    secure
-    !{sys.executable} -m pip install pycryptodome
-
-Note that the crypto and pycryptodome packages are used for encryption/decryption purposes,
-and it is recommended to use the more secure pycryptodome package.
-
-Finally, install any other required packages using the following command:
-
-.. code-block::
-
-    !{sys.executable} -m pip install <package_name>
-
-Replace <package_name> with the name of the package that you want to install.
-
 By following these steps, you can install the required packages directly to the Jupyter Notebook kernel and resolve any import
 errors that you may encounter. In addition, it is recommended to ensure that the virtual environment used by Jupyter is
 configured correctly to avoid any conflicts with package installations.
