@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Statistical Tests and Tools - BinPan 0.5.0 documentation</title>
-    <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Strategies Module" href="strategies.html" /><link rel="prev" title="Redis Module" href="redis_fetch.html" />
+    <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Starters Module" href="starters.html" /><link rel="prev" title="Redis Module" href="redis_fetch.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
     const sessionTheme = sessionStorage['_theme']
@@ -89,19 +89,20 @@ html.dark {
       <div class="sy-scrollbar p-6">
         <div class="globaltoc" data-expand-depth="0"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="aggregations.html">Aggregations Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="binpan.html">BinPan Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aggregations.html">Aggregations Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exchange.html">Exchange Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="files.html">Files Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="indicators.html">Indicators Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="influx_manager.html">Influx Manager Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="messages.html">Messages Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="messages.html#module-handlers.messages">Exceptions Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quest.html">Requests Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Statistical Tests and Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="starters.html">Starters Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tags.html">Tags &amp; Backtesting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="time_helper.html">Time Helpers</a></li>
@@ -164,9 +165,10 @@ html.dark {
     <div class="flex flex-col break-words justify-between">
       <div class="min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
         <article class="yue" role="main">
-          <section id="module-handlers.stat_tests">
-<span id="statistical-tests-and-tools"></span><h1>Statistical Tests and Tools<a class="headerlink" href="#module-handlers.stat_tests" title="Link to this heading">¶</a></h1>
-<p>Statistical tests and tools.</p>
+          <section id="statistical-tests-and-tools">
+<h1>Statistical Tests and Tools<a class="headerlink" href="#statistical-tests-and-tools" title="Link to this heading">¶</a></h1>
+<p>This module is inspired by the exercises in the book “Advances in Financial Machine Learning” by Marcos Lopez de Prado.</p>
+<p id="module-handlers.stat_tests">Statistical tests and tools.</p>
 <p><strong>Functions:</strong></p>
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
@@ -394,10 +396,10 @@ window: The window size for the SMA calculation.</p>
     </a>
   </div>
   <div class="navigation-next">
-    <a href="strategies.html">
+    <a href="starters.html">
       <div class="page-info">
         <span>Next</span>
-        <div class="title">Strategies Module</div>
+        <div class="title">Starters Module</div>
       </div>
       <i class="i-icon chevron"></i>
     </a>

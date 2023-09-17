@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Starters Module - BinPan 0.5.0 documentation</title>
+    <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Strategies Module" href="strategies.html" /><link rel="prev" title="Statistical Tests and Tools" href="stat_tests.html" />
+  <script>
+    const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const sessionTheme = sessionStorage['_theme']
+    if (sessionTheme) {
+      document.documentElement.classList.add(sessionTheme)
+    } else if (isDarkTheme) {
+      document.documentElement.classList.add('dark')
+    }
+  </script><link rel="stylesheet" type="text/css" href="_static/pygments.css?v=aecf457f" />
+    <link rel="stylesheet" type="text/css" href="_static/shibuya.css?v=2981b36d" />
+    <link rel="stylesheet" type="text/css" href="_static/style.css?v=1e48dca6" />
+    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=ee381b95" />
+    <style>
+:root {
+  --sy-f-sys:-apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Droid Sans, Helvetica Neue;--sy-f-cjk:PingFang SC, Hiragino Sans GB, Droid Sans Fallback, Microsoft YaHei;--sy-f-heading:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-text:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-mono:Menlo, Monaco, Consolas, "Courier New", monospace;--sy-c-divider:rgba(var(--sy-rc-text), 0.1);--sy-c-divider-weak:rgba(var(--sy-rc-text), 0.05);--sy-c-border:rgba(var(--sy-rc-text), 0.14);--sy-s-banner-height:0rem;--sy-s-navbar-height:56px;--sy-s-offset-top:calc(var(--sy-s-navbar-height) + var(--sy-s-banner-height));--sy-c-link:rgb(var(--sy-rc-theme));--sy-c-link-weak:rgba(var(--sy-rc-theme), 0.86);
+  --sy-rc-theme:143, 118, 214;--sy-rc-bg:255, 255, 255;--sy-rc-invert:0, 0, 0;--sy-rc-text:0, 0, 0;--sy-c-bg:#fff;--sy-c-bg-weak:#f9f9f9;--sy-c-text:#374151;--sy-c-text-weak:#6b7280;--sy-c-heading:#111827;--sy-c-bold:#111827;--sy-c-foot-text:#232226;--sy-c-foot-bg:#fafafa;--sy-c-foot-divider:#f0f0f0;
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --sy-rc-theme:143, 118, 214;--sy-rc-bg:255, 255, 255;--sy-rc-invert:0, 0, 0;--sy-rc-text:0, 0, 0;--sy-c-bg:#fff;--sy-c-bg-weak:#f9f9f9;--sy-c-text:#374151;--sy-c-text-weak:#6b7280;--sy-c-heading:#111827;--sy-c-bold:#111827;--sy-c-foot-text:#232226;--sy-c-foot-bg:#fafafa;--sy-c-foot-divider:#f0f0f0;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --sy-rc-theme:143, 118, 214;--sy-rc-bg:18, 18, 18;--sy-rc-invert:255, 255, 255;--sy-rc-text:255, 255, 255;--sy-c-bg:#121212;--sy-c-bg-weak:#212833;--sy-c-text:#cedbea;--sy-c-text-weak:#77889f;--sy-c-heading:#ebf0f4;--sy-c-bold:#ebf0f4;--sy-c-foot-text:#eee;--sy-c-foot-bg:#000;--sy-c-foot-divider:#000;
+  }
+}
+html.light {
+  --sy-rc-theme:143, 118, 214;--sy-rc-bg:255, 255, 255;--sy-rc-invert:0, 0, 0;--sy-rc-text:0, 0, 0;--sy-c-bg:#fff;--sy-c-bg-weak:#f9f9f9;--sy-c-text:#374151;--sy-c-text-weak:#6b7280;--sy-c-heading:#111827;--sy-c-bold:#111827;--sy-c-foot-text:#232226;--sy-c-foot-bg:#fafafa;--sy-c-foot-divider:#f0f0f0;
+}
+html.dark {
+  --sy-rc-theme:143, 118, 214;--sy-rc-bg:18, 18, 18;--sy-rc-invert:255, 255, 255;--sy-rc-text:255, 255, 255;--sy-c-bg:#121212;--sy-c-bg-weak:#212833;--sy-c-text:#cedbea;--sy-c-text-weak:#77889f;--sy-c-heading:#ebf0f4;--sy-c-bold:#ebf0f4;--sy-c-foot-text:#eee;--sy-c-foot-bg:#000;--sy-c-foot-divider:#000;
+}
+</style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-heading: Inter, var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    <meta property="og:type" content="website"/><meta property="og:title" content="Starters Module"/>
+<meta name="twitter:card" content="summary"/></head>
+<body><div class="document"><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand mr-4" href="index.html">
+      
+      
+      <strong>BinPan</strong>
+    </a>
+    <div class="sy-head-links" id="NavLinks">
+      <nav class="sy-head-nav"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form>
+        
+        
+        <div class="sy-head-social flex items-center">
+        </div>
+      </div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden">
+      <button class="js-theme theme-switch flex items-center" data-aria-light="Switch to dark mode" data-aria-dark="Switch to light mode">
+        <i class="i-icon theme-icon"></i>
+      </button>
+      <button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="NavLinks" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2 -translate-x-2"></span>
+          <span class="hamburger_3 -translate-x-1"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="binpan.html">BinPan Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aggregations.html">Aggregations Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exchange.html">Exchange Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="files.html">Files Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="indicators.html">Indicators Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="influx_manager.html">Influx Manager Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="messages.html">Messages Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quest.html">Requests Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stat_tests.html">Statistical Tests and Tools</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Starters Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tags.html">Tags &amp; Backtesting Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="time_helper.html">Time Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Module</a></li>
+</ul>
+
+        </div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-icon close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4">
+  <div class="localtoc">
+    <h3>On this page</h3>
+    <ul>
+<li><a class="reference internal" href="#handlers.starters.import_secret_module"><code class="docutils literal notranslate"><span class="pre">import_secret_module()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.starters.AesCipher"><code class="docutils literal notranslate"><span class="pre">AesCipher</span></code></a><ul>
+<li><a class="reference internal" href="#handlers.starters.AesCipher.encrypt"><code class="docutils literal notranslate"><span class="pre">AesCipher.encrypt()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.starters.AesCipher.decrypt"><code class="docutils literal notranslate"><span class="pre">AesCipher.decrypt()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#handlers.starters.get_exchange_limits"><code class="docutils literal notranslate"><span class="pre">get_exchange_limits()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.starters.is_python_version_numba_supported"><code class="docutils literal notranslate"><span class="pre">is_python_version_numba_supported()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.starters.is_running_in_jupyter"><code class="docutils literal notranslate"><span class="pre">is_running_in_jupyter()</span></code></a></li>
+</ul>
+
+  </div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div>
+    </div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+    <div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-icon menu"></i>
+      </button>
+    </div>
+    <ul class="flex-1">
+      
+      
+      <li><a href="index.html">BinPan</a><span>/</span></li>
+      
+      <li><strong>Starters Module</strong></li>
+      
+      
+    </ul>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-icon outdent"></i>
+      </button>
+    </div>
+  </div>
+</div>
+    <div class="flex flex-col break-words justify-between">
+      <div class="min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+        <article class="yue" role="main">
+          <section id="module-handlers.starters">
+<span id="starters-module"></span><h1>Starters Module<a class="headerlink" href="#module-handlers.starters" title="Link to this heading">¶</a></h1>
+<p>Functions to initialize before starting anything.</p>
+<p><strong>Functions:</strong></p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.starters.import_secret_module" title="handlers.starters.import_secret_module"><code class="xref py py-obj docutils literal notranslate"><span class="pre">import_secret_module</span></code></a>()</p></td>
+<td><p>Imports the 'secret.py' module from anywhere in the project directory hierarchy.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.starters.get_exchange_limits" title="handlers.starters.get_exchange_limits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_exchange_limits</span></code></a>()</p></td>
+<td><p>Binance manage several limits: RAW_REQUESTS, REQUEST_WEIGHT, and ORDERS rate limits.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.starters.is_python_version_numba_supported" title="handlers.starters.is_python_version_numba_supported"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_python_version_numba_supported</span></code></a>()</p></td>
+<td><p>Verify if python version is numba supported.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.starters.is_running_in_jupyter" title="handlers.starters.is_running_in_jupyter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_running_in_jupyter</span></code></a>()</p></td>
+<td><p>Check if the code is running in a Jupyter notebook.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Classes:</strong></p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.starters.AesCipher" title="handlers.starters.AesCipher"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AesCipher</span></code></a>()</p></td>
+<td><p>Cyphering object.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.starters.import_secret_module">
+<span class="sig-prename descclassname"><span class="pre">handlers.starters.</span></span><span class="sig-name descname"><span class="pre">import_secret_module</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#handlers.starters.import_secret_module" title="Link to this definition">¶</a></dt>
+<dd><p>Imports the ‘secret.py’ module from anywhere in the project directory hierarchy.</p>
+<p>The function searches for the ‘secret.py’ module in the current directory and all upper directories until it finds it
+or reaches the root of the file system.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The ‘secret’ module if found, None otherwise.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Module or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="handlers.starters.AesCipher">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.starters.</span></span><span class="sig-name descname"><span class="pre">AesCipher</span></span><a class="headerlink" href="#handlers.starters.AesCipher" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Cyphering object.</p>
+<p>Initialization function. Generates a key and an initialization vector based on the CPU info and the user home.</p>
+<p><strong>Methods:</strong></p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.starters.AesCipher.encrypt" title="handlers.starters.AesCipher.encrypt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">encrypt</span></code></a>(msg)</p></td>
+<td><p>Encrypting function.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.starters.AesCipher.decrypt" title="handlers.starters.AesCipher.decrypt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">decrypt</span></code></a>(msg_encrypted)</p></td>
+<td><p>Decrypt function.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="handlers.starters.AesCipher.encrypt">
+<span class="sig-name descname"><span class="pre">encrypt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.starters.AesCipher.encrypt" title="Link to this definition">¶</a></dt>
+<dd><p>Encrypting function. Encrypts a message with AES-128-CBC.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>msg</strong> (<em>str</em>) – Any message to encrypt.</p>
+</dd>
+<dt class="field-even">Return str<span class="colon">:</span></dt>
+<dd class="field-even"><p>A bytes base64 string.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="handlers.starters.AesCipher.decrypt">
+<span class="sig-name descname"><span class="pre">decrypt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg_encrypted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.starters.AesCipher.decrypt" title="Link to this definition">¶</a></dt>
+<dd><p>Decrypt function. Decrypts a message with AES-128-CBC.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>msg_encrypted</strong> (<em>str</em>) – A bytes base64 string.</p>
+</dd>
+<dt class="field-even">Return str<span class="colon">:</span></dt>
+<dd class="field-even"><p>Plain text.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.starters.get_exchange_limits">
+<span class="sig-prename descclassname"><span class="pre">handlers.starters.</span></span><span class="sig-name descname"><span class="pre">get_exchange_limits</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.starters.get_exchange_limits" title="Link to this definition">¶</a></dt>
+<dd><p>Binance manage several limits: RAW_REQUESTS, REQUEST_WEIGHT, and ORDERS rate limits.</p>
+<p>The headers for those limits, I assume that are:
+- RAW_REQUESTS: x-mbx-used-weight. Is cross all the api calls.
+- REQUEST_WEIGHT: Example: x-mbx-order-count-10s. Time interval limited requests.
+- ORDERS: Example: x-mbx-order-count-10s. Rate limit for orders.
+- X-SAPI-USED-IP-WEIGHT-1M: For sapi endpoint requests.</p>
+<p>Example response:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>{‘X-SAPI-USED-IP-WEIGHT-1M’: 1200,</dt><dd><p>‘x-mbx-order-count-10s’: 50,
+‘x-mbx-order-count-1d’: 160000,
+‘x-mbx-used-weight’: 6100,
+‘x-mbx-used-weight-1m’: 1200}</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Return dict<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.starters.is_python_version_numba_supported">
+<span class="sig-prename descclassname"><span class="pre">handlers.starters.</span></span><span class="sig-name descname"><span class="pre">is_python_version_numba_supported</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#handlers.starters.is_python_version_numba_supported" title="Link to this definition">¶</a></dt>
+<dd><p>Verify if python version is numba supported.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return bool<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if supported, False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.starters.is_running_in_jupyter">
+<span class="sig-prename descclassname"><span class="pre">handlers.starters.</span></span><span class="sig-name descname"><span class="pre">is_running_in_jupyter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#handlers.starters.is_running_in_jupyter" title="Link to this definition">¶</a></dt>
+<dd><p>Check if the code is running in a Jupyter notebook.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return bool<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if running in Jupyter, False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+        </article>
+        
+        <div class="navigation flex print:hidden">
+  <div class="navigation-prev">
+    <a href="stat_tests.html">
+      <i class="i-icon chevron"></i>
+      <div class="page-info">
+        <span>Previous</span>
+        
+        <div class="title">Statistical Tests and Tools</div>
+        
+      </div>
+    </a>
+  </div>
+  <div class="navigation-next">
+    <a href="strategies.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title">Strategies Module</div>
+      </div>
+      <i class="i-icon chevron"></i>
+    </a>
+  </div>
+</div>
+        
+      </div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2022, Fernando Alfonso</p>
+        
+        <p>
+          Made with
+          
+          <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+          
+          <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+        </p>
+      </div>
+      <div class="sy-foot-socials">
+      </div>
+    </div>
+  </div>
+</footer></div>
+      <script src="_static/documentation_options.js?v=1dd76d02"></script>
+      <script src="_static/doctools.js?v=888ff710"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/shibuya.js?v=3e5c8598"></script>
+    
+</body>
+</html>

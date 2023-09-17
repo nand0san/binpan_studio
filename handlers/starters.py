@@ -17,12 +17,12 @@ import importlib
 
 def import_secret_module():
     """
-    Importa el módulo 'secret' desde cualquier lugar en la jerarquía de directorios del proyecto.
+    Imports the 'secret.py' module from anywhere in the project directory hierarchy.
 
-    La función busca el módulo 'secret' en el directorio actual y todos los directorios superiores hasta que lo encuentra
-    o llega a la raíz del sistema de archivos.
+    The function searches for the 'secret.py' module in the current directory and all upper directories until it finds it
+    or reaches the root of the file system.
 
-    :return: El módulo 'secret' si se encuentra, None en caso contrario.
+    :return: The 'secret' module if found, None otherwise.
     :rtype: Module or None
     """
     current_dir = os.path.abspath(os.curdir)
@@ -47,41 +47,12 @@ def import_secret_module():
             sys.path.insert(0, current_dir)
 
 
-def import_if_not_exists_(module_name: str):
-    """
-    Import a Python module if it hasn't been imported yet.
-
-    This function takes a module_name parameter, which is the name of the module you want to import. If the module is not already present in sys.modules, it attempts to import the module using importlib.import_module().
-
-    :param module_name: The name of the module to be imported.
-    :type module_name: str
-
-    :raises ImportError: If the specified module cannot be imported.
-
-    :return: The imported module object if the module is successfully imported or if it is already present in sys.modules.
-    :rtype: ModuleType
-
-    :example:
-
-    .. code-block:: python
-
-        math_module = import_if_not_exists("math")
-        print(math_module.sqrt(4))  # Prints "2.0"
-
-    """
-    if module_name not in sys.modules:
-        try:
-            importlib.import_module(module_name)
-            print(f"Module {module_name} imported successfully.")
-        except ImportError:
-            raise Exception(f"Failed to import module {module_name}.")
-    else:
-        print(f"Module {module_name} already imported.")
-
-
 class AesCipher(object):
     """
     Cyphering object.
+
+    Initialization function. Generates a key and an initialization vector based on the CPU info and the user home.
+
     """
 
     def __init__(self):
@@ -91,7 +62,7 @@ class AesCipher(object):
 
     def encrypt(self, msg: str) -> str:
         """
-        Encrypting function.
+        Encrypting function. Encrypts a message with AES-128-CBC.
 
         :param str msg: Any message to encrypt.
         :return str: A bytes base64 string.
@@ -103,7 +74,7 @@ class AesCipher(object):
 
     def decrypt(self, msg_encrypted: str) -> str:
         """
-        Decrypt function.
+        Decrypt function. Decrypts a message with AES-128-CBC.
 
         :param str msg_encrypted: A bytes base64 string.
         :return str: Plain text.
@@ -167,6 +138,8 @@ def get_exchange_limits() -> dict:
 def is_python_version_numba_supported() -> bool:
     """
     Verify if python version is numba supported.
+
+    :return bool: True if supported, False otherwise.
     """
     min_version = (3, 7)
     max_version = (3, 11)  # Numba supports up to Python 3.10, so we set the maximum version to 3.11
@@ -177,6 +150,7 @@ def is_python_version_numba_supported() -> bool:
 def is_running_in_jupyter():
     """
     Check if the code is running in a Jupyter notebook.
+
     :return bool: True if running in Jupyter, False otherwise.
     """
     try:
@@ -184,4 +158,3 @@ def is_running_in_jupyter():
         return True
     except ImportError:
         return False
-

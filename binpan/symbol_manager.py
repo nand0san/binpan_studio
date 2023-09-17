@@ -73,7 +73,11 @@ class Symbol(object):
     more.
 
     Symbols can be any trading pair on Binance, such as BTCUSDT or ETHBUSD, and time intervals can be specified using the
-    following strings: '1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '6h', '8h', '12h', '1d', '3d', '1w', or '1M'.
+    following strings:
+
+        ```
+        '1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '6h', '8h', '12h', '1d', '3d', '1w', or '1M'
+        ```
 
     The class provides several plotting methods for quick data visualization.
 
@@ -81,19 +85,23 @@ class Symbol(object):
     :param str tick_interval: Any candle's interval available in binance. Capital letters doesn't matter.
     :param int or str start_time:  It can be an integer in milliseconds from epoch (1970-01-01 00:00:00 UTC) or any string in the formats:
 
+      .. code-block::
+
         - %Y-%m-%d %H:%M:%S.%f:       **2022-05-11 06:45:42.124567**
         - %Y-%m-%d %H:%M:%S:          **2022-05-11 06:45:42**
 
-       If start time is passed, it gets the next open according to the tick interval selected except an exact open time passed.
+     If start time is passed, it gets the next open according to the tick interval selected except an exact open time passed.
 
     :param int or str end_time:    It can be an integer in milliseconds from epoch (1970-01-01 00:00:00 UTC) or any string in the formats:
+
+      .. code-block::
 
         - %Y-%m-%d %H:%M:%S.%f:       **2022-05-11 06:45:42.124**
         - %Y-%m-%d %H:%M:%S:          **2022-05-11 06:45:42**
 
-       If end time is passed, it gets candles till the previous close according to the selected tick interval.
+     If end time is passed, it gets candles till the previous close according to the selected tick interval.
 
-       Example with daily time saving inside the interval:
+     Example with daily time saving inside the interval:
 
         .. code-block:: python
 

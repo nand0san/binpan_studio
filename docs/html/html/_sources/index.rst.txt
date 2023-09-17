@@ -31,6 +31,8 @@ An example of a plot for candles and indicators:
     If you decide to add API keys for using some account methods, BinPan will encrypt it in a file, and in memory,
     but it is better not enabling trading capability on the Binance API key configuration, just for your own peace of mind.
 
+    You will be asked for the API key and secret the first time you need it. It will be encrypted and stored in a file.
+
     Be careful out there!
 
 
@@ -135,8 +137,8 @@ greatly appreciated.
    :maxdepth: 2
    :caption: Contents:
 
-   aggregations.rst
    binpan.rst
+   aggregations.rst
    exceptions.rst
    exchange.rst
    files.rst
@@ -148,6 +150,7 @@ greatly appreciated.
    quest.rst
    redis_fetch.rst
    stat_tests.rst
+   starters.rst
    strategies.rst
    tags.rst
    time_helper.rst

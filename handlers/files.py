@@ -307,7 +307,7 @@ def fill_secrets_file() -> None:
     """
     Creates a file called secret.py or adds to it with the API key and API secret encrypted values.
 
-    :return: api_key, api_secret
+    :return: None
     """
     api_key = input(f"Please, enter your Binance Api Key: ")
     add_api_key(api_key_value=api_key)
@@ -321,7 +321,7 @@ def fill_telegram_secrets_file() -> None:
     """
     Creates a file called secret.py or adds to it with the telegram bot_id and chat_id encrypted values.
 
-    :return: api_key, api_secret
+    :return: None
     """
     bot = input(f"Please, enter your Telegram bot token for send messages or leave it empty: ")
     add_any_key(key=bot, key_name="encoded_telegram_bot_id")
