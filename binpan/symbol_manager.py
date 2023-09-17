@@ -15,7 +15,7 @@ from time import time
 import numpy as np
 
 from binpan.exchange_manager import Exchange
-import auxiliar
+from .auxiliar import csv_klines_setup, check_continuity, setup_startime_endtime
 
 from handlers.exceptions import BinPanException
 
@@ -242,11 +242,11 @@ class Symbol(object):
              self.start_time,
              self.end_time,
              self.closed,
-             self.limit) = auxiliar.csv_klines_setup(from_csv=from_csv,
-                                                     symbol=self.symbol,
-                                                     tick_interval=self.tick_interval,
-                                                     cwd=self.cwd,
-                                                     time_zone=self.time_zone)
+             self.limit) = csv_klines_setup(from_csv=from_csv,
+                                            symbol=self.symbol,
+                                            tick_interval=self.tick_interval,
+                                            cwd=self.cwd,
+                                            time_zone=self.time_zone)
         else:
             self.symbol = symbol.upper()
             self.tick_interval = tick_interval
@@ -303,13 +303,13 @@ class Symbol(object):
         ##############
 
         self.hours = hours
-        self.start_time, self.end_time = auxiliar.setup_startime_endtime(start_time=start_time,
-                                                                         end_time=end_time,
-                                                                         time_zone=self.time_zone,
-                                                                         hours=self.hours,
-                                                                         closed=self.closed,
-                                                                         tick_interval=self.tick_interval,
-                                                                         limit=self.limit)
+        self.start_time, self.end_time = setup_startime_endtime(start_time=start_time,
+                                                                end_time=end_time,
+                                                                time_zone=self.time_zone,
+                                                                hours=self.hours,
+                                                                closed=self.closed,
+                                                                tick_interval=self.tick_interval,
+                                                                limit=self.limit)
 
         binpan_logger.debug(f"New instance of BinPan Symbol {self.version}: {self.symbol},"
                             f" {self.tick_interval}, limit={self.limit}, start={self.start_time},"
@@ -369,7 +369,7 @@ class Symbol(object):
         self.blue_timestamps = []
 
         # check api continuity data and notify to user
-        auxiliar.check_continuity(df=self.df)
+        check_continuity(df=self.df)
 
     def __repr__(self):
         return str(self.df)

@@ -11,9 +11,9 @@ influx_logger = Logs(filename='./logs/influx_manager.log', name='influx_manager'
 
 def time_clause(timestamp_ms: int) -> str or None:
     """
-    If a timestamp in string (delta) or int, then convert it to a delta string or ISO format.
+    If a timestamp is provided as a string (delta) or int, it converts it to a delta string or ISO format.
 
-    :param timestamp_ms: A timestamp in milliseconds. If str passed, expected format is ISO or Influx Delta: 1h, -1d, etc...
+    :param timestamp_ms: A timestamp in milliseconds. If a string is passed, the expected format is ISO or Influx Delta: 1h, -1d, etc...
     :return: A string in ISO format or delta.
     """
     if timestamp_ms is None:
@@ -43,13 +43,13 @@ def influx_client(url: str,
                   timeout: int = 10000,
                   ) -> influxdb_client.InfluxDBClient:
     """
-    Función para obtener un cliente de InfluxDB en modo lectura.
+    Function to obtain an InfluxDB client in read mode.
 
-    :param str url: Url de InfluxDB. Por ejemplo, "http://localhost:8086"
-    :param str token: Token de acceso a InfluxDB.
-    :param str org: Organización de InfluxDB. Por ejemplo, "tu_org"
-    :param int timeout: Timeout de la conexión en milisegundos.
-    :return: Un cliente de InfluxDB.
+    :param str url: InfluxDB URL. For example, "http://localhost:8086"
+    :param str token: Access token to InfluxDB.
+    :param str org: InfluxDB organization. For example, "your_org"
+    :param int timeout: Connection timeout in milliseconds.
+    :return: An InfluxDB client.
     """
     return influxdb_client.InfluxDBClient(url=url,
                                           token=token,
@@ -67,12 +67,12 @@ def fetch_measurements(client: influxdb_client.InfluxDBClient,
                        bucket: str,
                        org: str) -> set:
     """
-    Función para obtener todas las medidas de un bucket específico.
+    Function to fetch all the measurements from a specific bucket.
 
-    :param client: Cliente conectado a InfluxDB.
-    :param bucket: Bucket de InfluxDB.
-    :param org: Organización de InfluxDB.
-    :return: Lista de medidas.
+    :param client: Client connected to InfluxDB.
+    :param bucket: InfluxDB bucket.
+    :param org: InfluxDB organization.
+    :return: List of measurements.
     """
     query_api = client.query_api()
     query = f'import "influxdata/influxdb/schema"\n' \
@@ -86,18 +86,17 @@ def fetch_measurement_tag_keys(client: influxdb_client.InfluxDBClient,
                                measurement: str,
                                org: str) -> set:
     """
-    Función para obtener todos los tags de una medida específica en un bucket específico.
+    Function to fetch all the tags of a specific measurement in a specific bucket.
 
-    :param client: Cliente conectado a InfluxDB
-    :param bucket: Nombre del bucket
-    :param measurement: Nombre de la medida. Por ejemplo, "trades"
-    :param org: Nombre de la organización. Por ejemplo, "tu_org"
-    :return: Conjunto de tags únicos. Ejemplo de retorno:
+    :param client: Client connected to InfluxDB.
+    :param bucket: Bucket name.
+    :param measurement: Measurement name. For example, "trades".
+    :param org: Organization name. For example, "your_org".
+    :return: Set of unique tags. Return example:
 
     .. code-block:: python
 
         {'buyer_is_maker', 'stream', 'symbol'}
-
     """
     query_api = client.query_api()
     query = f'import "influxdata/influxdb/schema"\n' \
@@ -115,13 +114,13 @@ def fetch_measurement_field_keys(client: influxdb_client.InfluxDBClient,
                                  measurement: str,
                                  org: str) -> set:
     """
-    Función para obtener todos los campos de una medida específica en un bucket específico.
+    Function to fetch all the fields of a specific measurement in a specific bucket.
 
-    :param client: Cliente conectado a InfluxDB
-    :param bucket: Nombre del bucket
-    :param measurement: Nombre de la medida. Por ejemplo, "trades"
-    :param org: Nombre de la organización. Por ejemplo, "tu_org"
-    :return: Conjunto de campos únicos. Ejemplo de retorno:
+    :param client: Client connected to InfluxDB.
+    :param bucket: Bucket name.
+    :param measurement: Measurement name. For example, "trades".
+    :param org: Organization name. For example, "your_org".
+    :return: Set of unique fields. Return example:
 
     .. code-block:: python
 
@@ -133,7 +132,6 @@ def fetch_measurement_field_keys(client: influxdb_client.InfluxDBClient,
          'seller_order_id',
          'trade_id',
          'trade_time'}
-
     """
     query_api = client.query_api()
 
@@ -159,17 +157,16 @@ def fetch_measurement_tag_values(client: influxdb_client.InfluxDBClient,
                                  end_time: int = None
                                  ) -> set:
     """
-    Función para obtener todos los valores que tiene un tag en una medida específica en un bucket específico en el periodo de
-    tiempo especificado.
+    Function to fetch all the values a tag has in a specific measurement in a specific bucket during the specified time period.
 
-    :param client: Cliente conectado a InfluxDB
-    :param measurement: Nombre de la medida. Por ejemplo, "trades"
-    :param tag: Nombre del tag. Por ejemplo, "stream"
-    :param bucket: Nombre del bucket
-    :param org: Nombre de la organización. Por ejemplo, "tu_org"
-    :param start_time: Timestamp en milisegundos para el inicio del rango de datos. Examples: 1631000000000, "2021-09-07T00:00:00Z", "-1d"
-    :param end_time: Timestamp en milisegundos para el final del rango de datos. Examples: 1631000000000, "2021-09-07T00:00:00Z", "-1d"
-    :return: Conjunto de símbolos únicos. Ejemplo de retorno:
+    :param client: Client connected to InfluxDB.
+    :param measurement: Measurement name. For example, "trades".
+    :param tag: Tag name. For example, "stream".
+    :param bucket: Bucket name.
+    :param org: Organization name. For example, "your_org".
+    :param start_time: Timestamp in milliseconds for the start of the data range. Examples: 1631000000000, "2021-09-07T00:00:00Z", "-1d".
+    :param end_time: Timestamp in milliseconds for the end of the data range. Examples: 1631000000000, "2021-09-07T00:00:00Z", "-1d".
+    :return: Set of unique symbols. Return example:
 
     .. code-block:: python
 
@@ -214,18 +211,18 @@ def fetch_data(client: influxdb_client.InfluxDBClient,
                start_time=None,
                end_time=None) -> list:
     """
-    Función para obtener datos de una medida específica en un bucket específico, filtrado por tags y fields específicos.
+    Function to retrieve data from a specific measurement in a specific bucket, filtered by specific tags and fields.
 
-    :param client: Cliente conectado a InfluxDB
-    :param bucket: Nombre del bucket
-    :param measurement: Nombre de la medida. Por ejemplo, "trades"
-    :param org: Nombre de la organización. Por ejemplo, "tu_org"
-    :param tags_filter: Diccionario de tags para filtrar. Por ejemplo, {"symbol": "BTC", "stream": "trades"}
-    :param fields_in_ret: Lista de fields para seleccionar. Por ejemplo, ["field1", "field2"]
-    :param tags_in_ret: Lista de tags para incluir en los resultados. Por ejemplo, ["stream"]
-    :param start_time: Timestamp en milisegundos para el inicio del rango de datos. Examples: 1631000000000, "2021-09-07T00:00:00Z", "-1d"
-    :param end_time: Timestamp en milisegundos para el final del rango de datos. Examples: 1631000000000, "2021-09-07T00:00:00Z", "-1d"
-    :return: Lista de resultados. Ejemplo de retorno:
+    :param client: Client connected to InfluxDB
+    :param bucket: Bucket name
+    :param measurement: Measurement name. For example, "trades"
+    :param org: Organization name. For example, "your_org"
+    :param tags_filter: Dictionary of tags to filter by. For example, {"symbol": "BTC", "stream": "trades"}
+    :param fields_in_ret: List of fields to select. For example, ["field1", "field2"]
+    :param tags_in_ret: List of tags to include in the results. For example, ["stream"]
+    :param start_time: Timestamp in milliseconds for the start of the data range. Examples: 1631000000000, "2021-09-07T00:00:00Z", "-1d"
+    :param end_time: Timestamp in milliseconds for the end of the data range. Examples: 1631000000000, "2021-09-07T00:00:00Z", "-1d"
+    :return: List of results. Return example:
 
     .. code-block:: python
 
@@ -308,14 +305,14 @@ def delete_measurement(client: influxdb_client.InfluxDBClient,
                        measurement: str,
                        days: int = 30):
     """
-    Función para eliminar un measurement en InfluxDB 2.x. No se borra directamente, sino que se borran los datos. El proceso es asíncrono,
-    por lo que puede tardar un tiempo en completarse.
+    Function to delete a measurement in InfluxDB 2.x. The data is not deleted directly, but rather the data within it is deleted. The process is asynchronous,
+    so it may take some time to complete.
 
-    :param client: Cliente conectado a InfluxDB.
-    :param org: Organización de InfluxDB.
-    :param bucket: Bucket de InfluxDB.
-    :param measurement: Nombre de la medida a eliminar.
-    :param days: Número de días a eliminar.
+    :param client: Client connected to InfluxDB.
+    :param org: InfluxDB organization.
+    :param bucket: InfluxDB bucket.
+    :param measurement: Name of the measurement to delete.
+    :param days: Number of days to delete.
     :return: None
     """
 
@@ -338,15 +335,15 @@ def delete_entries_by_tag_value(client: influxdb_client.InfluxDBClient,
                                 tag_value: str,
                                 days: int = 30):
     """
-    Función para eliminar entradas en un measurement específico donde un tag tiene un valor específico.
+    Function to delete entries in a specific measurement where a tag has a specific value.
 
-    :param client: Cliente conectado a InfluxDB.
-    :param org: Organización de InfluxDB.
-    :param bucket: Bucket de InfluxDB.
-    :param measurement: Nombre de la medida a eliminar.
-    :param tag_key: Nombre del tag.
-    :param tag_value: Valor del tag.
-    :param days: Número de días a eliminar.
+    :param client: Client connected to InfluxDB.
+    :param org: InfluxDB organization.
+    :param bucket: InfluxDB bucket.
+    :param measurement: Name of the measurement to delete.
+    :param tag_key: Name of the tag.
+    :param tag_value: Value of the tag.
+    :param days: Number of days to delete.
     :return: None
     """
     start_time = (datetime.utcnow() - timedelta(days=days)).isoformat("T") + "Z"
@@ -372,13 +369,13 @@ def create_bulk_points(client: influxdb_client.InfluxDBClient,
                        measurement: str,
                        data_list: List[Dict]):
     """
-    Función para crear una nueva medida en InfluxDB 2.x.
+    Function to create a new measurement in InfluxDB 2.x.
 
-    :param client: Cliente conectado a InfluxDB.
-    :param bucket: Bucket de InfluxDB.
-    :param org: Organización de InfluxDB.
-    :param measurement: Medida a crear.
-    :param data_list: Datos a insertar. En formato de lista de diccionarios. Por ejemplo:
+    :param client: Client connected to InfluxDB.
+    :param bucket: InfluxDB bucket.
+    :param org: InfluxDB organization.
+    :param measurement: Measurement to create.
+    :param data_list: Data to insert. In the format of a list of dictionaries with expected keys "fields", "tags" and "time". For example:
 
         .. code-block:: python
 

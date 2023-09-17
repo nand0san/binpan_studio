@@ -13,13 +13,13 @@
     } else if (isDarkTheme) {
       document.documentElement.classList.add('dark')
     }
-  </script><link rel="stylesheet" href="_static/pygments.css?v=2023.6.8" type="text/css" />
-    <link rel="stylesheet" href="_static/shibuya.css?v=2023.6.8" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="_static/style.css" />
-    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=2023.6.8" />
+  </script><link rel="stylesheet" type="text/css" href="_static/pygments.css?v=aecf457f" />
+    <link rel="stylesheet" type="text/css" href="_static/shibuya.css?v=2981b36d" />
+    <link rel="stylesheet" type="text/css" href="_static/style.css?v=1e48dca6" />
+    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=ee381b95" />
     <style>
 :root {
-  --sy-f-sys:-apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Droid Sans, Helvetica Neue;--sy-f-cjk:PingFang SC, Hiragino Sans GB, Droid Sans Fallback, Microsoft YaHei;--sy-f-heading:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-text:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-mono:Menlo, Monaco, Consolas, "Courier New", monospace;--sy-c-divider:rgba(var(--sy-rc-text), 0.1);--sy-c-divider-weak:rgba(var(--sy-rc-text), 0.05);--sy-c-border:rgba(var(--sy-rc-text), 0.14);--sy-s-banner-height:0rem;--sy-s-navbar-height:4rem;--sy-s-offset-top:calc(var(--sy-s-navbar-height) + var(--sy-s-banner-height));--sy-c-link:rgb(var(--sy-rc-theme));
+  --sy-f-sys:-apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Droid Sans, Helvetica Neue;--sy-f-cjk:PingFang SC, Hiragino Sans GB, Droid Sans Fallback, Microsoft YaHei;--sy-f-heading:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-text:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-mono:Menlo, Monaco, Consolas, "Courier New", monospace;--sy-c-divider:rgba(var(--sy-rc-text), 0.1);--sy-c-divider-weak:rgba(var(--sy-rc-text), 0.05);--sy-c-border:rgba(var(--sy-rc-text), 0.14);--sy-s-banner-height:0rem;--sy-s-navbar-height:56px;--sy-s-offset-top:calc(var(--sy-s-navbar-height) + var(--sy-s-banner-height));--sy-c-link:rgb(var(--sy-rc-theme));--sy-c-link-weak:rgba(var(--sy-rc-theme), 0.86);
   --sy-rc-theme:143, 118, 214;--sy-rc-bg:255, 255, 255;--sy-rc-invert:0, 0, 0;--sy-rc-text:0, 0, 0;--sy-c-bg:#fff;--sy-c-bg-weak:#f9f9f9;--sy-c-text:#374151;--sy-c-text-weak:#6b7280;--sy-c-heading:#111827;--sy-c-bold:#111827;--sy-c-foot-text:#232226;--sy-c-foot-bg:#fafafa;--sy-c-foot-divider:#f0f0f0;
 }
 @media (prefers-color-scheme: light) {
@@ -51,43 +51,37 @@ html.dark {
 <body><div class="document"><div class="sy-head">
   <div class="sy-head-blur"></div>
   <div class="sy-head-inner sy-container mx-auto">
-    <div class="sy-head-links flex items-center">
-      <div class="md:hidden flex items-center">
-        <button class="hamburger js-menu mr-3" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
-          <span class="hamburger_1"></span>
-          <span class="hamburger_2 -translate-x-2"></span>
-          <span class="hamburger_3 -translate-x-1"></span>
-        </button>
-      </div>
-      <a class="sy-head-brand" href="index.html">
-        
-        
-        <strong>BinPan</strong>
-      </a></div>
-    <div class="sy-head-actions flex gap-2 items-center print:hidden">
+    <a class="sy-head-brand mr-4" href="index.html">
       
-      <div class="hidden md:block"><form class="searchbox flex items-center" action="search.html" method="get">
+      
+      <strong>BinPan</strong>
+    </a>
+    <div class="sy-head-links" id="NavLinks">
+      <nav class="sy-head-nav"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="search.html" method="get">
   <input type="text" name="q" placeholder="Search" />
   <kbd>/</kbd>
 </form>
+        
+        
+        <div class="sy-head-social flex items-center">
+        </div>
       </div>
-      <button class="js-theme theme-switch flex items-center ml-1" data-aria-light="Switch to dark mode" data-aria-dark="Switch to light mode">
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden">
+      <button class="js-theme theme-switch flex items-center" data-aria-light="Switch to dark mode" data-aria-dark="Switch to light mode">
         <i class="i-icon theme-icon"></i>
       </button>
-      
+      <button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="NavLinks" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2 -translate-x-2"></span>
+          <span class="hamburger_3 -translate-x-1"></span>
+        </div>
+      </button>
     </div>
   </div>
-</div><aside id="lside" class="sy-lside md:hidden"><div class="sy-lside-inner md:sticky">
-      <div class="sy-lside-top pt-3 pb-3 px-6">
-        <div class="pt-3"><form class="searchbox flex items-center" action="search.html" method="get">
-  <input type="text" name="q" placeholder="Search" />
-  <button>Go</button>
-</form>
-        </div></div>
-    </div>
-  </aside>
-
-  <div class="sy-container mx-auto body">
+</div><div class="sy-container mx-auto body">
     <main class="sy-content mx-auto pt-12 px-6 xl:px-12 break-words">
       <article class="yue" role="main">
         
@@ -136,8 +130,6 @@ html.dark {
 </li>
       <li><a href="plotting.html#handlers.plotting.add_traces">add_traces() (in module handlers.plotting)</a>
 </li>
-      <li><a href="binpan.html#binpan.Symbol.agg_trades">agg_trades() (binpan.Symbol method)</a>
-</li>
       <li><a href="binpan.html#binpan.Symbol.alternating_fractal">alternating_fractal() (binpan.Symbol method)</a>
 </li>
   </ul></td>
@@ -153,8 +145,6 @@ html.dark {
       <li><a href="files.html#handlers.files.append_dataframe_to_csv">append_dataframe_to_csv() (in module handlers.files)</a>
 </li>
       <li><a href="wallet.html#handlers.wallet.assets_convertible_dust">assets_convertible_dust() (in module handlers.wallet)</a>
-</li>
-      <li><a href="binpan.html#binpan.Symbol.atomic_trades">atomic_trades() (binpan.Symbol method)</a>
 </li>
       <li><a href="binpan.html#binpan.Symbol.atr">atr() (binpan.Symbol method)</a>
 </li>
@@ -229,8 +219,6 @@ html.dark {
 </li>
       <li><a href="tags.html#handlers.tags.check_action_labels_for_backtesting">check_action_labels_for_backtesting() (in module handlers.tags)</a>
 </li>
-      <li><a href="binpan.html#binpan.Symbol.check_continuity">check_continuity() (binpan.Symbol method)</a>
-</li>
       <li><a href="time_helper.html#handlers.time_helper.check_tick_interval">check_tick_interval() (in module handlers.time_helper)</a>
 </li>
       <li><a href="quest.html#handlers.quest.check_weight">check_weight() (in module handlers.quest)</a>
@@ -255,10 +243,10 @@ html.dark {
 </li>
       <li><a href="time_helper.html#handlers.time_helper.convert_datetime_to_milliseconds">convert_datetime_to_milliseconds() (in module handlers.time_helper)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="time_helper.html#handlers.time_helper.convert_datetime_to_string">convert_datetime_to_string() (in module handlers.time_helper)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="time_helper.html#handlers.time_helper.convert_milliseconds_to_local_timezone_string">convert_milliseconds_to_local_timezone_string() (in module handlers.time_helper)</a>
 </li>
       <li><a href="time_helper.html#handlers.time_helper.convert_milliseconds_to_str">convert_milliseconds_to_str() (in module handlers.time_helper)</a>
@@ -291,6 +279,8 @@ html.dark {
 </li>
       <li><a href="aggregations.html#handlers.aggregations.count_trues_cumulative">count_trues_cumulative() (in module handlers.aggregations)</a>
 </li>
+      <li><a href="influx_manager.html#handlers.influx_manager.create_bulk_points">create_bulk_points() (in module handlers.influx_manager)</a>
+</li>
       <li><a href="files.html#handlers.files.create_dir">create_dir() (in module handlers.files)</a>
 </li>
       <li><a href="binpan.html#binpan.Symbol.cross">cross() (binpan.Symbol method)</a>
@@ -309,14 +299,18 @@ html.dark {
 </li>
       <li><a href="redis_fetch.html#handlers.redis_fetch.decode_zset_data">decode_zset_data() (in module handlers.redis_fetch)</a>
 </li>
+      <li><a href="influx_manager.html#handlers.influx_manager.delete_entries_by_tag_value">delete_entries_by_tag_value() (in module handlers.influx_manager)</a>
+</li>
       <li><a href="binpan.html#binpan.Symbol.delete_indicator_family">delete_indicator_family() (binpan.Symbol method)</a>
+</li>
+      <li><a href="influx_manager.html#handlers.influx_manager.delete_measurement">delete_measurement() (in module handlers.influx_manager)</a>
 </li>
       <li><a href="quest.html#handlers.quest.delete_response">delete_response() (in module handlers.quest)</a>
 </li>
-      <li><a href="quest.html#handlers.quest.delete_signed_request">delete_signed_request() (in module handlers.quest)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="quest.html#handlers.quest.delete_signed_request">delete_signed_request() (in module handlers.quest)</a>
+</li>
       <li><a href="plotting.html#handlers.plotting.deploy_traces">deploy_traces() (in module handlers.plotting)</a>
 </li>
       <li><a href="time_helper.html#handlers.time_helper.detect_tick_interval">detect_tick_interval() (in module handlers.time_helper)</a>
@@ -367,6 +361,8 @@ html.dark {
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="binpan.html#binpan.Exchange.fee">fee() (binpan.Exchange method)</a>
 </li>
+      <li><a href="influx_manager.html#handlers.influx_manager.fetch_data">fetch_data() (in module handlers.influx_manager)</a>
+</li>
       <li><a href="redis_fetch.html#handlers.redis_fetch.fetch_data_in_list">fetch_data_in_list() (in module handlers.redis_fetch)</a>
 </li>
       <li><a href="redis_fetch.html#handlers.redis_fetch.fetch_keys">fetch_keys() (in module handlers.redis_fetch)</a>
@@ -374,6 +370,14 @@ html.dark {
       <li><a href="redis_fetch.html#handlers.redis_fetch.fetch_list">fetch_list() (in module handlers.redis_fetch)</a>
 </li>
       <li><a href="redis_fetch.html#handlers.redis_fetch.fetch_list_filter_query">fetch_list_filter_query() (in module handlers.redis_fetch)</a>
+</li>
+      <li><a href="influx_manager.html#handlers.influx_manager.fetch_measurement_field_keys">fetch_measurement_field_keys() (in module handlers.influx_manager)</a>
+</li>
+      <li><a href="influx_manager.html#handlers.influx_manager.fetch_measurement_tag_keys">fetch_measurement_tag_keys() (in module handlers.influx_manager)</a>
+</li>
+      <li><a href="influx_manager.html#handlers.influx_manager.fetch_measurement_tag_values">fetch_measurement_tag_values() (in module handlers.influx_manager)</a>
+</li>
+      <li><a href="influx_manager.html#handlers.influx_manager.fetch_measurements">fetch_measurements() (in module handlers.influx_manager)</a>
 </li>
       <li><a href="redis_fetch.html#handlers.redis_fetch.fetch_set_and_parse">fetch_set_and_parse() (in module handlers.redis_fetch)</a>
 </li>
@@ -389,12 +393,12 @@ html.dark {
 </li>
       <li><a href="files.html#handlers.files.fill_secrets_file">fill_secrets_file() (in module handlers.files)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="files.html#handlers.files.fill_telegram_secrets_file">fill_telegram_secrets_file() (in module handlers.files)</a>
 </li>
       <li><a href="binpan.html#binpan.Exchange.filter">filter() (binpan.Exchange method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="exchange.html#handlers.exchange.filter_legal">filter_legal() (in module handlers.exchange)</a>
 </li>
       <li><a href="exchange.html#handlers.exchange.filter_leveraged_tokens">filter_leveraged_tokens() (in module handlers.exchange)</a>
@@ -444,6 +448,8 @@ html.dark {
       <li><a href="binpan.html#binpan.Symbol.get_agg_trades">get_agg_trades() (binpan.Symbol method)</a>
 </li>
       <li><a href="market.html#handlers.market.get_aggregated_trades">get_aggregated_trades() (in module handlers.market)</a>
+</li>
+      <li><a href="binpan.html#binpan.Symbol.get_api_status">get_api_status() (binpan.Symbol method)</a>
 </li>
       <li><a href="binpan.html#binpan.Symbol.get_atomic_trades">get_atomic_trades() (binpan.Symbol method)</a>
 
@@ -521,10 +527,10 @@ html.dark {
 </li>
       <li><a href="exchange.html#handlers.exchange.get_leveraged_symbols">get_leveraged_symbols() (in module handlers.exchange)</a>
 </li>
-      <li><a href="binpan.html#binpan.Symbol.get_maker_taker_buy_ratios">get_maker_taker_buy_ratios() (binpan.Symbol method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="binpan.html#binpan.Symbol.get_maker_taker_buy_ratios">get_maker_taker_buy_ratios() (binpan.Symbol method)</a>
+</li>
       <li><a href="wallet.html#handlers.wallet.get_margin_account_details">get_margin_account_details() (in module handlers.wallet)</a>
 </li>
       <li><a href="wallet.html#handlers.wallet.get_margin_balances">get_margin_balances() (in module handlers.wallet)</a>
@@ -599,8 +605,6 @@ html.dark {
 </li>
       <li><a href="wallet.html#handlers.wallet.get_spot_trades_list">get_spot_trades_list() (in module handlers.wallet)</a>
 </li>
-      <li><a href="binpan.html#binpan.Symbol.get_status">get_status() (binpan.Symbol method)</a>
-</li>
       <li><a href="binpan.html#binpan.Symbol.get_strategy_columns">get_strategy_columns() (binpan.Symbol method)</a>
 </li>
       <li><a href="binpan.html#binpan.Exchange.get_symbols">get_symbols() (binpan.Exchange method)</a>
@@ -663,6 +667,13 @@ html.dark {
 </li>
       </ul></li>
       <li>
+    handlers.influx_manager
+
+      <ul>
+        <li><a href="influx_manager.html#module-handlers.influx_manager">module</a>
+</li>
+      </ul></li>
+      <li>
     handlers.market
 
       <ul>
@@ -676,6 +687,8 @@ html.dark {
         <li><a href="messages.html#module-handlers.messages">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     handlers.plotting
 
@@ -683,8 +696,6 @@ html.dark {
         <li><a href="plotting.html#module-handlers.plotting">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     handlers.quest
 
@@ -760,6 +771,8 @@ html.dark {
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="influx_manager.html#handlers.influx_manager.influx_client">influx_client() (in module handlers.influx_manager)</a>
+</li>
       <li><a href="aggregations.html#handlers.aggregations.ImbalanceBars.initialize_startup_variables">initialize_startup_variables() (handlers.aggregations.ImbalanceBars method)</a>
 </li>
       <li><a href="binpan.html#binpan.Symbol.insert_indicator">insert_indicator() (binpan.Symbol method)</a>
@@ -847,6 +860,8 @@ html.dark {
         <li><a href="files.html#module-handlers.files">handlers.files</a>
 </li>
         <li><a href="indicators.html#module-handlers.indicators">handlers.indicators</a>
+</li>
+        <li><a href="influx_manager.html#module-handlers.influx_manager">handlers.influx_manager</a>
 </li>
         <li><a href="market.html#module-handlers.market">handlers.market</a>
 </li>
@@ -1169,10 +1184,10 @@ html.dark {
 </li>
       <li><a href="messages.html#handlers.messages.telegram_bot_send_text">telegram_bot_send_text() (in module handlers.messages)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="messages.html#handlers.messages.telegram_parse_dataframe_markdown">telegram_parse_dataframe_markdown() (in module handlers.messages)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="messages.html#handlers.messages.telegram_parse_dict">telegram_parse_dict() (in module handlers.messages)</a>
 </li>
       <li><a href="messages.html#handlers.messages.telegram_parse_order_markdown">telegram_parse_order_markdown() (in module handlers.messages)</a>
@@ -1186,6 +1201,8 @@ html.dark {
       <li><a href="indicators.html#handlers.indicators.time_active_zones">time_active_zones() (in module handlers.indicators)</a>
 </li>
       <li><a href="binpan.html#binpan.Symbol.time_centroids">time_centroids() (binpan.Symbol method)</a>
+</li>
+      <li><a href="influx_manager.html#handlers.influx_manager.time_clause">time_clause() (in module handlers.influx_manager)</a>
 </li>
       <li><a href="aggregations.html#handlers.aggregations.time_index_from_timestamps">time_index_from_timestamps() (in module handlers.aggregations)</a>
 </li>
@@ -1281,10 +1298,10 @@ html.dark {
     </div>
   </div>
 </footer></div>
-      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-      <script src="_static/doctools.js"></script>
-      <script src="_static/sphinx_highlight.js"></script>
-      <script src="_static/shibuya.js?v=2023.6.8"></script>
+      <script src="_static/documentation_options.js?v=1dd76d02"></script>
+      <script src="_static/doctools.js?v=888ff710"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/shibuya.js?v=3e5c8598"></script>
     
 </body>
 </html>

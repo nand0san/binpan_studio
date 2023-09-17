@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Influx Manager Module - BinPan 0.5.0 documentation</title>
+    <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Market Module" href="market.html" /><link rel="prev" title="Indicators Module" href="indicators.html" />
+  <script>
+    const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const sessionTheme = sessionStorage['_theme']
+    if (sessionTheme) {
+      document.documentElement.classList.add(sessionTheme)
+    } else if (isDarkTheme) {
+      document.documentElement.classList.add('dark')
+    }
+  </script><link rel="stylesheet" type="text/css" href="_static/pygments.css?v=aecf457f" />
+    <link rel="stylesheet" type="text/css" href="_static/shibuya.css?v=2981b36d" />
+    <link rel="stylesheet" type="text/css" href="_static/style.css?v=1e48dca6" />
+    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=ee381b95" />
+    <style>
+:root {
+  --sy-f-sys:-apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Droid Sans, Helvetica Neue;--sy-f-cjk:PingFang SC, Hiragino Sans GB, Droid Sans Fallback, Microsoft YaHei;--sy-f-heading:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-text:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-mono:Menlo, Monaco, Consolas, "Courier New", monospace;--sy-c-divider:rgba(var(--sy-rc-text), 0.1);--sy-c-divider-weak:rgba(var(--sy-rc-text), 0.05);--sy-c-border:rgba(var(--sy-rc-text), 0.14);--sy-s-banner-height:0rem;--sy-s-navbar-height:56px;--sy-s-offset-top:calc(var(--sy-s-navbar-height) + var(--sy-s-banner-height));--sy-c-link:rgb(var(--sy-rc-theme));--sy-c-link-weak:rgba(var(--sy-rc-theme), 0.86);
+  --sy-rc-theme:143, 118, 214;--sy-rc-bg:255, 255, 255;--sy-rc-invert:0, 0, 0;--sy-rc-text:0, 0, 0;--sy-c-bg:#fff;--sy-c-bg-weak:#f9f9f9;--sy-c-text:#374151;--sy-c-text-weak:#6b7280;--sy-c-heading:#111827;--sy-c-bold:#111827;--sy-c-foot-text:#232226;--sy-c-foot-bg:#fafafa;--sy-c-foot-divider:#f0f0f0;
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --sy-rc-theme:143, 118, 214;--sy-rc-bg:255, 255, 255;--sy-rc-invert:0, 0, 0;--sy-rc-text:0, 0, 0;--sy-c-bg:#fff;--sy-c-bg-weak:#f9f9f9;--sy-c-text:#374151;--sy-c-text-weak:#6b7280;--sy-c-heading:#111827;--sy-c-bold:#111827;--sy-c-foot-text:#232226;--sy-c-foot-bg:#fafafa;--sy-c-foot-divider:#f0f0f0;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --sy-rc-theme:143, 118, 214;--sy-rc-bg:18, 18, 18;--sy-rc-invert:255, 255, 255;--sy-rc-text:255, 255, 255;--sy-c-bg:#121212;--sy-c-bg-weak:#212833;--sy-c-text:#cedbea;--sy-c-text-weak:#77889f;--sy-c-heading:#ebf0f4;--sy-c-bold:#ebf0f4;--sy-c-foot-text:#eee;--sy-c-foot-bg:#000;--sy-c-foot-divider:#000;
+  }
+}
+html.light {
+  --sy-rc-theme:143, 118, 214;--sy-rc-bg:255, 255, 255;--sy-rc-invert:0, 0, 0;--sy-rc-text:0, 0, 0;--sy-c-bg:#fff;--sy-c-bg-weak:#f9f9f9;--sy-c-text:#374151;--sy-c-text-weak:#6b7280;--sy-c-heading:#111827;--sy-c-bold:#111827;--sy-c-foot-text:#232226;--sy-c-foot-bg:#fafafa;--sy-c-foot-divider:#f0f0f0;
+}
+html.dark {
+  --sy-rc-theme:143, 118, 214;--sy-rc-bg:18, 18, 18;--sy-rc-invert:255, 255, 255;--sy-rc-text:255, 255, 255;--sy-c-bg:#121212;--sy-c-bg-weak:#212833;--sy-c-text:#cedbea;--sy-c-text-weak:#77889f;--sy-c-heading:#ebf0f4;--sy-c-bold:#ebf0f4;--sy-c-foot-text:#eee;--sy-c-foot-bg:#000;--sy-c-foot-divider:#000;
+}
+</style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-heading: Inter, var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    <meta property="og:type" content="website"/><meta property="og:title" content="Influx Manager Module"/>
+<meta name="twitter:card" content="summary"/></head>
+<body><div class="document"><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand mr-4" href="index.html">
+      
+      
+      <strong>BinPan</strong>
+    </a>
+    <div class="sy-head-links" id="NavLinks">
+      <nav class="sy-head-nav"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form>
+        
+        
+        <div class="sy-head-social flex items-center">
+        </div>
+      </div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden">
+      <button class="js-theme theme-switch flex items-center" data-aria-light="Switch to dark mode" data-aria-dark="Switch to light mode">
+        <i class="i-icon theme-icon"></i>
+      </button>
+      <button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="NavLinks" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2 -translate-x-2"></span>
+          <span class="hamburger_3 -translate-x-1"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="aggregations.html">Aggregations Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="binpan.html">BinPan Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exchange.html">Exchange Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="files.html">Files Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="indicators.html">Indicators Module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Influx Manager Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="messages.html">Messages Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="messages.html#module-handlers.messages">Exceptions Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quest.html">Requests Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stat_tests.html">Statistical Tests and Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tags.html">Tags &amp; Backtesting Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="time_helper.html">Time Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Module</a></li>
+</ul>
+
+        </div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-icon close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4">
+  <div class="localtoc">
+    <h3>On this page</h3>
+    <ul>
+<li><a class="reference internal" href="#handlers.influx_manager.time_clause"><code class="docutils literal notranslate"><span class="pre">time_clause()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.influx_manager.influx_client"><code class="docutils literal notranslate"><span class="pre">influx_client()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.influx_manager.fetch_measurements"><code class="docutils literal notranslate"><span class="pre">fetch_measurements()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.influx_manager.fetch_measurement_tag_keys"><code class="docutils literal notranslate"><span class="pre">fetch_measurement_tag_keys()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.influx_manager.fetch_measurement_field_keys"><code class="docutils literal notranslate"><span class="pre">fetch_measurement_field_keys()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.influx_manager.fetch_measurement_tag_values"><code class="docutils literal notranslate"><span class="pre">fetch_measurement_tag_values()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.influx_manager.fetch_data"><code class="docutils literal notranslate"><span class="pre">fetch_data()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.influx_manager.delete_measurement"><code class="docutils literal notranslate"><span class="pre">delete_measurement()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.influx_manager.delete_entries_by_tag_value"><code class="docutils literal notranslate"><span class="pre">delete_entries_by_tag_value()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.influx_manager.create_bulk_points"><code class="docutils literal notranslate"><span class="pre">create_bulk_points()</span></code></a></li>
+</ul>
+
+  </div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div>
+    </div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+    <div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-icon menu"></i>
+      </button>
+    </div>
+    <ul class="flex-1">
+      
+      
+      <li><a href="index.html">BinPan</a><span>/</span></li>
+      
+      <li><strong>Influx Manager Module</strong></li>
+      
+      
+    </ul>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-icon outdent"></i>
+      </button>
+    </div>
+  </div>
+</div>
+    <div class="flex flex-col break-words justify-between">
+      <div class="min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+        <article class="yue" role="main">
+          <section id="module-handlers.influx_manager">
+<span id="influx-manager-module"></span><h1>Influx Manager Module<a class="headerlink" href="#module-handlers.influx_manager" title="Link to this heading">¶</a></h1>
+<p><strong>Functions:</strong></p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.influx_manager.time_clause" title="handlers.influx_manager.time_clause"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time_clause</span></code></a>(timestamp_ms)</p></td>
+<td><p>If a timestamp is provided as a string (delta) or int, it converts it to a delta string or ISO format.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.influx_manager.influx_client" title="handlers.influx_manager.influx_client"><code class="xref py py-obj docutils literal notranslate"><span class="pre">influx_client</span></code></a>(url, token, org[, timeout])</p></td>
+<td><p>Function to obtain an InfluxDB client in read mode.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.influx_manager.fetch_measurements" title="handlers.influx_manager.fetch_measurements"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fetch_measurements</span></code></a>(client, bucket, org)</p></td>
+<td><p>Function to fetch all the measurements from a specific bucket.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.influx_manager.fetch_measurement_tag_keys" title="handlers.influx_manager.fetch_measurement_tag_keys"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fetch_measurement_tag_keys</span></code></a>(client, bucket, ...)</p></td>
+<td><p>Function to fetch all the tags of a specific measurement in a specific bucket.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.influx_manager.fetch_measurement_field_keys" title="handlers.influx_manager.fetch_measurement_field_keys"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fetch_measurement_field_keys</span></code></a>(client, bucket, ...)</p></td>
+<td><p>Function to fetch all the fields of a specific measurement in a specific bucket.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.influx_manager.fetch_measurement_tag_values" title="handlers.influx_manager.fetch_measurement_tag_values"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fetch_measurement_tag_values</span></code></a>(client, ...[, ...])</p></td>
+<td><p>Function to fetch all the values a tag has in a specific measurement in a specific bucket during the specified time period.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.influx_manager.fetch_data" title="handlers.influx_manager.fetch_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fetch_data</span></code></a>(client, bucket, measurement, org)</p></td>
+<td><p>Function to retrieve data from a specific measurement in a specific bucket, filtered by specific tags and fields.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.influx_manager.delete_measurement" title="handlers.influx_manager.delete_measurement"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delete_measurement</span></code></a>(client, org, bucket, ...)</p></td>
+<td><p>Function to delete a measurement in InfluxDB 2.x.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.influx_manager.delete_entries_by_tag_value" title="handlers.influx_manager.delete_entries_by_tag_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delete_entries_by_tag_value</span></code></a>(client, org, ...)</p></td>
+<td><p>Function to delete entries in a specific measurement where a tag has a specific value.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.influx_manager.create_bulk_points" title="handlers.influx_manager.create_bulk_points"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_bulk_points</span></code></a>(client, bucket, org, ...)</p></td>
+<td><p>Function to create a new measurement in InfluxDB 2.x.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.influx_manager.time_clause">
+<span class="sig-prename descclassname"><span class="pre">handlers.influx_manager.</span></span><span class="sig-name descname"><span class="pre">time_clause</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timestamp_ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.influx_manager.time_clause" title="Link to this definition">¶</a></dt>
+<dd><p>If a timestamp is provided as a string (delta) or int, it converts it to a delta string or ISO format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>timestamp_ms</strong> – A timestamp in milliseconds. If a string is passed, the expected format is ISO or Influx Delta: 1h, -1d, etc…</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A string in ISO format or delta.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.influx_manager.influx_client">
+<span class="sig-prename descclassname"><span class="pre">handlers.influx_manager.</span></span><span class="sig-name descname"><span class="pre">influx_client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">org</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">InfluxDBClient</span></span></span><a class="headerlink" href="#handlers.influx_manager.influx_client" title="Link to this definition">¶</a></dt>
+<dd><p>Function to obtain an InfluxDB client in read mode.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>url</strong> (<em>str</em>) – InfluxDB URL. For example, “<a class="reference external" href="http://localhost:8086">http://localhost:8086</a>”</p></li>
+<li><p><strong>token</strong> (<em>str</em>) – Access token to InfluxDB.</p></li>
+<li><p><strong>org</strong> (<em>str</em>) – InfluxDB organization. For example, “your_org”</p></li>
+<li><p><strong>timeout</strong> (<em>int</em>) – Connection timeout in milliseconds.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An InfluxDB client.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.influx_manager.fetch_measurements">
+<span class="sig-prename descclassname"><span class="pre">handlers.influx_manager.</span></span><span class="sig-name descname"><span class="pre">fetch_measurements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InfluxDBClient</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bucket</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">org</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">set</span></span></span><a class="headerlink" href="#handlers.influx_manager.fetch_measurements" title="Link to this definition">¶</a></dt>
+<dd><p>Function to fetch all the measurements from a specific bucket.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> – Client connected to InfluxDB.</p></li>
+<li><p><strong>bucket</strong> – InfluxDB bucket.</p></li>
+<li><p><strong>org</strong> – InfluxDB organization.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of measurements.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.influx_manager.fetch_measurement_tag_keys">
+<span class="sig-prename descclassname"><span class="pre">handlers.influx_manager.</span></span><span class="sig-name descname"><span class="pre">fetch_measurement_tag_keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InfluxDBClient</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bucket</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">org</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">set</span></span></span><a class="headerlink" href="#handlers.influx_manager.fetch_measurement_tag_keys" title="Link to this definition">¶</a></dt>
+<dd><p>Function to fetch all the tags of a specific measurement in a specific bucket.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> – Client connected to InfluxDB.</p></li>
+<li><p><strong>bucket</strong> – Bucket name.</p></li>
+<li><p><strong>measurement</strong> – Measurement name. For example, “trades”.</p></li>
+<li><p><strong>org</strong> – Organization name. For example, “your_org”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Set of unique tags. Return example:</p>
+</dd>
+</dl>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="p">{</span><span class="s1">&#39;buyer_is_maker&#39;</span><span class="p">,</span> <span class="s1">&#39;stream&#39;</span><span class="p">,</span> <span class="s1">&#39;symbol&#39;</span><span class="p">}</span>
+</span></pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.influx_manager.fetch_measurement_field_keys">
+<span class="sig-prename descclassname"><span class="pre">handlers.influx_manager.</span></span><span class="sig-name descname"><span class="pre">fetch_measurement_field_keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InfluxDBClient</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bucket</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">org</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">set</span></span></span><a class="headerlink" href="#handlers.influx_manager.fetch_measurement_field_keys" title="Link to this definition">¶</a></dt>
+<dd><p>Function to fetch all the fields of a specific measurement in a specific bucket.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> – Client connected to InfluxDB.</p></li>
+<li><p><strong>bucket</strong> – Bucket name.</p></li>
+<li><p><strong>measurement</strong> – Measurement name. For example, “trades”.</p></li>
+<li><p><strong>org</strong> – Organization name. For example, “your_org”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Set of unique fields. Return example:</p>
+</dd>
+</dl>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="p">{</span><span class="s1">&#39;buyer_order_id&#39;</span><span class="p">,</span>
+</span><span id="1-2"> <span class="s1">&#39;event_time&#39;</span><span class="p">,</span>
+</span><span id="1-3"> <span class="s1">&#39;price&#39;</span><span class="p">,</span>
+</span><span id="1-4"> <span class="s1">&#39;quantity&#39;</span><span class="p">,</span>
+</span><span id="1-5"> <span class="s1">&#39;quote_quantity&#39;</span><span class="p">,</span>
+</span><span id="1-6"> <span class="s1">&#39;seller_order_id&#39;</span><span class="p">,</span>
+</span><span id="1-7"> <span class="s1">&#39;trade_id&#39;</span><span class="p">,</span>
+</span><span id="1-8"> <span class="s1">&#39;trade_time&#39;</span><span class="p">}</span>
+</span></pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.influx_manager.fetch_measurement_tag_values">
+<span class="sig-prename descclassname"><span class="pre">handlers.influx_manager.</span></span><span class="sig-name descname"><span class="pre">fetch_measurement_tag_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InfluxDBClient</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bucket</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">org</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">set</span></span></span><a class="headerlink" href="#handlers.influx_manager.fetch_measurement_tag_values" title="Link to this definition">¶</a></dt>
+<dd><p>Function to fetch all the values a tag has in a specific measurement in a specific bucket during the specified time period.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> – Client connected to InfluxDB.</p></li>
+<li><p><strong>measurement</strong> – Measurement name. For example, “trades”.</p></li>
+<li><p><strong>tag</strong> – Tag name. For example, “stream”.</p></li>
+<li><p><strong>bucket</strong> – Bucket name.</p></li>
+<li><p><strong>org</strong> – Organization name. For example, “your_org”.</p></li>
+<li><p><strong>start_time</strong> – Timestamp in milliseconds for the start of the data range. Examples: 1631000000000, “2021-09-07T00:00:00Z”, “-1d”.</p></li>
+<li><p><strong>end_time</strong> – Timestamp in milliseconds for the end of the data range. Examples: 1631000000000, “2021-09-07T00:00:00Z”, “-1d”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Set of unique symbols. Return example:</p>
+</dd>
+</dl>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="n">streams</span> <span class="o">=</span> <span class="n">fetch_tag_values</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span> <span class="n">bucket</span><span class="o">=</span><span class="n">influx_bucket</span><span class="p">,</span> <span class="n">measurement</span><span class="o">=</span><span class="s2">&quot;trades&quot;</span><span class="p">,</span> <span class="n">org</span><span class="o">=</span><span class="n">influx_org</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s2">&quot;stream&quot;</span><span class="p">)</span>
+</span><span id="1-2"><span class="nb">print</span><span class="p">(</span><span class="n">streams</span><span class="p">)</span>
+</span><span id="1-3">
+</span><span id="1-4"><span class="p">{</span><span class="s1">&#39;duskusdt@trade&#39;</span><span class="p">,</span> <span class="s1">&#39;dotusdt@trade&#39;</span><span class="p">,</span> <span class="s1">&#39;multiusdt@trade&#39;</span><span class="p">,</span> <span class="s1">&#39;fluxusdt@trade&#39;</span><span class="p">,</span> <span class="s1">&#39;scrtusdt@trade&#39;</span><span class="p">,</span> <span class="s1">&#39;frontusdt@trade&#39;</span><span class="p">,</span> <span class="s1">&#39;tfuelusdt@trade&#39;</span><span class="p">,</span>
+</span><span id="1-5"> <span class="s1">&#39;hftusdt@trade&#39;</span><span class="p">,</span> <span class="s1">&#39;alcxusdt@trade&#39;</span><span class="p">,</span> <span class="s1">&#39;rsrusdt@trade&#39;</span><span class="p">,</span> <span class="s1">&#39;joeusdt@trade&#39;</span><span class="p">,</span> <span class="s1">&#39;tkousdt@trade&#39;</span><span class="p">,</span> <span class="s1">&#39;vthousdt@trade&#39;</span><span class="p">,</span> <span class="s1">&#39;galusdt@trade&#39;</span><span class="p">,</span>
+</span><span id="1-6">  <span class="s1">&#39;osmousdt@trade&#39;</span><span class="p">,</span><span class="s1">&#39;...}</span>
+</span></pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.influx_manager.fetch_data">
+<span class="sig-prename descclassname"><span class="pre">handlers.influx_manager.</span></span><span class="sig-name descname"><span class="pre">fetch_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InfluxDBClient</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bucket</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">org</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tags_filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fields_in_ret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tags_in_ret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.influx_manager.fetch_data" title="Link to this definition">¶</a></dt>
+<dd><p>Function to retrieve data from a specific measurement in a specific bucket, filtered by specific tags and fields.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> – Client connected to InfluxDB</p></li>
+<li><p><strong>bucket</strong> – Bucket name</p></li>
+<li><p><strong>measurement</strong> – Measurement name. For example, “trades”</p></li>
+<li><p><strong>org</strong> – Organization name. For example, “your_org”</p></li>
+<li><p><strong>tags_filter</strong> – Dictionary of tags to filter by. For example, {“symbol”: “BTC”, “stream”: “trades”}</p></li>
+<li><p><strong>fields_in_ret</strong> – List of fields to select. For example, [“field1”, “field2”]</p></li>
+<li><p><strong>tags_in_ret</strong> – List of tags to include in the results. For example, [“stream”]</p></li>
+<li><p><strong>start_time</strong> – Timestamp in milliseconds for the start of the data range. Examples: 1631000000000, “2021-09-07T00:00:00Z”, “-1d”</p></li>
+<li><p><strong>end_time</strong> – Timestamp in milliseconds for the end of the data range. Examples: 1631000000000, “2021-09-07T00:00:00Z”, “-1d”</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of results. Return example:</p>
+</dd>
+</dl>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="n">data</span> <span class="o">=</span> <span class="n">fetch_data</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span>
+</span><span id="1-2">                  <span class="n">bucket</span><span class="o">=</span><span class="n">influx_bucket</span><span class="p">,</span>
+</span><span id="1-3">                  <span class="n">measurement</span><span class="o">=</span><span class="s2">&quot;trades&quot;</span><span class="p">,</span>
+</span><span id="1-4">                  <span class="n">org</span><span class="o">=</span><span class="n">influx_org</span><span class="p">,</span>
+</span><span id="1-5">                  <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;stream&quot;</span><span class="p">:</span> <span class="s2">&quot;btcusdt@trade&quot;</span><span class="p">,</span> <span class="s2">&quot;buyer_is_maker&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+</span><span id="1-6">                  <span class="n">fields</span><span class="o">=</span><span class="n">fields</span><span class="p">,</span>
+</span><span id="1-7">                  <span class="n">tag_keys</span><span class="o">=</span><span class="n">tags</span><span class="p">)</span>
+</span><span id="1-8"><span class="p">[{</span><span class="s1">&#39;result&#39;</span><span class="p">:</span> <span class="s1">&#39;_result&#39;</span><span class="p">,</span>
+</span><span id="1-9">  <span class="s1">&#39;table&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+</span><span id="1-10">  <span class="s1">&#39;_time&#39;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">454000</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">tzutc</span><span class="p">()),</span>
+</span><span id="1-11">  <span class="s1">&#39;_measurement&#39;</span><span class="p">:</span> <span class="s1">&#39;trades&#39;</span><span class="p">,</span>
+</span><span id="1-12">  <span class="s1">&#39;buyer_is_maker&#39;</span><span class="p">:</span> <span class="s1">&#39;True&#39;</span><span class="p">,</span>
+</span><span id="1-13">  <span class="s1">&#39;stream&#39;</span><span class="p">:</span> <span class="s1">&#39;btcusdt@trade&#39;</span><span class="p">,</span>
+</span><span id="1-14">  <span class="s1">&#39;buyer_order_id&#39;</span><span class="p">:</span> <span class="mi">22340720310</span><span class="p">,</span>
+</span><span id="1-15">  <span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="mf">26693.97</span><span class="p">,</span>
+</span><span id="1-16">  <span class="s1">&#39;quantity&#39;</span><span class="p">:</span> <span class="mf">0.00085</span><span class="p">,</span>
+</span><span id="1-17">  <span class="s1">&#39;quote_quantity&#39;</span><span class="p">:</span> <span class="mf">22.6898745</span><span class="p">,</span>
+</span><span id="1-18">  <span class="s1">&#39;seller_order_id&#39;</span><span class="p">:</span> <span class="mi">22340720976</span><span class="p">,</span>
+</span><span id="1-19">  <span class="s1">&#39;trade_id&#39;</span><span class="p">:</span> <span class="mi">3212341083</span><span class="p">},</span>
+</span><span id="1-20">  <span class="o">...</span><span class="p">]</span>
+</span></pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.influx_manager.delete_measurement">
+<span class="sig-prename descclassname"><span class="pre">handlers.influx_manager.</span></span><span class="sig-name descname"><span class="pre">delete_measurement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InfluxDBClient</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">org</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bucket</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">days</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">30</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.influx_manager.delete_measurement" title="Link to this definition">¶</a></dt>
+<dd><p>Function to delete a measurement in InfluxDB 2.x. The data is not deleted directly, but rather the data within it is deleted. The process is asynchronous,
+so it may take some time to complete.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> – Client connected to InfluxDB.</p></li>
+<li><p><strong>org</strong> – InfluxDB organization.</p></li>
+<li><p><strong>bucket</strong> – InfluxDB bucket.</p></li>
+<li><p><strong>measurement</strong> – Name of the measurement to delete.</p></li>
+<li><p><strong>days</strong> – Number of days to delete.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.influx_manager.delete_entries_by_tag_value">
+<span class="sig-prename descclassname"><span class="pre">handlers.influx_manager.</span></span><span class="sig-name descname"><span class="pre">delete_entries_by_tag_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InfluxDBClient</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">org</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bucket</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">days</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">30</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.influx_manager.delete_entries_by_tag_value" title="Link to this definition">¶</a></dt>
+<dd><p>Function to delete entries in a specific measurement where a tag has a specific value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> – Client connected to InfluxDB.</p></li>
+<li><p><strong>org</strong> – InfluxDB organization.</p></li>
+<li><p><strong>bucket</strong> – InfluxDB bucket.</p></li>
+<li><p><strong>measurement</strong> – Name of the measurement to delete.</p></li>
+<li><p><strong>tag_key</strong> – Name of the tag.</p></li>
+<li><p><strong>tag_value</strong> – Value of the tag.</p></li>
+<li><p><strong>days</strong> – Number of days to delete.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.influx_manager.create_bulk_points">
+<span class="sig-prename descclassname"><span class="pre">handlers.influx_manager.</span></span><span class="sig-name descname"><span class="pre">create_bulk_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InfluxDBClient</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bucket</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">org</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.influx_manager.create_bulk_points" title="Link to this definition">¶</a></dt>
+<dd><p>Function to create a new measurement in InfluxDB 2.x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> – Client connected to InfluxDB.</p></li>
+<li><p><strong>bucket</strong> – InfluxDB bucket.</p></li>
+<li><p><strong>org</strong> – InfluxDB organization.</p></li>
+<li><p><strong>measurement</strong> – Measurement to create.</p></li>
+<li><p><strong>data_list</strong> – <p>Data to insert. In the format of a list of dictionaries with expected keys “fields”, “tags” and “time”. For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="n">data_list</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="1-2">    <span class="p">{</span><span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;field1&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;field2&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
+</span><span id="1-3">     <span class="s2">&quot;tags&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;tag1&quot;</span><span class="p">:</span> <span class="s2">&quot;tag1&quot;</span><span class="p">,</span> <span class="s2">&quot;tag2&quot;</span><span class="p">:</span> <span class="s2">&quot;tag2&quot;</span><span class="p">},</span>
+</span><span id="1-4">     <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="mi">1234567890000000000</span><span class="p">}</span>
+</span><span id="1-5"><span class="p">]</span>
+</span></pre></div>
+</div>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+        </article>
+        
+        <div class="navigation flex print:hidden">
+  <div class="navigation-prev">
+    <a href="indicators.html">
+      <i class="i-icon chevron"></i>
+      <div class="page-info">
+        <span>Previous</span>
+        
+        <div class="title">Indicators Module</div>
+        
+      </div>
+    </a>
+  </div>
+  <div class="navigation-next">
+    <a href="market.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title">Market Module</div>
+      </div>
+      <i class="i-icon chevron"></i>
+    </a>
+  </div>
+</div>
+        
+      </div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2022, Fernando Alfonso</p>
+        
+        <p>
+          Made with
+          
+          <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+          
+          <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+        </p>
+      </div>
+      <div class="sy-foot-socials">
+      </div>
+    </div>
+  </div>
+</footer></div>
+      <script src="_static/documentation_options.js?v=1dd76d02"></script>
+      <script src="_static/doctools.js?v=888ff710"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/shibuya.js?v=3e5c8598"></script>
+    
+</body>
+</html>
