@@ -7,7 +7,7 @@ import pandas as pd
 
 from .starters import AesCipher, import_secret_module
 from .logs import Logs
-from .exceptions import BinPanException, MissingBinanceApiData, MissingTelegramApiData
+from .exceptions import BinPanException, MissingBinanceApiData
 
 files_logger = Logs(filename='./logs/files_logger.log', name='files_logger', info_level='INFO')
 
@@ -303,6 +303,24 @@ def get_encoded_telegram_secrets() -> tuple:
     return encoded_telegram_bot_id, encoded_chat_id
 
 
+def get_encoded_database_secrets() -> str:
+    try:
+        secret_module = import_secret_module()
+        importlib.reload(secret_module)
+        postgresql_password = secret_module.postgresql_password
+    except Exception:
+        print(f"postgresql_password not found in secret.py.")
+        fill_database_secrets_file()
+        try:
+            secret_module = import_secret_module()
+            importlib.reload(secret_module)
+            postgresql_password = secret_module.postgresql_password
+        except Exception:
+            files_logger.warning(f"BinPan Warning: PostgreSQL password not found.")
+            postgresql_password = ""
+    return postgresql_password
+
+
 def fill_secrets_file() -> None:
     """
     Creates a file called secret.py or adds to it with the API key and API secret encrypted values.
@@ -329,6 +347,17 @@ def fill_telegram_secrets_file() -> None:
     chat = input(f"Please, enter your Telegram chat id for send messages to you or leave it empty: ")
     add_any_key(key=chat, key_name="encoded_chat_id")
     print("Chat encrypted and saved.")
+
+
+def fill_database_secrets_file() -> None:
+    """
+    Creates a file called secret.py or adds to it with the postgresql password encrypted values.
+
+    :return: None
+    """
+    password = input(f"Please, enter your postgresql password: ")
+    add_any_key(key=password, key_name="postgresql_password")
+    print("postgresql password encrypted and saved.")
 
 
 def add_api_key(api_key_value: str) -> None:

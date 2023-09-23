@@ -3,7 +3,7 @@
 This is the main classes file.
 
 """
-__version__ = "0.5.0"
+__version__ = "0.5.1"
 
 import os
 from sys import path
@@ -49,7 +49,8 @@ from handlers.wallet import convert_str_date_to_ms
 
 from handlers.aggregations import resample_klines
 
-from handlers.standards import *
+from handlers.standards import (trade_trade_id_col, binance_api_candles_cols, agg_trades_columns, atomic_trades_columns, time_cols,
+                                dts_time_cols, reversal_columns, agg_trades_columns_from_binance, atomic_trades_columns_from_binance)
 
 if is_running_in_jupyter():
     from tqdm.notebook import tqdm
@@ -197,6 +198,9 @@ class Symbol(object):
                  time_zone: str = 'Europe/Madrid',
                  closed: bool = True,
                  hours: int = None,
+                 postgres_klines: bool = False,
+                 postgres_agg_trades: bool = False,
+                 postgres_atomic_trades: bool = False,
                  display_columns: int = 25,
                  display_max_rows: int = 10,
                  display_min_rows: int = 25,
@@ -215,10 +219,10 @@ class Symbol(object):
             tick_interval = check_tick_interval(tick_interval)
 
         # dataframe columns
-        self.original_candles_cols = original_candles_cols
-        self.presentation_columns = presentation_columns
+        # self.presentation_columns = presentation_columns
+        self.original_columns = binance_api_candles_cols
 
-        # trades columns
+        # # trades columns provisional
         self.agg_trades_columns = agg_trades_columns
         self.atomic_trades_columns = atomic_trades_columns
 
@@ -261,6 +265,20 @@ class Symbol(object):
             self.time_zone = time_zone
             self.limit = limit
             self.closed = closed
+
+        # database
+        if postgres_klines or postgres_agg_trades or postgres_atomic_trades:
+            import handlers.postgresql as postgresql
+            self.connection, self.cursor = postgresql.setup(symbol=self.symbol,
+                                                            tick_interval=self.tick_interval,
+                                                            postgres_klines=postgres_klines,
+                                                            postgres_agg_trades=postgres_agg_trades,
+                                                            postgres_atomic_trades=postgres_atomic_trades)
+        else:
+            self.connection, self.cursor = None, None
+        self.postgres_klines = postgres_klines
+        self.postgres_agg_trades = postgres_agg_trades
+        self.postgres_atomic_trades = postgres_atomic_trades
 
         # pandas visualization settings
         self.display_columns = display_columns
@@ -327,7 +345,7 @@ class Symbol(object):
         # query candles #
         #################
 
-        if not from_csv:
+        if not from_csv and not self.postgres_klines:
             self.raw = get_candles_by_time_stamps(symbol=self.symbol,
                                                   tick_interval=self.tick_interval,
                                                   start_time=self.start_time,
@@ -335,11 +353,23 @@ class Symbol(object):
                                                   limit=self.limit)
 
             self.df = parse_candles_to_dataframe(raw_response=self.raw,
-                                                 columns=self.original_candles_cols,
+                                                 columns=self.original_columns,
                                                  time_cols=self.time_cols,
                                                  symbol=self.symbol,
                                                  tick_interval=self.tick_interval,
                                                  time_zone=self.time_zone)
+        elif self.postgres_klines:
+            import handlers.postgresql as postgresql
+            self.table = postgresql.sanitize_table_name(f"{self.symbol}@kline_{self.tick_interval}")
+            self.df = postgresql.get_data_and_parse(cursor=self.cursor,
+                                                    table=self.table,
+                                                    symbol=self.symbol,
+                                                    tick_interval=self.tick_interval,
+                                                    time_zone=self.time_zone,
+                                                    start_time=self.start_time,
+                                                    end_time=self.end_time,
+                                                    data_type='kline',
+                                                    order_col="Timestamp")
         else:
             self.raw = None
 
@@ -545,7 +575,7 @@ class Symbol(object):
         if not columns_to_drop:
             columns_to_drop = []
             for col in current_columns:
-                if not col in self.original_candles_cols:
+                if not col in self.original_columns:
                     columns_to_drop.append(col)  # self.row_counter = 1
         try:
             if inplace:
@@ -952,6 +982,18 @@ class Symbol(object):
                 if not col in agg_trades_columns_from_binance:
                     raise BinPanException(f"File do not seems to be Aggregated Trades File!")
             self.agg_trades = df_
+        elif self.postgres_agg_trades:
+            from handlers.postgresql import get_data_and_parse
+            table = f"{self.symbol.lower()}_aggTrade"
+            self.atomic_trades = get_data_and_parse(cursor=self.cursor,
+                                                    table=table,
+                                                    symbol=self.symbol,
+                                                    tick_interval=self.tick_interval,
+                                                    time_zone=self.time_zone,
+                                                    start_time=curr_startTime,
+                                                    end_time=curr_endTime,
+                                                    data_type="aggTrade",
+                                                    order_col=trade_trade_id_col)
         else:
             try:
                 self.raw_agg_trades = get_historical_agg_trades(symbol=self.symbol, startTime=curr_startTime, endTime=curr_endTime)
@@ -970,8 +1012,12 @@ class Symbol(object):
 
         return self.agg_trades
 
-    def get_atomic_trades(self, hours: int = None, minutes: int = None, startTime: int or str = None, endTime: int or str = None,
-                          time_zone: str = None, from_csv: str = None) -> pd.DataFrame:
+    def get_atomic_trades(self, hours: int = None,
+                          minutes: int = None,
+                          startTime: int or str = None,
+                          endTime: int or str = None,
+                          time_zone: str = None,
+                          from_csv: str = None) -> pd.DataFrame:
         """
         Calls the API and creates another dataframe included in the object with the atomic trades from API for the period of the
         created object.
@@ -1031,7 +1077,10 @@ class Symbol(object):
                                                          expected_symbol=self.symbol, expected_timezone=self.time_zone)
 
             # load and to numeric types
-            df_ = read_csv_to_dataframe(filename=filename, index_col="Timestamp", secondary_index_col="Trade Id", symbol=self.symbol,
+            df_ = read_csv_to_dataframe(filename=filename,
+                                        index_col="Timestamp",
+                                        secondary_index_col="Trade Id",
+                                        symbol=self.symbol,
                                         index_time_zone=self.time_zone)
 
             # check columns
@@ -1039,6 +1088,18 @@ class Symbol(object):
                 if not col in atomic_trades_columns_from_binance:
                     raise BinPanException(f"File do not seems to be Atomic Trades File!")
             self.atomic_trades = df_
+        elif self.postgres_atomic_trades:
+            from handlers.postgresql import get_data_and_parse
+            table = f"{self.symbol.lower()}_trade"
+            self.atomic_trades = get_data_and_parse(cursor=self.cursor,
+                                                    table=table,
+                                                    symbol=self.symbol,
+                                                    tick_interval=self.tick_interval,
+                                                    time_zone=self.time_zone,
+                                                    start_time=curr_startTime,
+                                                    end_time=curr_endTime,
+                                                    data_type="trade",
+                                                    order_col=trade_trade_id_col)
         else:
             try:
                 self.raw_atomic_trades = get_historical_atomic_trades(symbol=self.symbol,

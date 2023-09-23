@@ -75,13 +75,11 @@ def set_subplots(extra_rows: int, candles_ta_height_ratio: float = 0.8, vertical
     return make_subplots(rows=rows, cols=1, shared_xaxes=True, row_heights=rows_heights, vertical_spacing=vertical_spacing, specs=specs)
 
 
-def set_candles(df: pd.DataFrame, x_labels: list = None, red_timestamps: list = None, blue_timestamps: list = None) -> tuple:
+def set_candles(df: pd.DataFrame, x_labels: list = None) -> tuple:
     """
     Put candles and axis into a tuple.
     :param pd.DataFrame df: Dataframe OHLC type.
     :param list x_labels: Labels to replace in x axis plotting.
-    :param list red_timestamps: List of timestamps for red vertical lines.
-    :param list blue_timestamps: List of timestamps for blue vertical lines.
     :return:
     """
     candles_plot = go.Candlestick(x=df.index, open=df['Open'], high=df['High'], low=df['Low'], close=df['Close'], name='Candles')
@@ -1508,7 +1506,7 @@ def plot_orderbook_value(ask_data: List[Tuple[List, float]], bid_data: List[Tupl
 # plot tools #
 ##############
 
-def normalize(max_value: int or float, min_value: int or float, data: list):
+def normalize(max_value: int or float, min_value: int or float, data: list or np.ndarray):
     """
     Normalize data from minimum as 0 to maximum as 1.
 

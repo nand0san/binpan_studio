@@ -554,7 +554,7 @@ def kmeans_custom_init(data: np.ndarray, max_clusters: int):
     return initial_centroids
 
 
-def find_optimal_clusters(KMeans_lib, data: np.ndarray, max_clusters: int, quiet: bool = False, initial_centroids: list = None) -> int:
+def find_optimal_clusters(KMeans_lib, data: np.ndarray, max_clusters: int, quiet: bool = False, initial_centroids: list or np.ndarray = None) -> int:
     """
     Find the optimal quantity of centroids for support and resistance methods using the elbow method.
 
@@ -635,8 +635,10 @@ def support_resistance_levels(df: pd.DataFrame, max_clusters: int = 5, by_quanti
         print("Clustering data...")
 
     if optimize_clusters_qty:
-        optimal_buy_clusters = find_optimal_clusters(KMeans_lib=KMeans, data=buy_prices, max_clusters=max_clusters, quiet=quiet, initial_centroids=initial_centroids)
-        optimal_sell_clusters = find_optimal_clusters(KMeans_lib=KMeans, data=sell_prices, max_clusters=max_clusters, quiet=quiet, initial_centroids=initial_centroids)
+        optimal_buy_clusters = find_optimal_clusters(KMeans_lib=KMeans, data=buy_prices, max_clusters=max_clusters, quiet=quiet,
+                                                     initial_centroids=initial_centroids)
+        optimal_sell_clusters = find_optimal_clusters(KMeans_lib=KMeans, data=sell_prices, max_clusters=max_clusters, quiet=quiet,
+                                                      initial_centroids=initial_centroids)
         if not quiet:
             print(f"Found {optimal_buy_clusters} support levels from buys and {optimal_sell_clusters} resistance levels from sells.")
     else:
