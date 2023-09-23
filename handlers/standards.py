@@ -2,6 +2,7 @@
 # BINPAN PRESENTATIONS #
 ########################
 
+# klines columns names
 
 open_time_col = 'Open time'
 open_col = 'Open'
@@ -32,7 +33,21 @@ original_candles_cols = [open_time_col,
                          ignore_col,
                          open_timestamp_col,
                          close_timestamp_col]
+
 presentation_columns = [open_col, high_col, low_col, close_col, volume_col, quote_volume_col, trades_col, taker_buy_base_volume_col, taker_buy_quote_volume_col]
+
+# trade columns names
+trade_id_col = 'Trade Id'
+price_col = 'Price'
+quantity_col = 'Quantity'
+quote_quantity_col = 'Quote quantity'
+buyer_order_id_col = 'Buyer Order Id'
+seller_order_id_col = 'Seller Order Id'
+time_col = 'Timestamp'
+buyer_was_maker_col = 'Buyer was maker'
+
+original_trades_cols = [trade_id_col, price_col, quantity_col, quote_quantity_col, buyer_order_id_col, seller_order_id_col, time_col, buyer_was_maker_col]
+
 
 # BINANCE API FIELD AND COLUMN NAMES
 

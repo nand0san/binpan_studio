@@ -676,8 +676,12 @@ def candles_ta(data: pd.DataFrame, indicators_series: list or pd.DataFrame = Non
         fig.update_layout(plot_bgcolor=plot_bgcolor)
 
     fig.show()
-    fig.write_image("last_plot.png")
-    return os.path.join(os.getcwd(), "last_plot.png")
+    try:
+        fig.write_image("last_plot.png")
+        return os.path.join(os.getcwd(), "last_plot.png")
+    except Exception as exc:
+        plot_logger.error(f"Error writing image: {exc}")
+        return None
 
 
 def candles_tagged(data: pd.DataFrame,

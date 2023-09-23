@@ -58,10 +58,10 @@ else:
 
 binpan_logger = Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 
-pd.set_option('display.max_columns', 20)
+pd.set_option('display.max_columns', 30)
 pd.set_option('display.width', 250)
 pd.set_option('display.min_rows', 10)
-pd.set_option('display.max_rows', 40)
+pd.set_option('display.max_rows', 12)
 
 empty_agg_trades_msg = "Empty trades, please request using: get_agg_trades() method: Example: my_symbol.get_agg_trades()"
 empty_atomic_trades_msg = "Empty atomic trades, please request using: get_atomic_trades() method: Example: my_symbol.get_atomic_trades()"
