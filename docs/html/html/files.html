@@ -135,8 +135,10 @@ html.dark {
 <li><a class="reference internal" href="#handlers.files.select_file"><code class="docutils literal notranslate"><span class="pre">select_file()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.files.get_encoded_secrets"><code class="docutils literal notranslate"><span class="pre">get_encoded_secrets()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.files.get_encoded_telegram_secrets"><code class="docutils literal notranslate"><span class="pre">get_encoded_telegram_secrets()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.files.get_encoded_database_secrets"><code class="docutils literal notranslate"><span class="pre">get_encoded_database_secrets()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.files.fill_secrets_file"><code class="docutils literal notranslate"><span class="pre">fill_secrets_file()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.files.fill_telegram_secrets_file"><code class="docutils literal notranslate"><span class="pre">fill_telegram_secrets_file()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.files.fill_database_secrets_file"><code class="docutils literal notranslate"><span class="pre">fill_database_secrets_file()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.files.add_api_key"><code class="docutils literal notranslate"><span class="pre">add_api_key()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.files.add_api_secret"><code class="docutils literal notranslate"><span class="pre">add_api_secret()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.files.add_any_key"><code class="docutils literal notranslate"><span class="pre">add_any_key()</span></code></a></li>
@@ -217,11 +219,17 @@ html.dark {
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.files.get_encoded_telegram_secrets" title="handlers.files.get_encoded_telegram_secrets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_encoded_telegram_secrets</span></code></a>()</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.files.fill_secrets_file" title="handlers.files.fill_secrets_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fill_secrets_file</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.files.get_encoded_database_secrets" title="handlers.files.get_encoded_database_secrets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_encoded_database_secrets</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.files.fill_secrets_file" title="handlers.files.fill_secrets_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fill_secrets_file</span></code></a>()</p></td>
 <td><p>Creates a file called secret.py or adds to it with the API key and API secret encrypted values.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.files.fill_telegram_secrets_file" title="handlers.files.fill_telegram_secrets_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fill_telegram_secrets_file</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.files.fill_telegram_secrets_file" title="handlers.files.fill_telegram_secrets_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fill_telegram_secrets_file</span></code></a>()</p></td>
 <td><p>Creates a file called secret.py or adds to it with the telegram bot_id and chat_id encrypted values.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.files.fill_database_secrets_file" title="handlers.files.fill_database_secrets_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fill_database_secrets_file</span></code></a>()</p></td>
+<td><p>Creates a file called secret.py or adds to it with the postgresql password encrypted values.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.files.add_api_key" title="handlers.files.add_api_key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_api_key</span></code></a>(api_key_value)</p></td>
 <td><p>Checks if exists in secret.py file and if not, then adds a line with the API key (not secret API key) encrypted value for working with the package.</p></td>
@@ -412,6 +420,11 @@ trades or klines.</p>
 <dd></dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="handlers.files.get_encoded_database_secrets">
+<span class="sig-prename descclassname"><span class="pre">handlers.files.</span></span><span class="sig-name descname"><span class="pre">get_encoded_database_secrets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.files.get_encoded_database_secrets" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="handlers.files.fill_secrets_file">
 <span class="sig-prename descclassname"><span class="pre">handlers.files.</span></span><span class="sig-name descname"><span class="pre">fill_secrets_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#handlers.files.fill_secrets_file" title="Link to this definition">¶</a></dt>
 <dd><p>Creates a file called secret.py or adds to it with the API key and API secret encrypted values.</p>
@@ -426,6 +439,17 @@ trades or klines.</p>
 <dt class="sig sig-object py" id="handlers.files.fill_telegram_secrets_file">
 <span class="sig-prename descclassname"><span class="pre">handlers.files.</span></span><span class="sig-name descname"><span class="pre">fill_telegram_secrets_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#handlers.files.fill_telegram_secrets_file" title="Link to this definition">¶</a></dt>
 <dd><p>Creates a file called secret.py or adds to it with the telegram bot_id and chat_id encrypted values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.files.fill_database_secrets_file">
+<span class="sig-prename descclassname"><span class="pre">handlers.files.</span></span><span class="sig-name descname"><span class="pre">fill_database_secrets_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#handlers.files.fill_database_secrets_file" title="Link to this definition">¶</a></dt>
+<dd><p>Creates a file called secret.py or adds to it with the postgresql password encrypted values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>None</p>

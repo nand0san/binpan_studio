@@ -89,19 +89,20 @@ html.dark {
       <div class="sy-scrollbar p-6">
         <div class="globaltoc" data-expand-depth="0"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="aggregations.html">Aggregations Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="binpan.html">BinPan Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aggregations.html">Aggregations Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exchange.html">Exchange Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="files.html">Files Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="indicators.html">Indicators Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="influx_manager.html">Influx Manager Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="messages.html">Messages Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="messages.html#module-handlers.messages">Exceptions Module</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Plotting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quest.html">Requests Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stat_tests.html">Statistical Tests and Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="starters.html">Starters Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tags.html">Tags &amp; Backtesting Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="time_helper.html">Time Helpers</a></li>
@@ -230,7 +231,7 @@ html.dark {
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.plotting.set_subplots" title="handlers.plotting.set_subplots"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_subplots</span></code></a>(extra_rows[, ...])</p></td>
 <td><p>Define rows and columns for subplots in plotting engine.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.plotting.set_candles" title="handlers.plotting.set_candles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_candles</span></code></a>(df[, x_labels, red_timestamps, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.plotting.set_candles" title="handlers.plotting.set_candles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_candles</span></code></a>(df[, x_labels])</p></td>
 <td><p>Put candles and axis into a tuple.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.plotting.set_volume_series" title="handlers.plotting.set_volume_series"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_volume_series</span></code></a>(df[, win, green_color, ...])</p></td>
@@ -339,12 +340,10 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.plotting.set_candles">
-<span class="sig-prename descclassname"><span class="pre">handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">set_candles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">red_timestamps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blue_timestamps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#handlers.plotting.set_candles" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">set_candles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#handlers.plotting.set_candles" title="Link to this definition">¶</a></dt>
 <dd><p>Put candles and axis into a tuple.
 :param pd.DataFrame df: Dataframe OHLC type.
 :param list x_labels: Labels to replace in x axis plotting.
-:param list red_timestamps: List of timestamps for red vertical lines.
-:param list blue_timestamps: List of timestamps for blue vertical lines.
 :return:</p>
 </dd></dl>
 
@@ -390,7 +389,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.plotting.set_ta_line">
-<span class="sig-prename descclassname"><span class="pre">handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">set_ta_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_index:</span> <span class="pre">&lt;pandas._libs.properties.AxisProperty</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x00000274B4C5EAD0&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serie:</span> <span class="pre">~pandas.core.series.Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color='blue'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name='Indicator'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_width:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_color:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_mode:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'none'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yaxis:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'y'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_legend=True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.plotting.set_ta_line" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">set_ta_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_index:</span> <span class="pre">&lt;pandas._libs.properties.AxisProperty</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x000001F7EEC8A770&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serie:</span> <span class="pre">~pandas.core.series.Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color='blue'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name='Indicator'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_width:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_color:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_mode:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'none'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yaxis:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'y'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_legend=True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.plotting.set_ta_line" title="Link to this definition">¶</a></dt>
 <dd><p>Plot a line plot for an indicator.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -566,16 +565,20 @@ indicator list or a fillcolor. For transparent colors use rgba string code to de
 <li><p><strong>annotation_values</strong> (<em>list</em>) – A list of pandas series with values to plot marks or annotations overlapped in the candles plot.</p></li>
 <li><p><strong>markers</strong> (<em>list</em>) – <p>Ordered like the annotations list.
 Example</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="n">markers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;arrow-bar-down&quot;</span><span class="p">,</span> <span class="s2">&quot;arrow-bar-up&quot;</span><span class="p">,</span> <span class="s2">&quot;arrow-bar-left&quot;</span><span class="p">,</span> <span class="s2">&quot;arrow-bar-right&quot;</span><span class="p">]</span>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="n">markers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;arrow-bar-down&quot;</span><span class="p">,</span> <span class="s2">&quot;arrow-bar-up&quot;</span><span class="p">,</span> <span class="s2">&quot;arrow-bar-left&quot;</span><span class="p">,</span> <span class="s2">&quot;arrow-bar-right&quot;</span><span class="p">]</span>
 </span></pre></div>
 </div>
+</div></blockquote>
 </p></li>
 <li><p><strong>text_positions</strong> (<em>list</em>) – <p>Ordered like the annotations list.
 Example</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="n">text_positions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;top center&quot;</span><span class="p">,</span> <span class="s2">&quot;middle left&quot;</span><span class="p">,</span> <span class="s2">&quot;top center&quot;</span><span class="p">,</span> <span class="s2">&quot;bottom center&quot;</span><span class="p">,</span> <span class="s2">&quot;top right&quot;</span><span class="p">,</span> <span class="s2">&quot;middle left&quot;</span><span class="p">,</span> <span class="s2">&quot;bottom right&quot;</span><span class="p">,</span>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="n">text_positions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;top center&quot;</span><span class="p">,</span> <span class="s2">&quot;middle left&quot;</span><span class="p">,</span> <span class="s2">&quot;top center&quot;</span><span class="p">,</span> <span class="s2">&quot;bottom center&quot;</span><span class="p">,</span> <span class="s2">&quot;top right&quot;</span><span class="p">,</span> <span class="s2">&quot;middle left&quot;</span><span class="p">,</span> <span class="s2">&quot;bottom right&quot;</span><span class="p">,</span>
 </span><span id="1-2"> <span class="s2">&quot;bottom left&quot;</span><span class="p">,</span> <span class="s2">&quot;top right&quot;</span><span class="p">,</span> <span class="s2">&quot;top right&quot;</span><span class="p">]</span>
 </span></pre></div>
 </div>
+</div></blockquote>
 </p></li>
 <li><p><strong>annotation_colors</strong> (<em>list</em>) – <p>Ordered like the annotations list.
 Example from default colors</p>
@@ -586,8 +589,8 @@ Example from default colors</p>
 </div>
 </p></li>
 <li><p><strong>annotation_legend_names</strong> (<em>list</em>) – Ordered like the annotations list of names to show in legend.</p></li>
-<li><p><strong>labels</strong> (<em>list</em>) – <p>Ordered like the annotations list of tags to plot overlapped. It defaults to price value if omitted.</p>
-<p>Example:
+<li><p><strong>labels</strong> (<em>list</em>) – <p>Ordered like the annotations list of tags to plot overlapped. It defaults to price value if omitted.
+Example:
 .. code-block:: python</p>
 <blockquote>
 <div><p>labels = [‘buy’, ‘sell’]</p>
@@ -624,11 +627,11 @@ Example from default colors</p>
 100)’ for more opacity.</p></li>
 <li><p><strong>vol_down_color</strong> (<em>str</em>) – Color for down volume bars. An rgba color string like: ‘rgba(242,149,149,255)’ or ‘rgba(233, 56, 18,
 100)’ for more opacity.</p></li>
-<li><p><strong>text_index</strong> (<em>bool</em>) – If enables, index will be transformed to a text index. It can be useful to plot candles not time correlated</p></li>
+<li><p><strong>text_index</strong> (<em>bool</em>) – If enables, index will be transformed to a text index. It can be useful to plot candles not time correlated
+like reversal candles.</p></li>
 </ul>
 </dd>
 </dl>
-<p>like reversal candles.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -843,12 +846,12 @@ using Maker buyer or Taker buyer discrete colors. Usually red and blue.</p>
 <li><p><strong>logarithmic</strong> (<em>bool</em>) – Y axis in a logarithmic scale.</p></li>
 <li><p><strong>overlap_prices</strong> (<em>pd.DataFrame</em>) – Data to plot overlapping scatter plot.</p></li>
 <li><p><strong>title</strong> (<em>str</em>) – Title string.</p></li>
-<li><p><strong>shifted</strong> (<em>int</em>) – If passed any integer, shifts candles to the right one step, this way can see more naturally trades actions over</p></li>
+<li><p><strong>shifted</strong> (<em>int</em>) – If passed any integer, shifts candles to the right one step, this way can see more naturally trades actions over
+klines.</p></li>
+<li><p><strong>kwargs_update_layout</strong> – Update layout plotly options.</p></li>
 </ul>
 </dd>
 </dl>
-<p>klines.
-:param kwargs_update_layout: Update layout plotly options.</p>
 <dl>
 <dt>Example:</dt><dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="kn">import</span> <span class="nn">binpan</span>
 </span><span id="1-2">

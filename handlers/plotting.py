@@ -384,14 +384,14 @@ def candles_ta(data: pd.DataFrame, indicators_series: list or pd.DataFrame = Non
     :param str yaxis_title: A name string.
     :param list annotation_values: A list of pandas series with values to plot marks or annotations overlapped in the candles plot.
     :param list markers: Ordered like the annotations list.
-        Example
+     Example
 
         .. code-block:: python
 
            markers = ["arrow-bar-down", "arrow-bar-up", "arrow-bar-left", "arrow-bar-right"]
 
     :param list text_positions: Ordered like the annotations list.
-        Example
+     Example
 
         .. code-block:: python
 
@@ -410,7 +410,6 @@ def candles_ta(data: pd.DataFrame, indicators_series: list or pd.DataFrame = Non
     :param list annotation_legend_names: Ordered like the annotations list of names to show in legend.
 
     :param list labels: Ordered like the annotations list of tags to plot overlapped. It defaults to price value if omitted.
-
         Example:
         .. code-block:: python
 
@@ -445,7 +444,7 @@ def candles_ta(data: pd.DataFrame, indicators_series: list or pd.DataFrame = Non
     :param str vol_down_color: Color for down volume bars. An rgba color string like: 'rgba(242,149,149,255)' or 'rgba(233, 56, 18,
      100)' for more opacity.
     :param bool text_index: If enables, index will be transformed to a text index. It can be useful to plot candles not time correlated
-    like reversal candles.
+     like reversal candles.
 
     """
     if plot_splitted_serie_couple is None:
@@ -1036,7 +1035,7 @@ def plot_trades(data: pd.DataFrame, max_size: int = 60, height: int = 1000, loga
     :param pd.DataFrame overlap_prices: Data to plot overlapping scatter plot.
     :param str title: Title string.
     :param int shifted: If passed any integer, shifts candles to the right one step, this way can see more naturally trades actions over
-    klines.
+     klines.
     :param kwargs_update_layout: Update layout plotly options.
 
     Example:
