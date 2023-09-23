@@ -217,6 +217,10 @@ class Symbol(object):
         # check correct tick interval passed
         if not from_csv:
             tick_interval = check_tick_interval(tick_interval)
+        else:
+            tick_interval = tick_interval
+        self.tick_interval = tick_interval
+        self.time_zone = time_zone
 
         # dataframe columns
         # self.presentation_columns = presentation_columns
