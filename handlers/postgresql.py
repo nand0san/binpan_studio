@@ -14,6 +14,16 @@ cipher_object = AesCipher()
 
 
 def setup(symbol: str, tick_interval: str, postgres_klines: bool, postgres_atomic_trades: bool, postgres_agg_trades: bool) -> tuple:
+    """
+    Setups the connection to the PostgreSQL database.
+
+    :param symbol: A symbol like "BTCUSDT"
+    :param tick_interval: A tick interval like "1m"
+    :param postgres_klines: A boolean to indicate if klines are requested
+    :param postgres_atomic_trades: A boolean to indicate if atomic trades are requested
+    :param postgres_agg_trades: A boolean to indicate if aggregate trades are requested
+    :return: Connection and cursor to the database
+    """
     try:
         from secret import postgresql_host, postgresql_port, postgresql_user, postgresql_database
         enc_postgresql_password = get_encoded_database_secrets()
@@ -48,6 +58,16 @@ def create_connection(user: str,
                       port: int,
                       database: str
                       ) -> Tuple[psycopg2.extensions.connection, psycopg2.extensions.cursor]:
+    """
+    Creates a connection to the PostgreSQL database.
+
+    :param user: User name
+    :param enc_password: Encrypted password.
+    :param host: Host name or ip address
+    :param port: Port number
+    :param database: Name of the database
+    :return: Returns a connection and a cursor to the database
+    """
     decoded_password = cipher_object.decrypt(enc_password)
     try:
         connection = psycopg2.connect(user=user,
@@ -59,9 +79,9 @@ def create_connection(user: str,
         sql_logger.debug(f"Conexión a PostgreSQL exitosa en ip {host} database {database}")
         return connection, cursor
     except (Exception, psycopg2.Error) as error:
-        sql_logger.error(f"Error al conectar con PostgreSQL en ip {host} database {database}: {error}")
-
-        return None, None
+        msg = f"Error connecting PostgreSQL {host} database {database}: {error}"
+        sql_logger.error(msg)
+        raise Exception(msg)
 
 
 def data_type_from_table(table: str) -> str or None:
@@ -84,10 +104,10 @@ def data_type_from_table(table: str) -> str or None:
 
 def get_valid_table_list(cursor) -> list:
     """
-    Obtiene la lista de tablas en la base de datos.
+    Obtains a list of valid tables from the database. Drops internal tables like "pg_stat_statements" or "pg_buffercache".
 
-    :param cursor: Un cursor de psycopg2 conectado a la base de datos.
-    :return:
+    :param cursor: A cursor to the database
+    :return: Returns a list of valid tables
     """
     # noinspection SqlCurrentSchemaInspection
     query = "SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema';"
@@ -108,6 +128,12 @@ def get_valid_table_list(cursor) -> list:
 
 
 def sanitize_table_name(table_name: str) -> str:
+    """
+    Sanitizes a table name. Replaces "@" with "_". Adds a prefix if the name starts with a number.
+
+    :param table_name: The table name
+    :return: Sanitized table name like "t_1btcusd_trade" or "btcusd_kline_1m"
+    """
     sanitized_name = table_name.replace("@", "_")
 
     # Añadir un prefijo si el nombre comienza con un número
@@ -128,6 +154,20 @@ def get_data_and_parse(cursor,
                        data_type: str,
                        order_col: str,
                        ):
+    """
+    Gets data from a table in the database and parses it to a dataframe.
+
+    :param cursor: Database cursor
+    :param table: Table name
+    :param symbol: Symbol like "BTCUSDT"
+    :param tick_interval: Tick interval like "1m"
+    :param time_zone: Time zone like "Europe/Madrid"
+    :param start_time: Timestamp in milliseconds
+    :param end_time: Timestamp in milliseconds
+    :param data_type: Data type like "kline", "trade", "aggTrade". Types are Binance websocket stream name types.
+    :param order_col: Column to order by. If None, orders by "Date"
+    :return: A dataframe with the data and pertinent columns.
+    """
     # llama a la tabla de klines pedida en el intervalo de timestamps solicitado
     try:
         query = sql.SQL("SELECT * FROM {} WHERE EXTRACT(EPOCH FROM time) * 1000 >= {} AND EXTRACT(EPOCH FROM time) * 1000 <= {} ORDER BY time ASC;").format(

@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Plotting Module - BinPan 0.5.0 documentation</title>
-    <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Requests Module" href="quest.html" /><link rel="prev" title="Messages Module" href="messages.html" />
+      <title>Plotting Module - BinPan 0.5.1 documentation</title>
+    <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="PostgreSQL Module" href="postgresql.html" /><link rel="prev" title="Messages Module" href="messages.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
     const sessionTheme = sessionStorage['_theme']
@@ -99,6 +99,7 @@ html.dark {
 <li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="messages.html">Messages Module</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Plotting Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postgresql.html">PostgreSQL Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quest.html">Requests Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stat_tests.html">Statistical Tests and Tools</a></li>
@@ -389,7 +390,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.plotting.set_ta_line">
-<span class="sig-prename descclassname"><span class="pre">handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">set_ta_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_index:</span> <span class="pre">&lt;pandas._libs.properties.AxisProperty</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x000001F7EEC8A770&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serie:</span> <span class="pre">~pandas.core.series.Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color='blue'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name='Indicator'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_width:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_color:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_mode:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'none'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yaxis:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'y'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_legend=True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.plotting.set_ta_line" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.plotting.</span></span><span class="sig-name descname"><span class="pre">set_ta_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_index:</span> <span class="pre">&lt;pandas._libs.properties.AxisProperty</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x000002B4BA66E7A0&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serie:</span> <span class="pre">~pandas.core.series.Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color='blue'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name='Indicator'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_width:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_color:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_mode:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'none'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yaxis:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'y'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_legend=True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.plotting.set_ta_line" title="Link to this definition">¶</a></dt>
 <dd><p>Plot a line plot for an indicator.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1182,10 +1183,10 @@ the smallest to the largest, that is, the smallest values will be divided into s
     </a>
   </div>
   <div class="navigation-next">
-    <a href="quest.html">
+    <a href="postgresql.html">
       <div class="page-info">
         <span>Next</span>
-        <div class="title">Requests Module</div>
+        <div class="title">PostgreSQL Module</div>
       </div>
       <i class="i-icon chevron"></i>
     </a>
@@ -1215,7 +1216,7 @@ the smallest to the largest, that is, the smallest values will be divided into s
     </div>
   </div>
 </footer></div>
-      <script src="_static/documentation_options.js?v=1dd76d02"></script>
+      <script src="_static/documentation_options.js?v=b9afe91b"></script>
       <script src="_static/doctools.js?v=888ff710"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/shibuya.js?v=3e5c8598"></script>

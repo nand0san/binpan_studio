@@ -147,6 +147,7 @@ greatly appreciated.
    market.rst
    messages.rst
    plotting.rst
+   postgresql.rst
    quest.rst
    redis_fetch.rst
    stat_tests.rst
