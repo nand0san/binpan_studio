@@ -3,7 +3,6 @@ Statistical tests and tools.
 """
 
 from scipy.stats import jarque_bera
-
 import pandas as pd
 import numpy as np
 

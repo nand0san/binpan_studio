@@ -12,7 +12,6 @@ from Crypto.Util.Padding import pad, unpad
 import sys
 import os
 import importlib
-# import re
 
 
 def import_secret_module():

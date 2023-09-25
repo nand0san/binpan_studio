@@ -1,8 +1,6 @@
-
 import json
 from time import sleep, time
 from typing import Tuple, List, Union, Dict
-from redis import StrictRedis
 import pandas as pd
 import numpy as np
 
@@ -14,8 +12,15 @@ from .time_helper import (convert_ms_column_to_datetime_with_zone, convert_datet
 from .starters import import_secret_module
 from .exceptions import RedisConfigError
 
-
 redis_logger = Logs(filename='./logs/redis_fetch.log', name='redis_fetch', info_level='INFO')
+
+try:
+    from redis import StrictRedis
+
+except ImportError:
+    StrictRedis = None
+    redis_logger.info("Redis module not found. Redis functions will not work.")
+    pass
 
 klines_columns = {"t": "Open timestamp",
                   "o": "Open",
@@ -55,7 +60,9 @@ def manage_sentinel(sentinel_redis: Union[dict, bool]) -> StrictRedis:
     """
     Manage the Redis Sentinel configuration and return a StrictRedis instance.
 
-    This function takes a sentinel_redis parameter, which can be a dictionary or a boolean. If it is a dictionary, the function expects the keys 'hosts', 'sentinel_service_name', and 'password' (optional) to be present. If it is a boolean, the function imports the sentinel_data from the secret module.
+    This function takes a sentinel_redis parameter, which can be a dictionary or a boolean. If it is a dictionary, the function expects 
+    the keys 'hosts', 'sentinel_service_name', and 'password' (optional) to be present. If it is a boolean, the function imports the 
+    sentinel_data from the secret module.
 
     :param sentinel_redis: A dictionary containing the Redis Sentinel configuration or a boolean to use the secret module for configuration.
     :type sentinel_redis: Union[dict, bool]
@@ -92,14 +99,17 @@ def manage_redis(redis_args: Union[bool, Dict, StrictRedis]) -> StrictRedis or N
     """
     Manage the Redis configuration and return a StrictRedis instance or None.
 
-    This function takes a redis_args parameter, which can be a dictionary, a boolean, or a StrictRedis object. If it is a dictionary, the function expects the Redis configuration keys to be present. If it is a boolean, the function imports the redis_conf from the secret module. If it is a StrictRedis object, the function returns the object as is.
+    This function takes a redis_args parameter, which can be a dictionary, a boolean, or a StrictRedis object. If it is a dictionary, 
+    the function expects the Redis configuration keys to be present. If it is a boolean, the function imports the redis_conf from the 
+    secret module. If it is a StrictRedis object, the function returns the object as is.
 
     :param redis_args: A dictionary containing the Redis configuration, a boolean to use the passed configuration, or a StrictRedis object.
     :type redis_args: Union[bool, Dict, StrictRedis]
     :return: A StrictRedis instance configured with the provided settings or None if no configuration is provided.
     :rtype: Union[StrictRedis, None]
 
-    :raises RedisConfigError: If there is a misconfiguration in the Redis settings or the 'redis_conf' key is not found in the secret.py module.
+    :raises RedisConfigError: If there is a misconfiguration in the Redis settings or the 'redis_conf' key is not found in the secret.py 
+    module.
     """
 
     if redis_args:
@@ -442,14 +452,18 @@ def fetch_zset_range(redisClient: StrictRedis,
 
         print(stream)
 
-        >>> 'galabusd@kline_5m'
+        > 'galabusd@kline_5m'
 
         redis_fetch.fetch_zset_range(redisClient=redis_client, key=stream, start_index=0, end_index=3)
 
-        >>> ['{"t": 1658765700000, "o": "0.05011000", "h": "0.05017000", "l": "0.05004000", "c": "0.05006000", "v": "345741.00000000", "T": 1658765999999, "q": "17315.68030000", "n": 87, "V": "84642.00000000", "Q": "4239.51131000", "B": "0"}',
-             '{"t": 1658766000000, "o": "0.05005000", "h": "0.05010000", "l": "0.04999000", "c": "0.04999000", "v": "448270.00000000", "T": 1658766299999, "q": "22422.46695000", "n": 68, "V": "132503.00000000", "Q": "6628.86299000", "B": "0"}',
-             '{"t": 1658766300000, "o": "0.04998000", "h": "0.05004000", "l": "0.04995000", "c": "0.05000000", "v": "268084.00000000", "T": 1658766599999, "q": "13396.55626000", "n": 57, "V": "94341.00000000", "Q": "4715.14561000", "B": "0"}',
-             '{"t": 1658766600000, "o": "0.04998000", "h": "0.05010000", "l": "0.04996000", "c": "0.05002000", "v": "402674.00000000", "T": 1658766899999, "q": "20162.97689000", "n": 68, "V": "154895.00000000", "Q": "7753.09416000", "B": "0"}']
+        > ['{"t": 1658765700000, "o": "0.05011000", "h": "0.05017000", "l": "0.05004000", "c": "0.05006000", "v": "345741.00000000", 
+        "T": 1658765999999, "q": "17315.68030000", "n": 87, "V": "84642.00000000", "Q": "4239.51131000", "B": "0"}',
+             '{"t": 1658766000000, "o": "0.05005000", "h": "0.05010000", "l": "0.04999000", "c": "0.04999000", "v": "448270.00000000", 
+             "T": 1658766299999, "q": "22422.46695000", "n": 68, "V": "132503.00000000", "Q": "6628.86299000", "B": "0"}',
+             '{"t": 1658766300000, "o": "0.04998000", "h": "0.05004000", "l": "0.04995000", "c": "0.05000000", "v": "268084.00000000", 
+             "T": 1658766599999, "q": "13396.55626000", "n": 57, "V": "94341.00000000", "Q": "4715.14561000", "B": "0"}',
+             '{"t": 1658766600000, "o": "0.04998000", "h": "0.05010000", "l": "0.04996000", "c": "0.05002000", "v": "402674.00000000", 
+             "T": 1658766899999, "q": "20162.97689000", "n": 68, "V": "154895.00000000", "Q": "7753.09416000", "B": "0"}']
 
     """
     if not key:
@@ -488,27 +502,37 @@ def fetch_zset_timestamps(redisClient: StrictRedis,
 
         print(stream)
 
-        >>> 'galabusd@kline_5m'
+        > 'galabusd@kline_5m'
 
-        redis_fetch.fetch_zset_timestamps(redisClient=redis_client, key=stream, start_timestamp=1658765700000, end_timestamp= 1658766600000, with_scores=True)
+        redis_fetch.fetch_zset_timestamps(redisClient=redis_client, key=stream, start_timestamp=1658765700000, end_timestamp= 
+        1658766600000, with_scores=True)
 
-        >>> [('{"t": 1658765700000, "o": "0.05011000", "h": "0.05017000", "l": "0.05004000", "c": "0.05006000", "v": "345741.00000000", "T": 1658765999999, "q": "17315.68030000", "n": 87, "V": "84642.00000000", "Q": "4239.51131000", "B": "0"}',
+        > [('{"t": 1658765700000, "o": "0.05011000", "h": "0.05017000", "l": "0.05004000", "c": "0.05006000", "v": "345741.00000000", 
+        "T": 1658765999999, "q": "17315.68030000", "n": 87, "V": "84642.00000000", "Q": "4239.51131000", "B": "0"}',
               1658765700000.0),
-             ('{"t": 1658766000000, "o": "0.05005000", "h": "0.05010000", "l": "0.04999000", "c": "0.04999000", "v": "448270.00000000", "T": 1658766299999, "q": "22422.46695000", "n": 68, "V": "132503.00000000", "Q": "6628.86299000", "B": "0"}',
+             ('{"t": 1658766000000, "o": "0.05005000", "h": "0.05010000", "l": "0.04999000", "c": "0.04999000", "v": "448270.00000000", 
+             "T": 1658766299999, "q": "22422.46695000", "n": 68, "V": "132503.00000000", "Q": "6628.86299000", "B": "0"}',
               1658766000000.0),
-             ('{"t": 1658766300000, "o": "0.04998000", "h": "0.05004000", "l": "0.04995000", "c": "0.05000000", "v": "268084.00000000", "T": 1658766599999, "q": "13396.55626000", "n": 57, "V": "94341.00000000", "Q": "4715.14561000", "B": "0"}',
+             ('{"t": 1658766300000, "o": "0.04998000", "h": "0.05004000", "l": "0.04995000", "c": "0.05000000", "v": "268084.00000000", 
+             "T": 1658766599999, "q": "13396.55626000", "n": 57, "V": "94341.00000000", "Q": "4715.14561000", "B": "0"}',
               1658766300000.0),
-             ('{"t": 1658766600000, "o": "0.04998000", "h": "0.05010000", "l": "0.04996000", "c": "0.05002000", "v": "402674.00000000", "T": 1658766899999, "q": "20162.97689000", "n": 68, "V": "154895.00000000", "Q": "7753.09416000", "B": "0"}',
+             ('{"t": 1658766600000, "o": "0.04998000", "h": "0.05010000", "l": "0.04996000", "c": "0.05002000", "v": "402674.00000000", 
+             "T": 1658766899999, "q": "20162.97689000", "n": 68, "V": "154895.00000000", "Q": "7753.09416000", "B": "0"}',
               1658766600000.0)]
 
         # Now without scores
 
-        redis_fetch.fetch_zset_timestamps(redisClient=redis_client, key=stream, start_timestamp=1658765700000, end_timestamp= 1658766600000, with_scores=False)
+        redis_fetch.fetch_zset_timestamps(redisClient=redis_client, key=stream, start_timestamp=1658765700000, end_timestamp= 
+        1658766600000, with_scores=False)
 
-        >>> ['{"t": 1658765700000, "o": "0.05011000", "h": "0.05017000", "l": "0.05004000", "c": "0.05006000", "v": "345741.00000000", "T": 1658765999999, "q": "17315.68030000", "n": 87, "V": "84642.00000000", "Q": "4239.51131000", "B": "0"}',
-            '{"t": 1658766000000, "o": "0.05005000", "h": "0.05010000", "l": "0.04999000", "c": "0.04999000", "v": "448270.00000000", "T": 1658766299999, "q": "22422.46695000", "n": 68, "V": "132503.00000000", "Q": "6628.86299000", "B": "0"}',
-            '{"t": 1658766300000, "o": "0.04998000", "h": "0.05004000", "l": "0.04995000", "c": "0.05000000", "v": "268084.00000000", "T": 1658766599999, "q": "13396.55626000", "n": 57, "V": "94341.00000000", "Q": "4715.14561000", "B": "0"}',
-            '{"t": 1658766600000, "o": "0.04998000", "h": "0.05010000", "l": "0.04996000", "c": "0.05002000", "v": "402674.00000000", "T": 1658766899999, "q": "20162.97689000", "n": 68, "V": "154895.00000000", "Q": "7753.09416000", "B": "0"}']
+        > ['{"t": 1658765700000, "o": "0.05011000", "h": "0.05017000", "l": "0.05004000", "c": "0.05006000", "v": "345741.00000000", 
+        "T": 1658765999999, "q": "17315.68030000", "n": 87, "V": "84642.00000000", "Q": "4239.51131000", "B": "0"}',
+            '{"t": 1658766000000, "o": "0.05005000", "h": "0.05010000", "l": "0.04999000", "c": "0.04999000", "v": "448270.00000000", 
+            "T": 1658766299999, "q": "22422.46695000", "n": 68, "V": "132503.00000000", "Q": "6628.86299000", "B": "0"}',
+            '{"t": 1658766300000, "o": "0.04998000", "h": "0.05004000", "l": "0.04995000", "c": "0.05000000", "v": "268084.00000000", 
+            "T": 1658766599999, "q": "13396.55626000", "n": 57, "V": "94341.00000000", "Q": "4715.14561000", "B": "0"}',
+            '{"t": 1658766600000, "o": "0.04998000", "h": "0.05010000", "l": "0.04996000", "c": "0.05002000", "v": "402674.00000000", 
+            "T": 1658766899999, "q": "20162.97689000", "n": 68, "V": "154895.00000000", "Q": "7753.09416000", "B": "0"}']
 
     """
     ret = redisClient.zrangebyscore(name=key,
@@ -781,14 +805,17 @@ def pipe_buffer_ordered_set(pipeline: StrictRedis,
         :param redisClient pipeline: A redis client pipeline.
         :param str key: The redis key name.
         :param list mapping: Data to push in the format {data: score}
-        :param LT: Only update existing elements if the new score is less than the current score. This flag doesn't prevent adding new elements.
+        :param LT: Only update existing elements if the new score is less than the current score. This flag doesn't prevent adding new 
+        elements.
         :param XX: Only update elements that already exist. Don't add new elements.
         :param NX: Only add new elements. Don't update already existing elements. This is the default only true value.
         :param GT: Only update existing elements if the new score is greater than the current score. This flag doesn't prevent adding new
            elements.
-        :param CH: Modify the return value from the number of new elements added, to the total number of elements changed (CH is an abbreviation
+        :param CH: Modify the return value from the number of new elements added, to the total number of elements changed (CH is an 
+        abbreviation
            of changed). Changed elements are new elements added and elements already existing for which the score was updated. So elements
-           specified in the command line having the same score as they had in the past are not counted. Note: normally the return value of ZADD
+           specified in the command line having the same score as they had in the past are not counted. Note: normally the return value 
+           of ZADD
            only counts the number of new elements added.
         :param INCR: When this option is specified ZADD acts like ZINCRBY. Only one score-element pair can be specified in this mode.
            Note: The GT, LT and NX options are mutually exclusive.

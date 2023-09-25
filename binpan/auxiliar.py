@@ -5,14 +5,14 @@ import pandas as pd
 from handlers.files import select_file, read_csv_to_dataframe, extract_filename_metadata
 from handlers.logs import Logs
 from handlers.market import (convert_to_numeric)
-from handlers.starters import is_running_in_jupyter
 from handlers.time_helper import (pandas_freq_tick_interval, open_from_milliseconds, time_interval)
 from handlers.wallet import convert_str_date_to_ms
 
-if is_running_in_jupyter():
-    pass
-else:
-    pass
+# from handlers.starters import is_running_in_jupyter
+# if is_running_in_jupyter():
+#     pass
+# else:
+#     pass
 
 binpan_logger = Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 

@@ -2,7 +2,6 @@ from datetime import datetime
 import pytz
 from time import time
 from typing import Tuple, List
-
 import pandas as pd
 
 from .logs import Logs
