@@ -165,7 +165,7 @@ postgresql_response_cols_by_type = {'kline': [kline_open_time_col,
                                               trade_seller_order_id_col,
                                               trade_date_col,
                                               trade_buyer_was_maker_col,
-                                              trade_best_price_match_col],
+                                              ],
                                     'aggTrade': None
                                     }
 postgresql_presentation_type_columns_dict = {'kline': postgresql_candles_ordered_cols,

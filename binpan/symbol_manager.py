@@ -49,7 +49,7 @@ from handlers.wallet import convert_str_date_to_ms
 
 from handlers.aggregations import resample_klines
 
-from handlers.standards import (trade_trade_id_col, binance_api_candles_cols, agg_trades_columns, atomic_trades_columns, time_cols,
+from handlers.standards import (binance_api_candles_cols, agg_trades_columns, atomic_trades_columns, time_cols,
                                 dts_time_cols, reversal_columns, agg_trades_columns_from_binance, atomic_trades_columns_from_binance)
 
 if is_running_in_jupyter():
@@ -888,7 +888,7 @@ class Symbol(object):
         start = self.df.iloc[0]['Open timestamp']
         # end = self.df.iloc[-1]['Close timestamp']
         end = self.df.iloc[-1]['Open timestamp']
-        binpan_logger.info(f"From first Open timestamp {start} to last Open timestamp {end}")
+        binpan_logger.debug(f"From first Open timestamp {start} to last Open timestamp {end}")
         return int(start), int(end)
 
     def get_dates(self) -> Tuple[str, str]:
@@ -1016,15 +1016,15 @@ class Symbol(object):
             self.agg_trades = df_
         elif self.postgres_agg_trades:
             from handlers.postgresql import get_data_and_parse
-            table = f"{self.symbol.lower()}_aggTrade"
-            self.atomic_trades = get_data_and_parse(cursor=self.cursor_atomic_trades,
-                                                    table=table,
-                                                    symbol=self.symbol,
-                                                    tick_interval=self.tick_interval,
-                                                    time_zone=self.time_zone,
-                                                    start_time=curr_startTime,
-                                                    end_time=curr_endTime,
-                                                    data_type="aggTrade")
+            agg_table = f"{self.symbol.lower()}_aggTrade"
+            self.agg_trades = get_data_and_parse(cursor=self.cursor_agg_trades,
+                                                 table=agg_table,
+                                                 symbol=self.symbol,
+                                                 tick_interval=self.tick_interval,
+                                                 time_zone=self.time_zone,
+                                                 start_time=curr_startTime,
+                                                 end_time=curr_endTime,
+                                                 data_type="aggTrade")
         else:
             try:
                 self.raw_agg_trades = get_historical_agg_trades(symbol=self.symbol, startTime=curr_startTime, endTime=curr_endTime)
@@ -1121,9 +1121,10 @@ class Symbol(object):
             self.atomic_trades = df_
         elif self.postgres_atomic_trades:
             from handlers.postgresql import get_data_and_parse
-            table = f"{self.symbol.lower()}_trade"
+            trade_table = f"{self.symbol.lower()}_trade"
+
             self.atomic_trades = get_data_and_parse(cursor=self.cursor_atomic_trades,
-                                                    table=table,
+                                                    table=trade_table,
                                                     symbol=self.symbol,
                                                     tick_interval=self.tick_interval,
                                                     time_zone=self.time_zone,

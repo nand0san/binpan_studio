@@ -180,12 +180,13 @@ def get_data_and_parse(cursor,
     :return: A dataframe with the data and pertinent columns.
     """
     # llama a la tabla de klines pedida en el intervalo de timestamps solicitado
+    sql_logger.info(f"Getting data from table {table} from {start_time} to {end_time}")
+
     try:
-        query = sql.SQL("SELECT * FROM {} WHERE EXTRACT(EPOCH FROM time) * 1000 >= {} AND EXTRACT(EPOCH FROM time) * 1000 <= {} ORDER BY time ASC;").format(
-            sql.Identifier(table),
-            sql.Literal(start_time),
-            sql.Literal(end_time)
-        )
+        query = sql.SQL("SELECT * FROM {} WHERE EXTRACT(EPOCH FROM time) * 1000 >= {} AND EXTRACT(EPOCH FROM time) * 1000 <= {} ORDER BY "
+                        "time ASC;").format(sql.Identifier(table),
+                                            sql.Literal(start_time),
+                                            sql.Literal(end_time))
         cursor.execute("BEGIN")
         cursor.execute(query)
         data = cursor.fetchall()
@@ -218,6 +219,7 @@ def get_data_and_parse(cursor,
     df.set_index(date_col, inplace=True, drop=False)
 
     if alt_order:
+        df.index.name = None
         df.sort_values([date_col, alt_order], inplace=True)
     else:
         df.sort_index(inplace=True)
