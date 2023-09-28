@@ -7,14 +7,13 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import plotly.express as px
 import plotly.figure_factory as ff
-
+import pandas as pd
+import numpy as np
 import os
 from random import choice
 from datetime import datetime
 from typing import List, Tuple, Literal
 
-import pandas as pd
-import numpy as np
 
 from .logs import Logs
 from .exceptions import BinPanException

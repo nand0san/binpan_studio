@@ -3,7 +3,7 @@
 This is the main classes file.
 
 """
-__version__ = "0.5.1"
+__version__ = "0.5.2"
 
 import os
 from sys import path
@@ -49,7 +49,7 @@ from handlers.wallet import convert_str_date_to_ms
 
 from handlers.aggregations import resample_klines
 
-from handlers.standards import (trade_trade_id_col, binance_api_candles_cols, agg_trades_columns, atomic_trades_columns, time_cols,
+from handlers.standards import (binance_api_candles_cols, agg_trades_columns, atomic_trades_columns, time_cols,
                                 dts_time_cols, reversal_columns, agg_trades_columns_from_binance, atomic_trades_columns_from_binance)
 
 if is_running_in_jupyter():
@@ -272,14 +272,43 @@ class Symbol(object):
 
         # database
         if postgres_klines or postgres_agg_trades or postgres_atomic_trades:
+
             import handlers.postgresql as postgresql
-            self.connection, self.cursor = postgresql.setup(symbol=self.symbol,
-                                                            tick_interval=self.tick_interval,
-                                                            postgres_klines=postgres_klines,
-                                                            postgres_agg_trades=postgres_agg_trades,
-                                                            postgres_atomic_trades=postgres_atomic_trades)
+            from secret import (postgresql_port, postgresql_user, postgresql_database, postgresql_host_klines, postgresql_host_aggTrades,
+                                postgresql_host_trades)
+
+            if postgres_klines:
+                self.connection_klines, self.cursor_klines = postgresql.setup(symbol=self.symbol,
+                                                                              tick_interval=self.tick_interval,
+                                                                              postgresql_host=postgresql_host_klines,
+                                                                              postgresql_user=postgresql_user,
+                                                                              postgresql_database=postgresql_database,
+                                                                              postgres_klines=True,
+                                                                              postgres_agg_trades=False,
+                                                                              postgres_atomic_trades=False,
+                                                                              postgresql_port=postgresql_port)
+            if postgres_agg_trades:
+                self.connection_agg_trades, self.cursor_agg_trades = postgresql.setup(symbol=self.symbol,
+                                                                                      tick_interval=self.tick_interval,
+                                                                                      postgresql_host=postgresql_host_aggTrades,
+                                                                                      postgresql_user=postgresql_user,
+                                                                                      postgresql_database=postgresql_database,
+                                                                                      postgres_klines=False,
+                                                                                      postgres_agg_trades=True,
+                                                                                      postgres_atomic_trades=False,
+                                                                                      postgresql_port=postgresql_port)
+            if postgres_atomic_trades:
+                self.connection_atomic_trades, self.cursor_atomic_trades = postgresql.setup(symbol=self.symbol,
+                                                                                            tick_interval=self.tick_interval,
+                                                                                            postgresql_host=postgresql_host_trades,
+                                                                                            postgresql_user=postgresql_user,
+                                                                                            postgresql_database=postgresql_database,
+                                                                                            postgres_klines=False,
+                                                                                            postgres_agg_trades=False,
+                                                                                            postgres_atomic_trades=True,
+                                                                                            postgresql_port=postgresql_port)
         else:
-            self.connection, self.cursor = None, None
+            self.connection_klines, self.cursor_klines = None, None
         self.postgres_klines = postgres_klines
         self.postgres_agg_trades = postgres_agg_trades
         self.postgres_atomic_trades = postgres_atomic_trades
@@ -363,17 +392,16 @@ class Symbol(object):
                                                  tick_interval=self.tick_interval,
                                                  time_zone=self.time_zone)
         elif self.postgres_klines:
-            import handlers.postgresql as postgresql
-            self.table = postgresql.sanitize_table_name(f"{self.symbol}@kline_{self.tick_interval}")
-            self.df = postgresql.get_data_and_parse(cursor=self.cursor,
+            import handlers.postgresql as postgresql  # solo para pycharm
+            self.table = postgresql.sanitize_table_name(f"{self.symbol.lower()}@kline_{self.tick_interval}")
+            self.df = postgresql.get_data_and_parse(cursor=self.cursor_klines,
                                                     table=self.table,
                                                     symbol=self.symbol,
                                                     tick_interval=self.tick_interval,
                                                     time_zone=self.time_zone,
                                                     start_time=self.start_time,
                                                     end_time=self.end_time,
-                                                    data_type='kline',
-                                                    order_col="Timestamp")
+                                                    data_type='kline')
         else:
             self.raw = None
 
@@ -860,7 +888,7 @@ class Symbol(object):
         start = self.df.iloc[0]['Open timestamp']
         # end = self.df.iloc[-1]['Close timestamp']
         end = self.df.iloc[-1]['Open timestamp']
-        binpan_logger.info(f"From first Open timestamp {start} to last Open timestamp {end}")
+        binpan_logger.debug(f"From first Open timestamp {start} to last Open timestamp {end}")
         return int(start), int(end)
 
     def get_dates(self) -> Tuple[str, str]:
@@ -988,16 +1016,15 @@ class Symbol(object):
             self.agg_trades = df_
         elif self.postgres_agg_trades:
             from handlers.postgresql import get_data_and_parse
-            table = f"{self.symbol.lower()}_aggTrade"
-            self.atomic_trades = get_data_and_parse(cursor=self.cursor,
-                                                    table=table,
-                                                    symbol=self.symbol,
-                                                    tick_interval=self.tick_interval,
-                                                    time_zone=self.time_zone,
-                                                    start_time=curr_startTime,
-                                                    end_time=curr_endTime,
-                                                    data_type="aggTrade",
-                                                    order_col=trade_trade_id_col)
+            agg_table = f"{self.symbol.lower()}_aggTrade"
+            self.agg_trades = get_data_and_parse(cursor=self.cursor_agg_trades,
+                                                 table=agg_table,
+                                                 symbol=self.symbol,
+                                                 tick_interval=self.tick_interval,
+                                                 time_zone=self.time_zone,
+                                                 start_time=curr_startTime,
+                                                 end_time=curr_endTime,
+                                                 data_type="aggTrade")
         else:
             try:
                 self.raw_agg_trades = get_historical_agg_trades(symbol=self.symbol, startTime=curr_startTime, endTime=curr_endTime)
@@ -1094,16 +1121,16 @@ class Symbol(object):
             self.atomic_trades = df_
         elif self.postgres_atomic_trades:
             from handlers.postgresql import get_data_and_parse
-            table = f"{self.symbol.lower()}_trade"
-            self.atomic_trades = get_data_and_parse(cursor=self.cursor,
-                                                    table=table,
+            trade_table = f"{self.symbol.lower()}_trade"
+
+            self.atomic_trades = get_data_and_parse(cursor=self.cursor_atomic_trades,
+                                                    table=trade_table,
                                                     symbol=self.symbol,
                                                     tick_interval=self.tick_interval,
                                                     time_zone=self.time_zone,
                                                     start_time=curr_startTime,
                                                     end_time=curr_endTime,
-                                                    data_type="trade",
-                                                    order_col=trade_trade_id_col)
+                                                    data_type="trade")
         else:
             try:
                 self.raw_atomic_trades = get_historical_atomic_trades(symbol=self.symbol,

@@ -11,7 +11,7 @@ from decimal import Decimal as dd
 
 from typing import List
 
-from redis import StrictRedis
+# from redis import StrictRedis
 
 from .exceptions import BinPanException
 from .logs import Logs
@@ -500,13 +500,14 @@ def get_aggregated_trades(symbol: str, fromId: int = None, limit: int = None, de
     return get_semi_signed_request(url=endpoint, decimal_mode=decimal_mode, api_key=api_key, params=query)
 
 
+# noinspection PyUnresolvedReferences
 def get_historical_agg_trades(symbol: str,
                               startTime: int = None,
                               endTime: int = None,
                               start_trade_id: int = None,
                               end_trade_id: int = None,
                               limit: int = 1000,
-                              redis_client_trades: StrictRedis = None) -> List[dict]:
+                              redis_client_trades=None) -> List[dict]:
     """
     Returns aggregated trades from id to limit or last trades if id not specified. Also is possible to get from starTime utc in
     milliseconds from epoch or until endtime milliseconds from epoch.

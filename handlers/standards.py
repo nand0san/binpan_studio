@@ -4,37 +4,53 @@
 
 # klines columns names
 
-open_time_col = 'Open time'
-open_col = 'Open'
-high_col = 'High'
-low_col = 'Low'
-close_col = 'Close'
-volume_col = 'Volume'
-close_time_col = 'Close time'
-quote_volume_col = 'Quote volume'
-trades_col = 'Trades'
-taker_buy_base_volume_col = 'Taker buy base volume'
-taker_buy_quote_volume_col = 'Taker buy quote volume'
-ignore_col = 'Ignore'
-open_timestamp_col = 'Open timestamp'
-close_timestamp_col = 'Close timestamp'
+kline_open_time_col = 'Open time'
+kline_open_col = 'Open'
+kline_high_col = 'High'
+kline_low_col = 'Low'
+kline_close_col = 'Close'
+kline_volume_col = 'Volume'
+kline_close_time_col = 'Close time'
+kline_quote_volume_col = 'Quote volume'
+kline_trades_col = 'Trades'
+kline_taker_buy_base_volume_col = 'Taker buy base volume'
+kline_taker_buy_quote_volume_col = 'Taker buy quote volume'
+kline_ignore_col = 'Ignore'
+kline_open_timestamp_col = 'Open timestamp'
+kline_close_timestamp_col = 'Close timestamp'
+kline_first_trade_id_col = 'First TradeId'
+kline_last_trade_id_col = 'Last TradeId'
 
-binance_api_candles_cols = [open_time_col,
-                            open_col,
-                            high_col,
-                            low_col,
-                            close_col,
-                            volume_col,
-                            close_time_col,
-                            quote_volume_col,
-                            trades_col,
-                            taker_buy_base_volume_col,
-                            taker_buy_quote_volume_col,
-                            ignore_col,
-                            open_timestamp_col,
-                            close_timestamp_col]
+binance_api_candles_cols = [kline_open_time_col,
+                            kline_open_col,
+                            kline_high_col,
+                            kline_low_col,
+                            kline_close_col,
+                            kline_volume_col,
+                            kline_close_time_col,
+                            kline_quote_volume_col,
+                            kline_trades_col,
+                            kline_taker_buy_base_volume_col,
+                            kline_taker_buy_quote_volume_col,
+                            kline_ignore_col,
+                            kline_open_timestamp_col,
+                            kline_close_timestamp_col]
 
-postgresql_candles_cols = None
+postgresql_candles_ordered_cols = [kline_open_time_col,
+                                   kline_open_col,
+                                   kline_high_col,
+                                   kline_low_col,
+                                   kline_close_col,
+                                   kline_volume_col,
+                                   kline_close_time_col,
+                                   kline_quote_volume_col,
+                                   kline_trades_col,
+                                   kline_taker_buy_base_volume_col,
+                                   kline_taker_buy_quote_volume_col,
+                                   kline_open_timestamp_col,
+                                   kline_close_timestamp_col,
+                                   kline_first_trade_id_col,
+                                   kline_last_trade_id_col]
 
 # presentation_columns = [open_time_col, open_col, high_col, low_col, close_col, close_time_col,
 #                         volume_col, quote_volume_col, trades_col,
@@ -75,8 +91,6 @@ binance_api_agg_trade_cols = [agg_trade_id_col, agg_trade_price_col, agg_quantit
 postgresql_agg_trade_cols = None
 
 binpan_type_columns_dict = {'kline': binance_api_candles_cols, 'trade': binance_api_trades_cols, 'aggTrade': binance_api_agg_trade_cols}
-postgresql_presentation_type_columns_dict = {'kline': postgresql_candles_cols, 'trade': postgresql_trades_cols,
-                                             'aggTrade': postgresql_agg_trade_cols}
 
 # BINANCE API FIELD AND COLUMN NAMES
 
@@ -130,9 +144,30 @@ atomic_trades_columns_from_redis = ['Trade Id', 'Price', 'Quantity', 'Buyer Orde
 #               'isBuyerMaker': True,
 #               'isBestMatch': True}
 
-postgresql_response_cols_by_type = {'kline': None,
-                                    'trade': [trade_trade_id_col, trade_price_col, trade_quantity_col, trade_quote_quantity_col,
-                                              trade_buyer_order_id_col, trade_seller_order_id_col, trade_date_col,
-                                              trade_buyer_was_maker_col, trade_best_price_match_col],
+postgresql_response_cols_by_type = {'kline': [kline_open_time_col,
+                                              kline_close_timestamp_col,
+                                              kline_first_trade_id_col,
+                                              kline_last_trade_id_col,
+                                              kline_open_col,
+                                              kline_close_col,
+                                              kline_high_col,
+                                              kline_low_col,
+                                              kline_volume_col,
+                                              kline_trades_col,
+                                              kline_quote_volume_col,
+                                              kline_taker_buy_base_volume_col,
+                                              kline_taker_buy_quote_volume_col],
+                                    'trade': [trade_trade_id_col,
+                                              trade_price_col,
+                                              trade_quantity_col,
+                                              trade_quote_quantity_col,
+                                              trade_buyer_order_id_col,
+                                              trade_seller_order_id_col,
+                                              trade_date_col,
+                                              trade_buyer_was_maker_col,
+                                              ],
                                     'aggTrade': None
                                     }
+postgresql_presentation_type_columns_dict = {'kline': postgresql_candles_ordered_cols,
+                                             'trade': postgresql_trades_cols,
+                                             'aggTrade': postgresql_agg_trade_cols}

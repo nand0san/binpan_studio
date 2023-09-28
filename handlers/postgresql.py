@@ -4,7 +4,7 @@ from psycopg2 import sql
 from typing import Tuple
 
 from .exceptions import BinPanException
-from .standards import postgresql_presentation_type_columns_dict, postgresql_response_cols_by_type
+from .standards import *
 from .files import get_encoded_database_secrets
 from .starters import AesCipher
 from .logs import Logs
@@ -13,19 +13,32 @@ sql_logger = Logs(filename='./logs/sql.log', name='sql', info_level='INFO')
 cipher_object = AesCipher()
 
 
-def setup(symbol: str, tick_interval: str, postgres_klines: bool, postgres_atomic_trades: bool, postgres_agg_trades: bool) -> tuple:
+def setup(symbol: str,
+          tick_interval: str,
+          postgresql_host: str,
+          postgresql_user: str,
+          postgresql_database: str,
+          postgres_klines: bool,
+          postgres_atomic_trades: bool,
+          postgres_agg_trades: bool,
+          postgresql_port: int = 5432) -> tuple:
     """
     Setups the connection to the PostgreSQL database.
 
     :param symbol: A symbol like "BTCUSDT"
     :param tick_interval: A tick interval like "1m"
+    :param postgresql_host: A host name or ip address
+    :param postgresql_user: A user name
+    :param postgresql_database: A database name
     :param postgres_klines: A boolean to indicate if klines are requested
     :param postgres_atomic_trades: A boolean to indicate if atomic trades are requested
     :param postgres_agg_trades: A boolean to indicate if aggregate trades are requested
+    :param postgresql_port: A port number
     :return: Connection and cursor to the database
+
     """
     try:
-        from secret import postgresql_host, postgresql_port, postgresql_user, postgresql_database
+        # from secret import postgresql_host, postgresql_port, postgresql_user, postgresql_database
         enc_postgresql_password = get_encoded_database_secrets()
         connection, cursor = create_connection(user=postgresql_user,
                                                enc_password=enc_postgresql_password,
@@ -46,8 +59,8 @@ def setup(symbol: str, tick_interval: str, postgres_klines: bool, postgres_atomi
             if not table in tables:
                 raise BinPanException(f"BinPan Exception: Table {table} not found in database {postgresql_database}")
     except Exception as e:
-        raise BinPanException(f"BinPan Exception: {e} \nVerify existence database credentials in secret.py (postgresql_host, "
-                              "postgresql_port, postgresql_user, postgresql_password, postgresql_database)")
+        raise BinPanException(f"BinPan Exception: {e} \nVerify existence on TABLE or DATABASE CREDENTIALS in secret.py "
+                              f"(postgresql_host, postgresql_port, postgresql_user, postgresql_password, postgresql_database)")
     return connection, cursor
 
 
@@ -152,7 +165,6 @@ def get_data_and_parse(cursor,
                        start_time: int,
                        end_time: int,
                        data_type: str,
-                       order_col: str,
                        ):
     """
     Gets data from a table in the database and parses it to a dataframe.
@@ -165,17 +177,16 @@ def get_data_and_parse(cursor,
     :param start_time: Timestamp in milliseconds
     :param end_time: Timestamp in milliseconds
     :param data_type: Data type like "kline", "trade", "aggTrade". Types are Binance websocket stream name types.
-    :param order_col: Column to order by. If None, orders by "Date"
     :return: A dataframe with the data and pertinent columns.
     """
     # llama a la tabla de klines pedida en el intervalo de timestamps solicitado
-    try:
-        query = sql.SQL("SELECT * FROM {} WHERE EXTRACT(EPOCH FROM time) * 1000 >= {} AND EXTRACT(EPOCH FROM time) * 1000 <= {} ORDER BY time ASC;").format(
-            sql.Identifier(table),
-            sql.Literal(start_time),
-            sql.Literal(end_time)
-        )
+    sql_logger.info(f"Getting data from table {table} from {start_time} to {end_time}")
 
+    try:
+        query = sql.SQL("SELECT * FROM {} WHERE EXTRACT(EPOCH FROM time) * 1000 >= {} AND EXTRACT(EPOCH FROM time) * 1000 <= {} ORDER BY "
+                        "time ASC;").format(sql.Identifier(table),
+                                            sql.Literal(start_time),
+                                            sql.Literal(end_time))
         cursor.execute("BEGIN")
         cursor.execute(query)
         data = cursor.fetchall()
@@ -189,23 +200,34 @@ def get_data_and_parse(cursor,
     data_dicts = [{data_type_structure[i]: l[i] for i in range(len(l))} for l in data]
     df = pd.DataFrame(data_dicts)
 
-    if not "Timestamp" in df.columns and "Date" in df.columns:  # trades
-        df['Timestamp'] = (df['Date'].astype('int64') // 10 ** 6).astype('int64')
+    alt_order = None
+    # TODO: añadir mas types
+    if data_type == "trade":
+        df[trade_time_col] = (df[trade_date_col].astype('int64') // 10 ** 6).astype('int64')
+        df[trade_date_col] = df[trade_date_col].dt.tz_convert(time_zone)
+        date_col = trade_date_col
+        alt_order = trade_trade_id_col
+    elif data_type == "kline":
+        df[kline_open_time_col] = df[kline_open_time_col].dt.tz_convert(time_zone)
+        df[kline_open_timestamp_col] = (df[kline_open_time_col].astype('int64') // 10 ** 6).astype('int64')
+        df[kline_close_time_col] = df[kline_close_timestamp_col]
+        df[kline_close_time_col] = pd.to_datetime(df[kline_close_time_col], unit='ms').dt.tz_localize(time_zone)
+        date_col = kline_open_time_col
     else:
-        pass
+        raise Exception(f"get_data_and_parse: BinPan Exception: Table {table} not recognized as a valid table")
 
-    df['Date'] = df['Date'].dt.tz_convert(time_zone)
-    df.set_index("Date", inplace=True)
-    if order_col:
-        df.sort_values(["Date", order_col], inplace=True)
+    df.set_index(date_col, inplace=True, drop=False)
+
+    if alt_order:
+        df.index.name = None
+        df.sort_values([date_col, alt_order], inplace=True)
     else:
-        df.sort_values("Date", inplace=True)
+        df.sort_index(inplace=True)
 
     if data_type == "kline":
         df.index.name = f"{symbol.upper()} {tick_interval} {time_zone}"
     else:
         df.index.name = f"{symbol.upper()} {time_zone}"
 
-    # forma de las columnas
     my_cols = postgresql_presentation_type_columns_dict[data_type]
     return df[my_cols]
