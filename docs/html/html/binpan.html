@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>BinPan Module - BinPan 0.5.4 documentation</title>
+      <title>BinPan Module - BinPan 0.5.6 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Aggregations Module" href="aggregations.html" /><link rel="prev" title="Welcome to BinPan’s documentation!" href="index.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -226,6 +226,8 @@ html.dark {
 <li><a class="reference internal" href="#binpan.Exchange.get_symbols"><code class="docutils literal notranslate"><span class="pre">Exchange.get_symbols()</span></code></a></li>
 <li><a class="reference internal" href="#binpan.Exchange.get_df"><code class="docutils literal notranslate"><span class="pre">Exchange.get_df()</span></code></a></li>
 <li><a class="reference internal" href="#binpan.Exchange.get_order_types"><code class="docutils literal notranslate"><span class="pre">Exchange.get_order_types()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.Exchange.get_busd_volume_24h"><code class="docutils literal notranslate"><span class="pre">Exchange.get_busd_volume_24h()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.Exchange.get_statistics_24h"><code class="docutils literal notranslate"><span class="pre">Exchange.get_statistics_24h()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -2558,6 +2560,12 @@ this will enable tagging those.</p></li>
 <tr class="row-even"><td><p><a class="reference internal" href="#binpan.Exchange.get_order_types" title="binpan.Exchange.get_order_types"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_order_types</span></code></a>()</p></td>
 <td><p>Returns a dataframe with order types for symbol.</p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Exchange.get_busd_volume_24h" title="binpan.Exchange.get_busd_volume_24h"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_busd_volume_24h</span></code></a>([quote])</p></td>
+<td><p>Returns a dataframe with 24h busd volume for every symbol.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Exchange.get_statistics_24h" title="binpan.Exchange.get_statistics_24h"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_statistics_24h</span></code></a>([symbol, quote])</p></td>
+<td><p>Returns a dataframe with 24h statistics for every symbol.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -2662,6 +2670,37 @@ this will enable tagging those.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Return pd.DataFrame<span class="colon">:</span></dt>
 <dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Exchange.get_busd_volume_24h">
+<span class="sig-name descname"><span class="pre">get_busd_volume_24h</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">quote</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#binpan.Exchange.get_busd_volume_24h" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a dataframe with 24h busd volume for every symbol.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>quote</strong> – Optional quote to filter.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dataframe with 24h busd volume for every symbol.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Exchange.get_statistics_24h">
+<span class="sig-name descname"><span class="pre">get_statistics_24h</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quote</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#binpan.Exchange.get_statistics_24h" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a dataframe with 24h statistics for every symbol.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>symbol</strong> – Optional symbol to filter.</p></li>
+<li><p><strong>quote</strong> – Optional quote to filter.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dataframe with 24h statistics for every symbol.</p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -2839,7 +2878,7 @@ performance analysis.</p>
     </div>
   </div>
 </footer></div>
-      <script src="_static/documentation_options.js?v=e1a677a5"></script>
+      <script src="_static/documentation_options.js?v=722679d6"></script>
       <script src="_static/doctools.js?v=888ff710"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/shibuya.js?v=3e5c8598"></script>
