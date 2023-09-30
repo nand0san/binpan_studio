@@ -12,6 +12,7 @@ from . import logs
 from . import market
 from . import messages
 from . import plotting
+from . import postgresql
 from . import quest
 from . import standards
 from . import starters
