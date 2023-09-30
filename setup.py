@@ -15,7 +15,7 @@ read_required = open('requirements.txt', 'r')
 REQUIRED = read_required.read()
 read_required.close()
 
-my_version = "v0.5.3"
+my_version = "v0.5.4"
 
 setup(name='binpan',
       version=my_version,
