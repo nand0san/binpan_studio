@@ -49,6 +49,10 @@ class Exchange(object):
         self.df = self.get_df()
         self.order_types = self.get_order_types()
 
+        # 24h things
+        self.busd_volume_24h = self.get_busd_volume_24h()
+        self.statistics_24h = self.get_statistics_24h()
+
     def __repr__(self):
         return str(self.df)
 
@@ -154,3 +158,45 @@ class Exchange(object):
         ord_df.columns = ord_df.value_counts().index[0]
         self.order_types = ord_df.astype(bool)
         return self.order_types
+
+    def get_busd_volume_24h(self, quote=None) -> pd.DataFrame:
+        """
+        Returns a dataframe with 24h busd volume for every symbol.
+
+        :param quote: Optional quote to filter.
+        :return: A dataframe with 24h busd volume for every symbol.
+        """
+        ret = handlers.exchange.statistics_24h(decimal_mode=True,
+                                               api_key=self.api_key,
+                                               api_secret=self.api_secret).sort_values('BUSD_volume', ascending=False)
+
+        columns = ['symbol', 'BUSD_volume', 'openPrice', 'highPrice', 'lowPrice', 'volume', 'quoteVolume', 'weightedAvgPrice']
+        ret = ret[columns + [c for c in ret.columns if c not in columns]]
+
+        if quote:
+            self.busd_volume_24h = ret.loc[ret['quote'] == quote.upper()]
+        else:
+            self.busd_volume_24h = ret
+        return self.busd_volume_24h
+
+    def get_statistics_24h(self, symbol: str = None, quote: str = None) -> pd.DataFrame:
+        """
+        Returns a dataframe with 24h statistics for every symbol.
+
+        :param symbol: Optional symbol to filter.
+        :param quote: Optional quote to filter.
+        :return: A dataframe with 24h statistics for every symbol.
+        """
+        ret = (handlers.exchange.statistics_24h(decimal_mode=True,
+                                                api_key=self.api_key,
+                                                api_secret=self.api_secret).sort_values('priceChangePercent', ascending=False))
+
+        columns = ['symbol', 'priceChangePercent', 'openPrice', 'highPrice', 'lowPrice', 'volume', 'quoteVolume', 'weightedAvgPrice']
+        ret = ret[columns + [c for c in ret.columns if c not in columns]]
+
+        if symbol:
+            ret = ret.loc[ret['symbol'] == symbol.upper()]
+        if quote:
+            ret = ret.loc[ret['quote'] == quote.upper()]
+        self.statistics_24h = ret
+        return ret
