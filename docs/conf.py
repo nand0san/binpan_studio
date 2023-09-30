@@ -36,7 +36,7 @@ spec = importlib.util.spec_from_file_location("module.name", secret_path)
 my_secret = importlib.util.module_from_spec(spec)
 sys.modules["module.name"] = my_secret
 spec.loader.exec_module(my_secret)
-version = "0.5.4"
+version = "0.5.5"
 release = version
 
 # config = dotenv_values("version.env")

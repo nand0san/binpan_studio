@@ -3,7 +3,7 @@
 This is the main classes file.
 
 """
-__version__ = "0.5.4"
+__version__ = "0.5.5"
 
 import os
 from sys import path
@@ -58,6 +58,7 @@ else:
     from tqdm import tqdm
 
 binpan_logger = Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
+version = __version__
 
 pd.set_option('display.max_columns', 30)
 pd.set_option('display.width', 250)
