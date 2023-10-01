@@ -23,7 +23,6 @@ from .standards import (klines_columns, agg_trades_columns_from_binance, atomic_
                         atomic_trades_columns_from_redis)
 from .files import get_encoded_secrets
 
-
 market_logger = Logs(filename='./logs/market_logger.log', name='market_logger', info_level='INFO')
 
 base_url = 'https://api.binance.com'
@@ -556,36 +555,57 @@ def get_historical_agg_trades(symbol: str,
     elif end_trade_id and not start_trade_id:
         start_trade_id = end_trade_id - limit
 
-    # trades = get_last_agg_trades(symbol=symbol, limit=1000)
-    if start_trade_id and end_trade_id:
-        trades = get_aggregated_trades(symbol=symbol, fromId=end_trade_id-1000, limit=1000)
-    else:
-        trades = get_last_agg_trades(symbol=symbol, limit=1000)
-    requests_cnt = 0
+    requests_cnt = 1
 
-    # with trade ids, find start
-    if start_trade_id and end_trade_id and not redis_client_trades:
+    if start_trade_id and end_trade_id:
+        trades = get_aggregated_trades(symbol=symbol, fromId=end_trade_id - 999, limit=1000)
+        trade_ids = [i['a'] for i in trades]  # verificar q viene con 'id'
+        if not end_trade_id in trade_ids:
+            market_logger.warning(f"Trade id {end_trade_id} not reported by API. Fetching older trades.")
+            end_trade_id = trade_ids[-1]
+            assert end_trade_id >= start_trade_id, f"BinPan Exception: get_historical_agg_trades: end_trade_id {end_trade_id} " \
+                                                   f"must be greater than start_trade_id {start_trade_id}"
         current_first_trade = trades[0]['a']
         while current_first_trade > start_trade_id:
             requests_cnt += 1
-            market_logger.info(f"Requests to API for aggregated trades of {symbol}: {requests_cnt}")
+            market_logger.info(f"Requests to API for aggregate trades of {symbol}: {requests_cnt}")
             fetched_older_trades = get_aggregated_trades(symbol=symbol, fromId=(current_first_trade - 1000), limit=1000)
             trades = fetched_older_trades + trades
             current_first_trade = trades[0]['a']
 
-        current_last_trade = trades[-1]['a']
-        while current_last_trade < end_trade_id:
-            requests_cnt += 1
-            market_logger.info(f"Requests to API for aggregated trades of {symbol}: {requests_cnt}")
-            fetched_older_trades = get_aggregated_trades(symbol=symbol, fromId=current_last_trade, limit=1000)
-            trades = fetched_older_trades + trades
-            current_last_trade = trades[-1]['a']
-
         ret = [i for i in trades if start_trade_id <= i['a'] <= end_trade_id]
         return sorted(ret, key=lambda x: x['a'])
 
+    # # trades = get_last_agg_trades(symbol=symbol, limit=1000)
+    # if start_trade_id and end_trade_id:
+    #     trades = get_aggregated_trades(symbol=symbol, fromId=end_trade_id-1000, limit=1000)
+    # else:
+    #     trades = get_last_agg_trades(symbol=symbol, limit=1000)
+    #
+    # # with trade ids, find start
+    # if start_trade_id and end_trade_id and not redis_client_trades:
+    #     current_first_trade = trades[0]['a']
+    #     while current_first_trade > start_trade_id:
+    #         requests_cnt += 1
+    #         market_logger.info(f"Requests to API for aggregated trades of {symbol}: {requests_cnt}")
+    #         fetched_older_trades = get_aggregated_trades(symbol=symbol, fromId=(current_first_trade - 1000), limit=1000)
+    #         trades = fetched_older_trades + trades
+    #         current_first_trade = trades[0]['a']
+    #
+    #     current_last_trade = trades[-1]['a']
+    #     while current_last_trade < end_trade_id:
+    #         requests_cnt += 1
+    #         market_logger.info(f"Requests to API for aggregated trades of {symbol}: {requests_cnt}")
+    #         fetched_older_trades = get_aggregated_trades(symbol=symbol, fromId=current_last_trade, limit=1000)
+    #         trades = fetched_older_trades + trades
+    #         current_last_trade = trades[-1]['a']
+    #
+    #     ret = [i for i in trades if start_trade_id <= i['a'] <= end_trade_id]
+    #     return sorted(ret, key=lambda x: x['a'])
+
     # with timestamps or trade ids
-    if not redis_client_trades and (startTime or endTime):
+    elif not redis_client_trades and (startTime or endTime):
+        trades = get_last_atomic_trades(symbol=symbol, limit=1000)
         current_first_trade_time = trades[0]['T']
         current_first_trade = trades[0]['a']
         # if startTime or endTime:
@@ -843,14 +863,17 @@ def get_historical_atomic_trades(symbol: str,
     elif end_trade_id and not start_trade_id:
         start_trade_id = end_trade_id - limit
 
-    if start_trade_id and end_trade_id:
-        trades = get_atomic_trades(symbol=symbol, fromId=end_trade_id-1000, limit=1000)
-    else:
-        trades = get_last_atomic_trades(symbol=symbol, limit=1000)
-    requests_cnt = 0
 
-    # with trade ids, find start
+    requests_cnt = 1
+
     if start_trade_id and end_trade_id:
+        trades = get_atomic_trades(symbol=symbol, fromId=end_trade_id-999, limit=1000)
+        trade_ids = [i['id'] for i in trades]
+        if not end_trade_id in trade_ids:
+            market_logger.warning(f"Trade id {end_trade_id} not reported by API. Fetching older trades.")
+            end_trade_id = trade_ids[-1]
+            assert end_trade_id >= start_trade_id, f"BinPan Exception: get_historical_atomic_trades: end_trade_id {end_trade_id} " \
+                                                    f"must be greater than start_trade_id {start_trade_id}"
         current_first_trade = trades[0]['id']
         while current_first_trade > start_trade_id:
             requests_cnt += 1
@@ -859,19 +882,39 @@ def get_historical_atomic_trades(symbol: str,
             trades = fetched_older_trades + trades
             current_first_trade = trades[0]['id']
 
-        current_last_trade = trades[-1]['id']
-        while current_last_trade < end_trade_id:
-            requests_cnt += 1
-            market_logger.info(f"Requests to API for atomic trades of {symbol}: {requests_cnt}")
-            fetched_older_trades = get_atomic_trades(symbol=symbol, fromId=current_last_trade, limit=1000)
-            trades = fetched_older_trades + trades
-            current_last_trade = trades[-1]['id']
-
         ret = [i for i in trades if start_trade_id <= i['id'] <= end_trade_id]
         return sorted(ret, key=lambda x: x['id'])
 
+    # if start_trade_id and end_trade_id:
+    #     trades = get_atomic_trades(symbol=symbol, fromId=end_trade_id - 1000, limit=1000)
+    # else:
+    #     trades = get_last_atomic_trades(symbol=symbol, limit=1000)
+    # requests_cnt = 0
+    #
+    # # with trade ids, find start
+    # if start_trade_id and end_trade_id:
+    #     current_first_trade = trades[0]['id']
+    #     while current_first_trade > start_trade_id:
+    #         requests_cnt += 1
+    #         market_logger.info(f"Requests to API for atomic trades of {symbol}: {requests_cnt}")
+    #         fetched_older_trades = get_atomic_trades(symbol=symbol, fromId=(current_first_trade - 1000), limit=1000)
+    #         trades = fetched_older_trades + trades
+    #         current_first_trade = trades[0]['id']
+    #
+    #     current_last_trade = trades[-1]['id']
+    #     while current_last_trade < end_trade_id:
+    #         requests_cnt += 1
+    #         market_logger.info(f"Requests to API for atomic trades of {symbol}: {requests_cnt}")
+    #         fetched_older_trades = get_atomic_trades(symbol=symbol, fromId=current_last_trade, limit=1000)
+    #         trades = fetched_older_trades + trades
+    #         current_last_trade = trades[-1]['id']
+    #
+    #     ret = [i for i in trades if start_trade_id <= i['id'] <= end_trade_id]
+    #     return sorted(ret, key=lambda x: x['id'])
+
     # with timestamps or trade ids
-    if startTime or endTime:
+    elif startTime or endTime:
+        trades = get_last_atomic_trades(symbol=symbol, limit=1000)
         current_first_trade_time = trades[0]['time']
         current_first_trade = trades[0]['id']
 
