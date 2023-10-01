@@ -556,7 +556,11 @@ def get_historical_agg_trades(symbol: str,
     elif end_trade_id and not start_trade_id:
         start_trade_id = end_trade_id - limit
 
-    trades = get_last_agg_trades(symbol=symbol, limit=1000)
+    # trades = get_last_agg_trades(symbol=symbol, limit=1000)
+    if start_trade_id and end_trade_id:
+        trades = get_aggregated_trades(symbol=symbol, fromId=end_trade_id-1000, limit=1000)
+    else:
+        trades = get_last_agg_trades(symbol=symbol, limit=1000)
     requests_cnt = 0
 
     # with trade ids, find start
@@ -794,8 +798,12 @@ def get_atomic_trades(symbol: str,
     return get_semi_signed_request(url=endpoint, decimal_mode=decimal_mode, api_key=api_key, params=query)
 
 
-def get_historical_atomic_trades(symbol: str, startTime: int = None, endTime: int = None, start_trade_id: int = None,
-                                 end_trade_id: int = None, limit: int = 1000) -> List[dict]:
+def get_historical_atomic_trades(symbol: str,
+                                 startTime: int = None,
+                                 endTime: int = None,
+                                 start_trade_id: int = None,
+                                 end_trade_id: int = None,
+                                 limit: int = 1000) -> List[dict]:
     """
     Returns atomic (not aggregated) trades between timestamps. It iterates over limit 1000 intervals to adjust to API limit.
 
@@ -835,7 +843,10 @@ def get_historical_atomic_trades(symbol: str, startTime: int = None, endTime: in
     elif end_trade_id and not start_trade_id:
         start_trade_id = end_trade_id - limit
 
-    trades = get_last_atomic_trades(symbol=symbol, limit=1000)
+    if start_trade_id and end_trade_id:
+        trades = get_atomic_trades(symbol=symbol, fromId=end_trade_id-1000, limit=1000)
+    else:
+        trades = get_last_atomic_trades(symbol=symbol, limit=1000)
     requests_cnt = 0
 
     # with trade ids, find start
