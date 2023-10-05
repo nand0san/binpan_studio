@@ -605,7 +605,7 @@ def get_historical_agg_trades(symbol: str,
 
     # with timestamps or trade ids
     elif not redis_client_trades and (startTime or endTime):
-        trades = get_last_atomic_trades(symbol=symbol, limit=1000)
+        trades = get_last_agg_trades(symbol=symbol, limit=1000)
         current_first_trade_time = trades[0]['T']
         current_first_trade = trades[0]['a']
         # if startTime or endTime:
@@ -863,17 +863,16 @@ def get_historical_atomic_trades(symbol: str,
     elif end_trade_id and not start_trade_id:
         start_trade_id = end_trade_id - limit
 
-
     requests_cnt = 1
 
     if start_trade_id and end_trade_id:
-        trades = get_atomic_trades(symbol=symbol, fromId=end_trade_id-999, limit=1000)
+        trades = get_atomic_trades(symbol=symbol, fromId=end_trade_id - 999, limit=1000)
         trade_ids = [i['id'] for i in trades]
         if not end_trade_id in trade_ids:
             market_logger.warning(f"Trade id {end_trade_id} not reported by API. Fetching older trades.")
             end_trade_id = trade_ids[-1]
             assert end_trade_id >= start_trade_id, f"BinPan Exception: get_historical_atomic_trades: end_trade_id {end_trade_id} " \
-                                                    f"must be greater than start_trade_id {start_trade_id}"
+                                                   f"must be greater than start_trade_id {start_trade_id}"
         current_first_trade = trades[0]['id']
         while current_first_trade > start_trade_id:
             requests_cnt += 1
