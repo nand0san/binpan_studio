@@ -1,5 +1,5 @@
 from time import time
-
+from pandas import to_datetime
 import pandas as pd
 
 from handlers.files import select_file, read_csv_to_dataframe, extract_filename_metadata
@@ -117,14 +117,20 @@ def check_continuity(df: pd.DataFrame):
     """
     Verify if the dataframe has continuity in klines by "Open timestamp" column.
     """
-
     dif = df['Open timestamp'].diff().dropna()  # Drop the NaN value for the first row
 
     try:
         assert len(dif.value_counts()) == 1, "BinPan Exception: Dataframe has gaps in klines continuity."
     except AssertionError:
-        # he añadido lo de pd series y podría fallar v0.5.0
         mask = pd.Series(dif != dif.iloc[0]).reindex(df.index).fillna(False)
         gaps = df.loc[mask, ['Open timestamp', 'Close timestamp']]
+
+        # Convertir los timestamps a un formato más legible
+        gaps['Open timestamp'] = to_datetime(gaps['Open timestamp'], unit='ms')
+        gaps['Close timestamp'] = to_datetime(gaps['Close timestamp'], unit='ms')
+
+        # También hacer lo mismo para 'dif'
+        dif_readable = to_datetime(dif[mask].index, unit='ms')
+
         binpan_logger.warning(f"BinPan Warning: Dataframe has gaps in klines continuity: \n{gaps}")
-        binpan_logger.warning(f"\nTimestamp differences detected: \n{dif[mask]}")
+        binpan_logger.warning(f"\nTimestamp discontinuities detected: \n{dif_readable}")
