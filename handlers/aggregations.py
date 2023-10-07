@@ -200,22 +200,41 @@ def resample_klines(data: pd.DataFrame, tick_interval: str) -> pd.DataFrame:
     assert isinstance(data.index, pd.DatetimeIndex), "The index must be a DatetimeIndex."
     df = data.copy(deep=True)
     interval = pandas_freq_tick_interval[tick_interval]
-    df_resampled = df.resample(interval).agg({
-        'Open time': 'first',
-        'Open': 'first',
-        'High': 'max',
-        'Low': 'min',
-        'Close': 'last',
-        'Volume': 'sum',
-        'Close time': 'last',
-        'Quote volume': 'sum',
-        'Trades': 'sum',
-        'Taker buy base volume': 'sum',
-        'Taker buy quote volume': 'sum',
-        'Ignore': 'last',
-        'Open timestamp': 'first',
-        'Close timestamp': 'last'
-    })
+
+    if "Ignore" in df.columns:
+        df_resampled = df.resample(interval).agg({
+            'Open time': 'first',
+            'Open': 'first',
+            'High': 'max',
+            'Low': 'min',
+            'Close': 'last',
+            'Volume': 'sum',
+            'Close time': 'last',
+            'Quote volume': 'sum',
+            'Trades': 'sum',
+            'Taker buy base volume': 'sum',
+            'Taker buy quote volume': 'sum',
+            'Ignore': 'last',
+            'Open timestamp': 'first',
+            'Close timestamp': 'last'
+        })
+    else:
+        df_resampled = df.resample(interval).agg({
+            'Open time': 'first',
+            'Open': 'first',
+            'High': 'max',
+            'Low': 'min',
+            'Close': 'last',
+            'Volume': 'sum',
+            'Close time': 'last',
+            'Quote volume': 'sum',
+            'Trades': 'sum',
+            'Taker buy base volume': 'sum',
+            'Taker buy quote volume': 'sum',
+            # 'Ignore': 'last',
+            'Open timestamp': 'first',
+            'Close timestamp': 'last'
+        })
     new_name_split = str(data.index.name).split()
     new_name_split[1] = tick_interval
     df_resampled.index.name = ' '.join(new_name_split)
