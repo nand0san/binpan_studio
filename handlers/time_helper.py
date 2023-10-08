@@ -417,3 +417,15 @@ def remove_initial_included_ranges(time_ranges, initial_minutes) -> List[tuple]:
             continue
         modified_time_ranges.append((start_time, end_time))
     return modified_time_ranges
+
+
+def adjust_timestamp_unit_nano_or_ms(ts):
+    # Contar el número de dígitos
+    num_digits = len(str(ts))
+
+    # Si está en milisegundos, convertir a nanosegundos
+    if num_digits <= 13:
+        ts *= 1_000_000
+
+    return ts
+

@@ -1,3 +1,8 @@
+stream_uniqueness_id_in_timescale = {'aggTrade': 'trade_id',
+                                     'trade': 'trade_id',
+                                     'kline': 'time',
+                                     'statistics': 'time'}
+
 ########################
 # BINPAN PRESENTATIONS #
 ########################
@@ -81,12 +86,12 @@ agg_quantity_col = trade_quantity_col
 agg_first_trade_id_col = 'First tradeId'
 agg_last_trade_id_col = 'Last tradeId'
 agg_date_col = trade_date_col
-agg_timestamp_col = trade_time_col
+agg_time_col = trade_time_col
 agg_buyer_was_maker_col = trade_buyer_was_maker_col
 agg_best_price_match_col = trade_best_price_match_col
 
 binance_api_agg_trade_cols = [agg_trade_id_col, agg_trade_price_col, agg_quantity_col, agg_first_trade_id_col,
-                              agg_last_trade_id_col, agg_date_col, agg_timestamp_col, agg_buyer_was_maker_col,
+                              agg_last_trade_id_col, agg_date_col, agg_time_col, agg_buyer_was_maker_col,
                               agg_best_price_match_col]
 postgresql_agg_trade_cols = None
 
@@ -171,3 +176,41 @@ postgresql_response_cols_by_type = {'kline': [kline_open_time_col,
 postgresql_presentation_type_columns_dict = {'kline': postgresql_candles_ordered_cols,
                                              'trade': postgresql_trades_cols,
                                              'aggTrade': postgresql_agg_trade_cols}
+
+# FROM POSTGRESQL TO BINPAN
+
+postgresql2binpan_renamer_dict = {"kline": {"time": kline_open_time_col,
+                                            "open": kline_open_col,
+                                            "high": kline_high_col,
+                                            "low": kline_low_col,
+                                            "close": kline_close_col,
+                                            "volume": kline_volume_col,
+                                            "close_timestamp": kline_close_timestamp_col,
+                                            "quote_volume": kline_quote_volume_col,
+                                            "trades": kline_trades_col,
+                                            "taker_buy_base_volume": kline_taker_buy_base_volume_col,
+                                            "taker_buy_quote_volume": kline_taker_buy_quote_volume_col,
+                                            "first_trade_id": kline_first_trade_id_col,
+                                            "last_trade_id": kline_last_trade_id_col,
+                                            "open_timestamp": kline_open_timestamp_col,
+                                            "ignore": kline_ignore_col},
+                                  "trade": {"trade_id": trade_trade_id_col,
+                                            "price": trade_price_col,
+                                            "quantity": trade_quantity_col,
+                                            "quote_quantity": trade_quote_quantity_col,
+                                            "date": trade_date_col,
+                                            "buyer_order_id": trade_buyer_order_id_col,
+                                            "seller_order_id": trade_seller_order_id_col,
+                                            "time": trade_time_col,
+                                            "buyer_was_maker": trade_buyer_was_maker_col,
+                                            "best_price_match": trade_best_price_match_col},
+                                  "aggTrade": {"aggregate_trade_id": agg_trade_id_col,
+                                               "price": agg_trade_price_col,
+                                               "quantity": agg_quantity_col,
+                                               "first_trade_id": agg_first_trade_id_col,
+                                               "last_trade_id": agg_last_trade_id_col,
+                                               "date": agg_date_col,
+                                               "time": agg_time_col,
+                                               "buyer_was_maker": agg_buyer_was_maker_col,
+                                               "best_price_match": agg_best_price_match_col}
+                                  }

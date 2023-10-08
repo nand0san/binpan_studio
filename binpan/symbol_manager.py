@@ -926,7 +926,7 @@ class Symbol(object):
         start, end = self.get_timestamps()
         ret_start = convert_milliseconds_to_str(ms=start, timezoned=self.time_zone)
         ret_end = convert_milliseconds_to_str(ms=end, timezoned=self.time_zone)
-        binpan_logger.info(f"From first Open date {ret_start} to last Open date {ret_end}")
+        binpan_logger.debug(f"From first Open date {ret_start} to last Open date {ret_end}")
         return ret_start, ret_end
 
     def get_agg_trades(self,
