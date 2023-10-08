@@ -188,20 +188,21 @@ def get_candles_by_time_stamps(symbol: str,
 
         raw_candles += response
 
-    if not raw_candles:
+    if not raw_candles:  # fixme: esto da error
         msg = f"BinPan Exception: Requested data for {symbol.lower()}@kline_{tick_interval} between {start_string} and " \
-              f"{end_string} missing in redis server."
+              f"{end_string} missing in API."
         market_logger.error(msg)
-        raise Exception(msg)
+        return []
+        # raise Exception(msg)
 
     # descarta sobrantes
     overtime_candle_ts = next_open_by_milliseconds(ms=end_time, tick_interval=tick_interval)
-    if raw_candles:
-        if type(raw_candles[0]) == list:  # if from binance
-            raw_candles = [i for i in raw_candles if int(i[0]) < overtime_candle_ts]
-        else:
-            open_ts_key = list(raw_candles[0].keys())[0]
-            raw_candles = [i for i in raw_candles if int(i[open_ts_key]) < overtime_candle_ts]
+    # if raw_candles:
+    if type(raw_candles[0]) == list:  # if from binance
+        raw_candles = [i for i in raw_candles if int(i[0]) < overtime_candle_ts]
+    else:
+        open_ts_key = list(raw_candles[0].keys())[0]
+        raw_candles = [i for i in raw_candles if int(i[open_ts_key]) < overtime_candle_ts]
 
     return raw_candles
 
