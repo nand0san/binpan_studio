@@ -125,11 +125,36 @@ html.dark {
     <h3>On this page</h3>
     <ul>
 <li><a class="reference internal" href="#handlers.postgresql.setup"><code class="docutils literal notranslate"><span class="pre">setup()</span></code></a></li>
-<li><a class="reference internal" href="#handlers.postgresql.create_connection"><code class="docutils literal notranslate"><span class="pre">create_connection()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.postgresql.is_cursor_alive"><code class="docutils literal notranslate"><span class="pre">is_cursor_alive()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.postgresql.data_type_from_table"><code class="docutils literal notranslate"><span class="pre">data_type_from_table()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.postgresql.get_valid_table_list"><code class="docutils literal notranslate"><span class="pre">get_valid_table_list()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.postgresql.sanitize_table_name"><code class="docutils literal notranslate"><span class="pre">sanitize_table_name()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.postgresql.get_data_and_parse"><code class="docutils literal notranslate"><span class="pre">get_data_and_parse()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.postgresql.create_connection"><code class="docutils literal notranslate"><span class="pre">create_connection()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.postgresql.close_connection"><code class="docutils literal notranslate"><span class="pre">close_connection()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.postgresql.create_database"><code class="docutils literal notranslate"><span class="pre">create_database()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.postgresql.list_tables_with_suffix"><code class="docutils literal notranslate"><span class="pre">list_tables_with_suffix()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.postgresql.check_standard_table_exists"><code class="docutils literal notranslate"><span class="pre">check_standard_table_exists()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.postgresql.is_hypertable"><code class="docutils literal notranslate"><span class="pre">is_hypertable()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.postgresql.get_column_names"><code class="docutils literal notranslate"><span class="pre">get_column_names()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.postgresql.get_indexed_columns"><code class="docutils literal notranslate"><span class="pre">get_indexed_columns()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.postgresql.get_hypertable_indexes"><code class="docutils literal notranslate"><span class="pre">get_hypertable_indexes()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.postgresql.add_index_to_hypertable"><code class="docutils literal notranslate"><span class="pre">add_index_to_hypertable()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.postgresql.check_index_exists"><code class="docutils literal notranslate"><span class="pre">check_index_exists()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.postgresql.create_hypertable_from_sample"><code class="docutils literal notranslate"><span class="pre">create_hypertable_from_sample()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.postgresql.create_table_and_hypertable_from_sample_old"><code class="docutils literal notranslate"><span class="pre">create_table_and_hypertable_from_sample_old()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.postgresql.create_simple_table"><code class="docutils literal notranslate"><span class="pre">create_simple_table()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.postgresql.convert_to_hypertable"><code class="docutils literal notranslate"><span class="pre">convert_to_hypertable()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.postgresql.fetch_hypertable"><code class="docutils literal notranslate"><span class="pre">fetch_hypertable()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.postgresql.delete_record"><code class="docutils literal notranslate"><span class="pre">delete_record()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.postgresql.delete_table"><code class="docutils literal notranslate"><span class="pre">delete_table()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.postgresql.delete_bulk_tables"><code class="docutils literal notranslate"><span class="pre">delete_bulk_tables()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.postgresql.create_table_and_hypertable_from_sample_old2"><code class="docutils literal notranslate"><span class="pre">create_table_and_hypertable_from_sample_old2()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.postgresql.infer_sql_type"><code class="docutils literal notranslate"><span class="pre">infer_sql_type()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.postgresql.flexible_tables_and_data_insert"><code class="docutils literal notranslate"><span class="pre">flexible_tables_and_data_insert()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.postgresql.data_type_table"><code class="docutils literal notranslate"><span class="pre">data_type_table()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.postgresql.insert_data"><code class="docutils literal notranslate"><span class="pre">insert_data()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.postgresql.delete_dupes"><code class="docutils literal notranslate"><span class="pre">delete_dupes()</span></code></a></li>
 </ul>
 
   </div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div>
@@ -173,8 +198,8 @@ html.dark {
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.postgresql.setup" title="handlers.postgresql.setup"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setup</span></code></a>(symbol, tick_interval, ...[, ...])</p></td>
 <td><p>Setups the connection to the PostgreSQL database.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.postgresql.create_connection" title="handlers.postgresql.create_connection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_connection</span></code></a>(user, enc_password, host, ...)</p></td>
-<td><p>Creates a connection to the PostgreSQL database.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.postgresql.is_cursor_alive" title="handlers.postgresql.is_cursor_alive"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_cursor_alive</span></code></a>(cursor)</p></td>
+<td><p>Verifica si un cursor de PostgreSQL está activo y en buen estado.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.postgresql.data_type_from_table" title="handlers.postgresql.data_type_from_table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">data_type_from_table</span></code></a>(table)</p></td>
 <td><p>Gets data type from table names: &quot;trade&quot;, &quot;aggTrade&quot;, &quot;depthX&quot;, &quot;depth&quot;, &quot;bookTicker&quot; or &quot;kline&quot;.</p></td>
@@ -187,6 +212,81 @@ html.dark {
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.postgresql.get_data_and_parse" title="handlers.postgresql.get_data_and_parse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_data_and_parse</span></code></a>(cursor, table, symbol, ...)</p></td>
 <td><p>Gets data from a table in the database and parses it to a dataframe.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.postgresql.create_connection" title="handlers.postgresql.create_connection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_connection</span></code></a>(user, enc_password, host, ...)</p></td>
+<td><p>Crea una conexión a la base de datos PostgreSQL.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.postgresql.close_connection" title="handlers.postgresql.close_connection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">close_connection</span></code></a>(connection, cursor)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.postgresql.create_database" title="handlers.postgresql.create_database"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_database</span></code></a>(cursor, db_name)</p></td>
+<td><p>Crea una nueva base de datos en PostgreSQL.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.postgresql.list_tables_with_suffix" title="handlers.postgresql.list_tables_with_suffix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list_tables_with_suffix</span></code></a>(cursor[, suffix])</p></td>
+<td><p>Retorna una lista con los nombres de las tablas que terminan con el sufijo especificado.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.postgresql.check_standard_table_exists" title="handlers.postgresql.check_standard_table_exists"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_standard_table_exists</span></code></a>(cursor, table_name)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.postgresql.is_hypertable" title="handlers.postgresql.is_hypertable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_hypertable</span></code></a>(cursor, table_name)</p></td>
+<td><p>Si la tabla no es hypertable, retorna True.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.postgresql.get_column_names" title="handlers.postgresql.get_column_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_column_names</span></code></a>(cursor, table_name)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.postgresql.get_indexed_columns" title="handlers.postgresql.get_indexed_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_indexed_columns</span></code></a>(cursor, table_name)</p></td>
+<td><p>No tengo muy claro la respuesta tan extendida de campos que da esta consulta.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.postgresql.get_hypertable_indexes" title="handlers.postgresql.get_hypertable_indexes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_hypertable_indexes</span></code></a>(cursor, hypertable_name)</p></td>
+<td><p>Return example:</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.postgresql.add_index_to_hypertable" title="handlers.postgresql.add_index_to_hypertable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_index_to_hypertable</span></code></a>(cursor, ...[, ...])</p></td>
+<td><p>Añade un índice a una hypertable en TimescaleDB.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.postgresql.check_index_exists" title="handlers.postgresql.check_index_exists"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_index_exists</span></code></a>(cursor, table_name, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.postgresql.create_hypertable_from_sample" title="handlers.postgresql.create_hypertable_from_sample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_hypertable_from_sample</span></code></a>(cursor, ...[, ...])</p></td>
+<td><p>Crea una tabla y la convierte en hypertable.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.postgresql.create_table_and_hypertable_from_sample_old" title="handlers.postgresql.create_table_and_hypertable_from_sample_old"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_table_and_hypertable_from_sample_old</span></code></a>(...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.postgresql.create_simple_table" title="handlers.postgresql.create_simple_table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_simple_table</span></code></a>(cursor, table_name, columns)</p></td>
+<td><p>Create a simple table in PostgreSQL.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.postgresql.convert_to_hypertable" title="handlers.postgresql.convert_to_hypertable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_to_hypertable</span></code></a>(cursor, table_name[, ...])</p></td>
+<td><p>Convierte una tabla en una hypertable.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.postgresql.fetch_hypertable" title="handlers.postgresql.fetch_hypertable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fetch_hypertable</span></code></a>(cursor, table[, startime, ...])</p></td>
+<td><p>Retorna una lista con los datos de integridad, es decir, trades o klines.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.postgresql.delete_record" title="handlers.postgresql.delete_record"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delete_record</span></code></a>(cursor, table_name, ...[, ...])</p></td>
+<td><p>Elimina registros de una hipertabla en TimescaleDB donde un campo específico coincide con un valor específico.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.postgresql.delete_table" title="handlers.postgresql.delete_table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delete_table</span></code></a>(cursor, table_name[, schema])</p></td>
+<td><p>Elimina una tabla de la base de datos a la que está conectado el cursor.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.postgresql.delete_bulk_tables" title="handlers.postgresql.delete_bulk_tables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delete_bulk_tables</span></code></a>(cursor, tables)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.postgresql.create_table_and_hypertable_from_sample_old2" title="handlers.postgresql.create_table_and_hypertable_from_sample_old2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_table_and_hypertable_from_sample_old2</span></code></a>(...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.postgresql.infer_sql_type" title="handlers.postgresql.infer_sql_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">infer_sql_type</span></code></a>(value, key[, time_col])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.postgresql.flexible_tables_and_data_insert" title="handlers.postgresql.flexible_tables_and_data_insert"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flexible_tables_and_data_insert</span></code></a>(cursor, ...)</p></td>
+<td><p>Review the tables in the parsed_dict and create them if they don't exist.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.postgresql.data_type_table" title="handlers.postgresql.data_type_table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">data_type_table</span></code></a>(table_name)</p></td>
+<td><p>Obtiene el tipo de datos de la tabla de su nombre.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.postgresql.insert_data" title="handlers.postgresql.insert_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert_data</span></code></a>(cursor, table, data)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.postgresql.delete_dupes" title="handlers.postgresql.delete_dupes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delete_dupes</span></code></a>(cursor, table, dupes, column, ...)</p></td>
+<td><p>Delete a dupe by continuity column.</p></td>
 </tr>
 </tbody>
 </table>
@@ -216,23 +316,13 @@ html.dark {
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="handlers.postgresql.create_connection">
-<span class="sig-prename descclassname"><span class="pre">handlers.postgresql.</span></span><span class="sig-name descname"><span class="pre">create_connection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enc_password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">database</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">connection</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">cursor</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#handlers.postgresql.create_connection" title="Link to this definition">¶</a></dt>
-<dd><p>Creates a connection to the PostgreSQL database.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>user</strong> – User name</p></li>
-<li><p><strong>enc_password</strong> – Encrypted password.</p></li>
-<li><p><strong>host</strong> – Host name or ip address</p></li>
-<li><p><strong>port</strong> – Port number</p></li>
-<li><p><strong>database</strong> – Name of the database</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Returns a connection and a cursor to the database</p>
-</dd>
-</dl>
+<dt class="sig sig-object py" id="handlers.postgresql.is_cursor_alive">
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql.</span></span><span class="sig-name descname"><span class="pre">is_cursor_alive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.postgresql.is_cursor_alive" title="Link to this definition">¶</a></dt>
+<dd><p>Verifica si un cursor de PostgreSQL está activo y en buen estado.</p>
+<p>Parámetros:
+- cursor: Cursor de la conexión a la base de datos PostgreSQL.</p>
+<p>Retorna:
+- True si el cursor está en buen estado, False en caso contrario.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -296,6 +386,355 @@ html.dark {
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A dataframe with the data and pertinent columns.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.postgresql.create_connection">
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql.</span></span><span class="sig-name descname"><span class="pre">create_connection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enc_password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">database</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">connection</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">cursor</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#handlers.postgresql.create_connection" title="Link to this definition">¶</a></dt>
+<dd><p>Crea una conexión a la base de datos PostgreSQL.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>user</strong> – Nombre de usuario</p></li>
+<li><p><strong>enc_password</strong> – Contraseña cifrada.</p></li>
+<li><p><strong>host</strong> – Nombre del host o dirección IP</p></li>
+<li><p><strong>port</strong> – Número de puerto</p></li>
+<li><p><strong>database</strong> – Nombre de la base de datos</p></li>
+<li><p><strong>timeout</strong> – Tiempo de espera en segundos</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Devuelve una conexión y un cursor a la base de datos</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.postgresql.close_connection">
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql.</span></span><span class="sig-name descname"><span class="pre">close_connection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.postgresql.close_connection" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.postgresql.create_database">
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql.</span></span><span class="sig-name descname"><span class="pre">create_database</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.postgresql.create_database" title="Link to this definition">¶</a></dt>
+<dd><p>Crea una nueva base de datos en PostgreSQL.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cursor</strong> – Cursor de psycopg2 a la base de datos.</p></li>
+<li><p><strong>db_name</strong> – Nombre de la base de datos a crear.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.postgresql.list_tables_with_suffix">
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql.</span></span><span class="sig-name descname"><span class="pre">list_tables_with_suffix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.postgresql.list_tables_with_suffix" title="Link to this definition">¶</a></dt>
+<dd><p>Retorna una lista con los nombres de las tablas que terminan con el sufijo especificado.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cursor</strong> – Un cursor de psycopg2 conectado a la base de datos.</p></li>
+<li><p><strong>suffix</strong> – Opcional. Sufijo de las tablas a buscar. Ejemplo: “_trade”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Una lista con los nombres de las tablas que terminan con el sufijo especificado.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.postgresql.check_standard_table_exists">
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql.</span></span><span class="sig-name descname"><span class="pre">check_standard_table_exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.postgresql.check_standard_table_exists" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.postgresql.is_hypertable">
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql.</span></span><span class="sig-name descname"><span class="pre">is_hypertable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.postgresql.is_hypertable" title="Link to this definition">¶</a></dt>
+<dd><p>Si la tabla no es hypertable, retorna True. Si no es hypertable o no existe retorna False.
+:param cursor:
+:param table_name:
+:return:</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.postgresql.get_column_names">
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql.</span></span><span class="sig-name descname"><span class="pre">get_column_names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.postgresql.get_column_names" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.postgresql.get_indexed_columns">
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql.</span></span><span class="sig-name descname"><span class="pre">get_indexed_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.postgresql.get_indexed_columns" title="Link to this definition">¶</a></dt>
+<dd><p>No tengo muy claro la respuesta tan extendida de campos que da esta consulta.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cursor</strong> – Un cursor de psycopg2 conectado a la base de datos.</p></li>
+<li><p><strong>table_name</strong> – Nombre de la tabla.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Una lista con los nombres de las columnas indexadas.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.postgresql.get_hypertable_indexes">
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql.</span></span><span class="sig-name descname"><span class="pre">get_hypertable_indexes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hypertable_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schema_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'public'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.postgresql.get_hypertable_indexes" title="Link to this definition">¶</a></dt>
+<dd><p>Return example:</p>
+<blockquote>
+<div></div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cursor</strong> – A psycopg2 cursor connected to the database.</p></li>
+<li><p><strong>hypertable_name</strong> – Name of the hypertable.</p></li>
+<li><p><strong>schema_name</strong> – Name of the schema. Default is ‘public’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of tuples with the index name and the index definition.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.postgresql.add_index_to_hypertable">
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql.</span></span><span class="sig-name descname"><span class="pre">add_index_to_hypertable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hypertable_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.postgresql.add_index_to_hypertable" title="Link to this definition">¶</a></dt>
+<dd><p>Añade un índice a una hypertable en TimescaleDB.</p>
+<p>Ejemplo:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="n">add_index_to_hypertable</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="s2">&quot;simple_table&quot;</span><span class="p">,</span> <span class="n">column_name</span><span class="o">=</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="n">index_name</span><span class="o">=</span><span class="s2">&quot;pepe&quot;</span><span class="p">)</span>
+</span><span id="1-2">
+</span><span id="1-3"><span class="p">[(</span><span class="s1">&#39;simple_table_time_idx&#39;</span><span class="p">,</span>
+</span><span id="1-4">  <span class="s1">&#39;CREATE INDEX simple_table_time_idx ON public.simple_table USING btree (&quot;time&quot; DESC)&#39;</span><span class="p">),</span>
+</span><span id="1-5"> <span class="p">(</span><span class="s1">&#39;pepe&#39;</span><span class="p">,</span> <span class="s1">&#39;CREATE INDEX pepe ON public.simple_table USING btree (&quot;time&quot;)&#39;</span><span class="p">)]</span>
+</span></pre></div>
+</div>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cursor</strong> – Un cursor de psycopg2 conectado a la base de datos.</p></li>
+<li><p><strong>hypertable_name</strong> – Nombre de la hypertable.</p></li>
+<li><p><strong>column_name</strong> – Nombre de la columna a la que se añadirá el índice.</p></li>
+<li><p><strong>index_name</strong> – Nombre opcional para el nuevo índice. Si no se proporciona, se generará automáticamente.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Retorna True si la operación fue exitosa, False en caso contrario.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.postgresql.check_index_exists">
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql.</span></span><span class="sig-name descname"><span class="pre">check_index_exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.postgresql.check_index_exists" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.postgresql.create_hypertable_from_sample">
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql.</span></span><span class="sig-name descname"><span class="pre">create_hypertable_from_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_by</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#handlers.postgresql.create_hypertable_from_sample" title="Link to this definition">¶</a></dt>
+<dd><p>Crea una tabla y la convierte en hypertable. Si la tabla ya existe, no hace nada.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cursor</strong> – Cursor de la conexión a la base de datos.</p></li>
+<li><p><strong>table_name</strong> – Tabla a crear.</p></li>
+<li><p><strong>sample_dict</strong> – <p>Este es un diccionario que contiene los nombres de las columnas y un valor de ejemplo para cada una. Por ejemplo,
+si la tabla tiene las columnas “id”, “name” y “age”, el diccionario debe ser así:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="n">sample_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+</span><span id="1-2">               <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;John&quot;</span><span class="p">,</span>
+</span><span id="1-3">               <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
+</span><span id="1-4">               <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="n">time</span><span class="p">()</span><span class="o">*</span><span class="mi">1000</span><span class="p">}</span>
+</span></pre></div>
+</div>
+</p></li>
+<li><p><strong>time_column</strong> – Columna de tiempo. Esta columna debe existir en la tabla y debe ser de tipo timestamp no nulo.</p></li>
+<li><p><strong>index_by</strong> – Optional. Nombre de la columna por la que se creará un índice adicional.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Retorna True si la tabla se creó y se convirtió en hypertable, False en caso contrario.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.postgresql.create_table_and_hypertable_from_sample_old">
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql.</span></span><span class="sig-name descname"><span class="pre">create_table_and_hypertable_from_sample_old</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_by</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#handlers.postgresql.create_table_and_hypertable_from_sample_old" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.postgresql.create_simple_table">
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql.</span></span><span class="sig-name descname"><span class="pre">create_simple_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.postgresql.create_simple_table" title="Link to this definition">¶</a></dt>
+<dd><p>Create a simple table in PostgreSQL.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cursor</strong> – A psycopg2 cursor connected to the database.</p></li>
+<li><p><strong>table_name</strong> – Name of the new table.</p></li>
+<li><p><strong>columns</strong> – List of tuples describing the columns. Each tuple must have the column name and the data type (e.g.
+[(“id”, “SERIAL PRIMARY KEY”), (“name”, “VARCHAR(50)”)]).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.postgresql.convert_to_hypertable">
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql.</span></span><span class="sig-name descname"><span class="pre">convert_to_hypertable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'time'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunk_time_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1</span> <span class="pre">day'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.postgresql.convert_to_hypertable" title="Link to this definition">¶</a></dt>
+<dd><p>Convierte una tabla en una hypertable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cursor</strong> – Cursor de la conexión a la base de datos.</p></li>
+<li><p><strong>table_name</strong> – Nombre de la tabla a convertir.</p></li>
+<li><p><strong>time_column</strong> – Columna de tiempo. Esta columna debe existir en la tabla y debe ser de tipo timestamp no nulo.</p></li>
+<li><p><strong>chunk_time_interval</strong> – <p>Especifica el tamaño de los chunks. Por defecto es 1 semana. Un chunk es un grupo de
+registros que se almacenan juntos en disco. Los chunks se crean automáticamente. Opciones válidas:</p>
+<blockquote>
+<div><ul>
+<li><p>’1 week’</p></li>
+<li><p>’1 month’</p></li>
+<li><p>’1 year’</p></li>
+<li><p>’1 day’</p></li>
+</ul>
+</div></blockquote>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Retorna True si la tabla se convirtió en hypertable, False en caso contrario.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.postgresql.fetch_hypertable">
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql.</span></span><span class="sig-name descname"><span class="pre">fetch_hypertable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endtime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#handlers.postgresql.fetch_hypertable" title="Link to this definition">¶</a></dt>
+<dd><p>Retorna una lista con los datos de integridad, es decir, trades o klines. Obtenidos de la tabla.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cursor</strong> – Un cursor de psycopg2 conectado a la base de datos.</p></li>
+<li><p><strong>table</strong> – Nombre de la tabla.</p></li>
+<li><p><strong>startime</strong> – Una marca de tiempo en milisegundos. Si no se especifica, se obtienen usará el primer registro.</p></li>
+<li><p><strong>endtime</strong> – Una marca de tiempo en milisegundos. Si no se especifica, se obtendrá hasta el último registro.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.postgresql.delete_record">
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql.</span></span><span class="sig-name descname"><span class="pre">delete_record</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_timestamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.postgresql.delete_record" title="Link to this definition">¶</a></dt>
+<dd><p>Elimina registros de una hipertabla en TimescaleDB donde un campo específico coincide con un valor específico.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cursor</strong> – Cursor de psycopg2 a la base de datos.</p></li>
+<li><p><strong>table_name</strong> – Nombre de la hipertabla.</p></li>
+<li><p><strong>field_name</strong> – Nombre del campo que se va a comparar.</p></li>
+<li><p><strong>value</strong> – Valor que se busca para eliminar.</p></li>
+<li><p><strong>is_timestamp</strong> – Si es True, convierte el valor de milisegundos a TIMESTAMPZ.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.postgresql.delete_table">
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql.</span></span><span class="sig-name descname"><span class="pre">delete_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'public'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.postgresql.delete_table" title="Link to this definition">¶</a></dt>
+<dd><p>Elimina una tabla de la base de datos a la que está conectado el cursor. También elimina la hypertable si existe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cursor</strong> – Un cursor de psycopg2 conectado a la base de datos.</p></li>
+<li><p><strong>table_name</strong> – Nombre de la tabla a eliminar.</p></li>
+<li><p><strong>schema</strong> – Esquema de la tabla.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Retorna True si la tabla se eliminó correctamente, False en caso contrario.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.postgresql.delete_bulk_tables">
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql.</span></span><span class="sig-name descname"><span class="pre">delete_bulk_tables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tables</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.postgresql.delete_bulk_tables" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.postgresql.create_table_and_hypertable_from_sample_old2">
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql.</span></span><span class="sig-name descname"><span class="pre">create_table_and_hypertable_from_sample_old2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_by</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#handlers.postgresql.create_table_and_hypertable_from_sample_old2" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.postgresql.infer_sql_type">
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql.</span></span><span class="sig-name descname"><span class="pre">infer_sql_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'time'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.postgresql.infer_sql_type" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.postgresql.flexible_tables_and_data_insert">
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql.</span></span><span class="sig-name descname"><span class="pre">flexible_tables_and_data_insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parsed_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verified_tables</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.postgresql.flexible_tables_and_data_insert" title="Link to this definition">¶</a></dt>
+<dd><p>Review the tables in the parsed_dict and create them if they don’t exist. Then insert the data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cursor</strong> – A psycopg2 cursor connected to the database.</p></li>
+<li><p><strong>parsed_dict</strong> – A dictionary with the parsed data.</p></li>
+<li><p><strong>verified_tables</strong> – Optional. A list with the names of the tables that have been verified.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.postgresql.data_type_table">
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql.</span></span><span class="sig-name descname"><span class="pre">data_type_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.postgresql.data_type_table" title="Link to this definition">¶</a></dt>
+<dd><p>Obtiene el tipo de datos de la tabla de su nombre.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>table_name</strong> – El nombre de la tabla.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tipo de canal websockets.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.postgresql.insert_data">
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql.</span></span><span class="sig-name descname"><span class="pre">insert_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.postgresql.insert_data" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.postgresql.delete_dupes">
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql.</span></span><span class="sig-name descname"><span class="pre">delete_dupes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dupes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_timestamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_errors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.postgresql.delete_dupes" title="Link to this definition">¶</a></dt>
+<dd><p>Delete a dupe by continuity column.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cursor</strong> – A psycopg2 cursor connected to the database.</p></li>
+<li><p><strong>table</strong> – The name of the table.</p></li>
+<li><p><strong>dupes</strong> – A list with the values of the dupe.</p></li>
+<li><p><strong>column</strong> – The name of the continuity column.</p></li>
+<li><p><strong>is_timestamp</strong> – If True, convert the values to timestamp.</p></li>
+<li><p><strong>ignore_errors</strong> – If True, ignore errors.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
 </dd>
 </dl>
 </dd></dl>

@@ -3,7 +3,7 @@
 This is the main classes file.
 
 """
-__version__ = "0.5.13"
+__version__ = "0.5.2"
 
 import os
 from sys import path
@@ -156,6 +156,18 @@ class Symbol(object):
     :param int display_columns:     Number of columns in the dataframe display. Convenient to adjust in jupyter notebooks.
     :param int display_max_rows:        Number of rows in the dataframe display. Convenient to adjust in jupyter notebooks.
     :param int display_width:       Display width in the dataframe display. Convenient to adjust in jupyter notebooks.
+    :param int display_min_rows:        Number of rows in the dataframe display. Convenient to adjust in jupyter notebooks.
+    :param bool or str postgres_klines:    If True, gets data from a postgres database by selecting interactively from tables found.
+        Also a string with table name can be used. If str passed, it will be used as host.
+    :param bool postgres_agg_trades:    If True, gets data from a postgres database by selecting interactively from tables found.
+        Also a string with table name can be used. If str passed, it will be used as host.
+    :param bool postgres_atomic_trades:    If True, gets data from a postgres database by selecting interactively from tables found.
+        Also a string with table name can be used. If str passed, it will be used as host.
+    :param int hours:    If hours is passed, it gets the candles from the last hours.
+    :param bool from_csv:    If True, gets data from a csv file by selecting interactively from csv files found.
+        Also a string with filename can be used.
+    :param dict info_dic:               Sometimes, for iterative processes, info_dic can be passed to avoid calling API for it. Its
+        weight is heavy.
     :param bool or str from_csv:    If True, gets data from a csv file by selecting interactively from csv files found.
      Also a string with filename can be used.
     :param dict info_dic:               Sometimes, for iterative processes, info_dic can be passed to avoid calling API for it. Its
@@ -199,9 +211,9 @@ class Symbol(object):
                  time_zone: str = 'Europe/Madrid',
                  closed: bool = True,
                  hours: int = None,
-                 postgres_klines: bool = False,
-                 postgres_agg_trades: bool = False,
-                 postgres_atomic_trades: bool = False,
+                 postgres_klines: bool or str = False,
+                 postgres_agg_trades: bool or str = False,
+                 postgres_atomic_trades: bool or str = False,
                  display_columns: int = 25,
                  display_max_rows: int = 10,
                  display_min_rows: int = 25,
@@ -275,10 +287,13 @@ class Symbol(object):
         if postgres_klines or postgres_agg_trades or postgres_atomic_trades:
 
             import handlers.postgresql as postgresql
-            from secret import (postgresql_port, postgresql_user, postgresql_database, postgresql_host_klines, postgresql_host_aggTrades,
-                                postgresql_host_trades)
+            from secret import (postgresql_port, postgresql_user, postgresql_database)
 
             if postgres_klines:
+                if type(postgres_klines) == str:
+                    postgresql_host_klines = postgres_klines
+                else:
+                    from secret import postgresql_host_klines
                 self.connection_klines, self.cursor_klines = postgresql.setup(symbol=self.symbol,
                                                                               tick_interval=self.tick_interval,
                                                                               postgresql_host=postgresql_host_klines,
@@ -289,6 +304,10 @@ class Symbol(object):
                                                                               postgres_atomic_trades=False,
                                                                               postgresql_port=postgresql_port)
             if postgres_agg_trades:
+                if type(postgres_agg_trades) == str:
+                    postgresql_host_aggTrades = postgres_klines
+                else:
+                    from secret import postgresql_host_aggTrades
                 self.connection_agg_trades, self.cursor_agg_trades = postgresql.setup(symbol=self.symbol,
                                                                                       tick_interval=self.tick_interval,
                                                                                       postgresql_host=postgresql_host_aggTrades,
@@ -299,6 +318,10 @@ class Symbol(object):
                                                                                       postgres_atomic_trades=False,
                                                                                       postgresql_port=postgresql_port)
             if postgres_atomic_trades:
+                if type(postgres_atomic_trades) == str:
+                    postgresql_host_trades = postgres_klines
+                else:
+                    from secret import postgresql_host_trades
                 self.connection_atomic_trades, self.cursor_atomic_trades = postgresql.setup(symbol=self.symbol,
                                                                                             tick_interval=self.tick_interval,
                                                                                             postgresql_host=postgresql_host_trades,
@@ -310,6 +333,7 @@ class Symbol(object):
                                                                                             postgresql_port=postgresql_port)
         else:
             self.connection_klines, self.cursor_klines = None, None
+
         self.postgres_klines = postgres_klines
         self.postgres_agg_trades = postgres_agg_trades
         self.postgres_atomic_trades = postgres_atomic_trades
@@ -902,7 +926,7 @@ class Symbol(object):
         start, end = self.get_timestamps()
         ret_start = convert_milliseconds_to_str(ms=start, timezoned=self.time_zone)
         ret_end = convert_milliseconds_to_str(ms=end, timezoned=self.time_zone)
-        binpan_logger.info(f"From first Open date {ret_start} to last Open date {ret_end}")
+        binpan_logger.debug(f"From first Open date {ret_start} to last Open date {ret_end}")
         return ret_start, ret_end
 
     def get_agg_trades(self,
