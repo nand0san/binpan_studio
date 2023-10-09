@@ -435,7 +435,7 @@ def convert_dict_to_numeric(input_dict: dict, parse_datetime2int: bool) -> dict:
                 output_dict[key] = int(float_val)
             else:
                 output_dict[key] = float_val
-        except ValueError:
+        except Exception:
             # Si falla la conversión, mantener el valor original
             output_dict[key] = value
     return output_dict
