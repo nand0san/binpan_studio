@@ -407,6 +407,8 @@ def convert_to_numeric(data: pd.DataFrame) -> pd.DataFrame:
     for col in df.columns:
         if col.endswith(' time'):
             continue
+        elif col == "Date":  # when data is previously parsed
+            continue
         df[col] = pd.to_numeric(arg=df[col], downcast='integer', errors='ignore')
     return df
 

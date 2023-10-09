@@ -291,6 +291,7 @@ class Symbol(object):
 
             if postgres_klines:
                 if type(postgres_klines) == str:
+                    binpan_logger.info(f"Postgres connection requested as str: {postgres_klines}")
                     postgresql_host_klines = postgres_klines
                 else:
                     from secret import postgresql_host_klines
@@ -305,7 +306,7 @@ class Symbol(object):
                                                                               postgresql_port=postgresql_port)
             if postgres_agg_trades:
                 if type(postgres_agg_trades) == str:
-                    postgresql_host_aggTrades = postgres_klines
+                    postgresql_host_aggTrades = postgres_agg_trades
                 else:
                     from secret import postgresql_host_aggTrades
                 self.connection_agg_trades, self.cursor_agg_trades = postgresql.setup(symbol=self.symbol,
@@ -319,7 +320,7 @@ class Symbol(object):
                                                                                       postgresql_port=postgresql_port)
             if postgres_atomic_trades:
                 if type(postgres_atomic_trades) == str:
-                    postgresql_host_trades = postgres_klines
+                    postgresql_host_trades = postgres_atomic_trades
                 else:
                     from secret import postgresql_host_trades
                 self.connection_atomic_trades, self.cursor_atomic_trades = postgresql.setup(symbol=self.symbol,
@@ -1040,8 +1041,8 @@ class Symbol(object):
                     raise BinPanException(f"File do not seems to be Aggregated Trades File!")
             self.agg_trades = df_
         elif self.postgres_agg_trades:
-            from handlers.postgresql import get_data_and_parse
-            agg_table = f"{self.symbol.lower()}_aggTrade"
+            from handlers.postgresql import get_data_and_parse, sanitize_table_name
+            agg_table = sanitize_table_name(f"{self.symbol.lower()}_aggTrade")
             self.agg_trades = get_data_and_parse(cursor=self.cursor_agg_trades,
                                                  table=agg_table,
                                                  symbol=self.symbol,

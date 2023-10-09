@@ -11,6 +11,7 @@ from .files import get_encoded_database_secrets
 from .starters import AesCipher
 from .logs import Logs
 from .market import convert_to_numeric
+
 # from .time_helper import adjust_timestamp_unit_nano_or_ms
 
 sql_logger = Logs(filename='./logs/sql.log', name='sql', info_level='INFO')
@@ -59,7 +60,7 @@ def setup(symbol: str,
             if not table in tables:
                 raise BinPanException(f"BinPan Exception: Table {table} not found in database {postgresql_database}")
         if postgres_agg_trades:
-            table = sanitize_table_name(f"{symbol.lower()}@aggTrade")
+            table = sanitize_table_name(f"{symbol.lower()}@aggtrade")
             if not table in tables:
                 raise BinPanException(f"BinPan Exception: Table {table} not found in database {postgresql_database}")
     except Exception as e:
@@ -130,7 +131,7 @@ def data_type_from_table(table: str) -> str or None:
 
     if "_kline_" in table:
         return "kline"
-    elif table.endswith("_aggTrade"):
+    elif table.endswith("_aggTrade") or table.endswith("_aggtrade"):
         return "aggTrade"
     elif table.endswith("_trade"):
         return "trade"
@@ -176,7 +177,7 @@ def sanitize_table_name(table_name: str) -> str:
     if sanitized_name[0].isdigit():
         sanitized_name = "t_" + sanitized_name
 
-    return sanitized_name
+    return sanitized_name.lower()
 
 
 # noinspection SqlCurrentSchemaInspection
@@ -206,7 +207,8 @@ def get_data_and_parse(cursor,
     sql_logger.info(f"Getting data from table {table} from {start_time} to {end_time}")
 
     try:
-        query = sql.SQL("SELECT * FROM {} WHERE EXTRACT(EPOCH FROM time) * 1000 >= {} AND EXTRACT(EPOCH FROM time) * 1000 <= {} ORDER BY "
+        query = sql.SQL("SELECT * FROM {} WHERE EXTRACT(EPOCH FROM time) * 1000 >= {} "
+                        "AND EXTRACT(EPOCH FROM time) * 1000 <= {} ORDER BY "
                         "time ASC;").format(sql.Identifier(table),
                                             sql.Literal(start_time),
                                             sql.Literal(end_time))
@@ -218,16 +220,24 @@ def get_data_and_parse(cursor,
         cursor.execute("ROLLBACK")
         sql_logger.error(f"Error obtaining data from table {table}: {e}")
         raise e
+
     # parsea los datos a un dataframe en base a las columnas de standards
-    # data_type_structure = postgresql_response_cols_by_type[data_type]
-    data_type_structure = get_column_names(cursor=cursor, table_name=table)
+    data_type_structure = get_column_names(cursor=cursor, table_name=table, own_transaction=True)
     data_dicts = [{data_type_structure[i]: l[i] for i in range(len(l))} for l in data]
     df = pd.DataFrame(data_dicts)
     df.rename(columns=postgresql2binpan_renamer_dict[data_type], inplace=True)
     alt_order = None
     if data_type == "trade":
         df[trade_time_col] = (df[trade_date_col].astype('int64') // 10 ** 6).astype('int64')
-        df[trade_date_col] = df[trade_date_col].dt.tz_convert(time_zone)
+        if trade_date_col in df.columns:
+            df[trade_date_col] = df[trade_date_col].dt.tz_convert(time_zone)
+        else:
+            # Convertir milisegundos a datetime
+            df[trade_date_col] = pd.to_datetime(df[trade_time_col], unit='ms')
+            df[trade_date_col] = df[trade_date_col].dt.tz_localize('UTC')  # Cambia 'UTC' si es necesario
+            # Convertir a la zona horaria deseada
+            df[trade_date_col] = df[trade_date_col].dt.tz_convert(time_zone)
+
         date_col = trade_date_col
         alt_order = trade_trade_id_col
     elif data_type == "kline":
@@ -237,10 +247,17 @@ def get_data_and_parse(cursor,
         df[kline_close_time_col] = df[kline_close_timestamp_col]
         df[kline_close_time_col] = pd.to_datetime(df[kline_close_time_col], unit='ms').dt.tz_localize(time_zone)
         date_col = kline_open_time_col
-    elif data_type == "aggTrade":
-        # TODO: sin probar
+    elif data_type == "aggTrade" or data_type == "aggtrade":
         df[agg_time_col] = (df[agg_time_col].astype('int64') // 10 ** 6).astype('int64')
-        df[agg_date_col] = df[agg_date_col].dt.tz_convert(time_zone)
+        if agg_date_col in df.columns:
+            df[agg_date_col] = df[agg_date_col].dt.tz_convert(time_zone)
+        else:
+            # Convertir milisegundos a datetime
+            df[agg_date_col] = pd.to_datetime(df[agg_time_col], unit='ms')
+            df[agg_date_col] = df[agg_date_col].dt.tz_localize('UTC')  # Cambia 'UTC' si es necesario
+            # Convertir a la zona horaria deseada
+            df[agg_date_col] = df[agg_date_col].dt.tz_convert(time_zone)
+
         date_col = agg_date_col
         alt_order = agg_trade_id_col
     else:
@@ -261,7 +278,7 @@ def get_data_and_parse(cursor,
     df = convert_to_numeric(data=df)
     ordered_existing_cols = [col for col in postgresql_presentation_type_columns_dict[data_type] if col in df.columns]
     not_expected_cols = [col for col in df.columns if col not in postgresql_presentation_type_columns_dict[data_type]]
-    return df[ordered_existing_cols+not_expected_cols]
+    return df[ordered_existing_cols + not_expected_cols]
 
     # my_cols = postgresql_presentation_type_columns_dict[data_type]
     #
@@ -356,12 +373,21 @@ def list_tables_with_suffix(cursor, suffix="") -> list:
     :param suffix: Opcional. Sufijo de las tablas a buscar. Ejemplo: "_trade".
     :return: Una lista con los nombres de las tablas que terminan con el sufijo especificado.
     """
-    query = f"""
-    SELECT table_name
-    FROM information_schema.tables
-    WHERE table_name LIKE '%{suffix}'
-      AND table_schema = 'public';  -- Opcional, si quieres filtrar por esquema
-    """
+    if suffix:
+        suffix = suffix.lower()
+    if suffix:
+        query = f"""
+        SELECT table_name
+        FROM information_schema.tables
+        WHERE table_name LIKE '%{suffix}'
+          AND table_schema = 'public';  -- Opcional, si quieres filtrar por esquema
+        """
+    else:
+        query = """
+        SELECT table_name
+        FROM information_schema.tables
+        WHERE table_schema = 'public';  -- Opcional, si quieres filtrar por esquema
+        """
     cursor.execute(query)
     return [row[0] for row in cursor.fetchall()]
 
@@ -395,7 +421,7 @@ def is_hypertable(cursor, table_name):
 
 def get_column_names(cursor,
                      table_name: str,
-                     own_transaction: bool = False) -> list:
+                     own_transaction: bool) -> list:
     """
     Returns a list with the names of the columns in a table.
 
@@ -410,14 +436,18 @@ def get_column_names(cursor,
     FROM information_schema.columns 
     WHERE table_name = '{table_name}';
     """
-    if own_transaction:
-        cursor.execute("BEGIN")
+    try:
+        if own_transaction:
+            cursor.execute("BEGIN")
         cursor.execute(query)
         columns = [row[0] for row in cursor.fetchall()]
-        cursor.execute("COMMIT")
-    else:
-        cursor.execute(query)
-        columns = [row[0] for row in cursor.fetchall()]
+        if own_transaction:
+            cursor.execute("COMMIT")
+    except Exception as _:
+        if own_transaction:
+            cursor.execute("ROLLBACK")
+        columns = []
+        assert is_cursor_alive(cursor), "Cursor no está vivo"
     return columns
 
 
@@ -517,6 +547,7 @@ def create_hypertable_from_sample(cursor,
                                   table_name: str,
                                   sample_dict: dict,
                                   time_column: str,
+                                  unique_col: str,
                                   index_by: str = None) -> bool:
     """
     Crea una tabla y la convierte en hypertable. Si la tabla ya existe, no hace nada.
@@ -534,6 +565,7 @@ def create_hypertable_from_sample(cursor,
                            "time": time()*1000}
 
     :param time_column: Columna de tiempo. Esta columna debe existir en la tabla y debe ser de tipo timestamp no nulo.
+    :param unique_col: Columna única. Esta columna debe existir en la tabla y debe ser de tipo no nulo.
     :param index_by: Optional. Nombre de la columna por la que se creará un índice adicional.
     :return: Retorna True si la tabla se creó y se convirtió en hypertable, False en caso contrario.
 
@@ -542,26 +574,28 @@ def create_hypertable_from_sample(cursor,
     sql_logger.debug(f"Argumentos de create_table_and_hypertable_from_sample DATA: {table_name}, {time_column}, {index_by}")
     sql_logger.debug(f"Tipo de datos para la columna de tiempo: {type(sample_dict[time_column])}")
     try:
-        if index_by == time_column:
-            index_by = None
+        # if index_by == time_column:
+        #     index_by = None
         exist = check_standard_table_exists(cursor, table_name=table_name)
         if not exist:
             create_simple_table(cursor=cursor,
                                 table_name=table_name,
                                 columns=[(key, infer_sql_type(value=value, key=key, time_col=time_column)) for key, value in
                                          sample_dict.items()])
-            assert convert_to_hypertable(cursor, table_name=table_name, time_column=time_column), (f"Error al convertir la tabla "
-                                                                                                   f"{table_name} en hypertable")
-            if index_by:
-                actual_index = get_hypertable_indexes(cursor, hypertable_name=table_name)
-                sql_logger.debug(f"Índices de hypertable {table_name} previos al update: {actual_index}")
-                index_name = f"idx_{table_name}_{index_by}"
-                add_index_to_hypertable(cursor, hypertable_name=table_name, column_name=index_by, index_name=index_name)
-                sql_logger.debug(f"Hypertable {table_name} creada en PostgreSQL con columnas: {sample_dict.keys()} e indexada por '"
-                                 f"{time_column}' y '{index_by}'")
-            else:
-                sql_logger.debug(f"Hypertable {table_name} creada en PostgreSQL con columnas: {sample_dict.keys()} e indexada por '"
-                                 f"{time_column}'")
+            assert convert_to_hypertable(cursor,
+                                         table_name=table_name,
+                                         unique_column=unique_col,
+                                         time_column=time_column), f"Error al convertir la tabla {table_name} en hypertable"
+            # if index_by:
+            #     actual_index = get_hypertable_indexes(cursor, hypertable_name=table_name)
+            #     sql_logger.debug(f"Índices de hypertable {table_name} previos al update: {actual_index}")
+            #     index_name = f"idx_{table_name}_{index_by}"
+            #     add_index_to_hypertable(cursor, hypertable_name=table_name, column_name=index_by, index_name=index_name)
+            #     sql_logger.debug(f"Hypertable {table_name} creada en PostgreSQL con columnas: {sample_dict.keys()} e indexada por '"
+            #                      f"{time_column}' y '{index_by}'")
+            # else:
+            #     sql_logger.debug(f"Hypertable {table_name} creada en PostgreSQL con columnas: {sample_dict.keys()} e indexada por '"
+            #                      f"{time_column}'")
             return True
         else:
             sql_logger.debug(f"Tabla {table_name} ya existe en PostgreSQL")
@@ -569,57 +603,6 @@ def create_hypertable_from_sample(cursor,
     except Exception as e:
         sql_logger.error(f"Error al crear hypertable {table_name} en PostgreSQL: {e}")
         raise e
-
-
-def create_table_and_hypertable_from_sample_old(cursor,
-                                                table_name: str,
-                                                sample_dict: dict,
-                                                time_column: str,
-                                                index_by: str = None) -> bool:
-    sql_logger.debug(f"Argumentos de create_table_and_hypertable_from_sample: {sample_dict}")
-    sql_logger.debug(f"Argumentos de create_table_and_hypertable_from_sample: {table_name}, {time_column}, {index_by}")
-    sql_logger.debug(f"Tipo de datos para la columna de tiempo: {type(sample_dict[time_column])}")
-
-    try:
-        # Verificar si la tabla es una hypertable
-        cursor.execute(f"SELECT * FROM timescaledb_information.hypertables WHERE hypertable_name = '{table_name}';")
-
-        # verificar si la tabla existe antes de pasarla a hypertable
-        # fixme: esto no funciona
-        cursor.execute(f"SELECT column_name, data_type FROM information_schema.columns WHERE table_name = '{table_name}';")
-        columns_info = cursor.fetchall()
-        sql_logger.debug(f"Información de columnas: {columns_info}")
-
-        is_hypertable = cursor.fetchone()
-
-        if not is_hypertable:
-            # Crear tabla y hypertable
-            column_definitions = [f"\"{key}\" {infer_sql_type(value=value, key=key, time_col=time_column)}" for key, value in
-                                  sample_dict.items()]
-            columns_sql = ", ".join(column_definitions)
-            sql_logger.debug(f"Creando tabla \"{table_name}\" con columnas: {columns_sql}")
-
-            cursor.execute(f"CREATE TABLE IF NOT EXISTS \"{table_name}\" ({columns_sql})")
-            try:
-                cursor.execute(f"SELECT create_hypertable('{table_name}', '{time_column}')")
-
-            except Exception as e:
-                sql_logger.debug(f"La tabla ya es una hypertable: {e}")
-                pass
-
-            if index_by:
-                # cursor.execute(f"CREATE INDEX IF NOT EXISTS \"idx_{table_name}_{index_by}\" ON \"{table_name}\" (\"{time_column}\",
-                # \"{index_by}\")")
-                index_name = f"idx_{table_name}_{index_by}"
-                if not check_index_exists(cursor, table_name, index_name):
-                    cursor.execute(f"CREATE INDEX {index_name} ON \"{table_name}\" (\"{time_column}\", \"{index_by}\")")
-
-        sql_logger.debug(f"Hypertable {table_name} creada o verificada en PostgreSQL")
-        return True
-
-    except Exception as e:
-        sql_logger.error(f"Error al crear hypertable {table_name} en PostgreSQL: {e}")
-        return False
 
 
 #####################
@@ -647,12 +630,18 @@ def create_simple_table(cursor, table_name: str, columns: list):
     cursor.execute(create_table_query)
 
 
-def convert_to_hypertable(cursor, table_name, time_column='time', chunk_time_interval='1 day'):
+def convert_to_hypertable(cursor,
+                          table_name: str,
+                          unique_column: str,
+                          time_column='time',
+                          chunk_time_interval='1 day'):
     """
     Convierte una tabla en una hypertable.
 
     :param cursor: Cursor de la conexión a la base de datos.
     :param table_name: Nombre de la tabla a convertir.
+    :param unique_column: Nombre de la columna que contiene valores únicos. Esta columna debe existir en la tabla y debe ser de tipo no
+    nulo.
     :param time_column: Columna de tiempo. Esta columna debe existir en la tabla y debe ser de tipo timestamp no nulo.
     :param chunk_time_interval: Especifica el tamaño de los chunks. Por defecto es 1 semana. Un chunk es un grupo de
      registros que se almacenan juntos en disco. Los chunks se crean automáticamente. Opciones válidas:
@@ -668,35 +657,26 @@ def convert_to_hypertable(cursor, table_name, time_column='time', chunk_time_int
         # Verificar si la tabla existe
         cursor.execute(f"SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = '{table_name}');")
         if not cursor.fetchone()[0]:
-            print("La tabla no existe.")
+            sql_logger.info(f"La tabla no existe: {table_name}")
             return False
 
         # Verificar si ya es una hipertabla
         cursor.execute(f"SELECT * FROM timescaledb_information.hypertables WHERE hypertable_name = '{table_name}';")
         if cursor.fetchone() is not None:
-            print("La tabla ya es una hipertabla.")
+            sql_logger.info(f"La tabla ya es una hipertabla: {table_name}")
             return False
 
-        # Verificar si existe un índice único que no incluye la columna de tiempo
-        cursor.execute(f"SELECT indexname, indexdef FROM pg_indexes WHERE tablename = '{table_name}';")
-        unique_indexes = cursor.fetchall()
-        for index_name, index_def in unique_indexes:
-            if time_column not in index_def:
-                print(f"Índice único {index_name} no incluye la columna de tiempo.")
-                if "_pkey" in index_name:
-                    print(f"Eliminando restricción de clave primaria {index_name}.")
-                    cursor.execute(f"ALTER TABLE {table_name} DROP CONSTRAINT {index_name};")
-                else:
-                    print(f"Eliminando índice {index_name}.")
-                    cursor.execute(f"DROP INDEX {index_name};")
-
-        # Convertir a hipertabla
-        query = f"SELECT create_hypertable('{table_name}', '{time_column}', chunk_time_interval => interval '{chunk_time_interval}');"
-        cursor.execute(query)
+        # convertir a hipertabla
+        cursor.execute(f"SELECT create_hypertable('{table_name}', '{time_column}');")
+        if unique_column:
+            cursor.execute(f'CREATE UNIQUE INDEX binpan_index ON {table_name} ("{time_column}", "{unique_column}");')
+        else:
+            pass
+        sql_logger.debug(f"Valor no usado: {chunk_time_interval}")
         return True
 
     except Exception as e:
-        print(f"Error al convertir la tabla en hipertabla: {e}")
+        sql_logger.error(f"Error al convertir la tabla en hipertabla: {e}")
         return False
 
 
@@ -739,7 +719,7 @@ def fetch_hypertable(cursor, table: str, startime: int = None, endtime: int = No
     return ret
 
 
-def delete_record(cursor, table_name: str, field_name: str, value: any, is_timestamp: bool = False):
+def delete_record(cursor, table_name: str, field_name: str, value: any, is_timestamp: bool = False, own_transaction=True):
     """
     Elimina registros de una hipertabla en TimescaleDB donde un campo específico coincide con un valor específico.
 
@@ -748,18 +728,20 @@ def delete_record(cursor, table_name: str, field_name: str, value: any, is_times
     :param field_name: Nombre del campo que se va a comparar.
     :param value: Valor que se busca para eliminar.
     :param is_timestamp: Si es True, convierte el valor de milisegundos a TIMESTAMPZ.
+    :param own_transaction: Si es True, la función creará su propia transacción. Si es False, la función utilizará la
     """
+    if own_transaction:
+        cursor.execute("BEGIN")
     if is_timestamp:
-        query = sql.SQL("DELETE FROM {} WHERE {} = to_timestamp(%s / 1000.0);").format(
-            sql.Identifier(table_name),
-            sql.Identifier(field_name))
+        query = sql.SQL("DELETE FROM {} WHERE {} = to_timestamp(%s / 1000.0);").format(sql.Identifier(table_name),
+                                                                                       sql.Identifier(field_name))
     else:
-        query = sql.SQL("DELETE FROM {} WHERE {} = %s;").format(
-            sql.Identifier(table_name),
-            sql.Identifier(field_name))
-
+        query = sql.SQL("DELETE FROM {} WHERE {} = %s;").format(sql.Identifier(table_name),
+                                                                sql.Identifier(field_name))
     # Ejecutar la consulta
     cursor.execute(query, [value])
+    if own_transaction:
+        cursor.execute("COMMIT")
 
 
 def delete_table(cursor, table_name, schema='public'):
@@ -814,64 +796,20 @@ def delete_bulk_tables(cursor, tables: list):
 # funciones alto nivel #
 ########################
 
-def create_table_and_hypertable_from_sample_old2(cursor,
-                                                 table_name: str,
-                                                 sample_dict: dict,
-                                                 time_column: str,
-                                                 index_by: str = None) -> bool:
-    sql_logger.debug(f"Argumentos de create_table_and_hypertable_from_sample: {sample_dict}")
-    sql_logger.debug(f"Argumentos de create_table_and_hypertable_from_sample: {table_name}, {time_column}, {index_by}")
-    sql_logger.debug(f"Tipo de datos para la columna de tiempo: {type(sample_dict[time_column])}")
-
-    try:
-        # Verificar si la tabla es una hypertable
-        cursor.execute(f"SELECT * FROM timescaledb_information.hypertables WHERE hypertable_name = '{table_name}';")
-
-        # verificar si la tabla existe antes de pasarla a hypertable
-        exists_hypertable = is_hypertable(cursor, table_name)
-
-        if not exists_hypertable:
-            # crear tabla y hypertable
-            pass
-
-        columns_info = cursor.fetchall()
-        sql_logger.debug(f"Información de columnas: {columns_info}")
-
-        # is_hypertable = cursor.fetchone()
-
-        if not is_hypertable:
-            # Crear tabla y hypertable
-            column_definitions = [f"\"{key}\" {infer_sql_type(value=value, key=key, time_col=time_column)}" for key, value in
-                                  sample_dict.items()]
-            columns_sql = ", ".join(column_definitions)
-            sql_logger.debug(f"Creando tabla \"{table_name}\" con columnas: {columns_sql}")
-
-            cursor.execute(f"CREATE TABLE IF NOT EXISTS \"{table_name}\" ({columns_sql})")
-            try:
-                cursor.execute(f"SELECT create_hypertable('{table_name}', '{time_column}')")
-
-            except Exception as e:
-                sql_logger.debug(f"La tabla ya es una hypertable: {e}")
-                pass
-
-            if index_by:
-                # cursor.execute(f"CREATE INDEX IF NOT EXISTS \"idx_{table_name}_{index_by}\" ON \"{table_name}\" (\"{time_column}\",
-                # \"{index_by}\")")
-                index_name = f"idx_{table_name}_{index_by}"
-                if not check_index_exists(cursor, table_name, index_name):
-                    cursor.execute(f"CREATE INDEX {index_name} ON \"{table_name}\" (\"{time_column}\", \"{index_by}\")")
-
-        sql_logger.debug(f"Hypertable {table_name} creada o verificada en PostgreSQL")
-        return True
-
-    except Exception as e:
-        sql_logger.error(f"Error al crear hypertable {table_name} en PostgreSQL: {e}")
-        return False
-
 
 def infer_sql_type(value: any, key: str, time_col: str = "time") -> str:
+    """
+    Infers the SQL type of a value. Because hypertables will be used, NOT NULL or UNIQUE are not allowed. Uniqueness must be
+     enforced by the index.
+
+    :param value: A value.
+    :param key: A key.
+    :param time_col: The name of the time column. Default is "time".
+    :return:
+    """
     if key == time_col:
-        column_type = "TIMESTAMPTZ NOT NULL"
+        # column_type = "TIMESTAMPTZ NOT NULL"  # comentado pq se ajusta la unicidad al pasar a hipertabla
+        column_type = "TIMESTAMPTZ"
     elif type(value) == bool:
         column_type = "BOOLEAN"
     elif type(value) == int:
@@ -888,11 +826,13 @@ def flexible_tables_and_data_insert(cursor,
                                     parsed_dict: Dict[str, List[dict]],
                                     verified_tables: list = None):
     """
-    Review the tables in the parsed_dict and create them if they don't exist. Then insert the data.
+    Revisa si las tablas existen y las crea si no existen. Luego inserta los datos en las tablas.
 
-    :param cursor: A psycopg2 cursor connected to the database.
-    :param parsed_dict: A dictionary with the parsed data.
-    :param verified_tables: Optional. A list with the names of the tables that have been verified.
+    :param cursor: Un cursor de psycopg2 conectado a la base de datos.
+    :param parsed_dict: Un diccionario con los datos a insertar. El key es el nombre de la tabla y el value es una lista de
+    diccionarios con los datos a insertar.
+    :param verified_tables: Un conjunto de tablas verificadas.
+    :return:
     """
     if not verified_tables:
         verified_tables = []  # Caché de tablas verificadas
@@ -905,12 +845,15 @@ def flexible_tables_and_data_insert(cursor,
             sanitized_table_name = sanitize_table_name(table_name)
             data_type = data_type_from_table(table=sanitized_table_name)
 
+            # fuerza unicidad en una columna
+            unique_column = stream_uniqueness_id_in_timescale[data_type]
             if sanitized_table_name not in verified_tables:
                 feedback = create_hypertable_from_sample(cursor=cursor,
                                                          table_name=sanitized_table_name,
                                                          sample_dict=records[0],
                                                          time_column="time",
-                                                         index_by=stream_uniqueness_id_in_timescale[data_type])
+                                                         unique_col=unique_column,
+                                                         index_by=unique_column)
                 if feedback:
                     sql_logger.debug(f"Tabla {sanitized_table_name} creada en PostgreSQL")
                 else:
@@ -921,10 +864,21 @@ def flexible_tables_and_data_insert(cursor,
             columns = records[0].keys()
             data_to_insert = [tuple(record[col] for col in columns) for record in records]  # convierte a tuplas
 
-            insert_query = sql.SQL("INSERT INTO {} ({}) VALUES ({}) ON CONFLICT DO NOTHING").format(
+            # insert_query = sql.SQL("INSERT INTO {} ({}) VALUES ({}) ON CONFLICT DO NOTHING").format(
+            #     sql.Identifier(sanitized_table_name),
+            #     sql.SQL(", ").join(map(sql.Identifier, columns)),
+            #     sql.SQL(", ").join(sql.SQL("to_timestamp(%s / 1000.0)") if col == "time" else sql.Placeholder() for col in columns))
+            # cursor.executemany(insert_query, data_to_insert)
+
+            columns_without_unique = [col for col in columns if col != unique_column]
+
+            insert_query = sql.SQL("INSERT INTO {} ({}) VALUES ({}) ON CONFLICT (time, {}) DO UPDATE SET {}").format(
                 sql.Identifier(sanitized_table_name),
                 sql.SQL(", ").join(map(sql.Identifier, columns)),
-                sql.SQL(", ").join(sql.SQL("to_timestamp(%s / 1000.0)") if col == "time" else sql.Placeholder() for col in columns))
+                sql.SQL(", ").join(sql.SQL("to_timestamp(%s / 1000.0)") if col == "time" else sql.Placeholder() for col in columns),
+                sql.Identifier(unique_column),
+                sql.SQL(", ").join(map(lambda col: sql.SQL(f"{col} = EXCLUDED.{col}"), columns_without_unique))
+            )
             cursor.executemany(insert_query, data_to_insert)
 
         cursor.execute("COMMIT")
@@ -936,21 +890,21 @@ def flexible_tables_and_data_insert(cursor,
     return verified_tables
 
 
-def data_type_table(table_name: str) -> str:
-    """
-    Obtiene el tipo de datos de la tabla de su nombre.
-
-    :param table_name: El nombre de la tabla.
-    :return: Tipo de canal websockets.
-    """
-    if "kline" in table_name:
-        return "kline"
-    elif "aggTrade" in table_name:
-        return "aggTrade"
-    elif "trade" in table_name:
-        return "trade"
-    else:
-        raise ValueError(f"data_type_table: Nombre de tabla inválido: {table_name}")
+# def data_type_table(table_name: str) -> str:
+#     """
+#     Obtiene el tipo de datos de la tabla de su nombre.
+#
+#     :param table_name: El nombre de la tabla.
+#     :return: Tipo de canal websockets.
+#     """
+#     if "kline" in table_name:
+#         return "kline"
+#     elif "aggTrade" in table_name or "aggtrade" in table_name:
+#         return "aggTrade"
+#     elif "trade" in table_name:
+#         return "trade"
+#     else:
+#         raise ValueError(f"data_type_table: Nombre de tabla inválido: {table_name}")
 
 
 def insert_data(cursor, table: str, data: List[dict]):
@@ -998,7 +952,8 @@ def delete_dupes(cursor,
                           table_name=table,
                           field_name=column,
                           value=dupe,
-                          is_timestamp=is_timestamp)
+                          is_timestamp=is_timestamp,
+                          own_transaction=False)
         cursor.execute("COMMIT")
     except Exception as e:
         # Si algo sale mal, revertir la transacción
