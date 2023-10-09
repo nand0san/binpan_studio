@@ -8,7 +8,7 @@ from time import time
 import pandas as pd
 import json
 from decimal import Decimal as dd
-
+from datetime import datetime
 from typing import List
 
 # from redis import StrictRedis
@@ -409,6 +409,36 @@ def convert_to_numeric(data: pd.DataFrame) -> pd.DataFrame:
             continue
         df[col] = pd.to_numeric(arg=df[col], downcast='integer', errors='ignore')
     return df
+
+
+def convert_dict_to_numeric(input_dict: dict, parse_datetime2int: bool) -> dict:
+    """
+    Converts all values in a dictionary to numeric values if possible.
+
+    :param input_dict: A dictionary.
+    :param parse_datetime2int: If True, parses datetime columns to int.
+    :return: Returns a dictionary with all values converted to numeric values if possible.
+    """
+    output_dict = dict()
+
+    for key, value in input_dict.items():
+        if isinstance(value, (datetime, pd.Timestamp)):
+            if parse_datetime2int:
+                output_dict[key] = int(value.timestamp() * 1000)
+            else:
+                output_dict[key] = value
+            continue
+        try:
+            float_val = float(value)
+            # Downgrade a int si es posible
+            if float_val.is_integer():
+                output_dict[key] = int(float_val)
+            else:
+                output_dict[key] = float_val
+        except ValueError:
+            # Si falla la conversión, mantener el valor original
+            output_dict[key] = value
+    return output_dict
 
 
 ##########
