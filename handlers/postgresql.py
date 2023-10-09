@@ -393,14 +393,31 @@ def is_hypertable(cursor, table_name):
     return cursor.fetchone() is not None
 
 
-def get_column_names(cursor, table_name) -> list:
+def get_column_names(cursor,
+                     table_name: str,
+                     own_transaction: bool = False) -> list:
+    """
+    Returns a list with the names of the columns in a table.
+
+    :param cursor: A psycopg2 cursor connected to the database.
+    :param table_name: Name of the table.
+    :param own_transaction: If True, the function will create its own transaction. If False, the function will use the
+     transaction of the cursor.
+    :return:
+    """
     query = f"""
     SELECT column_name 
     FROM information_schema.columns 
     WHERE table_name = '{table_name}';
     """
-    cursor.execute(query)
-    columns = [row[0] for row in cursor.fetchall()]
+    if own_transaction:
+        cursor.execute("BEGIN")
+        cursor.execute(query)
+        columns = [row[0] for row in cursor.fetchall()]
+        cursor.execute("COMMIT")
+    else:
+        cursor.execute(query)
+        columns = [row[0] for row in cursor.fetchall()]
     return columns
 
 
@@ -428,17 +445,19 @@ def get_indexed_columns(cursor, table_name) -> list:
 
 def get_hypertable_indexes(cursor, hypertable_name, schema_name='public'):
     """
-    Ejemplo de retorno:
+    Return example:
 
-    [('unfiusdt_trade_time_idx',
-      'CREATE INDEX unfiusdt_trade_time_idx ON public.unfiusdt_trade USING btree ("time" DESC)'),
-     ('idx_unfiusdt_trade_trade_id',
-      'CREATE INDEX idx_unfiusdt_trade_trade_id ON public.unfiusdt_trade USING btree ("time", trade_id)')]
+      .. code block:: python
 
-    :param cursor: Un cursor de psycopg2 conectado a la base de datos.
-    :param hypertable_name: Nombre de la tabla.
-    :param schema_name: Nombre del esquema.
-    :return: una lista de tuplas con los nombres de los índices y sus definiciones.
+        [('unfiusdt_trade_time_idx',
+          'CREATE INDEX unfiusdt_trade_time_idx ON public.unfiusdt_trade USING btree ("time" DESC)'),
+         ('idx_unfiusdt_trade_trade_id',
+          'CREATE INDEX idx_unfiusdt_trade_trade_id ON public.unfiusdt_trade USING btree ("time", trade_id)')]
+
+    :param cursor: A psycopg2 cursor connected to the database.
+    :param hypertable_name: Name of the hypertable.
+    :param schema_name: Name of the schema. Default is 'public'.
+    :return: A list of tuples with the index name and the index definition.
     """
     query = f"""
     SELECT indexname, indexdef 
@@ -610,13 +629,13 @@ def create_table_and_hypertable_from_sample_old(cursor,
 
 def create_simple_table(cursor, table_name: str, columns: list):
     """
-    Crea una tabla simple en la base de datos a la que está conectado el cursor.
+    Create a simple table in PostgreSQL.
 
-    Parámetros:
-    - cursor: Cursor de la conexión a la base de datos.
-    - table_name: Nombre de la nueva tabla.
-    - columns: Lista de tuplas que describen las columnas. Cada tupla debe tener
-               el nombre de la columna y el tipo de datos (ej. [("id", "SERIAL PRIMARY KEY"), ("name", "VARCHAR(50)")]).
+    :param cursor: A psycopg2 cursor connected to the database.
+    :param table_name: Name of the new table.
+    :param columns: List of tuples describing the columns. Each tuple must have the column name and the data type (e.g.
+     [("id", "SERIAL PRIMARY KEY"), ("name", "VARCHAR(50)")]).
+
     """
     # Crear la definición de las columnas para la query SQL
     columns_definition = ", ".join([f'"{name}" {data_type}' for name, data_type in columns])
@@ -795,39 +814,6 @@ def delete_bulk_tables(cursor, tables: list):
 # funciones alto nivel #
 ########################
 
-# def sanitize_table_name(table_name: str) -> str:
-#     sanitized_name = table_name.replace("@", "_")
-#
-#     # Añadir un prefijo si el nombre comienza con un número
-#     if sanitized_name[0].isdigit():
-#         sanitized_name = "t_" + sanitized_name
-#
-#     return sanitized_name.lower()
-#
-#
-# def get_valid_table_list(cursor) -> list:
-#     """
-#     Obtiene la lista de tablas en la base de datos.
-#
-#     :param cursor: Un cursor de psycopg2 conectado a la base de datos.
-#     :return:
-#     """
-#     query = "SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema';"
-#
-#     cursor.execute("BEGIN")
-#     cursor.execute(query)
-#     # Obtener y retornar la lista de tablas
-#     tables = [table[0] for table in cursor.fetchall()]
-#     cursor.execute("COMMIT")
-#
-#     valid_tables = []
-#     for table in tables:
-#         my_type = data_type_from_table(table)
-#         if my_type:
-#             valid_tables.append(table)
-#     return sorted(valid_tables)
-
-
 def create_table_and_hypertable_from_sample_old2(cursor,
                                                  table_name: str,
                                                  sample_dict: dict,
@@ -902,13 +888,11 @@ def flexible_tables_and_data_insert(cursor,
                                     parsed_dict: Dict[str, List[dict]],
                                     verified_tables: list = None):
     """
-    Revisa si las tablas existen y las crea si no existen. Luego inserta los datos en las tablas.
+    Review the tables in the parsed_dict and create them if they don't exist. Then insert the data.
 
-    :param cursor: Un cursor de psycopg2 conectado a la base de datos.
-    :param parsed_dict: Un diccionario con los datos a insertar. El key es el nombre de la tabla y el value es una lista de
-    diccionarios con los datos a insertar.
-    :param verified_tables: Un conjunto de tablas verificadas.
-    :return:
+    :param cursor: A psycopg2 cursor connected to the database.
+    :param parsed_dict: A dictionary with the parsed data.
+    :param verified_tables: Optional. A list with the names of the tables that have been verified.
     """
     if not verified_tables:
         verified_tables = []  # Caché de tablas verificadas
