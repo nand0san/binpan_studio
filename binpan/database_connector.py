@@ -1,7 +1,8 @@
 from handlers.postgresql import (create_connection, get_valid_table_list, is_cursor_alive, check_standard_table_exists,
                                  is_hypertable, get_column_names, get_indexed_columns, get_hypertable_indexes,
-                                 list_tables_with_suffix, data_type_from_table)
+                                 list_tables_with_suffix, data_type_from_table, count_rows_in_tables)
 from handlers.starters import AesCipher
+from typing import List, Dict
 
 cipher_object = AesCipher()
 
@@ -93,6 +94,11 @@ class Database:
 
         # mostrar una tabla con todos los datos recopilados
         print(f"Table: {table_name}\nExists: {exists}\nHyper: {hyper}\nColumns: {columns}\nIndex: {index}\nHyper Index: {hyper_index}")
+
+    def get_table_counts(self, tables: List[str] = None) -> Dict[str, int]:
+        if not tables:
+            tables = self.tables
+        return count_rows_in_tables(cursor=self.cursor, table_names=tables)
 
     @staticmethod
     def table_type(table_name: str):
