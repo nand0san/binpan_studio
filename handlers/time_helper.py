@@ -422,7 +422,7 @@ def remove_initial_included_ranges(time_ranges, initial_minutes) -> List[tuple]:
     :param time_ranges: A list of tuples containing the start and end time of each interval.
     :param initial_minutes: A quantity of minutes that defines the initial period.
     :return: A list of tuples containing the start and end time of each interval, without the ranges that are completely included in the
-    initial period.
+     initial period.
     """
     if not time_ranges:
         return []

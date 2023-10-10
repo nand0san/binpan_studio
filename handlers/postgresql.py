@@ -864,7 +864,7 @@ def flexible_tables_and_data_insert(cursor,
 
     :param cursor: Un cursor de psycopg2 conectado a la base de datos.
     :param parsed_dict: Un diccionario con los datos a insertar. El key es el nombre de la tabla y el value es una lista de
-    diccionarios con los datos a insertar.
+     diccionarios con los datos a insertar.
     :param verified_tables: Un conjunto de tablas verificadas.
     :param time_column: Nombre de la columna de tiempo.
     :param batch: Tamaño del lote para insertar datos.

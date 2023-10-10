@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Index - BinPan 0.5.13 documentation</title>
+      <title>Index - BinPan 0.5.21 documentation</title>
     <link rel="index" title="Index" href="#" /><link rel="search" title="Search" href="search.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -232,6 +232,8 @@ html.dark {
 </li>
       <li><a href="time_helper.html#handlers.time_helper.check_tick_interval">check_tick_interval() (in module handlers.time_helper)</a>
 </li>
+      <li><a href="postgresql.html#handlers.postgresql.check_unique_index_with_time">check_unique_index_with_time() (in module handlers.postgresql)</a>
+</li>
       <li><a href="quest.html#handlers.quest.check_weight">check_weight() (in module handlers.quest)</a>
 </li>
       <li><a href="binpan.html#binpan.Symbol.clean_in_out">clean_in_out() (binpan.Symbol method)</a>
@@ -258,12 +260,14 @@ html.dark {
 </li>
       <li><a href="time_helper.html#handlers.time_helper.convert_datetime_to_string">convert_datetime_to_string() (in module handlers.time_helper)</a>
 </li>
+      <li><a href="market.html#handlers.market.convert_dict_to_numeric">convert_dict_to_numeric() (in module handlers.market)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="time_helper.html#handlers.time_helper.convert_milliseconds_to_local_timezone_string">convert_milliseconds_to_local_timezone_string() (in module handlers.time_helper)</a>
 </li>
       <li><a href="time_helper.html#handlers.time_helper.convert_milliseconds_to_str">convert_milliseconds_to_str() (in module handlers.time_helper)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="time_helper.html#handlers.time_helper.convert_milliseconds_to_time_zone_datetime">convert_milliseconds_to_time_zone_datetime() (in module handlers.time_helper)</a>
 </li>
       <li><a href="time_helper.html#handlers.time_helper.convert_milliseconds_to_utc_datetime">convert_milliseconds_to_utc_datetime() (in module handlers.time_helper)</a>
@@ -282,8 +286,6 @@ html.dark {
 </li>
       <li><a href="exchange.html#handlers.exchange.convert_symbol_base_to_other_coin">convert_symbol_base_to_other_coin() (in module handlers.exchange)</a>
 </li>
-      <li><a href="postgresql.html#handlers.postgresql.convert_to_hypertable">convert_to_hypertable() (in module handlers.postgresql)</a>
-</li>
       <li><a href="market.html#handlers.market.convert_to_numeric">convert_to_numeric() (in module handlers.market)</a>
 </li>
       <li><a href="exchange.html#handlers.exchange.convert_to_other_coin">convert_to_other_coin() (in module handlers.exchange)</a>
@@ -291,6 +293,8 @@ html.dark {
       <li><a href="time_helper.html#handlers.time_helper.convert_utc_datetime_to_milliseconds">convert_utc_datetime_to_milliseconds() (in module handlers.time_helper)</a>
 </li>
       <li><a href="exchange.html#handlers.exchange.convert_utc_milliseconds">convert_utc_milliseconds() (in module handlers.exchange)</a>
+</li>
+      <li><a href="postgresql.html#handlers.postgresql.count_rows_in_tables">count_rows_in_tables() (in module handlers.postgresql)</a>
 </li>
       <li><a href="aggregations.html#handlers.aggregations.count_trues_cumulative">count_trues_cumulative() (in module handlers.aggregations)</a>
 </li>
@@ -302,13 +306,9 @@ html.dark {
 </li>
       <li><a href="files.html#handlers.files.create_dir">create_dir() (in module handlers.files)</a>
 </li>
-      <li><a href="postgresql.html#handlers.postgresql.create_hypertable_from_sample">create_hypertable_from_sample() (in module handlers.postgresql)</a>
-</li>
       <li><a href="postgresql.html#handlers.postgresql.create_simple_table">create_simple_table() (in module handlers.postgresql)</a>
 </li>
-      <li><a href="postgresql.html#handlers.postgresql.create_table_and_hypertable_from_sample_old">create_table_and_hypertable_from_sample_old() (in module handlers.postgresql)</a>
-</li>
-      <li><a href="postgresql.html#handlers.postgresql.create_table_and_hypertable_from_sample_old2">create_table_and_hypertable_from_sample_old2() (in module handlers.postgresql)</a>
+      <li><a href="postgresql.html#handlers.postgresql.create_table_and_hypertable">create_table_and_hypertable() (in module handlers.postgresql)</a>
 </li>
       <li><a href="binpan.html#binpan.Symbol.cross">cross() (binpan.Symbol method)</a>
 </li>
@@ -321,8 +321,6 @@ html.dark {
       <li><a href="wallet.html#handlers.wallet.daily_account_snapshot">daily_account_snapshot() (in module handlers.wallet)</a>
 </li>
       <li><a href="postgresql.html#handlers.postgresql.data_type_from_table">data_type_from_table() (in module handlers.postgresql)</a>
-</li>
-      <li><a href="postgresql.html#handlers.postgresql.data_type_table">data_type_table() (in module handlers.postgresql)</a>
 </li>
       <li><a href="time_helper.html#handlers.time_helper.datetime_utc_to_milliseconds">datetime_utc_to_milliseconds() (in module handlers.time_helper)</a>
 </li>
@@ -340,10 +338,10 @@ html.dark {
 </li>
       <li><a href="binpan.html#binpan.Symbol.delete_indicator_family">delete_indicator_family() (binpan.Symbol method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="influx_manager.html#handlers.influx_manager.delete_measurement">delete_measurement() (in module handlers.influx_manager)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="postgresql.html#handlers.postgresql.delete_record">delete_record() (in module handlers.postgresql)</a>
 </li>
       <li><a href="quest.html#handlers.quest.delete_response">delete_response() (in module handlers.quest)</a>
@@ -571,8 +569,6 @@ html.dark {
       <li><a href="market.html#handlers.market.get_historical_atomic_trades">get_historical_atomic_trades() (in module handlers.market)</a>
 </li>
       <li><a href="market.html#handlers.market.get_historical_candles">get_historical_candles() (in module handlers.market)</a>
-</li>
-      <li><a href="market.html#handlers.market.get_historical_candles_old">get_historical_candles_old() (in module handlers.market)</a>
 </li>
       <li><a href="postgresql.html#handlers.postgresql.get_hypertable_indexes">get_hypertable_indexes() (in module handlers.postgresql)</a>
 </li>
@@ -1411,7 +1407,7 @@ html.dark {
     </div>
   </div>
 </footer></div>
-      <script src="_static/documentation_options.js?v=c61aa432"></script>
+      <script src="_static/documentation_options.js?v=f8cada8d"></script>
       <script src="_static/doctools.js?v=888ff710"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/shibuya.js?v=3e5c8598"></script>
