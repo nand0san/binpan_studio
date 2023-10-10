@@ -58,6 +58,16 @@ def convert_datetime_to_string(dt) -> str:
     return dt.strftime("%Y-%m-%d %H:%M:%S")
 
 
+def convert_datetime_utc2ms(date_object: datetime) -> int:
+    """
+    Convert datetime object to milliseconds. Example: datetime.datetime(2023, 10, 10, 11, 52, tzinfo=datetime.timezone.utc)
+
+    :param date_object: A datetime object.
+    :return: A Unix timestamp in milliseconds.
+    """
+    return int(date_object.timestamp() * 1000)
+
+
 def convert_datetime_to_milliseconds(dt: datetime, timezoned: str = None) -> float:
     if not timezoned:
         epoch = datetime.utcfromtimestamp(0)
