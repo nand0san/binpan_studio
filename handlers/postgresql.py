@@ -3,6 +3,7 @@ import psycopg2
 from psycopg2 import sql
 from tqdm import tqdm
 from typing import Tuple, List, Dict
+from datetime import datetime
 from time import sleep
 
 from .exceptions import BinPanException
@@ -11,6 +12,7 @@ from .files import get_encoded_database_secrets
 from .starters import AesCipher
 from .logs import Logs
 from .market import convert_to_numeric
+from .time_helper import convert_milliseconds_to_str
 
 # from .time_helper import adjust_timestamp_unit_nano_or_ms
 
@@ -1031,7 +1033,9 @@ def get_data_and_parse(cursor,
     :return: A dataframe with the data and pertinent columns.
     """
     # llama a la tabla de klines pedida en el intervalo de timestamps solicitado
-    sql_logger.info(f"Getting data from table {table} from {start_time} to {end_time}")
+    start_time_string = convert_milliseconds_to_str(start_time, timezoned=time_zone)
+    end_time_string = convert_milliseconds_to_str(end_time, timezoned=time_zone)
+    sql_logger.info(f"Getting data from table {table} from {start_time_string} to {end_time_string}")
 
     try:
         query = sql.SQL("SELECT * FROM {} WHERE EXTRACT(EPOCH FROM time) * 1000 >= {} "

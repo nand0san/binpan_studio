@@ -113,24 +113,36 @@ def setup_startime_endtime(start_time: str,
     return start_time, end_time
 
 
-def check_continuity(df: pd.DataFrame):
+def check_continuity(df: pd.DataFrame, time_zone: str) -> pd.DataFrame:
     """
     Verify if the dataframe has continuity in klines by "Open timestamp" column.
+
+    :param df: Dataframe with klines data.
+    :param time_zone: A string with the time zone. Ex: 'Europe/Madrid'
+    :return: A dataframe with the gaps in klines continuity or if no gaps, returns empty dataframe.
     """
     dif = df['Open timestamp'].diff().dropna()  # Drop the NaN value for the first row
 
     try:
         assert len(dif.value_counts()) == 1, "BinPan Exception: Dataframe has gaps in klines continuity."
+        return pd.DataFrame()
     except AssertionError:
         mask = pd.Series(dif != dif.iloc[0]).reindex(df.index).fillna(False)
         gaps = df.loc[mask, ['Open timestamp', 'Close timestamp']]
 
         # Convertir los timestamps a un formato más legible
-        gaps['Open timestamp'] = to_datetime(gaps['Open timestamp'], unit='ms')
-        gaps['Close timestamp'] = to_datetime(gaps['Close timestamp'], unit='ms')
+        # gaps['Open timestamp'] = to_datetime(gaps['Open timestamp'], unit='ms')
+        # gaps['Close timestamp'] = to_datetime(gaps['Close timestamp'], unit='ms')
+        gaps['Open timestamp'] = pd.to_datetime(gaps['Open timestamp'], unit='ms', utc=True)
+        gaps['Close timestamp'] = pd.to_datetime(gaps['Close timestamp'], unit='ms', utc=True)
+        gaps['Open timestamp'] = gaps['Open timestamp'].dt.tz_convert(time_zone)
+        gaps['Close timestamp'] = gaps['Close timestamp'].dt.tz_convert(time_zone)
 
         # También hacer lo mismo para 'dif'
         dif_readable = to_datetime(dif[mask].index, unit='ms')
 
+        gaps["Gap length"] = gaps["Close timestamp"] - gaps["Open timestamp"]
+
         binpan_logger.warning(f"BinPan Warning: Dataframe has gaps in klines continuity: \n{gaps}")
         binpan_logger.warning(f"\nTimestamp discontinuities detected: \n{dif_readable}")
+        return gaps

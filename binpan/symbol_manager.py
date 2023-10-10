@@ -465,7 +465,7 @@ class Symbol(object):
         self.blue_timestamps = []
 
         # check api continuity data and notify to user
-        check_continuity(df=self.df)
+        self.discontinuities = check_continuity(df=self.df, time_zone=self.time_zone)
 
     def __repr__(self):
         return str(self.df)

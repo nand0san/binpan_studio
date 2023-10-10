@@ -133,7 +133,7 @@ def convert_milliseconds_to_str(ms: int, timezoned: str = None) -> str:
 
 def utc_start_of_day_ms() -> int:
     # now = get_server_time()
-    now = int(time()*1000)
+    now = int(time() * 1000)
     dt = convert_milliseconds_to_utc_datetime(now).replace(hour=0, minute=0, second=0, microsecond=0)
     return int(convert_datetime_to_milliseconds(dt))
 
@@ -179,7 +179,7 @@ def time_interval(tick_interval: str,
     """
     total_interval_ms = int(tick_seconds[tick_interval] * 1000 * limit)
     if not start_time and not end_time:
-        end_time = int(time()*1000)
+        end_time = int(time() * 1000)
         start_time = end_time - total_interval_ms
     elif not end_time and start_time:
         end_time = int(start_time) + total_interval_ms
@@ -217,14 +217,14 @@ def ticks_between_timestamps(start: int,
     if start_open != start:
         start_open = next_open_by_milliseconds(ms=start, tick_interval=tick_interval)
     end_close = close_from_milliseconds(end, tick_interval=tick_interval)
-    ret = ceil_division(end_close - start_open, tick_seconds[tick_interval]*1000)
+    ret = ceil_division(end_close - start_open, tick_seconds[tick_interval] * 1000)
     return ret
 
 
 def get_ticks_to_timestamp_utc(ticks_interval: str, timestamp: int = None):
     """Retorna cuantas velas se requieren hasta el timestamp pasado hasta ahora"""
     # now = get_server_time()
-    now = int(time()*1000)
+    now = int(time() * 1000)
     tick_ms = tick_seconds[ticks_interval] * 1000
     interval_ms = now - timestamp
     return interval_ms // tick_ms
@@ -285,7 +285,7 @@ def detect_tick_interval(data: pd.DataFrame) -> str:
 def next_open_utc(tick_interval: str) -> int:
     """Calcula el timestamp del next open para un tick_interval"""
     # utc_ms = get_server_time()
-    utc_ms = int(time()*1000)
+    utc_ms = int(time() * 1000)
     units = (utc_ms // (tick_seconds[tick_interval] * 1000))
     last_open_ms = units * tick_seconds[tick_interval] * 1000
     return last_open_ms + (tick_seconds[tick_interval] * 1000)
@@ -320,9 +320,26 @@ def wait_seconds_until_next_minute():
     return 60 - now.second
 
 
+# def calculate_iterations(start_time: int, end_time: int, tick_interval_ms: int, limit: int = 1000) -> int:
+#     """
+#     Calculate the number of iterations required to retrieve data within the given time range considering the API limit.
+#
+#     :param int start_time: Start timestamp (milliseconds) of the time range.
+#     :param int end_time: End timestamp (milliseconds) of the time range.
+#     :param int tick_interval_ms: Kline tick interval in milliseconds.
+#     :param int limit: API limit for the number of klines in a single request (default: 1000).
+#     :return int: The number of iterations required to retrieve data within the given time range.
+#     """
+#     total_intervals = (end_time - start_time) // tick_interval_ms
+#     iterations = (total_intervals + limit - 1) // limit
+#     return iterations
+
 def calculate_iterations(start_time: int, end_time: int, tick_interval_ms: int, limit: int = 1000) -> int:
     """
-    Calculate the number of iterations required to retrieve data within the given time range considering the API limit.
+    Calculate the number of iterations required to retrieve data within the given time range considering the API limit inclusively.
+
+    When timestamps in the middle of a kline, it will expand the time range to include the whole kline from opens including both start and
+     end timestamps.
 
     :param int start_time: Start timestamp (milliseconds) of the time range.
     :param int end_time: End timestamp (milliseconds) of the time range.
@@ -330,9 +347,13 @@ def calculate_iterations(start_time: int, end_time: int, tick_interval_ms: int, 
     :param int limit: API limit for the number of klines in a single request (default: 1000).
     :return int: The number of iterations required to retrieve data within the given time range.
     """
-    total_intervals = (end_time - start_time) // tick_interval_ms
-    iterations = (total_intervals + limit - 1) // limit
-    return iterations
+    start = (start_time // tick_interval_ms) * tick_interval_ms
+    end = -(end_time // -tick_interval_ms) * tick_interval_ms
+    klines = (end - start) / tick_interval_ms
+    assert int(klines) == klines, f"Error in calculate_iterations: klines is not an integer: {klines}"
+    iterations = -(klines // -limit)
+    assert int(iterations) == iterations, f"Error in calculate_iterations: iterations is not an integer: {iterations}"
+    return int(iterations)
 
 
 def infer_frequency_and_set_index(data: pd.DataFrame, timestamp_column: str = 'Open timestamp',
@@ -400,7 +421,8 @@ def remove_initial_included_ranges(time_ranges, initial_minutes) -> List[tuple]:
 
     :param time_ranges: A list of tuples containing the start and end time of each interval.
     :param initial_minutes: A quantity of minutes that defines the initial period.
-    :return: A list of tuples containing the start and end time of each interval, without the ranges that are completely included in the initial period.
+    :return: A list of tuples containing the start and end time of each interval, without the ranges that are completely included in the
+    initial period.
     """
     if not time_ranges:
         return []
@@ -410,8 +432,10 @@ def remove_initial_included_ranges(time_ranges, initial_minutes) -> List[tuple]:
     modified_time_ranges = [next((start_time, end_time) for start_time, end_time in time_ranges if end_time > initial_end_time)]
 
     for start_time, end_time in time_ranges[1:]:
-        # Si el tiempo de inicio del rango de tiempo actual es anterior al tiempo de finalización del último rango de tiempo en la lista modificada,
-        # entonces el rango de tiempo actual está completamente incluido en un rango de tiempo desde el comienzo del primer intervalo que aparece,
+        # Si el tiempo de inicio del rango de tiempo actual es anterior al tiempo de finalización del último rango de tiempo en la lista
+        # modificada,
+        # entonces el rango de tiempo actual está completamente incluido en un rango de tiempo desde el comienzo del primer intervalo que
+        # aparece,
         # por lo que lo saltamos
         if start_time < modified_time_ranges[-1][1]:
             continue
@@ -428,4 +452,3 @@ def adjust_timestamp_unit_nano_or_ms(ts):
         ts *= 1_000_000
 
     return ts
-

@@ -207,32 +207,33 @@ def get_candles_by_time_stamps(symbol: str,
     return raw_candles
 
 
-def get_historical_candles_old(symbol: str, tick_interval: str, start_time: int, end_time: int, tick_interval_ms: int,
-                               limit: int = 1000) -> list:
-    """
-    Retrieve all kline data within the given time range considering the API limit.
-
-    :param str symbol: The trading pair symbol (e.g., "BTCUSDT").
-    :param str tick_interval: Kline tick interval (e.g., "1m", "3m", "1h").
-    :param int start_time: Start timestamp (milliseconds) of the time range.
-    :param int end_time: End timestamp (milliseconds) of the time range.
-    :param int tick_interval_ms: Kline tick interval in milliseconds.
-    :param int limit: API limit for the number of klines in a single request (default: 1000).
-    :return: A list of klines data within the given time range.
-    :rtype: list
-    """
-    iterations = calculate_iterations(start_time=start_time, end_time=end_time, tick_interval_ms=tick_interval_ms, limit=limit)
-    all_data = []
-
-    for i in range(iterations):
-        current_start_time = start_time + i * limit * tick_interval_ms
-        current_end_time = min(current_start_time + (limit - 1) * tick_interval_ms, end_time)
-
-        data = get_candles_by_time_stamps(symbol=symbol, tick_interval=tick_interval, start_time=current_start_time,
-                                          end_time=current_end_time)
-        all_data.extend(data)
-
-    return all_data
+# def get_historical_candles_old(symbol: str, tick_interval: str, start_time: int, end_time: int, tick_interval_ms: int,
+#                                limit: int = 1000) -> list:
+#     """
+#     Retrieve all kline data within the given time range considering the API limit.
+#
+#     :param str symbol: The trading pair symbol (e.g., "BTCUSDT").
+#     :param str tick_interval: Kline tick interval (e.g., "1m", "3m", "1h").
+#     :param int start_time: Start timestamp (milliseconds) of the time range.
+#     :param int end_time: End timestamp (milliseconds) of the time range.
+#     :param int tick_interval_ms: Kline tick interval in milliseconds.
+#     :param int limit: API limit for the number of klines in a single request (default: 1000).
+#     :return: A list of klines data within the given time range.
+#     :rtype: list
+#     """
+#     iterations = calculate_iterations(start_time=start_time, end_time=end_time, tick_interval_ms=tick_interval_ms, limit=limit)
+#     all_data = []
+#
+#     for i in range(iterations + 1):
+#         current_start_time = start_time + i * limit * tick_interval_ms
+#         current_end_time = min(current_start_time + (limit - 1) * tick_interval_ms, end_time)
+#
+#         data = get_candles_by_time_stamps(symbol=symbol, tick_interval=tick_interval, start_time=current_start_time,
+#                                           end_time=current_end_time)
+#         if data:
+#             all_data.extend(data)
+#
+#     return all_data
 
 
 def get_historical_candles(symbol: str,
@@ -245,6 +246,8 @@ def get_historical_candles(symbol: str,
     """
     Retrieve all kline data within the given time range considering the API limit.
 
+    Start time and end time are rounded down to the nearest open tick interval and are included both opens rounded.
+
     :param str symbol: The trading pair symbol (e.g., "BTCUSDT").
     :param str tick_interval: Kline tick interval (e.g., "1m", "3m", "1h").
     :param int start_time: Start timestamp (milliseconds) of the time range.
@@ -255,25 +258,38 @@ def get_historical_candles(symbol: str,
     :return: A list of klines data within the given time range.
     :rtype: list
     """
-    iterations = calculate_iterations(start_time, end_time, tick_interval_ms, limit)
+    start = int((start_time // tick_interval_ms) * tick_interval_ms)
+    # end = int(-(end_time // -tick_interval_ms) * tick_interval_ms)  # trae una de mas
+    end = int((end_time // tick_interval_ms) * tick_interval_ms)
+
     all_data = []
 
-    for i in range(iterations):
-        current_start_time = start_time + i * limit * tick_interval_ms
-        current_end_time = min(current_start_time + (limit - 1) * tick_interval_ms, end_time)
+    for curr_start in range(start, end, limit * tick_interval_ms):
+
+        curr_end = curr_start + (limit * tick_interval_ms)
         if ignore_errors:
+            print(curr_start, curr_end)
             try:
                 data = get_candles_by_time_stamps(symbol=symbol,
                                                   tick_interval=tick_interval,
-                                                  start_time=current_start_time,
-                                                  end_time=current_end_time)
+                                                  start_time=curr_start,
+                                                  end_time=curr_end)
             except Exception as e:
                 market_logger.warning(f"{symbol} kline_{tick_interval} missing: {e}")
                 continue
         else:
-            data = get_candles_by_time_stamps(symbol=symbol, tick_interval=tick_interval, start_time=current_start_time,
-                                              end_time=current_end_time)
-        all_data.extend(data)
+            data = get_candles_by_time_stamps(symbol=symbol,
+                                              tick_interval=tick_interval,
+                                              start_time=curr_start,
+                                              end_time=curr_end)
+        if data:
+            all_data.extend(data)
+
+    # ordena datos por primera columna. No debería haber
+    all_data = sorted(all_data, key=lambda x: x[0])
+
+    # elimina duplicados por primera columna. No debería haber
+    all_data = [i for n, i in enumerate(all_data) if i not in all_data[n + 1:]]
 
     return all_data
 
