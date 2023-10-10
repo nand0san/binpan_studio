@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Time Helpers - BinPan 0.5.13 documentation</title>
+      <title>Time Helpers - BinPan 0.5.21 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Wallet Module" href="wallet.html" /><link rel="prev" title="Tags &amp; Backtesting Module" href="tags.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -290,7 +290,7 @@ html.dark {
 <td><p></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.calculate_iterations" title="handlers.time_helper.calculate_iterations"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_iterations</span></code></a>(start_time, end_time, ...)</p></td>
-<td><p>Calculate the number of iterations required to retrieve data within the given time range considering the API limit.</p></td>
+<td><p>Calculate the number of iterations required to retrieve data within the given time range considering the API limit inclusively.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.infer_frequency_and_set_index" title="handlers.time_helper.infer_frequency_and_set_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">infer_frequency_and_set_index</span></code></a>(data[, ...])</p></td>
 <td><p>Infers the frequency of the DataFrame based on the 'Open timestamp' column and sets it as the DataFrame index.</p></td>
@@ -541,7 +541,11 @@ Si coincide el timestamp con un open, calcula el final.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.calculate_iterations">
 <span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">calculate_iterations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval_ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.calculate_iterations" title="Link to this definition">¶</a></dt>
-<dd><p>Calculate the number of iterations required to retrieve data within the given time range considering the API limit.</p>
+<dd><p>Calculate the number of iterations required to retrieve data within the given time range considering the API limit inclusively.</p>
+<dl class="simple">
+<dt>When timestamps in the middle of a kline, it will expand the time range to include the whole kline from opens including both start and</dt><dd><p>end timestamps.</p>
+</dd>
+</dl>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -611,7 +615,8 @@ Si coincide el timestamp con un open, calcula el final.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A list of tuples containing the start and end time of each interval, without the ranges that are completely included in the initial period.</p>
+<dd class="field-even"><p>A list of tuples containing the start and end time of each interval, without the ranges that are completely included in the
+initial period.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -671,7 +676,7 @@ Si coincide el timestamp con un open, calcula el final.</p>
     </div>
   </div>
 </footer></div>
-      <script src="_static/documentation_options.js?v=c61aa432"></script>
+      <script src="_static/documentation_options.js?v=f8cada8d"></script>
       <script src="_static/doctools.js?v=888ff710"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/shibuya.js?v=3e5c8598"></script>

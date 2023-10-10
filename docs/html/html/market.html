@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Market Module - BinPan 0.5.13 documentation</title>
+      <title>Market Module - BinPan 0.5.21 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Messages Module" href="messages.html" /><link rel="prev" title="Influx Manager Module" href="influx_manager.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -127,11 +127,11 @@ html.dark {
 <li><a class="reference internal" href="#handlers.market.get_last_price"><code class="docutils literal notranslate"><span class="pre">get_last_price()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.market.get_prices_dic"><code class="docutils literal notranslate"><span class="pre">get_prices_dic()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.market.get_candles_by_time_stamps"><code class="docutils literal notranslate"><span class="pre">get_candles_by_time_stamps()</span></code></a></li>
-<li><a class="reference internal" href="#handlers.market.get_historical_candles_old"><code class="docutils literal notranslate"><span class="pre">get_historical_candles_old()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.market.get_historical_candles"><code class="docutils literal notranslate"><span class="pre">get_historical_candles()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.market.parse_candles_to_dataframe"><code class="docutils literal notranslate"><span class="pre">parse_candles_to_dataframe()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.market.basic_dataframe"><code class="docutils literal notranslate"><span class="pre">basic_dataframe()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.market.convert_to_numeric"><code class="docutils literal notranslate"><span class="pre">convert_to_numeric()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.market.convert_dict_to_numeric"><code class="docutils literal notranslate"><span class="pre">convert_dict_to_numeric()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.market.get_last_agg_trades"><code class="docutils literal notranslate"><span class="pre">get_last_agg_trades()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.market.get_aggregated_trades"><code class="docutils literal notranslate"><span class="pre">get_aggregated_trades()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.market.get_historical_agg_trades"><code class="docutils literal notranslate"><span class="pre">get_historical_agg_trades()</span></code></a></li>
@@ -194,20 +194,20 @@ html.dark {
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.market.get_candles_by_time_stamps" title="handlers.market.get_candles_by_time_stamps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_candles_by_time_stamps</span></code></a>(symbol, tick_interval)</p></td>
 <td><p>Calls API for a candles list using one or two timestamps, starting and ending.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.market.get_historical_candles_old" title="handlers.market.get_historical_candles_old"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_historical_candles_old</span></code></a>(symbol, ...[, limit])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.market.get_historical_candles" title="handlers.market.get_historical_candles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_historical_candles</span></code></a>(symbol, ...[, limit, ...])</p></td>
 <td><p>Retrieve all kline data within the given time range considering the API limit.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.market.get_historical_candles" title="handlers.market.get_historical_candles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_historical_candles</span></code></a>(symbol, ...[, limit, ...])</p></td>
-<td><p>Retrieve all kline data within the given time range considering the API limit.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.market.parse_candles_to_dataframe" title="handlers.market.parse_candles_to_dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_candles_to_dataframe</span></code></a>(raw_response, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.market.parse_candles_to_dataframe" title="handlers.market.parse_candles_to_dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_candles_to_dataframe</span></code></a>(raw_response, ...)</p></td>
 <td><p>Format a list of lists by changing the indicated time fields to string format.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.market.basic_dataframe" title="handlers.market.basic_dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">basic_dataframe</span></code></a>(data[, exceptions, actions_col])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.market.basic_dataframe" title="handlers.market.basic_dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">basic_dataframe</span></code></a>(data[, exceptions, actions_col])</p></td>
 <td><p>Delete all columns except: Open, High, Low, Close, Volume, actions.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.market.convert_to_numeric" title="handlers.market.convert_to_numeric"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_to_numeric</span></code></a>(data)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.market.convert_to_numeric" title="handlers.market.convert_to_numeric"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_to_numeric</span></code></a>(data)</p></td>
 <td><p>Converts to numeric all posible columns for a given Dataframe.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.market.convert_dict_to_numeric" title="handlers.market.convert_dict_to_numeric"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_dict_to_numeric</span></code></a>(input_dict, ...)</p></td>
+<td><p>Converts all values in a dictionary to numeric values if possible.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.market.get_last_agg_trades" title="handlers.market.get_last_agg_trades"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_last_agg_trades</span></code></a>(symbol[, limit])</p></td>
 <td><p>Get just the last aggregated trades from API.</p></td>
@@ -318,33 +318,10 @@ is open right in between the endtime timestamp.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="handlers.market.get_historical_candles_old">
-<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_historical_candles_old</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval_ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.market.get_historical_candles_old" title="Link to this definition">¶</a></dt>
-<dd><p>Retrieve all kline data within the given time range considering the API limit.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>symbol</strong> (<em>str</em>) – The trading pair symbol (e.g., “BTCUSDT”).</p></li>
-<li><p><strong>tick_interval</strong> (<em>str</em>) – Kline tick interval (e.g., “1m”, “3m”, “1h”).</p></li>
-<li><p><strong>start_time</strong> (<em>int</em>) – Start timestamp (milliseconds) of the time range.</p></li>
-<li><p><strong>end_time</strong> (<em>int</em>) – End timestamp (milliseconds) of the time range.</p></li>
-<li><p><strong>tick_interval_ms</strong> (<em>int</em>) – Kline tick interval in milliseconds.</p></li>
-<li><p><strong>limit</strong> (<em>int</em>) – API limit for the number of klines in a single request (default: 1000).</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A list of klines data within the given time range.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="handlers.market.get_historical_candles">
 <span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">get_historical_candles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval_ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_errors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.market.get_historical_candles" title="Link to this definition">¶</a></dt>
 <dd><p>Retrieve all kline data within the given time range considering the API limit.</p>
+<p>Start time and end time are rounded down to the nearest open tick interval and are included both opens rounded.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -420,6 +397,23 @@ is open right in between the endtime timestamp.</p>
 </dd>
 <dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
 <dd class="field-even"><p>A dataframe with numeric values in each column that can be numeric.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.market.convert_dict_to_numeric">
+<span class="sig-prename descclassname"><span class="pre">handlers.market.</span></span><span class="sig-name descname"><span class="pre">convert_dict_to_numeric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parse_datetime2int</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.market.convert_dict_to_numeric" title="Link to this definition">¶</a></dt>
+<dd><p>Converts all values in a dictionary to numeric values if possible.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_dict</strong> – A dictionary.</p></li>
+<li><p><strong>parse_datetime2int</strong> – If True, parses datetime columns to int.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns a dictionary with all values converted to numeric values if possible.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -910,7 +904,7 @@ symbol      STRING  NO      Parameter symbol and symbols cannot be used in combi
     </div>
   </div>
 </footer></div>
-      <script src="_static/documentation_options.js?v=c61aa432"></script>
+      <script src="_static/documentation_options.js?v=f8cada8d"></script>
       <script src="_static/doctools.js?v=888ff710"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/shibuya.js?v=3e5c8598"></script>

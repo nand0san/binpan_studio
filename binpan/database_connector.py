@@ -1,7 +1,8 @@
 from handlers.postgresql import (create_connection, get_valid_table_list, is_cursor_alive, check_standard_table_exists,
                                  is_hypertable, get_column_names, get_indexed_columns, get_hypertable_indexes,
-                                 list_tables_with_suffix, data_type_table)
+                                 list_tables_with_suffix, data_type_from_table, count_rows_in_tables)
 from handlers.starters import AesCipher
+from typing import List, Dict
 
 cipher_object = AesCipher()
 
@@ -64,7 +65,7 @@ class Database:
         self.status()
 
     def get_columns(self, table_name: str):
-        return get_column_names(cursor=self.cursor, table_name=table_name)
+        return get_column_names(cursor=self.cursor, table_name=table_name, own_transaction=True)
 
     def close(self):
         self.connection.close()
@@ -73,8 +74,10 @@ class Database:
         print(f"Host: {self.host}\nPort: {self.port}\nUser: {self.user}\nPassword: {self.password}\nDatabase: "
               f"{self.database}\nConnection: {self.connection}\nCursor: {self.cursor}")
 
-    def get_tables(self, table_type: str = None):
-        if table_type:
+    def get_tables(self, table_type: str = None, raw=False):
+        if raw:
+            return list_tables_with_suffix(self.cursor, "")
+        elif table_type:
             return list_tables_with_suffix(self.cursor, table_type)
         else:
             return get_valid_table_list(self.cursor)
@@ -85,14 +88,19 @@ class Database:
     def table_config(self, table_name: str):
         exists = check_standard_table_exists(cursor=self.cursor, table_name=table_name)
         hyper = is_hypertable(cursor=self.cursor, table_name=table_name)
-        columns = get_column_names(cursor=self.cursor, table_name=table_name)
+        columns = get_column_names(cursor=self.cursor, table_name=table_name, own_transaction=True)
         index = get_indexed_columns(cursor=self.cursor, table_name=table_name)
         hyper_index = get_hypertable_indexes(cursor=self.cursor, hypertable_name=table_name)
 
         # mostrar una tabla con todos los datos recopilados
         print(f"Table: {table_name}\nExists: {exists}\nHyper: {hyper}\nColumns: {columns}\nIndex: {index}\nHyper Index: {hyper_index}")
 
+    def get_table_counts(self, tables: List[str] = None) -> Dict[str, int]:
+        if not tables:
+            tables = self.tables
+        return count_rows_in_tables(cursor=self.cursor, table_names=tables)
+
     @staticmethod
     def table_type(table_name: str):
-        data_type = data_type_table(table_name)
+        data_type = data_type_from_table(table_name)
         return data_type
