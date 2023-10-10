@@ -656,23 +656,35 @@ def convert_to_hypertable(cursor,
     try:
         # Verificar si la tabla existe
         cursor.execute(f"SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = '{table_name}');")
-        if not cursor.fetchone()[0]:
-            sql_logger.info(f"La tabla no existe: {table_name}")
+        ret = cursor.fetchone()[0]
+        if not ret:
+            sql_logger.info(f"La tabla no existe: {table_name} {ret}")
             return False
 
         # Verificar si ya es una hipertabla
         cursor.execute(f"SELECT * FROM timescaledb_information.hypertables WHERE hypertable_name = '{table_name}';")
-        if cursor.fetchone() is not None:
-            sql_logger.info(f"La tabla ya es una hipertabla: {table_name}")
+        ret = cursor.fetchone()
+        if ret is not None:
+            sql_logger.info(f"La tabla ya es una hipertabla: {table_name} {ret}")
             return False
 
         # convertir a hipertabla
         cursor.execute(f"SELECT create_hypertable('{table_name}', '{time_column}');")
+        ret = cursor.fetchone()
+        if ret:
+            sql_logger.info(f"Tabla convertida a hipertabla: {table_name} {ret}")
         if unique_column:
             cursor.execute(f'CREATE UNIQUE INDEX binpan_index ON {table_name} ("{time_column}", "{unique_column}");')
+            # Capturar mensajes del servidor
+            if cursor.connection.notices:
+                sql_logger.debug(f"Mensajes del servidor: {cursor.connection.notices}")
         else:
-            pass
-        sql_logger.debug(f"Valor no usado: {chunk_time_interval}")
+            cursor.execute(f'CREATE UNIQUE INDEX binpan_index ON {table_name} ("{time_column}");')
+            # Capturar mensajes del servidor
+            if cursor.connection.notices:
+                sql_logger.debug(f"Mensajes del servidor: {cursor.connection.notices}")
+
+        # sql_logger.debug(f"Valor no usado: {chunk_time_interval}")
         return True
 
     except Exception as e:
