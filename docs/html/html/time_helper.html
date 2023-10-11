@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Time Helpers - BinPan 0.5.21 documentation</title>
+      <title>Time Helpers - BinPan 0.5.22 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Wallet Module" href="wallet.html" /><link rel="prev" title="Tags &amp; Backtesting Module" href="tags.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -126,6 +126,7 @@ html.dark {
     <ul>
 <li><a class="reference internal" href="#handlers.time_helper.convert_ms_column_to_datetime_with_zone"><code class="docutils literal notranslate"><span class="pre">convert_ms_column_to_datetime_with_zone()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.time_helper.convert_datetime_to_string"><code class="docutils literal notranslate"><span class="pre">convert_datetime_to_string()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.time_helper.convert_datetime_utc2ms"><code class="docutils literal notranslate"><span class="pre">convert_datetime_utc2ms()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.time_helper.convert_datetime_to_milliseconds"><code class="docutils literal notranslate"><span class="pre">convert_datetime_to_milliseconds()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.time_helper.convert_string_to_milliseconds"><code class="docutils literal notranslate"><span class="pre">convert_string_to_milliseconds()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.time_helper.datetime_utc_to_milliseconds"><code class="docutils literal notranslate"><span class="pre">datetime_utc_to_milliseconds()</span></code></a></li>
@@ -205,103 +206,106 @@ html.dark {
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.convert_datetime_to_string" title="handlers.time_helper.convert_datetime_to_string"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_datetime_to_string</span></code></a>(dt)</p></td>
 <td><p>Convierte datetime tanto utc como local.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.convert_datetime_to_milliseconds" title="handlers.time_helper.convert_datetime_to_milliseconds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_datetime_to_milliseconds</span></code></a>(dt[, timezoned])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.convert_datetime_utc2ms" title="handlers.time_helper.convert_datetime_utc2ms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_datetime_utc2ms</span></code></a>(date_object)</p></td>
+<td><p>Convert datetime object to milliseconds.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.convert_datetime_to_milliseconds" title="handlers.time_helper.convert_datetime_to_milliseconds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_datetime_to_milliseconds</span></code></a>(dt[, timezoned])</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.convert_string_to_milliseconds" title="handlers.time_helper.convert_string_to_milliseconds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_string_to_milliseconds</span></code></a>(ts[, timezoned])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.convert_string_to_milliseconds" title="handlers.time_helper.convert_string_to_milliseconds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_string_to_milliseconds</span></code></a>(ts[, timezoned])</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.datetime_utc_to_milliseconds" title="handlers.time_helper.datetime_utc_to_milliseconds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">datetime_utc_to_milliseconds</span></code></a>(dt)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.datetime_utc_to_milliseconds" title="handlers.time_helper.datetime_utc_to_milliseconds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">datetime_utc_to_milliseconds</span></code></a>(dt)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.end_time_from_start_time" title="handlers.time_helper.end_time_from_start_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">end_time_from_start_time</span></code></a>(startTime[, limit, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.end_time_from_start_time" title="handlers.time_helper.end_time_from_start_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">end_time_from_start_time</span></code></a>(startTime[, limit, ...])</p></td>
 <td><p>Calculates end time by tick interval and limit.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.start_time_from_end_time" title="handlers.time_helper.start_time_from_end_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">start_time_from_end_time</span></code></a>(endTime[, limit, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.start_time_from_end_time" title="handlers.time_helper.start_time_from_end_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">start_time_from_end_time</span></code></a>(endTime[, limit, ...])</p></td>
 <td><p>Calculates startime from a timestamp and a limit of klines before.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.convert_milliseconds_to_local_timezone_string" title="handlers.time_helper.convert_milliseconds_to_local_timezone_string"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_milliseconds_to_local_timezone_string</span></code></a>(ms)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.convert_milliseconds_to_local_timezone_string" title="handlers.time_helper.convert_milliseconds_to_local_timezone_string"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_milliseconds_to_local_timezone_string</span></code></a>(ms)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.convert_milliseconds_to_utc_string" title="handlers.time_helper.convert_milliseconds_to_utc_string"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_milliseconds_to_utc_string</span></code></a>(ms)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.convert_milliseconds_to_utc_string" title="handlers.time_helper.convert_milliseconds_to_utc_string"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_milliseconds_to_utc_string</span></code></a>(ms)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.convert_milliseconds_to_utc_datetime" title="handlers.time_helper.convert_milliseconds_to_utc_datetime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_milliseconds_to_utc_datetime</span></code></a>(ms)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.convert_milliseconds_to_utc_datetime" title="handlers.time_helper.convert_milliseconds_to_utc_datetime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_milliseconds_to_utc_datetime</span></code></a>(ms)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.convert_milliseconds_to_time_zone_datetime" title="handlers.time_helper.convert_milliseconds_to_time_zone_datetime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_milliseconds_to_time_zone_datetime</span></code></a>(ms)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.convert_milliseconds_to_time_zone_datetime" title="handlers.time_helper.convert_milliseconds_to_time_zone_datetime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_milliseconds_to_time_zone_datetime</span></code></a>(ms)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.convert_milliseconds_to_str" title="handlers.time_helper.convert_milliseconds_to_str"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_milliseconds_to_str</span></code></a>(ms[, timezoned])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.convert_milliseconds_to_str" title="handlers.time_helper.convert_milliseconds_to_str"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_milliseconds_to_str</span></code></a>(ms[, timezoned])</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.utc_start_of_day_ms" title="handlers.time_helper.utc_start_of_day_ms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">utc_start_of_day_ms</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.utc_start_of_day_ms" title="handlers.time_helper.utc_start_of_day_ms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">utc_start_of_day_ms</span></code></a>()</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.ms_day_begin_end" title="handlers.time_helper.ms_day_begin_end"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ms_day_begin_end</span></code></a>(ts)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.ms_day_begin_end" title="handlers.time_helper.ms_day_begin_end"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ms_day_begin_end</span></code></a>(ts)</p></td>
 <td><p>Calcula en horario utc el timestamp del comienzo del dia y su final del timestamp pasado como argumento.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.split_time_interval_in_full_days" title="handlers.time_helper.split_time_interval_in_full_days"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_time_interval_in_full_days</span></code></a>(ts_ini, ts_end)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.split_time_interval_in_full_days" title="handlers.time_helper.split_time_interval_in_full_days"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_time_interval_in_full_days</span></code></a>(ts_ini, ts_end)</p></td>
 <td><p>Dado un intervalo mediante dos timestamps, devuelve un alista de tuplas con el inicio y final de cada día completo tocado por el intervalo input.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.time_interval" title="handlers.time_helper.time_interval"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time_interval</span></code></a>(tick_interval[, limit, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.time_interval" title="handlers.time_helper.time_interval"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time_interval</span></code></a>(tick_interval[, limit, ...])</p></td>
 <td><p>Obtain a timestamp based on ticks intervals from a start or an end timestamp, based on limit.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.ceil_division" title="handlers.time_helper.ceil_division"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ceil_division</span></code></a>(a, b)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.ceil_division" title="handlers.time_helper.ceil_division"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ceil_division</span></code></a>(a, b)</p></td>
 <td><p>Better not to use //.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.ticks_between_timestamps" title="handlers.time_helper.ticks_between_timestamps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ticks_between_timestamps</span></code></a>(start, end, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.ticks_between_timestamps" title="handlers.time_helper.ticks_between_timestamps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ticks_between_timestamps</span></code></a>(start, end, ...)</p></td>
 <td><p>Dados dos timestamps en milliseconds y un tick interval te dice cuantas velas entran ahi.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.get_ticks_to_timestamp_utc" title="handlers.time_helper.get_ticks_to_timestamp_utc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ticks_to_timestamp_utc</span></code></a>(ticks_interval[, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.get_ticks_to_timestamp_utc" title="handlers.time_helper.get_ticks_to_timestamp_utc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ticks_to_timestamp_utc</span></code></a>(ticks_interval[, ...])</p></td>
 <td><p>Retorna cuantas velas se requieren hasta el timestamp pasado hasta ahora</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.convert_string_to_datetime" title="handlers.time_helper.convert_string_to_datetime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_string_to_datetime</span></code></a>(ts[, timezoned])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.convert_string_to_datetime" title="handlers.time_helper.convert_string_to_datetime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_string_to_datetime</span></code></a>(ts[, timezoned])</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.convert_utc_datetime_to_milliseconds" title="handlers.time_helper.convert_utc_datetime_to_milliseconds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_utc_datetime_to_milliseconds</span></code></a>(dt)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.convert_utc_datetime_to_milliseconds" title="handlers.time_helper.convert_utc_datetime_to_milliseconds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_utc_datetime_to_milliseconds</span></code></a>(dt)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.utc" title="handlers.time_helper.utc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">utc</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.utc" title="handlers.time_helper.utc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">utc</span></code></a>()</p></td>
 <td><p>Returns UTC time in milliseconds from epoch.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.utc_datetime" title="handlers.time_helper.utc_datetime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">utc_datetime</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.utc_datetime" title="handlers.time_helper.utc_datetime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">utc_datetime</span></code></a>()</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.check_tick_interval" title="handlers.time_helper.check_tick_interval"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_tick_interval</span></code></a>(tick_interval)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.check_tick_interval" title="handlers.time_helper.check_tick_interval"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_tick_interval</span></code></a>(tick_interval)</p></td>
 <td><p>Checks if argument is a Binance valid tick interval for candles.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.detect_tick_interval" title="handlers.time_helper.detect_tick_interval"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detect_tick_interval</span></code></a>(data)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.detect_tick_interval" title="handlers.time_helper.detect_tick_interval"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detect_tick_interval</span></code></a>(data)</p></td>
 <td><p>Retorna el tick interval de un dataframe</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.next_open_utc" title="handlers.time_helper.next_open_utc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">next_open_utc</span></code></a>(tick_interval)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.next_open_utc" title="handlers.time_helper.next_open_utc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">next_open_utc</span></code></a>(tick_interval)</p></td>
 <td><p>Calcula el timestamp del next open para un tick_interval</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.next_open_by_milliseconds" title="handlers.time_helper.next_open_by_milliseconds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">next_open_by_milliseconds</span></code></a>(ms, tick_interval)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.next_open_by_milliseconds" title="handlers.time_helper.next_open_by_milliseconds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">next_open_by_milliseconds</span></code></a>(ms, tick_interval)</p></td>
 <td><p>Calcula el timestamp del next open para un tick_interval.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.open_from_milliseconds" title="handlers.time_helper.open_from_milliseconds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">open_from_milliseconds</span></code></a>(ms, tick_interval)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.open_from_milliseconds" title="handlers.time_helper.open_from_milliseconds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">open_from_milliseconds</span></code></a>(ms, tick_interval)</p></td>
 <td><p>Retorna el open de la vela definida que contiene ese timestamp.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.close_from_milliseconds" title="handlers.time_helper.close_from_milliseconds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">close_from_milliseconds</span></code></a>(ms, tick_interval)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.close_from_milliseconds" title="handlers.time_helper.close_from_milliseconds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">close_from_milliseconds</span></code></a>(ms, tick_interval)</p></td>
 <td><p>Retorna el close de la vela definida que contiene ese timestamp.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.wait_seconds_until_next_minute" title="handlers.time_helper.wait_seconds_until_next_minute"><code class="xref py py-obj docutils literal notranslate"><span class="pre">wait_seconds_until_next_minute</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.wait_seconds_until_next_minute" title="handlers.time_helper.wait_seconds_until_next_minute"><code class="xref py py-obj docutils literal notranslate"><span class="pre">wait_seconds_until_next_minute</span></code></a>()</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.calculate_iterations" title="handlers.time_helper.calculate_iterations"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_iterations</span></code></a>(start_time, end_time, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.calculate_iterations" title="handlers.time_helper.calculate_iterations"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_iterations</span></code></a>(start_time, end_time, ...)</p></td>
 <td><p>Calculate the number of iterations required to retrieve data within the given time range considering the API limit inclusively.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.infer_frequency_and_set_index" title="handlers.time_helper.infer_frequency_and_set_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">infer_frequency_and_set_index</span></code></a>(data[, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.infer_frequency_and_set_index" title="handlers.time_helper.infer_frequency_and_set_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">infer_frequency_and_set_index</span></code></a>(data[, ...])</p></td>
 <td><p>Infers the frequency of the DataFrame based on the 'Open timestamp' column and sets it as the DataFrame index.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.get_dataframe_time_index_ranges" title="handlers.time_helper.get_dataframe_time_index_ranges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_dataframe_time_index_ranges</span></code></a>(data[, interval])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.get_dataframe_time_index_ranges" title="handlers.time_helper.get_dataframe_time_index_ranges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_dataframe_time_index_ranges</span></code></a>(data[, interval])</p></td>
 <td><p>Divides a DataFrame into time ranges of a specified interval. Complete intervals are used, but the first interval is the one with</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.remove_initial_included_ranges" title="handlers.time_helper.remove_initial_included_ranges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_initial_included_ranges</span></code></a>(time_ranges, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.remove_initial_included_ranges" title="handlers.time_helper.remove_initial_included_ranges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_initial_included_ranges</span></code></a>(time_ranges, ...)</p></td>
 <td><p>Remove the time ranges that are completely included in the initial period.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.adjust_timestamp_unit_nano_or_ms" title="handlers.time_helper.adjust_timestamp_unit_nano_or_ms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">adjust_timestamp_unit_nano_or_ms</span></code></a>(ts)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.adjust_timestamp_unit_nano_or_ms" title="handlers.time_helper.adjust_timestamp_unit_nano_or_ms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">adjust_timestamp_unit_nano_or_ms</span></code></a>(ts)</p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -322,6 +326,20 @@ html.dark {
 <dt class="sig sig-object py" id="handlers.time_helper.convert_datetime_to_string">
 <span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_datetime_to_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.time_helper.convert_datetime_to_string" title="Link to this definition">¶</a></dt>
 <dd><p>Convierte datetime tanto utc como local. No cambia zona horaria</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.time_helper.convert_datetime_utc2ms">
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_datetime_utc2ms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date_object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.convert_datetime_utc2ms" title="Link to this definition">¶</a></dt>
+<dd><p>Convert datetime object to milliseconds. Example: datetime.datetime(2023, 10, 10, 11, 52, tzinfo=datetime.timezone.utc)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>date_object</strong> – A datetime object.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A Unix timestamp in milliseconds.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -676,7 +694,7 @@ initial period.</p>
     </div>
   </div>
 </footer></div>
-      <script src="_static/documentation_options.js?v=f8cada8d"></script>
+      <script src="_static/documentation_options.js?v=cf3250e7"></script>
       <script src="_static/doctools.js?v=888ff710"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/shibuya.js?v=3e5c8598"></script>
