@@ -248,6 +248,8 @@ def get_historical_candles(symbol: str,
 
     Start time and end time are rounded down to the nearest open tick interval and are included both opens rounded.
 
+    Please, check last close timestamp in klines because it can be not closed yet.
+
     :param str symbol: The trading pair symbol (e.g., "BTCUSDT").
     :param str tick_interval: Kline tick interval (e.g., "1m", "3m", "1h").
     :param int start_time: Start timestamp (milliseconds) of the time range.
@@ -256,7 +258,23 @@ def get_historical_candles(symbol: str,
     :param int limit: API limit for the number of klines in a single request (default: 1000).
     :param bool ignore_errors: If tru, just throw a warning on error. Recommended for redis filler.
     :return: A list of klines data within the given time range.
-    :rtype: list
+
+    Example of binpan response:
+
+     .. code-block:: python
+
+        [[1696786200000,
+         '27890.28000000',
+         '27892.47000000',
+         '27890.27000000',
+         '27890.45000000',
+         '5.42396000',
+         1696786259999,
+         '151280.49524920',
+         370,
+         '1.99232000',
+         '55567.81240580',
+         '0']...]
     """
     start = int((start_time // tick_interval_ms) * tick_interval_ms)
     # end = int(-(end_time // -tick_interval_ms) * tick_interval_ms)  # trae una de mas
@@ -268,7 +286,6 @@ def get_historical_candles(symbol: str,
 
         curr_end = curr_start + (limit * tick_interval_ms)
         if ignore_errors:
-            print(curr_start, curr_end)
             try:
                 data = get_candles_by_time_stamps(symbol=symbol,
                                                   tick_interval=tick_interval,

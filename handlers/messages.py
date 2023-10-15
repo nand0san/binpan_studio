@@ -10,11 +10,9 @@ from .logs import Logs
 from .time_helper import convert_milliseconds_to_str
 from .wallet import get_spot_balances_df, get_spot_balances_total_value
 
-
 msg_logger = Logs(filename='./logs/msg_logger.log', name='msg_logger', info_level='INFO')
 
 cipher_object = AesCipher()
-
 
 encoded_telegram_bot_id, encoded_chat_id = get_encoded_telegram_secrets()
 
@@ -52,7 +50,7 @@ def telegram_bot_send_text(msg: dict or str,
     :return: Telegrams API response.
     """
 
-    if type(msg) == dict:
+    if type(msg) is dict:
         bot_message = str(msg.copy())
     else:
         bot_message = str(msg)
@@ -74,51 +72,71 @@ def telegram_bot_send_text(msg: dict or str,
     return response.json()
 
 
+def sort_mixed_dict(d: dict) -> dict:
+    """
+    Sort a dictionary that may contain mixed types (int, float, str, etc.)
+
+    :param dict d: The dictionary to sort.
+    :return dict: A new sorted dictionary.
+    """
+    int_dict = {k: v for k, v in d.items() if isinstance(v, int)}
+    float_dict = {k: v for k, v in d.items() if isinstance(v, float)}
+    str_dict = {k: v for k, v in d.items() if isinstance(v, str)}
+    dict_dict = {k: v for k, v in d.items() if isinstance(v, dict)}
+
+    int_dict = {k: v for k, v in sorted(int_dict.items(), key=lambda item: item[1], reverse=True)}
+    float_dict = {k: v for k, v in sorted(float_dict.items(), key=lambda item: item[1], reverse=True)}
+
+    sorted_dict = {**int_dict, **float_dict, **str_dict, **dict_dict}
+    return sorted_dict
+
+
 def telegram_parse_dict(msg_data: dict, timezone='UTC'):
     """
     Parses a dict and downcast types.
 
     :param dict msg_data: Dict to parse as message.
-    :param str timezone: A time zone to parse more human readable any field containing "time" in the name.
+    :param str timezone: A time zone to parse more human-readable any field containing "time" in the name.
     :return str: A markdown v1 parsed telegram string.
     """
-    msg_dict = msg_data.copy()
+
+    # Primera iteración: determinar el tipo de cada valor y hacer downcast si es posible
+    formatted_dict = {}
+    for k, v in msg_data.items():
+        try:
+            assert int(v) == float(v)
+            value = int(v)
+        except Exception:
+            try:
+                value = float(v)
+            except (ValueError, TypeError):
+                value = v
+        formatted_dict[k] = value
+
+    try:
+        formatted_dict = sort_mixed_dict(formatted_dict)
+    except Exception as _:
+        pass
+
+    # Segunda iteración: preparar la cadena para el envío de mensajes
     parsed_msg = ""
-    for k, v in msg_dict.items():
-        try:
-            fv1 = float(v)
-        except:
-            fv1 = v
-        try:
-            fv2 = int(fv1)
-            assert fv2 == fv1
-        except:
-            fv2 = fv1
-        if 'pct' in k:
-            fv2 *= 100
-            row = f"*{k}* : `{fv2:.2f}` \n"
-        elif type(fv2) == float:
-            row = f"*{k}* : `{fv2:.8f}` \n"
-        elif type(fv2) == int:
-            row = f"*{k}* : `{fv2}` \n"
-        elif type(fv2) == dict:
-            row = f"*{k}* : \n{telegram_parse_dict(msg_data=fv2, timezone=timezone)} \n"
+    for k, fv in formatted_dict.items():
+        if 'pct' in k and not "kline" in k and not "time" in k and not "timestamp" in k and not "trade" in k and not "Trade" in k:
+            fv *= 100
+            row = f"*{k}* :\t `{fv:.2f}` \n"
+        elif isinstance(fv, float):
+            row = f"*{k}* :\t `{fv:.8f}` \n"
+        elif isinstance(fv, int):
+            row = f"*{k}* :\t `{fv}` \n"
+        elif isinstance(fv, dict):
+            row = f"*{k}* :\t \n{telegram_parse_dict(msg_data=fv, timezone=timezone)} \n"
         else:
-            if 'time' in k and k != 'timeInForce' and k != 'time_zone':
-                try:
-                    date = convert_milliseconds_to_str(ms=fv2, timezoned=timezone)
-                    row = f"*{k}* : {date} \n"
-                except TypeError:
-                    row = f"*{k}* : {fv2} \n"
-                except ValueError:
-                    row = f"*{k}* : {fv2} \n"
-            else:
-                row = f"*{k}* : {fv2} \n"
+            row = f"*{k}* :\t {fv} \n"
+
         parsed_msg += row
-    return parsed_msg.replace('_', ' ').replace("Decimal('", "`").replace("')", "`")
 
+    return parsed_msg.replace('_', ' ').replace("Decimal('", "`").replace("')", "`").replace("{", "").replace("}", "")
 
-# future bot #
 
 
 def tab_str(text: str, indentation=8) -> str:
@@ -154,27 +172,6 @@ def telegram_parse_dataframe_markdown(data: pd.DataFrame, indentation: int = 10,
         str_row = f" {idx} " + ''.join([f"{cols[i]}: {d} " for i, d in enumerate(data_row)])
         ret += str(tab_str(str_row, indentation=indentation)) + "\n"
     return ret + "```"
-
-
-# def telegram_parse_dataframe_markdown(data: pd.DataFrame,
-#                                       indentation: int = 6,
-#                                       title: str = "Balances") -> str:
-#     """
-#     Parses a Dataframe in telegrams message format.
-#
-#     :param DataFrame data: A dataframe
-#     :param int indentation: Spaces to insert each tabulation.
-#     :param str title: a header or title to the result.
-#     :return str: String parsed with tabulations.
-#     """
-#     ret = f"*{title}*: \n"
-#     cols = data.columns
-#     ret += "```\n"
-#     for idx, row in data.iterrows():
-#         data_row = row.tolist()
-#         str_row = f" {idx} " + ''.join([f"{cols[i]}: {d:.8f} " for i, d in enumerate(data_row)])
-#         ret += str(tab_str(str_row, indentation=indentation)) + "\n"
-#     return ret + "```"
 
 
 def telegram_parse_order_markdown(original_order: dict,
