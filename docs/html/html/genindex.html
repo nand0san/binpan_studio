@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Index - BinPan 0.6.01 documentation</title>
+      <title>Index - BinPan 0.6.02 documentation</title>
     <link rel="index" title="Index" href="#" /><link rel="search" title="Search" href="search.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -264,10 +264,10 @@ html.dark {
 </li>
       <li><a href="market.html#handlers.market.convert_dict_to_numeric">convert_dict_to_numeric() (in module handlers.market)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="time_helper.html#handlers.time_helper.convert_milliseconds_to_local_timezone_string">convert_milliseconds_to_local_timezone_string() (in module handlers.time_helper)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="time_helper.html#handlers.time_helper.convert_milliseconds_to_str">convert_milliseconds_to_str() (in module handlers.time_helper)</a>
 </li>
       <li><a href="time_helper.html#handlers.time_helper.convert_milliseconds_to_time_zone_datetime">convert_milliseconds_to_time_zone_datetime() (in module handlers.time_helper)</a>
@@ -296,7 +296,11 @@ html.dark {
 </li>
       <li><a href="exchange.html#handlers.exchange.convert_utc_milliseconds">convert_utc_milliseconds() (in module handlers.exchange)</a>
 </li>
+      <li><a href="indicators.html#handlers.indicators.count_larger_values_backward">count_larger_values_backward() (in module handlers.indicators)</a>
+</li>
       <li><a href="postgresql.html#handlers.postgresql.count_rows_in_tables">count_rows_in_tables() (in module handlers.postgresql)</a>
+</li>
+      <li><a href="indicators.html#handlers.indicators.count_smaller_values_backward">count_smaller_values_backward() (in module handlers.indicators)</a>
 </li>
       <li><a href="aggregations.html#handlers.aggregations.count_trues_cumulative">count_trues_cumulative() (in module handlers.aggregations)</a>
 </li>
@@ -324,6 +328,8 @@ html.dark {
 </li>
       <li><a href="postgresql.html#handlers.postgresql.data_type_from_table">data_type_from_table() (in module handlers.postgresql)</a>
 </li>
+      <li><a href="postgresql.html#handlers.postgresql.data_type_table">data_type_table() (in module handlers.postgresql)</a>
+</li>
       <li><a href="time_helper.html#handlers.time_helper.datetime_utc_to_milliseconds">datetime_utc_to_milliseconds() (in module handlers.time_helper)</a>
 </li>
       <li><a href="aggregations.html#handlers.aggregations.ImbalanceBars.decide_sampling">decide_sampling() (handlers.aggregations.ImbalanceBars method)</a>
@@ -340,10 +346,10 @@ html.dark {
 </li>
       <li><a href="binpan.html#binpan.Symbol.delete_indicator_family">delete_indicator_family() (binpan.Symbol method)</a>
 </li>
-      <li><a href="influx_manager.html#handlers.influx_manager.delete_measurement">delete_measurement() (in module handlers.influx_manager)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="influx_manager.html#handlers.influx_manager.delete_measurement">delete_measurement() (in module handlers.influx_manager)</a>
+</li>
       <li><a href="postgresql.html#handlers.postgresql.delete_record">delete_record() (in module handlers.postgresql)</a>
 </li>
       <li><a href="quest.html#handlers.quest.delete_response">delete_response() (in module handlers.quest)</a>
@@ -586,10 +592,10 @@ html.dark {
 </li>
       <li><a href="exchange.html#handlers.exchange.get_leveraged_coins">get_leveraged_coins() (in module handlers.exchange)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="exchange.html#handlers.exchange.get_leveraged_symbols">get_leveraged_symbols() (in module handlers.exchange)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="binpan.html#binpan.Symbol.get_maker_taker_buy_ratios">get_maker_taker_buy_ratios() (binpan.Symbol method)</a>
 </li>
       <li><a href="wallet.html#handlers.wallet.get_margin_account_details">get_margin_account_details() (in module handlers.wallet)</a>
@@ -683,6 +689,8 @@ html.dark {
       <li><a href="binpan.html#binpan.Symbol.get_timestamps">get_timestamps() (binpan.Symbol method)</a>
 </li>
       <li><a href="exchange.html#handlers.exchange.get_top_gainers">get_top_gainers() (in module handlers.exchange)</a>
+</li>
+      <li><a href="binpan.html#binpan.Exchange.get_usdt_volume_24h">get_usdt_volume_24h() (binpan.Exchange method)</a>
 </li>
       <li><a href="postgresql.html#handlers.postgresql.get_valid_table_list">get_valid_table_list() (in module handlers.postgresql)</a>
 </li>
@@ -1335,9 +1343,11 @@ html.dark {
 </li>
       <li><a href="plotting.html#handlers.plotting.update_names">update_names() (in module handlers.plotting)</a>
 </li>
+      <li><a href="binpan.html#binpan.Wallet.update_spot">update_spot() (binpan.Wallet method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="binpan.html#binpan.Wallet.update_spot">update_spot() (binpan.Wallet method)</a>
+      <li><a href="postgresql.html#handlers.postgresql.update_table_columns">update_table_columns() (in module handlers.postgresql)</a>
 </li>
       <li><a href="quest.html#handlers.quest.update_weights">update_weights() (in module handlers.quest)</a>
 </li>
@@ -1411,7 +1421,7 @@ html.dark {
     </div>
   </div>
 </footer></div>
-      <script src="_static/documentation_options.js?v=061f3e2b"></script>
+      <script src="_static/documentation_options.js?v=31e7b441"></script>
       <script src="_static/doctools.js?v=888ff710"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/shibuya.js?v=3e5c8598"></script>

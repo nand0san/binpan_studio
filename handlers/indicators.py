@@ -32,14 +32,14 @@ os.environ["LOKY_MAX_CPU_COUNT"] = str(cpus)
 def alternating_fractal_indicator(df: pd.DataFrame, max_period: int = None, suffix: str = "") -> pd.DataFrame or None:
     """
     Obtains the minim value for fractal_w periods as fractal is pure alternating max to mins. In other words, max and mins alternates
-    in regular rhythm without any tow max or two mins consecutively.
+     in regular rhythm without any tow max or two mins consecutively.
 
     This custom indicator shows the minimum period in finding a pure alternating fractal. It is some kind of volatility in price
-    indicator, the most period needed, the most volatile price.
+     indicator, the most period needed, the most volatile price.
 
     :param pd.DataFrame df: BinPan Symbol dataframe.
     :param int max_period: Default is len of df. This method will check from 2 to the max period value to find a puer alternating max to
-    mins.
+     mins.
     :param str suffix: A decorative suffix for the name of the column created.
     :return pd.DataFrame: A dataframe with two columns, one with 1 or -1 for local max or local min to tag, and other with price values for
      that points.
@@ -483,7 +483,7 @@ def reversal_candles(trades: pd.DataFrame, decimal_positions: int, time_zone: st
 
     :param pd.Series trades: A dataframe with trades sizes, side and prices.
     :param int decimal_positions: Because this function uses integer numbers for prices, is needed to convert prices. Just steps are
-    relevant.
+     relevant.
     :param str time_zone: A time zone like "Europe/Madrid".
     :param int min_height: Minimum candles height in pips.
     :param int min_reversal: Maximum reversal to close the candles

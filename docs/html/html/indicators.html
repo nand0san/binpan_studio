@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Indicators Module - BinPan 0.6.01 documentation</title>
+      <title>Indicators Module - BinPan 0.6.02 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Influx Manager Module" href="influx_manager.html" /><link rel="prev" title="Files Module" href="files.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -130,6 +130,8 @@ html.dark {
 <li><a class="reference internal" href="#handlers.indicators.ker"><code class="docutils literal notranslate"><span class="pre">ker()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.indicators.fractal_w_indicator"><code class="docutils literal notranslate"><span class="pre">fractal_w_indicator()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.indicators.support_resistance_volume"><code class="docutils literal notranslate"><span class="pre">support_resistance_volume()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.indicators.count_smaller_values_backward"><code class="docutils literal notranslate"><span class="pre">count_smaller_values_backward()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.indicators.count_larger_values_backward"><code class="docutils literal notranslate"><span class="pre">count_larger_values_backward()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.indicators.split_serie_by_position"><code class="docutils literal notranslate"><span class="pre">split_serie_by_position()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.indicators.df_splitter"><code class="docutils literal notranslate"><span class="pre">df_splitter()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.indicators.zoom_cloud_indicators"><code class="docutils literal notranslate"><span class="pre">zoom_cloud_indicators()</span></code></a></li>
@@ -189,7 +191,7 @@ html.dark {
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.alternating_fractal_indicator" title="handlers.indicators.alternating_fractal_indicator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">alternating_fractal_indicator</span></code></a>(df[, ...])</p></td>
-<td><p>Obtains the minim value for fractal_w periods as fractal is pure alternating max to mins.</p></td>
+<td><p>Obtains the minim value for fractal_w periods as fractal is pure alternating max to mins. In other words, max and mins alternates</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.fractal_trend_indicator" title="handlers.indicators.fractal_trend_indicator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fractal_trend_indicator</span></code></a>(df[, period, ...])</p></td>
 <td><p>Obtains the trend of the fractal_w indicator.</p></td>
@@ -198,13 +200,19 @@ html.dark {
 <td><p>The Ichimoku Cloud is a collection of technical indicators that show support and resistance levels, as well as momentum and trend direction.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.ker" title="handlers.indicators.ker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ker</span></code></a>(close, window)</p></td>
-<td><p>Kaufman's Efficiency Ratio based in: <a class="reference external" href="https://stackoverflow.com/questions/36980238/calculating-kaufmans-efficiency-ratio-in-python-with-pandas">https://stackoverflow.com/questions/36980238/calculating-kaufmans-efficiency-ratio-in-python-with-pandas</a></p></td>
+<td><p>Kaufman's Efficiency Ratio based in: <a class="reference external" href="https://stackoverflow.com/questions/36980238/calculating-kaufmans-efficiency-ratio-in-python">https://stackoverflow.com/questions/36980238/calculating-kaufmans-efficiency-ratio-in-python</a> -with-pandas</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.fractal_w_indicator" title="handlers.indicators.fractal_w_indicator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fractal_w_indicator</span></code></a>(df[, period, merged, ...])</p></td>
 <td><p>The fractal indicator is based on a simple price pattern that is frequently seen in financial markets.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.support_resistance_volume" title="handlers.indicators.support_resistance_volume"><code class="xref py py-obj docutils literal notranslate"><span class="pre">support_resistance_volume</span></code></a>(df[, num_bins, ...])</p></td>
 <td><p>Calculates support and resistance levels based on volume and prices in the given dataframe.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.count_smaller_values_backward" title="handlers.indicators.count_smaller_values_backward"><code class="xref py py-obj docutils literal notranslate"><span class="pre">count_smaller_values_backward</span></code></a>(s)</p></td>
+<td><p>Calcula el número de valores que cada entrada en la serie supera hacia atrás hasta encontrar un valor superior o llegar al inicio de la serie.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.count_larger_values_backward" title="handlers.indicators.count_larger_values_backward"><code class="xref py py-obj docutils literal notranslate"><span class="pre">count_larger_values_backward</span></code></a>(s)</p></td>
+<td><p>Calcula el número de valores que son superiores a cada entrada en la serie hacia atrás hasta encontrar un valor igual o menor o llegar al inicio de la serie.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.split_serie_by_position" title="handlers.indicators.split_serie_by_position"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_serie_by_position</span></code></a>(serie, splitter_serie)</p></td>
 <td><p>Splits a serie by values of other serie in four series by relative positions for plotting colored clouds with plotly.</p></td>
@@ -263,15 +271,18 @@ html.dark {
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.indicators.alternating_fractal_indicator">
 <span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">alternating_fractal_indicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_period</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.indicators.alternating_fractal_indicator" title="Link to this definition">¶</a></dt>
-<dd><p>Obtains the minim value for fractal_w periods as fractal is pure alternating max to mins. In other words, max and mins alternates
-in regular rhythm without any tow max or two mins consecutively.</p>
-<p>This custom indicator shows the minimum period in finding a pure alternating fractal. It is some kind of volatility in price
-indicator, the most period needed, the most volatile price.</p>
+<dd><dl class="simple">
+<dt>Obtains the minim value for fractal_w periods as fractal is pure alternating max to mins. In other words, max and mins alternates</dt><dd><p>in regular rhythm without any tow max or two mins consecutively.</p>
+</dd>
+<dt>This custom indicator shows the minimum period in finding a pure alternating fractal. It is some kind of volatility in price</dt><dd><p>indicator, the most period needed, the most volatile price.</p>
+</dd>
+</dl>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df</strong> (<em>pd.DataFrame</em>) – BinPan Symbol dataframe.</p></li>
-<li><p><strong>max_period</strong> (<em>int</em>) – Default is len of df. This method will check from 2 to the max period value to find a puer alternating max to mins.</p></li>
+<li><p><strong>max_period</strong> (<em>int</em>) – Default is len of df. This method will check from 2 to the max period value to find a puer alternating max to
+mins.</p></li>
 <li><p><strong>suffix</strong> (<em>str</em>) – A decorative suffix for the name of the column created.</p></li>
 </ul>
 </dd>
@@ -340,7 +351,8 @@ before Default: 26.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.indicators.ker">
 <span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">ker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">close</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="headerlink" href="#handlers.indicators.ker" title="Link to this definition">¶</a></dt>
-<dd><p>Kaufman’s Efficiency Ratio based in: <a class="reference external" href="https://stackoverflow.com/questions/36980238/calculating-kaufmans-efficiency-ratio-in-python-with-pandas">https://stackoverflow.com/questions/36980238/calculating-kaufmans-efficiency-ratio-in-python-with-pandas</a></p>
+<dd><p>Kaufman’s Efficiency Ratio based in: <a class="reference external" href="https://stackoverflow.com/questions/36980238/calculating-kaufmans-efficiency-ratio-in-python">https://stackoverflow.com/questions/36980238/calculating-kaufmans-efficiency-ratio-in-python</a>
+-with-pandas</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -400,6 +412,36 @@ volumes, while a lower threshold yields more levels, based on a broader range of
 </dd>
 <dt class="field-even">Return list<span class="colon">:</span></dt>
 <dd class="field-even"><p>A sorted list of support and resistance levels.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.indicators.count_smaller_values_backward">
+<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">count_smaller_values_backward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="headerlink" href="#handlers.indicators.count_smaller_values_backward" title="Link to this definition">¶</a></dt>
+<dd><p>Calcula el número de valores que cada entrada en la serie supera hacia atrás
+hasta encontrar un valor superior o llegar al inicio de la serie.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>s</strong> – Serie de pandas o lista de números.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Serie de pandas con el número de valores que cada entrada supera hacia atrás.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.indicators.count_larger_values_backward">
+<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">count_larger_values_backward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="headerlink" href="#handlers.indicators.count_larger_values_backward" title="Link to this definition">¶</a></dt>
+<dd><p>Calcula el número de valores que son superiores a cada entrada en la serie hacia atrás
+hasta encontrar un valor igual o menor o llegar al inicio de la serie.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>s</strong> – Serie de pandas o lista de números.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Serie de pandas con el número de valores que son superiores a cada entrada hacia atrás.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -515,7 +557,8 @@ volumes, while a lower threshold yields more levels, based on a broader range of
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>trades</strong> (<em>pd.Series</em>) – A dataframe with trades sizes, side and prices.</p></li>
-<li><p><strong>decimal_positions</strong> (<em>int</em>) – Because this function uses integer numbers for prices, is needed to convert prices. Just steps are relevant.</p></li>
+<li><p><strong>decimal_positions</strong> (<em>int</em>) – Because this function uses integer numbers for prices, is needed to convert prices. Just steps are
+relevant.</p></li>
 <li><p><strong>time_zone</strong> (<em>str</em>) – A time zone like “Europe/Madrid”.</p></li>
 <li><p><strong>min_height</strong> (<em>int</em>) – Minimum candles height in pips.</p></li>
 <li><p><strong>min_reversal</strong> (<em>int</em>) – Maximum reversal to close the candles</p></li>
@@ -620,7 +663,8 @@ the resistance levels. Both lists contain float values.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.indicators.repeat_timestamps_by_quantity">
 <span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">repeat_timestamps_by_quantity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon_quantity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buy_maker</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buy_taker</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#handlers.indicators.repeat_timestamps_by_quantity" title="Link to this definition">¶</a></dt>
-<dd><p>Repeat timestamps by quantity to give more importance to prices with more quantity. It detects if data is from trades or klines by column names.</p>
+<dd><p>Repeat timestamps by quantity to give more importance to prices with more quantity. It detects if data is from trades or klines by
+column names.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -784,7 +828,7 @@ and ‘Maker buy base volume’ for each average price.</p>
     </div>
   </div>
 </footer></div>
-      <script src="_static/documentation_options.js?v=061f3e2b"></script>
+      <script src="_static/documentation_options.js?v=31e7b441"></script>
       <script src="_static/doctools.js?v=888ff710"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/shibuya.js?v=3e5c8598"></script>
