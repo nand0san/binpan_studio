@@ -589,7 +589,8 @@ def flexible_tables_and_data_insert(cursor,
 
             table_name = sanitize_table_name(table_name)
             data_type = data_type_from_table(table=table_name)
-
+            if not data_type:
+                continue
             # fuerza unicidad en una columna
             unique_column = stream_uniqueness_id_in_timescale[data_type]
             if unique_column == time_column:
@@ -684,12 +685,13 @@ def data_type_from_table(table: str) -> str or None:
     """
     if "kline" in table:
         return "kline"
-    elif "aggTrade" in table:
+    elif "aggTrade" in table or "aggtrade" in table:
         return "aggTrade"
     elif "trade" in table:
         return "trade"
     else:
-        raise ValueError(f"data_type_from_table: Nombre de tabla inválido: {table}")
+        sql_logger.debug(f"data_type_from_table: Nombre de tabla inválido: {table}")
+        return None
 
 
 # noinspection SqlCurrentSchemaInspection
