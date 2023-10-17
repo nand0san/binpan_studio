@@ -11,12 +11,10 @@ from decimal import Decimal as dd
 from datetime import datetime
 from typing import List
 
-# from redis import StrictRedis
-
 from .exceptions import BinPanException
 from .logs import Logs
 from .quest import check_weight, get_response, api_raw_get, get_semi_signed_request
-from .time_helper import (tick_seconds, calculate_iterations, convert_milliseconds_to_str, convert_ms_column_to_datetime_with_zone,
+from .time_helper import (tick_seconds, convert_milliseconds_to_str, convert_ms_column_to_datetime_with_zone,
                           convert_milliseconds_to_utc_string, convert_datetime_to_string, open_from_milliseconds, next_open_by_milliseconds,
                           convert_milliseconds_to_time_zone_datetime)
 from .standards import (klines_columns, agg_trades_columns_from_binance, atomic_trades_columns_from_binance,
@@ -50,9 +48,9 @@ def get_last_price(symbol: str = None) -> dict or list:
     res = api_raw_get(endpoint=endpoint, weight=weight, params={'symbol': symbol})
     market_logger.debug(f"get_last_price: {res}")
 
-    if type(res) == dict:
+    if type(res) is dict:
         return float(res['price'])
-    elif type(res) == list:
+    elif type(res) is list:
         return {k['symbol']: float(k['price']) for k in res}
 
 
@@ -157,26 +155,7 @@ def get_candles_by_time_stamps(symbol: str,
     for r in ranges:
         start = r[0]
         end = r[1]
-        #
-        # if redis_client:
-        #     from redis import StrictRedis
-        #     if type(redis_client) == dict:
-        #         try:
-        #             redis_client = StrictRedis(**redis_client)
-        #         except Exception:
-        #             msg = f"BinPan exceptionRedis client error: arguments for client={redis_client}"
-        #             market_logger.error(msg)
-        #             raise Exception(msg)
-        #     elif type(redis_client) != StrictRedis:
-        #         msg = f"BinPan exceptionRedis client error: type passed={type(redis_client)}"
-        #         market_logger.error(msg)
-        #         raise Exception(msg)
-        #
-        #     ret = redis_client.zrangebyscore(name=chan, min=start, max=end, withscores=False)
-        #     if not ret:
-        #         continue
-        #     response = [json.loads(i) for i in ret]
-        # else:
+
         params = {'symbol': symbol, 'interval': tick_interval, 'startTime': start, 'endTime': end, 'limit': limit}
         params = {k: v for k, v in params.items() if v}
         check_weight(1, endpoint=endpoint)
@@ -188,52 +167,23 @@ def get_candles_by_time_stamps(symbol: str,
 
         raw_candles += response
 
-    if not raw_candles:  # fixme: esto da error
+    if not raw_candles:
         msg = f"BinPan Exception: Requested data for {symbol.lower()}@kline_{tick_interval} between {start_string} and " \
               f"{end_string} missing in API."
-        market_logger.error(msg)
+        market_logger.warning(msg)
         return []
         # raise Exception(msg)
 
     # descarta sobrantes
     overtime_candle_ts = next_open_by_milliseconds(ms=end_time, tick_interval=tick_interval)
     # if raw_candles:
-    if type(raw_candles[0]) == list:  # if from binance
+    if type(raw_candles[0]) is list:  # if from binance
         raw_candles = [i for i in raw_candles if int(i[0]) < overtime_candle_ts]
     else:
         open_ts_key = list(raw_candles[0].keys())[0]
         raw_candles = [i for i in raw_candles if int(i[open_ts_key]) < overtime_candle_ts]
 
     return raw_candles
-
-
-# def get_historical_candles_old(symbol: str, tick_interval: str, start_time: int, end_time: int, tick_interval_ms: int,
-#                                limit: int = 1000) -> list:
-#     """
-#     Retrieve all kline data within the given time range considering the API limit.
-#
-#     :param str symbol: The trading pair symbol (e.g., "BTCUSDT").
-#     :param str tick_interval: Kline tick interval (e.g., "1m", "3m", "1h").
-#     :param int start_time: Start timestamp (milliseconds) of the time range.
-#     :param int end_time: End timestamp (milliseconds) of the time range.
-#     :param int tick_interval_ms: Kline tick interval in milliseconds.
-#     :param int limit: API limit for the number of klines in a single request (default: 1000).
-#     :return: A list of klines data within the given time range.
-#     :rtype: list
-#     """
-#     iterations = calculate_iterations(start_time=start_time, end_time=end_time, tick_interval_ms=tick_interval_ms, limit=limit)
-#     all_data = []
-#
-#     for i in range(iterations + 1):
-#         current_start_time = start_time + i * limit * tick_interval_ms
-#         current_end_time = min(current_start_time + (limit - 1) * tick_interval_ms, end_time)
-#
-#         data = get_candles_by_time_stamps(symbol=symbol, tick_interval=tick_interval, start_time=current_start_time,
-#                                           end_time=current_end_time)
-#         if data:
-#             all_data.extend(data)
-#
-#     return all_data
 
 
 def get_historical_candles(symbol: str,
@@ -346,7 +296,7 @@ def parse_candles_to_dataframe(raw_response: list,
 
     # check if redis columns
     if raw_response:
-        if type(raw_response[0]) == list:
+        if type(raw_response[0]) is list:
             df = pd.DataFrame(raw_response, columns=columns)
         else:
             response_keys = list(raw_response[0].keys())
@@ -373,7 +323,7 @@ def parse_candles_to_dataframe(raw_response: list,
     df.loc[:, 'Open timestamp'] = df['Open time']
     df.loc[:, 'Close timestamp'] = df['Close time']
 
-    if type(time_zone) == str and time_zone != 'UTC':  # converts to time zone the time columns
+    if type(time_zone) is str and time_zone != 'UTC':  # converts to time zone the time columns
         for col in time_cols:
             df.loc[:, col] = convert_ms_column_to_datetime_with_zone(df, col, time_zone=time_zone)
             # df.loc[:, col] = df[col].apply(lambda x:convert_datetime_to_string(x))
@@ -1244,7 +1194,7 @@ def get_orderbook_tickers(symbol: str = None, decimal_mode: bool = False) -> dic
     check_weight(weight, endpoint=endpoint)
     query = {'symbol': symbol}
     response = get_response(url=endpoint, params=query)
-    if type(response) == dict:
+    if type(response) is dict:
         ret = {response['symbol']: response}
     else:
         ret = {i['symbol']: i for i in response}

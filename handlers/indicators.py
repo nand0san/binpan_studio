@@ -38,7 +38,8 @@ def alternating_fractal_indicator(df: pd.DataFrame, max_period: int = None, suff
     indicator, the most period needed, the most volatile price.
 
     :param pd.DataFrame df: BinPan Symbol dataframe.
-    :param int max_period: Default is len of df. This method will check from 2 to the max period value to find a puer alternating max to mins.
+    :param int max_period: Default is len of df. This method will check from 2 to the max period value to find a puer alternating max to
+    mins.
     :param str suffix: A decorative suffix for the name of the column created.
     :return pd.DataFrame: A dataframe with two columns, one with 1 or -1 for local max or local min to tag, and other with price values for
      that points.
@@ -165,7 +166,8 @@ def ichimoku(data: pd.DataFrame, tenkan: int = 9, kijun: int = 26, chikou_span: 
 
 def ker(close: pd.Series, window: int, ) -> pd.Series:
     """
-    Kaufman's Efficiency Ratio based in: https://stackoverflow.com/questions/36980238/calculating-kaufmans-efficiency-ratio-in-python-with-pandas
+    Kaufman's Efficiency Ratio based in: https://stackoverflow.com/questions/36980238/calculating-kaufmans-efficiency-ratio-in-python
+    -with-pandas
 
     :param pd.Series close: Close prices serie.
     :param int window: Window to check indicator.
@@ -277,6 +279,62 @@ def support_resistance_volume(df, num_bins=100, price_col='Close', volume_col='V
             support_resistance_levels.append(level)
 
     return sorted(support_resistance_levels)
+
+##############################
+# HIGH OF THE DAY INDICATORS #
+##############################
+
+
+def count_smaller_values_backward(s: pd.Series or list) -> pd.Series:
+    """
+    Calcula el número de valores que cada entrada en la serie supera hacia atrás
+    hasta encontrar un valor superior o llegar al inicio de la serie.
+
+    :param s: Serie de pandas o lista de números.
+    :return: Serie de pandas con el número de valores que cada entrada supera hacia atrás.
+    """
+    if isinstance(s, list):
+        s = pd.Series(s)
+
+    # Inicializar una serie para almacenar los resultados
+    result = pd.Series(index=s.index, dtype=int)
+
+    # Calcular el número de valores que cada entrada supera hacia atrás
+    for i in range(len(s)):
+        count = 0
+        for j in range(i - 1, -1, -1):
+            if s.iloc[j] > s.iloc[i]:
+                break
+            count += 1
+        result.iloc[i] = count
+
+    return result
+
+
+def count_larger_values_backward(s: pd.Series or list) -> pd.Series:
+    """
+    Calcula el número de valores que son superiores a cada entrada en la serie hacia atrás
+    hasta encontrar un valor igual o menor o llegar al inicio de la serie.
+
+    :param s: Serie de pandas o lista de números.
+    :return: Serie de pandas con el número de valores que son superiores a cada entrada hacia atrás.
+    """
+    if isinstance(s, list):
+        s = pd.Series(s)
+
+    # Inicializar una serie para almacenar los resultados
+    result = pd.Series(index=s.index, dtype=int)
+
+    # Calcular el número de valores superiores a cada entrada hacia atrás
+    for i in range(len(s)):
+        count = 0
+        for j in range(i - 1, -1, -1):
+            if s.iloc[j] <= s.iloc[i]:
+                break
+            count += 1
+        result.iloc[i] = count
+
+    return result
 
 
 ####################
@@ -424,7 +482,8 @@ def reversal_candles(trades: pd.DataFrame, decimal_positions: int, time_zone: st
        https://atas.net/atas-possibilities/charts/how-to-set-reversal-charts-for-finding-the-market-reversal/
 
     :param pd.Series trades: A dataframe with trades sizes, side and prices.
-    :param int decimal_positions: Because this function uses integer numbers for prices, is needed to convert prices. Just steps are relevant.
+    :param int decimal_positions: Because this function uses integer numbers for prices, is needed to convert prices. Just steps are
+    relevant.
     :param str time_zone: A time zone like "Europe/Madrid".
     :param int min_height: Minimum candles height in pips.
     :param int min_reversal: Maximum reversal to close the candles
@@ -499,7 +558,8 @@ def reversal_candles(trades: pd.DataFrame, decimal_positions: int, time_zone: st
             height = 0
             prices_pool = []
 
-        # reversal_control.append((max(prices_pool, default=current_open) - current_price, min(prices_pool, default=current_open) - current_price))
+        # reversal_control.append((max(prices_pool, default=current_open) - current_price, min(prices_pool, default=current_open) -
+        # current_price))
 
     candles = pd.Series(data=candle_ids, index=trades.index, name='Candle')
     highs = pd.Series(data=high, index=trades.index, name='High')
@@ -554,7 +614,8 @@ def kmeans_custom_init(data: np.ndarray, max_clusters: int):
     return initial_centroids
 
 
-def find_optimal_clusters(KMeans_lib, data: np.ndarray, max_clusters: int, quiet: bool = False, initial_centroids: list or np.ndarray = None) -> int:
+def find_optimal_clusters(KMeans_lib, data: np.ndarray, max_clusters: int, quiet: bool = False,
+                          initial_centroids: list or np.ndarray = None) -> int:
     """
     Find the optimal quantity of centroids for support and resistance methods using the elbow method.
 
@@ -694,7 +755,8 @@ def support_resistance_levels_merged(df: pd.DataFrame, by_klines: bool, max_clus
         print("Clustering data...")
 
     if optimize_clusters_qty:
-        optimal_clusters = find_optimal_clusters(KMeans_lib=KMeans, data=repeated_prices, max_clusters=max_clusters, quiet=quiet, initial_centroids=initial_centroids)
+        optimal_clusters = find_optimal_clusters(KMeans_lib=KMeans, data=repeated_prices, max_clusters=max_clusters, quiet=quiet,
+                                                 initial_centroids=initial_centroids)
         if not quiet:
             print(f"Found {optimal_clusters} levels.")
     else:
@@ -707,7 +769,8 @@ def support_resistance_levels_merged(df: pd.DataFrame, by_klines: bool, max_clus
 
 def repeat_timestamps_by_quantity(df: pd.DataFrame, epsilon_quantity: float, buy_maker: bool = None, buy_taker: bool = None) -> np.ndarray:
     """
-    Repeat timestamps by quantity to give more importance to prices with more quantity. It detects if data is from trades or klines by column names.
+    Repeat timestamps by quantity to give more importance to prices with more quantity. It detects if data is from trades or klines by
+    column names.
 
     :param df: A pandas DataFrame with trades or klines, containing a 'Price', 'Quantity' columns or "Close", "Volume" respectively.
     :param epsilon_quantity: Quantity to repeat timestamps by.
@@ -798,18 +861,22 @@ def time_active_zones(df: pd.DataFrame, max_clusters: int = 5, simple: bool = Tr
             return [], []
     else:
         if len(buy_timestamps) == 0 and len(sell_timestamps) == 0:
-            print(f"There is not enough trade data to calculate time activity clusters: {len(buy_timestamps)} buys and {len(sell_timestamps)} sells.")
+            print(f"There is not enough trade data to calculate time activity clusters: {len(buy_timestamps)} buys and "
+                  f"{len(sell_timestamps)} sells.")
             return [], []
 
     if not quiet:
         print("Clustering data...")
     optimal_buy_clusters, optimal_sell_clusters, optimal_clusters = max_clusters, max_clusters, max_clusters
     if optimize_clusters_qty and not simple:
-        optimal_buy_clusters = find_optimal_clusters(KMeans_lib=KMeans, data=buy_timestamps, max_clusters=max_clusters, quiet=quiet, initial_centroids=initial_centroids)
-        optimal_sell_clusters = find_optimal_clusters(KMeans_lib=KMeans, data=sell_timestamps, max_clusters=max_clusters, quiet=quiet, initial_centroids=initial_centroids)
+        optimal_buy_clusters = find_optimal_clusters(KMeans_lib=KMeans, data=buy_timestamps, max_clusters=max_clusters, quiet=quiet,
+                                                     initial_centroids=initial_centroids)
+        optimal_sell_clusters = find_optimal_clusters(KMeans_lib=KMeans, data=sell_timestamps, max_clusters=max_clusters, quiet=quiet,
+                                                      initial_centroids=initial_centroids)
         print(f"Found {optimal_buy_clusters} clusters from buys timestamps and {optimal_sell_clusters} clusters from sells timestamps.")
     elif optimize_clusters_qty and simple:
-        optimal_clusters = find_optimal_clusters(KMeans_lib=KMeans, data=my_timestamps, max_clusters=max_clusters, quiet=quiet, initial_centroids=initial_centroids)
+        optimal_clusters = find_optimal_clusters(KMeans_lib=KMeans, data=my_timestamps, max_clusters=max_clusters, quiet=quiet,
+                                                 initial_centroids=initial_centroids)
         print(f"Found {optimal_clusters} clusters from timestamps.")
 
     n_init = 10
