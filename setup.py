@@ -15,14 +15,14 @@ read_required = open('requirements.txt', 'r')
 REQUIRED = read_required.read()
 read_required.close()
 
-my_version = "0.6.02"
+my_version = "0.6.03"
 
 setup(name='binpan',
       version=my_version,
       url='https://github.com/nand0san/binpan_studio',
       license='MIT',
       install_requires=REQUIRED,
-      python_requires='>=3.7.9',
+      python_requires='>=3.10.0',
       classifiers=[
           "License :: OSI Approved :: MIT License",
           "Programming Language :: Python :: 3",
