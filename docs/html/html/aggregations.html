@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Aggregations Module - BinPan 0.6.02 documentation</title>
+      <title>Aggregations Module - BinPan 0.6.04 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Exceptions Module" href="exceptions.html" /><link rel="prev" title="BinPan Module" href="binpan.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -363,7 +363,7 @@ of the specified numeric column for each group and filling the remaining cells w
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.aggregations.tag_by_accumulation">
-<span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">tag_by_accumulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">agg_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Quantity'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grouper_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.aggregations.tag_by_accumulation" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">tag_by_accumulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">agg_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Quantity'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grouper_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.aggregations.tag_by_accumulation" title="Link to this definition">¶</a></dt>
 <dd><p>Creates integer sequence by column value threshold accumulation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -371,7 +371,7 @@ of the specified numeric column for each group and filling the remaining cells w
 <li><p><strong>trades</strong> (<em>pd.DataFrame</em>) – Expected binpan aggregated trades or atomic trades dataframe.</p></li>
 <li><p><strong>agg_column</strong> (<em>str</em>) – Name of the column to group by volume accumulation.</p></li>
 <li><p><strong>grouper_name</strong> (<em>str</em>) – Name for the column to be used as grouper.</p></li>
-<li><p><strong>threshold</strong> (<em>int</em>) – Size of volume aggregated in bars to be compiled.</p></li>
+<li><p><strong>threshold</strong> (<em>float</em>) – Size of volume aggregated in bars to be compiled.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -393,9 +393,6 @@ of the specified numeric column for each group and filling the remaining cells w
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A new DataFrame with the resampled klines.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>pd.DataFrame resampled klines.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -516,13 +513,13 @@ of the specified numeric column for each group and filling the remaining cells w
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.aggregations.dollar_bars">
-<span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">dollar_bars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.aggregations.dollar_bars" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">dollar_bars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.aggregations.dollar_bars" title="Link to this definition">¶</a></dt>
 <dd><p>Creates Dollar (or quote) Bars OHLC bars from trades.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>trades</strong> (<em>pd.DataFrame</em>) – Expected binpan aggregated trades or atomic trades dataframe.</p></li>
-<li><p><strong>threshold</strong> (<em>int</em>) – Size of Dollar (or quote) threshold in bars to be compiled.</p></li>
+<li><p><strong>threshold</strong> (<em>float</em>) – Size of Dollar (or quote) threshold in bars to be compiled.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -759,7 +756,7 @@ threshold in other function.</p>
     </div>
   </div>
 </footer></div>
-      <script src="_static/documentation_options.js?v=31e7b441"></script>
+      <script src="_static/documentation_options.js?v=5e16a095"></script>
       <script src="_static/doctools.js?v=888ff710"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/shibuya.js?v=3e5c8598"></script>
