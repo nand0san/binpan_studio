@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>PostgreSQL Module - BinPan 0.6.01 documentation</title>
+      <title>PostgreSQL Module - BinPan 0.6.02 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Requests Module" href="quest.html" /><link rel="prev" title="Plotting Module" href="plotting.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -143,7 +143,9 @@ html.dark {
 <li><a class="reference internal" href="#handlers.postgresql.check_unique_index_with_time"><code class="docutils literal notranslate"><span class="pre">check_unique_index_with_time()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.postgresql.create_table_and_hypertable"><code class="docutils literal notranslate"><span class="pre">create_table_and_hypertable()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.postgresql.insert_data"><code class="docutils literal notranslate"><span class="pre">insert_data()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.postgresql.update_table_columns"><code class="docutils literal notranslate"><span class="pre">update_table_columns()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.postgresql.flexible_tables_and_data_insert"><code class="docutils literal notranslate"><span class="pre">flexible_tables_and_data_insert()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.postgresql.data_type_table"><code class="docutils literal notranslate"><span class="pre">data_type_table()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.postgresql.delete_dupes"><code class="docutils literal notranslate"><span class="pre">delete_dupes()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.postgresql.data_type_from_table"><code class="docutils literal notranslate"><span class="pre">data_type_from_table()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.postgresql.get_data_and_parse"><code class="docutils literal notranslate"><span class="pre">get_data_and_parse()</span></code></a></li>
@@ -250,14 +252,20 @@ html.dark {
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.postgresql.insert_data" title="handlers.postgresql.insert_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert_data</span></code></a>(table_name, records, cursor, ...)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.postgresql.flexible_tables_and_data_insert" title="handlers.postgresql.flexible_tables_and_data_insert"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flexible_tables_and_data_insert</span></code></a>(cursor, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.postgresql.update_table_columns" title="handlers.postgresql.update_table_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_table_columns</span></code></a>(cursor, table_name, ...)</p></td>
+<td><p>Verificar igualdad de columnas e insertar columnas faltantes en su caso.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.postgresql.flexible_tables_and_data_insert" title="handlers.postgresql.flexible_tables_and_data_insert"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flexible_tables_and_data_insert</span></code></a>(cursor, ...)</p></td>
 <td><p>Revisa si las tablas existen y las crea si no existen.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.postgresql.data_type_table" title="handlers.postgresql.data_type_table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">data_type_table</span></code></a>(table_name)</p></td>
+<td><p>Obtiene el tipo de datos de la tabla de su nombre.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.postgresql.delete_dupes" title="handlers.postgresql.delete_dupes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delete_dupes</span></code></a>(cursor, table, dupes, column, ...)</p></td>
 <td><p>Delete a dupe by continuity column.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.postgresql.data_type_from_table" title="handlers.postgresql.data_type_from_table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">data_type_from_table</span></code></a>(table)</p></td>
-<td><p>Gets data type from table names: &quot;trade&quot;, &quot;aggTrade&quot;, &quot;depthX&quot;, &quot;depth&quot;, &quot;bookTicker&quot; or &quot;kline&quot;.</p></td>
+<td><p>Obtiene el tipo de datos de la tabla de su nombre.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.postgresql.get_data_and_parse" title="handlers.postgresql.get_data_and_parse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_data_and_parse</span></code></a>(cursor, table, symbol, ...)</p></td>
 <td><p>Gets data from a table in the database and parses it to a dataframe.</p></td>
@@ -538,8 +546,27 @@ transaction of the cursor.</p></li>
 <dd></dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="handlers.postgresql.update_table_columns">
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql.</span></span><span class="sig-name descname"><span class="pre">update_table_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checked_columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.postgresql.update_table_columns" title="Link to this definition">¶</a></dt>
+<dd><p>Verificar igualdad de columnas e insertar columnas faltantes en su caso.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cursor</strong> – Cursor de la conexión a la base de datos.</p></li>
+<li><p><strong>table_name</strong> – Nombre de la tabla.</p></li>
+<li><p><strong>record</strong> – Un diccionario con los datos a typo a insertar para deducir el tipo de datos.</p></li>
+<li><p><strong>checked_columns</strong> – Lista de columnas ya verificadas.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Retorna una lista con las tablas verificadas actualizadas.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="handlers.postgresql.flexible_tables_and_data_insert">
-<span class="sig-prename descclassname"><span class="pre">handlers.postgresql.</span></span><span class="sig-name descname"><span class="pre">flexible_tables_and_data_insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parsed_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verified_tables</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'time'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.postgresql.flexible_tables_and_data_insert" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql.</span></span><span class="sig-name descname"><span class="pre">flexible_tables_and_data_insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parsed_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verified_tables</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checked_columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'time'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#handlers.postgresql.flexible_tables_and_data_insert" title="Link to this definition">¶</a></dt>
 <dd><p>Revisa si las tablas existen y las crea si no existen. Luego inserta los datos en las tablas.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -548,12 +575,27 @@ transaction of the cursor.</p></li>
 <li><p><strong>parsed_dict</strong> – Un diccionario con los datos a insertar. El key es el nombre de la tabla y el value es una lista de
 diccionarios con los datos a insertar.</p></li>
 <li><p><strong>verified_tables</strong> – Un conjunto de tablas verificadas.</p></li>
+<li><p><strong>checked_columns</strong> – Un conjunto de columnas verificadas.</p></li>
 <li><p><strong>time_column</strong> – Nombre de la columna de tiempo.</p></li>
 <li><p><strong>batch</strong> – Tamaño del lote para insertar datos.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.postgresql.data_type_table">
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql.</span></span><span class="sig-name descname"><span class="pre">data_type_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.postgresql.data_type_table" title="Link to this definition">¶</a></dt>
+<dd><p>Obtiene el tipo de datos de la tabla de su nombre.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>table_name</strong> – El nombre de la tabla.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tipo de canal websockets.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -582,13 +624,13 @@ diccionarios con los datos a insertar.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.postgresql.data_type_from_table">
 <span class="sig-prename descclassname"><span class="pre">handlers.postgresql.</span></span><span class="sig-name descname"><span class="pre">data_type_from_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.postgresql.data_type_from_table" title="Link to this definition">¶</a></dt>
-<dd><p>Gets data type from table names: “trade”, “aggTrade”, “depthX”, “depth”, “bookTicker” or “kline”. “orderbook”, “orderbook_value”.</p>
+<dd><p>Obtiene el tipo de datos de la tabla de su nombre.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>table</strong> (<em>str</em>) – A stream name like “btcbusd_trade”</p>
+<dd class="field-odd"><p><strong>table</strong> – El nombre de la tabla.</p>
 </dd>
-<dt class="field-even">Return str<span class="colon">:</span></dt>
-<dd class="field-even"><p>Data type or none if not detected</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tipo de canal websockets.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -758,7 +800,7 @@ diccionarios con los datos a insertar.</p></li>
     </div>
   </div>
 </footer></div>
-      <script src="_static/documentation_options.js?v=061f3e2b"></script>
+      <script src="_static/documentation_options.js?v=31e7b441"></script>
       <script src="_static/doctools.js?v=888ff710"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/shibuya.js?v=3e5c8598"></script>

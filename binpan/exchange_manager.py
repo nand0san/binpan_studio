@@ -204,6 +204,27 @@ class Exchange(object):
         return self.usdt_volume_24h
 
 
+    def get_usdt_volume_24h(self, quote=None) -> pd.DataFrame:
+        """
+        Returns a dataframe with 24h busd volume for every symbol.
+
+        :param quote: Optional quote to filter.
+        :return: A dataframe with 24h busd volume for every symbol.
+        """
+        ret = handlers.exchange.statistics_24h(decimal_mode=True,
+                                               api_key=self.api_key,
+                                               api_secret=self.api_secret,
+                                               stablecoin_value="USDT").sort_values('USDT_volume', ascending=False)
+
+        columns = ['symbol', 'USDT_volume', 'openPrice', 'highPrice', 'lowPrice', 'volume', 'quoteVolume', 'weightedAvgPrice']
+        ret = ret[columns + [c for c in ret.columns if c not in columns]]
+
+        if quote:
+            self.busd_volume_24h = ret.loc[ret['quote'] == quote.upper()]
+        else:
+            self.busd_volume_24h = ret
+        return self.busd_volume_24h
+
     def get_statistics_24h(self, symbol: str = None, quote: str = None) -> pd.DataFrame:
         """
         Returns a dataframe with 24h statistics for every symbol.
