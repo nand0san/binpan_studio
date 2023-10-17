@@ -74,12 +74,6 @@ trade_time_col = 'Timestamp'
 trade_buyer_was_maker_col = 'Buyer was maker'
 trade_best_price_match_col = 'Best price match'
 
-binance_api_trades_cols = [trade_trade_id_col, trade_price_col, trade_quantity_col, trade_quote_quantity_col,
-                           trade_date_col, trade_time_col, trade_buyer_was_maker_col, trade_best_price_match_col]
-
-postgresql_trades_cols = [trade_trade_id_col, trade_price_col, trade_quantity_col, trade_quote_quantity_col,
-                          trade_buyer_order_id_col, trade_seller_order_id_col, trade_time_col,
-                          trade_buyer_was_maker_col]
 # agg trade columns names
 agg_trade_id_col = 'Aggregate tradeId'
 agg_trade_price_col = trade_price_col
@@ -91,19 +85,31 @@ agg_time_col = trade_time_col
 agg_buyer_was_maker_col = trade_buyer_was_maker_col
 agg_best_price_match_col = trade_best_price_match_col
 
-binance_api_agg_trade_cols = [agg_trade_id_col, agg_trade_price_col, agg_quantity_col, agg_first_trade_id_col,
-                              agg_last_trade_id_col, agg_date_col, agg_time_col, agg_buyer_was_maker_col,
-                              agg_best_price_match_col]
+binance_api_trades_cols = [trade_trade_id_col, trade_price_col, trade_quantity_col, trade_quote_quantity_col,
+                           trade_date_col, trade_time_col, trade_buyer_was_maker_col, trade_best_price_match_col]
 
-# column pretty names to order when calling postgresql from binpan
+postgresql_trades_cols = [trade_trade_id_col, trade_price_col, trade_quantity_col, trade_quote_quantity_col,
+                          trade_buyer_order_id_col, trade_seller_order_id_col, trade_date_col, trade_time_col,
+                          trade_buyer_was_maker_col]
+
 postgresql_agg_trade_cols = [agg_trade_id_col,
                              agg_trade_price_col,
                              agg_quantity_col,
                              agg_first_trade_id_col,
                              agg_last_trade_id_col,
+                             agg_date_col,
                              agg_time_col,
-                             agg_buyer_was_maker_col,
-                             agg_date_col]
+                             agg_buyer_was_maker_col
+                             ]
+
+postgresql_presentation_type_columns_dict = {'kline': postgresql_candles_ordered_cols,
+                                             'trade': postgresql_trades_cols,
+                                             'aggTrade': postgresql_agg_trade_cols,
+                                             'aggtrade': postgresql_agg_trade_cols}
+
+binance_api_agg_trade_cols = [agg_trade_id_col, agg_trade_price_col, agg_quantity_col, agg_first_trade_id_col,
+                              agg_last_trade_id_col, agg_date_col, agg_time_col, agg_buyer_was_maker_col,
+                              agg_best_price_match_col]
 
 binpan_type_columns_dict = {'kline': binance_api_candles_cols,
                             'trade': binance_api_trades_cols,
@@ -186,10 +192,7 @@ atomic_trades_columns_from_redis = ['Trade Id', 'Price', 'Quantity', 'Buyer Orde
 #                                               ],
 #                                     'aggTrade': None
 #                                     }
-postgresql_presentation_type_columns_dict = {'kline': postgresql_candles_ordered_cols,
-                                             'trade': postgresql_trades_cols,
-                                             'aggTrade': postgresql_agg_trade_cols,
-                                             'aggtrade': postgresql_agg_trade_cols}
+
 
 # FROM POSTGRESQL TO BINPAN
 

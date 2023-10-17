@@ -744,15 +744,15 @@ def get_data_and_parse(cursor,
     df.rename(columns=postgresql2binpan_renamer_dict[data_type], inplace=True)
     alt_order = None
     if data_type == "trade":
-        df[trade_time_col] = (df[trade_date_col].astype('int64') // 10 ** 6).astype('int64')
         if trade_date_col in df.columns:
+            df[trade_time_col] = (df[trade_date_col].astype('int64') // 10 ** 6).astype('int64')
             df[trade_date_col] = df[trade_date_col].dt.tz_convert(time_zone)
-        else:
-            # Convertir milisegundos a datetime
-            df[trade_date_col] = pd.to_datetime(df[trade_time_col], unit='ms')
-            df[trade_date_col] = df[trade_date_col].dt.tz_localize('UTC')  # Cambia 'UTC' si es necesario
+        else:  # si no trae la columna de date, es q viene de timescale y timestamp esta en formato datetime
+            df[trade_date_col] = df[trade_time_col]
             # Convertir a la zona horaria deseada
             df[trade_date_col] = df[trade_date_col].dt.tz_convert(time_zone)
+            # timestamp a milisegundos
+            df[trade_time_col] = (df[trade_time_col].astype('int64') // 10 ** 6).astype('int64')
 
         date_col = trade_date_col
         alt_order = trade_trade_id_col

@@ -155,14 +155,14 @@ def drop_aggregated(data: pd.DataFrame, group_column: str, by='last') -> pd.Data
     return df.groupby(group_column).agg(aggregator)
 
 
-def tag_by_accumulation(trades: pd.DataFrame, threshold: int, agg_column: str = 'Quantity', grouper_name: str = 'group') -> pd.DataFrame:
+def tag_by_accumulation(trades: pd.DataFrame, threshold: float, agg_column: str = 'Quantity', grouper_name: str = 'group') -> pd.DataFrame:
     """
     Creates integer sequence by column value threshold accumulation.
 
     :param pd.DataFrame trades: Expected binpan aggregated trades or atomic trades dataframe.
     :param str agg_column: Name of the column to group by volume accumulation.
     :param str grouper_name: Name for the column to be used as grouper.
-    :param int threshold: Size of volume aggregated in bars to be compiled.
+    :param float threshold: Size of volume aggregated in bars to be compiled.
     :return:
     """
 
@@ -195,7 +195,6 @@ def resample_klines(data: pd.DataFrame, tick_interval: str) -> pd.DataFrame:
     :param pd.DataFrame data: The original DataFrame of klines. The index must be a DatetimeIndex.
     :param str tick_interval: The new frequency for the klines. This can be any Binance frequency.
     :return: A new DataFrame with the resampled klines.
-    :rtype: pd.DataFrame resampled klines.
     """
     assert isinstance(data.index, pd.DatetimeIndex), "The index must be a DatetimeIndex."
     df = data.copy(deep=True)
@@ -395,12 +394,12 @@ def volume_bars(trades: pd.DataFrame, threshold: int) -> pd.DataFrame:
     return df
 
 
-def dollar_bars(trades: pd.DataFrame, threshold: int) -> pd.DataFrame:
+def dollar_bars(trades: pd.DataFrame, threshold: float) -> pd.DataFrame:
     """
     Creates Dollar (or quote) Bars OHLC bars from trades.
 
     :param pd.DataFrame trades: Expected binpan aggregated trades or atomic trades dataframe.
-    :param int threshold: Size of Dollar (or quote) threshold in bars to be compiled.
+    :param float threshold: Size of Dollar (or quote) threshold in bars to be compiled.
     :return: A dataframe sampled with the new bars sampling.
     """
     if trades.empty:

@@ -71,7 +71,7 @@ class Database:
         self.connection.close()
 
     def status(self):
-        print(f"Host: {self.host}\nPort: {self.port}\nUser: {self.user}\nPassword: {self.password}\nDatabase: "
+        print(f"Host: {self.host}\nPort: {self.port}\nUser: {self.user}\nPassword: XXXXXXXXXXXX \nDatabase: "
               f"{self.database}\nConnection: {self.connection}\nCursor: {self.cursor}")
 
     def get_tables(self, table_type: str = None, raw=False):
