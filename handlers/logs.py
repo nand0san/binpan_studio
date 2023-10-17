@@ -69,6 +69,7 @@ class Logs:
         self.logger.critical(msg, exc_info=True)
 
     def read_last_lines(self, num_lines):
-        with open(self.log_file, 'r') as file:
+        with open(self.log_file, 'r', encoding='utf-8') as file:
             lines = file.readlines()
             return lines[-num_lines:]
+
