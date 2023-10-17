@@ -86,7 +86,7 @@ target/
 # IPython
 profile_default/
 ipython_config.py
-
+.pypirc
 # pyenv
 .python-version
 
