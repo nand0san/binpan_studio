@@ -164,6 +164,7 @@ orderbook*.ipynb
 ltcusdt.*
 ltcbtc.*
 
+test.ipynb
 test*
 *redis*
 secret.py
