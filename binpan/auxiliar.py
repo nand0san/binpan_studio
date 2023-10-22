@@ -1,6 +1,8 @@
 from time import time
 from pandas import to_datetime
 import pandas as pd
+from typing import Tuple, List, Dict
+from pandas import Timedelta
 
 from handlers.files import select_file, read_csv_to_dataframe, extract_filename_metadata
 from handlers.logs import Logs
@@ -145,4 +147,115 @@ def check_continuity(df: pd.DataFrame, time_zone: str) -> pd.DataFrame:
 
         binpan_logger.warning(f"BinPan Warning: Dataframe has gaps in klines continuity: \n{gaps}")
         binpan_logger.warning(f"\nTimestamp discontinuities detected: \n{dif_readable}")
+
+        binpan_logger.info(f"Please, repair the dataframe with the function 'repair_kline_discontinuity'.")
         return gaps
+
+
+def find_common_interval_and_generate_timestamps(data: pd.DataFrame, timestamp_col="Open timestamp") -> Tuple[int, List]:
+    """
+    Find the most common interval between timestamps and generate a list of timestamps that should be present in the
+     dataframe.
+
+    :param data: Dataframe with klines data.
+    :param timestamp_col: Name of the column with the timestamps.
+    :return: A tuple with the most common interval and a list of timestamps that should be present in the dataframe.
+    """
+    df = data.copy(deep=True)
+    df['Open timestamp diff'] = df[timestamp_col].diff()
+    common_interval = int(df['Open timestamp diff'].value_counts().idxmax())
+
+    df.sort_values(by=timestamp_col, inplace=True, ascending=True)
+    start_time = df['Open timestamp'].iloc[0]
+    end_time = df['Open timestamp'].iloc[-1]
+
+    expected_timestamps = list(range(start_time, end_time + common_interval, common_interval))
+
+    return common_interval, expected_timestamps
+
+
+def add_missing_klines(df, interval: int, expected_timestamps: List[int], timestamp_col="Open timestamp"):
+    """
+    Add missing rows with nan to the DataFrame based on the list of expected timestamps.
+
+    :param df: DataFrame with financial klines data.
+    :param interval: Interval between timestamps in milliseconds.
+    :param expected_timestamps: List of expected timestamps.
+    :param timestamp_col: Name of the column with the timestamps.
+    :return: DataFrame with missing rows added.
+    """
+    df_copy = df.copy(deep=True)
+    df_copy.sort_values(by=timestamp_col, inplace=True)
+
+    existing_timestamps = set(df_copy[timestamp_col])
+    missing_timestamps = set(expected_timestamps) - existing_timestamps
+
+    for ts in missing_timestamps:
+        new_row = pd.Series(index=df_copy.columns)
+        new_row[timestamp_col] = ts
+
+        # Inserta la nueva fila en el DataFrame después de la ultima fila que hay antes de la actual del bucle
+        # hay que tener en cuenta que el index del DataFrame es tipo objetos datetime
+        new_idx = df_copy.index[df_copy[timestamp_col] < ts].max()
+        new_idx += Timedelta(milliseconds=interval)
+        df_copy.loc[new_idx, :] = new_row
+
+    # Re-sort the DataFrame by timestamp
+    df_copy.sort_values(by=timestamp_col, inplace=True)
+
+    return df_copy
+
+
+def fill_missing_values(data: pd.DataFrame, interval_ms: int, time_zone: str) -> pd.DataFrame:
+    """
+    Fill missing values in the DataFrame.
+
+    :param data: DataFrame with financial klines data.
+    :param interval_ms: Interval between timestamps in milliseconds.
+    :param time_zone: A string with the time zone. Ex: 'Europe/Madrid'
+    :return: DataFrame with missing values filled.
+    """
+    df = data.copy(deep=True)
+    price_cols = ['Open', 'High', 'Low', 'Close']
+    volume_cols = ['Volume', 'Quote volume', 'Trades', 'Taker buy base volume', 'Taker buy quote volume']
+
+    df_filled = df.copy(deep=True)
+
+    df_filled[price_cols] = df_filled[price_cols].ffill()
+    df_filled[volume_cols] = df_filled[volume_cols].fillna(0)
+
+    # locate columns with missing First TradeId and Last TradeId
+    missing_first_trade_id = df_filled['First TradeId'].isna()
+
+    # ffill last_trade_id column
+    df_filled['Last TradeId'] = df_filled['Last TradeId'].ffill()
+    df_filled.loc[missing_first_trade_id, 'First TradeId'] = df_filled.loc[missing_first_trade_id]['Last TradeId']
+
+    # obtain date columns from timestamp columns
+    df_filled['Close timestamp'] = df['Open timestamp'] + interval_ms - 1
+    df_filled['Open time'] = pd.to_datetime(df_filled['Open timestamp'], unit='ms', utc=True)
+    df_filled['Close time'] = pd.to_datetime(df_filled['Close timestamp'], unit='ms', utc=True)
+
+    # convert timestamp columns to datetime
+    if time_zone:
+        df_filled['Open time'] = df_filled['Open time'].dt.tz_convert(time_zone)
+        df_filled['Close time'] = df_filled['Close time'].dt.tz_convert(time_zone)
+
+    return df_filled
+
+
+def repair_kline_discontinuity(df: pd.DataFrame, time_zone: str) -> pd.DataFrame:
+    """
+    Repair kline discontinuity in the DataFrame. Price columns are filled with the previous value and volume columns are
+     filled with 0. Timestamps are also filled with the missing values inferred from the most common interval. Dates columns
+     are also filled with the missing values inferred from the most common interval.
+
+    :param df: A DataFrame with klines data.
+    :param time_zone: A string with the time zone. Ex: 'Europe/Madrid'
+    :return: Repaired DataFrame.
+    """
+    interval, expected_ts = find_common_interval_and_generate_timestamps(df)
+    df_filled = add_missing_klines(df=df, interval=interval, expected_timestamps=expected_ts)
+    return fill_missing_values(data=df_filled, interval_ms=interval, time_zone=time_zone)
+
+

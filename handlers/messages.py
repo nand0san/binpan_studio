@@ -14,8 +14,6 @@ msg_logger = Logs(filename='./logs/msg_logger.log', name='msg_logger', info_leve
 
 cipher_object = AesCipher()
 
-encoded_telegram_bot_id, encoded_chat_id = get_encoded_telegram_secrets()
-
 
 def telegram_bot_send_text(msg: dict or str,
                            parse_mode='Markdown&text',
@@ -49,6 +47,7 @@ def telegram_bot_send_text(msg: dict or str,
     :param str alt_chat_id: Optional alternative chat id.
     :return: Telegrams API response.
     """
+    encoded_telegram_bot_id, encoded_chat_id = get_encoded_telegram_secrets()
 
     if type(msg) is dict:
         bot_message = str(msg.copy())
@@ -136,7 +135,6 @@ def telegram_parse_dict(msg_data: dict, timezone='UTC'):
         parsed_msg += row
 
     return parsed_msg.replace('_', ' ').replace("Decimal('", "`").replace("')", "`").replace("{", "").replace("}", "")
-
 
 
 def tab_str(text: str, indentation=8) -> str:
