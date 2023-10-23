@@ -3,7 +3,7 @@
 This is the main classes file.
 
 """
-__version__ = "0.6.05"
+__version__ = "0.6.06"
 
 import os
 from sys import path
@@ -1278,7 +1278,7 @@ class Symbol(object):
 
     def repair_continuity(self) -> pd.DataFrame:
         self.df = repair_kline_discontinuity(df=self.df, time_zone=self.time_zone)
-        binpan_logger.info(f"Klines continuity repaired")
+        binpan_logger.info(f"Klines continuity verification after repair")
         # verify discontinuity
         empty_is_ok = check_continuity(df=self.df, time_zone=self.time_zone)
         if empty_is_ok.empty:
