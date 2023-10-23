@@ -204,19 +204,19 @@ html.dark {
 <td><p>Replace a column from milliseconds to datetime with time zone.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.convert_datetime_to_string" title="handlers.time_helper.convert_datetime_to_string"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_datetime_to_string</span></code></a>(dt)</p></td>
-<td><p>Convierte datetime tanto utc como local.</p></td>
+<td><p>Converts a datetime to a string.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.convert_datetime_utc2ms" title="handlers.time_helper.convert_datetime_utc2ms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_datetime_utc2ms</span></code></a>(date_object)</p></td>
 <td><p>Convert datetime object to milliseconds.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.convert_datetime_to_milliseconds" title="handlers.time_helper.convert_datetime_to_milliseconds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_datetime_to_milliseconds</span></code></a>(dt[, timezoned])</p></td>
-<td><p></p></td>
+<td><p>Converts a datetime to milliseconds.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.convert_string_to_milliseconds" title="handlers.time_helper.convert_string_to_milliseconds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_string_to_milliseconds</span></code></a>(ts[, timezoned])</p></td>
 <td><p>Converts a string to milliseconds.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.datetime_utc_to_milliseconds" title="handlers.time_helper.datetime_utc_to_milliseconds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">datetime_utc_to_milliseconds</span></code></a>(dt)</p></td>
-<td><p></p></td>
+<td><p>Convert datetime object to milliseconds.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.end_time_from_start_time" title="handlers.time_helper.end_time_from_start_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">end_time_from_start_time</span></code></a>(startTime[, limit, ...])</p></td>
 <td><p>Calculates end time by tick interval and limit.</p></td>
@@ -225,28 +225,28 @@ html.dark {
 <td><p>Calculates startime from a timestamp and a limit of klines before.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.convert_milliseconds_to_local_timezone_string" title="handlers.time_helper.convert_milliseconds_to_local_timezone_string"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_milliseconds_to_local_timezone_string</span></code></a>(ms)</p></td>
-<td><p></p></td>
+<td><p>Converts a timestamp in milliseconds to a string.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.convert_milliseconds_to_utc_string" title="handlers.time_helper.convert_milliseconds_to_utc_string"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_milliseconds_to_utc_string</span></code></a>(ms)</p></td>
-<td><p></p></td>
+<td><p>Converts a timestamp in milliseconds to a string.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.convert_milliseconds_to_utc_datetime" title="handlers.time_helper.convert_milliseconds_to_utc_datetime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_milliseconds_to_utc_datetime</span></code></a>(ms)</p></td>
-<td><p></p></td>
+<td><p>Converts a timestamp in milliseconds to a datetime.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.convert_milliseconds_to_time_zone_datetime" title="handlers.time_helper.convert_milliseconds_to_time_zone_datetime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_milliseconds_to_time_zone_datetime</span></code></a>(ms)</p></td>
-<td><p></p></td>
+<td><p>Converts a timestamp in milliseconds to a datetime.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.convert_milliseconds_to_str" title="handlers.time_helper.convert_milliseconds_to_str"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_milliseconds_to_str</span></code></a>(ms[, timezoned])</p></td>
-<td><p></p></td>
+<td><p>Converts a timestamp in milliseconds to a string.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.utc_start_of_day_ms" title="handlers.time_helper.utc_start_of_day_ms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">utc_start_of_day_ms</span></code></a>()</p></td>
-<td><p></p></td>
+<td><p>Returns UTC time in milliseconds from epoch for the start of the day.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.ms_day_begin_end" title="handlers.time_helper.ms_day_begin_end"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ms_day_begin_end</span></code></a>(ts)</p></td>
-<td><p>Calcula en horario utc el timestamp del comienzo del dia y su final del timestamp pasado como argumento.</p></td>
+<td><p>Given a timestamp in milliseconds, it returns the start and end timestamps of the day.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.split_time_interval_in_full_days" title="handlers.time_helper.split_time_interval_in_full_days"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_time_interval_in_full_days</span></code></a>(ts_ini, ts_end)</p></td>
-<td><p>Dado un intervalo mediante dos timestamps, devuelve un alista de tuplas con el inicio y final de cada día completo tocado por el intervalo input.</p></td>
+<td><p>Given two timestamps in milliseconds, it returns a list of tuples with the start and end timestamps of each day in the interval.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.time_interval" title="handlers.time_helper.time_interval"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time_interval</span></code></a>(tick_interval[, limit, ...])</p></td>
 <td><p>Obtain a timestamp based on ticks intervals from a start or an end timestamp, based on limit.</p></td>
@@ -255,43 +255,43 @@ html.dark {
 <td><p>Better not to use //.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.ticks_between_timestamps" title="handlers.time_helper.ticks_between_timestamps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ticks_between_timestamps</span></code></a>(start, end, ...)</p></td>
-<td><p>Dados dos timestamps en milliseconds y un tick interval te dice cuantas velas entran ahi.</p></td>
+<td><p>Given two timestamps in milliseconds and a tick interval, it returns the number of ticks between them.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.get_ticks_to_timestamp_utc" title="handlers.time_helper.get_ticks_to_timestamp_utc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ticks_to_timestamp_utc</span></code></a>(ticks_interval[, ...])</p></td>
-<td><p>Retorna cuantas velas se requieren hasta el timestamp pasado hasta ahora</p></td>
+<td><p>Returns the number of ticks to the next timestamp in milliseconds.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.convert_string_to_datetime" title="handlers.time_helper.convert_string_to_datetime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_string_to_datetime</span></code></a>(ts[, timezoned])</p></td>
-<td><p></p></td>
+<td><p>Converts a string to datetime.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.convert_utc_datetime_to_milliseconds" title="handlers.time_helper.convert_utc_datetime_to_milliseconds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_utc_datetime_to_milliseconds</span></code></a>(dt)</p></td>
-<td><p></p></td>
+<td><p>Convert datetime object to milliseconds.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.utc" title="handlers.time_helper.utc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">utc</span></code></a>()</p></td>
 <td><p>Returns UTC time in milliseconds from epoch.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.utc_datetime" title="handlers.time_helper.utc_datetime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">utc_datetime</span></code></a>()</p></td>
-<td><p></p></td>
+<td><p>Returns UTC datetime.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.check_tick_interval" title="handlers.time_helper.check_tick_interval"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_tick_interval</span></code></a>(tick_interval)</p></td>
 <td><p>Checks if argument is a Binance valid tick interval for candles.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.detect_tick_interval" title="handlers.time_helper.detect_tick_interval"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detect_tick_interval</span></code></a>(data)</p></td>
-<td><p>Retorna el tick interval de un dataframe</p></td>
+<td><p>Detects tick interval from a dataframe with a column named 'Open timestamp'.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.next_open_utc" title="handlers.time_helper.next_open_utc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">next_open_utc</span></code></a>(tick_interval)</p></td>
-<td><p>Calcula el timestamp del next open para un tick_interval</p></td>
+<td><p>Calculates the next open timestamp in milliseconds for a tick interval.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.next_open_by_milliseconds" title="handlers.time_helper.next_open_by_milliseconds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">next_open_by_milliseconds</span></code></a>(ms, tick_interval)</p></td>
-<td><p>Calcula el timestamp del next open para un tick_interval.</p></td>
+<td><p>Calculates the next open timestamp in milliseconds for a tick interval.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.open_from_milliseconds" title="handlers.time_helper.open_from_milliseconds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">open_from_milliseconds</span></code></a>(ms, tick_interval)</p></td>
-<td><p>Retorna el open de la vela definida que contiene ese timestamp.</p></td>
+<td><p>Returns the open timestamp in milliseconds for a tick interval.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.close_from_milliseconds" title="handlers.time_helper.close_from_milliseconds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">close_from_milliseconds</span></code></a>(ms, tick_interval)</p></td>
-<td><p>Retorna el close de la vela definida que contiene ese timestamp.</p></td>
+<td><p>Returns the close timestamp in milliseconds for a tick interval.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.wait_seconds_until_next_minute" title="handlers.time_helper.wait_seconds_until_next_minute"><code class="xref py py-obj docutils literal notranslate"><span class="pre">wait_seconds_until_next_minute</span></code></a>()</p></td>
-<td><p></p></td>
+<td><p>Waits until the next minute.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.calculate_iterations" title="handlers.time_helper.calculate_iterations"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_iterations</span></code></a>(start_time, end_time, ...)</p></td>
 <td><p>Calculate the number of iterations required to retrieve data within the given time range considering the API limit inclusively.</p></td>
@@ -314,18 +314,34 @@ html.dark {
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.convert_ms_column_to_datetime_with_zone">
 <span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_ms_column_to_datetime_with_zone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Europe/Madrid'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ambiguous</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'infer'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="headerlink" href="#handlers.time_helper.convert_ms_column_to_datetime_with_zone" title="Link to this definition">¶</a></dt>
-<dd><p>Replace a column from milliseconds to datetime with time zone.
-:param df: A pandas dataframe.
-:param col: Name of the column to replace.
-:param time_zone: A time zone like ‘Europe/Madrid’
-:param ambiguous: A string or list to resolve ambiguous times during DST transitions. Default is ‘infer’.
-:return: Modified dataframe.</p>
+<dd><p>Replace a column from milliseconds to datetime with time zone.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> – A pandas dataframe.</p></li>
+<li><p><strong>col</strong> – Name of the column to replace.</p></li>
+<li><p><strong>time_zone</strong> – A time zone like ‘Europe/Madrid’</p></li>
+<li><p><strong>ambiguous</strong> – A string or list to resolve ambiguous times during DST transitions. Default is ‘infer’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Modified dataframe.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.convert_datetime_to_string">
 <span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_datetime_to_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.time_helper.convert_datetime_to_string" title="Link to this definition">¶</a></dt>
-<dd><p>Convierte datetime tanto utc como local. No cambia zona horaria</p>
+<dd><p>Converts a datetime to a string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dt</strong> – A datetime object.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A string with a date and time. Example: ‘2021-01-01 00:00:00.000’</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -345,7 +361,19 @@ html.dark {
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.convert_datetime_to_milliseconds">
 <span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_datetime_to_milliseconds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezoned</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.time_helper.convert_datetime_to_milliseconds" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Converts a datetime to milliseconds. If string contains a timezone, it will be removed when passing timezoned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dt</strong> – A datetime object.</p></li>
+<li><p><strong>timezoned</strong> – A timezone like ‘Europe/Madrid’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A Unix timestamp in milliseconds.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.convert_string_to_milliseconds">
@@ -367,7 +395,16 @@ html.dark {
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.datetime_utc_to_milliseconds">
 <span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">datetime_utc_to_milliseconds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.time_helper.datetime_utc_to_milliseconds" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Convert datetime object to milliseconds. Example: datetime.datetime(2023, 10, 10, 11, 52, tzinfo=datetime.timezone.utc)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dt</strong> – A datetime object.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A Unix timestamp in milliseconds.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.end_time_from_start_time">
@@ -390,54 +427,137 @@ html.dark {
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.start_time_from_end_time">
 <span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">start_time_from_end_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1h'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.start_time_from_end_time" title="Link to this definition">¶</a></dt>
-<dd><p>Calculates startime from a timestamp and a limit of klines before.
-:param int endTime: Timestamp in ms.
-:param int limit: API klines limit is 1000.
-:param str tick_interval: Kline interval.
-:return int: Timestamp in ms.</p>
+<dd><p>Calculates startime from a timestamp and a limit of klines before.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>endTime</strong> (<em>int</em>) – Timestamp in ms.</p></li>
+<li><p><strong>limit</strong> (<em>int</em>) – API klines limit is 1000.</p></li>
+<li><p><strong>tick_interval</strong> (<em>str</em>) – Kline interval.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return int<span class="colon">:</span></dt>
+<dd class="field-even"><p>Timestamp in ms.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.convert_milliseconds_to_local_timezone_string">
 <span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_milliseconds_to_local_timezone_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.time_helper.convert_milliseconds_to_local_timezone_string" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Converts a timestamp in milliseconds to a string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ms</strong> – A timestamp in milliseconds.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A string with a date and time. Example: ‘2021-01-01 00:00:00.000’</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.convert_milliseconds_to_utc_string">
 <span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_milliseconds_to_utc_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.time_helper.convert_milliseconds_to_utc_string" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Converts a timestamp in milliseconds to a string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ms</strong> – A timestamp in milliseconds.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A string with a date and time. Example: ‘2021-01-01 00:00:00.000’</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.convert_milliseconds_to_utc_datetime">
 <span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_milliseconds_to_utc_datetime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">datetime</span></span></span><a class="headerlink" href="#handlers.time_helper.convert_milliseconds_to_utc_datetime" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Converts a timestamp in milliseconds to a datetime.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ms</strong> – A timestamp in milliseconds.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A datetime object. Example: datetime.datetime(2021, 1, 1, 0, 0)</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.convert_milliseconds_to_time_zone_datetime">
 <span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_milliseconds_to_time_zone_datetime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezoned</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">datetime</span></span></span><a class="headerlink" href="#handlers.time_helper.convert_milliseconds_to_time_zone_datetime" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Converts a timestamp in milliseconds to a datetime. If string contains a timezone, it will be removed when passing timezoned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ms</strong> – A timestamp in milliseconds.</p></li>
+<li><p><strong>timezoned</strong> – A timezone like ‘Europe/Madrid’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A datetime object. Example: datetime.datetime(2021, 1, 1, 0, 0)</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.convert_milliseconds_to_str">
 <span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_milliseconds_to_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezoned</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.time_helper.convert_milliseconds_to_str" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Converts a timestamp in milliseconds to a string. If string contains a timezone, it will be removed when passing timezoned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ms</strong> – A timestamp in milliseconds.</p></li>
+<li><p><strong>timezoned</strong> – A timezone like ‘Europe/Madrid’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A string with a date and time. Example: ‘2021-01-01 00:00:00.000’</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.utc_start_of_day_ms">
 <span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">utc_start_of_day_ms</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.utc_start_of_day_ms" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns UTC time in milliseconds from epoch for the start of the day.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A timestamp in milliseconds.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.ms_day_begin_end">
 <span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">ms_day_begin_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts:</span> <span class="pre">int)</span> <span class="pre">-&gt;</span> <span class="pre">(&lt;class</span> <span class="pre">'int'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'int'&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.time_helper.ms_day_begin_end" title="Link to this definition">¶</a></dt>
-<dd><p>Calcula en horario utc el timestamp del comienzo del dia y su final del timestamp pasado como argumento.</p>
+<dd><p>Given a timestamp in milliseconds, it returns the start and end timestamps of the day.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ts</strong> – A timestamp in milliseconds.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple with the start and end timestamps of the day.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.split_time_interval_in_full_days">
 <span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">split_time_interval_in_full_days</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts_ini</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ts_end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.time_helper.split_time_interval_in_full_days" title="Link to this definition">¶</a></dt>
-<dd><p>Dado un intervalo mediante dos timestamps, devuelve un alista de tuplas con el inicio y final de cada día completo
-tocado por el intervalo input.</p>
+<dd><p>Given two timestamps in milliseconds, it returns a list of tuples with the start and end timestamps of each day in the interval.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ts_ini</strong> – A timestamp in milliseconds.</p></li>
+<li><p><strong>ts_end</strong> – A timestamp in milliseconds.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>It returns a list of tuples with the start and end timestamps of each day in the interval.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -481,44 +601,98 @@ tocado por el intervalo input.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.ticks_between_timestamps">
 <span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">ticks_between_timestamps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.ticks_between_timestamps" title="Link to this definition">¶</a></dt>
-<dd><p>Dados dos timestamps en milliseconds y un tick interval te dice cuantas velas entran ahi.</p>
+<dd><p>Given two timestamps in milliseconds and a tick interval, it returns the number of ticks between them.</p>
 <dl class="simple">
-<dt>Se aplica:</dt><dd><ul class="simple">
-<li><p>si el start es un open se toma la vela en la que abre, si no, se toma la siguiente vela.</p></li>
-<li><p>si el end es un open se toma la vela de ese open también, si no, igualmente, la vela que contiene al end.</p></li>
+<dt>It applies:</dt><dd><ul class="simple">
+<li><p>if the start is an open, the candle in which it opens is taken, if not, the next candle is taken.</p></li>
+<li><p>if the end is an open, the candle of that open is also taken, if not, likewise, the candle that contains the end.</p></li>
 </ul>
 </dd>
 </dl>
-<p>El limit no se tiene en cuenta aquí, previamente se habrá tenido en cuenta.</p>
+<p>Limit is not taken into account here, it will have been taken into account previously.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> – A timestamp in milliseconds.</p></li>
+<li><p><strong>end</strong> – A timestamp in milliseconds.</p></li>
+<li><p><strong>tick_interval</strong> – A tick interval like ‘1m’, ‘1h’, etc.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the number of ticks between them.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.get_ticks_to_timestamp_utc">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">get_ticks_to_timestamp_utc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ticks_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.time_helper.get_ticks_to_timestamp_utc" title="Link to this definition">¶</a></dt>
-<dd><p>Retorna cuantas velas se requieren hasta el timestamp pasado hasta ahora</p>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">get_ticks_to_timestamp_utc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ticks_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.get_ticks_to_timestamp_utc" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the number of ticks to the next timestamp in milliseconds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ticks_interval</strong> – A tick interval like ‘1m’, ‘1h’, etc.</p></li>
+<li><p><strong>timestamp</strong> – A timestamp in milliseconds. If None, it will use current time.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the number of ticks to the next timestamp in milliseconds.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.convert_string_to_datetime">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_string_to_datetime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezoned</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.time_helper.convert_string_to_datetime" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_string_to_datetime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezoned</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">datetime</span></span></span><a class="headerlink" href="#handlers.time_helper.convert_string_to_datetime" title="Link to this definition">¶</a></dt>
+<dd><p>Converts a string to datetime. If string contains a timezone, it will be removed when passing timezoned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ts</strong> – A string with a date and time. Example: ‘2021-01-01 00:00:00.000’</p></li>
+<li><p><strong>timezoned</strong> – A timezone like ‘Europe/Madrid’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns a datetime object.Example: datetime.datetime(2021, 1, 1, 0, 0)</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.convert_utc_datetime_to_milliseconds">
 <span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_utc_datetime_to_milliseconds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.time_helper.convert_utc_datetime_to_milliseconds" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Convert datetime object to milliseconds. Example: datetime.datetime(2023, 10, 10, 11, 52, tzinfo=datetime.timezone.utc)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dt</strong> – A datetime object.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A Unix timestamp in milliseconds.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.utc">
 <span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">utc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.utc" title="Link to this definition">¶</a></dt>
-<dd><p>Returns UTC time in milliseconds from epoch.
-:return: int</p>
+<dd><p>Returns UTC time in milliseconds from epoch.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A timestamp in milliseconds.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.utc_datetime">
 <span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">utc_datetime</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">datetime</span></span></span><a class="headerlink" href="#handlers.time_helper.utc_datetime" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns UTC datetime.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A datetime object.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.check_tick_interval">
@@ -528,45 +702,101 @@ tocado por el intervalo input.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>tick_interval</strong> (<em>str</em>) – A string, maybe, binance tick interval well formatted.</p>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A string with the tick interval.</p>
+</dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.detect_tick_interval">
 <span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">detect_tick_interval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.time_helper.detect_tick_interval" title="Link to this definition">¶</a></dt>
-<dd><p>Retorna el tick interval de un dataframe</p>
+<dd><p>Detects tick interval from a dataframe with a column named ‘Open timestamp’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> – A pandas dataframe with a column named ‘Open timestamp’.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A string with the tick interval detected. Example: ‘1m’, ‘1h’, etc.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.next_open_utc">
 <span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">next_open_utc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.next_open_utc" title="Link to this definition">¶</a></dt>
-<dd><p>Calcula el timestamp del next open para un tick_interval</p>
+<dd><p>Calculates the next open timestamp in milliseconds for a tick interval.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tick_interval</strong> – A tick interval like ‘1m’, ‘1h’, etc.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>It returns the next open timestamp in milliseconds.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.next_open_by_milliseconds">
 <span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">next_open_by_milliseconds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.next_open_by_milliseconds" title="Link to this definition">¶</a></dt>
-<dd><p>Calcula el timestamp del next open para un tick_interval.</p>
+<dd><p>Calculates the next open timestamp in milliseconds for a tick interval.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ms</strong> – A timestamp in milliseconds.</p></li>
+<li><p><strong>tick_interval</strong> – A tick interval like ‘1m’, ‘1h’, etc.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>It returns the next open timestamp in milliseconds.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.open_from_milliseconds">
 <span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">open_from_milliseconds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.open_from_milliseconds" title="Link to this definition">¶</a></dt>
-<dd><p>Retorna el open de la vela definida que contiene ese timestamp.
-Si coincide el timestamp con un open, calcula y devuelve ese mismo timestamp.</p>
+<dd><p>Returns the open timestamp in milliseconds for a tick interval.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ms</strong> – A timestamp in milliseconds.</p></li>
+<li><p><strong>tick_interval</strong> – A tick interval like ‘1m’, ‘1h’, etc.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>It returns the open timestamp in milliseconds for that tick interval in that timestamp.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.close_from_milliseconds">
 <span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">close_from_milliseconds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.close_from_milliseconds" title="Link to this definition">¶</a></dt>
-<dd><p>Retorna el close de la vela definida que contiene ese timestamp.
-Si coincide el timestamp con un open, calcula el final.</p>
+<dd><p>Returns the close timestamp in milliseconds for a tick interval.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ms</strong> – A timestamp in milliseconds.</p></li>
+<li><p><strong>tick_interval</strong> – A tick interval like ‘1m’, ‘1h’, etc.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the close timestamp in milliseconds for that tick interval in that timestamp.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.wait_seconds_until_next_minute">
 <span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">wait_seconds_until_next_minute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#handlers.time_helper.wait_seconds_until_next_minute" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Waits until the next minute.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>It returns the seconds to wait until the next minute.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.calculate_iterations">
