@@ -1,7 +1,8 @@
 from time import time
+from tqdm import tqdm
 from pandas import to_datetime
 import pandas as pd
-from typing import Tuple, List, Dict
+from typing import Tuple, List
 from pandas import Timedelta
 
 from handlers.files import select_file, read_csv_to_dataframe, extract_filename_metadata
@@ -146,7 +147,7 @@ def check_continuity(df: pd.DataFrame, time_zone: str) -> pd.DataFrame:
         gaps["Gap length"] = gaps["Close timestamp"] - gaps["Open timestamp"]
 
         binpan_logger.warning(f"BinPan Warning: Dataframe has gaps in klines continuity: \n{gaps}")
-        binpan_logger.warning(f"\nTimestamp discontinuities detected: \n{dif_readable}")
+        # binpan_logger.warning(f"\nTimestamp discontinuities detected: \n{dif_readable}")
 
         binpan_logger.info(f"Please, repair the dataframe with the function 'repair_kline_discontinuity'.")
         return gaps
@@ -162,16 +163,48 @@ def find_common_interval_and_generate_timestamps(data: pd.DataFrame, timestamp_c
     :return: A tuple with the most common interval and a list of timestamps that should be present in the dataframe.
     """
     df = data.copy(deep=True)
+    df.sort_values(by=timestamp_col, inplace=True, ascending=True)
     df['Open timestamp diff'] = df[timestamp_col].diff()
     common_interval = int(df['Open timestamp diff'].value_counts().idxmax())
 
-    df.sort_values(by=timestamp_col, inplace=True, ascending=True)
-    start_time = df['Open timestamp'].iloc[0]
-    end_time = df['Open timestamp'].iloc[-1]
+    start_time = int(df[timestamp_col].iloc[0])
+    end_time = int(df[timestamp_col].iloc[-1])
 
     expected_timestamps = list(range(start_time, end_time + common_interval, common_interval))
 
     return common_interval, expected_timestamps
+
+
+def create_empty_typed_dataframe(index_data: list, columns: list, dtype_dict: dict, index_type=None, index_timezone=None):
+    """
+    Create an empty DataFrame with the desired types. It uses zeros to avoid NaNs and dtype fixing errors.
+
+    :param index_data: A list with the index data. Can be a list of timestamps or a list of strings.
+    :param columns: A list with the column names.
+    :param dtype_dict: Types of the columns.
+    :param index_type: If passed, the index will be converted to this type.
+    :param index_timezone: If passed, the index will be converted to this timezone.
+    :return:
+    """
+    if index_type:
+        index = pd.to_datetime(index_data, unit='ms')
+    else:
+        index = index_data
+
+    df_ = pd.DataFrame(index=index, columns=columns)
+    df_.fillna(0, inplace=True)
+
+    for col, dtype in dtype_dict.items():
+        if pd.api.types.is_datetime64_any_dtype(dtype):
+            if isinstance(dtype, pd.DatetimeTZDtype):
+                # Localizar la zona horaria si el dtype es timezone-aware
+                df_[col] = pd.to_datetime(df_[col]).dt.tz_localize('UTC').astype(dtype)
+            else:
+                df_[col] = pd.to_datetime(df_[col]).astype(dtype)
+        else:
+            df_[col] = df_[col].astype(dtype, errors='ignore')
+
+    return df_.sort_index(ascending=True)
 
 
 def add_missing_klines(df, interval: int, expected_timestamps: List[int], timestamp_col="Open timestamp"):
@@ -186,23 +219,22 @@ def add_missing_klines(df, interval: int, expected_timestamps: List[int], timest
     """
     df_copy = df.copy(deep=True)
     df_copy.sort_values(by=timestamp_col, inplace=True)
-
-    existing_timestamps = set(df_copy[timestamp_col])
-    missing_timestamps = set(expected_timestamps) - existing_timestamps
-
-    for ts in missing_timestamps:
-        new_row = pd.Series(index=df_copy.columns)
-        new_row[timestamp_col] = ts
-
-        # Inserta la nueva fila en el DataFrame después de la ultima fila que hay antes de la actual del bucle
-        # hay que tener en cuenta que el index del DataFrame es tipo objetos datetime
-        new_idx = df_copy.index[df_copy[timestamp_col] < ts].max()
-        new_idx += Timedelta(milliseconds=interval)
-        df_copy.loc[new_idx, :] = new_row
-
-    # Re-sort the DataFrame by timestamp
+    dtype_dict = df_copy.dtypes.to_dict()
+    index_type = df.index.dtype
+    if df.index.tz:
+        index_timezone = df.index.tz.zone
+    else:
+        index_timezone = None
+    missing_timestamps = list(set(expected_timestamps) - set(df_copy[timestamp_col]))
+    df_ = create_empty_typed_dataframe(index_data=missing_timestamps,
+                                       columns=df_copy.columns,
+                                       dtype_dict=dtype_dict,
+                                       index_type=index_type,
+                                       index_timezone=index_timezone)
+    df_[timestamp_col] = sorted(missing_timestamps)
+    df_copy = pd.concat([df_copy, df_], axis=0)
     df_copy.sort_values(by=timestamp_col, inplace=True)
-
+    assert len(expected_timestamps) == len(df_copy), "BinPan Exception: There are still missing values in the DataFrame."
     return df_copy
 
 
@@ -224,12 +256,11 @@ def fill_missing_values(data: pd.DataFrame, interval_ms: int, time_zone: str) ->
     df_filled[price_cols] = df_filled[price_cols].ffill()
     df_filled[volume_cols] = df_filled[volume_cols].fillna(0)
 
-    # locate columns with missing First TradeId and Last TradeId
-    missing_first_trade_id = df_filled['First TradeId'].isna()
-
-    # ffill last_trade_id column
-    df_filled['Last TradeId'] = df_filled['Last TradeId'].ffill()
-    df_filled.loc[missing_first_trade_id, 'First TradeId'] = df_filled.loc[missing_first_trade_id]['Last TradeId']
+    if "First TradeId" in df_filled.columns:
+        missing_first_trade_id = df_filled['First TradeId'].isna()
+        # ffill last_trade_id column
+        df_filled['Last TradeId'] = df_filled['Last TradeId'].ffill()
+        df_filled.loc[missing_first_trade_id, 'First TradeId'] = df_filled.loc[missing_first_trade_id]['Last TradeId']
 
     # obtain date columns from timestamp columns
     df_filled['Close timestamp'] = df['Open timestamp'] + interval_ms - 1
@@ -254,8 +285,9 @@ def repair_kline_discontinuity(df: pd.DataFrame, time_zone: str) -> pd.DataFrame
     :param time_zone: A string with the time zone. Ex: 'Europe/Madrid'
     :return: Repaired DataFrame.
     """
+    binpan_logger.info("Repairing kline discontinuity with selective ffill...")
     interval, expected_ts = find_common_interval_and_generate_timestamps(df)
+    binpan_logger.info(f"Common interval found: {interval} ms. Inserting {len(expected_ts) - len(df)} missing rows...")
     df_filled = add_missing_klines(df=df, interval=interval, expected_timestamps=expected_ts)
+    binpan_logger.info("Filling missing values...")
     return fill_missing_values(data=df_filled, interval_ms=interval, time_zone=time_zone)
-
-
