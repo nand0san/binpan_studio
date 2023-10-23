@@ -1,7 +1,7 @@
 from time import time
 from pandas import to_datetime
 import pandas as pd
-from typing import Tuple, List, Dict
+from typing import Tuple, List
 from pandas import Timedelta
 
 from handlers.files import select_file, read_csv_to_dataframe, extract_filename_metadata
@@ -166,8 +166,8 @@ def find_common_interval_and_generate_timestamps(data: pd.DataFrame, timestamp_c
     common_interval = int(df['Open timestamp diff'].value_counts().idxmax())
 
     df.sort_values(by=timestamp_col, inplace=True, ascending=True)
-    start_time = df['Open timestamp'].iloc[0]
-    end_time = df['Open timestamp'].iloc[-1]
+    start_time = int(df['Open timestamp'].iloc[0])
+    end_time = int(df['Open timestamp'].iloc[-1])
 
     expected_timestamps = list(range(start_time, end_time + common_interval, common_interval))
 
@@ -224,12 +224,11 @@ def fill_missing_values(data: pd.DataFrame, interval_ms: int, time_zone: str) ->
     df_filled[price_cols] = df_filled[price_cols].ffill()
     df_filled[volume_cols] = df_filled[volume_cols].fillna(0)
 
-    # locate columns with missing First TradeId and Last TradeId
-    missing_first_trade_id = df_filled['First TradeId'].isna()
-
-    # ffill last_trade_id column
-    df_filled['Last TradeId'] = df_filled['Last TradeId'].ffill()
-    df_filled.loc[missing_first_trade_id, 'First TradeId'] = df_filled.loc[missing_first_trade_id]['Last TradeId']
+    if "First TradeId" in df_filled.columns:
+        missing_first_trade_id = df_filled['First TradeId'].isna()
+        # ffill last_trade_id column
+        df_filled['Last TradeId'] = df_filled['Last TradeId'].ffill()
+        df_filled.loc[missing_first_trade_id, 'First TradeId'] = df_filled.loc[missing_first_trade_id]['Last TradeId']
 
     # obtain date columns from timestamp columns
     df_filled['Close timestamp'] = df['Open timestamp'] + interval_ms - 1
@@ -254,8 +253,9 @@ def repair_kline_discontinuity(df: pd.DataFrame, time_zone: str) -> pd.DataFrame
     :param time_zone: A string with the time zone. Ex: 'Europe/Madrid'
     :return: Repaired DataFrame.
     """
+    binpan_logger.info("Repairing kline discontinuity...")
     interval, expected_ts = find_common_interval_and_generate_timestamps(df)
+    binpan_logger.info(f"Common interval: {interval} ms")
     df_filled = add_missing_klines(df=df, interval=interval, expected_timestamps=expected_ts)
+    binpan_logger.info("Filling missing values...")
     return fill_missing_values(data=df_filled, interval_ms=interval, time_zone=time_zone)
-
-

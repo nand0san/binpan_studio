@@ -79,6 +79,15 @@ def convert_datetime_to_milliseconds(dt: datetime, timezoned: str = None) -> flo
 
 
 def convert_string_to_milliseconds(ts: str, timezoned: str = None) -> int:
+    """
+    Converts a string to milliseconds. If string contains a timezone, it will be removed when passing timezoned.
+
+    :param ts: A string with a date and time. Example: '2021-01-01 00:00:00.000'
+    :param timezoned: A timezone like 'Europe/Madrid'
+    :return: Returns a timestamp in milliseconds.
+    """
+    if "+" in ts and timezoned:
+        ts = ts.split("+")[0]
     dt = convert_string_to_datetime(ts=ts, timezoned=timezoned)
     return int(convert_datetime_to_milliseconds(dt=dt, timezoned=timezoned))
 
