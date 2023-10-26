@@ -3,7 +3,7 @@
 This is the main classes file.
 
 """
-__version__ = "0.6.9"
+__version__ = "0.7.1"
 
 import os
 from sys import path
@@ -51,6 +51,8 @@ from handlers.aggregations import resample_klines
 
 from handlers.standards import (binance_api_candles_cols, agg_trades_columns, atomic_trades_columns, time_cols,
                                 dts_time_cols, reversal_columns, agg_trades_columns_from_binance, atomic_trades_columns_from_binance)
+
+from handlers.quest import tick_seconds
 
 if is_running_in_jupyter():
     from tqdm.notebook import tqdm
@@ -1457,7 +1459,9 @@ class Symbol(object):
              support_lines: list = None,
              support_lines_color: str = 'darkblue',
              resistance_lines: list = None,
-             resistance_lines_color: str = 'darkred'):
+             resistance_lines_color: str = 'darkred',
+             date: str = None,
+             date_radio: int = 20):
         """
         Plots a candles figure for the object.
 
@@ -1489,10 +1493,22 @@ class Symbol(object):
         :param str support_lines_color: A color for horizontal lines, 'darkblue' is by default.
         :param list resistance_lines: A list of prices to plot horizontal lines in the candles plot for resistances or any other level.
         :param str resistance_lines_color: A color for horizontal lines, 'darkred' is by default.
+        :param str date: A date in string format to plot a zoom of a radio of klines up and down in time. Useful to inspect dates.
+             Incompatible with zoom_start_idx and zoom_end_idx. Strings formatted as "2022-05-11 06:45:42"
+        :param str date_radio: A radio in klines to plot a zoom around a date.
         """
         if not overlapped_indicators:
             overlapped_indicators = []
-        temp_df = self.df.iloc[zoom_start_idx:zoom_end_idx]
+        assert not ((zoom_start_idx or zoom_end_idx) and date), "zoom_start_idx or zoom_end_idx and date are incompatible"
+
+        if not date:
+            temp_df = self.df.iloc[zoom_start_idx:zoom_end_idx]
+        else:
+            date_ms = convert_str_date_to_ms(date=date, time_zone=self.time_zone)
+            tick_ms = tick_seconds[self.tick_interval] * 1000
+            start_radio = date_ms - (tick_ms * date_radio)
+            end_radio = date_ms + (tick_ms * date_radio)
+            temp_df = self.df.loc[(self.df['Open timestamp'] >= start_radio) & ( self.df['Open timestamp'] <= end_radio)]
 
         if not title:
             title = temp_df.index.name
