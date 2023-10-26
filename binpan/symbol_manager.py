@@ -1508,7 +1508,7 @@ class Symbol(object):
             tick_ms = tick_seconds[self.tick_interval] * 1000
             start_radio = date_ms - (tick_ms * date_radio)
             end_radio = date_ms + (tick_ms * date_radio)
-            temp_df = self.df.loc[(self.df['Open timestamp'] >= start_radio) & ( self.df['Open timestamp'] <= end_radio)]
+            temp_df = self.df.loc[(self.df['Open timestamp'] >= start_radio) & (self.df['Open timestamp'] <= end_radio)]
 
         if not title:
             title = temp_df.index.name
