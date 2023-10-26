@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>PostgreSQL Database Module - BinPan 0.6.07 documentation</title>
+    <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Requests Module" href="quest.html" /><link rel="prev" title="PostgreSQL Module" href="postgresql.html" />
+  <script>
+    const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const sessionTheme = sessionStorage['_theme']
+    if (sessionTheme) {
+      document.documentElement.classList.add(sessionTheme)
+    } else if (isDarkTheme) {
+      document.documentElement.classList.add('dark')
+    }
+  </script><link rel="stylesheet" type="text/css" href="_static/pygments.css?v=aecf457f" />
+    <link rel="stylesheet" type="text/css" href="_static/shibuya.css?v=2981b36d" />
+    <link rel="stylesheet" type="text/css" href="_static/style.css?v=1e48dca6" />
+    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=ee381b95" />
+    <style>
+:root {
+  --sy-f-sys:-apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Droid Sans, Helvetica Neue;--sy-f-cjk:PingFang SC, Hiragino Sans GB, Droid Sans Fallback, Microsoft YaHei;--sy-f-heading:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-text:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-mono:Menlo, Monaco, Consolas, "Courier New", monospace;--sy-c-divider:rgba(var(--sy-rc-text), 0.1);--sy-c-divider-weak:rgba(var(--sy-rc-text), 0.05);--sy-c-border:rgba(var(--sy-rc-text), 0.14);--sy-s-banner-height:0rem;--sy-s-navbar-height:56px;--sy-s-offset-top:calc(var(--sy-s-navbar-height) + var(--sy-s-banner-height));--sy-c-link:rgb(var(--sy-rc-theme));--sy-c-link-weak:rgba(var(--sy-rc-theme), 0.86);
+  --sy-rc-theme:143, 118, 214;--sy-rc-bg:255, 255, 255;--sy-rc-invert:0, 0, 0;--sy-rc-text:0, 0, 0;--sy-c-bg:#fff;--sy-c-bg-weak:#f9f9f9;--sy-c-text:#374151;--sy-c-text-weak:#6b7280;--sy-c-heading:#111827;--sy-c-bold:#111827;--sy-c-foot-text:#232226;--sy-c-foot-bg:#fafafa;--sy-c-foot-divider:#f0f0f0;
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --sy-rc-theme:143, 118, 214;--sy-rc-bg:255, 255, 255;--sy-rc-invert:0, 0, 0;--sy-rc-text:0, 0, 0;--sy-c-bg:#fff;--sy-c-bg-weak:#f9f9f9;--sy-c-text:#374151;--sy-c-text-weak:#6b7280;--sy-c-heading:#111827;--sy-c-bold:#111827;--sy-c-foot-text:#232226;--sy-c-foot-bg:#fafafa;--sy-c-foot-divider:#f0f0f0;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --sy-rc-theme:143, 118, 214;--sy-rc-bg:18, 18, 18;--sy-rc-invert:255, 255, 255;--sy-rc-text:255, 255, 255;--sy-c-bg:#121212;--sy-c-bg-weak:#212833;--sy-c-text:#cedbea;--sy-c-text-weak:#77889f;--sy-c-heading:#ebf0f4;--sy-c-bold:#ebf0f4;--sy-c-foot-text:#eee;--sy-c-foot-bg:#000;--sy-c-foot-divider:#000;
+  }
+}
+html.light {
+  --sy-rc-theme:143, 118, 214;--sy-rc-bg:255, 255, 255;--sy-rc-invert:0, 0, 0;--sy-rc-text:0, 0, 0;--sy-c-bg:#fff;--sy-c-bg-weak:#f9f9f9;--sy-c-text:#374151;--sy-c-text-weak:#6b7280;--sy-c-heading:#111827;--sy-c-bold:#111827;--sy-c-foot-text:#232226;--sy-c-foot-bg:#fafafa;--sy-c-foot-divider:#f0f0f0;
+}
+html.dark {
+  --sy-rc-theme:143, 118, 214;--sy-rc-bg:18, 18, 18;--sy-rc-invert:255, 255, 255;--sy-rc-text:255, 255, 255;--sy-c-bg:#121212;--sy-c-bg-weak:#212833;--sy-c-text:#cedbea;--sy-c-text-weak:#77889f;--sy-c-heading:#ebf0f4;--sy-c-bold:#ebf0f4;--sy-c-foot-text:#eee;--sy-c-foot-bg:#000;--sy-c-foot-divider:#000;
+}
+</style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-heading: Inter, var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    <meta property="og:type" content="website"/><meta property="og:title" content="PostgreSQL Database Module"/>
+<meta name="twitter:card" content="summary"/></head>
+<body><div class="document"><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand mr-4" href="index.html">
+      
+      
+      <strong>BinPan</strong>
+    </a>
+    <div class="sy-head-links" id="NavLinks">
+      <nav class="sy-head-nav"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form>
+        
+        
+        <div class="sy-head-social flex items-center">
+        </div>
+      </div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden">
+      <button class="js-theme theme-switch flex items-center" data-aria-light="Switch to dark mode" data-aria-dark="Switch to light mode">
+        <i class="i-icon theme-icon"></i>
+      </button>
+      <button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="NavLinks" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2 -translate-x-2"></span>
+          <span class="hamburger_3 -translate-x-1"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="binpan.html">BinPan Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aggregations.html">Aggregations Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exchange.html">Exchange Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="files.html">Files Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="indicators.html">Indicators Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="influx_manager.html">Influx Manager Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="messages.html">Messages Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postgresql.html">PostgreSQL Module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">PostgreSQL Database Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quest.html">Requests Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stat_tests.html">Statistical Tests and Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="starters.html">Starters Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tags.html">Tags &amp; Backtesting Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="time_helper.html">Time Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Module</a></li>
+</ul>
+
+        </div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-icon close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4">
+  <div class="localtoc">
+    <h3>On this page</h3>
+    <ul>
+<li><a class="reference internal" href="#handlers.postgresql_database.get_db_size"><code class="docutils literal notranslate"><span class="pre">get_db_size()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.postgresql_database.get_table_sizes"><code class="docutils literal notranslate"><span class="pre">get_table_sizes()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.postgresql_database.get_wal_gb_size"><code class="docutils literal notranslate"><span class="pre">get_wal_gb_size()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.postgresql_database.get_active_connections"><code class="docutils literal notranslate"><span class="pre">get_active_connections()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.postgresql_database.get_autovacuum_level"><code class="docutils literal notranslate"><span class="pre">get_autovacuum_level()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.postgresql_database.get_ungranted_locks"><code class="docutils literal notranslate"><span class="pre">get_ungranted_locks()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.postgresql_database.get_cache_statistics"><code class="docutils literal notranslate"><span class="pre">get_cache_statistics()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.postgresql_database.get_hypertable_info"><code class="docutils literal notranslate"><span class="pre">get_hypertable_info()</span></code></a></li>
+</ul>
+
+  </div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div>
+    </div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+    <div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-icon menu"></i>
+      </button>
+    </div>
+    <ul class="flex-1">
+      
+      
+      <li><a href="index.html">BinPan</a><span>/</span></li>
+      
+      <li><strong>PostgreSQL Database Module</strong></li>
+      
+      
+    </ul>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-icon outdent"></i>
+      </button>
+    </div>
+  </div>
+</div>
+    <div class="flex flex-col break-words justify-between">
+      <div class="min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+        <article class="yue" role="main">
+          <section id="postgresql-database-module">
+<h1>PostgreSQL Database Module<a class="headerlink" href="#postgresql-database-module" title="Link to this heading">¶</a></h1>
+<p>This module contains the PostgreSQL database handler for general database checks.</p>
+<p id="module-handlers.postgresql_database"><strong>Functions:</strong></p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.postgresql_database.get_db_size" title="handlers.postgresql_database.get_db_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_db_size</span></code></a>(cursor)</p></td>
+<td><p>Get the size of the database in a human readable format</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.postgresql_database.get_table_sizes" title="handlers.postgresql_database.get_table_sizes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_table_sizes</span></code></a>(cursor[, only_public_schema])</p></td>
+<td><p>Get the size of each table in the database and return it as a pandas DataFrame with sizes in KB.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.postgresql_database.get_wal_gb_size" title="handlers.postgresql_database.get_wal_gb_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_wal_gb_size</span></code></a>(cursor)</p></td>
+<td><p>Get the size of the Write Ahead Log (WAL) in the database and return it in GB.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.postgresql_database.get_active_connections" title="handlers.postgresql_database.get_active_connections"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_active_connections</span></code></a>(cursor[, ...])</p></td>
+<td><p>Get the number of active connections in the database.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.postgresql_database.get_autovacuum_level" title="handlers.postgresql_database.get_autovacuum_level"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_autovacuum_level</span></code></a>(cursor)</p></td>
+<td><p>Get the Autovacuum status for tables in the database.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.postgresql_database.get_ungranted_locks" title="handlers.postgresql_database.get_ungranted_locks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ungranted_locks</span></code></a>(cursor)</p></td>
+<td><p>Get the ungranted locks in the database.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.postgresql_database.get_cache_statistics" title="handlers.postgresql_database.get_cache_statistics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_cache_statistics</span></code></a>(cursor)</p></td>
+<td><p>Get cache statistics for tables in the database.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.postgresql_database.get_hypertable_info" title="handlers.postgresql_database.get_hypertable_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_hypertable_info</span></code></a>(cursor)</p></td>
+<td><p>Get information about hypertables in the TimescaleDB.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.postgresql_database.get_db_size">
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql_database.</span></span><span class="sig-name descname"><span class="pre">get_db_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.postgresql_database.get_db_size" title="Link to this definition">¶</a></dt>
+<dd><p>Get the size of the database in a human readable format</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cursor</strong> – A psycopg2 cursor</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A string with the size of the database</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.postgresql_database.get_table_sizes">
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql_database.</span></span><span class="sig-name descname"><span class="pre">get_table_sizes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_public_schema</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.postgresql_database.get_table_sizes" title="Link to this definition">¶</a></dt>
+<dd><p>Get the size of each table in the database and return it as a pandas DataFrame with sizes in KB.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cursor</strong> – A psycopg2 cursor</p></li>
+<li><p><strong>only_public_schema</strong> – Optional, set to True to only get sizes of tables in the ‘public’ schema.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pandas DataFrame with the size of each table in the database</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.postgresql_database.get_wal_gb_size">
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql_database.</span></span><span class="sig-name descname"><span class="pre">get_wal_gb_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.postgresql_database.get_wal_gb_size" title="Link to this definition">¶</a></dt>
+<dd><p>Get the size of the Write Ahead Log (WAL) in the database and return it in GB.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cursor</strong> – a psycopg2 cursor</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Size in GB of the WAL</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.postgresql_database.get_active_connections">
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql_database.</span></span><span class="sig-name descname"><span class="pre">get_active_connections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">database_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'crypto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_superuser</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.postgresql_database.get_active_connections" title="Link to this definition">¶</a></dt>
+<dd><p>Get the number of active connections in the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cursor</strong> – a psycopg2 cursor</p></li>
+<li><p><strong>database_name</strong> – Optional, name of the specific database to filter.</p></li>
+<li><p><strong>include_superuser</strong> – Optional, whether to include superuser connections or not.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Number of active connections</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.postgresql_database.get_autovacuum_level">
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql_database.</span></span><span class="sig-name descname"><span class="pre">get_autovacuum_level</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.postgresql_database.get_autovacuum_level" title="Link to this definition">¶</a></dt>
+<dd><p>Get the Autovacuum status for tables in the database.</p>
+<p>This function returns a DataFrame with the following columns:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><cite>schemaname</cite>:</dt><dd><p>The schema where the table resides.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>relname</cite>:</dt><dd><p>The name of the table.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>last_autovacuum</cite>:</dt><dd><p>Timestamp of the last autovacuum operation performed on the table.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>last_autoanalyze</cite>:</dt><dd><p>Timestamp of the last autoanalyze operation performed on the table.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>n_dead_tup</cite>:</dt><dd><p>Number of dead tuples in the table. Dead tuples are rows that have been updated or deleted and are awaiting removal by autovacuum.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>n_live_tup</cite>:</dt><dd><p>Number of live tuples in the table. Live tuples are rows that are currently valid and not marked for deletion.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>n_mod_since_analyze</cite>:</dt><dd><p>Number of tuples modified since the last analyze operation. Analyze operations collect statistics about the data in the table
+to help the query planner optimize queries.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>seq_scan</cite>:</dt><dd><p>Number of sequential scans performed on the table. A high number can indicate that indexes are not being effectively utilized.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>idx_scan</cite>:</dt><dd><p>Number of index scans performed on the table. Indicates how often indexes are used for querying this table.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cursor</strong> – a psycopg2 cursor</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>DataFrame with Autovacuum status</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.postgresql_database.get_ungranted_locks">
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql_database.</span></span><span class="sig-name descname"><span class="pre">get_ungranted_locks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.postgresql_database.get_ungranted_locks" title="Link to this definition">¶</a></dt>
+<dd><p>Get the ungranted locks in the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cursor</strong> – a psycopg2 cursor</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>DataFrame with ungranted lock details</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.postgresql_database.get_cache_statistics">
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql_database.</span></span><span class="sig-name descname"><span class="pre">get_cache_statistics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.postgresql_database.get_cache_statistics" title="Link to this definition">¶</a></dt>
+<dd><p>Get cache statistics for tables in the database.</p>
+<p>This function returns a DataFrame with the following columns:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><cite>table_name</cite>:</dt><dd><p>The name of the table.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>heap_blks_read</cite>:</dt><dd><p>Number of disk blocks read for the main table (heap).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>heap_blks_hit</cite>:</dt><dd><p>Number of buffer hits in the cache for the main table (heap).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>idx_blks_read</cite>:</dt><dd><p>Number of disk blocks read for all indexes on the table.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>idx_blks_hit</cite>:</dt><dd><p>Number of buffer hits in the cache for all indexes on the table.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>toast_blks_read</cite>:</dt><dd><p>Number of disk blocks read for the TOAST table (used for storing large values out of main table rows).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>toast_blks_hit</cite>:</dt><dd><p>Number of buffer hits in the cache for the TOAST table.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>tidx_blks_read</cite>:</dt><dd><p>Number of disk blocks read for indexes on the TOAST table.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>tidx_blks_hit</cite>:</dt><dd><p>Number of buffer hits in the cache for indexes on the TOAST table.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>heap_cache_hit_rate</cite>:</dt><dd><p>Cache hit rate for the main table (heap).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>idx_cache_hit_rate</cite>:</dt><dd><p>Cache hit rate for all indexes on the table.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Cache hit rates are useful metrics for determining the efficiency of the cache. A high hit rate
+indicates that the cache is effectively reducing the need for disk reads.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cursor</strong> – a psycopg2 cursor</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>DataFrame with cache statistics</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.postgresql_database.get_hypertable_info">
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql_database.</span></span><span class="sig-name descname"><span class="pre">get_hypertable_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.postgresql_database.get_hypertable_info" title="Link to this definition">¶</a></dt>
+<dd><p>Get information about hypertables in the TimescaleDB.</p>
+<p>This function returns a DataFrame with the following columns:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><cite>hypertable_schema</cite>:</dt><dd><p>The schema in which the hypertable resides.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>hypertable_name</cite>:</dt><dd><p>The name of the hypertable.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>owner</cite>:</dt><dd><p>The owner of the hypertable.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>num_dimensions</cite>:</dt><dd><p>The number of dimensions of the hypertable.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>num_chunks</cite>:</dt><dd><p>The total number of chunks associated with the hypertable.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>compression_enabled</cite>:</dt><dd><p>Whether compression is enabled for the hypertable.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>is_distributed</cite>:</dt><dd><p>Indicates if the hypertable is distributed.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>replication_factor</cite>:</dt><dd><p>The replication factor of the hypertable (relevant for distributed hypertables).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>data_nodes</cite>:</dt><dd><p>Nodes where the hypertable data resides.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>tablespaces</cite>:</dt><dd><p>Tablespaces associated with the hypertable.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cursor</strong> – a psycopg2 cursor</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>DataFrame with hypertable details</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+        </article>
+        
+        <div class="navigation flex print:hidden">
+  <div class="navigation-prev">
+    <a href="postgresql.html">
+      <i class="i-icon chevron"></i>
+      <div class="page-info">
+        <span>Previous</span>
+        
+        <div class="title">PostgreSQL Module</div>
+        
+      </div>
+    </a>
+  </div>
+  <div class="navigation-next">
+    <a href="quest.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title">Requests Module</div>
+      </div>
+      <i class="i-icon chevron"></i>
+    </a>
+  </div>
+</div>
+        
+      </div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2022, Fernando Alfonso</p>
+        
+        <p>
+          Made with
+          
+          <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+          
+          <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+        </p>
+      </div>
+      <div class="sy-foot-socials">
+      </div>
+    </div>
+  </div>
+</footer></div>
+      <script src="_static/documentation_options.js?v=69ee2aff"></script>
+      <script src="_static/doctools.js?v=888ff710"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/shibuya.js?v=3e5c8598"></script>
+    
+</body>
+</html>

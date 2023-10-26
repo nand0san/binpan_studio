@@ -1,6 +1,7 @@
 from handlers.postgresql import (create_connection, get_valid_table_list, is_cursor_alive, check_standard_table_exists,
                                  is_hypertable, get_column_names, get_indexed_columns, get_hypertable_indexes,
                                  list_tables_with_suffix, data_type_from_table, count_rows_in_tables)
+from handlers import postgresql_database
 from handlers.starters import AesCipher
 from typing import List, Dict
 
@@ -55,6 +56,9 @@ class Database:
                                                          database=self.database)
 
         self.tables = self.get_tables()
+        self.size = self.get_db_size()
+        self.table_sizes = self.get_tables_sizes(only_public_schema=True)
+        self.hypertable_info = self.get_hypertable_info()
 
     def update_cursor(self):
         self.connection, self.cursor = create_connection(user=self.user,
@@ -81,6 +85,18 @@ class Database:
             return list_tables_with_suffix(self.cursor, table_type)
         else:
             return get_valid_table_list(self.cursor)
+
+    def get_tables_sizes(self, only_public_schema: bool = True):
+        self.table_sizes = postgresql_database.get_table_sizes(cursor=self.cursor, only_public_schema=only_public_schema)
+        return self.table_sizes
+
+    def get_db_size(self):
+        self.size = postgresql_database.get_db_size(cursor=self.cursor)
+        return self.size
+
+    def get_hypertable_info(self):
+        self.hypertable_info = postgresql_database.get_hypertable_info(cursor=self.cursor)
+        return self.hypertable_info
 
     def alive(self):
         return is_cursor_alive(self.cursor)
