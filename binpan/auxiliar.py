@@ -146,8 +146,8 @@ def check_continuity(df: pd.DataFrame, time_zone: str) -> pd.DataFrame:
 
         binpan_logger.warning(f"BinPan Warning: Dataframe has gaps in klines continuity: \n{gaps}")
         # binpan_logger.warning(f"\nTimestamp discontinuities detected: \n{dif_readable}")
-
-        binpan_logger.info(f"Please, repair the dataframe with the function 'repair_kline_discontinuity'.")
+        binpan_logger.info(f"Please, repair the dataframe with the function 'repair_continuity' method or 'repair_kline_discontinuity' "
+                           f"function from 'auxiliar.py'.")
         return gaps
 
 
@@ -211,6 +211,8 @@ def create_empty_typed_dataframe(index_data: list,
         else:
             df_[col] = df_[col].astype(dtype, errors='ignore')
     # print(type(df_.index))
+    # replace zeros with nans
+    df_.replace(0, pd.NA, inplace=True)
     return df_.sort_index(ascending=True)
 
 
