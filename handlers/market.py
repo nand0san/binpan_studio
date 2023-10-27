@@ -78,7 +78,7 @@ def get_candles_by_time_stamps(symbol: str,
                                start_time: int = None,
                                end_time: int = None,
                                limit=1000,
-                               time_zone='Europe/Madrid') -> list:
+                               time_zone='Europe/Madrid') -> List[list]:
     """
     Calls API for a candles list using one or two timestamps, starting and ending.
 
@@ -168,8 +168,8 @@ def get_candles_by_time_stamps(symbol: str,
         raw_candles += response
 
     if not raw_candles:
-        msg = f"BinPan Exception: Requested data for {symbol.lower()}@kline_{tick_interval} between {start_string} and " \
-              f"{end_string} missing in API."
+        msg = f"BinPan: Missing in API requested klines for {symbol.lower()}@kline_{tick_interval} between {start_string} and " \
+              f"{end_string}"
         market_logger.warning(msg)
         return []
         # raise Exception(msg)
@@ -192,7 +192,7 @@ def get_historical_candles(symbol: str,
                            end_time: int,
                            tick_interval_ms: int,
                            limit: int = 1000,
-                           ignore_errors: bool = False) -> list:
+                           ignore_errors: bool = False) -> List[list]:
     """
     Retrieve all kline data within the given time range considering the API limit.
 
@@ -430,7 +430,7 @@ def convert_dict_to_numeric(input_dict: dict, parse_datetime2int: bool) -> dict:
 # Trades #
 ##########
 
-def get_last_agg_trades(symbol: str, limit=1000) -> list:
+def get_last_agg_trades(symbol: str, limit=1000) -> List[dict]:
     """
     Get just the last aggregated trades from API.
 
@@ -469,7 +469,7 @@ def get_last_agg_trades(symbol: str, limit=1000) -> list:
     return get_response(url=endpoint, params=query)
 
 
-def get_aggregated_trades(symbol: str, fromId: int = None, limit: int = None, decimal_mode: bool = False) -> list:
+def get_aggregated_trades(symbol: str, fromId: int = None, limit: int = None, decimal_mode: bool = False) -> List[dict]:
     """
     Returns aggregated trades from id to limit or last trades if id not specified.
 
@@ -692,7 +692,7 @@ def get_historical_agg_trades(symbol: str,
 
 
 def parse_agg_trades_to_dataframe(response: list, columns: dict, symbol: str, time_zone: str = None, time_index: bool = None,
-                                  drop_dupes: str = None):
+                                  drop_dupes: str = None) -> pd.DataFrame:
     """
     Parses the API response into a pandas dataframe.
 
@@ -751,7 +751,7 @@ def parse_agg_trades_to_dataframe(response: list, columns: dict, symbol: str, ti
     return df[agg_trades_columns_from_binance]
 
 
-def get_last_atomic_trades(symbol: str, limit=1000) -> list:
+def get_last_atomic_trades(symbol: str, limit=1000) -> List[dict]:
     """
     Returns recent atomic (not aggregated) trades.
 
@@ -792,7 +792,7 @@ def get_last_atomic_trades(symbol: str, limit=1000) -> list:
 def get_atomic_trades(symbol: str,
                       fromId: int = None,
                       limit: int = None,
-                      decimal_mode: bool = False) -> list:
+                      decimal_mode: bool = False) -> List[dict]:
     """
     Returns atomic (not aggregated) trades from id to limit or last trades if id not specified.
 
@@ -1004,7 +1004,7 @@ def parse_atomic_trades_to_dataframe(response: list,
                                      symbol: str,
                                      time_zone: str = None,
                                      time_index: bool = None,
-                                     drop_dupes: str = None):
+                                     drop_dupes: str = None) -> pd.DataFrame:
     """
     Parses the API response into a pandas dataframe.
 
