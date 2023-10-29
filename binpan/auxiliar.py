@@ -244,7 +244,11 @@ def add_missing_klines(df, expected_timestamps: List[int], timestamp_col="Open t
                                        index_time_zone=index_time_zone,
                                        is_index_data_timestamps=True)
     df_[timestamp_col] = sorted(missing_timestamps)
-    df_copy = pd.concat([df_copy, df_], axis=0)
+
+    # index_name = df_copy.index.name
+    df_copy = pd.concat([df_copy, df_], axis=0, ignore_index=False)
+    # df_copy.index = df_copy['Open time']
+    # df_copy.index.name = index_name
 
     if index_time_zone:
         assert df_.index.tz.zone == df_copy.index.tz.zone, "BinPan Exception: Time zones are not the same."

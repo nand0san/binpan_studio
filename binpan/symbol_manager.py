@@ -3,7 +3,7 @@
 This is the main classes file.
 
 """
-__version__ = "0.7.2"
+__version__ = "0.7.3"
 
 import os
 from sys import path
@@ -57,7 +57,7 @@ from handlers.quest import tick_seconds
 if is_running_in_jupyter():
     from tqdm.notebook import tqdm
 else:
-    from tqdm import tqdm
+    from tqdm.autonotebook import tqdm
 
 binpan_logger = Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 version = __version__
@@ -2251,7 +2251,8 @@ class Symbol(object):
         :return: pd.Series
 
         """
-
+        binpan_logger.warning("This method is a sub-method used by sma() or ema(). PLease call it directly only if you know what you"
+                              " are doing. It uses pandas_ta ma method.")
         if 'length' in kwargs.keys():
             if kwargs['length'] >= len(self.df):
                 msg = f"BinPan Error: Ma window larger than data length."

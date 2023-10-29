@@ -18,7 +18,7 @@ from .tags import is_alternating
 if is_running_in_jupyter():
     from tqdm.notebook import tqdm
 else:
-    from tqdm import tqdm
+    from tqdm.autonotebook import tqdm
 
 # this is to avoid the error: "RuntimeError: can't set attribute" when using multiprocessing
 cpus = multiprocessing.cpu_count() // 2

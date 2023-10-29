@@ -5,7 +5,7 @@ from handlers.postgresql import (create_connection, get_valid_table_list, is_cur
                                  list_tables_with_suffix, data_type_from_table, count_rows_in_tables)
 from handlers import postgresql_database
 from handlers.starters import AesCipher
-from typing import List, Dict
+from typing import List
 
 cipher_object = AesCipher()
 
@@ -118,6 +118,7 @@ class Database:
             tables = self.tables
         ret = count_rows_in_tables(cursor=self.cursor, table_names=tables)
         return pd.Series(ret).sort_values(ascending=False)
+
     @staticmethod
     def table_type(table_name: str):
         data_type = data_type_from_table(table_name)
