@@ -3,7 +3,7 @@
 This is the main classes file.
 
 """
-__version__ = "0.7.3"
+__version__ = "0.7.4"
 
 import os
 from sys import path
@@ -629,8 +629,8 @@ class Symbol(object):
         :return pd.DataFrame: Pandas DataFrame with columns dropped.
 
         """
-        if not columns_to_drop:
-            columns_to_drop = []
+        # if not columns_to_drop:
+        #     columns_to_drop = []
         current_columns = self.df.columns
         if not columns_to_drop:
             columns_to_drop = []
@@ -1263,10 +1263,11 @@ class Symbol(object):
                                                            min_reversal=self.min_reversal)
         return self.reversal_atomic_klines
 
-    def resample(self, tick_interval: str):
+    def resample(self, tick_interval: str, inplace=False):
         """
         Resample trades to a different tick interval. Tick interval must be higher.
         :param str tick_interval: A binance tick interval. Must be higher than current tick interval.
+        :param bool inplace: Change object dataframe permanently whe True is selected. False shows a copy dataframe.
         :return pd.DataFrame: Resampled klines.
         """
         new_index = tick_interval_values.index(tick_interval)
@@ -1276,7 +1277,27 @@ class Symbol(object):
         except Exception as e:
             binpan_logger.error(f"BinPan error: resample must use higher interval: {new_index} not > {current_index} {e}")
             return
-        return resample_klines(data=self.df, tick_interval=tick_interval)
+        if inplace:
+            self.drop(inplace=True)
+            self.tick_interval = tick_interval
+            self.row_control = dict()
+            self.color_control = dict()
+            self.color_fill_control = dict()
+            self.indicators_filled_mode = dict()
+            self.axis_groups = dict()
+            self.global_axis_group = 99
+            self.strategies = 0
+            self.row_counter = 1
+            self.strategy_groups = dict()
+            self.plot_splitted_serie_couples = {}
+            self.timestamps = self.get_timestamps()
+            self.dates = self.get_dates()
+            self.start_time, self.end_time = self.timestamps
+            self.df = resample_klines(data=self.df, tick_interval=tick_interval)
+            self.discontinuities = check_continuity(df=self.df, time_zone=self.time_zone)
+            return self.df
+        else:
+            return resample_klines(data=self.df, tick_interval=tick_interval)
 
     def repair_continuity(self):
         self.df = repair_kline_discontinuity(df=self.df, time_zone=self.time_zone)
@@ -2251,8 +2272,8 @@ class Symbol(object):
         :return: pd.Series
 
         """
-        binpan_logger.warning("This method is a sub-method used by sma() or ema(). PLease call it directly only if you know what you"
-                              " are doing. It uses pandas_ta ma method.")
+        binpan_logger.debug("This method is a sub-method used by sma() or ema(). PLease call it directly only if you know "
+                            "what you are doing. It uses pandas_ta ma method.")
         if 'length' in kwargs.keys():
             if kwargs['length'] >= len(self.df):
                 msg = f"BinPan Error: Ma window larger than data length."
