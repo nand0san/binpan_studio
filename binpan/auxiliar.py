@@ -122,6 +122,9 @@ def check_continuity(df: pd.DataFrame, time_zone: str) -> pd.DataFrame:
     :param time_zone: A string with the time zone. Ex: 'Europe/Madrid'
     :return: A dataframe with the gaps in klines continuity or if no gaps, returns empty dataframe.
     """
+    if df.empty:
+        binpan_logger.warning("BinPan Warning: Dataframe is empty.")
+        return pd.DataFrame()
     dif = df['Open timestamp'].diff().dropna()  # Drop the NaN value for the first row
 
     try:

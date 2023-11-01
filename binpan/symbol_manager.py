@@ -3,7 +3,7 @@
 This is the main classes file.
 
 """
-__version__ = "0.7.5"
+__version__ = "0.7.6"
 
 import os
 from sys import path
@@ -913,6 +913,9 @@ class Symbol(object):
         :return tuple(int, int): Start Open timestamp and end close timestamp
 
         """
+        if self.df.empty:
+            binpan_logger.warning(f"BinPan Warning: Empty dataframe, no timestamps available.")
+            return 0, 0
         start = self.df.iloc[0]['Open timestamp']
         # end = self.df.iloc[-1]['Close timestamp']
         end = self.df.iloc[-1]['Open timestamp']
