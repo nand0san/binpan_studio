@@ -885,7 +885,7 @@ def data_type_from_table(table: str) -> str or None:
     :param table: The name of the table.
     :return: Websockets channel type.
     """
-    if "kline" in table:
+    if "kline" in table and not "missed" in table:
         return "kline"
     elif "aggTrade" in table or "aggtrade" in table:
         return "aggTrade"
@@ -894,7 +894,7 @@ def data_type_from_table(table: str) -> str or None:
     elif table.endswith("_statistics"):
         return "statistics"
     elif "missed" in table:
-        return "missed"
+        return None
     else:
         sql_logger.debug(f"data_type_from_table: Name {table} not recognized.")
         return None
