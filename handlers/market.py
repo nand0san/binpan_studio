@@ -162,9 +162,11 @@ def get_candles_by_time_stamps(symbol: str,
 
         start_str = convert_milliseconds_to_str(start, timezoned=time_zone)
         end_str = convert_milliseconds_to_str(min(end, int(1000 * time())), timezoned=time_zone)
-        market_logger.info(f"API request: {symbol} {start_str} to {end_str}")
+        expected_klines = int((end - start) / tick_milliseconds) + 1
+        market_logger.debug(f"API request: {symbol} {start_str} to {end_str}. Expected klines: {expected_klines}")
         response = get_response(url=endpoint, params=params)
-
+        if len(response) != expected_klines:
+            market_logger.warning(f"API response missing {expected_klines - len(response)} klines for {symbol} {start_str} to {end_str}")
         raw_candles += response
 
     if not raw_candles:
