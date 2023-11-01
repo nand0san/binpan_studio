@@ -113,11 +113,14 @@ class Database:
         # mostrar una tabla con todos los datos recopilados
         print(f"Table: {table_name}\nExists: {exists}\nHyper: {hyper}\nColumns: {columns}\nIndex: {index}\nHyper Index: {hyper_index}")
 
-    def get_table_counts(self, tables: List[str] = None) -> pd.Series:
+    def get_table_counts(self, tables: List[str] = None, drop_missed: bool = True) -> pd.Series:
         if not tables:
             tables = self.tables
         ret = count_rows_in_tables(cursor=self.cursor, table_names=tables)
-        return pd.Series(ret).sort_values(ascending=False)
+        ret = pd.Series(ret).sort_values(ascending=False)
+        if drop_missed:
+            ret = ret[~ret.index.str.contains("missed")]
+        return ret
 
     @staticmethod
     def table_type(table_name: str):
