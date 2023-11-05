@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Indicators Module - BinPan 0.7.6 documentation</title>
+      <title>Indicators Module - BinPan 0.7.7 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Influx Manager Module" href="influx_manager.html" /><link rel="prev" title="Files Module" href="files.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -127,12 +127,15 @@ html.dark {
     <ul>
 <li><a class="reference internal" href="#handlers.indicators.alternating_fractal_indicator"><code class="docutils literal notranslate"><span class="pre">alternating_fractal_indicator()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.indicators.fractal_trend_indicator"><code class="docutils literal notranslate"><span class="pre">fractal_trend_indicator()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.indicators.calculate_fractal_trend_on_flags"><code class="docutils literal notranslate"><span class="pre">calculate_fractal_trend_on_flags()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.indicators.ichimoku"><code class="docutils literal notranslate"><span class="pre">ichimoku()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.indicators.ker"><code class="docutils literal notranslate"><span class="pre">ker()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.indicators.fractal_w_indicator"><code class="docutils literal notranslate"><span class="pre">fractal_w_indicator()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.indicators.support_resistance_volume"><code class="docutils literal notranslate"><span class="pre">support_resistance_volume()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.indicators.count_smaller_values_backward"><code class="docutils literal notranslate"><span class="pre">count_smaller_values_backward()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.indicators.count_larger_values_backward"><code class="docutils literal notranslate"><span class="pre">count_larger_values_backward()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.indicators.rolling_max_with_steps_back"><code class="docutils literal notranslate"><span class="pre">rolling_max_with_steps_back()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.indicators.rolling_min_with_steps_back"><code class="docutils literal notranslate"><span class="pre">rolling_min_with_steps_back()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.indicators.split_serie_by_position"><code class="docutils literal notranslate"><span class="pre">split_serie_by_position()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.indicators.df_splitter"><code class="docutils literal notranslate"><span class="pre">df_splitter()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.indicators.zoom_cloud_indicators"><code class="docutils literal notranslate"><span class="pre">zoom_cloud_indicators()</span></code></a></li>
@@ -197,73 +200,82 @@ html.dark {
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.fractal_trend_indicator" title="handlers.indicators.fractal_trend_indicator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fractal_trend_indicator</span></code></a>(df[, period, ...])</p></td>
 <td><p>Obtains the trend of the fractal_w indicator.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.ichimoku" title="handlers.indicators.ichimoku"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ichimoku</span></code></a>(data[, tenkan, kijun, chikou_span, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.calculate_fractal_trend_on_flags" title="handlers.indicators.calculate_fractal_trend_on_flags"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_fractal_trend_on_flags</span></code></a>(df, flags)</p></td>
+<td><p>Applies the fractal_trend_indicator function to the dataframe df for each index flagged with 1 in the flags series.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.ichimoku" title="handlers.indicators.ichimoku"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ichimoku</span></code></a>(data[, tenkan, kijun, chikou_span, ...])</p></td>
 <td><p>The Ichimoku Cloud is a collection of technical indicators that show support and resistance levels, as well as momentum and trend direction.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.ker" title="handlers.indicators.ker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ker</span></code></a>(close, window)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.ker" title="handlers.indicators.ker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ker</span></code></a>(close, window)</p></td>
 <td><p>Kaufman's Efficiency Ratio based in: <a class="reference external" href="https://stackoverflow.com/questions/36980238/calculating-kaufmans-efficiency-ratio-in-python">https://stackoverflow.com/questions/36980238/calculating-kaufmans-efficiency-ratio-in-python</a> -with-pandas</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.fractal_w_indicator" title="handlers.indicators.fractal_w_indicator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fractal_w_indicator</span></code></a>(df[, period, merged, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.fractal_w_indicator" title="handlers.indicators.fractal_w_indicator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fractal_w_indicator</span></code></a>(df[, period, merged, ...])</p></td>
 <td><p>The fractal indicator is based on a simple price pattern that is frequently seen in financial markets.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.support_resistance_volume" title="handlers.indicators.support_resistance_volume"><code class="xref py py-obj docutils literal notranslate"><span class="pre">support_resistance_volume</span></code></a>(df[, num_bins, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.support_resistance_volume" title="handlers.indicators.support_resistance_volume"><code class="xref py py-obj docutils literal notranslate"><span class="pre">support_resistance_volume</span></code></a>(df[, num_bins, ...])</p></td>
 <td><p>Calculates support and resistance levels based on volume and prices in the given dataframe.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.count_smaller_values_backward" title="handlers.indicators.count_smaller_values_backward"><code class="xref py py-obj docutils literal notranslate"><span class="pre">count_smaller_values_backward</span></code></a>(s)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.count_smaller_values_backward" title="handlers.indicators.count_smaller_values_backward"><code class="xref py py-obj docutils literal notranslate"><span class="pre">count_smaller_values_backward</span></code></a>(s)</p></td>
 <td><p>Calcula el número de valores que cada entrada en la serie supera hacia atrás hasta encontrar un valor superior o llegar al inicio de la serie.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.count_larger_values_backward" title="handlers.indicators.count_larger_values_backward"><code class="xref py py-obj docutils literal notranslate"><span class="pre">count_larger_values_backward</span></code></a>(s)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.count_larger_values_backward" title="handlers.indicators.count_larger_values_backward"><code class="xref py py-obj docutils literal notranslate"><span class="pre">count_larger_values_backward</span></code></a>(s)</p></td>
 <td><p>Calcula el número de valores que son superiores a cada entrada en la serie hacia atrás hasta encontrar un valor igual o menor o llegar al inicio de la serie.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.split_serie_by_position" title="handlers.indicators.split_serie_by_position"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_serie_by_position</span></code></a>(serie, splitter_serie)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.rolling_max_with_steps_back" title="handlers.indicators.rolling_max_with_steps_back"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rolling_max_with_steps_back</span></code></a>(ser, window[, ...])</p></td>
+<td><p>Calculate the rolling maximum and the steps back to the maximum for each point in the series.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.rolling_min_with_steps_back" title="handlers.indicators.rolling_min_with_steps_back"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rolling_min_with_steps_back</span></code></a>(ser, window[, ...])</p></td>
+<td><p>Calculate the rolling minimum and the steps back to the minimum for each point in the series.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.split_serie_by_position" title="handlers.indicators.split_serie_by_position"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_serie_by_position</span></code></a>(serie, splitter_serie)</p></td>
 <td><p>Splits a serie by values of other serie in four series by relative positions for plotting colored clouds with plotly.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.df_splitter" title="handlers.indicators.df_splitter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">df_splitter</span></code></a>(data, up_column, down_column)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.df_splitter" title="handlers.indicators.df_splitter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">df_splitter</span></code></a>(data, up_column, down_column)</p></td>
 <td><p>Splits a dataframe y sub dataframes to plot by colored areas.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.zoom_cloud_indicators" title="handlers.indicators.zoom_cloud_indicators"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zoom_cloud_indicators</span></code></a>(...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.zoom_cloud_indicators" title="handlers.indicators.zoom_cloud_indicators"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zoom_cloud_indicators</span></code></a>(...)</p></td>
 <td><p>It zooms the cloud indicators in an index interval for a plot zoom.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.shift_indicator" title="handlers.indicators.shift_indicator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shift_indicator</span></code></a>(serie[, window])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.shift_indicator" title="handlers.indicators.shift_indicator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shift_indicator</span></code></a>(serie[, window])</p></td>
 <td><p>It shifts a candle ahead by the window argument value (or backwards if negative).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.ffill_indicator" title="handlers.indicators.ffill_indicator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ffill_indicator</span></code></a>(serie[, window])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.ffill_indicator" title="handlers.indicators.ffill_indicator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ffill_indicator</span></code></a>(serie[, window])</p></td>
 <td><p>It forward fills a value through nans while a window of candles ahead.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.reversal_candles" title="handlers.indicators.reversal_candles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reversal_candles</span></code></a>(trades, decimal_positions, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.reversal_candles" title="handlers.indicators.reversal_candles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reversal_candles</span></code></a>(trades, decimal_positions, ...)</p></td>
 <td><p>Generate reversal candles for reversal charts:</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.repeat_prices_by_quantity" title="handlers.indicators.repeat_prices_by_quantity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat_prices_by_quantity</span></code></a>(data, epsilon_quantity)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.repeat_prices_by_quantity" title="handlers.indicators.repeat_prices_by_quantity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat_prices_by_quantity</span></code></a>(data, epsilon_quantity)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.kmeans_custom_init" title="handlers.indicators.kmeans_custom_init"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kmeans_custom_init</span></code></a>(data, max_clusters)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.kmeans_custom_init" title="handlers.indicators.kmeans_custom_init"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kmeans_custom_init</span></code></a>(data, max_clusters)</p></td>
 <td><p>Generate initial centroids for K-means clustering with equally spaced values between min and max values in data.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.find_optimal_clusters" title="handlers.indicators.find_optimal_clusters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_optimal_clusters</span></code></a>(KMeans_lib, data, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.find_optimal_clusters" title="handlers.indicators.find_optimal_clusters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_optimal_clusters</span></code></a>(KMeans_lib, data, ...)</p></td>
 <td><p>Find the optimal quantity of centroids for support and resistance methods using the elbow method.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.support_resistance_levels" title="handlers.indicators.support_resistance_levels"><code class="xref py py-obj docutils literal notranslate"><span class="pre">support_resistance_levels</span></code></a>(df[, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.support_resistance_levels" title="handlers.indicators.support_resistance_levels"><code class="xref py py-obj docutils literal notranslate"><span class="pre">support_resistance_levels</span></code></a>(df[, ...])</p></td>
 <td><p>Calculate support and resistance levels for a given set of trades using K-means clustering.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.support_resistance_levels_merged" title="handlers.indicators.support_resistance_levels_merged"><code class="xref py py-obj docutils literal notranslate"><span class="pre">support_resistance_levels_merged</span></code></a>(df, by_klines)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.support_resistance_levels_merged" title="handlers.indicators.support_resistance_levels_merged"><code class="xref py py-obj docutils literal notranslate"><span class="pre">support_resistance_levels_merged</span></code></a>(df, by_klines)</p></td>
 <td><p>Calculate support and resistance levels merged for a given set of trades using K-means clustering.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.repeat_timestamps_by_quantity" title="handlers.indicators.repeat_timestamps_by_quantity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat_timestamps_by_quantity</span></code></a>(df, ...[, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.repeat_timestamps_by_quantity" title="handlers.indicators.repeat_timestamps_by_quantity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat_timestamps_by_quantity</span></code></a>(df, ...[, ...])</p></td>
 <td><p>Repeat timestamps by quantity to give more importance to prices with more quantity.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.time_active_zones" title="handlers.indicators.time_active_zones"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time_active_zones</span></code></a>(df[, max_clusters, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.time_active_zones" title="handlers.indicators.time_active_zones"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time_active_zones</span></code></a>(df[, max_clusters, ...])</p></td>
 <td><p>Calculate support and resistance levels timestamp centroids for a given set of trades using K-means clustering.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.market_profile_from_klines_melt" title="handlers.indicators.market_profile_from_klines_melt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">market_profile_from_klines_melt</span></code></a>(df)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.market_profile_from_klines_melt" title="handlers.indicators.market_profile_from_klines_melt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">market_profile_from_klines_melt</span></code></a>(df)</p></td>
 <td><p>Calculate the market profile for a given OHLC data.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.taker_maker_profile_from_klines_melt" title="handlers.indicators.taker_maker_profile_from_klines_melt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">taker_maker_profile_from_klines_melt</span></code></a>(df)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.taker_maker_profile_from_klines_melt" title="handlers.indicators.taker_maker_profile_from_klines_melt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">taker_maker_profile_from_klines_melt</span></code></a>(df)</p></td>
 <td><p>Calculate the ratio of taker and maker volume for a given OHLC data.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.market_profile_from_klines_grouped" title="handlers.indicators.market_profile_from_klines_grouped"><code class="xref py py-obj docutils literal notranslate"><span class="pre">market_profile_from_klines_grouped</span></code></a>(df[, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.market_profile_from_klines_grouped" title="handlers.indicators.market_profile_from_klines_grouped"><code class="xref py py-obj docutils literal notranslate"><span class="pre">market_profile_from_klines_grouped</span></code></a>(df[, ...])</p></td>
 <td><p>Calculate the market profile for a given OHLC data.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.market_profile_from_trades_grouped" title="handlers.indicators.market_profile_from_trades_grouped"><code class="xref py py-obj docutils literal notranslate"><span class="pre">market_profile_from_trades_grouped</span></code></a>(df[, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.market_profile_from_trades_grouped" title="handlers.indicators.market_profile_from_trades_grouped"><code class="xref py py-obj docutils literal notranslate"><span class="pre">market_profile_from_trades_grouped</span></code></a>(df[, ...])</p></td>
 <td><p>Calculate the market profile for a given trades data.</p></td>
 </tr>
 </tbody>
@@ -289,7 +301,7 @@ mins.</p></li>
 </dd>
 <dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
 <dd class="field-even"><p>A dataframe with two columns, one with 1 or -1 for local max or local min to tag, and other with price values for
-that points.</p>
+that points. If not found, it will return None.</p>
 </dd>
 </dl>
 <a class="reference internal image-reference" href="_images/fractal_w.png"><img alt="_images/fractal_w.png" src="_images/fractal_w.png" style="width: 1000px;" /></a>
@@ -313,6 +325,26 @@ that points.</p>
 </dd>
 </dl>
 <a class="reference internal image-reference" href="_images/fractal_w.png"><img alt="_images/fractal_w.png" src="_images/fractal_w.png" style="width: 1000px;" /></a>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.indicators.calculate_fractal_trend_on_flags">
+<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">calculate_fractal_trend_on_flags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">period</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#handlers.indicators.calculate_fractal_trend_on_flags" title="Link to this definition">¶</a></dt>
+<dd><p>Applies the fractal_trend_indicator function to the dataframe df for each index flagged with 1 in the flags series.</p>
+<p>This function is designed to work with a DatetimeIndex.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – BinPan Symbol dataframe.</p></li>
+<li><p><strong>flags</strong> (<em>pd.Series</em>) – Series containing flags (1 for indices to include).</p></li>
+<li><p><strong>period</strong> (<em>int</em>) – Number of periods (rows) to look back for calculating fractal trend. Defaults to length of df.</p></li>
+<li><p><strong>suffix</strong> (<em>str</em>) – A decorative suffix for the name of the column created.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of tuples with the results of fractal_trend_indicator for each flagged index.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -445,6 +477,32 @@ hasta encontrar un valor igual o menor o llegar al inicio de la serie.</p>
 <dd class="field-even"><p>Serie de pandas con el número de valores que son superiores a cada entrada hacia atrás.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.indicators.rolling_max_with_steps_back">
+<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">rolling_max_with_steps_back</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ser:</span> <span class="pre">~pandas.core.series.Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window:</span> <span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pct_diff:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True)</span> <span class="pre">-&gt;</span> <span class="pre">(&lt;class</span> <span class="pre">'pandas.core.series.Series'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'pandas.core.series.Series'&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.indicators.rolling_max_with_steps_back" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate the rolling maximum and the steps back to the maximum for each point in the series.</p>
+<p>Parameters:
+series (pd.Series): The time series of prices.
+window (int): The rolling window size.
+pct_result (bool): If True, the maximum values are returned as percentages instead of absolute values (default True).</p>
+<p>Returns:
+pd.Series: A series of the rolling maximum values.
+pd.Series: A series indicating the number of steps back to the maximum value within the window.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.indicators.rolling_min_with_steps_back">
+<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">rolling_min_with_steps_back</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ser:</span> <span class="pre">~pandas.core.series.Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window:</span> <span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pct_diff:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True)</span> <span class="pre">-&gt;</span> <span class="pre">(&lt;class</span> <span class="pre">'pandas.core.series.Series'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'pandas.core.series.Series'&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.indicators.rolling_min_with_steps_back" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate the rolling minimum and the steps back to the minimum for each point in the series.</p>
+<p>Parameters:
+series (pd.Series): The time series of prices.
+window (int): The rolling window size.
+pct_result (bool): If True, the minimum values are returned as percentages instead of absolute values (default True).</p>
+<p>Returns:
+pd.Series: A series of the rolling minimum values.
+pd.Series: A series indicating the number of steps back to the minimum value within the window.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -829,7 +887,7 @@ and ‘Maker buy base volume’ for each average price.</p>
     </div>
   </div>
 </footer></div>
-      <script src="_static/documentation_options.js?v=918ced64"></script>
+      <script src="_static/documentation_options.js?v=35f4697d"></script>
       <script src="_static/doctools.js?v=888ff710"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/shibuya.js?v=3e5c8598"></script>

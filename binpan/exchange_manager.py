@@ -52,6 +52,7 @@ class Exchange(object):
         # 24h things
         self.usdt_volume_24h = self.get_volume_24h()
         self.statistics_24h = self.get_statistics_24h()
+        self.busd_volume_24h = None
 
     def __repr__(self):
         return str(self.df)
@@ -202,7 +203,6 @@ class Exchange(object):
         else:
             self.usdt_volume_24h = ret
         return self.usdt_volume_24h
-
 
     def get_usdt_volume_24h(self, quote=None) -> pd.DataFrame:
         """
