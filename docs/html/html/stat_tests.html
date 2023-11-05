@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Statistical Tests and Tools - BinPan 0.7.7 documentation</title>
+      <title>Statistical Tests and Tools - BinPan 0.7.8 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Starters Module" href="starters.html" /><link rel="prev" title="Redis Module" href="redis_fetch.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -125,7 +125,6 @@ html.dark {
   <div class="localtoc">
     <h3>On this page</h3>
     <ul>
-<li><a class="reference internal" href="#handlers.stat_tests.jit"><code class="docutils literal notranslate"><span class="pre">jit()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.stat_tests.autocorrelation_coefficient"><code class="docutils literal notranslate"><span class="pre">autocorrelation_coefficient()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.stat_tests.compute_variances"><code class="docutils literal notranslate"><span class="pre">compute_variances()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.stat_tests.jarque_bera_test"><code class="docutils literal notranslate"><span class="pre">jarque_bera_test()</span></code></a></li>
@@ -133,6 +132,8 @@ html.dark {
 <li><a class="reference internal" href="#handlers.stat_tests.sma_numpy"><code class="docutils literal notranslate"><span class="pre">sma_numpy()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.stat_tests.ema_numba"><code class="docutils literal notranslate"><span class="pre">ema_numba()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.stat_tests.sma_numba"><code class="docutils literal notranslate"><span class="pre">sma_numba()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.stat_tests.rolling_max_with_steps_back_numba"><code class="docutils literal notranslate"><span class="pre">rolling_max_with_steps_back_numba()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.stat_tests.rolling_min_with_steps_back_numba"><code class="docutils literal notranslate"><span class="pre">rolling_min_with_steps_back_numba()</span></code></a></li>
 </ul>
 
   </div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div>
@@ -175,38 +176,36 @@ html.dark {
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.stat_tests.jit" title="handlers.stat_tests.jit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">jit</span></code></a>(*args, **kwargs)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.stat_tests.autocorrelation_coefficient" title="handlers.stat_tests.autocorrelation_coefficient"><code class="xref py py-obj docutils literal notranslate"><span class="pre">autocorrelation_coefficient</span></code></a>(data)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.stat_tests.autocorrelation_coefficient" title="handlers.stat_tests.autocorrelation_coefficient"><code class="xref py py-obj docutils literal notranslate"><span class="pre">autocorrelation_coefficient</span></code></a>(data)</p></td>
 <td><p>Calculate the autocorrelation coefficient of the returns in a pandas DataFrame.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.stat_tests.compute_variances" title="handlers.stat_tests.compute_variances"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_variances</span></code></a>(data)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.stat_tests.compute_variances" title="handlers.stat_tests.compute_variances"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_variances</span></code></a>(data)</p></td>
 <td><p>Compute the hourly resampled bars variance and variance of variances for a given OHLC DataFrame.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.stat_tests.jarque_bera_test" title="handlers.stat_tests.jarque_bera_test"><code class="xref py py-obj docutils literal notranslate"><span class="pre">jarque_bera_test</span></code></a>(data)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.stat_tests.jarque_bera_test" title="handlers.stat_tests.jarque_bera_test"><code class="xref py py-obj docutils literal notranslate"><span class="pre">jarque_bera_test</span></code></a>(data)</p></td>
 <td><p>Perform the Jarque-Bera test for normality on the returns of an OHLC DataFrame.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.stat_tests.ema_numpy" title="handlers.stat_tests.ema_numpy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ema_numpy</span></code></a>(arr, window)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.stat_tests.ema_numpy" title="handlers.stat_tests.ema_numpy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ema_numpy</span></code></a>(arr, window)</p></td>
 <td><p>Calculate the Exponential Moving Average (EMA) of the given array using NumPy.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.stat_tests.sma_numpy" title="handlers.stat_tests.sma_numpy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sma_numpy</span></code></a>(arr, window)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.stat_tests.sma_numpy" title="handlers.stat_tests.sma_numpy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sma_numpy</span></code></a>(arr, window)</p></td>
 <td><p>Calculate the Simple Moving Average (SMA) of the given array using NumPy.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.stat_tests.ema_numba" title="handlers.stat_tests.ema_numba"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ema_numba</span></code></a>(arr, window)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.stat_tests.ema_numba" title="handlers.stat_tests.ema_numba"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ema_numba</span></code></a>(arr, window)</p></td>
 <td><p>Calculate the Exponential Moving Average (EMA) of the given array using NumPy.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.stat_tests.sma_numba" title="handlers.stat_tests.sma_numba"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sma_numba</span></code></a>(arr, window)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.stat_tests.sma_numba" title="handlers.stat_tests.sma_numba"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sma_numba</span></code></a>(arr, window)</p></td>
 <td><p>Calculate the Simple Moving Average (SMA) of the given array using NumPy.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.stat_tests.rolling_max_with_steps_back_numba" title="handlers.stat_tests.rolling_max_with_steps_back_numba"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rolling_max_with_steps_back_numba</span></code></a>(values, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.stat_tests.rolling_min_with_steps_back_numba" title="handlers.stat_tests.rolling_min_with_steps_back_numba"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rolling_min_with_steps_back_numba</span></code></a>(values, ...)</p></td>
+<td><p></p></td>
 </tr>
 </tbody>
 </table>
 </div>
-<dl class="py function">
-<dt class="sig sig-object py" id="handlers.stat_tests.jit">
-<span class="sig-prename descclassname"><span class="pre">handlers.stat_tests.</span></span><span class="sig-name descname"><span class="pre">jit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.stat_tests.jit" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.stat_tests.autocorrelation_coefficient">
 <span class="sig-prename descclassname"><span class="pre">handlers.stat_tests.</span></span><span class="sig-name descname"><span class="pre">autocorrelation_coefficient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.stat_tests.autocorrelation_coefficient" title="Link to this definition">¶</a></dt>
@@ -381,6 +380,16 @@ window: The window size for the SMA calculation.</p>
 </div>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.stat_tests.rolling_max_with_steps_back_numba">
+<span class="sig-prename descclassname"><span class="pre">handlers.stat_tests.</span></span><span class="sig-name descname"><span class="pre">rolling_max_with_steps_back_numba</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pct_diff</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.stat_tests.rolling_max_with_steps_back_numba" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.stat_tests.rolling_min_with_steps_back_numba">
+<span class="sig-prename descclassname"><span class="pre">handlers.stat_tests.</span></span><span class="sig-name descname"><span class="pre">rolling_min_with_steps_back_numba</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pct_diff</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.stat_tests.rolling_min_with_steps_back_numba" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </section>
 
         </article>
@@ -431,7 +440,7 @@ window: The window size for the SMA calculation.</p>
     </div>
   </div>
 </footer></div>
-      <script src="_static/documentation_options.js?v=35f4697d"></script>
+      <script src="_static/documentation_options.js?v=ddeecabf"></script>
       <script src="_static/doctools.js?v=888ff710"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/shibuya.js?v=3e5c8598"></script>

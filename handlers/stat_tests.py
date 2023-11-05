@@ -275,3 +275,45 @@ def sma_numba(arr: np.ndarray, window: int) -> np.ndarray:
         start = max(0, i - window + 1)
         sma[i] = np.sum(arr[start:i + 1]) / (i - start + 1)
     return sma
+
+
+@jit(nopython=True)
+def rolling_max_with_steps_back_numba(values, window, pct_diff):
+    n = len(values)
+    rolling_max = np.empty(n, dtype=np.float64)
+    steps_back = np.empty(n, dtype=np.int64)
+
+    for i in range(n):
+        window_start = max(0, i - window + 1)
+        window_values = values[window_start:i + 1]
+        if pct_diff:
+            current_max = np.max(window_values)
+            rolling_max[i] = values[i] / current_max - 1 if current_max != 0 else 0
+        else:
+            rolling_max[i] = np.max(window_values)
+
+        max_idx = np.where(window_values == rolling_max[i])[0][-1]
+        steps_back[i] = window - 1 - (len(window_values) - max_idx - 1)
+
+    return rolling_max, steps_back
+
+
+@jit(nopython=True)
+def rolling_min_with_steps_back_numba(values, window, pct_diff):
+    n = len(values)
+    rolling_min = np.empty(n, dtype=np.float64)
+    steps_back = np.empty(n, dtype=np.int64)
+
+    for i in range(n):
+        window_start = max(0, i - window + 1)
+        window_values = values[window_start:i + 1]
+        if pct_diff:
+            current_min = np.min(window_values)
+            rolling_min[i] = values[i] / current_min - 1 if current_min != 0 else 0
+        else:
+            rolling_min[i] = np.min(window_values)
+
+        min_idx = np.where(window_values == rolling_min[i])[0][-1]
+        steps_back[i] = window - 1 - (len(window_values) - min_idx - 1)
+
+    return rolling_min, steps_back

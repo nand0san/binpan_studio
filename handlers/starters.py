@@ -143,7 +143,7 @@ def is_python_version_numba_supported() -> bool:
     min_version = (3, 7)
     max_version = (3, 11)  # Numba supports up to Python 3.10, so we set the maximum version to 3.11
     current_version = sys.version_info[:2]  # Get the first two elements of the version info tuple
-    return min_version <= current_version < max_version
+    return min_version <= current_version <= max_version
 
 
 def is_running_in_jupyter():
