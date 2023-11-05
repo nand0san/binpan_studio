@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Time Helpers - BinPan 0.7.6 documentation</title>
+      <title>Time Helpers - BinPan 0.7.7 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Wallet Module" href="wallet.html" /><link rel="prev" title="Tags &amp; Backtesting Module" href="tags.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -237,7 +237,7 @@ html.dark {
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.convert_milliseconds_to_time_zone_datetime" title="handlers.time_helper.convert_milliseconds_to_time_zone_datetime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_milliseconds_to_time_zone_datetime</span></code></a>(ms)</p></td>
 <td><p>Converts a timestamp in milliseconds to a datetime.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.convert_milliseconds_to_str" title="handlers.time_helper.convert_milliseconds_to_str"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_milliseconds_to_str</span></code></a>(ms[, timezoned])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.time_helper.convert_milliseconds_to_str" title="handlers.time_helper.convert_milliseconds_to_str"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_milliseconds_to_str</span></code></a>(ms, timezoned)</p></td>
 <td><p>Converts a timestamp in milliseconds to a string.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.time_helper.utc_start_of_day_ms" title="handlers.time_helper.utc_start_of_day_ms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">utc_start_of_day_ms</span></code></a>()</p></td>
@@ -504,7 +504,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.convert_milliseconds_to_str">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_milliseconds_to_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezoned</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.time_helper.convert_milliseconds_to_str" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_milliseconds_to_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezoned</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.time_helper.convert_milliseconds_to_str" title="Link to this definition">¶</a></dt>
 <dd><p>Converts a timestamp in milliseconds to a string. If string contains a timezone, it will be removed when passing timezoned.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -937,7 +937,7 @@ initial period.</p>
     </div>
   </div>
 </footer></div>
-      <script src="_static/documentation_options.js?v=918ced64"></script>
+      <script src="_static/documentation_options.js?v=35f4697d"></script>
       <script src="_static/doctools.js?v=888ff710"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/shibuya.js?v=3e5c8598"></script>

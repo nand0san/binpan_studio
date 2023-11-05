@@ -190,7 +190,7 @@ def convert_milliseconds_to_time_zone_datetime(ms: int, timezoned: str = None) -
     return utc_datetime.astimezone(time_zone)
 
 
-def convert_milliseconds_to_str(ms: int, timezoned: str = None) -> str:
+def convert_milliseconds_to_str(ms: int, timezoned: str) -> str:
     """
     Converts a timestamp in milliseconds to a string. If string contains a timezone, it will be removed when passing timezoned.
 

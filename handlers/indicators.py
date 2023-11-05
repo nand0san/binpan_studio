@@ -6,7 +6,7 @@ BinPan own indicators and utils.
 import pandas as pd
 import pytz
 import numpy as np
-from typing import Tuple
+from typing import Tuple, List
 import os
 import multiprocessing
 
@@ -29,6 +29,7 @@ os.environ["LOKY_MAX_CPU_COUNT"] = str(cpus)
 # INDICATORS #
 ##############
 
+
 def alternating_fractal_indicator(df: pd.DataFrame, max_period: int = None, suffix: str = "") -> pd.DataFrame or None:
     """
     Obtains the minim value for fractal_w periods as fractal is pure alternating max to mins. In other words, max and mins alternates
@@ -42,7 +43,7 @@ def alternating_fractal_indicator(df: pd.DataFrame, max_period: int = None, suff
      mins.
     :param str suffix: A decorative suffix for the name of the column created.
     :return pd.DataFrame: A dataframe with two columns, one with 1 or -1 for local max or local min to tag, and other with price values for
-     that points.
+     that points. If not found, it will return None.
 
     .. image:: images/indicators/fractal_w.png
         :width: 1000
@@ -62,7 +63,10 @@ def alternating_fractal_indicator(df: pd.DataFrame, max_period: int = None, suff
     return fractal
 
 
-def fractal_trend_indicator(df: pd.DataFrame, period: int = None, fractal: pd.DataFrame = None, suffix: str = "") -> tuple or None:
+def fractal_trend_indicator(df: pd.DataFrame,
+                            period: int = None,
+                            fractal: pd.DataFrame = None,
+                            suffix: str = "") -> tuple or None:
     """
     Obtains the trend of the fractal_w indicator. It will return maximums diff mean and minimums diff mean also in a tuple.
 
@@ -91,6 +95,39 @@ def fractal_trend_indicator(df: pd.DataFrame, period: int = None, fractal: pd.Da
     print(f"Maximum_min_diff={min_trend.max()}")
     print(f"Minimum_min_diff={min_trend.min()}")
     return max_trend.mean(), min_trend.mean()
+
+
+def calculate_fractal_trend_on_flags(df: pd.DataFrame, flags: pd.Series, period: int = None, suffix: str = "") -> List[tuple]:
+    """
+    Applies the fractal_trend_indicator function to the dataframe df for each index flagged with 1 in the flags series.
+
+    This function is designed to work with a DatetimeIndex.
+
+    :param pd.DataFrame df: BinPan Symbol dataframe.
+    :param pd.Series flags: Series containing flags (1 for indices to include).
+    :param int period: Number of periods (rows) to look back for calculating fractal trend. Defaults to length of df.
+    :param str suffix: A decorative suffix for the name of the column created.
+    :return: A list of tuples with the results of fractal_trend_indicator for each flagged index.
+    """
+    results = []
+    # Ensure flags index aligns with df index
+    # flags = flags.reindex(df.index, fill_value=0)
+    flagged_indices = flags[flags == 1].index
+
+    for flag_date in flagged_indices:
+        print(f"\nCalculating fractal trend for {flag_date}")
+        # Find the starting index for the period
+        start_period_index = df.index.get_loc(flag_date) - period
+        if start_period_index < 0:
+            continue
+
+        # Obtain the molecule dataframe based on the current index and period
+        molecule_df = df.iloc[start_period_index:df.index.get_loc(flag_date)]
+        # Calculate the fractal trend indicator for this molecule
+        trend_result = fractal_trend_indicator(df=molecule_df, period=period, suffix=suffix)
+        results.append((flag_date, trend_result))
+
+    return results
 
 
 def ichimoku(data: pd.DataFrame, tenkan: int = 9, kijun: int = 26, chikou_span: int = 26, senkou_cloud_base: int = 52,
@@ -280,6 +317,7 @@ def support_resistance_volume(df, num_bins=100, price_col='Close', volume_col='V
 
     return sorted(support_resistance_levels)
 
+
 ##############################
 # HIGH OF THE DAY INDICATORS #
 ##############################
@@ -335,6 +373,52 @@ def count_larger_values_backward(s: pd.Series or list) -> pd.Series:
         result.iloc[i] = count
 
     return result
+
+
+def rolling_max_with_steps_back(ser: pd.Series, window: int, pct_diff: bool = True) -> (pd.Series, pd.Series):
+    """
+    Calculate the rolling maximum and the steps back to the maximum for each point in the series.
+
+    Parameters:
+    series (pd.Series): The time series of prices.
+    window (int): The rolling window size.
+    pct_result (bool): If True, the maximum values are returned as percentages instead of absolute values (default True).
+
+    Returns:
+    pd.Series: A series of the rolling maximum values.
+    pd.Series: A series indicating the number of steps back to the maximum value within the window.
+    """
+    if pct_diff:
+        # rolling_max = ser.rolling(window=window).max() / ser - 1
+        rolling_max = ser / ser.rolling(window=window).max() - 1
+    else:
+        rolling_max = ser.rolling(window=window).max()
+    max_indices = ser.rolling(window=window).apply(lambda x: np.where(x == x.max())[0][-1], raw=False)
+    steps_back = window - 1 - max_indices
+    return rolling_max, steps_back
+
+
+def rolling_min_with_steps_back(ser: pd.Series, window: int, pct_diff: bool = True) -> (pd.Series, pd.Series):
+    """
+    Calculate the rolling minimum and the steps back to the minimum for each point in the series.
+
+    Parameters:
+    series (pd.Series): The time series of prices.
+    window (int): The rolling window size.
+    pct_result (bool): If True, the minimum values are returned as percentages instead of absolute values (default True).
+
+    Returns:
+    pd.Series: A series of the rolling minimum values.
+    pd.Series: A series indicating the number of steps back to the minimum value within the window.
+    """
+    if pct_diff:
+        # rolling_min = series.rolling(window=window).min() / series - 1
+        rolling_min = ser / ser.rolling(window=window).min() - 1
+    else:
+        rolling_min = ser.rolling(window=window).min()
+    min_indices = ser.rolling(window=window).apply(lambda x: np.where(x == x.min())[0][-1], raw=False)
+    steps_back = window - 1 - min_indices
+    return rolling_min, steps_back
 
 
 ####################
