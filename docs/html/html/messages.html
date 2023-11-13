@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Messages Module - BinPan 0.7.8 documentation</title>
+      <title>Messages Module - BinPan 0.7.9 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Plotting Module" href="plotting.html" /><link rel="prev" title="Market Module" href="market.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -179,8 +179,8 @@ html.dark {
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.messages.sort_mixed_dict" title="handlers.messages.sort_mixed_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sort_mixed_dict</span></code></a>(d)</p></td>
 <td><p>Sort a dictionary that may contain mixed types (int, float, str, etc.)</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.messages.telegram_parse_dict" title="handlers.messages.telegram_parse_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">telegram_parse_dict</span></code></a>(msg_data[, timezone])</p></td>
-<td><p>Parses a dict and downcast types.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.messages.telegram_parse_dict" title="handlers.messages.telegram_parse_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">telegram_parse_dict</span></code></a>(msg_data[, order, timezone])</p></td>
+<td><p>Parses a dictionary to a telegram message.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.messages.tab_str" title="handlers.messages.tab_str"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tab_str</span></code></a>(text[, indentation])</p></td>
 <td><p>Indentation for telegram messages.</p></td>
@@ -246,17 +246,18 @@ variable names <em>encoded_chat_id</em>, <em>encoded_telegram_bot_id</em>.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.messages.telegram_parse_dict">
-<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">telegram_parse_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'UTC'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.messages.telegram_parse_dict" title="Link to this definition">¶</a></dt>
-<dd><p>Parses a dict and downcast types.</p>
+<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">telegram_parse_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Europe/Madrid'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.messages.telegram_parse_dict" title="Link to this definition">¶</a></dt>
+<dd><p>Parses a dictionary to a telegram message.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>msg_data</strong> (<em>dict</em>) – Dict to parse as message.</p></li>
-<li><p><strong>timezone</strong> (<em>str</em>) – A time zone to parse more human-readable any field containing “time” in the name.</p></li>
+<li><p><strong>msg_data</strong> – A dictionary with the data to be parsed.</p></li>
+<li><p><strong>order</strong> – Ascending or descending order. Example: “asc” or “desc”.</p></li>
+<li><p><strong>timezone</strong> – A string with the timezone.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return str<span class="colon">:</span></dt>
-<dd class="field-even"><p>A markdown v1 parsed telegram string.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A string with the parsed message.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -370,7 +371,7 @@ variable names <em>encoded_chat_id</em>, <em>encoded_telegram_bot_id</em>.</p>
     </div>
   </div>
 </footer></div>
-      <script src="_static/documentation_options.js?v=ddeecabf"></script>
+      <script src="_static/documentation_options.js?v=79964ea6"></script>
       <script src="_static/doctools.js?v=888ff710"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/shibuya.js?v=3e5c8598"></script>

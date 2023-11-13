@@ -14,7 +14,7 @@ from .logs import Logs
 
 base_url = 'https://api.binance.com'
 
-stablecoins = ['PAX', 'TUSD', 'USDC', 'USDS', 'USDT', 'BUSD', 'DAI', 'UST', 'USDP', 'TRIBE', 'UST']
+stablecoins = ['PAX', 'TUSD', 'USDC', 'USDS', 'USDT', 'BUSD', 'DAI', 'UST', 'USDP', 'TRIBE', 'UST', 'USSD', 'FDUSD', 'FRAX', 'USDP', 'USDJ']
 
 float_api_items = ['price', 'origQty', 'executedQty', 'cummulativeQuoteQty', 'stopLimitPrice', 'stopPrice', 'commission', 'qty',
                    'origQuoteOrderQty', 'makerCommission', 'takerCommission']
