@@ -3,7 +3,7 @@
 This is the main classes file.
 
 """
-__version__ = "0.7.8"
+__version__ = "0.7.9"
 
 import os
 from sys import path
@@ -18,7 +18,6 @@ from binpan.exchange_manager import Exchange
 from .auxiliar import csv_klines_setup, check_continuity, setup_startime_endtime, repair_kline_discontinuity
 
 from handlers.exceptions import BinPanException
-
 from handlers.exchange import (get_decimal_positions, get_info_dic, get_precision, get_orderTypes_and_permissions, get_fees,
                                get_symbols_filters)
 from handlers.files import select_file, read_csv_to_dataframe, save_dataframe_to_csv, extract_filename_metadata, get_encoded_secrets

@@ -126,13 +126,6 @@ def get_candles_by_time_stamps(symbol: str,
     """
     endpoint = '/api/v3/klines?'
 
-    start_string = convert_milliseconds_to_str(ms=start_time, timezoned=time_zone)
-    end_string = convert_milliseconds_to_str(ms=end_time, timezoned=time_zone)
-
-    chan = f"{symbol.lower()}@kline_{tick_interval}"
-    market_logger.info(f"get_candles_by_time_stamps -> symbol={symbol} tick_interval={tick_interval} start={start_string} end={end_string} "
-                       f"channel:{chan}")
-
     tick_milliseconds = int(tick_seconds[tick_interval] * 1000)
 
     if not start_time and not end_time:
@@ -145,6 +138,12 @@ def get_candles_by_time_stamps(symbol: str,
     elif start_time and not end_time:
         end_time = start_time + (limit * tick_milliseconds)  # ??? for getting limit exactly
         end_time = open_from_milliseconds(ms=end_time, tick_interval=tick_interval)
+
+    start_string = convert_milliseconds_to_str(ms=start_time, timezoned=time_zone)
+    end_string = convert_milliseconds_to_str(ms=end_time, timezoned=time_zone)
+
+    # chan = f"{symbol.lower()}@kline_{tick_interval}"
+    market_logger.info(f"get_candles_by_time_stamps -> symbol={symbol} tick_interval={tick_interval} start={start_string} end={end_string}")
 
     # prepare iteration for big loops
     tick_milliseconds = int(tick_seconds[tick_interval] * 1000)
@@ -164,11 +163,13 @@ def get_candles_by_time_stamps(symbol: str,
 
         start_str = convert_milliseconds_to_str(start, timezoned=time_zone)
         end_str = convert_milliseconds_to_str(min(end, int(1000 * time())), timezoned=time_zone)
-        expected_klines = int((end - start) / tick_milliseconds)
+        # expected_klines = int((end - start) / tick_milliseconds)
+        expected_klines = int(-((end - start) // -tick_milliseconds))
         market_logger.debug(f"API request: {symbol} {start_str} to {end_str}. Expected klines: {expected_klines}")
         response = get_response(url=endpoint, params=params)
-        if len(response) != expected_klines:
-            market_logger.warning(f"API response missing {expected_klines - len(response)} klines for {symbol} {start_str} to {end_str} expected "
+        if len(response) < expected_klines:
+            market_logger.warning(f"API response missing {expected_klines - len(response)} klines for {symbol} {start_str} to {end_str} "
+                                  f"expected "
                                   f"{expected_klines} got {len(response)}")
         raw_candles += response
 
