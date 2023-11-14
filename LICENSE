@@ -1,22 +1,45 @@
-MIT License
+BinPan Software License
 
-Copyright (c) 2022 Fernando Alfonso
+This document outlines the licensing terms for the BinPan project.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+1. Open Source License
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+The BinPan project is available under the MIT License, as follows:
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+    MIT License
+
+    Copyright (c) 2022 Fernando Alfonso
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+
+2. Commercial License
+
+For individuals or entities who wish to use BinPan in a commercial setting or who do not wish to comply with the terms of the MIT License,
+a commercial license is available. The terms of the commercial license include:
+
+- Permission to use, copy, modify, and distribute the software and its documentation for any purpose with or without fee.
+- Provision of warranty and support as agreed upon in the commercial licensing agreement.
+- Other terms as negotiated between the licensee and the BinPan project maintainer Fernando Alfonso.
+
+For more information on obtaining a commercial license, please contact hancaidolosdos@hotmail.com.
+
+This dual licensing model supports the continued development and maintenance of BinPan while also providing options for users with different needs and capabilities.
+
+Copyright (c) 2023 by Fernando Alfonso
 

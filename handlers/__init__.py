@@ -11,6 +11,7 @@ from . import indicators
 from . import logs
 from . import market
 from . import messages
+from . import numba_tools
 from . import plotting
 from . import postgresql
 from . import postgresql_database

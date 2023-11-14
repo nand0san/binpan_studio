@@ -6,33 +6,33 @@ from scipy.stats import jarque_bera
 import pandas as pd
 import numpy as np
 
-from .starters import is_python_version_numba_supported
+# from .starters import is_python_version_numba_supported
 
-if is_python_version_numba_supported():
-    try:
-        from numba import jit
-    except Exception as e:
-        msg = "Cannot import numba: only Python versions >=3.7,<3.11 are supported. Using Numpy."
-        print(msg)
-
-        # noinspection PyUnusedLocal
-        def jit(*args, **kwargs):
-            # Define a no-op decorator to replace @nb.jit
-            def decorator(func):
-                return func
-
-            return decorator
-else:
-    msg = "Cannot import numba: only Python versions >=3.7,<3.11 are supported. Using Numpy."
-    print(msg)
-
-    # noinspection PyUnusedLocal
-    def jit(*args, **kwargs):
-        # Define a no-op decorator to replace @nb.jit
-        def decorator(func):
-            return func
-
-        return decorator
+# if is_python_version_numba_supported():
+#     try:
+#         from numba import jit
+#     except Exception as e:
+#         msg = "Cannot import numba: only Python versions >=3.7,<3.11 are supported. Using Numpy."
+#         print(msg)
+#
+#         # noinspection PyUnusedLocal
+#         def jit(*args, **kwargs):
+#             # Define a no-op decorator to replace @nb.jit
+#             def decorator(func):
+#                 return func
+#
+#             return decorator
+# else:
+#     msg = "Cannot import numba: only Python versions >=3.7,<3.11 are supported. Using Numpy."
+#     print(msg)
+#
+#     # noinspection PyUnusedLocal
+#     def jit(*args, **kwargs):
+#         # Define a no-op decorator to replace @nb.jit
+#         def decorator(func):
+#             return func
+#
+#         return decorator
 
 
 def autocorrelation_coefficient(data: pd.DataFrame):
@@ -213,107 +213,107 @@ def sma_numpy(arr: np.ndarray, window: int) -> np.ndarray:
 
     return sma_padded
 
-
-@jit(nopython=True)
-def ema_numba(arr: np.ndarray, window: int) -> np.ndarray:
-    """
-    Calculate the Exponential Moving Average (EMA) of the given array using NumPy.
-
-    Args:
-        arr: A NumPy array containing the input data.
-        window: The window size for the EMA calculation.
-
-    Returns:
-        A NumPy array containing the EMA values.
-
-    Example:
-
-    .. code-block::
-
-        import numpy as np
-        arr = np.array([1.0, 2.5, 3.7, 4.2, 5.0, 6.3])
-        window = 3
-        ema_result = ema_numpy(arr, window)
-        print(ema_result)
-
-        [1.         1.66666667 2.61111111 3.40740741 4.27160494 5.18106996]
-    """
-    alpha = 2 / (window + 1)
-    ema = np.zeros_like(arr)
-    ema[0] = arr[0]
-    for i in range(1, arr.shape[0]):
-        ema[i] = alpha * arr[i] + (1 - alpha) * ema[i - 1]
-    return ema
-
-
-@jit(nopython=True)
-def sma_numba(arr: np.ndarray, window: int) -> np.ndarray:
-    """
-    Calculate the Simple Moving Average (SMA) of the given array using NumPy.
-
-    Args:
-        arr: A NumPy array containing the input data.
-        window: The window size for the SMA calculation.
-
-    Returns:
-        A NumPy array containing the SMA values.
-
-    Example:
-
-    .. code-block::
-
-        import numpy as np
-        arr = np.array([1.0, 2.5, 3.7, 4.2, 5.0, 6.3])
-        window = 3
-        sma_result = sma_numpy(arr, window)
-        print(sma_result)
-
-        [       nan        nan 2.4        3.46666667 4.3        5.16666667]
-    """
-    sma = np.empty_like(arr, dtype=np.float64)
-    for i in range(arr.shape[0]):
-        start = max(0, i - window + 1)
-        sma[i] = np.sum(arr[start:i + 1]) / (i - start + 1)
-    return sma
-
-
-@jit(nopython=True)
-def rolling_max_with_steps_back_numba(values, window, pct_diff):
-    n = len(values)
-    rolling_max = np.empty(n, dtype=np.float64)
-    steps_back = np.empty(n, dtype=np.int64)
-
-    for i in range(n):
-        window_start = max(0, i - window + 1)
-        window_values = values[window_start:i + 1]
-        if pct_diff:
-            current_max = np.max(window_values)
-            rolling_max[i] = values[i] / current_max - 1 if current_max != 0 else 0
-        else:
-            rolling_max[i] = np.max(window_values)
-
-        max_idx = np.where(window_values == rolling_max[i])[0][-1]
-        steps_back[i] = window - 1 - (len(window_values) - max_idx - 1)
-
-    return rolling_max, steps_back
-
-
-@jit(nopython=True)
-def rolling_min_with_steps_back_numba(values, window, pct_diff):
-    n = len(values)
-    rolling_min = np.empty(n, dtype=np.float64)
-    steps_back = np.empty(n, dtype=np.int64)
-
-    for i in range(n):
-        window_start = max(0, i - window + 1)
-        window_values = values[window_start:i + 1]
-        if pct_diff:
-            current_min = np.min(window_values)
-            rolling_min[i] = values[i] / current_min - 1 if current_min != 0 else 0
-        else:
-            rolling_min[i] = np.min(window_values)
-
-        min_idx = np.where(window_values == rolling_min[i])[0][-1]
-        steps_back[i] = window - 1 - (len(window_values) - min_idx - 1)
-
-    return rolling_min, steps_back
+#
+# @jit(nopython=True)
+# def ema_numba(arr: np.ndarray, window: int) -> np.ndarray:
+#     """
+#     Calculate the Exponential Moving Average (EMA) of the given array using NumPy.
+#
+#     Args:
+#         arr: A NumPy array containing the input data.
+#         window: The window size for the EMA calculation.
+#
+#     Returns:
+#         A NumPy array containing the EMA values.
+#
+#     Example:
+#
+#     .. code-block::
+#
+#         import numpy as np
+#         arr = np.array([1.0, 2.5, 3.7, 4.2, 5.0, 6.3])
+#         window = 3
+#         ema_result = ema_numpy(arr, window)
+#         print(ema_result)
+#
+#         [1.         1.66666667 2.61111111 3.40740741 4.27160494 5.18106996]
+#     """
+#     alpha = 2 / (window + 1)
+#     ema = np.zeros_like(arr)
+#     ema[0] = arr[0]
+#     for i in range(1, arr.shape[0]):
+#         ema[i] = alpha * arr[i] + (1 - alpha) * ema[i - 1]
+#     return ema
+#
+#
+# @jit(nopython=True)
+# def sma_numba(arr: np.ndarray, window: int) -> np.ndarray:
+#     """
+#     Calculate the Simple Moving Average (SMA) of the given array using NumPy.
+#
+#     Args:
+#         arr: A NumPy array containing the input data.
+#         window: The window size for the SMA calculation.
+#
+#     Returns:
+#         A NumPy array containing the SMA values.
+#
+#     Example:
+#
+#     .. code-block::
+#
+#         import numpy as np
+#         arr = np.array([1.0, 2.5, 3.7, 4.2, 5.0, 6.3])
+#         window = 3
+#         sma_result = sma_numpy(arr, window)
+#         print(sma_result)
+#
+#         [       nan        nan 2.4        3.46666667 4.3        5.16666667]
+#     """
+#     sma = np.empty_like(arr, dtype=np.float64)
+#     for i in range(arr.shape[0]):
+#         start = max(0, i - window + 1)
+#         sma[i] = np.sum(arr[start:i + 1]) / (i - start + 1)
+#     return sma
+#
+#
+# @jit(nopython=True)
+# def rolling_max_with_steps_back_numba(values, window, pct_diff):
+#     n = len(values)
+#     rolling_max = np.empty(n, dtype=np.float64)
+#     steps_back = np.empty(n, dtype=np.int64)
+#
+#     for i in range(n):
+#         window_start = max(0, i - window + 1)
+#         window_values = values[window_start:i + 1]
+#         if pct_diff:
+#             current_max = np.max(window_values)
+#             rolling_max[i] = values[i] / current_max - 1 if current_max != 0 else 0
+#         else:
+#             rolling_max[i] = np.max(window_values)
+#
+#         max_idx = np.where(window_values == rolling_max[i])[0][-1]
+#         steps_back[i] = window - 1 - (len(window_values) - max_idx - 1)
+#
+#     return rolling_max, steps_back
+#
+#
+# @jit(nopython=True)
+# def rolling_min_with_steps_back_numba(values, window, pct_diff):
+#     n = len(values)
+#     rolling_min = np.empty(n, dtype=np.float64)
+#     steps_back = np.empty(n, dtype=np.int64)
+#
+#     for i in range(n):
+#         window_start = max(0, i - window + 1)
+#         window_values = values[window_start:i + 1]
+#         if pct_diff:
+#             current_min = np.min(window_values)
+#             rolling_min[i] = values[i] / current_min - 1 if current_min != 0 else 0
+#         else:
+#             rolling_min[i] = np.min(window_values)
+#
+#         min_idx = np.where(window_values == rolling_min[i])[0][-1]
+#         steps_back[i] = window - 1 - (len(window_values) - min_idx - 1)
+#
+#     return rolling_min, steps_back
