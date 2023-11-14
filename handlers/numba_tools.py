@@ -1,8 +1,8 @@
 import numpy as np
-from typing import Tuple
 
 try:
     from numba import njit
+
     print("Numba imported")
 except Exception as e:
     msg = "Cannot import numba. Optionally install numba for better performance: 'pip install numba'"
@@ -12,64 +12,48 @@ except Exception as e:
     def njit(*args, **kwargs):
         def decorator(func):
             return func
+
         return decorator
 
 
 @njit(cache=True)
-def rolling_max_with_steps_back_numba(values: np.ndarray, window: int, pct_diff: bool) -> Tuple[np.ndarray, np.ndarray]:
-    """
-    Calculate the rolling maximum of the given array using NumPy.
-
-    :param values: A NumPy array containing the input data.
-    :param window: An integer for the window size.
-    :param pct_diff: A boolean indicating whether to calculate the percentage difference.
-    :return: A tuple containing the rolling maximum value and the steps back.
-    """
-
+def rolling_max_with_steps_back_numba(values, window, pct_diff):
     n = len(values)
-    rolling_max = np.empty(n, dtype=np.float64)
-    steps_back = np.empty(n, dtype=np.int64)
+    rolling_max = np.full(n, np.nan)  # Inicializar con NaN
+    steps_back = np.full(n, -1)  # Inicializar con -1
 
-    for i in range(n):
-        window_start = max(0, i - window + 1)
-        window_values = values[window_start:i + 1]
-        if pct_diff:
-            current_max = np.max(window_values)
-            rolling_max[i] = values[i] / current_max - 1 if current_max != 0 else 0
-        else:
-            rolling_max[i] = np.max(window_values)
+    for i in range(window - 1, n):
+        window_values = values[i - window + 1:i + 1]
 
-        max_idx = np.where(window_values == rolling_max[i])[0][-1]
-        steps_back[i] = window - 1 - (len(window_values) - max_idx - 1)
+        # Ignorar los NaNs en la ventana actual
+        valid_values = window_values[~np.isnan(window_values)]
+
+        if len(valid_values) > 0:
+            current_max = np.max(valid_values)
+            rolling_max[i] = values[i] / current_max - 1 if pct_diff and current_max != 0 else current_max
+            max_idx = np.where(window_values == current_max)[0][-1]
+            steps_back[i] = window - 1 - (len(window_values) - max_idx - 1)
 
     return rolling_max, steps_back
 
 
 @njit(cache=True)
-def rolling_min_with_steps_back_numba(values: np.ndarray, window: int, pct_diff: bool) -> Tuple[np.ndarray, np.ndarray]:
-    """
-    Calculate the rolling minimum of the given array using NumPy.
-
-    :param values: A NumPy array containing the input data.
-    :param window: An integer for the window size.
-    :param pct_diff: A boolean indicating whether to calculate the percentage difference.
-    :return: A tuple containing the rolling minimum value and the steps back.
-    """
+def rolling_min_with_steps_back_numba(values, window, pct_diff):
     n = len(values)
-    rolling_min = np.empty(n, dtype=np.float64)
-    steps_back = np.empty(n, dtype=np.int64)
+    rolling_min = np.full(n, np.nan)  # Inicializar con NaN
+    steps_back = np.full(n, -1)  # Inicializar con -1
 
-    for i in range(n):
-        window_start = max(0, i - window + 1)
-        window_values = values[window_start:i + 1]
-        if pct_diff:
-            current_min = np.min(window_values)
-            rolling_min[i] = values[i] / current_min - 1 if current_min != 0 else 0
-        else:
-            rolling_min[i] = np.min(window_values)
+    for i in range(window - 1, n):
+        window_values = values[i - window + 1:i + 1]
 
-        min_idx = np.where(window_values == rolling_min[i])[0][-1]
-        steps_back[i] = window - 1 - (len(window_values) - min_idx - 1)
+        # Ignorar los NaNs en la ventana actual
+        valid_values = window_values[~np.isnan(window_values)]
+
+        if len(valid_values) > 0:
+            current_min = np.min(valid_values)
+            rolling_min[i] = values[i] / current_min - 1 if pct_diff and current_min != 0 else current_min
+            min_idx = np.where(window_values == current_min)[0][-1]
+            steps_back[i] = window - 1 - (len(window_values) - min_idx - 1)
 
     return rolling_min, steps_back
 

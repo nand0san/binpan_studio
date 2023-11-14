@@ -168,7 +168,7 @@ def get_candles_by_time_stamps(symbol: str,
         market_logger.debug(f"API request: {symbol} {start_str} to {end_str}. Expected klines: {expected_klines}")
         response = get_response(url=endpoint, params=params)
         if len(response) < expected_klines:
-            market_logger.warning(f"API response missing {expected_klines - len(response)} klines for {symbol} {start_str} to {end_str} "
+            market_logger.warning(f"API response missing {expected_klines - len(response)} klines (maybe not closed yet) for {symbol} {start_str} to {end_str} "
                                   f"expected "
                                   f"{expected_klines} got {len(response)}")
         raw_candles += response

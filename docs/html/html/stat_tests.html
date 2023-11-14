@@ -130,10 +130,6 @@ html.dark {
 <li><a class="reference internal" href="#handlers.stat_tests.jarque_bera_test"><code class="docutils literal notranslate"><span class="pre">jarque_bera_test()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.stat_tests.ema_numpy"><code class="docutils literal notranslate"><span class="pre">ema_numpy()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.stat_tests.sma_numpy"><code class="docutils literal notranslate"><span class="pre">sma_numpy()</span></code></a></li>
-<li><a class="reference internal" href="#handlers.stat_tests.ema_numba"><code class="docutils literal notranslate"><span class="pre">ema_numba()</span></code></a></li>
-<li><a class="reference internal" href="#handlers.stat_tests.sma_numba"><code class="docutils literal notranslate"><span class="pre">sma_numba()</span></code></a></li>
-<li><a class="reference internal" href="#handlers.stat_tests.rolling_max_with_steps_back_numba"><code class="docutils literal notranslate"><span class="pre">rolling_max_with_steps_back_numba()</span></code></a></li>
-<li><a class="reference internal" href="#handlers.stat_tests.rolling_min_with_steps_back_numba"><code class="docutils literal notranslate"><span class="pre">rolling_min_with_steps_back_numba()</span></code></a></li>
 </ul>
 
   </div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div>
@@ -190,18 +186,6 @@ html.dark {
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.stat_tests.sma_numpy" title="handlers.stat_tests.sma_numpy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sma_numpy</span></code></a>(arr, window)</p></td>
 <td><p>Calculate the Simple Moving Average (SMA) of the given array using NumPy.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.stat_tests.ema_numba" title="handlers.stat_tests.ema_numba"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ema_numba</span></code></a>(arr, window)</p></td>
-<td><p>Calculate the Exponential Moving Average (EMA) of the given array using NumPy.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.stat_tests.sma_numba" title="handlers.stat_tests.sma_numba"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sma_numba</span></code></a>(arr, window)</p></td>
-<td><p>Calculate the Simple Moving Average (SMA) of the given array using NumPy.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.stat_tests.rolling_max_with_steps_back_numba" title="handlers.stat_tests.rolling_max_with_steps_back_numba"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rolling_max_with_steps_back_numba</span></code></a>(values, ...)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.stat_tests.rolling_min_with_steps_back_numba" title="handlers.stat_tests.rolling_min_with_steps_back_numba"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rolling_min_with_steps_back_numba</span></code></a>(values, ...)</p></td>
-<td><p></p></td>
 </tr>
 </tbody>
 </table>
@@ -333,62 +317,6 @@ and the data is not normally distributed.</p>
 </span></pre></div>
 </div>
 </dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="handlers.stat_tests.ema_numba">
-<span class="sig-prename descclassname"><span class="pre">handlers.stat_tests.</span></span><span class="sig-name descname"><span class="pre">ema_numba</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#handlers.stat_tests.ema_numba" title="Link to this definition">¶</a></dt>
-<dd><p>Calculate the Exponential Moving Average (EMA) of the given array using NumPy.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>arr: A NumPy array containing the input data.
-window: The window size for the EMA calculation.</p>
-</dd>
-<dt>Returns:</dt><dd><p>A NumPy array containing the EMA values.</p>
-</dd>
-</dl>
-<p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-</span><span id="1-2"><span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="mf">3.7</span><span class="p">,</span> <span class="mf">4.2</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">6.3</span><span class="p">])</span>
-</span><span id="1-3"><span class="n">window</span> <span class="o">=</span> <span class="mi">3</span>
-</span><span id="1-4"><span class="n">ema_result</span> <span class="o">=</span> <span class="n">ema_numpy</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">window</span><span class="p">)</span>
-</span><span id="1-5"><span class="nb">print</span><span class="p">(</span><span class="n">ema_result</span><span class="p">)</span>
-</span><span id="1-6">
-</span><span id="1-7"><span class="p">[</span><span class="mf">1.</span>         <span class="mf">1.66666667</span> <span class="mf">2.61111111</span> <span class="mf">3.40740741</span> <span class="mf">4.27160494</span> <span class="mf">5.18106996</span><span class="p">]</span>
-</span></pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="handlers.stat_tests.sma_numba">
-<span class="sig-prename descclassname"><span class="pre">handlers.stat_tests.</span></span><span class="sig-name descname"><span class="pre">sma_numba</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#handlers.stat_tests.sma_numba" title="Link to this definition">¶</a></dt>
-<dd><p>Calculate the Simple Moving Average (SMA) of the given array using NumPy.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>arr: A NumPy array containing the input data.
-window: The window size for the SMA calculation.</p>
-</dd>
-<dt>Returns:</dt><dd><p>A NumPy array containing the SMA values.</p>
-</dd>
-</dl>
-<p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-</span><span id="1-2"><span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="mf">3.7</span><span class="p">,</span> <span class="mf">4.2</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">6.3</span><span class="p">])</span>
-</span><span id="1-3"><span class="n">window</span> <span class="o">=</span> <span class="mi">3</span>
-</span><span id="1-4"><span class="n">sma_result</span> <span class="o">=</span> <span class="n">sma_numpy</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">window</span><span class="p">)</span>
-</span><span id="1-5"><span class="nb">print</span><span class="p">(</span><span class="n">sma_result</span><span class="p">)</span>
-</span><span id="1-6">
-</span><span id="1-7"><span class="p">[</span>       <span class="n">nan</span>        <span class="n">nan</span> <span class="mf">2.4</span>        <span class="mf">3.46666667</span> <span class="mf">4.3</span>        <span class="mf">5.16666667</span><span class="p">]</span>
-</span></pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="handlers.stat_tests.rolling_max_with_steps_back_numba">
-<span class="sig-prename descclassname"><span class="pre">handlers.stat_tests.</span></span><span class="sig-name descname"><span class="pre">rolling_max_with_steps_back_numba</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pct_diff</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.stat_tests.rolling_max_with_steps_back_numba" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="handlers.stat_tests.rolling_min_with_steps_back_numba">
-<span class="sig-prename descclassname"><span class="pre">handlers.stat_tests.</span></span><span class="sig-name descname"><span class="pre">rolling_min_with_steps_back_numba</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pct_diff</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.stat_tests.rolling_min_with_steps_back_numba" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
 
 </section>
 

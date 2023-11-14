@@ -36,7 +36,7 @@ from handlers.market import (get_candles_by_time_stamps, parse_candles_to_datafr
 from handlers.plotting import (plotly_colors, plot_trades, candles_ta, plot_pie, plot_hists_vs, candles_tagged, bar_plot, plot_scatter,
                                orderbook_depth, dist_plot, profile_plot)
 
-from handlers.starters import is_running_in_jupyter
+# from handlers.starters import is_running_in_jupyter
 
 from handlers.time_helper import (check_tick_interval, convert_milliseconds_to_str, get_dataframe_time_index_ranges,
                                   remove_initial_included_ranges, tick_interval_values)
@@ -53,9 +53,9 @@ from handlers.standards import (binance_api_candles_cols, agg_trades_columns, at
 
 from handlers.quest import tick_seconds
 
-if is_running_in_jupyter():
-    from tqdm.notebook import tqdm
-else:
+import warnings
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
     from tqdm.autonotebook import tqdm
 
 binpan_logger = Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')

@@ -1,9 +1,13 @@
 import pandas as pd
 import psycopg2
 from psycopg2 import sql
-from tqdm.autonotebook import tqdm
 from typing import Tuple, List, Dict, Optional
 from time import sleep
+
+import warnings
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    from tqdm.autonotebook import tqdm
 
 from .exceptions import BinPanException
 from .standards import *
