@@ -1,6 +1,6 @@
-numpy==1.26.2  # do not update to newer version, it will break pandas
+numpy>=1.26.2  # do not update to newer version, it will break pandas
 pandas-ta>=0.3.14b0
-pandas==2.1.3
+pandas>=2.1.3
 plotly==5.18.0
 py-cpuinfo>=9.0.0
 pycryptodome==3.19.0
