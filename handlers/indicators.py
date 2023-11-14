@@ -10,14 +10,14 @@ from typing import Tuple, List
 import os
 import multiprocessing
 
-from .starters import is_running_in_jupyter
+# from .starters import is_running_in_jupyter
 from .time_helper import convert_milliseconds_to_time_zone_datetime
 from .time_helper import pandas_freq_tick_interval
 from .tags import is_alternating
 
-if is_running_in_jupyter():
-    from tqdm.notebook import tqdm
-else:
+import warnings
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
     from tqdm.autonotebook import tqdm
 
 # this is to avoid the error: "RuntimeError: can't set attribute" when using multiprocessing

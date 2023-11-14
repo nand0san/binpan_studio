@@ -113,6 +113,7 @@ celerybeat.pid
 env/
 venv/
 venv37/
+vemv*/
 ENV/
 env.bak/
 venv.bak/
@@ -171,3 +172,4 @@ secret_.py
 secret*
 investigacion*
 test*
+venv_no_numba/

@@ -1,6 +1,6 @@
-numpy==1.26.1  # do not update to newer version, it will break pandas
+numpy==1.26.2  # do not update to newer version, it will break pandas
 pandas-ta>=0.3.14b0
-pandas==2.1.2
+pandas==2.1.3
 plotly==5.18.0
 py-cpuinfo>=9.0.0
 pycryptodome==3.19.0
@@ -12,13 +12,12 @@ typing~=3.7.4.3
 ipykernel==6.26.0
 kaleido==0.2.1 # do not update to newer version, it will break plotly
 
-# numba # no version pip freezefor python 3.11 yet, required version between 3.7 and 3.10
+# optionally required for some features
 scikit-learn==1.3.2  # optional for kmeans with support and resistance levels
 # numba~=0.57.0
 
 # alternative databases
 # redis~=5.0.0
-# numba==0.58.0
 # influxdb-client==1.37.0
 psycopg2-binary==2.9.9
 
