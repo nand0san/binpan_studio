@@ -1111,7 +1111,8 @@ def insert_missed_from_api_ids(cursor,
                                table: str,
                                misses: List[int],
                                continuity_field: str,
-                               own_transaction: bool = True):
+                               previously_used_missed_tables: list = None,
+                               own_transaction: bool = True) -> list:
     """
     Insert missed ids from the API into the database.
 
@@ -1119,14 +1120,17 @@ def insert_missed_from_api_ids(cursor,
     :param table: A table name. Like "ltcusdt_trade".
     :param misses: A list of missed ids. Each id is a timestamp or a trade_id. Example: [1620000000000, 1620000000001, ...]
     :param continuity_field: A continuity field. Like "time" or "trade_id".
+    :param previously_used_missed_tables: A list of existing tables. If None, it will be retrieved from the database.
     :param own_transaction: A boolean. If True, the function will create its own transaction. If False, the function will use the
     :return: It returns nothing.
     """
     miss_table = f"{table}_missed"
     if own_transaction:
         cursor.execute("BEGIN")
-    if not miss_table in list_tables_with_suffix(cursor=cursor, suffix="_missed"):
-        create_missed_table(cursor=cursor, continuity_field=continuity_field, miss_table=miss_table)
+    if not miss_table in previously_used_missed_tables:
+        if not miss_table in list_tables_with_suffix(cursor=cursor, suffix="_missed"):
+            create_missed_table(cursor=cursor, continuity_field=continuity_field, miss_table=miss_table)
+        previously_used_missed_tables.append(miss_table)
 
     insertion = [{continuity_field: miss} for miss in misses]
 
@@ -1137,4 +1141,4 @@ def insert_missed_from_api_ids(cursor,
                 unique_column=continuity_field)
     if own_transaction:
         cursor.execute("COMMIT")
-    return
+    return previously_used_missed_tables
