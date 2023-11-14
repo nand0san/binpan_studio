@@ -5,6 +5,7 @@ from typing import Tuple, List, Dict, Optional
 from time import sleep
 
 import warnings
+
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
     from tqdm.autonotebook import tqdm
@@ -1076,21 +1077,26 @@ def create_missed_table(cursor, continuity_field: str, miss_table: str):
 def get_missed_ids(cursor,
                    table: str,
                    continuity_field: str,
-                   own_transaction: bool = True) -> List[int]:
+                   previously_used_missed_tables: list,
+                   own_transaction: bool = True) -> Tuple[list, list]:
     """
     Get the missed timestamps or trade_id from the database for each table. Each table has a parallel table with api misses.
 
     :param cursor: A psycopg2 cursor connected to the database.
     :param table: Missed ids table name. Default is "table_name_missed".
     :param continuity_field: The name of the continuity field.
+    :param previously_used_missed_tables: A list of existing tables. If None, it will be retrieved from the database.
     :param own_transaction: If True, the function will create its own transaction. If False, the function will use the
-    :return: A list with the missed timestamps.
+    :return: A tuple with a list with the missed timestamps and a list with the previously used missed tables.
     """
     miss_table = f"{table}_missed"
     if own_transaction:
         cursor.execute("BEGIN")
-    if not miss_table in list_tables_with_suffix(cursor=cursor, suffix="_missed"):
-        create_missed_table(cursor=cursor, continuity_field=continuity_field, miss_table=miss_table)
+
+    if not miss_table in previously_used_missed_tables:
+        if not miss_table in list_tables_with_suffix(cursor=cursor, suffix="_missed"):
+            create_missed_table(cursor=cursor, continuity_field=continuity_field, miss_table=miss_table)
+        previously_used_missed_tables.append(miss_table)
 
     query = f'SELECT "{continuity_field}" FROM {miss_table} ORDER BY time;'
 
@@ -1104,7 +1110,7 @@ def get_missed_ids(cursor,
     if own_transaction:
         cursor.execute("COMMIT")
 
-    return sorted(list(missed_ids))
+    return sorted(list(missed_ids)), previously_used_missed_tables
 
 
 def insert_missed_from_api_ids(cursor,
