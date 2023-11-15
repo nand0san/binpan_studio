@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>PostgreSQL Module - BinPan 0.7.10 documentation</title>
+      <title>PostgreSQL Module - BinPan 0.7.14 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="PostgreSQL Database Module" href="postgresql_database.html" /><link rel="prev" title="Plotting Module" href="plotting.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -300,7 +300,7 @@ html.dark {
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.postgresql.create_missed_table" title="handlers.postgresql.create_missed_table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_missed_table</span></code></a>(cursor, ...)</p></td>
 <td><p>Create a table to store the missed ids.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.postgresql.get_missed_ids" title="handlers.postgresql.get_missed_ids"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_missed_ids</span></code></a>(cursor, table, continuity_field)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.postgresql.get_missed_ids" title="handlers.postgresql.get_missed_ids"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_missed_ids</span></code></a>(cursor, table, ...[, ...])</p></td>
 <td><p>Get the missed timestamps or trade_id from the database for each table.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.postgresql.insert_missed_from_api_ids" title="handlers.postgresql.insert_missed_from_api_ids"><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert_missed_from_api_ids</span></code></a>(cursor, table, ...)</p></td>
@@ -882,7 +882,7 @@ dictionaries with the data to be inserted.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.postgresql.get_missed_ids">
-<span class="sig-prename descclassname"><span class="pre">handlers.postgresql.</span></span><span class="sig-name descname"><span class="pre">get_missed_ids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">continuity_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">own_transaction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#handlers.postgresql.get_missed_ids" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql.</span></span><span class="sig-name descname"><span class="pre">get_missed_ids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">continuity_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">previously_used_missed_tables</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">own_transaction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#handlers.postgresql.get_missed_ids" title="Link to this definition">¶</a></dt>
 <dd><p>Get the missed timestamps or trade_id from the database for each table. Each table has a parallel table with api misses.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -890,18 +890,19 @@ dictionaries with the data to be inserted.</p></li>
 <li><p><strong>cursor</strong> – A psycopg2 cursor connected to the database.</p></li>
 <li><p><strong>table</strong> – Missed ids table name. Default is “table_name_missed”.</p></li>
 <li><p><strong>continuity_field</strong> – The name of the continuity field.</p></li>
+<li><p><strong>previously_used_missed_tables</strong> – A list of existing tables. If None, it will be retrieved from the database.</p></li>
 <li><p><strong>own_transaction</strong> – If True, the function will create its own transaction. If False, the function will use the</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A list with the missed timestamps.</p>
+<dd class="field-even"><p>A tuple with a list with the missed timestamps and a list with the previously used missed tables.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.postgresql.insert_missed_from_api_ids">
-<span class="sig-prename descclassname"><span class="pre">handlers.postgresql.</span></span><span class="sig-name descname"><span class="pre">insert_missed_from_api_ids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">misses</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">continuity_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">own_transaction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.postgresql.insert_missed_from_api_ids" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.postgresql.</span></span><span class="sig-name descname"><span class="pre">insert_missed_from_api_ids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">misses</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">continuity_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">previously_used_missed_tables</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">own_transaction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.postgresql.insert_missed_from_api_ids" title="Link to this definition">¶</a></dt>
 <dd><p>Insert missed ids from the API into the database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -910,6 +911,7 @@ dictionaries with the data to be inserted.</p></li>
 <li><p><strong>table</strong> – A table name. Like “ltcusdt_trade”.</p></li>
 <li><p><strong>misses</strong> – A list of missed ids. Each id is a timestamp or a trade_id. Example: [1620000000000, 1620000000001, …]</p></li>
 <li><p><strong>continuity_field</strong> – A continuity field. Like “time” or “trade_id”.</p></li>
+<li><p><strong>previously_used_missed_tables</strong> – A list of existing tables. If None, it will be retrieved from the database.</p></li>
 <li><p><strong>own_transaction</strong> – A boolean. If True, the function will create its own transaction. If False, the function will use the</p></li>
 </ul>
 </dd>
@@ -969,7 +971,7 @@ dictionaries with the data to be inserted.</p></li>
     </div>
   </div>
 </footer></div>
-      <script src="_static/documentation_options.js?v=d46e566c"></script>
+      <script src="_static/documentation_options.js?v=281f4ccb"></script>
       <script src="_static/doctools.js?v=888ff710"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/shibuya.js?v=3e5c8598"></script>

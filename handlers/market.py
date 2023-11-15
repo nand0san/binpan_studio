@@ -6,7 +6,7 @@ Market functions
 
 from time import time
 import pandas as pd
-import json
+from random import randint
 from decimal import Decimal as dd
 from datetime import datetime
 from typing import List
@@ -85,14 +85,14 @@ def get_candles_by_time_stamps(symbol: str,
     In case the limit is passed and exceeded by requested time intervals, the start_time prevails over the end_time,
     start_time must come in milliseconds from epoch.
 
-    In case of two timeStamps as arguments, limit is ignored.
+    In case of two timeStamps as arguments, limit is ignored and a loop is performed to get all candles in the range.
 
     The API rounds the startTime up to the next open of the next candle. That is, it does not include the candle in which there is
     that timeStamp, but the next candle of the corresponding tick_interval, except in case it exactly matches the value of an open
     timestamp, in which case it will include it in the return.
 
     The indicated endTime will include the candlestick that timestamp is on. It should be in milliseconds. It can be a not closed one if
-    is open right in between the endtime timestamp.
+    is open right in between the endtime timestamp. API is inclusive in this case.
 
     If no timestamps are passed, the last quantity candlesticks up to limit count are returned.
 
@@ -102,7 +102,9 @@ def get_candles_by_time_stamps(symbol: str,
     :param int end_time: A timestamp in milliseconds from epoch.
     :param int limit: Count of candles to ask for.
     :param str time_zone: Just used for exception errors.
-    :return list: Returns a list from the Binance API
+    :return list: Returns a list from the Binance API.
+
+    .. note::    By default unique API response is inclusive for start_time and end_time, IF LESS than 1000 limit applied.
 
     .. code-block::
 
@@ -125,37 +127,40 @@ def get_candles_by_time_stamps(symbol: str,
 
     """
     endpoint = '/api/v3/klines?'
-
     tick_milliseconds = int(tick_seconds[tick_interval] * 1000)
+    limit = min(limit, 1000)
 
     if not start_time and not end_time:
-        end_time = int(time()) * 1000
+        end_time = int(time()) * 1000  # la api traería la ultima vela cerrada
 
     if not start_time and end_time:
-        start_time = end_time - (limit * tick_milliseconds)
+        start_time = end_time - (
+                    (limit - 1) * tick_milliseconds)  # this will include exactly the limit passed if <= 1000, including last one
+        # start_time = end_time - (limit * tick_milliseconds)  # this will exclude the last candle if limit is 1000 and include_last is
+        # False
         start_time = open_from_milliseconds(ms=start_time, tick_interval=tick_interval)
 
     elif start_time and not end_time:
-        end_time = start_time + (limit * tick_milliseconds)  # ??? for getting limit exactly
+        end_time = start_time + ((limit - 1) * tick_milliseconds)  # end time is included
         end_time = open_from_milliseconds(ms=end_time, tick_interval=tick_interval)
 
     start_string = convert_milliseconds_to_str(ms=start_time, timezoned=time_zone)
     end_string = convert_milliseconds_to_str(ms=end_time, timezoned=time_zone)
 
     # chan = f"{symbol.lower()}@kline_{tick_interval}"
-    market_logger.info(f"get_candles_by_time_stamps -> symbol={symbol} tick_interval={tick_interval} start={start_string} end={end_string}")
+    market_logger.info(f"get_candles_by_time_stamps -> symbol={symbol} tick_interval={tick_interval} start={start_string} end="
+                       f"{end_string} limit={limit}")
 
     # prepare iteration for big loops
-    tick_milliseconds = int(tick_seconds[tick_interval] * 1000)
     ranges = [(i, i + (1000 * tick_milliseconds)) for i in range(start_time, end_time, tick_milliseconds * 1000)]
 
     # loop
     raw_candles = []
-    for r in ranges:
-        start = r[0]
-        end = r[1]
+    for start, end_ in ranges:
         now = int(time() * 1000)
-        end = min(end, next_open_by_milliseconds(ms=now, tick_interval=tick_interval), end_time)
+        end = min(end_,
+                  next_open_by_milliseconds(ms=now, tick_interval=tick_interval),
+                  next_open_by_milliseconds(ms=end_time, tick_interval=tick_interval))
 
         params = {'symbol': symbol, 'interval': tick_interval, 'startTime': start, 'endTime': end, 'limit': limit}
         params = {k: v for k, v in params.items() if v}
@@ -163,13 +168,16 @@ def get_candles_by_time_stamps(symbol: str,
 
         start_str = convert_milliseconds_to_str(start, timezoned=time_zone)
         end_str = convert_milliseconds_to_str(min(end, int(1000 * time())), timezoned=time_zone)
+
         # expected_klines = int((end - start) / tick_milliseconds)
         expected_klines = int(-((end - start) // -tick_milliseconds))
         market_logger.debug(f"API request: {symbol} {start_str} to {end_str}. Expected klines: {expected_klines}")
+
         response = get_response(url=endpoint, params=params)
+
         if len(response) < expected_klines:
-            market_logger.warning(f"API response missing {expected_klines - len(response)} klines (maybe not closed yet) for {symbol} {start_str} to {end_str} "
-                                  f"expected "
+            market_logger.warning(f"API response missing {expected_klines - len(response)} "
+                                  f"klines (maybe not closed yet) for {symbol} {start_str} to {end_str} expected "
                                   f"{expected_klines} got {len(response)}")
         raw_candles += response
 
@@ -182,7 +190,7 @@ def get_candles_by_time_stamps(symbol: str,
 
     # descarta sobrantes
     overtime_candle_ts = next_open_by_milliseconds(ms=end_time, tick_interval=tick_interval)
-    # if raw_candles:
+
     if type(raw_candles[0]) is list:  # if from binance
         raw_candles = [i for i in raw_candles if int(i[0]) < overtime_candle_ts]
     else:
@@ -243,6 +251,7 @@ def get_historical_candles(symbol: str,
         curr_end = curr_start + (limit * tick_interval_ms)
         if ignore_errors:
             try:
+                # get_candles_by_time_stamps excludes end_time
                 data = get_candles_by_time_stamps(symbol=symbol,
                                                   tick_interval=tick_interval,
                                                   start_time=curr_start,
@@ -251,6 +260,7 @@ def get_historical_candles(symbol: str,
                 market_logger.warning(f"{symbol} kline_{tick_interval} missing: {e}")
                 continue
         else:
+            # get_candles_by_time_stamps excludes end_time
             data = get_candles_by_time_stamps(symbol=symbol,
                                               tick_interval=tick_interval,
                                               start_time=curr_start,
@@ -523,14 +533,13 @@ def get_aggregated_trades(symbol: str, fromId: int = None, limit: int = None, de
     return get_semi_signed_request(url=endpoint, decimal_mode=decimal_mode, api_key=api_key, params=query)
 
 
-# noinspection PyUnresolvedReferences
 def get_historical_agg_trades(symbol: str,
                               startTime: int = None,
                               endTime: int = None,
                               start_trade_id: int = None,
                               end_trade_id: int = None,
-                              limit: int = 1000,
-                              redis_client_trades=None) -> List[dict]:
+                              limit_ids: int = 1000,
+                              limit_hours: float = 1) -> List[dict]:
     """
     Returns aggregated trades from id to limit or last trades if id not specified. Also is possible to get from starTime utc in
     milliseconds from epoch or until endtime milliseconds from epoch.
@@ -549,9 +558,10 @@ def get_historical_agg_trades(symbol: str,
     :param int endTime: A timestamp in milliseconds from epoch.
     :param int start_trade_id: A trade id as first one (older).
     :param int end_trade_id: A trade id as last one (newer).
-    :param int limit: Count of trades to ask for. Ignored if start and end passed.
-    :param bool redis_client_trades: A redis instance of a connector. Must be a trades redis connector, usually different configuration
-     from candles redis server.
+    :param int limit_ids: Count of trades to ask for if just start_trade_id or just end_trade_id passed.
+        Ignored if startTime or endTime passed.
+    :param int limit_hours: Count of hours to ask for if just startTime or just endTime passed.
+        Ignored if start_trade_id or end_trade_id passed.
     :return list: Returns a list from the Binance API in dicts.
 
     .. code-block::
@@ -569,132 +579,128 @@ def get_historical_agg_trades(symbol: str,
           }
         ]
     """
+
+    id_field = "a"
+    timestamp_field = "T"
+    trade_type = "aggregated"
+    limit_hours_ms = int(60 * 1000 * 60 * limit_hours)
+    requests_cnt = 1
+
+    if trade_type == "aggregated":
+        my_func = get_aggregated_trades
+    else:
+        my_func = get_atomic_trades
+
     try:
         assert bool(startTime or endTime) ^ bool(start_trade_id or end_trade_id)
     except AssertionError:
-        raise BinPanException(f"BinPan Exception: get_historical_agg_trades params mixed time, timestamp and trade id: {locals()}")
+        raise BinPanException(f"BinPan Exception: get historical {trade_type} trades params mixed time, timestamp and trade id: {locals()}")
 
     if start_trade_id and not end_trade_id:
-        end_trade_id = start_trade_id + limit
+        end_trade_id = start_trade_id + (limit_ids - 1)
     elif end_trade_id and not start_trade_id:
-        start_trade_id = end_trade_id - limit
-
-    requests_cnt = 1
+        start_trade_id = end_trade_id - (limit_ids - 1)
 
     if start_trade_id and end_trade_id:
-        trades = get_aggregated_trades(symbol=symbol, fromId=end_trade_id - 999, limit=1000)
-        trade_ids = [i['a'] for i in trades]  # verificar q viene con 'id'
-        if not end_trade_id in trade_ids:
-            market_logger.warning(f"Trade id {end_trade_id} not reported by API. Fetching older trades.")
-            end_trade_id = trade_ids[-1]
-            assert end_trade_id >= start_trade_id, f"BinPan Exception: get_historical_agg_trades: end_trade_id {end_trade_id} " \
-                                                   f"must be greater than start_trade_id {start_trade_id}"
-        current_first_trade = trades[0]['a']
+        trades = my_func(symbol=symbol, fromId=end_trade_id - 999, limit=1000)  # el presente
+        end_trade_id = trades[-1][id_field]  # evita pedir del futuro
+        current_first_trade = trades[0][id_field]
+
         while current_first_trade > start_trade_id:
             requests_cnt += 1
-            market_logger.info(f"Requests to API for aggregate trades of {symbol}: {requests_cnt}")
-            fetched_older_trades = get_aggregated_trades(symbol=symbol, fromId=(current_first_trade - 1000), limit=1000)
+            market_logger.info(f"Requests to API for {trade_type} trades of {symbol}: {requests_cnt} current_first_trade: "
+                               f"{current_first_trade}")
+            # restamos 1000 pq current_first_trade ya lo tenemos, asi no viene repetido
+            fetched_older_trades = my_func(symbol=symbol, fromId=(current_first_trade - 1000), limit=1000)
             trades = fetched_older_trades + trades
-            current_first_trade = trades[0]['a']
+            current_first_trade = trades[0][id_field]
 
-        ret = [i for i in trades if start_trade_id <= i['a'] <= end_trade_id]
-        return sorted(ret, key=lambda x: x['a'])
+        ret = [i for i in trades if start_trade_id <= i[id_field] <= end_trade_id]
+        return sorted(ret, key=lambda x: x[id_field])
 
-    # # trades = get_last_agg_trades(symbol=symbol, limit=1000)
-    # if start_trade_id and end_trade_id:
-    #     trades = get_aggregated_trades(symbol=symbol, fromId=end_trade_id-1000, limit=1000)
-    # else:
-    #     trades = get_last_agg_trades(symbol=symbol, limit=1000)
-    #
-    # # with trade ids, find start
-    # if start_trade_id and end_trade_id and not redis_client_trades:
-    #     current_first_trade = trades[0]['a']
-    #     while current_first_trade > start_trade_id:
-    #         requests_cnt += 1
-    #         market_logger.info(f"Requests to API for aggregated trades of {symbol}: {requests_cnt}")
-    #         fetched_older_trades = get_aggregated_trades(symbol=symbol, fromId=(current_first_trade - 1000), limit=1000)
-    #         trades = fetched_older_trades + trades
-    #         current_first_trade = trades[0]['a']
-    #
-    #     current_last_trade = trades[-1]['a']
-    #     while current_last_trade < end_trade_id:
-    #         requests_cnt += 1
-    #         market_logger.info(f"Requests to API for aggregated trades of {symbol}: {requests_cnt}")
-    #         fetched_older_trades = get_aggregated_trades(symbol=symbol, fromId=current_last_trade, limit=1000)
-    #         trades = fetched_older_trades + trades
-    #         current_last_trade = trades[-1]['a']
-    #
-    #     ret = [i for i in trades if start_trade_id <= i['a'] <= end_trade_id]
-    #     return sorted(ret, key=lambda x: x['a'])
+    # with timestamps
+    elif startTime or endTime:
+        factor = 1
+        trades = my_func(symbol=symbol, limit=1000)
+        current_first_trade_time = trades[0][timestamp_field]
+        current_last_trade_time = trades[-1][timestamp_field]
+        current_first_trade = trades[0][id_field]
 
-    # with timestamps or trade ids
-    elif not redis_client_trades and (startTime or endTime):
-        trades = get_last_agg_trades(symbol=symbol, limit=1000)
-        current_first_trade_time = trades[0]['T']
-        current_first_trade = trades[0]['a']
-        # if startTime or endTime:
-        if startTime:
-            while current_first_trade_time >= startTime:
-                requests_cnt += 1
-                market_logger.info(f"Requests API for aggregated trades searching STARTIME {symbol}: {requests_cnt} current_first_trade:"
-                                   f"{current_first_trade}")
-                fetched_older_trades = get_aggregated_trades(symbol=symbol, fromId=current_first_trade - 1000, limit=1000)
+        if endTime and not startTime:
+            market_logger.info(f"Star time not passed for {trade_type} trades of {symbol}. Calculating {limit_hours} hour ago.")
+            startTime = min(endTime, current_last_trade_time) - limit_hours_ms
+            endTime = min(endTime, current_last_trade_time)  # no podemos pedir trades del futuro
+
+        if startTime and not endTime:
+            market_logger.info(f"End time not passed for {trade_type} trades of {symbol}. Calculating {limit_hours} hours ahead.")
+            endTime = startTime + (1000 * 60 * 60 * limit_hours)
+
+        elif not startTime and not endTime:
+            endTime = current_last_trade_time  # no podemos pedir trades del futuro
+            market_logger.info(f"Start time not passed for {trade_type} trades of {symbol}. Calculating {limit_hours} hours ago.")
+            startTime = endTime - (1000 * 60 * 60 * limit_hours)
+
+        assert startTime <= endTime, f"BinPan Exception: get historical {trade_type} trades endTime < startTime: {locals()}"
+
+        touche = False
+
+        while startTime <= current_first_trade_time:
+
+            requests_cnt += 1
+            start_str = pd.to_datetime(current_first_trade_time, unit='ms').strftime('%Y-%m-%d %H:%M:%S')
+            market_logger.info(f"Requests API for {trade_type} trades searching STARTIME {symbol}: {requests_cnt} current_first_trade:"
+                               f"{current_first_trade} date: {start_str}")
+
+            # restamos 1000 pq el current first trade ya lo tenemos y no queremos que venga repetido
+            fetched_older_trades = my_func(symbol=symbol, fromId=current_first_trade - (1000 * factor), limit=1000)
+
+            current_first_trade_factor = fetched_older_trades[0][id_field]
+            current_last_trade_factor = fetched_older_trades[-1][id_field]
+            current_first_timestamp_factor = fetched_older_trades[0][timestamp_field]
+            current_last_timestamp_factor = fetched_older_trades[-1][timestamp_field]
+
+            if endTime < current_first_timestamp_factor:
+                market_logger.debug("endTime < current_first_timestamp_factor")
+                if not touche:
+                    factor += 1
+                current_first_trade = current_first_trade_factor
+                current_first_trade_time = current_first_timestamp_factor
+                continue
+
+            elif current_last_timestamp_factor < endTime and not touche:  # si nos pasamos frenamos y volvemos a subir
+                market_logger.debug("current_last_timestamp_factor < endTime and not touche")
+                factor = max(factor - 2, 1)
+                unlock_posible_loops = randint(1, 1000)
+                current_first_trade = current_last_trade_factor + unlock_posible_loops + 1000*factor  # hay que subir, nos hemos pasado
+                current_first_trade_time = max(current_first_timestamp_factor, startTime)  # para que no bloquee por saltos grandes
+                continue
+
+            elif current_first_timestamp_factor <= endTime <= current_last_timestamp_factor:  # empezamos a grabar
+                market_logger.debug("current_first_timestamp_factor <= endTime <= current_last_timestamp_factor")
+                factor = 1
+                touche = True
+                current_first_trade = current_first_trade_factor
+                current_first_trade_time = current_first_timestamp_factor
                 trades = fetched_older_trades + trades
-                current_first_trade_time = trades[0]['T']
-                current_first_trade = trades[0]['a']
-        if endTime:
-            current_last_trade = trades[-1]['a']
-            prev_last_trade = current_last_trade
-            current_last_trade_time = trades[-1]['T']
-            retry_count = 0  # añadido
+                continue
 
-            while current_last_trade_time <= endTime:
-                requests_cnt += 1
-                market_logger.info(f"Requests API for aggregated trades searching ENDTIME {symbol}: "
-                                   f"{requests_cnt}  current_last_trade:{current_last_trade}")
-                fetched_newer_trades = get_aggregated_trades(symbol=symbol, fromId=current_last_trade, limit=1000)
-                trades += fetched_newer_trades
-                current_last_trade = trades[-1]['a']
-                current_last_trade_time = trades[-1]['T']
-                if current_last_trade != prev_last_trade:
-                    prev_last_trade = current_last_trade  # vigilando esto
-                    retry_count = 0
-                else:
-                    retry_count += 1
-                    if retry_count >= 3:
-                        break
+            elif touche:
+                market_logger.debug("touche")
+                current_first_trade = current_first_trade_factor
+                current_first_trade_time = current_first_timestamp_factor
+                trades = fetched_older_trades + trades
 
-        ret = [i for i in trades if startTime <= i['T'] <= endTime]
-        return sorted(ret, key=lambda x: x['a'])
+            else:
+                start_str = pd.to_datetime(current_first_timestamp_factor, unit='ms').strftime('%Y-%m-%d %H:%M:%S')
+                end_str = pd.to_datetime(current_last_timestamp_factor, unit='ms').strftime('%Y-%m-%d %H:%M:%S')
+                raise BinPanException(f"BinPan Exception: {symbol} get historical {trade_type} trades {start_str} - {end_str}")
 
-    # from redis
-    response = []
-    market_logger.info(f"Fetching aggregated trades from redis server for {symbol}")
-
-    curr_trades = redis_client_trades.zrange(name=f"{symbol.lower()}@aggTrade", start=0, end=-1, withscores=True)
-
-    curr_trades = [json.loads(i[0]) for i in curr_trades]
-    market_logger.debug(f"Fetched {len(curr_trades)} aggregated trades for {symbol}")
-
-    if curr_trades:
-        timestamps_dict = {k['T']: k['a'] for k in curr_trades}  # associate timestamps with trade id
-        trade_ids = [i for t, i in timestamps_dict.items() if startTime <= t <= endTime]
-        market_logger.debug(f"List of aggregated trades {len(trade_ids)} for {symbol}")
-
-        if trade_ids:
-            response = redis_client_trades.zrangebyscore(name=f"{symbol.lower()}@aggTrade", min=trade_ids[0], max=trade_ids[
-                -1], withscores=False)
-            response = [json.loads(i) for i in response]
-        else:
-            response = []
-
-        market_logger.info(f"Clean aggregated {len(response)} trades found for {symbol}")
-
-    if not response:
-        start_str = convert_milliseconds_to_utc_string(ms=startTime)
-        end_str = convert_milliseconds_to_utc_string(ms=endTime)
-        market_logger.info(f"No aggregated trade IDs found for {symbol} for given interval {start_str} and {end_str} (UTC) in server.")
-    return response
+        # acota
+        ret = [i for i in trades if startTime <= i[timestamp_field] <= endTime]
+        # elimina trades duplicados
+        ret = [i for n, i in enumerate(ret) if i not in ret[n + 1:]]
+        # ordena
+        return sorted(ret, key=lambda x: x[id_field])
 
 
 def parse_agg_trades_to_dataframe(response: list, columns: dict, symbol: str, time_zone: str = None, time_index: bool = None,
@@ -847,19 +853,23 @@ def get_historical_atomic_trades(symbol: str,
                                  endTime: int = None,
                                  start_trade_id: int = None,
                                  end_trade_id: int = None,
-                                 limit: int = 1000) -> List[dict]:
+                                 limit_ids: int = 1000,
+                                 limit_hours: float = 1) -> List[dict]:
     """
     Returns atomic (not aggregated) trades between timestamps. It iterates over limit 1000 intervals to adjust to API limit.
 
     This request can be very slow because the API request weight limit.
 
+    :param str symbol: A binance valid symbol.
     :param int startTime: A timestamp in milliseconds from epoch.
     :param int endTime: A timestamp in milliseconds from epoch.
     :param int start_trade_id: A trade id as first one (older).
     :param int end_trade_id: A trade id as last one (newer).
-    :param int limit: Limit for missing heads or tails of the interval requested with timestamps or trade ids. Ignored if  start and end
-     passed.
-    :param str symbol: A binance valid symbol.
+    :param int limit_ids: Count of trades to ask for if just start_trade_id or just end_trade_id passed.
+        Ignored if startTime or endTime passed.
+    :param int limit_hours: Count of hours to ask for if just startTime or just endTime passed.
+        Ignored if start_trade_id or end_trade_id passed.
+    :return list: Returns a list from the Binance API in dicts.
     :return list: Returns a list from the Binance API
 
     .. code-block::
@@ -875,134 +885,128 @@ def get_historical_atomic_trades(symbol: str,
                  'isBestMatch': True}, ...
              ]
     """
-    retry_limit = 10
+
+    id_field = "id"
+    timestamp_field = "time"
+    trade_type = "atomic"
+    limit_hours_ms = int(60 * 1000 * 60 * limit_hours)
+    requests_cnt = 1
+
+    if trade_type == "aggregated":
+        my_func = get_aggregated_trades
+    else:
+        my_func = get_atomic_trades
 
     try:
         assert bool(startTime or endTime) ^ bool(start_trade_id or end_trade_id)
     except AssertionError:
-        raise BinPanException(f"BinPan Exception: get_historical_atomic_trades params mixed time, timestamp and trade id: {locals()}")
+        raise BinPanException(f"BinPan Exception: get historical {trade_type} trades params mixed time, timestamp and trade id: {locals()}")
 
     if start_trade_id and not end_trade_id:
-        end_trade_id = start_trade_id + limit
+        end_trade_id = start_trade_id + (limit_ids - 1)
     elif end_trade_id and not start_trade_id:
-        start_trade_id = end_trade_id - limit
-
-    requests_cnt = 1
+        start_trade_id = end_trade_id - (limit_ids - 1)
 
     if start_trade_id and end_trade_id:
-        trades = get_atomic_trades(symbol=symbol, fromId=end_trade_id - 999, limit=1000)
-        trade_ids = [i['id'] for i in trades]
-        if not end_trade_id in trade_ids:
-            market_logger.warning(f"Trade id {end_trade_id} not reported by API. Fetching older trades.")
-            end_trade_id = trade_ids[-1]
-            assert end_trade_id >= start_trade_id, f"BinPan Exception: get_historical_atomic_trades: end_trade_id {end_trade_id} " \
-                                                   f"must be greater than start_trade_id {start_trade_id}"
-        current_first_trade = trades[0]['id']
+        trades = my_func(symbol=symbol, fromId=end_trade_id - 999, limit=1000)  # el presente
+        end_trade_id = trades[-1][id_field]  # evita pedir del futuro
+        current_first_trade = trades[0][id_field]
+
         while current_first_trade > start_trade_id:
             requests_cnt += 1
-            market_logger.info(f"Requests to API for atomic trades of {symbol}: {requests_cnt}")
-            fetched_older_trades = get_atomic_trades(symbol=symbol, fromId=(current_first_trade - 1000), limit=1000)
+            market_logger.info(f"Requests to API for {trade_type} trades of {symbol}: {requests_cnt} current_first_trade: "
+                               f"{current_first_trade}")
+            # restamos 1000 pq current_first_trade ya lo tenemos, asi no viene repetido
+            fetched_older_trades = my_func(symbol=symbol, fromId=(current_first_trade - 1000), limit=1000)
             trades = fetched_older_trades + trades
-            current_first_trade = trades[0]['id']
+            current_first_trade = trades[0][id_field]
 
-        ret = [i for i in trades if start_trade_id <= i['id'] <= end_trade_id]
-        return sorted(ret, key=lambda x: x['id'])
+        ret = [i for i in trades if start_trade_id <= i[id_field] <= end_trade_id]
+        return sorted(ret, key=lambda x: x[id_field])
 
-    # if start_trade_id and end_trade_id:
-    #     trades = get_atomic_trades(symbol=symbol, fromId=end_trade_id - 1000, limit=1000)
-    # else:
-    #     trades = get_last_atomic_trades(symbol=symbol, limit=1000)
-    # requests_cnt = 0
-    #
-    # # with trade ids, find start
-    # if start_trade_id and end_trade_id:
-    #     current_first_trade = trades[0]['id']
-    #     while current_first_trade > start_trade_id:
-    #         requests_cnt += 1
-    #         market_logger.info(f"Requests to API for atomic trades of {symbol}: {requests_cnt}")
-    #         fetched_older_trades = get_atomic_trades(symbol=symbol, fromId=(current_first_trade - 1000), limit=1000)
-    #         trades = fetched_older_trades + trades
-    #         current_first_trade = trades[0]['id']
-    #
-    #     current_last_trade = trades[-1]['id']
-    #     while current_last_trade < end_trade_id:
-    #         requests_cnt += 1
-    #         market_logger.info(f"Requests to API for atomic trades of {symbol}: {requests_cnt}")
-    #         fetched_older_trades = get_atomic_trades(symbol=symbol, fromId=current_last_trade, limit=1000)
-    #         trades = fetched_older_trades + trades
-    #         current_last_trade = trades[-1]['id']
-    #
-    #     ret = [i for i in trades if start_trade_id <= i['id'] <= end_trade_id]
-    #     return sorted(ret, key=lambda x: x['id'])
-
-    # with timestamps or trade ids
+    # with timestamps
     elif startTime or endTime:
-        trades = get_last_atomic_trades(symbol=symbol, limit=1000)
-        current_first_trade_time = trades[0]['time']
-        current_first_trade = trades[0]['id']
+        factor = 1
+        trades = my_func(symbol=symbol, limit=1000)
+        current_first_trade_time = trades[0][timestamp_field]
+        current_last_trade_time = trades[-1][timestamp_field]
+        current_first_trade = trades[0][id_field]
 
-        if startTime:
-            while current_first_trade_time >= startTime:
-                requests_cnt += 1
-                market_logger.info(f"Requests API for atomic trades searching STARTIME {symbol}: {requests_cnt} current_first_trade:"
-                                   f"{current_first_trade}")
-                fetched_older_trades = get_atomic_trades(symbol=symbol, fromId=current_first_trade - 1000, limit=1000)
+        if endTime and not startTime:
+            market_logger.info(f"Star time not passed for {trade_type} trades of {symbol}. Calculating {limit_hours} hour ago.")
+            startTime = min(endTime, current_last_trade_time) - limit_hours_ms
+            endTime = min(endTime, current_last_trade_time)  # no podemos pedir trades del futuro
+
+        if startTime and not endTime:
+            market_logger.info(f"End time not passed for {trade_type} trades of {symbol}. Calculating {limit_hours} hours ahead.")
+            endTime = startTime + (1000 * 60 * 60 * limit_hours)
+
+        elif not startTime and not endTime:
+            endTime = current_last_trade_time  # no podemos pedir trades del futuro
+            market_logger.info(f"Start time not passed for {trade_type} trades of {symbol}. Calculating {limit_hours} hours ago.")
+            startTime = endTime - (1000 * 60 * 60 * limit_hours)
+
+        assert startTime <= endTime, f"BinPan Exception: get historical {trade_type} trades endTime < startTime: {locals()}"
+
+        touche = False
+
+        while startTime <= current_first_trade_time:
+
+            requests_cnt += 1
+            start_str = pd.to_datetime(current_first_trade_time, unit='ms').strftime('%Y-%m-%d %H:%M:%S')
+            market_logger.info(f"Requests API for {trade_type} trades searching STARTIME {symbol}: {requests_cnt} current_first_trade:"
+                               f"{current_first_trade} date: {start_str}")
+
+            # restamos 1000 pq el current first trade ya lo tenemos y no queremos que venga repetido
+            fetched_older_trades = my_func(symbol=symbol, fromId=current_first_trade - (1000 * factor), limit=1000)
+
+            current_first_trade_factor = fetched_older_trades[0][id_field]
+            current_last_trade_factor = fetched_older_trades[-1][id_field]
+            current_first_timestamp_factor = fetched_older_trades[0][timestamp_field]
+            current_last_timestamp_factor = fetched_older_trades[-1][timestamp_field]
+
+            if endTime < current_first_timestamp_factor:
+                market_logger.debug("endTime < current_first_timestamp_factor")
+                if not touche:
+                    factor += 1
+                current_first_trade = current_first_trade_factor
+                current_first_trade_time = current_first_timestamp_factor
+                continue
+
+            elif current_last_timestamp_factor < endTime and not touche:  # si nos pasamos frenamos y volvemos a subir
+                market_logger.debug("current_last_timestamp_factor < endTime and not touche")
+                factor = max(factor - 2, 1)
+                unlock_posible_loops = randint(1, 1000)
+                current_first_trade = current_last_trade_factor + unlock_posible_loops + 1000*factor  # hay que subir, nos hemos pasado
+                current_first_trade_time = max(current_first_timestamp_factor, startTime)  # para que no bloquee por saltos grandes
+                continue
+
+            elif current_first_timestamp_factor <= endTime <= current_last_timestamp_factor:  # empezamos a grabar
+                market_logger.debug("current_first_timestamp_factor <= endTime <= current_last_timestamp_factor")
+                factor = 1
+                touche = True
+                current_first_trade = current_first_trade_factor
+                current_first_trade_time = current_first_timestamp_factor
                 trades = fetched_older_trades + trades
-                current_first_trade_time = trades[0]['time']
-                current_first_trade = trades[0]['id']
-        if endTime:
-            current_last_trade = trades[-1]['id']
-            prev_last_trade = current_last_trade
-            current_last_trade_time = trades[-1]['time']
-            retry_count = 0
+                continue
 
-            while current_last_trade_time <= endTime:
-                requests_cnt += 1
-                market_logger.info(f"Requests API for atomic trades searching ENDTIME {symbol}: {requests_cnt} current_last_trade:"
-                                   f"{current_last_trade}")
-                fetched_newer_trades = get_atomic_trades(symbol=symbol, fromId=current_last_trade, limit=1000)
-                trades += fetched_newer_trades
-                current_last_trade = trades[-1]['id']
-                current_last_trade_time = trades[-1]['time']
-                if current_last_trade != prev_last_trade:
-                    prev_last_trade = current_last_trade  # vigilando esto
-                    retry_count = 0
-                else:
-                    retry_count += 1
-                    if retry_count >= 3:
-                        break
+            elif touche:
+                market_logger.debug("touche")
+                current_first_trade = current_first_trade_factor
+                current_first_trade_time = current_first_timestamp_factor
+                trades = fetched_older_trades + trades
 
-        ret = [i for i in trades if startTime <= i['time'] <= endTime]
-        return sorted(ret, key=lambda x: x['id'])
+            else:
+                start_str = pd.to_datetime(current_first_timestamp_factor, unit='ms').strftime('%Y-%m-%d %H:%M:%S')
+                end_str = pd.to_datetime(current_last_timestamp_factor, unit='ms').strftime('%Y-%m-%d %H:%M:%S')
+                raise BinPanException(f"BinPan Exception: {symbol} get historical {trade_type} trades {start_str} - {end_str}")
 
-    # from redis
-    # response = []
-    # market_logger.info(f"Fetching atomic trades from redis server for {symbol}")
-    #
-    # curr_trades = redis_client_trades.zrange(name=f"{symbol.lower()}@trade", start=0, end=-1, withscores=True)
-    #
-    # curr_trades = [json.loads(i[0]) for i in curr_trades]
-    # market_logger.debug(f"Fetched {len(curr_trades)} atomic trades for {symbol}")
-    #
-    # if curr_trades:
-    #     timestamps_dict = {k['T']: k['t'] for k in curr_trades}  # associate timestamps with trade id
-    #     trade_ids = [i for t, i in timestamps_dict.items() if startTime <= t <= endTime]
-    #     market_logger.debug(f"List of atomic trades {len(trade_ids)} for {symbol}")
-    #
-    #     if trade_ids:
-    #         response = redis_client_trades.zrangebyscore(name=f"{symbol.lower()}@trade", min=trade_ids[0], max=trade_ids[
-    #             -1], withscores=False)
-    #         response = [json.loads(i) for i in response]
-    #     else:
-    #         response = []
-    #
-    #     market_logger.info(f"Clean atomic {len(response)} trades found for {symbol}")
-    #
-    # if not response:
-    #     start_str = convert_milliseconds_to_utc_string(ms=startTime)
-    #     end_str = convert_milliseconds_to_utc_string(ms=endTime)
-    #     market_logger.info(f"No atomic trade IDs found for {symbol} for given interval {start_str} and {end_str} (UTC) in server.")
-    # return response
+        # acota
+        ret = [i for i in trades if startTime <= i[timestamp_field] <= endTime]
+        # elimina trades duplicados
+        ret = [i for n, i in enumerate(ret) if i not in ret[n + 1:]]
+        # ordena
+        return sorted(ret, key=lambda x: x[id_field])
 
 
 def parse_atomic_trades_to_dataframe(response: list,

@@ -142,7 +142,7 @@ def drop_aggregated(data: pd.DataFrame, group_column: str, by='last') -> pd.Data
 
     # sequential integers fault warning
     integers = data.loc[df[group_column].apply(lambda x: isinstance(x, (int, np.integer))), group_column]
-    differences = np.diff(integers)
+    differences = np.diff(integers)  # ojo, np.diff elimina el primer elemento en vez de venir con nan
     differences = np.isnan(differences) | (differences == 1)
     try:
         assert differences.all(), f"Warning: Numbers in column '{group_column}' are not consecutive."
