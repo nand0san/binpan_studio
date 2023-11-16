@@ -1,4 +1,5 @@
 import numpy as np
+from typing import Tuple
 
 try:
     from numba import njit
@@ -17,7 +18,15 @@ except Exception as e:
 
 
 @njit(cache=True)
-def rolling_max_with_steps_back_numba(values, window, pct_diff):
+def rolling_max_with_steps_back_numba(values, window, pct_diff) -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Calculate the rolling maximum of the given array using NumPy.
+
+    :param values: A NumPy array containing the input data.
+    :param window: An integer for the window size.
+    :param pct_diff: A boolean indicating whether to calculate the percentage difference.
+    :return: A tuple containing the rolling maximum value and the steps back.
+    """
     n = len(values)
     rolling_max = np.full(n, np.nan)  # Inicializar con NaN
     steps_back = np.full(n, -1)  # Inicializar con -1
@@ -38,7 +47,40 @@ def rolling_max_with_steps_back_numba(values, window, pct_diff):
 
 
 @njit(cache=True)
-def rolling_min_with_steps_back_numba(values, window, pct_diff):
+def rolling_max_with_steps_back_last_value_numba(values: np.ndarray, window: int, pct_diff: bool) -> Tuple[float, int]:
+    """
+    Calculate the rolling maximum for the last value in the given array using NumPy.
+
+    :param values: A NumPy array containing the input data.
+    :param window: An integer for the window size.
+    :param pct_diff: A boolean indicating whether to calculate the percentage difference.
+    :return: A tuple containing the rolling maximum value and the steps back for the last value.
+    """
+    n = len(values)
+
+    # Asegurarse de que la ventana no sea mayor que el tamaño de 'values'
+    effective_window = min(window, n)
+
+    # Obtener los valores de la última ventana
+    window_values = values[-effective_window:]
+
+    # Ignorar los NaNs en la ventana actual
+    valid_values = window_values[~np.isnan(window_values)]
+
+    if len(valid_values) > 0:
+        current_max = np.max(valid_values)
+        last_value_max = values[-1] / current_max - 1 if pct_diff and current_max != 0 else current_max
+        max_idx = np.where(window_values == current_max)[0][-1]
+        steps_back = effective_window - 1 - (len(window_values) - max_idx - 1)
+    else:
+        last_value_max = np.nan
+        steps_back = -1
+
+    return last_value_max, steps_back
+
+
+@njit(cache=True)
+def rolling_min_with_steps_back_numba(values, window, pct_diff) -> Tuple[np.ndarray, np.ndarray]:
     n = len(values)
     rolling_min = np.full(n, np.nan)  # Inicializar con NaN
     steps_back = np.full(n, -1)  # Inicializar con -1
@@ -56,6 +98,39 @@ def rolling_min_with_steps_back_numba(values, window, pct_diff):
             steps_back[i] = window - 1 - (len(window_values) - min_idx - 1)
 
     return rolling_min, steps_back
+
+
+@njit(cache=True)
+def rolling_min_with_steps_back_last_value_numba(values: np.ndarray, window: int, pct_diff: bool) -> Tuple[float, int]:
+    """
+    Calculate the rolling minimum for the last value in the given array using NumPy.
+
+    :param values: A NumPy array containing the input data.
+    :param window: An integer for the window size.
+    :param pct_diff: A boolean indicating whether to calculate the percentage difference.
+    :return: A tuple containing the rolling minimum value and the steps back for the last value.
+    """
+    n = len(values)
+
+    # Asegurarse de que la ventana no sea mayor que el tamaño de 'values'
+    effective_window = min(window, n)
+
+    # Obtener los valores de la última ventana
+    window_values = values[-effective_window:]
+
+    # Ignorar los NaNs en la ventana actual
+    valid_values = window_values[~np.isnan(window_values)]
+
+    if len(valid_values) > 0:
+        current_min = np.min(valid_values)
+        last_value_min = values[-1] / current_min - 1 if pct_diff and current_min != 0 else current_min
+        min_idx = np.where(window_values == current_min)[0][-1]
+        steps_back = effective_window - 1 - (len(window_values) - min_idx - 1)
+    else:
+        last_value_min = np.nan
+        steps_back = -1
+
+    return last_value_min, steps_back
 
 
 @njit(cache=True)
@@ -187,6 +262,25 @@ def close_support_log_numba(close: np.ndarray, support: np.ndarray) -> np.ndarra
 
 
 @njit(cache=True)
+def close_support_log_single_numba(close: np.ndarray, support: np.ndarray) -> np.float64:
+    """
+    Calculate the logarithmic ratio between a single closing price and the closest support level to it.
+
+    :param close: A single closing price (float).
+    :param support: A NumPy array containing the support levels.
+    :return: The logarithmic ratio for the given closing price.
+    """
+    # support = np.sort(support)
+    index = np.searchsorted(support, close, side='right') - 1
+    index = max(index, 0)  # Asegurar que el índice no sea negativo
+    closest_support = support[index]
+    closest_support = close if close == support[index] else closest_support
+    # noinspection PyTypeChecker
+    closest_support = max(closest_support, 1e-9)  # Evitar división por cero o logaritmo de un número negativo
+    return np.log(close / closest_support)
+
+
+@njit(cache=True)
 def close_resistance_log_numba(close: np.ndarray, resistance: np.ndarray) -> np.ndarray:
     """
     Calculate the logarithmic ratio between the closest resistance level and the closing price.
@@ -206,3 +300,23 @@ def close_resistance_log_numba(close: np.ndarray, resistance: np.ndarray) -> np.
     closest_resistance = np.maximum(closest_resistance, 1e-9)
     # Calcular la diferencia logarítmica
     return np.log(np.where(closest_resistance == close, 1, closest_resistance / close))
+
+
+@njit(cache=True)
+def close_resistance_log_single_numba(close: np.ndarray, resistance: np.ndarray) -> np.float64:
+    """
+    Calculate the logarithmic ratio between the closest resistance level and a single closing price.
+
+    :param close: A single closing price (float).
+    :param resistance: A NumPy array containing the resistance levels.
+    :return: The logarithmic ratio for the given closing price.
+    """
+    # resistance = np.sort(resistance)
+    index = np.searchsorted(resistance, close, side='left')
+    index = min(index, len(resistance) - 1)  # Asegurar que el índice no sea mayor que el máximo índice válido
+    closest_resistance = resistance[index]
+    # noinspection PyTypeChecker
+    closest_resistance = max(closest_resistance, 1e-9)  # Evitar logaritmo de un número negativo o cero
+
+    # Calcular la diferencia logarítmica
+    return np.log(max(closest_resistance / close, 1))
