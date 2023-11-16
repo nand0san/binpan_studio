@@ -821,8 +821,12 @@ def support_resistance_levels(df: pd.DataFrame, max_clusters: int = 5, by_quanti
     return support_levels.flatten().tolist(), resistance_levels.flatten().tolist()
 
 
-def support_resistance_levels_merged(df: pd.DataFrame, by_klines: bool, max_clusters: int = 5, by_quantity: float = None,
-                                     optimize_clusters_qty: bool = False, quiet: bool = False):
+def support_resistance_levels_merged(df: pd.DataFrame,
+                                     by_klines: bool,
+                                     max_clusters: int = 5,
+                                     by_quantity: float = None,
+                                     optimize_clusters_qty: bool = False,
+                                     quiet: bool = False):
     """
     Calculate support and resistance levels merged for a given set of trades using K-means clustering.
     :param df: A pandas DataFrame with trades or klines, containing a 'Price', 'Quantity' columns or "Close", "Volume".

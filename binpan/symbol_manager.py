@@ -2300,11 +2300,11 @@ class Symbol(object):
         df = self.df.copy(deep=True)
 
         if self.is_numba and ma_name == 'ema':
-            ma_ = ema_numba(df[column_source], window=kwargs['length'])
+            ma_ = ema_numba(df[column_source].values, window=kwargs['length'])
             ma = pd.Series(data=ma_, index=df.index, name=f"EMA_{kwargs['length']}")
 
         elif self.is_numba and ma_name == 'sma':
-            ma_ = sma_numba(df[column_source], window=kwargs['length'])
+            ma_ = sma_numba(df[column_source].values, window=kwargs['length'])
             ma = pd.Series(data=ma_, index=df.index, name=f"SMA_{kwargs['length']}")
 
         else:
@@ -2488,7 +2488,7 @@ class Symbol(object):
         """
 
         if self.is_numba:
-            rsi_ = ema_numba(self.df['Close'], window=length)
+            rsi_ = ema_numba(self.df['Close'].values, window=length)
             rsi = pd.Series(data=rsi_, index=self.df.index, name=f"RSI_{length}")
         else:
             rsi = ta.rsi(close=self.df['Close'], length=length, **kwargs)
@@ -3312,12 +3312,16 @@ class Symbol(object):
                 if not by_quantity:
                     by_quantity = np.mean(self.atomic_trades['Quantity'].values)
                 if simple:
-                    self.support_lines = support_resistance_levels_merged(self.atomic_trades, max_clusters=max_clusters,
-                                                                          by_quantity=by_quantity, by_klines=False)
+                    self.support_lines = support_resistance_levels_merged(self.atomic_trades,
+                                                                          max_clusters=max_clusters,
+                                                                          by_quantity=by_quantity,
+                                                                          by_klines=False)
                     self.resistance_lines = []
                 else:
-                    self.support_lines, self.resistance_lines = support_resistance_levels(self.atomic_trades, max_clusters=max_clusters,
-                                                                                          by_quantity=by_quantity, by_klines=False)
+                    self.support_lines, self.resistance_lines = support_resistance_levels(self.atomic_trades,
+                                                                                          max_clusters=max_clusters,
+                                                                                          by_quantity=by_quantity,
+                                                                                          by_klines=False)
         elif from_aggregated:
             from_data = "aggregated trades"
             if self.agg_trades.empty:
