@@ -633,8 +633,6 @@ def get_historical_trades(symbol: str,
     :return list: Returns a list from the Binance API in dicts.
 
     """
-    if limit_hours:
-        limit_hours_ms = int(60 * 1000 * 60 * limit_hours)
 
     requests_cnt = 1
 
@@ -686,11 +684,14 @@ def get_historical_trades(symbol: str,
         current_first_trade = trades[0][id_field]
 
         if endTime and not startTime:
+            assert limit_hours, f"BinPan Exception: get historical {trade_type} trades endTime without trades limit_hours: {locals()}"
             market_logger.info(f"Star time not passed for {trade_type} trades of {symbol}. Calculating {limit_hours} hour ago.")
+            limit_hours_ms = int(60 * 1000 * 60 * limit_hours)
             startTime = min(endTime, current_last_trade_time) - limit_hours_ms
             endTime = min(endTime, current_last_trade_time)  # no podemos pedir trades del futuro
 
         if startTime and not endTime:
+            assert limit_hours, f"BinPan Exception: get historical {trade_type} trades startTime without trades limit_hours: {locals()}"
             market_logger.info(f"End time not passed for {trade_type} trades of {symbol}. Calculating {limit_hours} hours ahead.")
             endTime = startTime + (1000 * 60 * 60 * limit_hours)
 
