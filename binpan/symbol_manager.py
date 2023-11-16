@@ -3,7 +3,7 @@
 This is the main classes file.
 
 """
-__version__ = "0.7.15"
+__version__ = "0.8.1"
 
 import os
 from sys import path
@@ -36,8 +36,6 @@ from handlers.market import (get_candles_by_time_stamps, parse_candles_to_datafr
 from handlers.plotting import (plotly_colors, plot_trades, candles_ta, plot_pie, plot_hists_vs, candles_tagged, bar_plot, plot_scatter,
                                orderbook_depth, dist_plot, profile_plot)
 
-# from handlers.starters import is_running_in_jupyter
-
 from handlers.time_helper import (check_tick_interval, convert_milliseconds_to_str, get_dataframe_time_index_ranges,
                                   remove_initial_included_ranges, tick_interval_values)
 
@@ -57,6 +55,14 @@ import warnings
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
     from tqdm.autonotebook import tqdm
+
+try:
+    from numba import njit
+    from handlers.numba_tools import sma_numba, rsi_numba, ema_numba
+    is_numba = True
+except ImportError:
+    is_numba = False
+    sma_numba, rsi_numba, ema_numba = None, None, None
 
 binpan_logger = Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 version = __version__
@@ -233,6 +239,8 @@ class Symbol(object):
             tick_interval = check_tick_interval(tick_interval)
         else:
             tick_interval = tick_interval
+
+        self.is_numba = is_numba
         self.tick_interval = tick_interval
         self.time_zone = time_zone
 
@@ -2218,9 +2226,9 @@ class Symbol(object):
 
         return profit / hours
 
-    #################
-    # Exchange Data #
-    #################
+    ######################
+    # More Exchange Data #
+    ######################
 
     def get_fees(self, symbol: str = None):
         """
@@ -2258,7 +2266,12 @@ class Symbol(object):
     # Indicators #
     ##############
 
-    def ma(self, ma_name: str = 'ema', column_source: str = 'Close', inplace: bool = False, suffix: str = None, color: str or int = None,
+    def ma(self,
+           ma_name: str = 'ema',
+           column_source: str = 'Close',
+           inplace: bool = False,
+           suffix: str = None,
+           color: str or int = None,
            **kwargs):
         """
         Generic moving average method. Calls pandas_ta 'ma' method.
@@ -2285,7 +2298,17 @@ class Symbol(object):
             kwargs.update({'suffix': suffix})
 
         df = self.df.copy(deep=True)
-        ma = ta.ma(name=ma_name, source=df[column_source], **kwargs)
+
+        if self.is_numba and ma_name == 'ema':
+            ma_ = ema_numba(df[column_source], window=kwargs['length'])
+            ma = pd.Series(data=ma_, index=df.index, name=f"EMA_{kwargs['length']}")
+
+        elif self.is_numba and ma_name == 'sma':
+            ma_ = sma_numba(df[column_source], window=kwargs['length'])
+            ma = pd.Series(data=ma_, index=df.index, name=f"SMA_{kwargs['length']}")
+
+        else:
+            ma = ta.ma(name=ma_name, source=df[column_source], **kwargs)
 
         if inplace and self.is_new(ma):
             # plot ready
@@ -2464,7 +2487,12 @@ class Symbol(object):
 
         """
 
-        rsi = ta.rsi(close=self.df['Close'], length=length, **kwargs)
+        if self.is_numba:
+            rsi_ = ema_numba(self.df['Close'], window=length)
+            rsi = pd.Series(data=rsi_, index=self.df.index, name=f"RSI_{length}")
+        else:
+            rsi = ta.rsi(close=self.df['Close'], length=length, **kwargs)
+
         column_name = str(rsi.name) + suffix
 
         if inplace and self.is_new(rsi):
