@@ -132,17 +132,20 @@ def get_candles_by_time_stamps(symbol: str,
 
     if not start_time and not end_time:
         end_time = int(time()) * 1000  # la api traería la ultima vela cerrada
+        start_time = end_time - ((limit - 1) * tick_milliseconds)
+        start_time = open_from_milliseconds(ms=start_time, tick_interval=tick_interval)
 
     if not start_time and end_time:
-        start_time = end_time - (
-                    (limit - 1) * tick_milliseconds)  # this will include exactly the limit passed if <= 1000, including last one
-        # start_time = end_time - (limit * tick_milliseconds)  # this will exclude the last candle if limit is 1000 and include_last is
-        # False
+        start_time = end_time - ((limit - 1) * tick_milliseconds)
         start_time = open_from_milliseconds(ms=start_time, tick_interval=tick_interval)
 
     elif start_time and not end_time:
         end_time = start_time + ((limit - 1) * tick_milliseconds)  # end time is included
         end_time = open_from_milliseconds(ms=end_time, tick_interval=tick_interval)
+
+    end_time = min(end_time,
+                   next_open_by_milliseconds(ms=int(time() * 1000), tick_interval=tick_interval),
+                   next_open_by_milliseconds(ms=end_time, tick_interval=tick_interval))
 
     start_string = convert_milliseconds_to_str(ms=start_time, timezoned=time_zone)
     end_string = convert_milliseconds_to_str(ms=end_time, timezoned=time_zone)
@@ -156,11 +159,7 @@ def get_candles_by_time_stamps(symbol: str,
 
     # loop
     raw_candles = []
-    for start, end_ in ranges:
-        now = int(time() * 1000)
-        end = min(end_,
-                  next_open_by_milliseconds(ms=now, tick_interval=tick_interval),
-                  next_open_by_milliseconds(ms=end_time, tick_interval=tick_interval))
+    for start, end in ranges:
 
         params = {'symbol': symbol, 'interval': tick_interval, 'startTime': start, 'endTime': end, 'limit': limit}
         params = {k: v for k, v in params.items() if v}
@@ -176,14 +175,13 @@ def get_candles_by_time_stamps(symbol: str,
         response = get_response(url=endpoint, params=params)
 
         if len(response) < expected_klines:
-            market_logger.warning(f"API response missing {expected_klines - len(response)} "
-                                  f"klines (maybe not closed yet) for {symbol} {start_str} to {end_str} expected "
-                                  f"{expected_klines} got {len(response)}")
+            market_logger.warning(f"API response missing {expected_klines - len(response)} klines for {symbol} {start_str} to "
+                                  f"{end_str} expected {expected_klines} got {len(response)}")
         raw_candles += response
 
     if not raw_candles:
-        msg = f"BinPan: Missing in API requested klines for {symbol.lower()}@kline_{tick_interval} between {start_string} and " \
-              f"{end_string}"
+        msg = (f"BinPan: Missing in API requested klines for {symbol.lower()}@kline_{tick_interval} between {start_string} "
+               f"and {end_string}")
         market_logger.warning(msg)
         return []
         # raise Exception(msg)
@@ -192,12 +190,16 @@ def get_candles_by_time_stamps(symbol: str,
     overtime_candle_ts = next_open_by_milliseconds(ms=end_time, tick_interval=tick_interval)
 
     if type(raw_candles[0]) is list:  # if from binance
-        raw_candles = [i for i in raw_candles if int(i[0]) < overtime_candle_ts]
+        raw_candles_ = [i for i in raw_candles if int(i[0]) < overtime_candle_ts]
     else:
         open_ts_key = list(raw_candles[0].keys())[0]
-        raw_candles = [i for i in raw_candles if int(i[open_ts_key]) < overtime_candle_ts]
+        raw_candles_ = [i for i in raw_candles if int(i[open_ts_key]) < overtime_candle_ts]
 
-    return raw_candles
+    if len(raw_candles) != len(raw_candles_):
+        market_logger.info(f"Pruned overtime_candle_ts {len(raw_candles) - len(raw_candles_)} candles from API response for {symbol} "
+                           f"{tick_interval}")
+
+    return raw_candles_
 
 
 def get_historical_candles(symbol: str,
@@ -205,7 +207,7 @@ def get_historical_candles(symbol: str,
                            start_time: int,
                            end_time: int,
                            tick_interval_ms: int,
-                           limit: int = 1000,
+                           requests_limit: int = 1000,
                            ignore_errors: bool = False) -> List[list]:
     """
     Retrieve all kline data within the given time range considering the API limit.
@@ -219,7 +221,7 @@ def get_historical_candles(symbol: str,
     :param int start_time: Start timestamp (milliseconds) of the time range.
     :param int end_time: End timestamp (milliseconds) of the time range.
     :param int tick_interval_ms: Kline tick interval in milliseconds.
-    :param int limit: API limit for the number of klines in a single request (default: 1000).
+    :param int requests_limit: API limit for the number of klines in a single request (default: 1000).
     :param bool ignore_errors: If tru, just throw a warning on error. Recommended for redis filler.
     :return: A list of klines data within the given time range.
 
@@ -246,9 +248,9 @@ def get_historical_candles(symbol: str,
 
     all_data = []
 
-    for curr_start in range(start, end, limit * tick_interval_ms):
+    for curr_start in range(start, end, requests_limit * tick_interval_ms):
 
-        curr_end = curr_start + (limit * tick_interval_ms)
+        curr_end = curr_start + (requests_limit * tick_interval_ms)
         if ignore_errors:
             try:
                 # get_candles_by_time_stamps excludes end_time
@@ -583,25 +585,82 @@ def get_historical_agg_trades(symbol: str,
     id_field = "a"
     timestamp_field = "T"
     trade_type = "aggregated"
-    limit_hours_ms = int(60 * 1000 * 60 * limit_hours)
+
+    return get_historical_trades(symbol=symbol,
+                                 trade_type=trade_type,
+                                 id_field=id_field,
+                                 timestamp_field=timestamp_field,
+                                 startTime=startTime,
+                                 endTime=endTime,
+                                 start_trade_id=start_trade_id,
+                                 end_trade_id=end_trade_id,
+                                 limit_ids=limit_ids,
+                                 limit_hours=limit_hours)
+
+
+def get_historical_trades(symbol: str,
+                          trade_type: str,
+                          id_field: str,
+                          timestamp_field: str,
+                          startTime: int = None,
+                          endTime: int = None,
+                          start_trade_id: int = None,
+                          end_trade_id: int = None,
+                          limit_ids: int = 1000,
+                          limit_hours: float = 1) -> List[dict]:
+    """
+    Returns aggregated or atomic trades from id to limit or last trades if id not specified. Also is possible to get from starTime utc in
+    milliseconds from epoch or until endtime milliseconds from epoch.
+
+    Start time and end time not applied if trade id passed.
+
+    Limit applied in fromId mode defaults to 1000.
+
+    Limit hours applied in startTime or endTime mode defaults to 1 hour.
+
+    :param str symbol: A binance valid symbol.
+    :param str trade_type: 'aggregated' or 'atomic'.
+    :param str id_field: 'a' or 't' for aggregated or atomic respectively.
+    :param str timestamp_field: 'T' or 't' for aggregated or atomic respectively.
+    :param int startTime: A timestamp in milliseconds from epoch.
+    :param int endTime: A timestamp in milliseconds from epoch.
+    :param int start_trade_id: A trade id as first one (older).
+    :param int end_trade_id: A trade id as last one (newer).
+    :param int limit_ids: Count of trades to ask for if just start_trade_id or just end_trade_id passed.
+        Ignored if startTime or endTime passed.
+    :param int limit_hours: Count of hours to ask for if just startTime or just endTime passed.
+        Ignored if start_trade_id or end_trade_id passed.
+    :return list: Returns a list from the Binance API in dicts.
+
+    """
+    if limit_hours:
+        limit_hours_ms = int(60 * 1000 * 60 * limit_hours)
+
     requests_cnt = 1
 
     if trade_type == "aggregated":
         my_func = get_aggregated_trades
-    else:
+    else:  # atomic
         my_func = get_atomic_trades
 
     try:
         assert bool(startTime or endTime) ^ bool(start_trade_id or end_trade_id)
     except AssertionError:
-        raise BinPanException(f"BinPan Exception: get historical {trade_type} trades params mixed time, timestamp and trade id: {locals()}")
+        if not startTime and not endTime and not start_trade_id and not end_trade_id:
+            raise BinPanException(f"BinPan Exception: get historical {trade_type} trades params missing: {locals()}")
+        else:
+            raise BinPanException(f"BinPan Exception: get historical {trade_type} trades params mixed time, timestamp and trade id: {locals()}")
 
     if start_trade_id and not end_trade_id:
+        assert limit_ids, f"BinPan Exception: get historical {trade_type} from start_trade_id without trades limit_ids: {locals()}"
         end_trade_id = start_trade_id + (limit_ids - 1)
     elif end_trade_id and not start_trade_id:
+        assert limit_ids, f"BinPan Exception: get historical {trade_type} from end_trade_id without trades limit_ids: {locals()}"
         start_trade_id = end_trade_id - (limit_ids - 1)
 
     if start_trade_id and end_trade_id:
+        assert start_trade_id <= end_trade_id, f"BinPan Exception: get historical {trade_type} trades start_trade_id > end_trade_id: {locals()}"
+        market_logger.info(f"Ignoring limit_ids {limit_ids} for {trade_type} trades of {symbol} from {start_trade_id} to {end_trade_id}")
         trades = my_func(symbol=symbol, fromId=end_trade_id - 999, limit=1000)  # el presente
         end_trade_id = trades[-1][id_field]  # evita pedir del futuro
         current_first_trade = trades[0][id_field]
@@ -671,7 +730,7 @@ def get_historical_agg_trades(symbol: str,
                 market_logger.debug("current_last_timestamp_factor < endTime and not touche")
                 factor = max(factor - 2, 1)
                 unlock_posible_loops = randint(1, 1000)
-                current_first_trade = current_last_trade_factor + unlock_posible_loops + 1000*factor  # hay que subir, nos hemos pasado
+                current_first_trade = current_last_trade_factor + unlock_posible_loops + 1000 * factor  # hay que subir, nos hemos pasado
                 current_first_trade_time = max(current_first_timestamp_factor, startTime)  # para que no bloquee por saltos grandes
                 continue
 
@@ -889,124 +948,17 @@ def get_historical_atomic_trades(symbol: str,
     id_field = "id"
     timestamp_field = "time"
     trade_type = "atomic"
-    limit_hours_ms = int(60 * 1000 * 60 * limit_hours)
-    requests_cnt = 1
 
-    if trade_type == "aggregated":
-        my_func = get_aggregated_trades
-    else:
-        my_func = get_atomic_trades
-
-    try:
-        assert bool(startTime or endTime) ^ bool(start_trade_id or end_trade_id)
-    except AssertionError:
-        raise BinPanException(f"BinPan Exception: get historical {trade_type} trades params mixed time, timestamp and trade id: {locals()}")
-
-    if start_trade_id and not end_trade_id:
-        end_trade_id = start_trade_id + (limit_ids - 1)
-    elif end_trade_id and not start_trade_id:
-        start_trade_id = end_trade_id - (limit_ids - 1)
-
-    if start_trade_id and end_trade_id:
-        trades = my_func(symbol=symbol, fromId=end_trade_id - 999, limit=1000)  # el presente
-        end_trade_id = trades[-1][id_field]  # evita pedir del futuro
-        current_first_trade = trades[0][id_field]
-
-        while current_first_trade > start_trade_id:
-            requests_cnt += 1
-            market_logger.info(f"Requests to API for {trade_type} trades of {symbol}: {requests_cnt} current_first_trade: "
-                               f"{current_first_trade}")
-            # restamos 1000 pq current_first_trade ya lo tenemos, asi no viene repetido
-            fetched_older_trades = my_func(symbol=symbol, fromId=(current_first_trade - 1000), limit=1000)
-            trades = fetched_older_trades + trades
-            current_first_trade = trades[0][id_field]
-
-        ret = [i for i in trades if start_trade_id <= i[id_field] <= end_trade_id]
-        return sorted(ret, key=lambda x: x[id_field])
-
-    # with timestamps
-    elif startTime or endTime:
-        factor = 1
-        trades = my_func(symbol=symbol, limit=1000)
-        current_first_trade_time = trades[0][timestamp_field]
-        current_last_trade_time = trades[-1][timestamp_field]
-        current_first_trade = trades[0][id_field]
-
-        if endTime and not startTime:
-            market_logger.info(f"Star time not passed for {trade_type} trades of {symbol}. Calculating {limit_hours} hour ago.")
-            startTime = min(endTime, current_last_trade_time) - limit_hours_ms
-            endTime = min(endTime, current_last_trade_time)  # no podemos pedir trades del futuro
-
-        if startTime and not endTime:
-            market_logger.info(f"End time not passed for {trade_type} trades of {symbol}. Calculating {limit_hours} hours ahead.")
-            endTime = startTime + (1000 * 60 * 60 * limit_hours)
-
-        elif not startTime and not endTime:
-            endTime = current_last_trade_time  # no podemos pedir trades del futuro
-            market_logger.info(f"Start time not passed for {trade_type} trades of {symbol}. Calculating {limit_hours} hours ago.")
-            startTime = endTime - (1000 * 60 * 60 * limit_hours)
-
-        assert startTime <= endTime, f"BinPan Exception: get historical {trade_type} trades endTime < startTime: {locals()}"
-
-        touche = False
-
-        while startTime <= current_first_trade_time:
-
-            requests_cnt += 1
-            start_str = pd.to_datetime(current_first_trade_time, unit='ms').strftime('%Y-%m-%d %H:%M:%S')
-            market_logger.info(f"Requests API for {trade_type} trades searching STARTIME {symbol}: {requests_cnt} current_first_trade:"
-                               f"{current_first_trade} date: {start_str}")
-
-            # restamos 1000 pq el current first trade ya lo tenemos y no queremos que venga repetido
-            fetched_older_trades = my_func(symbol=symbol, fromId=current_first_trade - (1000 * factor), limit=1000)
-
-            current_first_trade_factor = fetched_older_trades[0][id_field]
-            current_last_trade_factor = fetched_older_trades[-1][id_field]
-            current_first_timestamp_factor = fetched_older_trades[0][timestamp_field]
-            current_last_timestamp_factor = fetched_older_trades[-1][timestamp_field]
-
-            if endTime < current_first_timestamp_factor:
-                market_logger.debug("endTime < current_first_timestamp_factor")
-                if not touche:
-                    factor += 1
-                current_first_trade = current_first_trade_factor
-                current_first_trade_time = current_first_timestamp_factor
-                continue
-
-            elif current_last_timestamp_factor < endTime and not touche:  # si nos pasamos frenamos y volvemos a subir
-                market_logger.debug("current_last_timestamp_factor < endTime and not touche")
-                factor = max(factor - 2, 1)
-                unlock_posible_loops = randint(1, 1000)
-                current_first_trade = current_last_trade_factor + unlock_posible_loops + 1000*factor  # hay que subir, nos hemos pasado
-                current_first_trade_time = max(current_first_timestamp_factor, startTime)  # para que no bloquee por saltos grandes
-                continue
-
-            elif current_first_timestamp_factor <= endTime <= current_last_timestamp_factor:  # empezamos a grabar
-                market_logger.debug("current_first_timestamp_factor <= endTime <= current_last_timestamp_factor")
-                factor = 1
-                touche = True
-                current_first_trade = current_first_trade_factor
-                current_first_trade_time = current_first_timestamp_factor
-                trades = fetched_older_trades + trades
-                continue
-
-            elif touche:
-                market_logger.debug("touche")
-                current_first_trade = current_first_trade_factor
-                current_first_trade_time = current_first_timestamp_factor
-                trades = fetched_older_trades + trades
-
-            else:
-                start_str = pd.to_datetime(current_first_timestamp_factor, unit='ms').strftime('%Y-%m-%d %H:%M:%S')
-                end_str = pd.to_datetime(current_last_timestamp_factor, unit='ms').strftime('%Y-%m-%d %H:%M:%S')
-                raise BinPanException(f"BinPan Exception: {symbol} get historical {trade_type} trades {start_str} - {end_str}")
-
-        # acota
-        ret = [i for i in trades if startTime <= i[timestamp_field] <= endTime]
-        # elimina trades duplicados
-        ret = [i for n, i in enumerate(ret) if i not in ret[n + 1:]]
-        # ordena
-        return sorted(ret, key=lambda x: x[id_field])
+    return get_historical_trades(symbol=symbol,
+                                 trade_type=trade_type,
+                                 id_field=id_field,
+                                 timestamp_field=timestamp_field,
+                                 startTime=startTime,
+                                 endTime=endTime,
+                                 start_trade_id=start_trade_id,
+                                 end_trade_id=end_trade_id,
+                                 limit_ids=limit_ids,
+                                 limit_hours=limit_hours)
 
 
 def parse_atomic_trades_to_dataframe(response: list,
@@ -1302,3 +1254,26 @@ def convert_coin(coin: str, decimal_mode: bool, convert_to: str = 'BUSD', coin_q
         else:
             market_logger.warning(f"No possible conversion for {coin} to {convert_to}")
             return None
+
+
+if __name__ == '__main__':
+    symbol = "renusdt".upper()
+
+    tests = [
+        (30140069, None, 1000),
+        (None, 30140069, None),
+        (30140069 - 2000, 30140069, None),
+        (30140069 - 2000, 30140069, 1000),
+        (None, None, 1000),
+        (None, None, None),
+        (None, None, 1),]
+
+
+
+    for st, ed, l in tests:
+        print(f"Start: {st} End: {ed} Limir: {l}")
+        # a = get_historical_atomic_trades("renusdt".upper(), startTime = 1699381564859- 1000, endTime=1699381564859)
+        a = get_historical_atomic_trades(symbol=symbol, start_trade_id=st, end_trade_id=ed, limit_ids=l)
+        print("Hours:", (a[-1]['time'] - a[0]['time']) / (1000 * 60 * 60))
+        print(len(a))
+        assert len(pd.Series([i["id"] for i in a]).diff().value_counts()) == 1
