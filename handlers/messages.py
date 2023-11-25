@@ -92,85 +92,6 @@ def sort_mixed_dict(d: dict) -> dict:
     return sorted_dict
 
 
-# def telegram_parse_dict(msg_data: dict, order: str = None, timezone="Europe/Madrid"):
-#     """
-#     Parses a dictionary to a telegram message.
-#
-#     :param msg_data: A dictionary with the data to be parsed.
-#     :param order: Ascending or descending order. Example: "asc" or "desc".
-#     :param timezone: A string with the timezone.
-#     :return: A string with the parsed message.
-#     """
-#
-#     def downcast_value(value):
-#         try:
-#             assert int(value) == float(value)
-#             return int(value)
-#         except:
-#             try:
-#                 return float(value)
-#             except (ValueError, TypeError):
-#                 return value
-#
-#     formatted_dict = {}
-#     for k, v in msg_data.items():
-#         if isinstance(v, tuple):
-#             value = tuple(downcast_value(i) for i in v)
-#         elif isinstance(v, dict):
-#             value = telegram_parse_dict(v)
-#         elif isinstance(v, list):
-#             value = [downcast_value(i) for i in v]
-#         else:
-#             value = downcast_value(v)
-#         formatted_dict[k] = value
-#
-#     if order:
-#         message_tuples = []
-#         for k, v in formatted_dict.items():
-#             if isinstance(v, tuple):
-#                 value = -np.inf
-#                 if type(v[0]) is int or type(v[0]) is float:
-#                     value = v[0]
-#             else:
-#                 value = v
-#             message_tuples.append((k, value))
-#         if order == "asc":
-#             message_tuples.sort(key=lambda x: x[1])
-#         elif order == "desc":
-#             message_tuples.sort(key=lambda x: x[1], reverse=True)
-#     else:
-#         message_tuples = formatted_dict.items()
-#
-#     parsed_msg = ""
-#
-#     for k, _ in message_tuples:
-#         fv = formatted_dict[k]
-#         if isinstance(fv, tuple):
-#             tuple_str = " ; ".join([f"`{i}`" for i in fv])
-#             row = f"*{k}*: {tuple_str} \n"
-#         elif 'pct' in k and not "kline" in k and not "time" in k and not "timestamp" in k and not "trade" in k and not "Trade" in k:
-#             fv *= 100
-#             row = f"*{k}* : `{fv:.2f}` \n"
-#         elif 'time' in k or 'timestamp' in k:
-#             if isinstance(fv, datetime.datetime):
-#                 fv = fv.strftime("%Y-%m-%d %H:%M:%S")
-#             elif isinstance(fv, int):
-#                 fv = convert_milliseconds_to_str(fv, timezoned=timezone)
-#             row = f"*{k}* : `{fv}` \n"
-#         elif isinstance(fv, float):
-#             row = f"*{k}* : `{fv:.8f}` \n"
-#         elif isinstance(fv, int):
-#             row = f"*{k}* : `{fv}` \n"
-#         elif isinstance(fv, dict):
-#             row = f"*{k}* : \n{telegram_parse_dict(msg_data=fv, timezone=timezone)} \n"
-#         else:
-#             row = f"*{k}*: `{fv}` \n"
-#
-#         parsed_msg += row
-#
-#     return parsed_msg.replace('_', ' ').replace("Decimal('", "`").replace("')", "`").replace("{", "").replace("}", "")
-
-
 def telegram_parse_dict(msg_data: dict, order: str = None, timezone="Europe/Madrid"):
     """
     Parses a dictionary to a telegram message.
@@ -233,6 +154,9 @@ def telegram_parse_dict(msg_data: dict, order: str = None, timezone="Europe/Madr
                 row = f"*{k}* : `{fv:.2f}` \n"
             else:
                 row = f"*{k}* : `{fv}` \n"
+        elif "_delay" in k and fv:
+            fv /= 1000
+            row = f"*{k}* : `{fv:.2f}` seconds\n"
 
         elif 'time' in k or 'timestamp' in k:
             if isinstance(fv, datetime.datetime):

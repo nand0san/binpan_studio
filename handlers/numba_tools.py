@@ -9,6 +9,7 @@ except Exception as e:
     msg = "Cannot import numba. Optionally install numba for better performance: 'pip install numba'"
     print(msg)
 
+
     # noinspection PyUnusedLocal
     def njit(*args, **kwargs):
         def decorator(func):
@@ -182,6 +183,33 @@ def rma_numba(values: np.ndarray, window: int) -> np.ndarray:
         avg[i] = alpha * values[i] + scale * avg[i - 1]
     return avg
 
+#
+# @njit(cache=True)
+# def rsi_numba_a(arr, period=21):
+#     """
+#     Calculate the Relative Strength Index (RSI) of the given array using NumPy.
+#
+#     Note: Results are identical to the pandas-ta implementation.
+#
+#     :param arr: A NumPy array containing the closing prices.
+#     :param period: An integer for the window size.
+#     :return: A NumPy array containing the RSI values.
+#
+#     """
+#     delta = np.diff(arr)
+#     up, down = np.copy(delta), np.copy(delta)
+#     up[up < 0] = 0
+#     down[down > 0] = 0
+#
+#     # Exponential Weighted windows mean with centre of mass = period - 1 -> alpha = 1 / (period)
+#     # alpha = 1 / (period)
+#     rUp = ema_numba(arr=up, window=period)
+#     rDown = np.abs(ema_numba(arr=down, window=period))
+#     result = 100 - (100 / (1 + rUp / rDown))
+#
+#     # append nan that was lost in np.diff
+#     return np.concatenate((np.array([np.nan]), result))
+
 
 @njit(cache=True)
 def rsi_numba(close: np.ndarray, window: int) -> np.ndarray:
@@ -320,3 +348,4 @@ def close_resistance_log_single_numba(close: np.ndarray, resistance: np.ndarray)
 
     # Calcular la diferencia logarítmica
     return np.log(max(closest_resistance / close, 1))
+

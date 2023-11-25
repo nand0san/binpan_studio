@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Time Helpers - BinPan 0.8.1 documentation</title>
+      <title>Time Helpers - BinPan 0.8.2 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Wallet Module" href="wallet.html" /><link rel="prev" title="Tags &amp; Backtesting Module" href="tags.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -13,13 +13,13 @@
     } else if (isDarkTheme) {
       document.documentElement.classList.add('dark')
     }
-  </script><link rel="stylesheet" type="text/css" href="_static/pygments.css?v=aecf457f" />
-    <link rel="stylesheet" type="text/css" href="_static/shibuya.css?v=2981b36d" />
-    <link rel="stylesheet" type="text/css" href="_static/style.css?v=1e48dca6" />
-    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=ee381b95" />
+  </script><link rel="stylesheet" href="_static/pygments.css?v=2023.6.8" type="text/css" />
+    <link rel="stylesheet" href="_static/shibuya.css?v=2023.6.8" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/style.css" />
+    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=2023.6.8" />
     <style>
 :root {
-  --sy-f-sys:-apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Droid Sans, Helvetica Neue;--sy-f-cjk:PingFang SC, Hiragino Sans GB, Droid Sans Fallback, Microsoft YaHei;--sy-f-heading:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-text:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-mono:Menlo, Monaco, Consolas, "Courier New", monospace;--sy-c-divider:rgba(var(--sy-rc-text), 0.1);--sy-c-divider-weak:rgba(var(--sy-rc-text), 0.05);--sy-c-border:rgba(var(--sy-rc-text), 0.14);--sy-s-banner-height:0rem;--sy-s-navbar-height:56px;--sy-s-offset-top:calc(var(--sy-s-navbar-height) + var(--sy-s-banner-height));--sy-c-link:rgb(var(--sy-rc-theme));--sy-c-link-weak:rgba(var(--sy-rc-theme), 0.86);
+  --sy-f-sys:-apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Droid Sans, Helvetica Neue;--sy-f-cjk:PingFang SC, Hiragino Sans GB, Droid Sans Fallback, Microsoft YaHei;--sy-f-heading:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-text:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-mono:Menlo, Monaco, Consolas, "Courier New", monospace;--sy-c-divider:rgba(var(--sy-rc-text), 0.1);--sy-c-divider-weak:rgba(var(--sy-rc-text), 0.05);--sy-c-border:rgba(var(--sy-rc-text), 0.14);--sy-s-banner-height:0rem;--sy-s-navbar-height:4rem;--sy-s-offset-top:calc(var(--sy-s-navbar-height) + var(--sy-s-banner-height));--sy-c-link:rgb(var(--sy-rc-theme));
   --sy-rc-theme:143, 118, 214;--sy-rc-bg:255, 255, 255;--sy-rc-invert:0, 0, 0;--sy-rc-text:0, 0, 0;--sy-c-bg:#fff;--sy-c-bg-weak:#f9f9f9;--sy-c-text:#374151;--sy-c-text-weak:#6b7280;--sy-c-heading:#111827;--sy-c-bold:#111827;--sy-c-foot-text:#232226;--sy-c-foot-bg:#fafafa;--sy-c-foot-divider:#f0f0f0;
 }
 @media (prefers-color-scheme: light) {
@@ -52,42 +52,48 @@ html.dark {
 <body><div class="document"><div class="sy-head">
   <div class="sy-head-blur"></div>
   <div class="sy-head-inner sy-container mx-auto">
-    <a class="sy-head-brand mr-4" href="index.html">
-      
-      
-      <strong>BinPan</strong>
-    </a>
-    <div class="sy-head-links" id="NavLinks">
-      <nav class="sy-head-nav"></nav>
-      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="search.html" method="get">
-  <input type="text" name="q" placeholder="Search" />
-  <kbd>/</kbd>
-</form>
-        
-        
-        <div class="sy-head-social flex items-center">
-        </div>
-      </div>
-    </div>
-    <div class="sy-head-actions flex items-center shrink-0 print:hidden">
-      <button class="js-theme theme-switch flex items-center" data-aria-light="Switch to dark mode" data-aria-dark="Switch to light mode">
-        <i class="i-icon theme-icon"></i>
-      </button>
-      <button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="NavLinks" aria-expanded="false">
-        <div class="hamburger">
+    <div class="sy-head-links flex items-center">
+      <div class="md:hidden flex items-center">
+        <button class="hamburger js-menu mr-3" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
           <span class="hamburger_1"></span>
           <span class="hamburger_2 -translate-x-2"></span>
           <span class="hamburger_3 -translate-x-1"></span>
-        </div>
+        </button>
+      </div>
+      <a class="sy-head-brand" href="index.html">
+        
+        
+        <strong>BinPan</strong>
+      </a></div>
+    <div class="sy-head-actions flex gap-2 items-center print:hidden">
+      
+      <div class="hidden md:block"><form class="searchbox flex items-center" action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form>
+      </div>
+      <button class="js-theme theme-switch flex items-center ml-1" data-aria-light="Switch to dark mode" data-aria-dark="Switch to light mode">
+        <i class="i-icon theme-icon"></i>
       </button>
+      
+        <button class="js-menu xl:hidden flex items-center ml-1" aria-label="Show table of contents" type="button" aria-controls="rside" aria-expanded="false">
+          <i class="i-icon outdent"></i>
+        </button>
     </div>
   </div>
 </div>
 <div class="sy-page sy-container flex mx-auto">
-  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+  <aside id="lside" class="sy-lside md:w-64 md:shrink-0 print:hidden">
     <div class="sy-lside-inner md:sticky">
+      <div class="sy-lside-top md:hidden pt-3 pb-3 px-6">
+        <div class="pt-3"><form class="searchbox flex items-center" action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <button>Go</button>
+</form>
+        </div></div>
       <div class="sy-scrollbar p-6">
-        <div class="globaltoc" data-expand-depth="0"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+        <div class="globaltoc">
+          <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="binpan.html">BinPan Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="aggregations.html">Aggregations Module</a></li>
@@ -113,17 +119,15 @@ html.dark {
 
         </div>
       </div>
-      
     </div>
   </aside>
-  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
   <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
     <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
       <i class="i-icon close"></i>
     </button>
-    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4">
+    <div class="sy-scrollbar px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4">
   <div class="localtoc">
-    <h3>On this page</h3>
+    <h3>Table of Contents</h3>
     <ul>
 <li><a class="reference internal" href="#handlers.time_helper.convert_ms_column_to_datetime_with_zone"><code class="docutils literal notranslate"><span class="pre">convert_ms_column_to_datetime_with_zone()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.time_helper.convert_datetime_to_string"><code class="docutils literal notranslate"><span class="pre">convert_datetime_to_string()</span></code></a></li>
@@ -163,40 +167,17 @@ html.dark {
 <li><a class="reference internal" href="#handlers.time_helper.adjust_timestamp_unit_nano_or_ms"><code class="docutils literal notranslate"><span class="pre">adjust_timestamp_unit_nano_or_ms()</span></code></a></li>
 </ul>
 
+
   </div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div>
     </div>
   </aside>
   <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
   <main class="sy-main w-full max-sm:max-w-full print:pt-6">
-    <div class="sy-breadcrumbs" role="navigation">
-  <div class="sy-breadcrumbs-inner flex items-center">
-    <div class="md:hidden mr-3">
-      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
-        <i class="i-icon menu"></i>
-      </button>
-    </div>
-    <ul class="flex-1">
-      
-      
-      <li><a href="index.html">BinPan</a><span>/</span></li>
-      
-      <li><strong>Time Helpers</strong></li>
-      
-      
-    </ul>
-    <div class="xl:hidden ml-1">
-      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
-        aria-expanded="false">
-        <i class="i-icon outdent"></i>
-      </button>
-    </div>
-  </div>
-</div>
     <div class="flex flex-col break-words justify-between">
-      <div class="min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+      <div class="min-w-0 max-w-6xl px-6 pb-6 pt-6 xl:px-12">
         <article class="yue" role="main">
           <section id="module-handlers.time_helper">
-<span id="time-helpers"></span><h1>Time Helpers<a class="headerlink" href="#module-handlers.time_helper" title="Link to this heading">¶</a></h1>
+<span id="time-helpers"></span><h1>Time Helpers<a class="headerlink" href="#module-handlers.time_helper" title="Permalink to this heading">¶</a></h1>
 <p><strong>Functions:</strong></p>
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
@@ -314,7 +295,7 @@ html.dark {
 </div>
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.convert_ms_column_to_datetime_with_zone">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_ms_column_to_datetime_with_zone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Europe/Madrid'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ambiguous</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'infer'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="headerlink" href="#handlers.time_helper.convert_ms_column_to_datetime_with_zone" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_ms_column_to_datetime_with_zone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Europe/Madrid'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ambiguous</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'infer'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="headerlink" href="#handlers.time_helper.convert_ms_column_to_datetime_with_zone" title="Permalink to this definition">¶</a></dt>
 <dd><p>Replace a column from milliseconds to datetime with time zone.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -333,7 +314,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.convert_datetime_to_string">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_datetime_to_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.time_helper.convert_datetime_to_string" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_datetime_to_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.time_helper.convert_datetime_to_string" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts a datetime to a string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -347,7 +328,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.convert_datetime_utc2ms">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_datetime_utc2ms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date_object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.convert_datetime_utc2ms" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_datetime_utc2ms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date_object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.convert_datetime_utc2ms" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert datetime object to milliseconds. Example: datetime.datetime(2023, 10, 10, 11, 52, tzinfo=datetime.timezone.utc)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -361,7 +342,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.convert_datetime_to_milliseconds">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_datetime_to_milliseconds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezoned</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.time_helper.convert_datetime_to_milliseconds" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_datetime_to_milliseconds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezoned</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#handlers.time_helper.convert_datetime_to_milliseconds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts a datetime to milliseconds. If string contains a timezone, it will be removed when passing timezoned.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -378,7 +359,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.convert_string_to_milliseconds">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_string_to_milliseconds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezoned</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.convert_string_to_milliseconds" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_string_to_milliseconds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezoned</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.convert_string_to_milliseconds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts a string to milliseconds. If string contains a timezone, it will be removed when passing timezoned.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -395,7 +376,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.datetime_utc_to_milliseconds">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">datetime_utc_to_milliseconds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.time_helper.datetime_utc_to_milliseconds" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">datetime_utc_to_milliseconds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.time_helper.datetime_utc_to_milliseconds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert datetime object to milliseconds. Example: datetime.datetime(2023, 10, 10, 11, 52, tzinfo=datetime.timezone.utc)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -409,7 +390,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.end_time_from_start_time">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">end_time_from_start_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1h'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.end_time_from_start_time" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">end_time_from_start_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1h'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.end_time_from_start_time" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates end time by tick interval and limit.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -427,7 +408,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.start_time_from_end_time">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">start_time_from_end_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1h'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.start_time_from_end_time" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">start_time_from_end_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1h'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.start_time_from_end_time" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates startime from a timestamp and a limit of klines before.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -445,7 +426,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.convert_milliseconds_to_local_timezone_string">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_milliseconds_to_local_timezone_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.time_helper.convert_milliseconds_to_local_timezone_string" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_milliseconds_to_local_timezone_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.time_helper.convert_milliseconds_to_local_timezone_string" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts a timestamp in milliseconds to a string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -459,7 +440,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.convert_milliseconds_to_utc_string">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_milliseconds_to_utc_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.time_helper.convert_milliseconds_to_utc_string" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_milliseconds_to_utc_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.time_helper.convert_milliseconds_to_utc_string" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts a timestamp in milliseconds to a string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -473,7 +454,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.convert_milliseconds_to_utc_datetime">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_milliseconds_to_utc_datetime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">datetime</span></span></span><a class="headerlink" href="#handlers.time_helper.convert_milliseconds_to_utc_datetime" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_milliseconds_to_utc_datetime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">datetime</span></span></span><a class="headerlink" href="#handlers.time_helper.convert_milliseconds_to_utc_datetime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts a timestamp in milliseconds to a datetime.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -487,7 +468,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.convert_milliseconds_to_time_zone_datetime">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_milliseconds_to_time_zone_datetime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezoned</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">datetime</span></span></span><a class="headerlink" href="#handlers.time_helper.convert_milliseconds_to_time_zone_datetime" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_milliseconds_to_time_zone_datetime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezoned</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">datetime</span></span></span><a class="headerlink" href="#handlers.time_helper.convert_milliseconds_to_time_zone_datetime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts a timestamp in milliseconds to a datetime. If string contains a timezone, it will be removed when passing timezoned.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -504,7 +485,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.convert_milliseconds_to_str">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_milliseconds_to_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezoned</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.time_helper.convert_milliseconds_to_str" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_milliseconds_to_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezoned</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.time_helper.convert_milliseconds_to_str" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts a timestamp in milliseconds to a string. If string contains a timezone, it will be removed when passing timezoned.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -521,7 +502,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.utc_start_of_day_ms">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">utc_start_of_day_ms</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.utc_start_of_day_ms" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">utc_start_of_day_ms</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.utc_start_of_day_ms" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns UTC time in milliseconds from epoch for the start of the day.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -532,7 +513,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.ms_day_begin_end">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">ms_day_begin_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts:</span> <span class="pre">int)</span> <span class="pre">-&gt;</span> <span class="pre">(&lt;class</span> <span class="pre">'int'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'int'&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.time_helper.ms_day_begin_end" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">ms_day_begin_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts:</span> <span class="pre">int)</span> <span class="pre">-&gt;</span> <span class="pre">(&lt;class</span> <span class="pre">'int'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'int'&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.time_helper.ms_day_begin_end" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given a timestamp in milliseconds, it returns the start and end timestamps of the day.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -546,7 +527,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.split_time_interval_in_full_days">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">split_time_interval_in_full_days</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts_ini</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ts_end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.time_helper.split_time_interval_in_full_days" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">split_time_interval_in_full_days</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts_ini</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ts_end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#handlers.time_helper.split_time_interval_in_full_days" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given two timestamps in milliseconds, it returns a list of tuples with the start and end timestamps of each day in the interval.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -563,7 +544,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.time_interval">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">time_interval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#handlers.time_helper.time_interval" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">time_interval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#handlers.time_helper.time_interval" title="Permalink to this definition">¶</a></dt>
 <dd><p>Obtain a timestamp based on ticks intervals from a start or an end timestamp, based on limit.</p>
 <p>If no start or end timestamp passed, then use current utc timestamp in milliseconds and limit.</p>
 <dl class="field-list simple">
@@ -583,7 +564,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.ceil_division">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">ceil_division</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.ceil_division" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">ceil_division</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.ceil_division" title="Permalink to this definition">¶</a></dt>
 <dd><p>Better not to use //.</p>
 <p>From: <a class="reference external" href="https://stackoverflow.com/questions/14822184/is-there-a-ceiling-equivalent-of-operator-in-python">https://stackoverflow.com/questions/14822184/is-there-a-ceiling-equivalent-of-operator-in-python</a></p>
 <dl class="field-list simple">
@@ -601,7 +582,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.ticks_between_timestamps">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">ticks_between_timestamps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.ticks_between_timestamps" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">ticks_between_timestamps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.ticks_between_timestamps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given two timestamps in milliseconds and a tick interval, it returns the number of ticks between them.</p>
 <dl class="simple">
 <dt>It applies:</dt><dd><ul class="simple">
@@ -627,7 +608,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.get_ticks_to_timestamp_utc">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">get_ticks_to_timestamp_utc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ticks_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.get_ticks_to_timestamp_utc" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">get_ticks_to_timestamp_utc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ticks_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.get_ticks_to_timestamp_utc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the number of ticks to the next timestamp in milliseconds.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -644,7 +625,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.convert_string_to_datetime">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_string_to_datetime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezoned</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">datetime</span></span></span><a class="headerlink" href="#handlers.time_helper.convert_string_to_datetime" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_string_to_datetime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezoned</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">datetime</span></span></span><a class="headerlink" href="#handlers.time_helper.convert_string_to_datetime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts a string to datetime. If string contains a timezone, it will be removed when passing timezoned.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -661,7 +642,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.convert_utc_datetime_to_milliseconds">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_utc_datetime_to_milliseconds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.time_helper.convert_utc_datetime_to_milliseconds" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">convert_utc_datetime_to_milliseconds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.time_helper.convert_utc_datetime_to_milliseconds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert datetime object to milliseconds. Example: datetime.datetime(2023, 10, 10, 11, 52, tzinfo=datetime.timezone.utc)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -675,7 +656,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.utc">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">utc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.utc" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">utc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.utc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns UTC time in milliseconds from epoch.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -686,7 +667,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.utc_datetime">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">utc_datetime</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">datetime</span></span></span><a class="headerlink" href="#handlers.time_helper.utc_datetime" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">utc_datetime</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">datetime</span></span></span><a class="headerlink" href="#handlers.time_helper.utc_datetime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns UTC datetime.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -697,7 +678,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.check_tick_interval">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">check_tick_interval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.time_helper.check_tick_interval" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">check_tick_interval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.time_helper.check_tick_interval" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks if argument is a Binance valid tick interval for candles.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -711,7 +692,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.detect_tick_interval">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">detect_tick_interval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.time_helper.detect_tick_interval" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">detect_tick_interval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.time_helper.detect_tick_interval" title="Permalink to this definition">¶</a></dt>
 <dd><p>Detects tick interval from a dataframe with a column named ‘Open timestamp’.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -725,7 +706,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.next_open_utc">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">next_open_utc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.next_open_utc" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">next_open_utc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.next_open_utc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the next open timestamp in milliseconds for a tick interval.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -739,7 +720,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.next_open_by_milliseconds">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">next_open_by_milliseconds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.next_open_by_milliseconds" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">next_open_by_milliseconds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.next_open_by_milliseconds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the next open timestamp in milliseconds for a tick interval.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -756,7 +737,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.open_from_milliseconds">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">open_from_milliseconds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.open_from_milliseconds" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">open_from_milliseconds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.open_from_milliseconds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the open timestamp in milliseconds for a tick interval.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -773,7 +754,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.close_from_milliseconds">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">close_from_milliseconds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.close_from_milliseconds" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">close_from_milliseconds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.close_from_milliseconds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the close timestamp in milliseconds for a tick interval.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -790,7 +771,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.wait_seconds_until_next_minute">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">wait_seconds_until_next_minute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#handlers.time_helper.wait_seconds_until_next_minute" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">wait_seconds_until_next_minute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#handlers.time_helper.wait_seconds_until_next_minute" title="Permalink to this definition">¶</a></dt>
 <dd><p>Waits until the next minute.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -801,7 +782,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.calculate_iterations">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">calculate_iterations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval_ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.calculate_iterations" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">calculate_iterations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval_ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#handlers.time_helper.calculate_iterations" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the number of iterations required to retrieve data within the given time range considering the API limit inclusively.</p>
 <dl class="simple">
 <dt>When timestamps in the middle of a kline, it will expand the time range to include the whole kline from opens including both start and</dt><dd><p>end timestamps.</p>
@@ -824,7 +805,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.infer_frequency_and_set_index">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">infer_frequency_and_set_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamp_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Open</span> <span class="pre">timestamp'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.time_helper.infer_frequency_and_set_index" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">infer_frequency_and_set_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamp_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Open</span> <span class="pre">timestamp'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.time_helper.infer_frequency_and_set_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Infers the frequency of the DataFrame based on the ‘Open timestamp’ column and sets it as the DataFrame index.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -845,7 +826,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.get_dataframe_time_index_ranges">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">get_dataframe_time_index_ranges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'30T'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#handlers.time_helper.get_dataframe_time_index_ranges" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">get_dataframe_time_index_ranges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'30T'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#handlers.time_helper.get_dataframe_time_index_ranges" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Divides a DataFrame into time ranges of a specified interval. Complete intervals are used, but the first interval is the one with</dt><dd><p>the rest.</p>
 </dd>
@@ -866,7 +847,7 @@ html.dark {
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.remove_initial_included_ranges">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">remove_initial_included_ranges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_ranges</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_minutes</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#handlers.time_helper.remove_initial_included_ranges" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">remove_initial_included_ranges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_ranges</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_minutes</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#handlers.time_helper.remove_initial_included_ranges" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove the time ranges that are completely included in the initial period.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -884,13 +865,15 @@ initial period.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.time_helper.adjust_timestamp_unit_nano_or_ms">
-<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">adjust_timestamp_unit_nano_or_ms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.time_helper.adjust_timestamp_unit_nano_or_ms" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.time_helper.</span></span><span class="sig-name descname"><span class="pre">adjust_timestamp_unit_nano_or_ms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.time_helper.adjust_timestamp_unit_nano_or_ms" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </section>
 
         </article>
         
+      </div>
+      <div class="min-w-0 max-w-6xl px-6 pb-6 xl:pt-6 xl:px-12">
         <div class="navigation flex print:hidden">
   <div class="navigation-prev">
     <a href="tags.html">
@@ -937,10 +920,10 @@ initial period.</p>
     </div>
   </div>
 </footer></div>
-      <script src="_static/documentation_options.js?v=ec16d22d"></script>
-      <script src="_static/doctools.js?v=888ff710"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-      <script src="_static/shibuya.js?v=3e5c8598"></script>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+      <script src="_static/doctools.js"></script>
+      <script src="_static/sphinx_highlight.js"></script>
+      <script src="_static/shibuya.js?v=2023.6.8"></script>
     
 </body>
 </html>

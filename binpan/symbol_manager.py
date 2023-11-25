@@ -3,7 +3,7 @@
 This is the main classes file.
 
 """
-__version__ = "0.8.1"
+__version__ = "0.8.2"
 
 import os
 from sys import path
@@ -2488,7 +2488,7 @@ class Symbol(object):
         """
 
         if self.is_numba:
-            rsi_ = ema_numba(self.df['Close'].values, window=length)
+            rsi_ = rsi_numba(self.df['Close'].values, window=length)
             rsi = pd.Series(data=rsi_, index=self.df.index, name=f"RSI_{length}")
         else:
             rsi = ta.rsi(close=self.df['Close'], length=length, **kwargs)
