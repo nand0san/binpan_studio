@@ -34,7 +34,23 @@ quest_logger = Logs(filename='./logs/quest.log', name='quest', info_level='INFO'
 cipher_object = AesCipher()
 
 # rate limits
-api_rate_limits = get_exchange_limits()
+
+# api_rate_limits = get_exchange_limits()
+
+try:
+    api_rate_limits = get_exchange_limits()
+except ConnectionError as exc:
+    weight_logger.warning(f"Cannot connect to Binance API for rate limits")
+    # api_rate_limits = {'X-SAPI-USED-IP-WEIGHT-1M': 1200,
+    #                    'X-SAPI-USED-UID-WEIGHT-1M': 1200,
+    #                    'x-mbx-used-weight': 6100,
+    #                    'x-mbx-used-weight-1m': 1200,
+    #                    'x-mbx-order-count-10s': 50,
+    #                    'x-mbx-order-count-1d': 160000}
+    api_rate_limits = {"REQUEST_1M": 1200,
+                       "REQUEST_5M": 1200*5,
+                       "ORDERS_10S": 1200/6,
+                       "ORDERS_1D": 1200*60*24}
 
 current_weight = {}
 endpoint_headers = {}  # read temp file

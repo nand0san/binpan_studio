@@ -118,10 +118,21 @@ def get_data_and_parse(cursor,
 
     # parsea los datos a un dataframe en base a las columnas de standards
     data_type_structure = get_column_names(cursor=cursor, table_name=table, own_transaction=True)
-    data_dicts = [{data_type_structure[i]: l[i] for i in range(len(l))} for l in data]
-    df = pd.DataFrame(data_dicts)
-    df.rename(columns=postgresql2binpan_renamer_dict[data_type], inplace=True)
+    # data_dicts = [{data_type_structure[i]: l[i] for i in range(len(l))} for l in data]
+    # df = pd.DataFrame(data_dicts)
+    # df.rename(columns=postgresql2binpan_renamer_dict[data_type], inplace=True)
+
+    if data:
+        data_dicts = [{data_type_structure[i]: l[i] for i in range(len(l))} for l in data]
+        df = pd.DataFrame(data_dicts)
+        df.rename(columns=postgresql2binpan_renamer_dict[data_type], inplace=True)
+    else:  # para cuando no hay internet pero si database
+        df = pd.DataFrame(data=None, columns=data_type_structure)
+        df.rename(columns=postgresql2binpan_renamer_dict[data_type], inplace=True)
+        return df
+
     alt_order = None
+
     if data_type == "trade":
         if trade_date_col in df.columns:
             df[trade_time_col] = (df[trade_date_col].astype('int64') // 10 ** 6).astype('int64')

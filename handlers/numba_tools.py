@@ -1,21 +1,23 @@
 import numpy as np
 from typing import Tuple
 
-try:
-    from numba import njit
+from numba import njit
 
-    print("Numba imported")
-except Exception as e:
-    msg = "Cannot import numba. Optionally install numba for better performance: 'pip install numba'"
-    print(msg)
-
-
-    # noinspection PyUnusedLocal
-    def njit(*args, **kwargs):
-        def decorator(func):
-            return func
-
-        return decorator
+# try:
+#     from numba import njit
+#
+#     print("Numba imported")
+# except Exception as e:
+#     msg = "Cannot import numba. Optionally install numba for better performance: 'pip install numba'"
+#     print(msg)
+#
+#
+#     # noinspection PyUnusedLocal
+#     def njit(*args, **kwargs):
+#         def decorator(func):
+#             return func
+#
+#         return decorator
 
 
 @njit(cache=True)
@@ -183,33 +185,6 @@ def rma_numba(values: np.ndarray, window: int) -> np.ndarray:
         avg[i] = alpha * values[i] + scale * avg[i - 1]
     return avg
 
-#
-# @njit(cache=True)
-# def rsi_numba_a(arr, period=21):
-#     """
-#     Calculate the Relative Strength Index (RSI) of the given array using NumPy.
-#
-#     Note: Results are identical to the pandas-ta implementation.
-#
-#     :param arr: A NumPy array containing the closing prices.
-#     :param period: An integer for the window size.
-#     :return: A NumPy array containing the RSI values.
-#
-#     """
-#     delta = np.diff(arr)
-#     up, down = np.copy(delta), np.copy(delta)
-#     up[up < 0] = 0
-#     down[down > 0] = 0
-#
-#     # Exponential Weighted windows mean with centre of mass = period - 1 -> alpha = 1 / (period)
-#     # alpha = 1 / (period)
-#     rUp = ema_numba(arr=up, window=period)
-#     rDown = np.abs(ema_numba(arr=down, window=period))
-#     result = 100 - (100 / (1 + rUp / rDown))
-#
-#     # append nan that was lost in np.diff
-#     return np.concatenate((np.array([np.nan]), result))
-
 
 @njit(cache=True)
 def rsi_numba(close: np.ndarray, window: int) -> np.ndarray:
@@ -340,12 +315,11 @@ def close_resistance_log_single_numba(close: np.ndarray, resistance: np.ndarray)
     :return: The logarithmic ratio for the given closing price.
     """
     # resistance = np.sort(resistance)
-    index = np.searchsorted(resistance, close, side='left')
-    index = min(index, len(resistance) - 1)  # Asegurar que el índice no sea mayor que el máximo índice válido
+    index_ = np.searchsorted(resistance, close, side='left')
+    index = min(index_, len(resistance) - 1)  # Asegurar que el índice no sea mayor que el máximo índice válido
     closest_resistance = resistance[index]
     # noinspection PyTypeChecker
     closest_resistance = max(closest_resistance, 1e-9)  # Evitar logaritmo de un número negativo o cero
 
     # Calcular la diferencia logarítmica
     return np.log(max(closest_resistance / close, 1))
-

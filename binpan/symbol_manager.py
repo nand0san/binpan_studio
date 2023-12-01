@@ -3,7 +3,7 @@
 This is the main classes file.
 
 """
-__version__ = "0.8.2"
+__version__ = "0.8.3"
 
 import os
 from sys import path
@@ -452,20 +452,42 @@ class Symbol(object):
         ##################
 
         if not info_dic:  # for loop operations can be passed to avoid api weight overcome
-            self.info_dic = get_info_dic()
+            try:
+                self.info_dic = get_info_dic()
+            except Exception as e:
+                binpan_logger.warning(f"Error trying get_info_dic() from API: {e}")
+                self.info_dic = dict()
         else:
             assert type(info_dic) == dict, "info_dic must be a dictionary"
             assert len(info_dic) > 0, "info_dic must be a dictionary with data"
             self.info_dic = info_dic
 
-        self.tickSize = self.info_dic[self.symbol]['filters'][0]['tickSize']
-        self.decimals = get_decimal_positions(self.tickSize)
-        self.pip = self.tickSize
+        try:
+            self.tickSize = self.info_dic[self.symbol]['filters'][0]['tickSize']
+            self.decimals = get_decimal_positions(self.tickSize)
+            self.pip = self.tickSize
+            self.order_filters = self.get_order_filters()
+            self.order_types = self.get_order_types()
+            self.permissions = self.get_permissions()
+            self.precision = self.get_precision()
+        except KeyError:  # maybe no internet connectio but database available in local
+            self.tickSize = None
+            self.decimals = None
+            self.pip = None
+            self.order_filters = None
+            self.order_types = None
+            self.permissions = None
+            self.precision = None
 
-        self.order_filters = self.get_order_filters()
-        self.order_types = self.get_order_types()
-        self.permissions = self.get_permissions()
-        self.precision = self.get_precision()
+        # self.tickSize = self.info_dic[self.symbol]['filters'][0]['tickSize']
+        # self.decimals = get_decimal_positions(self.tickSize)
+        # self.pip = self.tickSize
+        #
+        # self.order_filters = self.get_order_filters()
+        # self.order_types = self.get_order_types()
+        # self.permissions = self.get_permissions()
+        # self.precision = self.get_precision()
+
         self.market_profile_df = pd.DataFrame()
         self.rolling_support_resistance_df = pd.DataFrame()
 
