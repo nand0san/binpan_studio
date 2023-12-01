@@ -1,25 +1,25 @@
-numpy~=1.26.2  # do not update to newer version, it will break pandas
+numpy~=1.26.2 
 pandas-ta>=0.3.14b0
 pandas~=2.1.3
-plotly==5.18.0
+plotly>=5.18.0
 py-cpuinfo>=9.0.0
-pycryptodome==3.19.0
-pytz==2023.3.post1
-requests==2.31.0
-scipy==1.11.4
-tqdm==4.66.1
+pycryptodome>=3.19.0
+pytz>=2023.3.post1
+requests>=2.31.0
+scipy>=1.11.4
+tqdm>=4.66.1
 typing~=3.7.4.3
-ipykernel==6.26.0
-kaleido==0.2.1 # do not update to newer version, it will break plotly
+kaleido~=0.2.1 # do not update to newer version, it will break plotly
+ipykernel>=6.27.1
 
 # optionally required for some features
-scikit-learn==1.3.2  # optional for kmeans with support and resistance levels
-# numba~=0.57.0
+scikit-learn>=1.3.2  # optional for kmeans with support and resistance levels
+numba>=0.58.1
 
 # alternative databases
 # redis~=5.0.0
 # influxdb-client==1.37.0
-psycopg2-binary==2.9.9
+psycopg2-binary>=2.9.9
 
 # docs & pypi
 # setuptools==68.2.2
@@ -27,3 +27,6 @@ psycopg2-binary==2.9.9
 # autodocsumm==0.2.11
 # shibuya==2023.9.3
 # twine==3.4.2
+# setuptools==69.0.2
+
+setuptools~=69.0.2

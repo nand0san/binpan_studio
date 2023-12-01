@@ -96,10 +96,16 @@ def get_exchange_limits() -> dict:
     Example response:
 
         {'X-SAPI-USED-IP-WEIGHT-1M': 1200,
-         'x-mbx-order-count-10s': 50,
-         'x-mbx-order-count-1d': 160000,
+         'X-SAPI-USED-UID-WEIGHT-1M': 1200,
          'x-mbx-used-weight': 6100,
-         'x-mbx-used-weight-1m': 1200}
+         'x-mbx-used-weight-1m': 1200,
+         'x-mbx-order-count-10s': 50,
+         'x-mbx-order-count-1d': 160000}
+
+         {"REQUEST_1M": 1200,
+          "REQUEST_5M": 1200*5,
+          "ORDERS_10S": 1200/6,
+          "ORDERS_1D": 1200*60*24}
 
     :return dict:
     """

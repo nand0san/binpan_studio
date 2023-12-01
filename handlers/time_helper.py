@@ -340,7 +340,10 @@ def convert_string_to_datetime(ts: str, timezoned: str = None) -> datetime:
     try:
         ret = datetime.strptime(ts, '%Y-%m-%d %H:%M:%S.%f')
     except ValueError:
-        ret = datetime.strptime(ts, '%Y-%m-%d %H:%M:%S')
+        try:
+            ret = datetime.strptime(ts, '%Y-%m-%d %H:%M:%S')
+        except ValueError:
+            ret = datetime.strptime(ts, '%Y-%m-%d')
     if timezoned:
         mytz = pytz.timezone(timezoned)
         return mytz.localize(ret)
