@@ -3,7 +3,7 @@
 This is the main classes file.
 
 """
-__version__ = "0.8.3"
+__version__ = "0.8.4"
 
 import os
 from sys import path
@@ -1309,6 +1309,7 @@ class Symbol(object):
         except Exception as e:
             binpan_logger.error(f"BinPan error: resample must use higher interval: {new_index} not > {current_index} {e}")
             return
+        binpan_logger.info(f"Resampling {self.symbol} from {self.tick_interval} to {tick_interval}")
         if inplace:
             self.drop(inplace=True)
             self.tick_interval = tick_interval

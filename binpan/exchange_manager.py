@@ -170,17 +170,40 @@ class Exchange(object):
                        info_dic=None,
                        sort_by: str = None) -> pd.DataFrame:
         """
-        Returns a dataframe with 24h busd volume for every symbol.
+        Returns a dataframe with 24-hour USDT volume for each cryptocurrency symbol.
 
-        :param quote: Optional quote to filter.
-        :param tradeable: Optional filter to return only tradeable symbols.
-        :param spot_required: Optional filter to return only spot tradeable symbols.
-        :param margin_required: Optional filter to return only margin tradeable symbols.
-        :param drop_legal: Optional filter to drop legal symbols.
-        :param filter_leveraged: Optional filter to drop leveraged symbols.
-        :param info_dic: Optional info dictionary to use.
-        :param sort_by: Optional column to sort by.
-        :return: A dataframe with 24h busd volume for every symbol.
+        :param quote: Optional string to filter by a specific quote currency (e.g., 'USDT').
+        :param tradeable: Optional boolean to return only tradeable symbols.
+        :param spot_required: Optional boolean to return only spot tradeable symbols.
+        :param margin_required: Optional boolean to return only margin tradeable symbols.
+        :param drop_legal: Optional boolean to exclude legal symbols.
+        :param filter_leveraged: Optional boolean to exclude leveraged symbols.
+        :param info_dic: Optional dictionary containing additional information.
+        :param sort_by: Optional string to sort the dataframe by a specific column.
+        :return: Pandas DataFrame with columns like 'symbol', 'USDT_volume', 'openPrice',
+                 'highPrice', 'lowPrice', 'volume', 'quoteVolume', 'weightedAvgPrice',
+                 'priceChange', 'priceChangePercent', 'lastPrice', etc., for each symbol.
+
+        Example:
+
+        .. code-block:: python
+
+                from binpan import Exchange
+                ex = Exchange()
+                df = ex.get_volume_24h()
+                print(df.head())
+
+                # Output:
+                #            symbol   USDT_volume  openPrice  highPrice   lowPrice   ...
+                # BTCUSDT    BTCUSDT  1.083965e+09  38786.19   39717.14   38703.44   ...
+                # ETHUSDT    ETHUSDT  7.474834e+08  2104.86    2186.60    2093.39    ...
+                # SOLUSDT    SOLUSDT  3.334904e+08  62.26      65.53      61.31      ...
+                # ORDIUSDT  ORDIUSDT  3.319640e+08  24.303     34.559     23.812     ...
+                # USTCUSDT  USTCUSDT  2.550245e+08  0.053219   0.069795   0.05233    ...
+                # ...
+
+        Note: The output is a simplified representation of the actual DataFrame.
+        The actual DataFrame contains more columns and rows.
         """
         quote = quote.upper()
         if not sort_by:

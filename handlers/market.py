@@ -161,15 +161,16 @@ def get_candles_by_time_stamps(symbol: str,
     raw_candles = []
     for start, end in ranges:
 
+        end = min(end, int(1000 * time()))
         params = {'symbol': symbol, 'interval': tick_interval, 'startTime': start, 'endTime': end, 'limit': limit}
         params = {k: v for k, v in params.items() if v}
         check_weight(1, endpoint=endpoint)
 
         start_str = convert_milliseconds_to_str(start, timezoned=time_zone)
-        end_str = convert_milliseconds_to_str(min(end, int(1000 * time())), timezoned=time_zone)
+        end_str = convert_milliseconds_to_str(end, timezoned=time_zone)
 
         # expected_klines = int((end - start) / tick_milliseconds)
-        expected_klines = int(-((end - start) // -tick_milliseconds))
+        expected_klines = int(-((end - start) // -tick_milliseconds))  # round up
         market_logger.debug(f"API request: {symbol} {start_str} to {end_str}. Expected klines: {expected_klines}")
 
         response = get_response(url=endpoint, params=params)

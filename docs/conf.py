@@ -16,7 +16,7 @@ spec = importlib.util.spec_from_file_location("module.name", secret_path)
 my_secret = importlib.util.module_from_spec(spec)
 sys.modules["module.name"] = my_secret
 spec.loader.exec_module(my_secret)
-version = "0.8.3"
+version = "0.8.4"
 release = version
 
 extensions = [
@@ -41,6 +41,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '.ipynb_checkpoints', 's
 html_theme = 'shibuya'
 
 html_static_path = ['_static']
+
 
 def setup(app):
     app.add_css_file('style.css')
