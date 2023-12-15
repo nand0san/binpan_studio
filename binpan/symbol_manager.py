@@ -3420,6 +3420,13 @@ class Symbol(object):
         """
         Calculate support and resistance levels for the Symbol based on either atomic trades or aggregated trades in a rolling window.
 
+        If discrete_interval is passed, it will ignore time_steps_minutes and minutes_window and will use this interval to calculate the
+         rolling support and resistance. It can be any of the following: '1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', etc
+
+        The parameter delayed is useful when you want to calculate the rolling support and resistance with a delay. For example, if you
+            want to calculate the rolling support and resistance with the last 5 minutes of data, but you want to calculate it 5 minutes
+            after the last minute of the window, you can pass delayed=5. Useful for projecting support and resistance levels in the future.
+
         It returns a pandas dataframe with each column representing ordered levels from higher to lower for support and resistance. The
          function iterates in steps of a minutes quantity.
 
