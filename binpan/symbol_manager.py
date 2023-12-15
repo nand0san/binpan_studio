@@ -3,7 +3,7 @@
 This is the main classes file.
 
 """
-__version__ = "0.8.4"
+__version__ = "0.8.5"
 
 import os
 from sys import path
@@ -37,7 +37,7 @@ from handlers.plotting import (plotly_colors, plot_trades, candles_ta, plot_pie,
                                orderbook_depth, dist_plot, profile_plot)
 
 from handlers.time_helper import (check_tick_interval, convert_milliseconds_to_str, get_dataframe_time_index_ranges,
-                                  remove_initial_included_ranges, tick_interval_values)
+                                  remove_initial_included_ranges, tick_interval_values, pandas_freq_tick_interval)
 
 from handlers.tags import (tag_column_to_strategy_group, backtesting, backtesting_short, tag_comparison, tag_cross, merge_series,
                            clean_in_out)
@@ -1295,24 +1295,26 @@ class Symbol(object):
                                                            min_reversal=self.min_reversal)
         return self.reversal_atomic_klines
 
-    def resample(self, tick_interval: str, inplace=False):
+    def resample(self, tick_interval_new: str, inplace=False):
         """
         Resample trades to a different tick interval. Tick interval must be higher.
-        :param str tick_interval: A binance tick interval. Must be higher than current tick interval.
+        :param str tick_interval_new: A binance tick interval. Must be higher than current tick interval.
         :param bool inplace: Change object dataframe permanently whe True is selected. False shows a copy dataframe.
         :return pd.DataFrame: Resampled klines.
         """
-        new_index = tick_interval_values.index(tick_interval)
         current_index = tick_interval_values.index(self.tick_interval)
+        new_index = tick_interval_values.index(tick_interval_new)
+
         try:
             assert new_index > current_index
         except Exception as e:
             binpan_logger.error(f"BinPan error: resample must use higher interval: {new_index} not > {current_index} {e}")
             return
-        binpan_logger.info(f"Resampling {self.symbol} from {self.tick_interval} to {tick_interval}")
+
+        binpan_logger.info(f"Resampling {self.symbol} from {self.tick_interval} to {tick_interval_new}")
         if inplace:
             self.drop(inplace=True)
-            self.tick_interval = tick_interval
+            self.tick_interval = tick_interval_new
             self.row_control = dict()
             self.color_control = dict()
             self.color_fill_control = dict()
@@ -1326,11 +1328,11 @@ class Symbol(object):
             self.timestamps = self.get_timestamps()
             self.dates = self.get_dates()
             self.start_time, self.end_time = self.timestamps
-            self.df = resample_klines(data=self.df, tick_interval=tick_interval)
+            self.df = resample_klines(data=self.df, tick_interval=tick_interval_new)
             self.discontinuities = check_continuity(df=self.df, time_zone=self.time_zone)
             return self.df
         else:
-            return resample_klines(data=self.df, tick_interval=tick_interval)
+            return resample_klines(data=self.df, tick_interval=tick_interval_new)
 
     def repair_continuity(self):
         self.df = repair_kline_discontinuity(df=self.df, time_zone=self.time_zone)
@@ -3404,14 +3406,16 @@ class Symbol(object):
         return self.support_lines, self.resistance_lines
 
     def rolling_support_resistance(self,
-                                   minutes_window: int = 8 * 60,
-                                   time_steps_minutes: int = 4 * 60,
+                                   minutes_window: int = None,
+                                   time_steps_minutes: int = None,
+                                   discrete_interval: str = None,
                                    from_atomic: bool = False,
                                    from_aggregated: bool = False,
                                    max_clusters: int = 5,
                                    by_quantity: float = True,
                                    simple: bool = True,
                                    inplace: bool = True,
+                                   delayed: int = 0,
                                    colors: list = None) -> pd.DataFrame or None:
         """
         Calculate support and resistance levels for the Symbol based on either atomic trades or aggregated trades in a rolling window.
@@ -3421,12 +3425,15 @@ class Symbol(object):
 
         :param int minutes_window: A rolling window of time in minutes. Whe using trades, it will calculate window by time index.
         :param int time_steps_minutes: Loop steps in minutes. Default is 10. Each step will calculate a new window data.
+        :param str discrete_interval: If passed, it will ignore time_steps_minutes and minutes_window and will use this interval to
+            calculate the rolling support and resistance. It can be any of the following: '1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', etc
         :param bool from_atomic: If True, support and resistance levels will be calculated using atomic trades.
         :param bool from_aggregated: If True, support and resistance levels will be calculated using aggregated trades.
         :param int max_clusters: If passed, fixes count of levels of support and resistance. Default is 5.
         :param float by_quantity: It takes each price into account by how many times the specified quantity appears in "Quantity" column.
         :param bool simple: If True, it will calculate support and resistance levels merged. Just levels. Default is True.
         :param bool inplace: If True, it will replace the current dataframe with the new one. Default is True.
+        :param int delayed: If passed, it will delay the calculation of the rolling window by the specified number of steps.git
         :param list colors: A list of colors for the indicator dataframe columns. Is the color to show when plotting.
          It can be any color from plotly library or a number in the list of those. Default colors defined.
          https://community.plotly.com/t/plotly-colours-list/11730
@@ -3454,19 +3461,33 @@ class Symbol(object):
 
         result = pd.DataFrame(index=df.index)
         result.index.name = f"Rolling support resistance {df.index.name}"
-        delta_window = f"{minutes_window}T"
-        delta_step = f"{time_steps_minutes}T"
-
-        # rangos de actualización de tiempo
-        update_time_ranges = get_dataframe_time_index_ranges(data=df, interval=delta_step)
-        update_time_ranges = remove_initial_included_ranges(time_ranges=update_time_ranges, initial_minutes=minutes_window)
         sup_cols = [f"Support_{k + 1}" for k in range(max_clusters)]
         res_cols = [f"Resistance_{k + 1}" for k in range(max_clusters)]
 
+        if discrete_interval is not None:
+            discrete_index = df.resample(discrete_interval).first().index
+            update_time_ranges = [(discrete_index[i], discrete_index[i + 1] - pd.Timedelta(seconds=1)) for i in
+                                  range(len(discrete_index) - 1)]
+
+        else:
+            # Lógica para calcular rangos de tiempo deslizantes
+            delta_step = f"{time_steps_minutes}T"
+            update_time_ranges = get_dataframe_time_index_ranges(data=df, interval=delta_step)
+            update_time_ranges = remove_initial_included_ranges(time_ranges=update_time_ranges, initial_minutes=minutes_window)
+
         # loop por cada ventana de tiempo
-        for start, end in tqdm(update_time_ranges):
-            # calcula al principio de cada intervalo de actualización la ventana necesaria para scar los datos
-            df_window = df.loc[start - pd.Timedelta(delta_window): start]
+        # for start, end in tqdm(update_time_ranges):
+        for i in range(1, len(update_time_ranges)):
+            previous_start, previous_end = update_time_ranges[i - delayed]
+            current_start, current_end = update_time_ranges[i]
+
+            df_window = df.loc[previous_start:previous_end]
+
+            # if discrete_interval is not None:
+            #     df_window = df.loc[start:end]
+            # else:
+            #     delta_window = f"{minutes_window}T"
+            #     df_window = df.loc[start - pd.Timedelta(delta_window): start]
 
             # Aplica la función hipotética al fragmento del DataFrame
             if simple:
@@ -3477,9 +3498,9 @@ class Symbol(object):
                 s_lines, r_lines = support_resistance_levels(df=df_window, max_clusters=max_clusters, by_quantity=by_quantity,
                                                              by_klines=by_klines, quiet=True)
             for k, sup in enumerate(s_lines):
-                result.loc[start:end, sup_cols[k]] = sup
+                result.loc[current_start:current_end, sup_cols[k]] = sup
             for k, res in enumerate(r_lines):
-                result.loc[start:end, res_cols[k]] = res
+                result.loc[current_start:current_end, res_cols[k]] = res
 
         if inplace:
             # update data
@@ -3576,34 +3597,6 @@ class Symbol(object):
                                                                               max_clusters=max_clusters,
                                                                               by_quantity=by_quantity, simple=simple)
         binpan_logger.info(f"Time centroids added from {from_data}")
-        # if inplace:
-        #     # update data
-        #     binpan_logger.info(f"Updating timestamp centroids for {self.symbol} from {from_data}")
-        #     if [c for c in self.df.columns if "Buys_time_centroid" in c]:
-        #         self.delete_indicator_family(indicator_name_root="Buys_time")
-        #     if [c for c in self.df.columns if "Sells_time_centroid" in c]:
-        #         self.delete_indicator_family(indicator_name_root="Sells_time")
-        #     if [c for c in self.df.columns if "Time_centroid" in c]:
-        #         self.delete_indicator_family(indicator_name_root="Time_centroid")
-        #     if simple:
-        #         sup_cols = [f"Time_centroid_{k + 1}" for k in range(len(self.blue_timestamps))]
-        #         res_cols = []
-        #     else:
-        #         sup_cols = [f"Buys_time_centroid{k + 1}" for k in range(len(self.blue_timestamps))]
-        #         res_cols = [f"Sells_time_centroid{k + 1}" for k in range(len(self.red_timestamps))]
-        # for i, c in enumerate(sup_cols):
-        #     self.df.loc[:, c] = self.blue_timestamps[i]
-        # for i, c in enumerate(res_cols):
-        #     self.df.loc[:, c] = self.red_timestamps[i]
-
-        # add plot info
-        # if not colors:
-        #     colors = ["blue" for _ in sup_cols] + ["red" for _ in res_cols]
-
-        # for i, column_name in enumerate(sup_cols + res_cols):
-        #     self.set_plot_color(indicator_column=column_name, color=colors[i])
-        #     self.set_plot_color_fill(indicator_column=column_name, color_fill=False)
-        #     self.set_plot_row(indicator_column=str(column_name), row_position=1)  # overlaps are one  # return self.df
         return self.blue_timestamps, self.red_timestamps
 
     #############

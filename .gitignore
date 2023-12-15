@@ -164,6 +164,7 @@ orderbook cost.ipynb
 orderbook*.ipynb
 ltcusdt.*
 ltcbtc.*
+btcusdt.*
 
 example database info.ipynb
 *redis*

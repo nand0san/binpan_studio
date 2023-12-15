@@ -562,26 +562,27 @@ def remove_initial_included_ranges(time_ranges, initial_minutes) -> List[tuple]:
 
     :param time_ranges: A list of tuples containing the start and end time of each interval.
     :param initial_minutes: A quantity of minutes that defines the initial period.
-    :return: A list of tuples containing the start and end time of each interval, without the ranges that are completely included in the
-     initial period.
+    :return: A list of tuples containing the start and end time of each interval, without the ranges that are completely included in the initial period.
     """
     if not time_ranges:
         return []
 
     initial_end_time = time_ranges[0][0] + pd.Timedelta(minutes=initial_minutes)
 
-    modified_time_ranges = [next((start_time, end_time) for start_time, end_time in time_ranges if end_time > initial_end_time)]
+    # Filtra los rangos de tiempo que no están completamente incluidos en el periodo inicial
+    modified_time_ranges = [(start_time, end_time) for start_time, end_time in time_ranges if end_time > initial_end_time]
 
-    for start_time, end_time in time_ranges[1:]:
-        # Si el tiempo de inicio del rango de tiempo actual es anterior al tiempo de finalización del último rango de tiempo en la lista
-        # modificada,
-        # entonces el rango de tiempo actual está completamente incluido en un rango de tiempo desde el comienzo del primer intervalo que
-        # aparece,
-        # por lo que lo saltamos
-        if start_time < modified_time_ranges[-1][1]:
+    if not modified_time_ranges:
+        return []
+
+    # Filtra los rangos de tiempo adicionales que puedan estar completamente incluidos
+    final_ranges = [modified_time_ranges[0]]
+    for start_time, end_time in modified_time_ranges[1:]:
+        if start_time < final_ranges[-1][1]:
             continue
-        modified_time_ranges.append((start_time, end_time))
-    return modified_time_ranges
+        final_ranges.append((start_time, end_time))
+
+    return final_ranges
 
 
 def adjust_timestamp_unit_nano_or_ms(ts):

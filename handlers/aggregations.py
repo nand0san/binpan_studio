@@ -238,6 +238,49 @@ def resample_klines(data: pd.DataFrame, tick_interval: str) -> pd.DataFrame:
     return df_resampled
 
 
+def oversample(data: pd.DataFrame, new_interval: str) -> pd.DataFrame:
+    """
+    Expands a DataFrame of klines by calculating aggregated values for new columns
+    from the start of the oversampled interval to each row.
+
+    :param pd.DataFrame data: The original DataFrame of klines. The index must be a DatetimeIndex.
+    :param str new_interval: The new frequency for oversampling. This can be any Binance frequency.
+    :return: An expanded DataFrame with oversampled data.
+    """
+    assert isinstance(data.index, pd.DatetimeIndex), "The index must be a DatetimeIndex."
+    df = data.copy(deep=True)
+
+    interval = pandas_freq_tick_interval[new_interval]
+    interval_ms = pd.Timedelta(interval).total_seconds() * 1000
+
+    def get_interval_start(row_time: pd.Timestamp, freq: str) -> pd.Timestamp:
+        return row_time.floor(freq)
+
+    oversampled = pd.DataFrame(index=df.index)
+
+    for index, row in df.iterrows():
+        interval_start = get_interval_start(index, interval)
+        interval_data = df.loc[interval_start:index]
+
+        oversampled.at[index, 'Open time'] = pd.to_datetime(interval_data['Open time'].iloc[0]).tz_localize(None)
+        oversampled.at[index, 'Open'] = interval_data['Open'].iloc[0]
+        oversampled.at[index, 'High'] = interval_data['High'].max()
+        oversampled.at[index, 'Low'] = interval_data['Low'].min()
+        oversampled.at[index, 'Close'] = interval_data['Close'].iloc[-1]
+        oversampled.at[index, 'Volume'] = interval_data['Volume'].sum()
+        oversampled.at[index, 'Close time'] = pd.to_datetime(interval_data['Open time'].iloc[0] + pd.Timedelta(interval_ms - 1, unit='ms')).tz_localize(None)
+        oversampled.at[index, 'Quote volume'] = interval_data['Quote volume'].sum()
+        oversampled.at[index, 'Trades'] = interval_data['Trades'].sum()
+        oversampled.at[index, 'Taker buy base volume'] = interval_data['Taker buy base volume'].sum()
+        oversampled.at[index, 'Taker buy quote volume'] = interval_data['Taker buy quote volume'].sum()
+        oversampled.at[index, 'Open timestamp'] = interval_data['Open timestamp'].iloc[0]
+        oversampled.at[index, 'Close timestamp'] = interval_data['Open timestamp'].iloc[0] + interval_ms - 1
+
+    combined_data = pd.concat([df, oversampled.add_suffix('_oversampled')], axis=1)
+
+    return combined_data
+
+
 def time_index_from_timestamps(data: pd.DataFrame, index_name: str = None, timezone: str = 'Europe/Madrid', drop_col: bool = False, ):
     """
     Assumes existing timestamp column or at least Open timestamp column.

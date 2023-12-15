@@ -744,7 +744,10 @@ def find_optimal_clusters(KMeans_lib, data: np.ndarray, max_clusters: int, quiet
     return np.argmin(np.gradient(np.gradient(inertia))) + 1
 
 
-def support_resistance_levels(df: pd.DataFrame, max_clusters: int = 5, by_quantity: float = None, by_klines=True, quiet=False,
+def support_resistance_levels(df: pd.DataFrame,
+                              max_clusters: int = 5,
+                              by_quantity: float = None,
+                              by_klines=True, quiet=False,
                               optimize_clusters_qty: bool = False) -> Tuple:
     """
     Calculate support and resistance levels for a given set of trades using K-means clustering.
