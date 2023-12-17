@@ -3,7 +3,7 @@
 This is the main classes file.
 
 """
-__version__ = "0.8.5"
+__version__ = "0.8.6"
 
 import os
 from sys import path
@@ -54,15 +54,15 @@ from handlers.quest import tick_seconds
 import warnings
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
-    from tqdm.autonotebook import tqdm
 
-try:
-    from numba import njit
-    from handlers.numba_tools import sma_numba, rsi_numba, ema_numba
-    is_numba = True
-except ImportError:
-    is_numba = False
-    sma_numba, rsi_numba, ema_numba = None, None, None
+from handlers.numba_tools import sma_numba, rsi_numba, ema_numba
+# try:
+#     from numba import njit
+#     from handlers.numba_tools import sma_numba, rsi_numba, ema_numba
+#     is_numba = True
+# except ImportError:
+#     is_numba = False
+#     sma_numba, rsi_numba, ema_numba = None, None, None
 
 binpan_logger = Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 version = __version__
@@ -240,7 +240,7 @@ class Symbol(object):
         else:
             tick_interval = tick_interval
 
-        self.is_numba = is_numba
+        # self.is_numba = is_numba
         self.tick_interval = tick_interval
         self.time_zone = time_zone
 
@@ -2324,11 +2324,13 @@ class Symbol(object):
 
         df = self.df.copy(deep=True)
 
-        if self.is_numba and ma_name == 'ema':
+        # if self.is_numba and ma_name == 'ema':
+        if ma_name == 'ema':
             ma_ = ema_numba(df[column_source].values, window=kwargs['length'])
             ma = pd.Series(data=ma_, index=df.index, name=f"EMA_{kwargs['length']}")
 
-        elif self.is_numba and ma_name == 'sma':
+        # elif self.is_numba and ma_name == 'sma':
+        elif ma_name == 'sma':
             ma_ = sma_numba(df[column_source].values, window=kwargs['length'])
             ma = pd.Series(data=ma_, index=df.index, name=f"SMA_{kwargs['length']}")
 
@@ -2493,7 +2495,7 @@ class Symbol(object):
 
         return macd
 
-    def rsi(self, length: int = 14, inplace: bool = True, suffix: str = '', color: str or int = None, **kwargs):
+    def rsi(self, length: int = 14, inplace: bool = True, suffix: str = '', color: str or int = None):
         """
         Relative Strength Index (RSI).
 
@@ -2503,7 +2505,6 @@ class Symbol(object):
         :param bool inplace: Make it permanent in the instance or not.
         :param str suffix: A decorative suffix for the name of the column created.
         :param str or int color: Is the color to show when plotting from plotly list or index of color in that list.
-        :param kwargs: Optional from https://github.com/twopirllc/pandas-ta/blob/main/pandas_ta/momentum/rsi.py
         :return: A Pandas Series
 
         .. image:: images/indicators/rsi.png
@@ -2512,11 +2513,11 @@ class Symbol(object):
 
         """
 
-        if self.is_numba:
-            rsi_ = rsi_numba(self.df['Close'].values, window=length)
-            rsi = pd.Series(data=rsi_, index=self.df.index, name=f"RSI_{length}")
-        else:
-            rsi = ta.rsi(close=self.df['Close'], length=length, **kwargs)
+        # if self.is_numba:
+        rsi_ = rsi_numba(self.df['Close'].values, window=length)
+        rsi = pd.Series(data=rsi_, index=self.df.index, name=f"RSI_{length}")
+        # else:
+        #     rsi = ta.rsi(close=self.df['Close'], length=length, **kwargs)
 
         column_name = str(rsi.name) + suffix
 
@@ -3418,17 +3419,38 @@ class Symbol(object):
                                    delayed: int = 0,
                                    colors: list = None) -> pd.DataFrame or None:
         """
-        Calculate support and resistance levels for the Symbol based on either atomic trades or aggregated trades in a rolling window.
+        Calculate support and resistance levels for the Symbol based on either atomic trades or aggregated trades in a rolling window. Also
+        from klines supported, but less accurate. It returns a pandas dataframe with each column representing ordered levels from lower to
+        higher for support and resistance. The function iterates in steps of a minutes quantity or a discrete interval.
 
         If discrete_interval is passed, it will ignore time_steps_minutes and minutes_window and will use this interval to calculate the
-         rolling support and resistance. It can be any of the following: '1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', etc
+        rolling support and resistance minutes_window and time_steps_minutes. It can be any of the binance kline ones: '1m', '3m', '5m', '15m',
+        '30m', '1h', '2h', '4h', etc
 
         The parameter delayed is useful when you want to calculate the rolling support and resistance with a delay. For example, if you
-            want to calculate the rolling support and resistance with the last 5 minutes of data, but you want to calculate it 5 minutes
-            after the last minute of the window, you can pass delayed=5. Useful for projecting support and resistance levels in the future.
+        want to calculate the rolling support and resistance with the last 5 minutes of data, but you want to project it 5 minutes
+        after the last minute of the window, you can pass delayed=1 (1 step of the interval selected). Useful for projecting support and
+        resistance levels in the future.
 
-        It returns a pandas dataframe with each column representing ordered levels from higher to lower for support and resistance. The
-         function iterates in steps of a minutes quantity.
+        If simple parameter is True, it will calculate support and resistance levels merged. Just levels. Default is True.
+
+        Example: If you want to calculate the rolling support and resistance with and interval of 24h and a delayed of 1, this will add past 24h
+        support and resistance levels to the current dataframe
+
+            .. code-block::
+
+                my_symbol.rolling_support_resistance(discrete_interval='1d', delayed=1)
+
+        .. image:: images/rolling_support_resistance.png
+
+        Example: Not discrete mode but same 24 h intervals and not delayed.
+        
+            .. code-block::
+
+                sym.rolling_support_resistance(minutes_window=24*60, time_steps_minutes=24*60, max_clusters=5)
+
+        .. image:: images/rolling_support_resistance_2.png
+
 
         :param int minutes_window: A rolling window of time in minutes. Whe using trades, it will calculate window by time index.
         :param int time_steps_minutes: Loop steps in minutes. Default is 10. Each step will calculate a new window data.
@@ -3440,7 +3462,7 @@ class Symbol(object):
         :param float by_quantity: It takes each price into account by how many times the specified quantity appears in "Quantity" column.
         :param bool simple: If True, it will calculate support and resistance levels merged. Just levels. Default is True.
         :param bool inplace: If True, it will replace the current dataframe with the new one. Default is True.
-        :param int delayed: If passed, it will delay the calculation of the rolling window by the specified number of steps.git
+        :param int delayed: If passed, it will project the rolling support and resistance levels in the future. Default is 0  and means 0 windows projected in the future.
         :param list colors: A list of colors for the indicator dataframe columns. Is the color to show when plotting.
          It can be any color from plotly library or a number in the list of those. Default colors defined.
          https://community.plotly.com/t/plotly-colours-list/11730
@@ -3471,10 +3493,18 @@ class Symbol(object):
         sup_cols = [f"Support_{k + 1}" for k in range(max_clusters)]
         res_cols = [f"Resistance_{k + 1}" for k in range(max_clusters)]
 
-        if discrete_interval is not None:
-            discrete_index = df.resample(discrete_interval).first().index
-            update_time_ranges = [(discrete_index[i], discrete_index[i + 1] - pd.Timedelta(seconds=1)) for i in
-                                  range(len(discrete_index) - 1)]
+        if discrete_interval:
+            pandas_interval = pandas_freq_tick_interval[discrete_interval]
+            discrete_index = df.resample(pandas_interval).first().index
+
+            # Extender el último índice para incluir el intervalo futuro. Util para delayed
+            last_index = discrete_index[-1] + pd.to_timedelta(pandas_interval)
+            extended_discrete_index = discrete_index.union([last_index])
+
+            update_time_ranges = [
+                (extended_discrete_index[i], extended_discrete_index[i + 1] - pd.Timedelta(seconds=1))
+                for i in range(len(extended_discrete_index) - 1)
+            ]
 
         else:
             # Lógica para calcular rangos de tiempo deslizantes
@@ -3484,10 +3514,9 @@ class Symbol(object):
 
         # loop por cada ventana de tiempo
         # for start, end in tqdm(update_time_ranges):
-        for i in range(1, len(update_time_ranges)):
+        for i in range(len(update_time_ranges)):
             previous_start, previous_end = update_time_ranges[i - delayed]
             current_start, current_end = update_time_ranges[i]
-
             df_window = df.loc[previous_start:previous_end]
 
             # if discrete_interval is not None:
