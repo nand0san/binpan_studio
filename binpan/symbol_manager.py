@@ -3,7 +3,7 @@
 This is the main classes file.
 
 """
-__version__ = "0.8.7"
+__version__ = "0.8.8"
 
 import os
 from sys import path
@@ -3470,7 +3470,7 @@ class Symbol(object):
          resistance.
         """
         binpan_logger.info(f"Each {time_steps_minutes} minutes, support and resistance will be calculated with the last {minutes_window} "
-                           f"minutes  data")
+                           f"minutes  data. Or by a discrete interval of {discrete_interval}.")
         by_klines = False
 
         if from_atomic:

@@ -24,12 +24,14 @@ from numba import njit
 @njit(cache=True)
 def rolling_max_with_steps_back_numba(values, window, pct_diff) -> Tuple[np.ndarray, np.ndarray]:
     """
-    Calculate the rolling maximum of the given array using NumPy.
+    Calculate the rolling maximum and the number of steps back to the rolling maximum within a moving window.
 
-    :param values: A NumPy array containing the input data.
-    :param window: An integer for the window size.
-    :param pct_diff: A boolean indicating whether to calculate the percentage difference.
-    :return: A tuple containing the rolling maximum value and the steps back.
+    :param values: A 1D NumPy array containing the input data.
+    :param window: An integer specifying the size of the moving window.
+    :param pct_diff: A boolean to determine if the output should be the percentage difference
+                     between the current value and the rolling maximum. If False, the rolling maximum is returned.
+    :return: A tuple of two 1D NumPy arrays. The first array is the rolling maximum or the percentage difference
+             (based on `pct_diff`). The second array contains the number of steps back to the rolling maximum.
     """
     n = len(values)
     rolling_max = np.full(n, np.nan)  # Inicializar con NaN
@@ -53,13 +55,16 @@ def rolling_max_with_steps_back_numba(values, window, pct_diff) -> Tuple[np.ndar
 @njit(cache=True)
 def rolling_max_with_steps_back_last_value_numba(values: np.ndarray, window: int, pct_diff: bool) -> Tuple[float, int]:
     """
-    Calculate the rolling maximum for the last value in the given array using NumPy.
+    Calculate the rolling maximum and the steps back to the maximum for the last value in the input array.
 
-    :param values: A NumPy array containing the input data.
-    :param window: An integer for the window size.
-    :param pct_diff: A boolean indicating whether to calculate the percentage difference.
-    :return: A tuple containing the rolling maximum value and the steps back for the last value.
+    :param values: A 1D NumPy array containing the input data.
+    :param window: An integer specifying the size of the moving window.
+    :param pct_diff: A boolean to determine if the output should be the percentage difference
+                     between the last value and its rolling maximum. If False, the rolling maximum is returned.
+    :return: A tuple containing the rolling maximum or the percentage difference (based on `pct_diff`) for the last value,
+             and the steps back to the rolling maximum for the last value.
     """
+
     n = len(values)
 
     # Asegurarse de que la ventana no sea mayor que el tamaño de 'values'
@@ -85,6 +90,16 @@ def rolling_max_with_steps_back_last_value_numba(values: np.ndarray, window: int
 
 @njit(cache=True)
 def rolling_min_with_steps_back_numba(values, window, pct_diff) -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Calculate the rolling minimum and the number of steps back to the rolling minimum within a moving window.
+
+    :param values: A 1D NumPy array containing the input data.
+    :param window: An integer specifying the size of the moving window.
+    :param pct_diff: A boolean to determine if the output should be the percentage difference
+                     between the current value and the rolling minimum. If False, the rolling minimum is returned.
+    :return: A tuple of two 1D NumPy arrays. The first array is the rolling minimum or the percentage difference
+             (based on `pct_diff`). The second array contains the number of steps back to the rolling minimum.
+    """
     n = len(values)
     rolling_min = np.full(n, np.nan)  # Inicializar con NaN
     steps_back = np.full(n, -1)  # Inicializar con -1
@@ -140,26 +155,15 @@ def rolling_min_with_steps_back_last_value_numba(values: np.ndarray, window: int
 @njit(cache=True)
 def ema_numba(arr: np.ndarray, window: int) -> np.ndarray:
     """
-    Calculate the Exponential Moving Average (EMA) of the given array using NumPy.
+    Calculate the Exponential Moving Average (EMA) of the given array.
 
-    Note: Results are identical to the pandas-ta implementation.
+    :param arr: A 1D NumPy array containing the input data.
+    :param window: An integer specifying the size of the moving window for EMA calculation.
+    :return: A 1D NumPy array containing the EMA values.
 
-    :param arr: A NumPy array containing the input data.
-    :param window: The window size for the EMA calculation.
-    :return: A NumPy array containing the EMA values.
-
-    Example:
-
-    .. code-block::
-
-        import numpy as np
-        arr = np.array([1.0, 2.5, 3.7, 4.2, 5.0, 6.3])
-        window = 3
-        ema_result = ema_numpy(arr, window)
-        print(ema_result)
-
-        [1.         1.66666667 2.61111111 3.40740741 4.27160494 5.18106996]
+    Note: The EMA is calculated using the formula `EMA[today] = (Value[today] * (2 / (1 + window))) + (EMA[yesterday] * (1 - (2 / (1 + window))))`.
     """
+
     alpha = 2 / (window + 1)
     ema = np.zeros_like(arr)
     ema[0] = arr[0]
@@ -171,12 +175,15 @@ def ema_numba(arr: np.ndarray, window: int) -> np.ndarray:
 @njit(cache=True)
 def rma_numba(values: np.ndarray, window: int) -> np.ndarray:
     """
-    Calculate the Rolling Moving Average (RMA) of the given array using NumPy.
+    Calculate the Rolling Moving Average (RMA) of the given array.
 
-    :param values: A NumPy array containing the input data.
-    :param window: An integer for the window size.
-    :return: A value containing the RMA.
+    :param values: A 1D NumPy array containing the input data.
+    :param window: An integer specifying the size of the moving window for RMA calculation.
+    :return: A 1D NumPy array containing the RMA values.
+
+    Note: The RMA is a type of moving average that gives more weight to recent data points, similar to the EMA.
     """
+
     alpha = 1.0 / window
     scale = 1.0 - alpha
     n = len(values)
@@ -190,14 +197,15 @@ def rma_numba(values: np.ndarray, window: int) -> np.ndarray:
 @njit(cache=True)
 def rsi_numba(close: np.ndarray, window: int) -> np.ndarray:
     """
-    Calculate the Relative Strength Index (RSI) of the given array using NumPy.
+    Calculate the Relative Strength Index (RSI) for an array of closing prices.
 
-    Note: Results are identical to the pandas-ta implementation.
+    :param close: A 1D NumPy array containing the closing prices.
+    :param window: An integer specifying the size of the moving window for RSI calculation.
+    :return: A 1D NumPy array containing the RSI values.
 
-    :param close: A NumPy array containing the closing prices.
-    :param window: An integer for the window size.
-    :return: A NumPy array containing the RSI values.
+    Note: The RSI is calculated using the formula `RSI = 100 - (100 / (1 + (Average Gain / Average Loss)))`.
     """
+
     delta = np.diff(close)
     gain = np.where(delta > 0, delta, 0.0)
     loss = np.where(delta < 0, -delta, 0.0)
@@ -285,9 +293,9 @@ def close_support_dynamic_numba(close: np.ndarray, supports: np.ndarray) -> np.n
 
         # Encontrar el soporte más cercano por debajo del precio de cierre actual
         if current_supports.size > 0:
-            indices = np.searchsorted(current_supports, close[i], side='right') - 1
-            indices = np.clip(indices, 0, len(current_supports) - 1)
-            closest_support = current_supports[indices]
+            index = np.searchsorted(current_supports, close[i], side='right') - 1
+            index = 0 if index < 0 else min(index, len(current_supports) - 1)
+            closest_support = current_supports[index]
             # Usamos el valor de cierre cuando no hay soporte más cercano inferior
             closest_support = close[i] if close[i] < current_supports[0] else closest_support
         else:
@@ -295,7 +303,8 @@ def close_support_dynamic_numba(close: np.ndarray, supports: np.ndarray) -> np.n
             closest_support = close[i]
 
         # Evitar división por cero o logaritmo de un número negativo
-        closest_support = np.maximum(closest_support, 1e-9)
+        # noinspection PyTypeChecker
+        closest_support = max(closest_support, 1e-9)
         log_ratios[i] = np.log(close[i] / closest_support)
 
     return log_ratios
@@ -390,6 +399,7 @@ def close_resistance_log_single_numba(close: np.ndarray, resistance: np.ndarray)
     """
     # resistance = np.sort(resistance)
     index_ = np.searchsorted(resistance, close, side='left')
+    # noinspection PyTypeChecker
     index = min(index_, len(resistance) - 1)  # Asegurar que el índice no sea mayor que el máximo índice válido
     closest_resistance = resistance[index]
     # noinspection PyTypeChecker
