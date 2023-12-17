@@ -3,7 +3,7 @@
 This is the main classes file.
 
 """
-__version__ = "0.8.6"
+__version__ = "0.8.7"
 
 import os
 from sys import path
@@ -1295,15 +1295,15 @@ class Symbol(object):
                                                            min_reversal=self.min_reversal)
         return self.reversal_atomic_klines
 
-    def resample(self, tick_interval_new: str, inplace=False):
+    def resample(self, tick_interval: str, inplace=False):
         """
         Resample trades to a different tick interval. Tick interval must be higher.
-        :param str tick_interval_new: A binance tick interval. Must be higher than current tick interval.
+        :param str tick_interval: A binance tick interval. Must be higher than current tick interval.
         :param bool inplace: Change object dataframe permanently whe True is selected. False shows a copy dataframe.
         :return pd.DataFrame: Resampled klines.
         """
         current_index = tick_interval_values.index(self.tick_interval)
-        new_index = tick_interval_values.index(tick_interval_new)
+        new_index = tick_interval_values.index(tick_interval)
 
         try:
             assert new_index > current_index
@@ -1311,10 +1311,10 @@ class Symbol(object):
             binpan_logger.error(f"BinPan error: resample must use higher interval: {new_index} not > {current_index} {e}")
             return
 
-        binpan_logger.info(f"Resampling {self.symbol} from {self.tick_interval} to {tick_interval_new}")
+        binpan_logger.info(f"Resampling {self.symbol} from {self.tick_interval} to {tick_interval}")
         if inplace:
             self.drop(inplace=True)
-            self.tick_interval = tick_interval_new
+            self.tick_interval = tick_interval
             self.row_control = dict()
             self.color_control = dict()
             self.color_fill_control = dict()
@@ -1328,11 +1328,11 @@ class Symbol(object):
             self.timestamps = self.get_timestamps()
             self.dates = self.get_dates()
             self.start_time, self.end_time = self.timestamps
-            self.df = resample_klines(data=self.df, tick_interval=tick_interval_new)
+            self.df = resample_klines(data=self.df, tick_interval=tick_interval)
             self.discontinuities = check_continuity(df=self.df, time_zone=self.time_zone)
             return self.df
         else:
-            return resample_klines(data=self.df, tick_interval=tick_interval_new)
+            return resample_klines(data=self.df, tick_interval=tick_interval)
 
     def repair_continuity(self):
         self.df = repair_kline_discontinuity(df=self.df, time_zone=self.time_zone)

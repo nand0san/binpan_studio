@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>BinPan Module - BinPan 0.8.6 documentation</title>
+      <title>BinPan Module - BinPan 0.8.7 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Aggregations Module" href="aggregations.html" /><link rel="prev" title="Welcome to BinPan’s documentation!" href="index.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -470,7 +470,7 @@ weight is heavy.</p></li>
 <tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.get_reversal_atomic_candles" title="binpan.Symbol.get_reversal_atomic_candles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_reversal_atomic_candles</span></code></a>([min_height, ...])</p></td>
 <td><p>Resamples API atomic trades to reversal klines:</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.resample" title="binpan.Symbol.resample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resample</span></code></a>(tick_interval_new[, inplace])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.resample" title="binpan.Symbol.resample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resample</span></code></a>(tick_interval[, inplace])</p></td>
 <td><p>Resample trades to a different tick interval.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.set_plot_row" title="binpan.Symbol.set_plot_row"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_row</span></code></a>([indicator_column, row_position])</p></td>
@@ -1039,9 +1039,9 @@ API weight and can take a sleep to wait until API weight returns to a low value.
 
 <dl class="py method">
 <dt class="sig sig-object py" id="binpan.Symbol.resample">
-<span class="sig-name descname"><span class="pre">resample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tick_interval_new</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.resample" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">resample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.resample" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resample trades to a different tick interval. Tick interval must be higher.
-:param str tick_interval_new: A binance tick interval. Must be higher than current tick interval.
+:param str tick_interval: A binance tick interval. Must be higher than current tick interval.
 :param bool inplace: Change object dataframe permanently whe True is selected. False shows a copy dataframe.
 :return pd.DataFrame: Resampled klines.</p>
 </dd></dl>

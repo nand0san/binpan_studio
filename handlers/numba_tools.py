@@ -3,6 +3,7 @@ from typing import Tuple
 
 from numba import njit
 
+
 # try:
 #     from numba import njit
 #
@@ -265,6 +266,42 @@ def close_support_log_numba(close: np.ndarray, support: np.ndarray) -> np.ndarra
 
 
 @njit(cache=True)
+def close_support_dynamic_numba(close: np.ndarray, supports: np.ndarray) -> np.ndarray:
+    """
+    Calculate the logarithmic ratio between the closing price and the closest support level
+    for each point in time, where the support levels can change over time.
+
+    :param close: A NumPy array containing the closing prices.
+    :param supports: A 2D NumPy array where each row contains the support levels at a given time.
+    :return: A NumPy array containing the logarithmic ratio for each point in time.
+    """
+    log_ratios = np.zeros(close.shape[0])
+
+    for i in range(close.shape[0]):
+        # Obtener los soportes para el tiempo actual y ordenarlos
+        current_supports = supports[i, :]
+        current_supports = current_supports[~np.isnan(current_supports)]  # Eliminar NaNs
+        current_supports = np.sort(current_supports)
+
+        # Encontrar el soporte más cercano por debajo del precio de cierre actual
+        if current_supports.size > 0:
+            indices = np.searchsorted(current_supports, close[i], side='right') - 1
+            indices = np.clip(indices, 0, len(current_supports) - 1)
+            closest_support = current_supports[indices]
+            # Usamos el valor de cierre cuando no hay soporte más cercano inferior
+            closest_support = close[i] if close[i] < current_supports[0] else closest_support
+        else:
+            # Si no hay soportes, usar el valor de cierre para evitar división por cero
+            closest_support = close[i]
+
+        # Evitar división por cero o logaritmo de un número negativo
+        closest_support = np.maximum(closest_support, 1e-9)
+        log_ratios[i] = np.log(close[i] / closest_support)
+
+    return log_ratios
+
+
+@njit(cache=True)
 def close_support_log_single_numba(close: np.ndarray, support: np.ndarray) -> np.float64:
     """
     Calculate the logarithmic ratio between a single closing price and the closest support level to it.
@@ -303,6 +340,43 @@ def close_resistance_log_numba(close: np.ndarray, resistance: np.ndarray) -> np.
     closest_resistance = np.maximum(closest_resistance, 1e-9)
     # Calcular la diferencia logarítmica
     return np.log(np.where(closest_resistance == close, 1, closest_resistance / close))
+
+
+@njit(cache=True)
+def close_resistance_dynamic_numba(close: np.ndarray, resistances: np.ndarray) -> np.ndarray:
+    """
+    Calculate the logarithmic ratio between the closest resistance level and the closing price
+    for each point in time, where the resistance levels can change over time.
+
+    :param close: A NumPy array containing the closing prices.
+    :param resistances: A 2D NumPy array where each row contains the resistance levels at a given time.
+    :return: A NumPy array containing the logarithmic ratio for each point in time.
+    """
+    log_ratios = np.zeros(close.shape[0])
+
+    for i in range(close.shape[0]):
+        # Obtener las resistencias para el tiempo actual y ordenarlas
+        current_resistances = resistances[i, :]
+        current_resistances = current_resistances[~np.isnan(current_resistances)]  # Eliminar NaNs
+        current_resistances = np.sort(current_resistances)
+
+        # Encontrar la resistencia más cercana por encima del precio de cierre actual
+        if current_resistances.size > 0:
+            indices = np.searchsorted(current_resistances, close[i], side='left')
+            indices = np.minimum(indices, len(current_resistances) - 1)
+            closest_resistance = current_resistances[indices]
+            # Reemplazar los valores donde no hay resistencia superior con el valor de cierre
+            closest_resistance = close[i] if close[i] > current_resistances[-1] else closest_resistance
+        else:
+            # Si no hay resistencias, usar el valor de cierre para evitar división por cero
+            closest_resistance = close[i]
+
+        # Evitar logaritmo de un número negativo o cero
+        closest_resistance = np.maximum(closest_resistance, 1e-9)
+        # Calcular la diferencia logarítmica
+        log_ratios[i] = np.log(np.where(closest_resistance == close[i], 1, closest_resistance / close[i]))
+
+    return log_ratios
 
 
 @njit(cache=True)
