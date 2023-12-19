@@ -674,22 +674,7 @@ def reversal_candles(trades: pd.DataFrame, decimal_positions: int, time_zone: st
     return klines
 
 
-# def repeat_prices_by_quantity(data: pd.DataFrame, epsilon_quantity: float, price_col="Price", qty_col='Quantity') -> np.ndarray:
-#     repeated_prices = []
-#     for price, quantity in data[[price_col, qty_col]].values:
-#         repeat_count = int(-(quantity // -epsilon_quantity))  # ceil division
-#         repeated_prices.extend([price] * repeat_count)
-#
-#     return np.array(repeated_prices).reshape(-1, 1)
-
-# def repeat_prices_by_quantity(data: pd.DataFrame, epsilon_quantity: float, price_col="Price", qty_col='Quantity'):
-#     for price, quantity in data[[price_col, qty_col]].itertuples(index=False):
-#         repeat_count = int(-(quantity // -epsilon_quantity))  # ceil division
-#         for _ in range(repeat_count):
-#             yield price
-
-
-def repeat_prices_by_quantity(data: pd.DataFrame, epsilon_quantity: float, price_col="Price", qty_col='Quantity') -> np.ndarray:
+def repeat_prices_by_quantity_old(data: pd.DataFrame, epsilon_quantity: float, price_col="Price", qty_col='Quantity') -> np.ndarray:
     """
     Repeat prices by quantity to use in K-means clustering.
 
@@ -703,6 +688,21 @@ def repeat_prices_by_quantity(data: pd.DataFrame, epsilon_quantity: float, price
     quantities = np.ceil(data[qty_col].values / epsilon_quantity).astype(int)
     repeated_prices = np.repeat(data[price_col].values, quantities)
     return repeated_prices.reshape(-1, 1)
+
+
+def repeat_prices_by_quantity(data: pd.DataFrame, epsilon_quantity: float, price_col="Price", qty_col='Quantity') -> np.ndarray:
+    """
+    Optimized version of repeating prices by quantity for K-means clustering.
+
+    :param pd.DataFrame data: A pandas DataFrame with trades or klines, containing a 'Price', 'Quantity' columns and a 'Buyer was maker' column,
+        if trades passed, else "Close", "Volume" and "Taker buy base volume"
+    :param float epsilon_quantity: The epsilon quantity to use for repeating prices.
+    :param str price_col: The name of the column containing price data. Default is 'Price'.
+    :param str qty_col: The name of the column containing quantity data. Default is 'Quantity'.
+    :return np.ndarray: A numpy array with the prices repeated by quantity.
+    """
+    repeated_prices = (price for price, qty in zip(data[price_col], data[qty_col]) for _ in range(int(np.ceil(qty / epsilon_quantity))))
+    return np.array(list(repeated_prices)).reshape(-1, 1)
 
 
 def kmeans_custom_init(data: np.ndarray, max_clusters: int):
@@ -918,7 +918,11 @@ def repeat_timestamps_by_quantity(df: pd.DataFrame, epsilon_quantity: float, buy
     return np.array(repeated_timestamps).reshape(-1, 1)
 
 
-def time_active_zones(df: pd.DataFrame, max_clusters: int = 5, simple: bool = True, by_quantity: float = True, quiet=False,
+def time_active_zones(df: pd.DataFrame,
+                      max_clusters: int = 5,
+                      simple: bool = True,
+                      by_quantity: float = True,
+                      quiet=False,
                       optimize_clusters_qty: bool = False) -> Tuple:
     """
     Calculate support and resistance levels timestamp centroids for a given set of trades using K-means clustering.
@@ -940,11 +944,7 @@ def time_active_zones(df: pd.DataFrame, max_clusters: int = 5, simple: bool = Tr
            :width: 1000
 
     """
-    try:
-        from sklearn.cluster import KMeans
-    except ImportError:
-        print(f"Please install sklearn: `pip install -U scikit-learn` to use Clustering")
-        return [], []
+    from sklearn.cluster import KMeans
 
     # copy data to avoid side effects
     df_, my_timestamps, buy_timestamps, sell_timestamps = df.copy(deep=True), [], [], []

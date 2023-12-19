@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>BinPan Module - BinPan 0.8.8 documentation</title>
+      <title>BinPan Module - BinPan 0.8.9 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Aggregations Module" href="aggregations.html" /><link rel="prev" title="Welcome to BinPan’s documentation!" href="index.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -288,8 +288,8 @@ following strings:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>symbol</strong> (<em>str</em>) – It can be any symbol in the binance exchange, like BTCUSDT, ethbusd or any other. Capital letters doesn’t matter.</p></li>
-<li><p><strong>tick_interval</strong> (<em>str</em>) – Any candle’s interval available in binance. Capital letters doesn’t matter.</p></li>
+<li><p><strong>symbol</strong> (<em>str</em>) – It can be any symbol in the binance exchange, like BTCUSDT, ethbusd or any other. Capital letters don’t matter.</p></li>
+<li><p><strong>tick_interval</strong> (<em>str</em>) – Any candle’s interval available in binance. Capital letters don’t matter.</p></li>
 <li><p><strong>start_time</strong> (<em>int</em><em> or </em><em>str</em>) – <p>It can be an integer in milliseconds from epoch (1970-01-01 00:00:00 UTC) or any string in the formats:</p>
 <blockquote>
 <div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="o">-</span> <span class="o">%</span><span class="n">Y</span><span class="o">-%</span><span class="n">m</span><span class="o">-%</span><span class="n">d</span> <span class="o">%</span><span class="n">H</span><span class="p">:</span><span class="o">%</span><span class="n">M</span><span class="p">:</span><span class="o">%</span><span class="n">S</span><span class="o">.%</span><span class="n">f</span><span class="p">:</span>       <span class="o">**</span><span class="mi">2022</span><span class="o">-</span><span class="mi">05</span><span class="o">-</span><span class="mi">11</span> <span class="mi">06</span><span class="p">:</span><span class="mi">45</span><span class="p">:</span><span class="mf">42.124567</span><span class="o">**</span>
@@ -358,7 +358,7 @@ date with daily time saving changes, the result would show the change in the tim
 <p>Candles are ordered with the timestamp regardless of the index name, even if the index shows the hourly change
 because daily time saving changes.</p>
 </p></li>
-<li><p><strong>closed</strong> (<em>bool</em>) – The last candle is a closed one in the moment of the creation, instead of a running candle not closed yet.</p></li>
+<li><p><strong>closed</strong> (<em>bool</em>) – The last candle is a closed one in the moment of the creation, discarding the current running one not closed yet. Default True.</p></li>
 <li><p><strong>display_columns</strong> (<em>int</em>) – Number of columns in the dataframe display. Convenient to adjust in jupyter notebooks.</p></li>
 <li><p><strong>display_max_rows</strong> (<em>int</em>) – Number of rows in the dataframe display. Convenient to adjust in jupyter notebooks.</p></li>
 <li><p><strong>display_width</strong> (<em>int</em>) – Display width in the dataframe display. Convenient to adjust in jupyter notebooks.</p></li>
@@ -420,19 +420,19 @@ weight is heavy.</p></li>
 <td><p>Saves current aggregated trades to a csv file.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.set_display_columns" title="binpan.Symbol.set_display_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_display_columns</span></code></a>([display_columns])</p></td>
-<td><p>Change the number of maximum columns shown in the display of the dataframe.</p></td>
+<td><p>Method to change the number of columns shown in the display of the dataframe.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.set_display_min_rows" title="binpan.Symbol.set_display_min_rows"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_display_min_rows</span></code></a>([display_min_rows])</p></td>
-<td><p>Change the number of minimum rows shown in the display of the dataframe.</p></td>
+<td><p>Method to change the number of minimum rows shown in the display of the dataframe.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.set_display_max_rows" title="binpan.Symbol.set_display_max_rows"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_display_max_rows</span></code></a>([display_max_rows])</p></td>
-<td><p>Change the number of maximum rows shown in the display of the dataframe.</p></td>
+<td><p>Method to change the number of maximum rows shown in the display of the dataframe.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.set_display_width" title="binpan.Symbol.set_display_width"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_display_width</span></code></a>([display_width])</p></td>
-<td><p>Change the shown width shown in the display of the dataframe.</p></td>
+<td><p>Method to change the width shown in the display of the dataframe.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.set_display_decimals" title="binpan.Symbol.set_display_decimals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_display_decimals</span></code></a>(display_decimals)</p></td>
-<td><p>Change the decimals shown in the dataframe.</p></td>
+<td><p>Method to change the number of decimals shown in the display of the dataframe.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.basic" title="binpan.Symbol.basic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">basic</span></code></a>([exceptions, actions_col])</p></td>
 <td><p>Shows just a basic selection of columns data in the dataframe.</p></td>
@@ -444,7 +444,7 @@ weight is heavy.</p></li>
 <td><p>Deletes indicator from dataframe.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.insert_indicator" title="binpan.Symbol.insert_indicator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert_indicator</span></code></a>(source_data[, ...])</p></td>
-<td><p>Adds indicator to dataframe.</p></td>
+<td><p>Adds one or more indicators to the DataFrame in place.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.hk" title="binpan.Symbol.hk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hk</span></code></a>([inplace])</p></td>
 <td><p>It computes Heikin Ashi candles.</p></td>
@@ -680,7 +680,7 @@ weight is heavy.</p></li>
 <dd class="field-odd"><p><strong>timestamped_filename</strong> (<em>bool</em>) – Adds start and end timestamps to the name.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p></p>
+<dd class="field-even"><p>None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -694,7 +694,7 @@ weight is heavy.</p></li>
 <dd class="field-odd"><p><strong>timestamped_filename</strong> (<em>bool</em>) – Adds start and end timestamps to the name.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p></p>
+<dd class="field-even"><p>None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -708,7 +708,7 @@ weight is heavy.</p></li>
 <dd class="field-odd"><p><strong>timestamped_filename</strong> (<em>bool</em>) – Adds start and end timestamps to the name.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p></p>
+<dd class="field-even"><p>None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -716,10 +716,13 @@ weight is heavy.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="binpan.Symbol.set_display_columns">
 <span class="sig-name descname"><span class="pre">set_display_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">display_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.set_display_columns" title="Permalink to this definition">¶</a></dt>
-<dd><p>Change the number of maximum columns shown in the display of the dataframe.</p>
+<dd><p>Method to change the number of columns shown in the display of the dataframe. Uses pandas options.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>display_columns</strong> (<em>int</em>) – Integer</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -727,7 +730,7 @@ weight is heavy.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="binpan.Symbol.set_display_min_rows">
 <span class="sig-name descname"><span class="pre">set_display_min_rows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">display_min_rows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.set_display_min_rows" title="Permalink to this definition">¶</a></dt>
-<dd><p>Change the number of minimum rows shown in the display of the dataframe.</p>
+<dd><p>Method to change the number of minimum rows shown in the display of the dataframe. Uses pandas options.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>display_min_rows</strong> (<em>int</em>) – Integer</p>
@@ -738,7 +741,7 @@ weight is heavy.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="binpan.Symbol.set_display_max_rows">
 <span class="sig-name descname"><span class="pre">set_display_max_rows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">display_max_rows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.set_display_max_rows" title="Permalink to this definition">¶</a></dt>
-<dd><p>Change the number of maximum rows shown in the display of the dataframe.</p>
+<dd><p>Method to change the number of maximum rows shown in the display of the dataframe. Uses pandas options.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>display_max_rows</strong> (<em>int</em>) – Integer</p>
@@ -749,7 +752,7 @@ weight is heavy.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="binpan.Symbol.set_display_width">
 <span class="sig-name descname"><span class="pre">set_display_width</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">display_width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.set_display_width" title="Permalink to this definition">¶</a></dt>
-<dd><p>Change the shown width shown in the display of the dataframe.</p>
+<dd><p>Method to change the width shown in the display of the dataframe. Uses pandas options.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>display_width</strong> (<em>int</em>) – Integer</p>
@@ -760,7 +763,7 @@ weight is heavy.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="binpan.Symbol.set_display_decimals">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_display_decimals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">display_decimals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Symbol.set_display_decimals" title="Permalink to this definition">¶</a></dt>
-<dd><p>Change the decimals shown in the dataframe. It changes all the columns decimals.</p>
+<dd><p>Method to change the number of decimals shown in the display of the dataframe. Uses pandas options.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>display_decimals</strong> (<em>int</em>) – Integer</p>
@@ -776,7 +779,7 @@ weight is heavy.</p></li>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>exceptions</strong> (<em>list</em>) – Columns names to keep.</p></li>
-<li><p><strong>actions_col</strong> (<em>str</em>) – Under development. To keep tags for buy or sell actions.</p></li>
+<li><p><strong>actions_col</strong> (<em>str</em>) – To keep tags for buy or sell actions.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
@@ -821,34 +824,29 @@ in the object remains.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="binpan.Symbol.insert_indicator">
-<span class="sig-name descname"><span class="pre">insert_indicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strategy_group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plotting_row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plotting_rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_overlapped_plot_rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_fills</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#binpan.Symbol.insert_indicator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Adds indicator to dataframe. It always do inplace.</p>
+<span class="sig-name descname"><span class="pre">insert_indicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">DataFrame</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strategy_group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plotting_row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plotting_rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_overlapped_plot_rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_fills</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#binpan.Symbol.insert_indicator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds one or more indicators to the DataFrame in place.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>source_data</strong> (<em>pd.Series</em><em> or </em><em>pd.DataFrame</em><em> or </em><em>np.ndarray</em><em> or </em><em>list</em>) – Source data from pandas_ta or any other. Expected named series
-or list of names, or at least a suffix. If nothing passed, name will be autogenerated.</p></li>
-<li><p><strong>strategy_group</strong> (<em>int</em>) – Optionally can be tagged into a strategy group when inserting data.</p></li>
-<li><p><strong>plotting_row</strong> (<em>int</em>) – When a single serie inserted, a plotting row for a single inserted object. 1 overlaps candles, other,
-gets own row.</p></li>
-<li><p><strong>plotting_rows</strong> (<em>list</em>) – mandatory. Rows position for autoplot each serie. 1 is overlap, ANY OTHER INTEGER will calculate row
-position. Passing list of source data will put different row for each indicator added, ignoring same number in the list. Finally
-you can
-change assigned row with <code class="docutils literal notranslate"><span class="pre">my_symbol.set_plot_row('New_column',</span> <span class="pre">2)</span></code></p></li>
-<li><p><strong>color</strong> (<em>str</em>) – When a single serie inserted, a plotting color.</p></li>
-<li><p><strong>no_overlapped_plot_rows</strong> (<em>bool</em>) – When a single serie inserted, a plotting color.</p></li>
-<li><p><strong>colors</strong> (<em>list</em>) – Colors list for each serie indicator. Default is random colors.</p></li>
-<li><p><strong>color_fills</strong> (<em>list</em>) – Colors to fill indicator til y-axis or False to avoid. Example for transparent green
-<code class="docutils literal notranslate"><span class="pre">'rgba(26,150,65,0.5)'</span></code>. Default is all False.</p></li>
-<li><p><strong>name</strong> (<em>str</em>) – When a single serie inserted, a name for a single inserted object.</p></li>
-<li><p><strong>names</strong> (<em>list</em>) – A list for the columns when inserted.</p></li>
-<li><p><strong>suffix</strong> (<em>str</em>) – A suffix for the new column name/s. If numpy array or nameless pandas series, suffix is the whole name.</p></li>
+<li><p><strong>source_data</strong> – The source data for the indicator(s). Can be a Series, DataFrame, ndarray, or list thereof.</p></li>
+<li><p><strong>strategy_group</strong> – (Optional) Name of the strategy group to tag the inserted data.</p></li>
+<li><p><strong>plotting_row</strong> – (Optional) The specific row for plotting a single series. ‘1’ overlaps with candles; other values create new rows.</p></li>
+<li><p><strong>plotting_rows</strong> – (Optional) List of rows for plotting each series. ‘1’ means overlap; other integers determine separate row positions.</p></li>
+<li><p><strong>color</strong> – (Optional) Color for plotting a single series.</p></li>
+<li><p><strong>no_overlapped_plot_rows</strong> – If True, avoids overlapping plot rows for multiple series.</p></li>
+<li><p><strong>colors</strong> – (Optional) List of colors for each series indicator. Defaults to random colors if not provided.</p></li>
+<li><p><strong>color_fills</strong> – (Optional) List of color fills (as strings) or False to avoid filling. Example: ‘rgba(26,150,65,0.5)’.</p></li>
+<li><p><strong>name</strong> – (Optional) Name for a single inserted object.</p></li>
+<li><p><strong>names</strong> – (Optional) List of names for each column when multiple indicators are inserted.</p></li>
+<li><p><strong>suffix</strong> – Suffix to add to the new column name(s). If the source data is nameless, the suffix becomes the entire name.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return pd.DataFrame or None<span class="colon">:</span></dt>
-<dd class="field-even"><p>Instance candles dataframe.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The modified DataFrame with new indicators added, or None if the operation fails.</p>
 </dd>
 </dl>
+<p>Note: This function dynamically assigns plotting rows and colors if they are not explicitly provided. It handles different types of input data for indicators and integrates them into the existing DataFrame.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -896,7 +894,7 @@ created object.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If the object covers a long time interval, this action can take a relative long time. The BinPan library take care of the
-API weight and can take a sleep to wait until API weight returns to a low value.</p>
+API weight and can take a sleep to wait until API weight returns to a low value. This avoids ban from the API.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

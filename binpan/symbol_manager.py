@@ -3,12 +3,12 @@
 This is the main classes file.
 
 """
-__version__ = "0.8.8"
+__version__ = "0.8.9"
 
 import os
 from sys import path
 import pandas as pd
-from typing import Tuple, List, Union
+from typing import Tuple, List, Union, Optional
 import pandas_ta as ta
 from random import choice
 from time import time
@@ -90,8 +90,8 @@ class Symbol(object):
 
     The class provides several plotting methods for quick data visualization.
 
-    :param str symbol:  It can be any symbol in the binance exchange, like BTCUSDT, ethbusd or any other. Capital letters doesn't matter.
-    :param str tick_interval: Any candle's interval available in binance. Capital letters doesn't matter.
+    :param str symbol:  It can be any symbol in the binance exchange, like BTCUSDT, ethbusd or any other. Capital letters don't matter.
+    :param str tick_interval: Any candle's interval available in binance. Capital letters don't matter.
     :param int or str start_time:  It can be an integer in milliseconds from epoch (1970-01-01 00:00:00 UTC) or any string in the formats:
 
       .. code-block::
@@ -159,7 +159,7 @@ class Symbol(object):
                         Candles are ordered with the timestamp regardless of the index name, even if the index shows the hourly change
                         because daily time saving changes.
 
-    :param bool closed:      The last candle is a closed one in the moment of the creation, instead of a running candle not closed yet.
+    :param bool closed:      The last candle is a closed one in the moment of the creation, discarding the current running one not closed yet. Default True.
     :param int display_columns:     Number of columns in the dataframe display. Convenient to adjust in jupyter notebooks.
     :param int display_max_rows:        Number of rows in the dataframe display. Convenient to adjust in jupyter notebooks.
     :param int display_width:       Display width in the dataframe display. Convenient to adjust in jupyter notebooks.
@@ -510,7 +510,7 @@ class Symbol(object):
         Saves current csv to a csv file.
 
         :param bool timestamped_filename: Adds start and end timestamps to the name.
-        :return:
+        :return: None
         """
         df_ = self.df
         if timestamped_filename:
@@ -527,7 +527,7 @@ class Symbol(object):
         Saves current atomic trades to a csv file.
 
         :param bool timestamped_filename: Adds start and end timestamps to the name.
-        :return:
+        :return: None
         """
         if self.atomic_trades.empty:
             binpan_logger.info(f"No atomic trades to save.")
@@ -547,7 +547,7 @@ class Symbol(object):
         Saves current aggregated trades to a csv file.
 
         :param bool timestamped_filename: Adds start and end timestamps to the name.
-        :return:
+        :return: None
         """
         if self.agg_trades.empty:
             binpan_logger.info(f"No aggregated trades to save.")
@@ -568,10 +568,10 @@ class Symbol(object):
 
     def set_display_columns(self, display_columns=None):
         """
-        Change the number of maximum columns shown in the display of the dataframe.
+        Method to change the number of columns shown in the display of the dataframe. Uses pandas options.
 
         :param int display_columns: Integer
-
+        :return: None
         """
         if display_columns:
             self.display_columns = display_columns
@@ -581,7 +581,7 @@ class Symbol(object):
 
     def set_display_min_rows(self, display_min_rows=None):
         """
-        Change the number of minimum rows shown in the display of the dataframe.
+        Method to change the number of minimum rows shown in the display of the dataframe. Uses pandas options.
 
         :param int display_min_rows: Integer
 
@@ -595,7 +595,7 @@ class Symbol(object):
 
     def set_display_max_rows(self, display_max_rows=None):
         """
-        Change the number of maximum rows shown in the display of the dataframe.
+        Method to change the number of maximum rows shown in the display of the dataframe. Uses pandas options.
 
         :param int display_max_rows: Integer
 
@@ -609,7 +609,7 @@ class Symbol(object):
 
     def set_display_width(self, display_width: int = None):
         """
-        Change the shown width shown in the display of the dataframe.
+        Method to change the width shown in the display of the dataframe. Uses pandas options.
 
         :param int display_width: Integer
 
@@ -623,7 +623,7 @@ class Symbol(object):
     @staticmethod
     def set_display_decimals(display_decimals: int):
         """
-        Change the decimals shown in the dataframe. It changes all the columns decimals.
+        Method to change the number of decimals shown in the display of the dataframe. Uses pandas options.
 
         :param int display_decimals: Integer
 
@@ -640,7 +640,7 @@ class Symbol(object):
         Shows just a basic selection of columns data in the dataframe.
 
         :param list exceptions: Columns names to keep.
-        :param str actions_col: Under development. To keep tags for buy or sell actions.
+        :param str actions_col: To keep tags for buy or sell actions.
         :return pd.DataFrame: Pandas DataFrame
         """
         return basic_dataframe(data=self.df, exceptions=exceptions, actions_col=actions_col)
@@ -748,39 +748,35 @@ class Symbol(object):
         return self.df
 
     def insert_indicator(self,
-                         source_data: pd.Series or pd.DataFrame or np.ndarray or list,
-                         strategy_group: str = None,
-                         plotting_row: str = None,
-                         plotting_rows: list = None,
-                         color: str = None,
+                         source_data: Union[pd.Series, pd.DataFrame, np.ndarray, list],
+                         strategy_group: Optional[str] = None,
+                         plotting_row: Optional[int] = None,
+                         plotting_rows: Optional[List[int]] = None,
+                         color: Optional[str] = None,
                          no_overlapped_plot_rows: bool = True,
-                         colors: list = None,
-                         color_fills: list = None,
-                         name: str = None, names: list = None,
-                         suffix: str = '') -> pd.DataFrame or None:
+                         colors: Optional[List[str]] = None,
+                         color_fills: Optional[List[Union[str, bool]]] = None,
+                         name: Optional[str] = None,
+                         names: Optional[List[str]] = None,
+                         suffix: str = '') -> Optional[pd.DataFrame]:
         """
-        Adds indicator to dataframe. It always do inplace.
+         Adds one or more indicators to the DataFrame in place.
 
-        :param pd.Series or pd.DataFrame or np.ndarray or list source_data: Source data from pandas_ta or any other. Expected named series
-           or list of names, or at least a suffix. If nothing passed, name will be autogenerated.
-        :param int strategy_group: Optionally can be tagged into a strategy group when inserting data.
-        :param int plotting_row: When a single serie inserted, a plotting row for a single inserted object. 1 overlaps candles, other,
-         gets own row.
-        :param list plotting_rows: mandatory. Rows position for autoplot each serie. 1 is overlap, ANY OTHER INTEGER will calculate row
-         position. Passing list of source data will put different row for each indicator added, ignoring same number in the list. Finally
-         you can
-         change assigned row with ``my_symbol.set_plot_row('New_column', 2)``
-        :param str color: When a single serie inserted, a plotting color.
-        :param bool no_overlapped_plot_rows: When a single serie inserted, a plotting color.
-        :param list colors: Colors list for each serie indicator. Default is random colors.
-        :param list color_fills: Colors to fill indicator til y-axis or False to avoid. Example for transparent green
-           ``'rgba(26,150,65,0.5)'``. Default is all False.
-        :param str name: When a single serie inserted, a name for a single inserted object.
-        :param list names: A list for the columns when inserted.
-        :param str suffix: A suffix for the new column name/s. If numpy array or nameless pandas series, suffix is the whole name.
-        :return pd.DataFrame or None: Instance candles dataframe.
+         :param source_data: The source data for the indicator(s). Can be a Series, DataFrame, ndarray, or list thereof.
+         :param strategy_group: (Optional) Name of the strategy group to tag the inserted data.
+         :param plotting_row: (Optional) The specific row for plotting a single series. '1' overlaps with candles; other values create new rows.
+         :param plotting_rows: (Optional) List of rows for plotting each series. '1' means overlap; other integers determine separate row positions.
+         :param color: (Optional) Color for plotting a single series.
+         :param no_overlapped_plot_rows: If True, avoids overlapping plot rows for multiple series.
+         :param colors: (Optional) List of colors for each series indicator. Defaults to random colors if not provided.
+         :param color_fills: (Optional) List of color fills (as strings) or False to avoid filling. Example: 'rgba(26,150,65,0.5)'.
+         :param name: (Optional) Name for a single inserted object.
+         :param names: (Optional) List of names for each column when multiple indicators are inserted.
+         :param suffix: Suffix to add to the new column name(s). If the source data is nameless, the suffix becomes the entire name.
+         :return: The modified DataFrame with new indicators added, or None if the operation fails.
 
-        """
+         Note: This function dynamically assigns plotting rows and colors if they are not explicitly provided. It handles different types of input data for indicators and integrates them into the existing DataFrame.
+         """
         if type(source_data) == list:
             data_qty = len(source_data)
         elif type(source_data) == pd.DataFrame:
@@ -858,10 +854,12 @@ class Symbol(object):
             for element_idx, new_element in enumerate(source_data):
 
                 assert type(new_element) in [pd.Series, np.ndarray]
+                # noinspection PyUnresolvedReferences
                 data = new_element.copy(deep=True)
 
                 if not names:
                     try:
+                        # noinspection PyUnresolvedReferences
                         current_name = new_element.name
                     except Exception:
                         current_name = f"Indicator_{len(self.df) + element_idx}{suffix}"
@@ -978,7 +976,7 @@ class Symbol(object):
         .. note::
 
            If the object covers a long time interval, this action can take a relative long time. The BinPan library take care of the
-           API weight and can take a sleep to wait until API weight returns to a low value.
+           API weight and can take a sleep to wait until API weight returns to a low value. This avoids ban from the API.
 
         :param int hours: If passed, it use just last passed hours for the plot.
         :param int minutes: If passed, it use just last passed minutes for the plot.

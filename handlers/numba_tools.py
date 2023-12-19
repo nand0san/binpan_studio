@@ -1,24 +1,6 @@
 import numpy as np
-from typing import Tuple
-
-from numba import njit
-
-
-# try:
-#     from numba import njit
-#
-#     print("Numba imported")
-# except Exception as e:
-#     msg = "Cannot import numba. Optionally install numba for better performance: 'pip install numba'"
-#     print(msg)
-#
-#
-#     # noinspection PyUnusedLocal
-#     def njit(*args, **kwargs):
-#         def decorator(func):
-#             return func
-#
-#         return decorator
+from typing import Tuple, List
+from numba import njit, prange
 
 
 @njit(cache=True)
@@ -407,3 +389,27 @@ def close_resistance_log_single_numba(close: np.ndarray, resistance: np.ndarray)
 
     # Calcular la diferencia logarítmica
     return np.log(max(closest_resistance / close, 1))
+
+
+@njit(parallel=True)
+def calculate_ema_relations(arr: np.ndarray, windows: np.ndarray, epsilon: float = 1e-8) -> List[np.ndarray]:
+    """
+    Calcula las relaciones de media móvil exponencial (EMA) para una serie de valores, utilizando un conjunto de ventanas especificadas.
+
+    La función utiliza Numba para la optimización del cálculo, especialmente efectiva en grandes conjuntos de datos. Para cada ventana en
+    'windows', calcula la EMA de la serie 'arr'. Luego, ajusta los valores de EMA para evitar divisiones por cero, usando 'epsilon'. Finalmente, devuelve una lista de arrays, cada uno representando la serie 'arr' dividida por su respectiva EMA calculada.
+
+    :param arr : Array de valores para el cálculo de EMA.
+    :param windows : Array de ventanas para el cálculo de EMA.
+    :param epsilon : Valor de ajuste para evitar divisiones por cero.
+    :return : Lista de arrays, cada uno representando la serie 'arr' dividida por su respectiva EMA calculada.
+
+    """
+    results = []
+    for i in prange(len(windows)):
+        window = windows[i]
+        current_ema = ema_numba(arr, window)
+        current_ema = np.where(current_ema == 0, epsilon, current_ema)
+        result = arr / current_ema
+        results.append(result)
+    return results

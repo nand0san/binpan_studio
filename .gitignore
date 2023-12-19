@@ -173,5 +173,5 @@ secret_.py
 secret*
 investigacion*
 test.ipynb
-
+docstring_extractor.py
 venv_no_numba/
