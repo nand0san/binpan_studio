@@ -14,6 +14,7 @@ import multiprocessing
 from .time_helper import convert_milliseconds_to_time_zone_datetime
 from .time_helper import pandas_freq_tick_interval
 from .tags import is_alternating
+from .logs import Logs
 
 import warnings
 with warnings.catch_warnings():
@@ -23,6 +24,8 @@ with warnings.catch_warnings():
 # this is to avoid the error: "RuntimeError: can't set attribute" when using multiprocessing
 cpus = multiprocessing.cpu_count() // 2
 os.environ["LOKY_MAX_CPU_COUNT"] = str(cpus)
+
+indicator_logger = Logs(filename='./logs/indicators.log', name='indicators', info_level='INFO')
 
 
 ##############
@@ -690,19 +693,20 @@ def repeat_prices_by_quantity_old(data: pd.DataFrame, epsilon_quantity: float, p
     return repeated_prices.reshape(-1, 1)
 
 
-def repeat_prices_by_quantity(data: pd.DataFrame, epsilon_quantity: float, price_col="Price", qty_col='Quantity') -> np.ndarray:
+def repeat_prices_by_quantity(data: pd.DataFrame, price_col="Price", qty_col='Quantity') -> np.ndarray:
     """
     Optimized version of repeating prices by quantity for K-means clustering.
 
     :param pd.DataFrame data: A pandas DataFrame with trades or klines, containing a 'Price', 'Quantity' columns and a 'Buyer was maker' column,
         if trades passed, else "Close", "Volume" and "Taker buy base volume"
-    :param float epsilon_quantity: The epsilon quantity to use for repeating prices.
     :param str price_col: The name of the column containing price data. Default is 'Price'.
     :param str qty_col: The name of the column containing quantity data. Default is 'Quantity'.
     :return np.ndarray: A numpy array with the prices repeated by quantity.
     """
-    repeated_prices = (price for price, qty in zip(data[price_col], data[qty_col]) for _ in range(int(np.ceil(qty / epsilon_quantity))))
-    return np.array(list(repeated_prices)).reshape(-1, 1)
+    repeated_prices = np.repeat(data[price_col].values, data[qty_col].values)
+    # repeated_prices = (price for price, qty in zip(data[price_col], data[qty_col]) for _ in range(int(np.ceil(qty / epsilon_quantity))))
+    # return np.array(list(repeated_prices)).reshape(-1, 1)
+    return repeated_prices.reshape(-1, 1)
 
 
 def kmeans_custom_init(data: np.ndarray, max_clusters: int):
@@ -746,8 +750,8 @@ def find_optimal_clusters(KMeans_lib, data: np.ndarray, max_clusters: int, quiet
 
 def support_resistance_levels(df: pd.DataFrame,
                               max_clusters: int = 5,
-                              by_quantity: float = None,
-                              by_klines=True, quiet=False,
+                              by_quantity: bool = None,
+                              by_klines=True,
                               optimize_clusters_qty: bool = False) -> Tuple:
     """
     Calculate support and resistance levels for a given set of trades using K-means clustering.
@@ -761,8 +765,7 @@ def support_resistance_levels(df: pd.DataFrame,
     :param float by_quantity: Count each price as many times the quantity contains a float of a the passed amount.
         Example: If a price 0.001 has a quantity of 100 and by_quantity is 0.1, quantity/by_quantity = 100/0.1 = 1000, then this prices
         is taken into account 1000 times instead of 1.
-    :param bool by_klines: If true, use market profile from klines.
-    :param bool quiet: If true, do not print progress bar.
+    :param bool by_klines: If true, data is assumed to be klines.
     :param bool optimize_clusters_qty: If true, find the optimal number of clusters to use for calculating support and resistance levels.
     :return: A tuple containing two lists: the first list contains the support levels, and the second list contains
         the resistance levels. Both lists contain float values.
@@ -770,80 +773,77 @@ def support_resistance_levels(df: pd.DataFrame,
     try:
         from sklearn.cluster import KMeans
     except ImportError:
-        print(f"Please install sklearn: `pip install -U scikit-learn` to use Clustering")
+        indicator_logger.warning(f"Please install sklearn: `pip install -U scikit-learn` to use Clustering")
         return [], []
-    # copy data to avoid side effects
+
     df_ = df.copy(deep=True)
 
     # function core starts here
     if not by_klines:
+        if by_quantity:
+            quantity = np.mean(df_['Quantity'])
+            df_["qty"] = (df_['Quantity'] / quantity).astype(int)
         buy_data = df_.loc[df_['Buyer was maker'] == False]
         sell_data = df_.loc[df_['Buyer was maker'] == True]
         initial_centroids = kmeans_custom_init(data=df_['Price'].values, max_clusters=max_clusters)
+        if by_quantity:
+
+            buy_prices = repeat_prices_by_quantity(data=buy_data, price_col="Price", qty_col="qty")
+            sell_prices = repeat_prices_by_quantity(data=sell_data, price_col="Price", qty_col="qty")
+            df_.drop(columns=["qty"], inplace=True)
+        else:
+            buy_prices = buy_data['Price'].values.reshape(-1, 1)
+            sell_prices = sell_data['Price'].values.reshape(-1, 1)
+
+        if len(buy_prices) == 0 and len(sell_prices) == 0:
+            indicator_logger.warning(f"There is no trade data to calculate support and resistance levels: {len(buy_prices)} buys and {len(sell_prices)} sells.")
+            return [], []
+
+        if optimize_clusters_qty:
+            optimal_buy_clusters = find_optimal_clusters(KMeans_lib=KMeans, data=buy_prices, max_clusters=max_clusters, initial_centroids=initial_centroids)
+            optimal_sell_clusters = find_optimal_clusters(KMeans_lib=KMeans, data=sell_prices, max_clusters=max_clusters, initial_centroids=initial_centroids)
+        else:
+            optimal_buy_clusters = max_clusters
+            optimal_sell_clusters = max_clusters
+
+        indicator_logger.info(f"Found {optimal_buy_clusters} support levels from buys and {optimal_sell_clusters} resistance levels from sells.")
+
+        kmeans_buy = KMeans(n_clusters=optimal_buy_clusters, n_init=1, init=initial_centroids).fit(buy_prices)
+        kmeans_sell = KMeans(n_clusters=optimal_sell_clusters, n_init=1, init=initial_centroids).fit(sell_prices)
+
+        support_levels = np.sort(kmeans_buy.cluster_centers_, axis=0)
+        resistance_levels = np.sort(kmeans_sell.cluster_centers_, axis=0)
+
+        return support_levels.flatten().tolist(), resistance_levels.flatten().tolist()
 
     else:
-        profile = market_profile_from_klines_melt(df=df_).reset_index()
-        buy_data = profile.loc[profile['Is_Maker'] == True]
-        sell_data = profile.loc[profile['Is_Maker'] == False]
-        initial_centroids = kmeans_custom_init(data=df_['Close'].values, max_clusters=max_clusters)
-
-    if by_quantity and not by_klines:
-        buy_prices = repeat_prices_by_quantity(data=buy_data, epsilon_quantity=by_quantity, price_col="Price", qty_col="Quantity")
-        sell_prices = repeat_prices_by_quantity(data=sell_data, epsilon_quantity=by_quantity, price_col="Price", qty_col="Quantity")
-    elif by_quantity and by_klines:  # asume data came from Market Profile
-        buy_prices = repeat_prices_by_quantity(data=buy_data, epsilon_quantity=by_quantity, price_col="Market_Profile", qty_col="Volume")
-        sell_prices = repeat_prices_by_quantity(data=sell_data, epsilon_quantity=by_quantity, price_col="Market_Profile", qty_col="Volume")
-    else:
-        buy_prices = buy_data['Price'].values.reshape(-1, 1)
-        sell_prices = sell_data['Price'].values.reshape(-1, 1)
-
-    if len(buy_prices) == 0 and len(sell_prices) == 0:
-        print(f"There is no trade data to calculate support and resistance levels: {len(buy_prices)} buys and {len(sell_prices)} sells.")
-        return [], []
-
-    if not quiet:
-        print("Clustering data...")
-
-    if optimize_clusters_qty:
-        optimal_buy_clusters = find_optimal_clusters(KMeans_lib=KMeans, data=buy_prices, max_clusters=max_clusters, quiet=quiet,
-                                                     initial_centroids=initial_centroids)
-        optimal_sell_clusters = find_optimal_clusters(KMeans_lib=KMeans, data=sell_prices, max_clusters=max_clusters, quiet=quiet,
-                                                      initial_centroids=initial_centroids)
-        if not quiet:
-            print(f"Found {optimal_buy_clusters} support levels from buys and {optimal_sell_clusters} resistance levels from sells.")
-    else:
-        optimal_buy_clusters = max_clusters
-        optimal_sell_clusters = max_clusters
-
-    kmeans_buy = KMeans(n_clusters=optimal_buy_clusters, n_init=1, init=initial_centroids).fit(buy_prices)
-    kmeans_sell = KMeans(n_clusters=optimal_sell_clusters, n_init=1, init=initial_centroids).fit(sell_prices)
-
-    support_levels = np.sort(kmeans_buy.cluster_centers_, axis=0)
-    resistance_levels = np.sort(kmeans_sell.cluster_centers_, axis=0)
-
-    return support_levels.flatten().tolist(), resistance_levels.flatten().tolist()
+        indicator_logger.info("Calculating support and resistance levels from klines in simple mode...")
+        support_levels = support_resistance_levels_merged(df=df_,
+                                                          by_klines=True,
+                                                          max_clusters=max_clusters,
+                                                          by_quantity=by_quantity,
+                                                          optimize_clusters_qty=optimize_clusters_qty)
+        return support_levels, []
 
 
 def support_resistance_levels_merged(df: pd.DataFrame,
                                      by_klines: bool,
                                      max_clusters: int = 5,
-                                     by_quantity: float = None,
-                                     optimize_clusters_qty: bool = False,
-                                     quiet: bool = False):
+                                     by_quantity: float = True,
+                                     optimize_clusters_qty: bool = False):
     """
     Calculate support and resistance levels merged for a given set of trades using K-means clustering.
     :param df: A pandas DataFrame with trades or klines, containing a 'Price', 'Quantity' columns or "Close", "Volume".
-    :param by_klines: If true, use klines.
+    :param by_klines: If true, assume data is from klines.
     :param max_clusters: Quantity of clusters to consider initially. Default: 5.
     :param by_quantity: If true, use quantity to repeat prices. It gives more importance to prices with more quantity.
     :param optimize_clusters_qty: If true, find the optimal number of clusters to use for calculating support and resistance levels.
-    :param quiet: If true, do not print progress bar.
     :return: A list containing the support and resistance levels merged. It would be just levels.
     """
     try:
         from sklearn.cluster import KMeans
     except ImportError:
-        print(f"Please install sklearn: `pip install -U scikit-learn` to use Clustering")
+        indicator_logger.warning(f"Please install sklearn: `pip install -U scikit-learn` to use Clustering")
         return [], []
     # copy data to avoid side effects
     df_ = df.copy(deep=True)
@@ -855,23 +855,21 @@ def support_resistance_levels_merged(df: pd.DataFrame,
         initial_centroids = kmeans_custom_init(data=df_['Close'].values, max_clusters=max_clusters)
 
     if by_quantity and not by_klines:
-        repeated_prices = repeat_prices_by_quantity(data=df_, epsilon_quantity=by_quantity, price_col="Price", qty_col="Quantity")
+        repeated_prices = repeat_prices_by_quantity(data=df_, price_col="Price", qty_col="Quantity")
     elif by_quantity and by_klines:
-        repeated_prices = repeat_prices_by_quantity(data=df_, epsilon_quantity=by_quantity, price_col="Close", qty_col="Volume")
+        repeated_prices = repeat_prices_by_quantity(data=df_, price_col="Close", qty_col="Trades")
     else:
         repeated_prices = df_['Price'].values.reshape(-1, 1)
 
     if len(repeated_prices) == 0:
-        print(f"There is no data to calculate support and resistance merged levels: {len(repeated_prices)}")
+        indicator_logger.warning(f"There is no data to calculate support and resistance merged levels: {len(repeated_prices)}")
         return [], []
-    if not quiet:
-        print("Clustering data...")
+
+    indicator_logger.warning("Clustering data...")
 
     if optimize_clusters_qty:
-        optimal_clusters = find_optimal_clusters(KMeans_lib=KMeans, data=repeated_prices, max_clusters=max_clusters, quiet=quiet,
-                                                 initial_centroids=initial_centroids)
-        if not quiet:
-            print(f"Found {optimal_clusters} levels.")
+        optimal_clusters = find_optimal_clusters(KMeans_lib=KMeans, data=repeated_prices, max_clusters=max_clusters, initial_centroids=initial_centroids)
+        indicator_logger.info(f"Found {optimal_clusters} levels.")
     else:
         optimal_clusters = max_clusters
 
@@ -880,7 +878,11 @@ def support_resistance_levels_merged(df: pd.DataFrame,
     return levels.flatten().tolist()
 
 
-def repeat_timestamps_by_quantity(df: pd.DataFrame, epsilon_quantity: float, buy_maker: bool = None, buy_taker: bool = None) -> np.ndarray:
+def repeat_timestamps_by_quantity(df: pd.DataFrame,
+                                  epsilon_quantity: float,
+                                  buy_maker: bool = None,
+                                  buy_taker: bool = None,
+                                  trades_col_from_kline: str = "Trades") -> np.ndarray:
     """
     Repeat timestamps by quantity to give more importance to prices with more quantity. It detects if data is from trades or klines by
     column names.
@@ -889,6 +891,7 @@ def repeat_timestamps_by_quantity(df: pd.DataFrame, epsilon_quantity: float, buy
     :param epsilon_quantity: Quantity to repeat timestamps by.
     :param buy_maker: If true, use maker side volume.
     :param buy_taker: If true, use taker side volume.
+    :param trades_col_from_kline: If true, use taker side volume.
     :return:
     """
     data = df.copy()
@@ -901,11 +904,14 @@ def repeat_timestamps_by_quantity(df: pd.DataFrame, epsilon_quantity: float, buy
             col = 'Taker buy base volume'
         else:
             col = 'Volume'
-
-        for price, quantity, timestamp in data[['Close', col, 'Open timestamp']].values:
-            repeat_count = int(-(quantity // -epsilon_quantity))  # ceil division
-            repeated_timestamps.extend([timestamp] * repeat_count)
-    else:
+        # TODO: si los trades rulan dejamos esto como referencia para las klines
+        if trades_col_from_kline:
+            repeated_timestamps = np.repeat(df["Close"], df[trades_col_from_kline])
+        else:
+            for price, quantity, timestamp in data[['Close', col, 'Open timestamp']].values:
+                repeat_count = int(-(quantity // -epsilon_quantity))  # ceil division
+                repeated_timestamps.extend([timestamp] * repeat_count)
+    else:  # entonces deben ser trades y Quantity aparecerá como columna a manejar
         if buy_maker:
             data_filtered = data.loc[data['Buyer was maker'] == True]
         elif buy_taker:
@@ -958,15 +964,15 @@ def time_active_zones(df: pd.DataFrame,
             buy_timestamps = repeat_timestamps_by_quantity(df=buy_data, epsilon_quantity=by_quantity, buy_maker=False, buy_taker=True)
             sell_timestamps = repeat_timestamps_by_quantity(df=sell_data, epsilon_quantity=by_quantity, buy_maker=True, buy_taker=False)
         else:
-            my_timestamps = repeat_timestamps_by_quantity(df=df_, epsilon_quantity=by_quantity)  # tomara todo el quantity
+            my_timestamps = repeat_timestamps_by_quantity(df=df_, epsilon_quantity=by_quantity, trades_col_from_kline="Trades")  # tomara todo el quantity
     else:
         initial_centroids = kmeans_custom_init(data=df_['Open timestamp'].values, max_clusters=max_clusters)
         assert by_quantity, "If simple is true, by_quantity must be true too because KMEANS from evenly spaced klines has no sense."
         if not simple:
-            buy_timestamps = repeat_timestamps_by_quantity(df=df_, epsilon_quantity=by_quantity, buy_maker=False, buy_taker=True)
-            sell_timestamps = repeat_timestamps_by_quantity(df=df_, epsilon_quantity=by_quantity, buy_maker=True, buy_taker=False)
+            buy_timestamps = repeat_timestamps_by_quantity(df=df_, epsilon_quantity=by_quantity, buy_maker=False, buy_taker=True, trades_col_from_kline="Trades")
+            sell_timestamps = repeat_timestamps_by_quantity(df=df_, epsilon_quantity=by_quantity, buy_maker=True, buy_taker=False, trades_col_from_kline="Trades")
         else:
-            my_timestamps = repeat_timestamps_by_quantity(df=df_, epsilon_quantity=by_quantity)  # tomara todo el volumen
+            my_timestamps = repeat_timestamps_by_quantity(df=df_, epsilon_quantity=by_quantity, trades_col_from_kline="Trades")
 
     if simple:
         if len(my_timestamps) == 0:

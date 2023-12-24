@@ -3,7 +3,7 @@
 This is the main classes file.
 
 """
-__version__ = "0.8.9"
+__version__ = "0.8.10"
 
 import os
 from sys import path
@@ -3355,23 +3355,29 @@ class Symbol(object):
                     by_quantity = np.mean(self.agg_trades['Quantity'].values)
 
                 if simple:
-                    self.support_lines = support_resistance_levels_merged(self.agg_trades, max_clusters=max_clusters,
+                    self.support_lines = support_resistance_levels_merged(self.agg_trades,
+                                                                          max_clusters=max_clusters,
                                                                           by_quantity=by_quantity,
                                                                           by_klines=False)
                     self.resistance_lines = []
                 else:
-                    self.support_lines, self.resistance_lines = support_resistance_levels(self.agg_trades, max_clusters=max_clusters,
-                                                                                          by_quantity=by_quantity, by_klines=False)
+                    self.support_lines, self.resistance_lines = support_resistance_levels(self.agg_trades,
+                                                                                          max_clusters=max_clusters,
+                                                                                          by_quantity=by_quantity,
+                                                                                          by_klines=False)
         else:  # with klines
             from_data = "klines"
             if not by_quantity:
-                by_quantity = np.mean(self.df['Volume'].values) * 0.25
+                by_quantity = np.mean(self.df['Trades'].values)
             if simple:
-                self.support_lines = support_resistance_levels_merged(self.df, max_clusters=max_clusters, by_quantity=by_quantity,
+                self.support_lines = support_resistance_levels_merged(self.df,
+                                                                      max_clusters=max_clusters,
+                                                                      by_quantity=by_quantity,
                                                                       by_klines=True)
                 self.resistance_lines = []
             else:
-                self.support_lines, self.resistance_lines = support_resistance_levels(self.df, max_clusters=max_clusters,
+                self.support_lines, self.resistance_lines = support_resistance_levels(self.df,
+                                                                                      max_clusters=max_clusters,
                                                                                       by_quantity=by_quantity,
                                                                                       by_klines=True)
 
@@ -3411,7 +3417,7 @@ class Symbol(object):
                                    from_atomic: bool = False,
                                    from_aggregated: bool = False,
                                    max_clusters: int = 5,
-                                   by_quantity: float = True,
+                                   by_quantity: bool = True,
                                    simple: bool = True,
                                    inplace: bool = True,
                                    delayed: int = 0,
@@ -3511,26 +3517,23 @@ class Symbol(object):
             update_time_ranges = remove_initial_included_ranges(time_ranges=update_time_ranges, initial_minutes=minutes_window)
 
         # loop por cada ventana de tiempo
-        # for start, end in tqdm(update_time_ranges):
         for i in range(len(update_time_ranges)):
             previous_start, previous_end = update_time_ranges[i - delayed]
             current_start, current_end = update_time_ranges[i]
             df_window = df.loc[previous_start:previous_end]
 
-            # if discrete_interval is not None:
-            #     df_window = df.loc[start:end]
-            # else:
-            #     delta_window = f"{minutes_window}T"
-            #     df_window = df.loc[start - pd.Timedelta(delta_window): start]
-
             # Aplica la función hipotética al fragmento del DataFrame
             if simple:
-                s_lines = support_resistance_levels_merged(df=df_window, max_clusters=max_clusters, by_quantity=by_quantity,
-                                                           by_klines=by_klines, quiet=True)
+                s_lines = support_resistance_levels_merged(df=df_window,
+                                                           max_clusters=max_clusters,
+                                                           by_quantity=by_quantity,
+                                                           by_klines=by_klines)
                 r_lines = []
             else:
-                s_lines, r_lines = support_resistance_levels(df=df_window, max_clusters=max_clusters, by_quantity=by_quantity,
-                                                             by_klines=by_klines, quiet=True)
+                s_lines, r_lines = support_resistance_levels(df=df_window,
+                                                             max_clusters=max_clusters,
+                                                             by_quantity=by_quantity,
+                                                             by_klines=by_klines)
             for k, sup in enumerate(s_lines):
                 result.loc[current_start:current_end, sup_cols[k]] = sup
             for k, res in enumerate(r_lines):
@@ -3619,7 +3622,7 @@ class Symbol(object):
         else:  # with klines
             from_data = "klines"
             if not by_quantity:
-                by_quantity = np.mean(self.df['Volume'].values) * 0.25
+                by_quantity = np.mean(self.df['Trades'].values)
             if simple:
                 self.blue_timestamps, self.red_timestamps = time_active_zones(self.df,
                                                                               max_clusters=max_clusters,
