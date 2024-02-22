@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Indicators Module - BinPan 0.8.11 documentation</title>
+      <title>Indicators Module - BinPan 0.8.12 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Influx Manager Module" href="influx_manager.html" /><link rel="prev" title="Files Module" href="files.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -227,7 +227,7 @@ html.dark {
 <td><p>Generate reversal candles for reversal charts:</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.repeat_prices_by_quantity" title="handlers.indicators.repeat_prices_by_quantity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat_prices_by_quantity</span></code></a>(data[, price_col, ...])</p></td>
-<td><p>Optimized version of repeating prices by quantity for K-means clustering.</p></td>
+<td><p>Optimized version of repeating prices by quantity for K-means clustering, with a comparison between 'Quantity' and 'Quote quantity' to choose the column with larger values for repeating prices.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.kmeans_custom_init" title="handlers.indicators.kmeans_custom_init"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kmeans_custom_init</span></code></a>(data, max_clusters)</p></td>
 <td><p>Generate initial centroids for K-means clustering with equally spaced values between min and max values in data.</p></td>
@@ -629,19 +629,20 @@ relevant.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.indicators.repeat_prices_by_quantity">
-<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">repeat_prices_by_quantity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">price_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Price'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qty_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Quantity'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#handlers.indicators.repeat_prices_by_quantity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Optimized version of repeating prices by quantity for K-means clustering.</p>
+<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">repeat_prices_by_quantity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">price_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Price'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qty_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Quantity'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alt_qty_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Quote</span> <span class="pre">quantity'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#handlers.indicators.repeat_prices_by_quantity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Optimized version of repeating prices by quantity for K-means clustering, with a comparison between ‘Quantity’ and ‘Quote quantity’
+to choose the column with larger values for repeating prices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>pd.DataFrame</em>) – A pandas DataFrame with trades or klines, containing a ‘Price’, ‘Quantity’ columns and a ‘Buyer was maker’ column,
-if trades passed, else “Close”, “Volume” and “Taker buy base volume”</p></li>
+<li><p><strong>data</strong> (<em>pd.DataFrame</em>) – A pandas DataFrame with trades or klines, containing ‘Price’, ‘Quantity’, and optionally ‘Quote quantity’ columns.</p></li>
 <li><p><strong>price_col</strong> (<em>str</em>) – The name of the column containing price data. Default is ‘Price’.</p></li>
-<li><p><strong>qty_col</strong> (<em>str</em>) – The name of the column containing quantity data. Default is ‘Quantity’.</p></li>
+<li><p><strong>qty_col</strong> (<em>str</em>) – The primary name of the column containing quantity data. Default is ‘Quantity’.</p></li>
+<li><p><strong>alt_qty_col</strong> (<em>str</em>) – The alternative name of the column containing quantity data to compare with qty_col. Default is ‘Quote quantity’.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return np.ndarray<span class="colon">:</span></dt>
-<dd class="field-even"><p>A numpy array with the prices repeated by quantity.</p>
+<dd class="field-even"><p>A numpy array with the prices repeated by the chosen quantity.</p>
 </dd>
 </dl>
 </dd></dl>

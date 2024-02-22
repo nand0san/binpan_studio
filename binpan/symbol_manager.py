@@ -3,7 +3,7 @@
 This is the main classes file.
 
 """
-__version__ = "0.8.11"
+__version__ = "0.8.12"
 
 import os
 from sys import path

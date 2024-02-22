@@ -693,18 +693,26 @@ def reversal_candles(trades: pd.DataFrame, decimal_positions: int, time_zone: st
 #     return repeated_prices.reshape(-1, 1)
 
 
-def repeat_prices_by_quantity(data: pd.DataFrame, price_col="Price", qty_col='Quantity') -> np.ndarray:
+def repeat_prices_by_quantity(data: pd.DataFrame, price_col="Price", qty_col='Quantity', alt_qty_col='Quote quantity') -> np.ndarray:
     """
-    Optimized version of repeating prices by quantity for K-means clustering.
+    Optimized version of repeating prices by quantity for K-means clustering, with a comparison between 'Quantity' and 'Quote quantity'
+    to choose the column with larger values for repeating prices.
 
-    :param pd.DataFrame data: A pandas DataFrame with trades or klines, containing a 'Price', 'Quantity' columns and a 'Buyer was maker' column,
-        if trades passed, else "Close", "Volume" and "Taker buy base volume"
+    :param pd.DataFrame data: A pandas DataFrame with trades or klines, containing 'Price', 'Quantity', and optionally 'Quote quantity' columns.
     :param str price_col: The name of the column containing price data. Default is 'Price'.
-    :param str qty_col: The name of the column containing quantity data. Default is 'Quantity'.
-    :return np.ndarray: A numpy array with the prices repeated by quantity.
+    :param str qty_col: The primary name of the column containing quantity data. Default is 'Quantity'.
+    :param str alt_qty_col: The alternative name of the column containing quantity data to compare with qty_col. Default is 'Quote quantity'.
+    :return np.ndarray: A numpy array with the prices repeated by the chosen quantity.
     """
-    # Convertir las cantidades a enteros antes de la repetición
-    quantities = data[qty_col].values.astype(int)
+    # Elegir la columna con valores más grandes para minimizar el error al pasar a int
+    if qty_col in data.columns and alt_qty_col in data.columns:
+        # Seleccionar una línea aleatoria para comparar los valores
+        random_index = np.random.randint(0, len(data))
+        if data[qty_col].iloc[random_index] < data[alt_qty_col].iloc[random_index]:
+            qty_col = alt_qty_col
+
+    # Asumiendo que los valores en la columna elegida pueden ser flotantes, redondear hacia abajo antes de convertir a enteros
+    quantities = np.floor(data[qty_col].values).astype(int)
     repeated_prices = np.repeat(data[price_col].values, quantities)
 
     return repeated_prices.reshape(-1, 1)
@@ -856,9 +864,9 @@ def support_resistance_levels_merged(df: pd.DataFrame,
         initial_centroids = kmeans_custom_init(data=df_['Close'].values, max_clusters=max_clusters)
 
     if by_quantity and not by_klines:
-        repeated_prices = repeat_prices_by_quantity(data=df_, price_col="Price", qty_col="Quantity")
+        repeated_prices = repeat_prices_by_quantity(data=df_, price_col="Price", qty_col="Quantity", alt_qty_col="Quote quantity")
     elif by_quantity and by_klines:
-        repeated_prices = repeat_prices_by_quantity(data=df_, price_col="Close", qty_col="Trades")
+        repeated_prices = repeat_prices_by_quantity(data=df_, price_col="Close", qty_col="Trades", alt_qty_col="Quote volume")
     else:
         repeated_prices = df_['Price'].values.reshape(-1, 1)
 
