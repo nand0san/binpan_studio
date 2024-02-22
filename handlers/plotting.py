@@ -90,12 +90,12 @@ def set_candles(df: pd.DataFrame, x_labels: list = None) -> tuple:
 
 
 # noinspection PyTypeChecker
-def set_volume_series(df: pd.DataFrame, win: int = 21, green_color='rgba(70, 197, 74, 1)', red_color='rgba(197, 79, 70, 1)') -> tuple:
+def set_volume_series(df: pd.DataFrame, window: int = 21, green_color='rgba(70, 197, 74, 1)', red_color='rgba(197, 79, 70, 1)') -> tuple:
     """
     Sets or unsets volume histogram.
 
     :param df: A binpan's dataframe.
-    :param win: Window for volume average line.
+    :param window: Window for volume average line.
     :param str green_color: An rgba color string like: 'rgba(144,194,178,255)'
     :param red_color: An rgba color string like: 'rgba(242,149,149,255)'
     :return: A tuple with several figures.
@@ -106,9 +106,9 @@ def set_volume_series(df: pd.DataFrame, win: int = 21, green_color='rgba(70, 197
 
     volume_g = go.Bar(x=volume_green.index, y=volume_green['Volume'], marker_color=green_color, name='Up volume')
     volume_r = go.Bar(x=volume_red.index, y=volume_red['Volume'], marker_color=red_color, name='Down volume')
-    vol_ewma = df['Volume'].ewm(span=win, min_periods=0, adjust=False, ignore_na=False).mean()
+    vol_ewma = df['Volume'].ewm(span=window, min_periods=0, adjust=False, ignore_na=False).mean()
     # volume_ma = set_ta_scatter(df_, vol_ewma)
-    volume_ma = go.Scatter(x=df.index, y=vol_ewma, line=dict(color='black', width=0.5), name=f'Volume EMA {win}')
+    volume_ma = go.Scatter(x=df.index, y=vol_ewma, line=dict(color='black', width=0.5), name=f'Volume EMA {window}')
 
     return volume_g, volume_r, volume_ma, 3
 
@@ -338,13 +338,34 @@ def generate_vertical_shapes(timestamps: list, y0: float, y1: float, color='blue
 # market plotting #
 ###################
 
-def candles_ta(data: pd.DataFrame, indicators_series: list or pd.DataFrame = None, rows_pos=None, indicator_names=None,
-               indicators_colors=None, indicators_color_filled: dict = None, indicators_filled_mode: dict = None, axis_groups=None,
-               plot_splitted_serie_couple=None, width: int = 1800, height: int = 1000, range_slider: bool = False, red_timestamps=None,
-               blue_timestamps=None, candles_ta_height_ratio: float = 0.5, plot_volume: bool or str = True,
-               title: str = 'Candlesticks, indicators, and Volume plot', yaxis_title: str = 'Symbol Price', annotation_values: list = None,
-               markers: list = None, text_positions: list = None, annotation_colors: list = None, annotation_legend_names: list = None,
-               labels: list = None, plot_bgcolor: str = None, text_index: bool = False, vol_up_color: str = None,
+def candles_ta(data: pd.DataFrame,
+               indicators_series: list or pd.DataFrame = None,
+               rows_pos=None,
+               indicator_names=None,
+               indicators_colors=None,
+               indicators_color_filled: dict = None,
+               indicators_filled_mode: dict = None,
+               axis_groups=None,
+               plot_splitted_serie_couple=None,
+               width: int = 1800,
+               height: int = 1000,
+               range_slider: bool = False,
+               red_timestamps=None,
+               blue_timestamps=None,
+               candles_ta_height_ratio: float = 0.5,
+               plot_volume: bool or str = True,
+               volume_window: int = 21,
+               title: str = 'Candlesticks, indicators, and Volume plot',
+               yaxis_title: str = 'Symbol Price',
+               annotation_values: list = None,
+               markers: list = None,
+               text_positions: list = None,
+               annotation_colors: list = None,
+               annotation_legend_names: list = None,
+               labels: list = None,
+               plot_bgcolor: str = None,
+               text_index: bool = False,
+               vol_up_color: str = None,
                vol_down_color: str = None):
     """
     Data needs to be a DataFrame that at least contains the columns: Open Close High Low Volume
@@ -379,6 +400,7 @@ def candles_ta(data: pd.DataFrame, indicators_series: list or pd.DataFrame = Non
     :param list blue_timestamps: A list of timestamps to plot vertical lines overlap in blue color.
     :param float candles_ta_height_ratio: A ratio between the big candles plot and (if any) the rest of indicator subplots below.
     :param bool or str plot_volume: Optional to plot volume from "Volume" column or pass volume column name.
+    :param int volume_window: A window for volume moving average.
     :param str title: A title string.
     :param str yaxis_title: A name string.
     :param list annotation_values: A list of pandas series with values to plot marks or annotations overlapped in the candles plot.
@@ -550,7 +572,7 @@ def candles_ta(data: pd.DataFrame, indicators_series: list or pd.DataFrame = Non
 
     # volume
     if plot_volume:
-        volume_g, volume_r, volume_ma, ax = set_volume_series(df_plot, green_color=vol_up_color, red_color=vol_down_color)
+        volume_g, volume_r, volume_ma, ax = set_volume_series(df_plot, green_color=vol_up_color, red_color=vol_down_color, window=volume_window)
         axes += ax
         rows = [1, 2, 2, 2]
         pre_rows = 4

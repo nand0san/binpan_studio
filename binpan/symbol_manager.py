@@ -3,7 +3,7 @@
 This is the main classes file.
 
 """
-__version__ = "0.8.12"
+__version__ = "0.8.13"
 
 import os
 from sys import path
@@ -384,6 +384,7 @@ class Symbol(object):
         self.row_control = dict()
         self.color_control = dict()
         self.color_fill_control = dict()
+        self.plotting_volume_ma = 21
         self.indicators_filled_mode = dict()
         self.axis_groups = dict()
         self.global_axis_group = 99
@@ -1769,9 +1770,20 @@ class Symbol(object):
             kwargs['candles_ta_height_ratio'] = 0.7
 
         if from_atomic:
-            return candles_ta(data=self.reversal_atomic_klines, plot_volume='Quantity', text_index=text_index, **kwargs)
+            return candles_ta(data=self.reversal_atomic_klines, plot_volume='Quantity', text_index=text_index,
+                              volume_window=self.plotting_volume_ma, **kwargs)
         else:
-            return candles_ta(data=self.reversal_agg_klines, plot_volume='Quantity', text_index=text_index, **kwargs)
+            return candles_ta(data=self.reversal_agg_klines, plot_volume='Quantity', text_index=text_index,
+                              volume_window=self.plotting_volume_ma, **kwargs)
+
+    def set_plotting_volume_ma(self, window: int = 21) -> None:
+        """
+        Set a window for plotting volume moving average on the candles plot when volumen bars are plotted.
+
+        :param int window: A window for the moving average.
+        """
+        self.plotting_volume_ma = window
+        binpan_logger.info(f"Plotting volume moving average set to {window}")
 
     def plot_trades_pie(self, categories: int = 25, logarithmic=True, title: str = None):
         """

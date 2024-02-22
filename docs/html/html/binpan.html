@@ -164,6 +164,7 @@ html.dark {
 <li><a class="reference internal" href="#binpan.Symbol.plot_agg_trades_size"><code class="docutils literal notranslate"><span class="pre">Symbol.plot_agg_trades_size()</span></code></a></li>
 <li><a class="reference internal" href="#binpan.Symbol.plot_atomic_trades_size"><code class="docutils literal notranslate"><span class="pre">Symbol.plot_atomic_trades_size()</span></code></a></li>
 <li><a class="reference internal" href="#binpan.Symbol.plot_reversal"><code class="docutils literal notranslate"><span class="pre">Symbol.plot_reversal()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.Symbol.set_plotting_volume_ma"><code class="docutils literal notranslate"><span class="pre">Symbol.set_plotting_volume_ma()</span></code></a></li>
 <li><a class="reference internal" href="#binpan.Symbol.plot_trades_pie"><code class="docutils literal notranslate"><span class="pre">Symbol.plot_trades_pie()</span></code></a></li>
 <li><a class="reference internal" href="#binpan.Symbol.plot_aggression_sizes"><code class="docutils literal notranslate"><span class="pre">Symbol.plot_aggression_sizes()</span></code></a></li>
 <li><a class="reference internal" href="#binpan.Symbol.plot_market_profile"><code class="docutils literal notranslate"><span class="pre">Symbol.plot_market_profile()</span></code></a></li>
@@ -509,163 +510,166 @@ weight is heavy.</p></li>
 <tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.plot_reversal" title="binpan.Symbol.plot_reversal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_reversal</span></code></a>([min_height, min_reversal, ...])</p></td>
 <td><p>Plots reversal candles.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.plot_trades_pie" title="binpan.Symbol.plot_trades_pie"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_trades_pie</span></code></a>([categories, logarithmic, title])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.set_plotting_volume_ma" title="binpan.Symbol.set_plotting_volume_ma"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plotting_volume_ma</span></code></a>([window])</p></td>
+<td><p>Set a window for plotting volume moving average on the candles plot when volumen bars are plotted.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.plot_trades_pie" title="binpan.Symbol.plot_trades_pie"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_trades_pie</span></code></a>([categories, logarithmic, title])</p></td>
 <td><p>Plots a pie chart.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.plot_aggression_sizes" title="binpan.Symbol.plot_aggression_sizes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_aggression_sizes</span></code></a>([bins, hist_funct, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.plot_aggression_sizes" title="binpan.Symbol.plot_aggression_sizes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_aggression_sizes</span></code></a>([bins, hist_funct, ...])</p></td>
 <td><p>Binance fees can be cheaper for maker orders, many times when big traders, like whales, are operating .</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.plot_market_profile" title="binpan.Symbol.plot_market_profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_market_profile</span></code></a>([bins, hours, minutes, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.plot_market_profile" title="binpan.Symbol.plot_market_profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_market_profile</span></code></a>([bins, hours, minutes, ...])</p></td>
 <td><p>Plots volume histogram by prices segregated aggressive buyers from sellers.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.plot_trades_scatter" title="binpan.Symbol.plot_trades_scatter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_trades_scatter</span></code></a>([x, y, dot_symbol, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.plot_trades_scatter" title="binpan.Symbol.plot_trades_scatter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_trades_scatter</span></code></a>([x, y, dot_symbol, ...])</p></td>
 <td><p>A scatter plot showing each price level volume or trades.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.plot_orderbook" title="binpan.Symbol.plot_orderbook"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_orderbook</span></code></a>([accumulated, title, height, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.plot_orderbook" title="binpan.Symbol.plot_orderbook"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_orderbook</span></code></a>([accumulated, title, height, ...])</p></td>
 <td><p>Plots orderbook depth.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.plot_orderbook_density" title="binpan.Symbol.plot_orderbook_density"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_orderbook_density</span></code></a>([x_col, color, bins, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.plot_orderbook_density" title="binpan.Symbol.plot_orderbook_density"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_orderbook_density</span></code></a>([x_col, color, bins, ...])</p></td>
 <td><p>Plot a distribution plot for a dataframe column.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.plot_taker_maker_ratio_profile" title="binpan.Symbol.plot_taker_maker_ratio_profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_taker_maker_ratio_profile</span></code></a>([bins, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.plot_taker_maker_ratio_profile" title="binpan.Symbol.plot_taker_maker_ratio_profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_taker_maker_ratio_profile</span></code></a>([bins, ...])</p></td>
 <td><p>Plots taker vs maker ratio profile.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.update_info_dic" title="binpan.Symbol.update_info_dic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_info_dic</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.update_info_dic" title="binpan.Symbol.update_info_dic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_info_dic</span></code></a>()</p></td>
 <td><p>Returns exchangeInfo data when instantiated.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.get_order_filters" title="binpan.Symbol.get_order_filters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_order_filters</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.get_order_filters" title="binpan.Symbol.get_order_filters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_order_filters</span></code></a>()</p></td>
 <td><p>Get exchange info about the symbol for order filters.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.get_order_types" title="binpan.Symbol.get_order_types"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_order_types</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.get_order_types" title="binpan.Symbol.get_order_types"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_order_types</span></code></a>()</p></td>
 <td><p>Get exchange info about the symbol for order types.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.get_permissions" title="binpan.Symbol.get_permissions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_permissions</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.get_permissions" title="binpan.Symbol.get_permissions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_permissions</span></code></a>()</p></td>
 <td><p>Get exchange info about the symbol for trading permissions.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.get_precision" title="binpan.Symbol.get_precision"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_precision</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.get_precision" title="binpan.Symbol.get_precision"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_precision</span></code></a>()</p></td>
 <td><p>Get exchange info about the symbol for assets precision.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.get_api_status" title="binpan.Symbol.get_api_status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_api_status</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.get_api_status" title="binpan.Symbol.get_api_status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_api_status</span></code></a>()</p></td>
 <td><p>Return the symbol status, TRADING, BREAK, etc.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.backtesting" title="binpan.Symbol.backtesting"><code class="xref py py-obj docutils literal notranslate"><span class="pre">backtesting</span></code></a>(actions_col[, target_column, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.backtesting" title="binpan.Symbol.backtesting"><code class="xref py py-obj docutils literal notranslate"><span class="pre">backtesting</span></code></a>(actions_col[, target_column, ...])</p></td>
 <td><p>Simulates buys and sells using labels in a tagged column with actions.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.roi" title="binpan.Symbol.roi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">roi</span></code></a>([column])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.roi" title="binpan.Symbol.roi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">roi</span></code></a>([column])</p></td>
 <td><p>It returns win or loos percent for a evaluation column.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.profit_hour" title="binpan.Symbol.profit_hour"><code class="xref py py-obj docutils literal notranslate"><span class="pre">profit_hour</span></code></a>([column])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.profit_hour" title="binpan.Symbol.profit_hour"><code class="xref py py-obj docutils literal notranslate"><span class="pre">profit_hour</span></code></a>([column])</p></td>
 <td><p>It returns win or loos quantity per hour.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.get_fees" title="binpan.Symbol.get_fees"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_fees</span></code></a>([symbol])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.get_fees" title="binpan.Symbol.get_fees"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_fees</span></code></a>([symbol])</p></td>
 <td><p>Shows applied fees for the symbol of the object.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.get_orderbook" title="binpan.Symbol.get_orderbook"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_orderbook</span></code></a>([limit])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.get_orderbook" title="binpan.Symbol.get_orderbook"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_orderbook</span></code></a>([limit])</p></td>
 <td><p>Gets orderbook.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.ma" title="binpan.Symbol.ma"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ma</span></code></a>([ma_name, column_source, inplace, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.ma" title="binpan.Symbol.ma"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ma</span></code></a>([ma_name, column_source, inplace, ...])</p></td>
 <td><p>Generic moving average method.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.sma" title="binpan.Symbol.sma"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sma</span></code></a>([window, column, inplace, suffix, color])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.sma" title="binpan.Symbol.sma"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sma</span></code></a>([window, column, inplace, suffix, color])</p></td>
 <td><p>Generate technical indicator Simple Moving Average.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.ema" title="binpan.Symbol.ema"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ema</span></code></a>([window, column, inplace, suffix, color])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.ema" title="binpan.Symbol.ema"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ema</span></code></a>([window, column, inplace, suffix, color])</p></td>
 <td><p>Generate technical indicator Exponential Moving Average.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.supertrend" title="binpan.Symbol.supertrend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">supertrend</span></code></a>([length, multiplier, inplace, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.supertrend" title="binpan.Symbol.supertrend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">supertrend</span></code></a>([length, multiplier, inplace, ...])</p></td>
 <td><p>Generate technical indicator Supertrend.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.macd" title="binpan.Symbol.macd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">macd</span></code></a>([fast, slow, smooth, inplace, suffix, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.macd" title="binpan.Symbol.macd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">macd</span></code></a>([fast, slow, smooth, inplace, suffix, ...])</p></td>
 <td><p>Generate technical indicator Moving Average, Convergence/Divergence (MACD).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.rsi" title="binpan.Symbol.rsi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rsi</span></code></a>([length, inplace, suffix, color])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.rsi" title="binpan.Symbol.rsi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rsi</span></code></a>([length, inplace, suffix, color])</p></td>
 <td><p>Relative Strength Index (RSI).</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.stoch_rsi" title="binpan.Symbol.stoch_rsi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stoch_rsi</span></code></a>([rsi_length, k_smooth, d_smooth, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.stoch_rsi" title="binpan.Symbol.stoch_rsi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stoch_rsi</span></code></a>([rsi_length, k_smooth, d_smooth, ...])</p></td>
 <td><p>Stochastic Relative Strength Index (RSI) with a fast and slow exponential moving averages.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.on_balance_volume" title="binpan.Symbol.on_balance_volume"><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_balance_volume</span></code></a>([inplace, suffix, color])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.on_balance_volume" title="binpan.Symbol.on_balance_volume"><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_balance_volume</span></code></a>([inplace, suffix, color])</p></td>
 <td><p>On balance indicator.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.accumulation_distribution" title="binpan.Symbol.accumulation_distribution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">accumulation_distribution</span></code></a>([inplace, suffix, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.accumulation_distribution" title="binpan.Symbol.accumulation_distribution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">accumulation_distribution</span></code></a>([inplace, suffix, ...])</p></td>
 <td><p>Accumulation/Distribution indicator.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.vwap" title="binpan.Symbol.vwap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vwap</span></code></a>([anchor, inplace, suffix, color])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.vwap" title="binpan.Symbol.vwap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vwap</span></code></a>([anchor, inplace, suffix, color])</p></td>
 <td><p>Volume Weighted Average Price.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.atr" title="binpan.Symbol.atr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atr</span></code></a>([length, inplace, suffix, color])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.atr" title="binpan.Symbol.atr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atr</span></code></a>([length, inplace, suffix, color])</p></td>
 <td><p>Average True Range.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.cci" title="binpan.Symbol.cci"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cci</span></code></a>([length, scaling, inplace, suffix, color])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.cci" title="binpan.Symbol.cci"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cci</span></code></a>([length, scaling, inplace, suffix, color])</p></td>
 <td><p>Compute the Commodity Channel Index (CCI) for NIFTY based on the 14-day moving average.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.eom" title="binpan.Symbol.eom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eom</span></code></a>([length, divisor, drift, inplace, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.eom" title="binpan.Symbol.eom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eom</span></code></a>([length, divisor, drift, inplace, ...])</p></td>
 <td><p>Ease of Movement (EMV) can be used to confirm a bullish or a bearish trend.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.roc" title="binpan.Symbol.roc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">roc</span></code></a>([length, escalar, inplace, suffix, color])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.roc" title="binpan.Symbol.roc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">roc</span></code></a>([length, escalar, inplace, suffix, color])</p></td>
 <td><p>The Rate of Change (ROC) is a technical indicator that measures the percentage change between the most recent price and the price &quot;n&quot; day’s ago.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.bbands" title="binpan.Symbol.bbands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bbands</span></code></a>([length, std, ddof, inplace, suffix, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.bbands" title="binpan.Symbol.bbands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bbands</span></code></a>([length, std, ddof, inplace, suffix, ...])</p></td>
 <td><p>These bands consist of an upper Bollinger band and a lower Bollinger band and are placed two standard deviations above and below a moving average.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.stoch" title="binpan.Symbol.stoch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stoch</span></code></a>([k_length, stoch_d, k_smooth, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.stoch" title="binpan.Symbol.stoch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stoch</span></code></a>([k_length, stoch_d, k_smooth, ...])</p></td>
 <td><p>Stochastic Oscillator with a fast and slow exponential moving averages.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.ichimoku" title="binpan.Symbol.ichimoku"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ichimoku</span></code></a>([tenkan, kijun, chikou_span, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.ichimoku" title="binpan.Symbol.ichimoku"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ichimoku</span></code></a>([tenkan, kijun, chikou_span, ...])</p></td>
 <td><p>The Ichimoku Cloud is a collection of technical indicators that show support and resistance levels, as well as momentum and trend direction.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.alternating_fractal" title="binpan.Symbol.alternating_fractal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">alternating_fractal</span></code></a>([max_period, inplace, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.alternating_fractal" title="binpan.Symbol.alternating_fractal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">alternating_fractal</span></code></a>([max_period, inplace, ...])</p></td>
 <td><p>Obtains the minim value for fractal_w periods as fractal is pure alternating from max to min to max etc.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.fractal" title="binpan.Symbol.fractal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fractal</span></code></a>([period, inplace, overlap_plot, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.fractal" title="binpan.Symbol.fractal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fractal</span></code></a>([period, inplace, overlap_plot, ...])</p></td>
 <td><p>The fractal indicator is based on a simple price pattern that is frequently seen in financial markets.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.get_market_profile" title="binpan.Symbol.get_market_profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_market_profile</span></code></a>([bins, hours, minutes, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.get_market_profile" title="binpan.Symbol.get_market_profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_market_profile</span></code></a>([bins, hours, minutes, ...])</p></td>
 <td><p>Generates a market profile dataframe from trade or kline data.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.get_maker_taker_buy_ratios" title="binpan.Symbol.get_maker_taker_buy_ratios"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_maker_taker_buy_ratios</span></code></a>([window, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.get_maker_taker_buy_ratios" title="binpan.Symbol.get_maker_taker_buy_ratios"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_maker_taker_buy_ratios</span></code></a>([window, ...])</p></td>
 <td><p>Generates the makers versus makers+takers volume ratio by each_kline.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.get_taker_maker_ratio_profile" title="binpan.Symbol.get_taker_maker_ratio_profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_taker_maker_ratio_profile</span></code></a>([bins, hours, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.get_taker_maker_ratio_profile" title="binpan.Symbol.get_taker_maker_ratio_profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_taker_maker_ratio_profile</span></code></a>([bins, hours, ...])</p></td>
 <td><p>Generates a market profile of the makers versus makers+takers volume ratio by each_kline.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.pandas_ta_indicator" title="binpan.Symbol.pandas_ta_indicator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas_ta_indicator</span></code></a>(name, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.pandas_ta_indicator" title="binpan.Symbol.pandas_ta_indicator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas_ta_indicator</span></code></a>(name, **kwargs)</p></td>
 <td><p>Calls any indicator in pandas_ta library with function name as first argument and any kwargs the function will use.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.support_resistance" title="binpan.Symbol.support_resistance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">support_resistance</span></code></a>([from_atomic, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.support_resistance" title="binpan.Symbol.support_resistance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">support_resistance</span></code></a>([from_atomic, ...])</p></td>
 <td><p>Calculate support and resistance levels for the Symbol based on either atomic trades or aggregated trades.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.rolling_support_resistance" title="binpan.Symbol.rolling_support_resistance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rolling_support_resistance</span></code></a>([minutes_window, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.rolling_support_resistance" title="binpan.Symbol.rolling_support_resistance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rolling_support_resistance</span></code></a>([minutes_window, ...])</p></td>
 <td><p>Calculate support and resistance levels for the Symbol based on either atomic trades or aggregated trades in a rolling window.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.time_centroids" title="binpan.Symbol.time_centroids"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time_centroids</span></code></a>([from_atomic, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.time_centroids" title="binpan.Symbol.time_centroids"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time_centroids</span></code></a>([from_atomic, ...])</p></td>
 <td><p>Calculate centroids for timestamps of more activity in taker buys or takers sells.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.tag" title="binpan.Symbol.tag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tag</span></code></a>(column, reference[, relation, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.tag" title="binpan.Symbol.tag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tag</span></code></a>(column, reference[, relation, ...])</p></td>
 <td><p>It tags values of a column/serie compared to other serie or value by methods gt,ge,eq,le,lt as condition.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.cross" title="binpan.Symbol.cross"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cross</span></code></a>(slow[, fast, cross_over_tag, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.cross" title="binpan.Symbol.cross"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cross</span></code></a>(slow[, fast, cross_over_tag, ...])</p></td>
 <td><p>It tags crossing values from a column/serie (fast) over a serie or value (slow).</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.shift" title="binpan.Symbol.shift"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shift</span></code></a>(column[, window, strategy_group, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.shift" title="binpan.Symbol.shift"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shift</span></code></a>(column[, window, strategy_group, ...])</p></td>
 <td><p>It shifts a candle ahead by the window argument value (or backwards if negative)</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.merge_columns" title="binpan.Symbol.merge_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_columns</span></code></a>(main_column, other_column[, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.merge_columns" title="binpan.Symbol.merge_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_columns</span></code></a>(main_column, other_column[, ...])</p></td>
 <td><p>Predominant serie will be filled nans with values, if existing, from the other serie.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.clean_in_out" title="binpan.Symbol.clean_in_out"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clean_in_out</span></code></a>(column[, in_tag, out_tag, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.clean_in_out" title="binpan.Symbol.clean_in_out"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clean_in_out</span></code></a>(column[, in_tag, out_tag, ...])</p></td>
 <td><p>It cleans a serie with in and out tags by eliminating in streaks and out streaks.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.set_strategy_groups" title="binpan.Symbol.set_strategy_groups"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_strategy_groups</span></code></a>(column, group[, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.set_strategy_groups" title="binpan.Symbol.set_strategy_groups"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_strategy_groups</span></code></a>(column, group[, ...])</p></td>
 <td><p>Returns strategy_groups for BinPan DataFrame.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.get_strategy_columns" title="binpan.Symbol.get_strategy_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_strategy_columns</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.get_strategy_columns" title="binpan.Symbol.get_strategy_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_strategy_columns</span></code></a>()</p></td>
 <td><p>Returns column names starting with &quot;Strategy&quot;.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.strategy_from_tags_crosses" title="binpan.Symbol.strategy_from_tags_crosses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">strategy_from_tags_crosses</span></code></a>([columns, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.strategy_from_tags_crosses" title="binpan.Symbol.strategy_from_tags_crosses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">strategy_from_tags_crosses</span></code></a>([columns, ...])</p></td>
 <td><p>Checks where all tags and cross columns get value &quot;1&quot; at the same time.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#binpan.Symbol.ffill_window" title="binpan.Symbol.ffill_window"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ffill_window</span></code></a>(column[, window, inplace, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Symbol.ffill_window" title="binpan.Symbol.ffill_window"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ffill_window</span></code></a>(column[, window, inplace, ...])</p></td>
 <td><p>It forward fills a value through nans a window ahead.</p></td>
 </tr>
 </tbody>
@@ -1293,6 +1297,17 @@ waiting long time intervals grabbing the trades.)</p>
 </div>
 <a class="reference internal image-reference" href="_images/reversal.png"><img alt="_images/reversal.png" src="_images/reversal.png" style="width: 1000px;" /></a>
 </div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.Symbol.set_plotting_volume_ma">
+<span class="sig-name descname"><span class="pre">set_plotting_volume_ma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">21</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#binpan.Symbol.set_plotting_volume_ma" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set a window for plotting volume moving average on the candles plot when volumen bars are plotted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>window</strong> (<em>int</em>) – A window for the moving average.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
