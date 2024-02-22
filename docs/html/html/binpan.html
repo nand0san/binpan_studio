@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>BinPan Module - BinPan 0.8.12 documentation</title>
+      <title>BinPan Module - BinPan 0.8.13 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Aggregations Module" href="aggregations.html" /><link rel="prev" title="Welcome to BinPan’s documentation!" href="index.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -2587,7 +2587,7 @@ this will enable tagging those.</p></li>
 <td><p>Updates from API and returns a dict with all merged exchange info about a symbol.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#binpan.Exchange.get_symbols" title="binpan.Exchange.get_symbols"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_symbols</span></code></a>([coin, base, quote])</p></td>
-<td><p>Return list of symbols for a coin.</p></td>
+<td><p>Return list of all symbols for a coin.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#binpan.Exchange.get_df" title="binpan.Exchange.get_df"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_df</span></code></a>()</p></td>
 <td><p>Extended symbols dataframe with exchange info about trading permissions, trading or blocked symbol, order types, margin allowed, etc</p></td>
@@ -2675,13 +2675,14 @@ this will enable tagging those.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="binpan.Exchange.get_symbols">
 <span class="sig-name descname"><span class="pre">get_symbols</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quote</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#binpan.Exchange.get_symbols" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return list of symbols for a coin. Can be selected symbols where it is base, or quote, or both.</p>
+<dd><p>Return list of all symbols for a coin. Can be selected symbols where it is base, or quote, or both.
+By default, returns all symbols where coin is base or quote but you can deactivate one of them.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>coin</strong> (<em>str</em>) – An existing binance coin.</p></li>
-<li><p><strong>base</strong> (<em>bool</em>) – Activate return of symbols where coin is base.</p></li>
-<li><p><strong>quote</strong> (<em>bool</em>) – Activate return of symbols where coin is quote.</p></li>
+<li><p><strong>base</strong> (<em>bool</em>) – Activate return of symbols where coin is base. Default is True.</p></li>
+<li><p><strong>quote</strong> (<em>bool</em>) – Activate return of symbols where coin is quote. Default is True.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return list<span class="colon">:</span></dt>

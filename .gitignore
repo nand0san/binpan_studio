@@ -166,7 +166,7 @@ ltcusdt.*
 ltcbtc.*
 btcusdt.*
 
-example database maintenance.ipynb
+examples database maintenance.ipynb
 *redis*
 secret.py
 secret_.py

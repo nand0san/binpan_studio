@@ -128,7 +128,8 @@ def get_candles_by_time_stamps(symbol: str,
     """
     endpoint = '/api/v3/klines?'
     tick_milliseconds = int(tick_seconds[tick_interval] * 1000)
-    limit = min(limit, 1000)
+    # limit = min(limit, 1000)
+    limit = (end_time - start_time) // tick_milliseconds
 
     if not start_time and not end_time:
         end_time = int(time()) * 1000  # la api traería la ultima vela cerrada
@@ -160,9 +161,9 @@ def get_candles_by_time_stamps(symbol: str,
     # loop
     raw_candles = []
     for start, end in ranges:
-
+        loop_limit = min(limit, 1000)
         end = min(end, int(1000 * time()))
-        params = {'symbol': symbol, 'interval': tick_interval, 'startTime': start, 'endTime': end, 'limit': limit}
+        params = {'symbol': symbol, 'interval': tick_interval, 'startTime': start, 'endTime': end, 'limit': loop_limit}
         params = {k: v for k, v in params.items() if v}
         check_weight(1, endpoint=endpoint)
 
@@ -197,7 +198,7 @@ def get_candles_by_time_stamps(symbol: str,
         raw_candles_ = [i for i in raw_candles if int(i[open_ts_key]) < overtime_candle_ts]
 
     if len(raw_candles) != len(raw_candles_):
-        market_logger.info(f"Pruned overtime_candle_ts {len(raw_candles) - len(raw_candles_)} candles from API response for {symbol} "
+        market_logger.info(f"Pruned not closed or overtime candles {len(raw_candles) - len(raw_candles_)} candles from API response for {symbol} "
                            f"{tick_interval}")
 
     return raw_candles_
