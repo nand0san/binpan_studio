@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Indicators Module - BinPan 0.8.10 documentation</title>
+      <title>Indicators Module - BinPan 0.8.11 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Influx Manager Module" href="influx_manager.html" /><link rel="prev" title="Files Module" href="files.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -146,7 +146,6 @@ html.dark {
 <li><a class="reference internal" href="#handlers.indicators.shift_indicator"><code class="docutils literal notranslate"><span class="pre">shift_indicator()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.indicators.ffill_indicator"><code class="docutils literal notranslate"><span class="pre">ffill_indicator()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.indicators.reversal_candles"><code class="docutils literal notranslate"><span class="pre">reversal_candles()</span></code></a></li>
-<li><a class="reference internal" href="#handlers.indicators.repeat_prices_by_quantity_old"><code class="docutils literal notranslate"><span class="pre">repeat_prices_by_quantity_old()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.indicators.repeat_prices_by_quantity"><code class="docutils literal notranslate"><span class="pre">repeat_prices_by_quantity()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.indicators.kmeans_custom_init"><code class="docutils literal notranslate"><span class="pre">kmeans_custom_init()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.indicators.find_optimal_clusters"><code class="docutils literal notranslate"><span class="pre">find_optimal_clusters()</span></code></a></li>
@@ -227,40 +226,37 @@ html.dark {
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.reversal_candles" title="handlers.indicators.reversal_candles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reversal_candles</span></code></a>(trades, decimal_positions, ...)</p></td>
 <td><p>Generate reversal candles for reversal charts:</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.repeat_prices_by_quantity_old" title="handlers.indicators.repeat_prices_by_quantity_old"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat_prices_by_quantity_old</span></code></a>(data, ...[, ...])</p></td>
-<td><p>Repeat prices by quantity to use in K-means clustering.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.repeat_prices_by_quantity" title="handlers.indicators.repeat_prices_by_quantity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat_prices_by_quantity</span></code></a>(data[, price_col, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.repeat_prices_by_quantity" title="handlers.indicators.repeat_prices_by_quantity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat_prices_by_quantity</span></code></a>(data[, price_col, ...])</p></td>
 <td><p>Optimized version of repeating prices by quantity for K-means clustering.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.kmeans_custom_init" title="handlers.indicators.kmeans_custom_init"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kmeans_custom_init</span></code></a>(data, max_clusters)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.kmeans_custom_init" title="handlers.indicators.kmeans_custom_init"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kmeans_custom_init</span></code></a>(data, max_clusters)</p></td>
 <td><p>Generate initial centroids for K-means clustering with equally spaced values between min and max values in data.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.find_optimal_clusters" title="handlers.indicators.find_optimal_clusters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_optimal_clusters</span></code></a>(KMeans_lib, data, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.find_optimal_clusters" title="handlers.indicators.find_optimal_clusters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_optimal_clusters</span></code></a>(KMeans_lib, data, ...)</p></td>
 <td><p>Find the optimal quantity of centroids for support and resistance methods using the elbow method.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.support_resistance_levels" title="handlers.indicators.support_resistance_levels"><code class="xref py py-obj docutils literal notranslate"><span class="pre">support_resistance_levels</span></code></a>(df[, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.support_resistance_levels" title="handlers.indicators.support_resistance_levels"><code class="xref py py-obj docutils literal notranslate"><span class="pre">support_resistance_levels</span></code></a>(df[, ...])</p></td>
 <td><p>Calculate support and resistance levels for a given set of trades using K-means clustering.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.support_resistance_levels_merged" title="handlers.indicators.support_resistance_levels_merged"><code class="xref py py-obj docutils literal notranslate"><span class="pre">support_resistance_levels_merged</span></code></a>(df, by_klines)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.support_resistance_levels_merged" title="handlers.indicators.support_resistance_levels_merged"><code class="xref py py-obj docutils literal notranslate"><span class="pre">support_resistance_levels_merged</span></code></a>(df, by_klines)</p></td>
 <td><p>Calculate support and resistance levels merged for a given set of trades using K-means clustering.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.repeat_timestamps_by_quantity" title="handlers.indicators.repeat_timestamps_by_quantity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat_timestamps_by_quantity</span></code></a>(df, ...[, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.repeat_timestamps_by_quantity" title="handlers.indicators.repeat_timestamps_by_quantity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat_timestamps_by_quantity</span></code></a>(df, ...[, ...])</p></td>
 <td><p>Repeat timestamps by quantity to give more importance to prices with more quantity.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.time_active_zones" title="handlers.indicators.time_active_zones"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time_active_zones</span></code></a>(df[, max_clusters, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.time_active_zones" title="handlers.indicators.time_active_zones"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time_active_zones</span></code></a>(df[, max_clusters, ...])</p></td>
 <td><p>Calculate support and resistance levels timestamp centroids for a given set of trades using K-means clustering.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.market_profile_from_klines_melt" title="handlers.indicators.market_profile_from_klines_melt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">market_profile_from_klines_melt</span></code></a>(df)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.market_profile_from_klines_melt" title="handlers.indicators.market_profile_from_klines_melt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">market_profile_from_klines_melt</span></code></a>(df)</p></td>
 <td><p>Calculate the market profile for a given OHLC data.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.taker_maker_profile_from_klines_melt" title="handlers.indicators.taker_maker_profile_from_klines_melt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">taker_maker_profile_from_klines_melt</span></code></a>(df)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.taker_maker_profile_from_klines_melt" title="handlers.indicators.taker_maker_profile_from_klines_melt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">taker_maker_profile_from_klines_melt</span></code></a>(df)</p></td>
 <td><p>Calculate the ratio of taker and maker volume for a given OHLC data.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.market_profile_from_klines_grouped" title="handlers.indicators.market_profile_from_klines_grouped"><code class="xref py py-obj docutils literal notranslate"><span class="pre">market_profile_from_klines_grouped</span></code></a>(df[, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.market_profile_from_klines_grouped" title="handlers.indicators.market_profile_from_klines_grouped"><code class="xref py py-obj docutils literal notranslate"><span class="pre">market_profile_from_klines_grouped</span></code></a>(df[, ...])</p></td>
 <td><p>Calculate the market profile for a given OHLC data.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.indicators.market_profile_from_trades_grouped" title="handlers.indicators.market_profile_from_trades_grouped"><code class="xref py py-obj docutils literal notranslate"><span class="pre">market_profile_from_trades_grouped</span></code></a>(df[, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.indicators.market_profile_from_trades_grouped" title="handlers.indicators.market_profile_from_trades_grouped"><code class="xref py py-obj docutils literal notranslate"><span class="pre">market_profile_from_trades_grouped</span></code></a>(df[, ...])</p></td>
 <td><p>Calculate the market profile for a given trades data.</p></td>
 </tr>
 </tbody>
@@ -627,26 +623,6 @@ relevant.</p></li>
 <a class="reference internal image-reference" href="_images/reversal.png"><img alt="_images/reversal.png" src="_images/reversal.png" style="width: 1000px;" /></a>
 </dd>
 </dl>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="handlers.indicators.repeat_prices_by_quantity_old">
-<span class="sig-prename descclassname"><span class="pre">handlers.indicators.</span></span><span class="sig-name descname"><span class="pre">repeat_prices_by_quantity_old</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon_quantity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">price_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Price'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qty_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Quantity'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#handlers.indicators.repeat_prices_by_quantity_old" title="Permalink to this definition">¶</a></dt>
-<dd><p>Repeat prices by quantity to use in K-means clustering.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>pd.DataFrame</em>) – A pandas DataFrame with trades or klines, containing a ‘Price’, ‘Quantity’ columns and a ‘Buyer was maker’ column,
-if trades passed, else “Close”, “Volume” and “Taker buy base volume”</p></li>
-<li><p><strong>epsilon_quantity</strong> (<em>float</em>) – The epsilon quantity to use for repeating prices.</p></li>
-<li><p><strong>price_col</strong> (<em>str</em>) – The name of the column containing price data. Default is ‘Price’.</p></li>
-<li><p><strong>qty_col</strong> (<em>str</em>) – The name of the column containing quantity data. Default is ‘Quantity’.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return np.ndarray<span class="colon">:</span></dt>
-<dd class="field-even"><p>A numpy array with the prices repeated by quantity.</p>
 </dd>
 </dl>
 </dd></dl>
