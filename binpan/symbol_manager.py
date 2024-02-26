@@ -42,7 +42,7 @@ from handlers.time_helper import (check_tick_interval, convert_milliseconds_to_s
 from handlers.tags import (tag_column_to_strategy_group, backtesting, backtesting_short, tag_comparison, tag_cross, merge_series,
                            clean_in_out)
 
-from handlers.wallet import convert_str_date_to_ms
+from objects.timeframes import convert_str_date_to_ms
 
 from handlers.aggregations import resample_klines
 

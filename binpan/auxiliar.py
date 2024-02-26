@@ -7,7 +7,7 @@ from handlers.files import select_file, read_csv_to_dataframe, extract_filename_
 from handlers.logs import Logs
 from handlers.market import (convert_to_numeric)
 from handlers.time_helper import (pandas_freq_tick_interval, open_from_milliseconds, time_interval)
-from handlers.wallet import convert_str_date_to_ms
+from objects.timeframes import convert_str_date_to_ms
 
 # from handlers.starters import is_running_in_jupyter
 # if is_running_in_jupyter():
@@ -84,7 +84,19 @@ def setup_startime_endtime(start_time: str,
                            hours: int,
                            closed: bool,
                            tick_interval: str,
-                           limit: int):
+                           limit: int) -> Tuple[int, int]:
+    """
+    Setup start and end time for klines data.
+
+    :param start_time: A string with the start time. Ex: '2021-01-01 00:00:00'
+    :param end_time: A string with the end time. Ex: '2021-01-01 00:00:00'
+    :param time_zone: A string with the time zone. Ex: 'Europe/Madrid'
+    :param hours: Limit the data by hours.
+    :param closed: If True, the end time is set to the last closed kline.
+    :param tick_interval: Tick interval as filter.
+    :param limit: Limit of klines to retrieve.
+    :return: A tuple with the start and end time.
+    """
     start_time = convert_str_date_to_ms(date=start_time, time_zone=time_zone)
     end_time = convert_str_date_to_ms(date=end_time, time_zone=time_zone)
 

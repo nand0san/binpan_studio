@@ -91,7 +91,7 @@ def convert_datetime_to_milliseconds(dt: datetime, timezoned: str = None) -> flo
     return (dt - epoch).total_seconds() * 1000.0
 
 
-def convert_string_to_milliseconds(ts: str, timezoned: str = None) -> int:
+def convert_string_to_milliseconds_old(ts: str, timezoned: str = None) -> int:
     """
     Converts a string to milliseconds. If string contains a timezone, it will be removed when passing timezoned.
 
