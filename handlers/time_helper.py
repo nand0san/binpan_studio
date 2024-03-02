@@ -1,7 +1,7 @@
 from datetime import datetime
 import pytz
 from time import time
-from typing import Tuple, List
+from typing import Tuple, List, Union
 import pandas as pd
 
 from .logs import Logs
@@ -11,6 +11,7 @@ time_logger = Logs(filename='./logs/time_helpers.log', name='time_helpers', info
 tick_seconds = {'1m': 60, '3m': 60 * 3, '5m': 5 * 60, '15m': 15 * 60, '30m': 30 * 60, '1h': 60 * 60, '2h': 60 * 60 * 2,
                 '4h': 60 * 60 * 4, '6h': 60 * 60 * 6, '8h': 60 * 60 * 8, '12h': 60 * 60 * 12, '1d': 60 * 60 * 24,
                 '3d': 60 * 60 * 24 * 3, '1w': 60 * 60 * 24 * 7, '1M': 60 * 60 * 24 * 30}
+
 pandas_freq_tick_interval = {'1m': '1T',
                              '3m': '3T',
                              '5m': '5T',
@@ -594,3 +595,102 @@ def adjust_timestamp_unit_nano_or_ms(ts):
         ts *= 1_000_000
 
     return ts
+
+
+##########################
+# funciones para clases @
+##########################
+
+
+def parse_timestamp(timestamp_str: str, timezone: Union[str, pytz] = "Europe/Madrid") -> datetime:
+    """
+    Parses a timestamp in ISO 8601 format or in one of the specified custom formats. Accepted formats are:
+
+    - "YYYY-MM-DD HH:MM:SS"
+    - "YYYY/MM/DD HH:MM:SS"
+    - "YYYY-MM-DD"
+    - "YYYY/MM/DD"
+    - "DD-MM-YYYY HH:MM:SS"
+    - "DD/MM/YYYY HH:MM:SS"
+    - "DD-MM-YYYY"
+    - "DD/MM/YYYY"
+    - "YYYYMMDDHHMMSS"
+    - "YYYYMMDD"
+
+    If the timestamp string don't include time zone information, it is assumed to be in UTC.
+    If the timestamp string includes time zone information, the resulting datetime object will be timezone-aware.
+    If timezone parameter is specified, and the timestamp string includes time zone information with a different offset,
+    it adjusts the datetime object to utc and then to the specified timezone. If the offsets are the same, it simply makes the datetime
+    object aware of the specified timezone without changing the time.
+
+    :param timestamp_str: Timestamp in ISO 8601 format or in one of the specified custom formats.
+    :param timezone: Time zone in IANA format (e.g., "Europe/Madrid"). If specified, the datetime object will be adjusted
+                     to this timezone. If not specified, and the timestamp includes time zone information,
+                     the datetime object will remain in its original timezone. If no time zone information is included,
+                     the timestamp is assumed to be in UTC. Default is "Europe/Madrid".
+    :return: Datetime object with the date and time specified in the timestamp, adjusted to the specified timezone if provided. Example:
+
+        .. code-block:: python
+
+            dt = parse_timestamp("2024-01-27 03:14:00", None)
+            print(dt, dt.tzinfo)
+            2024-01-27 03:14:00 None
+
+            dt = parse_timestamp("2024-01-27 03:14:00+01:00", None)
+            print(dt, dt.tzinfo)
+            2024-01-27 03:14:00+01:00 UTC+01:00
+
+            dt = parse_timestamp("01-01-2024 3:14:00", "Europe/Madrid")
+            print(dt, dt.tzinfo)
+            2024-01-01 04:14:00+01:00 Europe/Madrid
+
+            dt = parse_timestamp("2024-01-27 03:14:00+01:00", "Europe/Madrid")
+            print(dt, dt.tzinfo)
+            2024-01-27 03:14:00+01:00 Europe/Madrid
+
+            dt = parse_timestamp("2024-01-27 03:14:00+01:00", pytz.timezone("Europe/Madrid"))
+            print(dt, dt.tzinfo)
+            2024-01-27 03:14:00+01:00 Europe/Madrid
+
+    """
+    try:
+        dt = datetime.fromisoformat(timestamp_str)
+    except ValueError:
+        formats = [
+            "%Y-%m-%d %H:%M:%S",
+            "%Y/%m/%d %H:%M:%S",
+            "%Y-%m-%d",
+            "%Y/%m/%d",
+            "%d-%m-%Y %H:%M:%S",
+            "%d/%m/%Y %H:%M:%S",
+            "%d-%m-%Y",
+            "%d/%m/%Y",
+            "%Y%m%d%H%M%S",
+            "%Y%m%d"
+        ]
+
+        for fmt in formats:
+            try:
+                dt = datetime.strptime(timestamp_str, fmt)
+                # need to convert to UTC, later will be converted to the specified timezone if needed
+                dt = dt.replace(tzinfo=pytz.utc)
+                break
+            except ValueError:
+                continue
+        else:
+            raise ValueError(f"Timestamp '{timestamp_str}' is not in a recognized format.")
+
+    # noinspection PyUnresolvedReferences
+    if timezone is None:
+        pass
+    elif isinstance(timezone, str):
+        timezone = pytz.timezone(timezone)
+    elif timezone and hasattr(timezone, 'localize') or hasattr(timezone, 'utcoffset'):
+        pass  # It's a pytz timezone object or similar; no change needed
+    else:
+        raise TypeError(f"Timezone must be a string or a pytz timezone object, not {type(timezone)}")
+
+    if timezone:
+        dt = dt.astimezone(timezone)
+
+    return dt
