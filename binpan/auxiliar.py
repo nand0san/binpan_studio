@@ -7,7 +7,7 @@ from handlers.files import select_file, read_csv_to_dataframe, extract_filename_
 from handlers.logs import Logs
 from handlers.market import (convert_to_numeric)
 from handlers.time_helper import (pandas_freq_tick_interval, open_from_milliseconds, time_interval)
-from objects.timeframes import convert_str_date_to_ms
+from objects.timeframes import Timestamp
 
 # from handlers.starters import is_running_in_jupyter
 # if is_running_in_jupyter():
@@ -91,30 +91,28 @@ def setup_startime_endtime(start_time: str,
     :param start_time: A string with the start time. Ex: '2021-01-01 00:00:00'
     :param end_time: A string with the end time. Ex: '2021-01-01 00:00:00'
     :param time_zone: A string with the time zone. Ex: 'Europe/Madrid'
-    :param hours: Limit the data by hours.
+    :param hours: Limit the data by hours. If start_time is not set, it will be calculated from end_time.
     :param closed: If True, the end time is set to the last closed kline.
     :param tick_interval: Tick interval as filter.
     :param limit: Limit of klines to retrieve.
     :return: A tuple with the start and end time.
     """
-    start_time = convert_str_date_to_ms(date=start_time, time_zone=time_zone)
-    end_time = convert_str_date_to_ms(date=end_time, time_zone=time_zone)
-
-    # work with open timestamps
     if start_time:
-        start_time = open_from_milliseconds(ms=start_time, tick_interval=tick_interval)
+        start_time = Timestamp(value=start_time, timezone=time_zone, tick_interval=tick_interval)
     if end_time:
-        end_time = open_from_milliseconds(ms=end_time, tick_interval=tick_interval)
+        end_time = Timestamp(value=end_time, timezone=time_zone, tick_interval=tick_interval)
 
     # limit by hours
     if hours:
         if not end_time:
-            end_time = int(time() * 1000)
+            now = int(1000 * time())
+            end_time = Timestamp(value=now, timezone=time_zone, tick_interval=tick_interval)
         if not start_time:
-            start_time = end_time - (hours * 60 * 60 * 1000)
+            start_time = end_time.subtract_timedelta(delta=hours * 60 * 60 * 1000)
 
     # fill missing timestamps
     start_time, end_time = time_interval(tick_interval=tick_interval,
+                                         timezone=time_zone,
                                          limit=limit,
                                          start_time=start_time,
                                          end_time=end_time)
