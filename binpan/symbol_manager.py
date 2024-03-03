@@ -229,16 +229,14 @@ class Symbol(object):
                  info_dic: dict = None):
 
         if not symbol and not from_csv:
-            raise BinPanException(f"BinPan Exception: symbol needed")
+            raise BinPanException(f"BinPan Exception: symbol needed or CSV file to load data using from_csv='filename.csv'")
 
         if not from_csv and not symbol.isalnum():
-            binpan_logger.error(f"BinPan Exception: Ilegal characters in symbol.")
+            binpan_logger.error(f"BinPan Exception: Ilegal characters in symbol: {symbol}")
 
         # check correct tick interval passed
         if not from_csv:
             tick_interval = check_tick_interval(tick_interval)
-        else:
-            tick_interval = tick_interval
 
         # self.is_numba = is_numba
         self.tick_interval = tick_interval

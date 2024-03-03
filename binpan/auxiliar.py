@@ -98,15 +98,15 @@ def setup_startime_endtime(start_time: str,
     :return: A tuple with the start and end time.
     """
     if start_time:
-        start_time = Timestamp(value=start_time, timezone=time_zone, tick_interval=tick_interval)
+        start_time = Timestamp(value=start_time, timezone_IANA=time_zone, tick_interval=tick_interval)
     if end_time:
-        end_time = Timestamp(value=end_time, timezone=time_zone, tick_interval=tick_interval)
+        end_time = Timestamp(value=end_time, timezone_IANA=time_zone, tick_interval=tick_interval)
 
     # limit by hours
     if hours:
         if not end_time:
             now = int(1000 * time())
-            end_time = Timestamp(value=now, timezone=time_zone, tick_interval=tick_interval)
+            end_time = Timestamp(value=now, timezone_IANA=time_zone, tick_interval=tick_interval)
         if not start_time:
             start_time = end_time.subtract_timedelta(delta=hours * 60 * 60 * 1000)
 

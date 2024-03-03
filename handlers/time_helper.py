@@ -271,7 +271,7 @@ def time_interval(tick_interval: str,
     total_interval_ms = int(tick_seconds[tick_interval] * 1000 * limit)
     if not start_time and not end_time:
         now = int(time() * 1000)
-        end_time = Timestamp(value=now,  timezone=timezone, tick_interval=tick_interval)
+        end_time = Timestamp(value=now, timezone_IANA=timezone, tick_interval=tick_interval)
         start_time = end_time.subtract_timedelta(delta=total_interval_ms)
     elif not end_time and start_time:
         end_time = int(start_time) + total_interval_ms
