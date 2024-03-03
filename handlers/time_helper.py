@@ -107,6 +107,11 @@ def convert_string_to_milliseconds_old(ts: str, timezoned: str = None) -> int:
     return int(convert_datetime_to_milliseconds(dt=dt, timezoned=timezoned))
 
 
+def convert_string_to_milliseconds(ts: str, timezoned: str = None) -> int:
+    dt = convert_string_to_datetime(ts=ts, timezoned=timezoned)
+    return int(convert_datetime_to_milliseconds(dt=dt, timezoned=timezoned))
+
+
 def datetime_utc_to_milliseconds(dt: datetime):
     """
     Convert datetime object to milliseconds. Example: datetime.datetime(2023, 10, 10, 11, 52, tzinfo=datetime.timezone.utc)

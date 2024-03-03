@@ -15,7 +15,7 @@ from time import time
 import numpy as np
 
 from binpan.exchange_manager import Exchange
-from .auxiliar import csv_klines_setup, check_continuity, setup_startime_endtime, repair_kline_discontinuity
+from .auxiliar import csv_klines_setup, check_continuity, repair_kline_discontinuity
 
 from handlers.exceptions import BinPanException
 from handlers.exchange import (get_decimal_positions, get_info_dic, get_precision, get_orderTypes_and_permissions, get_fees,
@@ -42,16 +42,15 @@ from handlers.time_helper import (check_tick_interval, convert_milliseconds_to_s
 from handlers.tags import (tag_column_to_strategy_group, backtesting, backtesting_short, tag_comparison, tag_cross, merge_series,
                            clean_in_out)
 
-
-
 from handlers.aggregations import resample_klines
 
 from handlers.standards import (binance_api_candles_cols, agg_trades_columns, atomic_trades_columns, time_cols,
                                 dts_time_cols, reversal_columns, agg_trades_columns_from_binance, atomic_trades_columns_from_binance)
 
 from handlers.quest import tick_seconds
-
+from handlers.wallet import convert_str_date_to_ms
 import warnings
+
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
 
@@ -161,7 +160,8 @@ class Symbol(object):
                         Candles are ordered with the timestamp regardless of the index name, even if the index shows the hourly change
                         because daily time saving changes.
 
-    :param bool closed:      The last candle is a closed one in the moment of the creation, discarding the current running one not closed yet. Default True.
+    :param bool closed:      The last candle is a closed one in the moment of the creation, discarding the current running one not closed
+    yet. Default True.
     :param int display_columns:     Number of columns in the dataframe display. Convenient to adjust in jupyter notebooks.
     :param int display_max_rows:        Number of rows in the dataframe display. Convenient to adjust in jupyter notebooks.
     :param int display_width:       Display width in the dataframe display. Convenient to adjust in jupyter notebooks.
@@ -172,7 +172,7 @@ class Symbol(object):
         Also a string with table name can be used. If str passed, it will be used as host.
     :param bool postgres_atomic_trades:    If True, gets data from a postgres database by selecting interactively from tables found.
         Also a string with table name can be used. If str passed, it will be used as host.
-    :param int hours:    If hours is passed, it gets the candles from the last hours.
+    :param float hours:    If hours is passed, it gets the candles from the last hours.
     :param bool from_csv:    If True, gets data from a csv file by selecting interactively from csv files found.
         Also a string with filename can be used.
     :param dict info_dic:               Sometimes, for iterative processes, info_dic can be passed to avoid calling API for it. Its
@@ -219,7 +219,7 @@ class Symbol(object):
                  limit: int = 1000,
                  time_zone: str = 'Europe/Madrid',
                  closed: bool = True,
-                 hours: int = None,
+                 hours: float = None,
                  postgres_klines: bool or str = False,
                  postgres_agg_trades: bool or str = False,
                  postgres_atomic_trades: bool or str = False,
@@ -237,12 +237,12 @@ class Symbol(object):
             binpan_logger.error(f"BinPan Exception: Ilegal characters in symbol: {symbol}")
 
         # check correct tick interval passed
-        if not from_csv:
-            tick_interval = check_tick_interval(tick_interval)
+        # if not from_csv:
+        # tick_interval = check_tick_interval(tick_interval)
 
         # self.is_numba = is_numba
-        self.tick_interval = tick_interval
-        self.time_zone = time_zone
+        # self.tick_interval = tick_interval
+        # self.time_zone = time_zone
 
         # dataframe columns
         self.original_columns = binance_api_candles_cols
@@ -261,17 +261,13 @@ class Symbol(object):
         path.append(self.cwd)
 
         # parámetros principales
-        if symbol:  # en csv no se pasa symbol y da error el upper
-            self.symbol = symbol.upper()
-        else:
-            self.symbol = ""
+        self.symbol = symbol.upper() if symbol else ""
 
         if from_csv:
             (self.df,
              self.symbol,
              self.tick_interval,
              self.time_zone,
-             self.data_type,
              self.start_time,
              self.end_time,
              self.closed,
@@ -281,77 +277,102 @@ class Symbol(object):
                                             cwd=self.cwd,
                                             time_zone=self.time_zone)
         else:
-            self.symbol = symbol.upper()
-            self.tick_interval = tick_interval
-            self.time_zone = time_zone
-            self.limit = limit
+            ##############
+            # timestamps #
+            ##############
+            tick_interval = check_tick_interval(tick_interval) if tick_interval else None
             self.closed = closed
 
-        # database
-        if postgres_klines or postgres_agg_trades or postgres_atomic_trades:
+            self.timeframe = Timeframe(start=start_time,
+                                       end=end_time,
+                                       timezone_IANA=time_zone,
+                                       tick_interval=tick_interval,
+                                       limit=limit,
+                                       hours=hours,
+                                       closed=closed)
 
-            import handlers.postgresql as postgresql
-            from secret import (postgresql_port, postgresql_user, postgresql_database)
+            self.start_time = self.timeframe.start.epoch()
+            self.end_time = self.timeframe.end.epoch()
+            self.tick_interval = self.timeframe.tick_interval
+            self.limit = self.timeframe.get_limit()
+            self.hours = self.timeframe.get_hours()
+            self.time_zone = str(self.timeframe.timezone)
 
-            if postgres_klines:
-                if type(postgres_klines) == str:
-                    binpan_logger.info(f"Postgres connection requested as str: {postgres_klines}")
-                    postgresql_host_klines = postgres_klines
-                else:
-                    from secret import postgresql_host_klines
-                self.connection_klines, self.cursor_klines = postgresql.setup(symbol=self.symbol,
-                                                                              tick_interval=self.tick_interval,
-                                                                              postgresql_host=postgresql_host_klines,
-                                                                              postgresql_user=postgresql_user,
-                                                                              postgresql_database=postgresql_database,
-                                                                              postgres_klines=True,
-                                                                              postgres_agg_trades=False,
-                                                                              postgres_atomic_trades=False,
-                                                                              postgresql_port=postgresql_port)
-            if postgres_agg_trades:
-                if type(postgres_agg_trades) == str:
-                    postgresql_host_aggTrades = postgres_agg_trades
-                else:
-                    from secret import postgresql_host_aggTrades
-                self.connection_agg_trades, self.cursor_agg_trades = postgresql.setup(symbol=self.symbol,
-                                                                                      tick_interval=self.tick_interval,
-                                                                                      postgresql_host=postgresql_host_aggTrades,
-                                                                                      postgresql_user=postgresql_user,
-                                                                                      postgresql_database=postgresql_database,
-                                                                                      postgres_klines=False,
-                                                                                      postgres_agg_trades=True,
-                                                                                      postgres_atomic_trades=False,
-                                                                                      postgresql_port=postgresql_port)
-            if postgres_atomic_trades:
-                if type(postgres_atomic_trades) == str:
-                    postgresql_host_trades = postgres_atomic_trades
-                else:
-                    from secret import postgresql_host_trades
-                self.connection_atomic_trades, self.cursor_atomic_trades = postgresql.setup(symbol=self.symbol,
-                                                                                            tick_interval=self.tick_interval,
-                                                                                            postgresql_host=postgresql_host_trades,
-                                                                                            postgresql_user=postgresql_user,
-                                                                                            postgresql_database=postgresql_database,
-                                                                                            postgres_klines=False,
-                                                                                            postgres_agg_trades=False,
-                                                                                            postgres_atomic_trades=True,
-                                                                                            postgresql_port=postgresql_port)
-        else:
-            self.connection_klines, self.cursor_klines = None, None
+            # self.start_time, self.end_time = setup_startime_endtime(start_time=start_time,
+            #                                                         end_time=end_time,
+            #                                                         time_zone=self.time_zone,
+            #                                                         hours=self.hours,
+            #                                                         closed=self.closed,
+            #                                                         tick_interval=self.tick_interval,
+            #                                                         limit=self.limit)
+
+            # database
+            if postgres_klines or postgres_agg_trades or postgres_atomic_trades:
+
+                import handlers.postgresql as postgresql
+                from secret import (postgresql_port, postgresql_user, postgresql_database)
+
+                if postgres_klines:
+                    if type(postgres_klines) == str:
+                        binpan_logger.info(f"Postgres connection requested as str: {postgres_klines}")
+                        postgresql_host_klines = postgres_klines
+                    else:
+                        from secret import postgresql_host_klines
+                    self.connection_klines, self.cursor_klines = postgresql.setup(symbol=self.symbol,
+                                                                                  tick_interval=self.tick_interval,
+                                                                                  postgresql_host=postgresql_host_klines,
+                                                                                  postgresql_user=postgresql_user,
+                                                                                  postgresql_database=postgresql_database,
+                                                                                  postgres_klines=True,
+                                                                                  postgres_agg_trades=False,
+                                                                                  postgres_atomic_trades=False,
+                                                                                  postgresql_port=postgresql_port)
+                if postgres_agg_trades:
+                    if type(postgres_agg_trades) == str:
+                        postgresql_host_aggTrades = postgres_agg_trades
+                    else:
+                        from secret import postgresql_host_aggTrades
+                    self.connection_agg_trades, self.cursor_agg_trades = postgresql.setup(symbol=self.symbol,
+                                                                                          tick_interval=self.tick_interval,
+                                                                                          postgresql_host=postgresql_host_aggTrades,
+                                                                                          postgresql_user=postgresql_user,
+                                                                                          postgresql_database=postgresql_database,
+                                                                                          postgres_klines=False,
+                                                                                          postgres_agg_trades=True,
+                                                                                          postgres_atomic_trades=False,
+                                                                                          postgresql_port=postgresql_port)
+                if postgres_atomic_trades:
+                    if type(postgres_atomic_trades) == str:
+                        postgresql_host_trades = postgres_atomic_trades
+                    else:
+                        from secret import postgresql_host_trades
+                    self.connection_atomic_trades, self.cursor_atomic_trades = postgresql.setup(symbol=self.symbol,
+                                                                                                tick_interval=self.tick_interval,
+                                                                                                postgresql_host=postgresql_host_trades,
+                                                                                                postgresql_user=postgresql_user,
+                                                                                                postgresql_database=postgresql_database,
+                                                                                                postgres_klines=False,
+                                                                                                postgres_agg_trades=False,
+                                                                                                postgres_atomic_trades=True,
+                                                                                                postgresql_port=postgresql_port)
+            else:
+                self.connection_klines, self.cursor_klines = None, None
 
         self.postgres_klines = postgres_klines
         self.postgres_agg_trades = postgres_agg_trades
         self.postgres_atomic_trades = postgres_atomic_trades
 
         # pandas visualization settings
-        self.display_columns = display_columns
+        self.display_max_columns = display_columns
+        # self.display_min_columns = 10
         self.display_max_rows = display_max_rows
         self.display_min_rows = display_min_rows
         self.display_width = display_width
-        self.set_display_columns(display_columns)
-        self.set_display_width(display_width)
-        self.set_display_min_rows(display_min_rows)
-        self.set_display_max_rows(display_max_rows)
+        self.set_display_max_columns(self.display_max_columns)
+        # self.set_display_min_columns(self.display_min_columns)  # no existe este método en pandas
+        self.set_display_width(self.display_width)
+        self.set_display_min_rows(self.display_min_rows)
+        self.set_display_max_rows(self.display_max_rows)
 
         # indicators and relevant data initialization #
 
@@ -387,25 +408,6 @@ class Symbol(object):
         self.row_counter = 1
         self.strategy_groups = dict()
         self.plot_splitted_serie_couples = {}
-
-        ##############
-        # timestamps #
-        ##############
-
-        self.hours = hours
-
-        self.timeframe = Timeframe(start=start_time,
-                                   end=end_time,
-                                   timezone_IANA=self.time_zone,
-                                   tick_interval=self.tick_interval)
-
-        self.start_time, self.end_time = setup_startime_endtime(start_time=start_time,
-                                                                end_time=end_time,
-                                                                time_zone=self.time_zone,
-                                                                hours=self.hours,
-                                                                closed=self.closed,
-                                                                tick_interval=self.tick_interval,
-                                                                limit=self.limit)
 
         binpan_logger.debug(f"New instance of BinPan Symbol {self.version}: {self.symbol},"
                             f" {self.tick_interval}, limit={self.limit}, start={self.start_time},"
@@ -568,18 +570,32 @@ class Symbol(object):
     # pandas display #
     ##################
 
-    def set_display_columns(self, display_columns=None):
+    def set_display_max_columns(self, display_columns=None):
         """
-        Method to change the number of columns shown in the display of the dataframe. Uses pandas options.
+        Method to change the maximum number of columns shown in the display of the dataframe. Uses pandas options.
 
         :param int display_columns: Integer
         :return: None
         """
         if display_columns:
-            self.display_columns = display_columns
+            self.display_max_columns = display_columns
             pd.set_option('display.max_columns', display_columns)
         else:
-            pd.set_option('display.max_columns', self.display_columns)
+            pd.set_option('display.max_columns', self.display_max_columns)
+
+    # def set_display_min_columns(self, display_min_columns=None):
+    # no existe este método en pandas
+    #     """
+    #     Method to change the minimum number of columns shown in the display of the dataframe. Uses pandas options.
+    #
+    #     :param int display_min_columns: Integer
+    #     :return: None
+    #     """
+    #     if display_min_columns:
+    #         self.display_min_columns = display_min_columns
+    #         pd.set_option('display.min_columns', display_min_columns)
+    #     else:
+    #         pd.set_option('display.min_columns', self.display_min_columns)
 
     def set_display_min_rows(self, display_min_rows=None):
         """
@@ -766,8 +782,10 @@ class Symbol(object):
 
          :param source_data: The source data for the indicator(s). Can be a Series, DataFrame, ndarray, or list thereof.
          :param strategy_group: (Optional) Name of the strategy group to tag the inserted data.
-         :param plotting_row: (Optional) The specific row for plotting a single series. '1' overlaps with candles; other values create new rows.
-         :param plotting_rows: (Optional) List of rows for plotting each series. '1' means overlap; other integers determine separate row positions.
+         :param plotting_row: (Optional) The specific row for plotting a single series. '1' overlaps with candles; other values create
+         new rows.
+         :param plotting_rows: (Optional) List of rows for plotting each series. '1' means overlap; other integers determine separate row
+         positions.
          :param color: (Optional) Color for plotting a single series.
          :param no_overlapped_plot_rows: If True, avoids overlapping plot rows for multiple series.
          :param colors: (Optional) List of colors for each series indicator. Defaults to random colors if not provided.
@@ -777,7 +795,8 @@ class Symbol(object):
          :param suffix: Suffix to add to the new column name(s). If the source data is nameless, the suffix becomes the entire name.
          :return: The modified DataFrame with new indicators added, or None if the operation fails.
 
-         Note: This function dynamically assigns plotting rows and colors if they are not explicitly provided. It handles different types of input data for indicators and integrates them into the existing DataFrame.
+         Note: This function dynamically assigns plotting rows and colors if they are not explicitly provided. It handles different types
+         of input data for indicators and integrates them into the existing DataFrame.
          """
         if type(source_data) == list:
             data_qty = len(source_data)
@@ -1103,7 +1122,8 @@ class Symbol(object):
 
         return self.agg_trades
 
-    def get_atomic_trades(self, hours: int = None,
+    def get_atomic_trades(self,
+                          hours: int = None,
                           minutes: int = None,
                           startTime: int or str = None,
                           endTime: int or str = None,
@@ -3441,7 +3461,8 @@ class Symbol(object):
         higher for support and resistance. The function iterates in steps of a minutes quantity or a discrete interval.
 
         If discrete_interval is passed, it will ignore time_steps_minutes and minutes_window and will use this interval to calculate the
-        rolling support and resistance minutes_window and time_steps_minutes. It can be any of the binance kline ones: '1m', '3m', '5m', '15m',
+        rolling support and resistance minutes_window and time_steps_minutes. It can be any of the binance kline ones: '1m', '3m', '5m',
+        '15m',
         '30m', '1h', '2h', '4h', etc
 
         The parameter delayed is useful when you want to calculate the rolling support and resistance with a delay. For example, if you
@@ -3451,7 +3472,8 @@ class Symbol(object):
 
         If simple parameter is True, it will calculate support and resistance levels merged. Just levels. Default is True.
 
-        Example: If you want to calculate the rolling support and resistance with and interval of 24h and a delayed of 1, this will add past 24h
+        Example: If you want to calculate the rolling support and resistance with and interval of 24h and a delayed of 1, this will add
+        past 24h
         support and resistance levels to the current dataframe
 
             .. code-block::
@@ -3472,14 +3494,16 @@ class Symbol(object):
         :param int minutes_window: A rolling window of time in minutes. Whe using trades, it will calculate window by time index.
         :param int time_steps_minutes: Loop steps in minutes. Default is 10. Each step will calculate a new window data.
         :param str discrete_interval: If passed, it will ignore time_steps_minutes and minutes_window and will use this interval to
-            calculate the rolling support and resistance. It can be any of the following: '1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', etc
+            calculate the rolling support and resistance. It can be any of the following: '1m', '3m', '5m', '15m', '30m', '1h', '2h',
+            '4h', etc
         :param bool from_atomic: If True, support and resistance levels will be calculated using atomic trades.
         :param bool from_aggregated: If True, support and resistance levels will be calculated using aggregated trades.
         :param int max_clusters: If passed, fixes count of levels of support and resistance. Default is 5.
         :param float by_quantity: It takes each price into account by how many times the specified quantity appears in "Quantity" column.
         :param bool simple: If True, it will calculate support and resistance levels merged. Just levels. Default is True.
         :param bool inplace: If True, it will replace the current dataframe with the new one. Default is True.
-        :param int delayed: If passed, it will project the rolling support and resistance levels in the future. Default is 0  and means 0 windows projected in the future.
+        :param int delayed: If passed, it will project the rolling support and resistance levels in the future. Default is 0  and means 0
+        windows projected in the future.
         :param list colors: A list of colors for the indicator dataframe columns. Is the color to show when plotting.
          It can be any color from plotly library or a number in the list of those. Default colors defined.
          https://community.plotly.com/t/plotly-colours-list/11730

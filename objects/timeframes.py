@@ -179,24 +179,12 @@ class Timestamp:
             self.tick_interval = None
             self.tick_interval_ms = None
 
-        if type(value) == 'Timestamp' or type(value) == Timestamp:
-            self.dt = value.get_datetime()
-        elif type(value) == str:
-            self.dt = parse_timestamp(timestamp_str=value, timezone=timezone_IANA)
-        elif type(value) == datetime:
-            self.dt = value
-        elif type(value) == int:
-            # expected int in milliseconds
-            assert value > 0, f"Timestamp value must be a positive integer, not {value}"
-            self.dt = datetime.utcfromtimestamp(value / 1000).replace(tzinfo=pytz.utc)
-        else:
-            raise ValueError(f"Timestamp value must be other Timestamp, a string, a datetime object, or an integer timestamp in milliseconds, "
-                             f"not {type(value)}")
+        self.dt = self.dt_constructor(timezone_IANA=timezone_IANA, value=value)
 
         self.timezone = self.apply_new_timezone(timezone_=timezone_IANA)
 
         self.ms = self.epoch()
-        self.timestamp = self.ms
+        # self.timestamp = self.ms
 
         self.open = self.get_open() if self.tick_interval else None
         self.close = self.get_close() if self.tick_interval else None
@@ -208,6 +196,26 @@ class Timestamp:
                                                              f"{self.offset()} != {self.timezone_offset()}")
         except AssertionError:
             self.apply_new_timezone(timezone_=timezone_IANA)
+
+    @staticmethod
+    def dt_constructor(timezone_IANA: str or None, value: Union[str, int, datetime, 'Timestamp']) -> datetime:
+        """
+        Constructs the datetime object from the value passed to the Timestamp object.
+        """
+        if type(value) == 'Timestamp' or type(value) == Timestamp:
+            dt = value.get_datetime()
+        elif type(value) == str:
+            dt = parse_timestamp(timestamp_str=value, timezone=timezone_IANA)
+        elif type(value) == datetime:
+            dt = value
+        elif type(value) == int:
+            # expected int in milliseconds
+            assert value > 0, f"Timestamp value must be a positive integer, not {value}"
+            dt = datetime.utcfromtimestamp(value / 1000).replace(tzinfo=pytz.utc)
+        else:
+            raise ValueError(f"Timestamp value must be other Timestamp, a string, a datetime object, or an integer timestamp in milliseconds, "
+                             f"not {type(value)}")
+        return dt
 
     def apply_new_timezone(self, timezone_: Union[datetime.tzinfo, str, None]) -> pytz or None:
         """
@@ -231,6 +239,26 @@ class Timestamp:
             # Inherits the timezone from the datetime object
             timezone_set = self.dt.tzinfo
         return timezone_set
+
+    def apply_open(self):
+        """
+        Update the object with new dt value from the open of the tick interval.
+        """
+        self.dt = self.dt_constructor(timezone_IANA=self.timezone, value=self.get_open())
+        self.open = self.get_open()
+        self.close = self.get_close()
+        self.ms = self.epoch()
+        self.utc = self.dt.astimezone(pytz.utc)
+
+    def apply_close(self):
+        """
+        Update the object with new dt value from the close of the tick interval.
+        """
+        self.dt = self.dt_constructor(timezone_IANA=self.timezone, value=self.get_close())
+        self.open = self.get_open()
+        self.close = self.get_close()
+        self.ms = self.epoch()
+        self.utc = self.dt.astimezone(pytz.utc)
 
     def to_datetime(self) -> datetime:
         """
@@ -336,6 +364,26 @@ class Timestamp:
         if self.tick_interval_ms is None:
             raise Exception(f"No tick interval defined for Timestamp: {self.to_string()}")
         return self.get_open() + self.tick_interval_ms
+
+    def get_prev_open(self) -> int:
+        """
+        Returns the Timestamp at the beginning of the previous tick interval.
+
+        :return: Milliseconds since the Unix epoch at the beginning of the previous tick interval.
+        """
+        if self.tick_interval_ms is None:
+            raise Exception(f"No tick interval defined for Timestamp: {self.to_string()}")
+        return self.get_open() - self.tick_interval_ms
+
+    def get_prev_close(self) -> int:
+        """
+        Returns the Timestamp at the end of the previous tick interval.
+
+        :return: Milliseconds since the Unix epoch at the end of the previous tick interval.
+        """
+        if self.tick_interval_ms is None:
+            raise Exception(f"No tick interval defined for Timestamp: {self.to_string()}")
+        return self.get_open() - 1
 
     def get_datetime(self) -> datetime:
         """
@@ -475,7 +523,8 @@ class Timeframe:
                  timezone_IANA: Union[str, None] = "Europe/Madrid",
                  tick_interval: Union[str, None] = "1m",
                  hours: int = None,
-                 limit: int = None
+                 limit: int = None,
+                 closed: bool = True
                  ):
         """
         Initializes the Timeframe object.
@@ -488,6 +537,8 @@ class Timeframe:
         :param tick_interval: The tick interval for the Timeframe, given as a string, e.g., "1m", "1h", "1d". Defaults to "1m".
         :param hours: The number of hours of de range of Timeframe. If specified, it will be used to obtain start or end from the other.
         :param limit: The number of hours of the range of the Timeframe. If specified, it will be used to obtain start or end from the other.
+        :param closed: If True, the end of the Timeframe is included in the range. If False, the end is excluded because it is open.
+                       Just for discrete timeframes. Default is True.
         """
         assert not (bool(limit) & bool(hours)), "Either 'hours' or 'limit' can be specified, but not both."
 
@@ -500,13 +551,18 @@ class Timeframe:
         else:
             self.is_discrete = False
 
-        if not (bool(start) and bool(end)) and (limit or hours):
-            start, end = self._get_start_end_from_hours_or_limit(start, end)
+        if (not (bool(start) and bool(end))) and (limit or hours):
+            start, end = self._get_start_end_from_hours_or_limit(start_time=start, end_time=end, limit=limit, hours=hours)
 
         # Ensure that the start and end are Timestamp objects.
         self.start = Timestamp(start, timezone_IANA=timezone_IANA)
-        self.end = Timestamp(end, timezone_IANA=timezone_IANA)
-
+        if not closed:
+            self.end = Timestamp(end, timezone_IANA=timezone_IANA)
+        else:
+            now = int(time() * 1000)
+            end_ms = min(Timestamp(end, timezone_IANA=timezone_IANA).ms,
+                         Timestamp(now, timezone_IANA=timezone_IANA, tick_interval=self.tick_interval).get_prev_open())
+            self.end = Timestamp(end_ms, timezone_IANA=timezone_IANA)
         self.timezone = self.start.timezone
         self.ms = self.get_ms()
 
@@ -745,7 +801,8 @@ class Timeframe:
                                            hours: Union[float, None],
                                            limit: Union[int, None],
                                            start_time: Union[str, int, datetime, Timestamp] = None,
-                                           end_time: Union[str, int, datetime, Timestamp] = None
+                                           end_time: Union[str, int, datetime, Timestamp] = None,
+                                           closed: bool = True
                                            ) -> Tuple[Timestamp, Timestamp]:
         """
         Returns the number of hours of the range of the Timeframe based on the limit.
@@ -766,6 +823,7 @@ class Timeframe:
                            even a Timestamp object.
         :param end_time: The end of the Timeframe, given as a string, a datetime object, or an integer timestamp in milliseconds,
                          even a Timestamp object.
+        :param closed: If True, the end of the Timeframe is included in the range. If False, the end is excluded because it is open.
         :return: The start and end times of the Timeframe based on the number of hours or the limit.
         """
         assert bool(limit) ^ bool(hours), "Either 'hours' or 'limit' must be specified, but not both or none."
@@ -774,18 +832,30 @@ class Timeframe:
             # ceil division to ensure the limit is not less than the hours
             limit = -(-hours * 60 * 60 * 1000 // self.tick_interval_ms)
 
+        now = Timestamp(int(time() * 1000), tick_interval=self.tick_interval)
+
+        if closed:
+            now_ts = now.get_prev_close()
+        else:
+            now_ts = now.epoch()
+
         if not end_time and not start_time:
-            now = int(1000 * time())
-            end_time = Timestamp(value=now, tick_interval=self.tick_interval)
-            start_time = end_time.subtract_timedelta(delta=limit * 60 * 60 * 1000)
+            end_time = Timestamp(now_ts, tick_interval=self.tick_interval)
+            start_time = end_time.subtract_timedelta(delta=limit * self.tick_interval_ms)
 
         elif not end_time and start_time:
             start_time = Timestamp(start_time, tick_interval=self.tick_interval)
-            end_time = start_time.add_timedelta(delta=limit * 60 * 60 * 1000)
+            start_time.apply_open()
+            end_time_ts = start_time.open + (limit * self.tick_interval_ms) - 1  # -1 ms para ajustar al close
+
+            if closed:
+                end_time = Timestamp(min(now_ts, end_time_ts), tick_interval=self.tick_interval)
+            else:
+                end_time = start_time.add_timedelta(delta=limit * self.tick_interval_ms)
 
         elif end_time and not start_time:
-            end_time = Timestamp(end_time, tick_interval=self.tick_interval)
-            start_time = end_time.subtract_timedelta(delta=limit * 60 * 60 * 1000)
+            end_time = Timestamp(now_ts, tick_interval=self.tick_interval)
+            start_time = end_time.subtract_timedelta(delta=limit * self.tick_interval_ms)
         else:
             raise NotImplementedError(f"This case is not implemented yet. start_time: {start_time}, end_time: {end_time}, limit: {limit}, hours: {hours}")
         return start_time, end_time
