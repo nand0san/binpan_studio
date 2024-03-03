@@ -378,6 +378,50 @@ class Timestamp:
                 raise TypeError(f"Cannot compare Timestamp with object of type {type(other)}")
         return other_dt
 
+    def __add__(self, other):
+        """
+        Adds a timedelta or milliseconds to the Timestamp and returns a new Timestamp instance.
+
+        :param other: The amount of time to add, either as a timedelta or as an integer representing milliseconds.
+        :return: A new Timestamp instance with the added time.
+        """
+        if isinstance(other, timedelta):
+            new_dt = self.dt + other
+        elif isinstance(other, int):
+            # Assume the integer represents milliseconds.
+            delta = timedelta(milliseconds=other)
+            new_dt = self.dt + delta
+        else:
+            raise TypeError("Addition only supports timedelta or integer (as milliseconds).")
+
+        # Return a new Timestamp instance with the updated datetime.
+        try:
+            return Timestamp(new_dt, timezone_IANA=self.timezone.zone if self.timezone else None, tick_interval=self.tick_interval)
+        except AttributeError:
+            return Timestamp(new_dt, timezone_IANA=None, tick_interval=self.tick_interval)
+
+    def __sub__(self, other):
+        """
+        Subtracts a timedelta or milliseconds from the Timestamp and returns a new Timestamp instance.
+
+        :param other: The amount of time to subtract, either as a timedelta or as an integer representing milliseconds.
+        :return: A new Timestamp instance with the subtracted time.
+        """
+        if isinstance(other, timedelta):
+            new_dt = self.dt - other
+        elif isinstance(other, int):
+            # Assume the integer represents milliseconds.
+            delta = timedelta(milliseconds=other)
+            new_dt = self.dt - delta
+        else:
+            raise TypeError("Subtraction only supports timedelta or integer (as milliseconds).")
+
+        # Return a new Timestamp instance with the updated datetime.
+        try:
+            return Timestamp(new_dt, timezone_IANA=self.timezone.zone if self.timezone else None, tick_interval=self.tick_interval)
+        except AttributeError:
+            return Timestamp(new_dt, timezone_IANA=None, tick_interval=self.tick_interval)
+
 
 class Timeframe:
     def __init__(self,
