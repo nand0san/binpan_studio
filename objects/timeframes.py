@@ -24,7 +24,7 @@ tick_milliseconds = {
 class Timestamp:
     def __init__(self, value: any, timezone: str or None = "Europe/Madrid", tick_interval: str = "1m"):
         """
-        Initializes the Timestamp object. The value can be a string, a datetime object, a timestamp in seconds (int),
+        Initializes the Timestamp object. The value can be a string, a datetime object, an integer timestamp in milliseconds,
         or other formats that can be interpreted as a datetime.
 
         The expected string format is "%Y-%m-%d %H:%M:%S", but other ISO 8601 formats can also be parsed.
@@ -36,10 +36,21 @@ class Timestamp:
         """
         assert tick_interval in tick_milliseconds, f"The tick interval is not recognized: {tick_interval}"
 
-        self.dt = parse_timestamp(timestamp_str=value, timezone=timezone)
+        if type(value) == str:
+            self.dt = parse_timestamp(timestamp_str=value, timezone=timezone)
+        elif type(value) == datetime:
+            self.dt = value
+        elif type(value) == int:
+            # expected int in milliseconds
+            self.dt = datetime.utcfromtimestamp(value / 1000)
+            self.dt = self.dt.replace(tzinfo=pytz.utc)
+
         # extract time zone from the datetime object
         self.timezone = None
-        if self.dt.tzinfo is not None:
+        if timezone is not None:
+            self.timezone = pytz.timezone(timezone)
+            self.dt = self.dt.astimezone(self.timezone)
+        elif self.dt.tzinfo is not None:
             self.timezone = self.dt.tzinfo
 
         self.ms = self.epoch()
