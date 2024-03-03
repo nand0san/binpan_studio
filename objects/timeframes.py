@@ -207,6 +207,9 @@ class Timestamp:
         if type(timezone_) == str:
             timezone_set = pytz.timezone(timezone_)
             self.dt = self.dt.astimezone(timezone_set)
+        elif hasattr(timezone_, "zone"):
+            timezone_set = timezone_
+            self.dt = self.dt.astimezone(timezone_set)
         elif type(timezone_) == pytz.tzinfo.DstTzInfo or type(timezone_) == pytz.tzinfo.StaticTzInfo:
             timezone_set = timezone_
             self.dt = self.dt.astimezone(timezone_set)
@@ -693,6 +696,7 @@ class TimeframeIterator:
         assert timeframe.is_discrete, "Timeframe not iterable, it's not discrete."
         self._timeframe = timeframe
         self._current = self._timeframe.start.to_datetime()
+        # print(f"Current type and timezone in _current: {type(self._timeframe.timezone)}, {self._timeframe.timezone}")
 
     def __iter__(self):
         return self
@@ -700,6 +704,8 @@ class TimeframeIterator:
     def __next__(self):
         if self._current > self._timeframe.end.to_datetime():
             raise StopIteration
+        # convierte self._current a utc
+        # utc_ms = int(self._current.astimezone(pytz.utc).timestamp() * 1000)
         current_timestamp = Timestamp(self._current, timezone_IANA=self._timeframe.timezone, tick_interval=self._timeframe.tick_interval)
         # Move to the next open based on the tick interval.
         self._current += timedelta(milliseconds=self._timeframe.tick_interval_ms)
