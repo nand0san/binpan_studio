@@ -42,7 +42,7 @@ from handlers.time_helper import (check_tick_interval, convert_milliseconds_to_s
 from handlers.tags import (tag_column_to_strategy_group, backtesting, backtesting_short, tag_comparison, tag_cross, merge_series,
                            clean_in_out)
 
-from objects.timeframes import convert_str_date_to_ms
+
 
 from handlers.aggregations import resample_klines
 
@@ -63,6 +63,8 @@ from handlers.numba_tools import sma_numba, rsi_numba, ema_numba
 # except ImportError:
 #     is_numba = False
 #     sma_numba, rsi_numba, ema_numba = None, None, None
+
+from objects.timeframes import Timeframe
 
 binpan_logger = Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 version = __version__
@@ -243,15 +245,10 @@ class Symbol(object):
         self.time_zone = time_zone
 
         # dataframe columns
-        # self.presentation_columns = presentation_columns
         self.original_columns = binance_api_candles_cols
-
-        # # trades columns provisional
         self.agg_trades_columns = agg_trades_columns
         self.atomic_trades_columns = atomic_trades_columns
-
         self.reversal_columns = reversal_columns
-
         # time cols
         self.time_cols = time_cols
         self.dts_time_cols = dts_time_cols
@@ -396,6 +393,12 @@ class Symbol(object):
         ##############
 
         self.hours = hours
+
+        self.timeframe = Timeframe(start=start_time,
+                                   end=end_time,
+                                   timezone_IANA=self.time_zone,
+                                   tick_interval=self.tick_interval)
+
         self.start_time, self.end_time = setup_startime_endtime(start_time=start_time,
                                                                 end_time=end_time,
                                                                 time_zone=self.time_zone,
