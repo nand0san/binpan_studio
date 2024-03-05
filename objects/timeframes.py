@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import pandas as pd
 from time import time
 import pytz
 from typing import Union, Tuple
@@ -23,12 +24,28 @@ tick_milliseconds = {
     '1M': 30 * 24 * 60 * 60 * 1000,  # Approximation for one month
 }
 
+pandas_freq_tick_interval = {'1m': '1T',
+                             '3m': '3T',
+                             '5m': '5T',
+                             '15m': '15T',
+                             '30m': '30T',
+                             '1h': '1H',
+                             '2h': '2H',
+                             '4h': '4H',
+                             '6h': '6H',
+                             '8h': '8H',
+                             '12h': '12H',
+                             '1d': '1D',
+                             '3d': '3D',
+                             '1w': '1W',
+                             '1M': '1M'}
+
 
 class Timeframe:
     def __init__(self,
                  start: Union[str, int, datetime, Timestamp, None],
                  end: Union[str, int, datetime, Timestamp, None],
-                 timezone_IANA: Union[str, None] = "Europe/Madrid",
+                 timezone_IANA: Union[str, None] = "UTC",
                  tick_interval: Union[str, None] = "1m",
                  hours: int = None,
                  limit: int = None,
@@ -40,7 +57,7 @@ class Timeframe:
         :param start: The start of the Timeframe, given as a string, a datetime object, or an integer timestamp in milliseconds.
         :param end: The end of the Timeframe, given as a string, a datetime object, or an integer timestamp in milliseconds.
         :param timezone_IANA: The timezone for the Timeframe, given as an IANA time zone string, e.g., "UTC", "Europe/Madrid".
-                              Defaults to "Europe/Madrid". If not recognized or not defined, it defaults the value passed in the
+                              Defaults to "UTC". If not recognized or not defined, it defaults the value passed in the
                               timestamp if it includes timezone information, or to UTC if it doesn't nad no timezone is specified.
         :param tick_interval: The tick interval for the Timeframe, given as a string, e.g., "1m", "1h", "1d". Defaults to "1m".
         :param hours: The number of hours of de range of Timeframe. If specified, it will be used to obtain start or end from the other.
@@ -61,7 +78,8 @@ class Timeframe:
 
         if (not (bool(start) and bool(end))) and (limit or hours):
             start, end = self._get_start_end_from_hours_or_limit(start_time=start, end_time=end, limit=limit, hours=hours)
-
+        else:
+            assert start and end, "Not enough information to create the Timeframe."
         # Ensure that the start and end are Timestamp objects.
         self.start = Timestamp(start, timezone_IANA=timezone_IANA)
         if not closed:
@@ -367,6 +385,17 @@ class Timeframe:
         else:
             raise NotImplementedError(f"This case is not implemented yet. start_time: {start_time}, end_time: {end_time}, limit: {limit}, hours: {hours}")
         return start_time, end_time
+
+    def get_pandas_index(self, name: str = "") -> pd.DatetimeIndex:
+        """
+        Returns a pandas index for the Timeframe.
+
+        :param name: The name of the index. Like BTCUSDT 15m Europe/Madrid. Default is "".
+        """
+        return pd.date_range(start=self.start.to_datetime(),
+                             end=self.end.to_datetime(),
+                             freq=pandas_freq_tick_interval[self.tick_interval],
+                             name=name)
 
 
 class TimeframeIterator:

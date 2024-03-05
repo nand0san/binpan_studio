@@ -44,8 +44,8 @@ from handlers.tags import (tag_column_to_strategy_group, backtesting, backtestin
 
 from handlers.aggregations import resample_klines
 
-from handlers.standards import (binance_api_candles_cols, agg_trades_columns, atomic_trades_columns, time_cols,
-                                dts_time_cols, reversal_columns, agg_trades_columns_from_binance, atomic_trades_columns_from_binance)
+from handlers.standards import (binance_api_candles_cols, agg_trades_api_map_columns, atomic_trades_api_map_columns, time_cols,
+                                dts_time_cols, reversal_columns_order, agg_trades_columns_from_binance, atomic_trades_columns_from_binance)
 
 from handlers.quest import tick_seconds
 from handlers.wallet import convert_str_date_to_ms
@@ -55,13 +55,7 @@ with warnings.catch_warnings():
     warnings.simplefilter("ignore")
 
 from handlers.numba_tools import sma_numba, rsi_numba, ema_numba
-# try:
-#     from numba import njit
-#     from handlers.numba_tools import sma_numba, rsi_numba, ema_numba
-#     is_numba = True
-# except ImportError:
-#     is_numba = False
-#     sma_numba, rsi_numba, ema_numba = None, None, None
+
 
 from objects.timeframes import Timeframe
 
@@ -246,9 +240,9 @@ class Symbol(object):
 
         # dataframe columns
         self.original_columns = binance_api_candles_cols
-        self.agg_trades_columns = agg_trades_columns
-        self.atomic_trades_columns = atomic_trades_columns
-        self.reversal_columns = reversal_columns
+        self.agg_trades_columns = agg_trades_api_map_columns
+        self.atomic_trades_columns = atomic_trades_api_map_columns
+        self.reversal_columns = reversal_columns_order
         # time cols
         self.time_cols = time_cols
         self.dts_time_cols = dts_time_cols
@@ -291,8 +285,8 @@ class Symbol(object):
                                        hours=hours,
                                        closed=closed)
 
-            self.start_time = self.timeframe.start.epoch()
-            self.end_time = self.timeframe.end.epoch()
+            self.start_time = self.timeframe.start.get_open()
+            self.end_time = self.timeframe.end.get_close()
             self.tick_interval = self.timeframe.tick_interval
             self.limit = self.timeframe.get_limit()
             self.hours = self.timeframe.get_hours()
@@ -314,7 +308,7 @@ class Symbol(object):
 
                 if postgres_klines:
                     if type(postgres_klines) == str:
-                        binpan_logger.info(f"Postgres connection requested as str: {postgres_klines}")
+                        binpan_logger.info(f"Postgres connection requested: {postgres_klines}")
                         postgresql_host_klines = postgres_klines
                     else:
                         from secret import postgresql_host_klines

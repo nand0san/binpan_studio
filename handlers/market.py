@@ -17,7 +17,7 @@ from .quest import check_weight, get_response, api_raw_get, get_semi_signed_requ
 from .time_helper import (tick_seconds, convert_milliseconds_to_str, convert_ms_column_to_datetime_with_zone,
                           convert_milliseconds_to_utc_string, convert_datetime_to_string, open_from_milliseconds, next_open_by_milliseconds,
                           convert_milliseconds_to_time_zone_datetime)
-from .standards import (klines_columns, agg_trades_columns_from_binance, atomic_trades_columns_from_binance,
+from .standards import (klines_api_map_columns, agg_trades_columns_from_binance, atomic_trades_columns_from_binance,
                         atomic_trades_columns_from_redis)
 from .files import get_encoded_secrets
 
@@ -325,9 +325,9 @@ def parse_candles_to_dataframe(raw_response: list,
             sort_columns.sort()
 
             if response_keys != sort_columns:  # json keys from redis different
-                columns = list(klines_columns.keys())
+                columns = list(klines_api_map_columns.keys())
                 df = pd.DataFrame(raw_response, columns=columns)
-                df.rename(columns=klines_columns, inplace=True)
+                df.rename(columns=klines_api_map_columns, inplace=True)
             else:
                 df = pd.DataFrame(raw_response, columns=columns)
     else:

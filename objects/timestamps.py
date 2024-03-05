@@ -21,6 +21,7 @@ tick_milliseconds = {
     '1M': 30 * 24 * 60 * 60 * 1000,  # Approximation for one month
 }
 
+
 def parse_timestamp(timestamp_str: str, timezone: Union[str, pytz] = "Europe/Madrid") -> datetime:
     """
     Parses a timestamp in ISO 8601 format or in one of the specified custom formats. Accepted formats are:
@@ -133,7 +134,7 @@ def parse_timestamp(timestamp_str: str, timezone: Union[str, pytz] = "Europe/Mad
 class Timestamp:
     def __init__(self,
                  value: Union[str, int, datetime, 'Timestamp'],
-                 timezone_IANA: str or None = "Europe/Madrid",
+                 timezone_IANA: Union[str, int, datetime, 'Timestamp', None] = "UTC",
                  tick_interval: Union[str, None] = "1m"):
         """
         Initializes the Timestamp object. The value can be a string, a datetime object, an integer timestamp in milliseconds,
@@ -143,7 +144,7 @@ class Timestamp:
 
         :param value: The value to be parsed and stored as a datetime object. Allowed types are str, int, datetime, and Timestamp.
         :param timezone_IANA: The timezone for the timestamp, given as an IANA time zone string, e.g., "UTC", "Europe/Madrid".
-                              Defaults to "Europe/Madrid". If not recognized or not defined, it defaults the value passed in the
+                              Defaults to "UTC". If not recognized or not defined, it defaults the value passed in the
                               timestamp if
                               it includes timezone information, or to UTC if it doesn't.
         :param tick_interval: The tick interval for the timestamp, given as a string, e.g., "1m", "1h", "1d". Defaults to "1m". If none is
@@ -197,7 +198,8 @@ class Timestamp:
             self.apply_new_timezone(timezone_=timezone_IANA)
 
     @staticmethod
-    def dt_constructor(timezone_IANA: str or None, value: Union[str, int, datetime, 'Timestamp']) -> datetime:
+    def dt_constructor(timezone_IANA: str or None,
+                       value: Union[str, int, datetime, 'Timestamp']) -> datetime:
         """
         Constructs the datetime object from the value passed to the Timestamp object.
         """
@@ -212,7 +214,8 @@ class Timestamp:
             assert value > 0, f"Timestamp value must be a positive integer, not {value}"
             dt = datetime.utcfromtimestamp(value / 1000).replace(tzinfo=pytz.utc)
         else:
-            raise ValueError(f"Timestamp value must be other Timestamp, a string, a datetime object, or an integer timestamp in milliseconds, "
+            raise ValueError(f"Timestamp value must be other Timestamp, a string, a datetime object, or an integer timestamp in "
+                             f"milliseconds, "
                              f"not {type(value)}")
         return dt
 
