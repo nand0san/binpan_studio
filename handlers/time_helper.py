@@ -3,7 +3,7 @@ import pytz
 from time import time
 from typing import Tuple, List, Union
 import pandas as pd
-from objects.timeframes import Timestamp
+from objects.timestamps import Timestamp
 
 from .logs import Logs
 

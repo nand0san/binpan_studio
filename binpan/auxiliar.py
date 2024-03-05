@@ -7,7 +7,7 @@ from handlers.files import select_file, read_csv_to_dataframe, extract_filename_
 from handlers.logs import Logs
 from handlers.market import (convert_to_numeric)
 from handlers.time_helper import (pandas_freq_tick_interval, open_from_milliseconds, time_interval)
-from objects.timeframes import Timestamp
+from objects.timestamps import Timestamp
 
 # from handlers.starters import is_running_in_jupyter
 # if is_running_in_jupyter():
