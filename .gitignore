@@ -171,6 +171,7 @@ examples database maintenance.ipynb
 secret.py
 secret_.py
 secret*
+!secrets.py
 investigacion*
 test.ipynb
 docstring_extractor.py

@@ -9,6 +9,7 @@ from handlers.standards import (atomic_trades_api_map_columns, postgresql2binpan
 
 class Trades(Timeframe):  # Fetcher objeto para trincar de api, postgresql, csv, etc
     def __init__(self,
+                 symbol: str,
                  start: Union[str, int, datetime, Timestamp, None],
                  end: Union[str, int, datetime, Timestamp, None],
                  trades: Union[List[dict], pd.DataFrame],
