@@ -1,10 +1,10 @@
 from random import sample
 import pandas as pd
 
-from .logs import Logs
+from .logs import LogManager
 
 
-tags_logger = Logs(filename='./logs/tags_logger.log', name='tags_logger', info_level='INFO')
+tags_logger = LogManager(filename='./logs/tags_logger.log', name='tags_logger', info_level='INFO')
 
 
 def random_strategy(data: pd.DataFrame,

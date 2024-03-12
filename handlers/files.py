@@ -6,10 +6,10 @@ import importlib
 import pandas as pd
 
 from .starters import AesCipher, import_secret_module
-from .logs import Logs
+from .logs import LogManager
 from .exceptions import BinPanException, MissingBinanceApiData
 
-files_logger = Logs(filename='./logs/files_logger.log', name='files_logger', info_level='INFO')
+files_logger = LogManager(filename='./logs/files_logger.log', name='files_logger', info_level='INFO')
 
 cipher_object = AesCipher()
 

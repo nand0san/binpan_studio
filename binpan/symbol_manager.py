@@ -27,7 +27,7 @@ from handlers.indicators import (df_splitter, reversal_candles, zoom_cloud_indic
                                  alternating_fractal_indicator, fractal_trend_indicator, market_profile_from_klines_grouped,
                                  market_profile_from_trades_grouped, support_resistance_levels_merged, time_active_zones)
 
-from handlers.logs import Logs
+from handlers.logs import LogManager
 
 from handlers.market import (get_candles_by_time_stamps, parse_candles_to_dataframe, convert_to_numeric, basic_dataframe,
                              get_historical_agg_trades, parse_agg_trades_to_dataframe, get_historical_atomic_trades,
@@ -59,7 +59,7 @@ from handlers.numba_tools import sma_numba, rsi_numba, ema_numba
 
 from objects.timeframes import Timeframe
 
-binpan_logger = Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
+binpan_logger = LogManager(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 version = __version__
 
 pd.set_option('display.max_columns', 30)

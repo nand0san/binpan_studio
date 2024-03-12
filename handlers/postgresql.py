@@ -14,11 +14,11 @@ from .exceptions import BinPanException
 from .standards import *
 from .files import get_encoded_database_secrets
 from .starters import AesCipher
-from .logs import Logs
+from .logs import LogManager
 from .market import convert_to_numeric
 from .time_helper import convert_milliseconds_to_str
 
-sql_logger = Logs(filename='./logs/sql.log', name='sql', info_level='INFO')
+sql_logger = LogManager(filename='./logs/sql.log', name='sql', info_level='INFO')
 cipher_object = AesCipher()
 
 

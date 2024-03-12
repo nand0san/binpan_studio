@@ -15,9 +15,16 @@ class Trades(Timeframe):  # Fetcher objeto para trincar de api, postgresql, csv,
                  trades: Union[List[dict], pd.DataFrame],
                  trade_type: str = 'trade',
                  origin: str = 'binance_api',
-                 ):
+                 timezone_IANA: str = 'Europe/Madrid',
+                 tick_interval: Union[str, None] = None,
+                 closed: bool = False):
 
-        super().__init__(start=start, end=end, tick_interval=None, closed=False)
+        Timeframe.__init__(self,
+                           start=start,
+                           end=end,
+                           timezone_IANA=timezone_IANA,
+                           tick_interval=tick_interval,
+                           closed=closed)
 
         assert trade_type in ['trade', 'aggtrade', 'aggTrade'], f"Trades trade type must be 'trade', 'aggtrade' or 'aggTrade' not {trade_type}"
         assert origin in ['binance_api', 'csv', 'postgresql'], f"Trades origin must be 'binance_api', 'csv' or 'postgresql' not {origin}"
@@ -54,3 +61,11 @@ class Trades(Timeframe):  # Fetcher objeto para trincar de api, postgresql, csv,
 
     def __str__(self):
         return str(self.trades)
+    # TODO: IMPLEMENTAR FUNCIONES PARA PARSEO DE DISTINTOS ORIGENES DE DATOS
+    #       - binance api
+    #       - csv
+    #       - postgresql
+
+    def to_csv(self, filepath: str):
+        self.trades.to_csv(filepath)
+

@@ -3,13 +3,13 @@ from time import sleep
 import pandas as pd
 
 # from objects.timeframes import convert_str_date_to_ms
-from .logs import Logs
+from .logs import LogManager
 from .quest import api_raw_signed_get, api_raw_signed_post
 from .time_helper import convert_milliseconds_to_str
 from handlers.time_helper import convert_string_to_milliseconds
 from .market import get_prices_dic, convert_coin
 
-wallet_logger = Logs(filename='./logs/wallet_logger.log', name='wallet_logger', info_level='INFO')
+wallet_logger = LogManager(filename='./logs/wallet_logger.log', name='wallet_logger', info_level='INFO')
 
 
 ##########

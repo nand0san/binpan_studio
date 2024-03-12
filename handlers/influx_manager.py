@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta
-from .logs import Logs
+from .logs import LogManager
 from typing import List, Dict
 
-influx_logger = Logs(filename='./logs/influx_manager.log', name='influx_manager', info_level='DEBUG')
+influx_logger = LogManager(filename='./logs/influx_manager.log', name='influx_manager', info_level='DEBUG')
 
 try:
     import influxdb_client

@@ -9,7 +9,7 @@ import numpy as np
 from typing import Union
 from .market import get_prices_dic
 from .quest import api_raw_get, api_raw_signed_get, check_weight
-from .logs import Logs
+from .logs import LogManager
 
 base_url = 'https://api.binance.com'
 
@@ -19,7 +19,7 @@ float_api_items = ['price', 'origQty', 'executedQty', 'cummulativeQuoteQty', 'st
                    'origQuoteOrderQty', 'makerCommission', 'takerCommission']
 int_api_items = ['orderId', 'orderListId', 'transactTime', 'tradeId', 'transactionTime', 'updateTime', 'time']
 
-exchange_logger = Logs(filename='./logs/exchange_logger.log', name='exchange_logger', info_level='INFO')
+exchange_logger = LogManager(filename='./logs/exchange_logger.log', name='exchange_logger', info_level='INFO')
 
 
 #########################

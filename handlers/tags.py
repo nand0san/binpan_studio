@@ -9,9 +9,9 @@ import numpy as np
 
 from .exchange import get_info_dic, get_bases_dic, get_quotes_dic
 from .market import get_candles_by_time_stamps, parse_candles_to_dataframe
-from .logs import Logs
+from .logs import LogManager
 
-logger = Logs(filename='./logs/tags.log', name='tags', info_level='INFO')
+logger = LogManager(filename='./logs/tags.log', name='tags', info_level='INFO')
 
 
 def tag_value(serie: pd.Series,

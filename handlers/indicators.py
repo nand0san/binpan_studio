@@ -14,7 +14,7 @@ import multiprocessing
 from .time_helper import convert_milliseconds_to_time_zone_datetime
 from .time_helper import pandas_freq_tick_interval
 from .tags import is_alternating
-from .logs import Logs
+from .logs import LogManager
 
 import warnings
 with warnings.catch_warnings():
@@ -25,7 +25,7 @@ with warnings.catch_warnings():
 cpus = multiprocessing.cpu_count() // 2
 os.environ["LOKY_MAX_CPU_COUNT"] = str(cpus)
 
-indicator_logger = Logs(filename='./logs/indicators.log', name='indicators', info_level='INFO')
+indicator_logger = LogManager(filename='./logs/indicators.log', name='indicators', info_level='INFO')
 
 
 ##############

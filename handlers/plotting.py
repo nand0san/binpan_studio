@@ -15,11 +15,11 @@ from datetime import datetime
 from typing import List, Tuple, Literal
 
 
-from .logs import Logs
+from .logs import LogManager
 from .exceptions import BinPanException
 from .time_helper import infer_frequency_and_set_index
 
-plot_logger = Logs(filename='./logs/plotting.log', name='plotting', info_level='INFO')
+plot_logger = LogManager(filename='./logs/plotting.log', name='plotting', info_level='INFO')
 
 plotly_colors = ["aliceblue", "antiquewhite", "aqua", "aquamarine", "azure", "beige", "bisque", "black", "blanchedalmond", "blue",
                  "blueviolet", "brown", "burlywood", "cadetblue", "chartreuse", "chocolate", "coral", "cornflowerblue", "cornsilk",

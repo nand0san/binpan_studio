@@ -12,7 +12,7 @@ from datetime import datetime
 from typing import List
 
 from .exceptions import BinPanException
-from .logs import Logs
+from .logs import LogManager
 from .quest import check_weight, get_response, api_raw_get, get_semi_signed_request
 from .time_helper import (tick_seconds, convert_milliseconds_to_str, convert_ms_column_to_datetime_with_zone,
                           convert_milliseconds_to_utc_string, convert_datetime_to_string, open_from_milliseconds, next_open_by_milliseconds,
@@ -21,7 +21,7 @@ from .standards import (klines_api_map_columns, agg_trades_columns_from_binance,
                         atomic_trades_columns_from_redis)
 from .files import get_encoded_secrets
 
-market_logger = Logs(filename='./logs/market_logger.log', name='market_logger', info_level='INFO')
+market_logger = LogManager(filename='./logs/market_logger.log', name='market_logger', info_level='INFO')
 
 base_url = 'https://api.binance.com'
 

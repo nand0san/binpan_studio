@@ -5,9 +5,9 @@ from typing import Tuple, List, Union
 import pandas as pd
 from objects.timestamps import Timestamp
 
-from .logs import Logs
+from .logs import LogManager
 
-time_logger = Logs(filename='./logs/time_helpers.log', name='time_helpers', info_level='INFO')
+time_logger = LogManager(filename='./logs/time_helpers.log', name='time_helpers', info_level='INFO')
 
 tick_seconds = {'1m': 60, '3m': 60 * 3, '5m': 5 * 60, '15m': 15 * 60, '30m': 30 * 60, '1h': 60 * 60, '2h': 60 * 60 * 2,
                 '4h': 60 * 60 * 4, '6h': 60 * 60 * 6, '8h': 60 * 60 * 8, '12h': 60 * 60 * 12, '1d': 60 * 60 * 24,

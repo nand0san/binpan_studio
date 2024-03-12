@@ -4,7 +4,7 @@ import pandas as pd
 
 
 from handlers.files import select_file, read_csv_to_dataframe, extract_filename_metadata
-from handlers.logs import Logs
+from handlers.logs import LogManager
 from handlers.market import (convert_to_numeric)
 from handlers.time_helper import (pandas_freq_tick_interval, open_from_milliseconds, time_interval)
 from objects.timestamps import Timestamp
@@ -15,7 +15,7 @@ from objects.timestamps import Timestamp
 # else:
 #     pass
 
-binpan_logger = Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
+binpan_logger = LogManager(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 
 
 def csv_klines_setup(from_csv: str or bool,
