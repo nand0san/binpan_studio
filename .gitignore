@@ -175,3 +175,5 @@ investigacion*
 test.ipynb
 docstring_extractor.py
 venv_no_numba/
+
+test*
