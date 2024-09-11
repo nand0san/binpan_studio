@@ -2,18 +2,34 @@ from decimal import Decimal as dd
 from time import sleep
 import pandas as pd
 
-from .logs import Logs
+# from objects.timeframes import convert_str_date_to_ms
+from .logs import LogManager
 from .quest import api_raw_signed_get, api_raw_signed_post
 from .time_helper import convert_milliseconds_to_str
-from .time_helper import convert_string_to_milliseconds
+from handlers.time_helper import convert_string_to_milliseconds
 from .market import get_prices_dic, convert_coin
 
-wallet_logger = Logs(filename='./logs/wallet_logger.log', name='wallet_logger', info_level='INFO')
+wallet_logger = LogManager(filename='./logs/wallet_logger.log', name='wallet_logger', info_level='INFO')
 
 
 ##########
 # Helper #
 ##########
+
+def convert_str_date_to_ms_old(date: str or int,
+                           time_zone: str):
+    """
+    Converts dates strings formatted as "2022-05-11 06:45:42" to timestamp in milliseconds. If timestamp passed
+    it returns the timestamp.
+
+    :param str or int date: Date to check format.
+    :param time_zone: A time zone like 'Europe/Madrid'
+    :return int: Milliseconds of timestamp.
+    """
+    if type(date) == str:
+        date = convert_string_to_milliseconds(date, timezoned=time_zone)
+    return date
+
 
 def convert_str_date_to_ms(date: str or int,
                            time_zone: str):
@@ -40,7 +56,7 @@ def daily_account_snapshot(account_type: str,
                            api_key: str,
                            api_secret: str,
                            startTime: int or str = None,
-                           endTime: int = None,
+                           endTime: int or str = None,
                            limit=30,
                            time_zone=None) -> pd.DataFrame:
     """

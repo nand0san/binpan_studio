@@ -12,16 +12,16 @@ from datetime import datetime
 from typing import List
 
 from .exceptions import BinPanException
-from .logs import Logs
+from .logs import LogManager
 from .quest import check_weight, get_response, api_raw_get, get_semi_signed_request
 from .time_helper import (tick_seconds, convert_milliseconds_to_str, convert_ms_column_to_datetime_with_zone,
                           convert_milliseconds_to_utc_string, convert_datetime_to_string, open_from_milliseconds, next_open_by_milliseconds,
                           convert_milliseconds_to_time_zone_datetime)
-from .standards import (klines_columns, agg_trades_columns_from_binance, atomic_trades_columns_from_binance,
+from .standards import (klines_api_map_columns, agg_trades_columns_from_binance, atomic_trades_columns_from_binance,
                         atomic_trades_columns_from_redis)
 from .files import get_encoded_secrets
 
-market_logger = Logs(filename='./logs/market_logger.log', name='market_logger', info_level='INFO')
+market_logger = LogManager(filename='./logs/market_logger.log', name='market_logger', info_level='INFO')
 
 base_url = 'https://api.binance.com'
 
@@ -128,7 +128,8 @@ def get_candles_by_time_stamps(symbol: str,
     """
     endpoint = '/api/v3/klines?'
     tick_milliseconds = int(tick_seconds[tick_interval] * 1000)
-    limit = min(limit, 1000)
+    # limit = min(limit, 1000)
+    limit = (end_time - start_time) // tick_milliseconds
 
     if not start_time and not end_time:
         end_time = int(time()) * 1000  # la api traería la ultima vela cerrada
@@ -160,9 +161,9 @@ def get_candles_by_time_stamps(symbol: str,
     # loop
     raw_candles = []
     for start, end in ranges:
-
+        loop_limit = min(limit, 1000)
         end = min(end, int(1000 * time()))
-        params = {'symbol': symbol, 'interval': tick_interval, 'startTime': start, 'endTime': end, 'limit': limit}
+        params = {'symbol': symbol, 'interval': tick_interval, 'startTime': start, 'endTime': end, 'limit': loop_limit}
         params = {k: v for k, v in params.items() if v}
         check_weight(1, endpoint=endpoint)
 
@@ -197,7 +198,7 @@ def get_candles_by_time_stamps(symbol: str,
         raw_candles_ = [i for i in raw_candles if int(i[open_ts_key]) < overtime_candle_ts]
 
     if len(raw_candles) != len(raw_candles_):
-        market_logger.info(f"Pruned overtime_candle_ts {len(raw_candles) - len(raw_candles_)} candles from API response for {symbol} "
+        market_logger.info(f"Pruned not closed or overtime candles {len(raw_candles) - len(raw_candles_)} candles from API response for {symbol} "
                            f"{tick_interval}")
 
     return raw_candles_
@@ -324,9 +325,9 @@ def parse_candles_to_dataframe(raw_response: list,
             sort_columns.sort()
 
             if response_keys != sort_columns:  # json keys from redis different
-                columns = list(klines_columns.keys())
+                columns = list(klines_api_map_columns.keys())
                 df = pd.DataFrame(raw_response, columns=columns)
-                df.rename(columns=klines_columns, inplace=True)
+                df.rename(columns=klines_api_map_columns, inplace=True)
             else:
                 df = pd.DataFrame(raw_response, columns=columns)
     else:

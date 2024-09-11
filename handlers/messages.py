@@ -8,11 +8,11 @@ import datetime
 
 from .starters import AesCipher
 from .files import get_encoded_telegram_secrets
-from .logs import Logs
+from .logs import LogManager
 from .time_helper import convert_milliseconds_to_str
 from .wallet import get_spot_balances_df, get_spot_balances_total_value
 
-msg_logger = Logs(filename='./logs/msg_logger.log', name='msg_logger', info_level='INFO')
+msg_logger = LogManager(filename='./logs/msg_logger.log', name='msg_logger', info_level='INFO')
 
 cipher_object = AesCipher()
 

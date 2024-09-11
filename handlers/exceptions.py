@@ -4,9 +4,9 @@ Exceptions control.
 import json
 from socket import gethostname
 
-from .logs import Logs
+from .logs import LogManager
 
-exceptions_logger = Logs(filename='./logs/exceptions.log', name='exceptions', info_level='INFO')
+exceptions_logger = LogManager(filename='./logs/exceptions.log', name='exceptions', info_level='INFO')
 hostname = gethostname() + ' exceptions '
 
 

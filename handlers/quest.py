@@ -12,7 +12,7 @@ import hashlib
 import copy
 from time import sleep
 
-from .logs import Logs
+from .logs import LogManager
 from .exceptions import BinanceAPIException, BinanceRequestException
 from .starters import AesCipher, get_exchange_limits
 
@@ -28,8 +28,8 @@ tick_seconds = {'1m': 60, '3m': 60 * 3, '5m': 5 * 60, '15m': 15 * 60, '30m': 30 
 
 tick_interval_values = ['1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '6h', '8h', '12h', '1d', '3d', '1w', '1M']
 
-weight_logger = Logs(filename='./logs/weight.log', name='weight', info_level='INFO')
-quest_logger = Logs(filename='./logs/quest.log', name='quest', info_level='INFO')
+weight_logger = LogManager(filename='./logs/weight.log', name='weight', info_level='INFO')
+quest_logger = LogManager(filename='./logs/quest.log', name='quest', info_level='INFO')
 
 cipher_object = AesCipher()
 

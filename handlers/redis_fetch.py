@@ -4,7 +4,7 @@ from typing import Tuple, List, Union, Dict
 import pandas as pd
 import numpy as np
 
-from .logs import Logs
+from .logs import LogManager
 from .market import convert_to_numeric, tick_seconds
 from .time_helper import (convert_ms_column_to_datetime_with_zone, convert_datetime_to_string, convert_milliseconds_to_utc_string,
                           convert_milliseconds_to_time_zone_datetime, convert_milliseconds_to_str, open_from_milliseconds,
@@ -12,7 +12,7 @@ from .time_helper import (convert_ms_column_to_datetime_with_zone, convert_datet
 from .starters import import_secret_module
 from .exceptions import RedisConfigError
 
-redis_logger = Logs(filename='./logs/redis_fetch.log', name='redis_fetch', info_level='INFO')
+redis_logger = LogManager(filename='./logs/redis_fetch.log', name='redis_fetch', info_level='INFO')
 
 try:
     from redis import StrictRedis

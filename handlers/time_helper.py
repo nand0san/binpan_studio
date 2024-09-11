@@ -1,16 +1,18 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import pytz
 from time import time
-from typing import Tuple, List
+from typing import Tuple, List, Union
 import pandas as pd
+from objects.timestamps import Timestamp
 
-from .logs import Logs
+from .logs import LogManager
 
-time_logger = Logs(filename='./logs/time_helpers.log', name='time_helpers', info_level='INFO')
+time_logger = LogManager(filename='./logs/time_helpers.log', name='time_helpers', info_level='INFO')
 
 tick_seconds = {'1m': 60, '3m': 60 * 3, '5m': 5 * 60, '15m': 15 * 60, '30m': 30 * 60, '1h': 60 * 60, '2h': 60 * 60 * 2,
                 '4h': 60 * 60 * 4, '6h': 60 * 60 * 6, '8h': 60 * 60 * 8, '12h': 60 * 60 * 12, '1d': 60 * 60 * 24,
                 '3d': 60 * 60 * 24 * 3, '1w': 60 * 60 * 24 * 7, '1M': 60 * 60 * 24 * 30}
+
 pandas_freq_tick_interval = {'1m': '1T',
                              '3m': '3T',
                              '5m': '5T',
@@ -91,7 +93,7 @@ def convert_datetime_to_milliseconds(dt: datetime, timezoned: str = None) -> flo
     return (dt - epoch).total_seconds() * 1000.0
 
 
-def convert_string_to_milliseconds(ts: str, timezoned: str = None) -> int:
+def convert_string_to_milliseconds_old(ts: str, timezoned: str = None) -> int:
     """
     Converts a string to milliseconds. If string contains a timezone, it will be removed when passing timezoned.
 
@@ -101,6 +103,11 @@ def convert_string_to_milliseconds(ts: str, timezoned: str = None) -> int:
     """
     if "+" in ts and timezoned:
         ts = ts.split("+")[0]
+    dt = convert_string_to_datetime(ts=ts, timezoned=timezoned)
+    return int(convert_datetime_to_milliseconds(dt=dt, timezoned=timezoned))
+
+
+def convert_string_to_milliseconds(ts: str, timezoned: str = None) -> int:
     dt = convert_string_to_datetime(ts=ts, timezoned=timezoned)
     return int(convert_datetime_to_milliseconds(dt=dt, timezoned=timezoned))
 
@@ -249,15 +256,17 @@ def split_time_interval_in_full_days(ts_ini: int, ts_end: int) -> list:
 
 
 def time_interval(tick_interval: str,
+                  timezone: str,
                   limit: int = 1000,
-                  start_time: int = None,
-                  end_time: int = None) -> Tuple[int, int]:
+                  start_time: Timestamp = None,
+                  end_time: Timestamp = None) -> Tuple[int, int]:
     """
     Obtain a timestamp based on ticks intervals from a start or an end timestamp, based on limit.
 
     If no start or end timestamp passed, then use current utc timestamp in milliseconds and limit.
 
     :param str tick_interval: A binance valid tick interval
+    :param str timezone: A timezone like 'Europe/Madrid'
     :param int start_time: A timestamp in milliseconds.
     :param int end_time: A timestamp in milliseconds.
     :param int limit: Ticks limit. Not applied if start and end passed. Default is 1000
@@ -266,8 +275,9 @@ def time_interval(tick_interval: str,
     """
     total_interval_ms = int(tick_seconds[tick_interval] * 1000 * limit)
     if not start_time and not end_time:
-        end_time = int(time() * 1000)
-        start_time = end_time - total_interval_ms
+        now = int(time() * 1000)
+        end_time = Timestamp(value=now, timezone_IANA=timezone, tick_interval=tick_interval)
+        start_time = end_time.subtract_timedelta(delta=total_interval_ms)
     elif not end_time and start_time:
         end_time = int(start_time) + total_interval_ms
     elif not start_time and end_time:
@@ -594,3 +604,10 @@ def adjust_timestamp_unit_nano_or_ms(ts):
         ts *= 1_000_000
 
     return ts
+
+
+##########################
+# funciones para clases @
+##########################
+
+

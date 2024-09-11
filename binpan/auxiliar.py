@@ -4,10 +4,10 @@ import pandas as pd
 
 
 from handlers.files import select_file, read_csv_to_dataframe, extract_filename_metadata
-from handlers.logs import Logs
+from handlers.logs import LogManager
 from handlers.market import (convert_to_numeric)
 from handlers.time_helper import (pandas_freq_tick_interval, open_from_milliseconds, time_interval)
-from handlers.wallet import convert_str_date_to_ms
+from objects.timestamps import Timestamp
 
 # from handlers.starters import is_running_in_jupyter
 # if is_running_in_jupyter():
@@ -15,7 +15,7 @@ from handlers.wallet import convert_str_date_to_ms
 # else:
 #     pass
 
-binpan_logger = Logs(filename='./logs/binpan.log', name='binpan', info_level='INFO')
+binpan_logger = LogManager(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 
 
 def csv_klines_setup(from_csv: str or bool,
@@ -75,43 +75,53 @@ def csv_klines_setup(from_csv: str or bool,
     else:
         closed = True
 
-    return df, symbol, tick_interval, time_zone, data_type, start_time, end_time, closed, limit
+    return df, symbol, tick_interval, time_zone, start_time, end_time, closed, limit
 
-
-def setup_startime_endtime(start_time: str,
-                           end_time: str,
-                           time_zone: str,
-                           hours: int,
-                           closed: bool,
-                           tick_interval: str,
-                           limit: int):
-    start_time = convert_str_date_to_ms(date=start_time, time_zone=time_zone)
-    end_time = convert_str_date_to_ms(date=end_time, time_zone=time_zone)
-
-    # work with open timestamps
-    if start_time:
-        start_time = open_from_milliseconds(ms=start_time, tick_interval=tick_interval)
-    if end_time:
-        end_time = open_from_milliseconds(ms=end_time, tick_interval=tick_interval)
-
-    # limit by hours
-    if hours:
-        if not end_time:
-            end_time = int(time() * 1000)
-        if not start_time:
-            start_time = end_time - (hours * 60 * 60 * 1000)
-
-    # fill missing timestamps
-    start_time, end_time = time_interval(tick_interval=tick_interval,
-                                         limit=limit,
-                                         start_time=start_time,
-                                         end_time=end_time)
-    # discard not closed
-    now = int(1000 * time())
-    current_open = open_from_milliseconds(ms=now, tick_interval=tick_interval)
-    if closed and end_time >= current_open:
-        end_time = current_open - 2000
-    return start_time, end_time
+#
+# def setup_startime_endtime(start_time: str,
+#                            end_time: str,
+#                            time_zone: str,
+#                            hours: int,
+#                            closed: bool,
+#                            tick_interval: str,
+#                            limit: int) -> Tuple[int, int]:
+#     """
+#     Setup start and end time for klines data.
+#
+#     :param start_time: A string with the start time. Ex: '2021-01-01 00:00:00'
+#     :param end_time: A string with the end time. Ex: '2021-01-01 00:00:00'
+#     :param time_zone: A string with the time zone. Ex: 'Europe/Madrid'
+#     :param hours: Limit the data by hours. If start_time is not set, it will be calculated from end_time.
+#     :param closed: If True, the end time is set to the last closed kline.
+#     :param tick_interval: Tick interval as filter.
+#     :param limit: Limit of klines to retrieve.
+#     :return: A tuple with the start and end time.
+#     """
+#     if start_time:
+#         start_time = Timestamp(value=start_time, timezone_IANA=time_zone, tick_interval=tick_interval)
+#     if end_time:
+#         end_time = Timestamp(value=end_time, timezone_IANA=time_zone, tick_interval=tick_interval)
+#
+#     # limit by hours
+#     if hours:
+#         if not end_time:
+#             now = int(1000 * time())
+#             end_time = Timestamp(value=now, timezone_IANA=time_zone, tick_interval=tick_interval)
+#         if not start_time:
+#             start_time = end_time.subtract_timedelta(delta=hours * 60 * 60 * 1000)
+#
+#     # fill missing timestamps
+#     start_time, end_time = time_interval(tick_interval=tick_interval,
+#                                          timezone=time_zone,
+#                                          limit=limit,
+#                                          start_time=start_time,
+#                                          end_time=end_time)
+#     # discard not closed
+#     now = int(1000 * time())
+#     current_open = open_from_milliseconds(ms=now, tick_interval=tick_interval)
+#     if closed and end_time >= current_open:
+#         end_time = current_open - 2000
+#     return start_time, end_time
 
 
 def check_continuity(df: pd.DataFrame, time_zone: str) -> pd.DataFrame:

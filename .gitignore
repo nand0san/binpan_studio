@@ -166,11 +166,12 @@ ltcusdt.*
 ltcbtc.*
 btcusdt.*
 
-example database info.ipynb
+examples database maintenance.ipynb
 *redis*
 secret.py
 secret_.py
 secret*
+!secrets.py
 investigacion*
 test.ipynb
 docstring_extractor.py

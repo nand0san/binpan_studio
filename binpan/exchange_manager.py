@@ -117,11 +117,12 @@ class Exchange(object):
 
     def get_symbols(self, coin: str = None, base: bool = True, quote: bool = True):
         """
-        Return list of symbols for a coin. Can be selected symbols where it is base, or quote, or both.
+        Return list of all symbols for a coin. Can be selected symbols where it is base, or quote, or both.
+        By default, returns all symbols where coin is base or quote but you can deactivate one of them.
 
         :param str coin: An existing binance coin.
-        :param bool base: Activate return of symbols where coin is base.
-        :param bool quote: Activate return of symbols where coin is quote.
+        :param bool base: Activate return of symbols where coin is base. Default is True.
+        :param bool quote: Activate return of symbols where coin is quote. Default is True.
         :return list: List of symbols where it is base, quote or both.
         """
         if not coin:
