@@ -9,4 +9,8 @@ def __getattr__(name):
         from .database_connector import Database
         globals()["Database"] = Database
         return Database
+    if name == "handlers":
+        import handlers
+        globals()["handlers"] = handlers
+        return handlers
     raise AttributeError(f"module 'binpan' has no attribute {name!r}")

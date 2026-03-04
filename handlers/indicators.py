@@ -734,7 +734,7 @@ def kmeans_custom_init(data: np.ndarray, max_clusters: int):
 
 
 def find_optimal_clusters(KMeans_lib, data: np.ndarray, max_clusters: int, quiet: bool = False,
-                          initial_centroids: list or np.ndarray = None) -> int:
+                          initial_centroids: list or np.ndarray = None, sample_weight: np.ndarray = None) -> int:
     """
     Find the optimal quantity of centroids for support and resistance methods using the elbow method.
 
@@ -743,6 +743,7 @@ def find_optimal_clusters(KMeans_lib, data: np.ndarray, max_clusters: int, quiet
     :param max_clusters: Maximum number of clusters to consider.
     :param bool quiet: If true, do not print progress bar.
     :param list initial_centroids: Initial centroids to use optionally for faster results.
+    :param np.ndarray sample_weight: Optional sample weights for weighted KMeans.
     :return: The optimal number of clusters (centroids) as an integer.
     """
 
@@ -752,7 +753,7 @@ def find_optimal_clusters(KMeans_lib, data: np.ndarray, max_clusters: int, quiet
     else:
         pbar = tqdm(range(1, max_clusters + 1))
     for n_clusters in pbar:
-        kmeans = KMeans_lib(n_clusters=n_clusters, n_init=10, random_state=0, init=initial_centroids).fit(data)
+        kmeans = KMeans_lib(n_clusters=n_clusters, n_init=10, random_state=0, init=initial_centroids).fit(data, sample_weight=sample_weight)
         inertia.append(kmeans.inertia_)
     return np.argmin(np.gradient(np.gradient(inertia))) + 1
 
@@ -835,6 +836,43 @@ def support_resistance_levels(df: pd.DataFrame,
         return support_levels, []
 
 
+def _get_prices_and_weights(df: pd.DataFrame, by_klines: bool, by_quantity: bool) -> tuple:
+    """
+    Extract price array and optional sample weights for KMeans clustering.
+
+    Uses sample_weight instead of np.repeat to avoid MemoryError with large volumes.
+
+    :param pd.DataFrame df: DataFrame with trades or klines data.
+    :param bool by_klines: If true, use kline columns (Close, Trades/Quote volume).
+    :param bool by_quantity: If true, return quantity-based weights.
+    :return tuple: (prices as 2D array, sample_weight array or None).
+    """
+    if by_klines:
+        prices = df['Close'].values.reshape(-1, 1)
+        if by_quantity:
+            # elegir la columna con valores más grandes para mejor ponderación
+            qty_col, alt_col = 'Trades', 'Quote volume'
+            if qty_col in df.columns and alt_col in df.columns:
+                random_idx = np.random.randint(0, len(df))
+                if df[qty_col].iloc[random_idx] < df[alt_col].iloc[random_idx]:
+                    qty_col = alt_col
+            weights = df[qty_col].values.astype(float)
+        else:
+            weights = None
+    else:
+        prices = df['Price'].values.reshape(-1, 1)
+        if by_quantity:
+            qty_col, alt_col = 'Quantity', 'Quote quantity'
+            if qty_col in df.columns and alt_col in df.columns:
+                random_idx = np.random.randint(0, len(df))
+                if df[qty_col].iloc[random_idx] < df[alt_col].iloc[random_idx]:
+                    qty_col = alt_col
+            weights = df[qty_col].values.astype(float)
+        else:
+            weights = None
+    return prices, weights
+
+
 def support_resistance_levels_merged(df: pd.DataFrame,
                                      by_klines: bool,
                                      max_clusters: int = 5,
@@ -842,10 +880,13 @@ def support_resistance_levels_merged(df: pd.DataFrame,
                                      optimize_clusters_qty: bool = False):
     """
     Calculate support and resistance levels merged for a given set of trades using K-means clustering.
+
+    Uses ``sample_weight`` in KMeans instead of repeating prices, avoiding MemoryError with large volumes.
+
     :param df: A pandas DataFrame with trades or klines, containing a 'Price', 'Quantity' columns or "Close", "Volume".
     :param by_klines: If true, assume data is from klines.
     :param max_clusters: Quantity of clusters to consider initially. Default: 5.
-    :param by_quantity: If true, use quantity to repeat prices. It gives more importance to prices with more quantity.
+    :param by_quantity: If true, use quantity to weight prices. It gives more importance to prices with more quantity.
     :param optimize_clusters_qty: If true, find the optimal number of clusters to use for calculating support and resistance levels.
     :return: A list containing the support and resistance levels merged. It would be just levels.
     """
@@ -854,35 +895,25 @@ def support_resistance_levels_merged(df: pd.DataFrame,
     except ImportError:
         indicator_logger.warning(f"Please install sklearn: `pip install -U scikit-learn` to use Clustering")
         return [], []
-    # copy data to avoid side effects
+
     df_ = df.copy(deep=True)
+    prices, weights = _get_prices_and_weights(df_, by_klines=by_klines, by_quantity=by_quantity)
+    initial_centroids = kmeans_custom_init(data=prices.ravel(), max_clusters=max_clusters)
 
-    # function core starts here
-    if not by_klines:
-        initial_centroids = kmeans_custom_init(data=df_['Price'].values, max_clusters=max_clusters)
-    else:
-        initial_centroids = kmeans_custom_init(data=df_['Close'].values, max_clusters=max_clusters)
-
-    if by_quantity and not by_klines:
-        repeated_prices = repeat_prices_by_quantity(data=df_, price_col="Price", qty_col="Quantity", alt_qty_col="Quote quantity")
-    elif by_quantity and by_klines:
-        repeated_prices = repeat_prices_by_quantity(data=df_, price_col="Close", qty_col="Trades", alt_qty_col="Quote volume")
-    else:
-        repeated_prices = df_['Price'].values.reshape(-1, 1)
-
-    if len(repeated_prices) == 0:
-        indicator_logger.warning(f"There is no data to calculate support and resistance merged levels: {len(repeated_prices)}")
+    if len(prices) == 0:
+        indicator_logger.warning(f"There is no data to calculate support and resistance merged levels: {len(prices)}")
         return [], []
 
     indicator_logger.warning("Clustering data...")
 
     if optimize_clusters_qty:
-        optimal_clusters = find_optimal_clusters(KMeans_lib=KMeans, data=repeated_prices, max_clusters=max_clusters, initial_centroids=initial_centroids)
+        optimal_clusters = find_optimal_clusters(KMeans_lib=KMeans, data=prices, max_clusters=max_clusters,
+                                                 initial_centroids=initial_centroids, sample_weight=weights)
         indicator_logger.info(f"Found {optimal_clusters} levels.")
     else:
         optimal_clusters = max_clusters
 
-    kmeans_result = KMeans(n_clusters=optimal_clusters, n_init=1, init=initial_centroids).fit(repeated_prices)
+    kmeans_result = KMeans(n_clusters=optimal_clusters, n_init=1, init=initial_centroids).fit(prices, sample_weight=weights)
     levels = np.sort(kmeans_result.cluster_centers_, axis=0)
     return levels.flatten().tolist()
 
@@ -1099,7 +1130,7 @@ def market_profile_from_klines_grouped(df: pd.DataFrame, num_bins: int = 100) ->
     df_['Maker buy base volume'] = df_['Volume'] - df_['Taker buy base volume']
     df_['Market_Profile'] = (df_['High'] + df_['Low'] + df_['Close']) / 3
     df_['Price_Bin'] = pd.cut(df_['Market_Profile'], bins=num_bins)
-    volume_by_price_bin = df_.groupby('Price_Bin').agg({'Taker buy base volume': 'sum', 'Maker buy base volume': 'sum'})
+    volume_by_price_bin = df_.groupby('Price_Bin', observed=True).agg({'Taker buy base volume': 'sum', 'Maker buy base volume': 'sum'})
     # Convertir el índice a un IntervalIndex
     volume_by_price_bin.index = pd.IntervalIndex(volume_by_price_bin.index)
     # Ordenar por el límite inferior de cada intervalo
@@ -1123,7 +1154,7 @@ def market_profile_from_trades_grouped(df: pd.DataFrame, num_bins: int = 100) ->
     df_['Maker buy base volume'] = df_['Quantity'].where(df_['Buyer was maker'], 0)
 
     df_['Price_Bin'] = pd.cut(df_['Price'], bins=num_bins)
-    volume_by_price_bin = df_.groupby('Price_Bin').agg({'Taker buy base volume': 'sum', 'Maker buy base volume': 'sum'})
+    volume_by_price_bin = df_.groupby('Price_Bin', observed=True).agg({'Taker buy base volume': 'sum', 'Maker buy base volume': 'sum'})
     # Convert the index to an IntervalIndex
     volume_by_price_bin.index = pd.IntervalIndex(volume_by_price_bin.index)
     # Sort by the lower bound of each interval

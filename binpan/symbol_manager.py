@@ -280,6 +280,10 @@ class Symbol(object):
             tick_interval = check_tick_interval(tick_interval) if tick_interval else None
             self.closed = closed
 
+            # Si hours o start+end definen el rango, ignorar el limit por defecto (1000)
+            if hours is not None or (start_time is not None and end_time is not None):
+                limit = None
+
             self.timeframe = Timeframe(start=start_time,
                                        end=end_time,
                                        timezone_IANA=time_zone,

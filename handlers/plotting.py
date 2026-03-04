@@ -1169,7 +1169,7 @@ def plot_pie(serie: pd.Series, categories: int = 15, title=f"Size trade categori
         spread = np.arange(mi_original, ma_original, step)
 
     # orders = {serie.name: spread}
-    pie = serie.groupby(pd.cut(serie, spread)).count()
+    pie = serie.groupby(pd.cut(serie, spread), observed=True).count()
     names = [str(i) for i in pie.index]
 
     fig = px.pie(pie, values=serie.name, names=names, color_discrete_sequence=px.colors.sequential.RdBu, title=title, hover_name=serie.name)

@@ -87,21 +87,20 @@ def tag_comparison(serie_a: pd.Series,
     :param bool to_numeric: If true, if possible, downcast type until the most basic numeric type (integer)
     :return pd.Series: A serie with tags (argument) as values.
     """
-    ret = pd.Series(index=serie_a.index, dtype=type(match_tag))
-
     if gt:
-        ret = serie_a.gt(serie_b)
-    if ge:
-        ret = serie_a.ge(serie_b)
-    if eq:
-        ret = serie_a.eq(serie_b)
-    if le:
-        ret = serie_a.le(serie_b)
-    if lt:
-        ret = serie_a.lt(serie_b)
+        mask = serie_a.gt(serie_b)
+    elif ge:
+        mask = serie_a.ge(serie_b)
+    elif eq:
+        mask = serie_a.eq(serie_b)
+    elif le:
+        mask = serie_a.le(serie_b)
+    elif lt:
+        mask = serie_a.lt(serie_b)
+    else:
+        mask = pd.Series(False, index=serie_a.index)
 
-    ret.loc[ret] = match_tag
-    ret.loc[ret == False] = mismatch_tag
+    ret = pd.Series(np.where(mask, match_tag, mismatch_tag), index=serie_a.index)
 
     if to_numeric:
         return pd.to_numeric(arg=ret)
