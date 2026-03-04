@@ -145,9 +145,28 @@ class Exchange(object):
 
         """
         df = pd.DataFrame(self.info_dic.values()).set_index('symbol', drop=True)
-        per_df = pd.DataFrame(data=df['permissions'].tolist(), index=df.index)
-        per_df.columns = per_df.value_counts().index[0]
-        self.df = pd.concat([df.drop('permissions', axis=1), per_df.astype(bool)], axis=1)
+
+        # Binance migró permissions → permissionSets (lista de listas). Filtrar TRD_GRP_* internos.
+        perm_col = 'permissionSets' if 'permissionSets' in df.columns else 'permissions'
+
+        def _flatten_perms(perm_data):
+            if not perm_data:
+                return set()
+            if isinstance(perm_data[0], list):
+                return {p for sublist in perm_data for p in sublist if not p.startswith('TRD_GRP_')}
+            return {p for p in perm_data if not p.startswith('TRD_GRP_')}
+
+        flat_perms = df[perm_col].apply(_flatten_perms)
+        all_perms = set()
+        for s in flat_perms:
+            all_perms.update(s)
+
+        per_df = pd.DataFrame(index=df.index)
+        for perm in sorted(all_perms):
+            per_df[perm] = flat_perms.apply(lambda x, p=perm: p in x)
+
+        cols_to_drop = [c for c in ('permissions', 'permissionSets') if c in df.columns]
+        self.df = pd.concat([df.drop(cols_to_drop, axis=1), per_df], axis=1)
         return self.df
 
     def get_order_types(self):
@@ -156,9 +175,15 @@ class Exchange(object):
 
         :return pd.DataFrame:
         """
-        ord_df = pd.DataFrame(data=self.df['orderTypes'].tolist(), index=self.df.index)
-        ord_df.columns = ord_df.value_counts().index[0]
-        self.order_types = ord_df.astype(bool)
+        all_types = set()
+        for types_list in self.df['orderTypes']:
+            all_types.update(types_list)
+
+        ord_df = pd.DataFrame(index=self.df.index)
+        for ot in sorted(all_types):
+            ord_df[ot] = self.df['orderTypes'].apply(lambda x, t=ot: t in x)
+
+        self.order_types = ord_df
         return self.order_types
 
     def get_volume_24h(self,

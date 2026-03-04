@@ -407,6 +407,19 @@ def filter_tradeable(info_dic: dict) -> dict:
     return {k: v for k, v in info_dic.items() if v['status'].upper() == 'TRADING'}
 
 
+def _get_permissions(symbol_info: dict) -> set:
+    """
+    Extracts permissions from symbol info, supporting both legacy 'permissions' and new 'permissionSets' format.
+
+    :param dict symbol_info: Single symbol info dictionary from exchange API.
+    :return set: Set of permission strings (e.g. {'SPOT', 'MARGIN'}).
+    """
+    perms = set(symbol_info.get('permissions', []))
+    for pset in symbol_info.get('permissionSets', []):
+        perms.update(pset)
+    return perms
+
+
 def filter_spot(info_dic: dict) -> dict:
     """
     Returns, from BinPan exchange info dictionary currently SPOT symbols.
@@ -415,7 +428,7 @@ def filter_spot(info_dic: dict) -> dict:
     :return dict: BinPan exchange info dictionary, but, just with currently SPOT symbols.
 
     """
-    return {k: v for k, v in info_dic.items() if 'SPOT' in v['permissions'] or 'spot' in v['permissions']}
+    return {k: v for k, v in info_dic.items() if 'SPOT' in _get_permissions(v)}
 
 
 def filter_margin(info_dic: dict) -> dict:
@@ -426,7 +439,7 @@ def filter_margin(info_dic: dict) -> dict:
     :return dict: BinPan exchange info dictionary, but, just with currently MARGIN symbols.
 
     """
-    return {k: v for k, v in info_dic.items() if 'MARGIN' in v['permissions'] or 'margin' in v['permissions']}
+    return {k: v for k, v in info_dic.items() if 'MARGIN' in _get_permissions(v)}
 
 
 def filter_not_margin(symbols: list = None,
@@ -442,7 +455,7 @@ def filter_not_margin(symbols: list = None,
     if not info_dic:
         info_dic = get_info_dic()
 
-    permissions_dic = {k: v['permissions'] for k, v in info_dic.items()}
+    permissions_dic = {k: _get_permissions(v) for k, v in info_dic.items()}
 
     if symbols:
         return [s for s, p in permissions_dic.items() if 'MARGIN' in p and s in symbols]
@@ -504,7 +517,7 @@ def get_orderTypes_and_permissions(info_dic: dict = None) -> dict:
     """
     if not info_dic:
         info_dic = get_info_dic()
-    return {k: {'orderTypes': v['orderTypes'], 'permissions': v['permissions']} for k, v in info_dic.items()}
+    return {k: {'orderTypes': v['orderTypes'], 'permissions': list(_get_permissions(v))} for k, v in info_dic.items()}
 
 
 def get_fees_dict(decimal_mode: bool,
@@ -941,7 +954,10 @@ def try_coin_conversion_to_stablecoin_by_intermediate_symbol(coin: str,
         return price * coin_qty * prices[try_symbol]
 
     elif coin_to_check_with_stablecoin + coin in prices.keys() and try_symbol in prices.keys():
-        price = 1 / prices[coin_to_check_with_stablecoin + coin]
+        divisor = prices[coin_to_check_with_stablecoin + coin]
+        if not divisor:
+            return None
+        price = 1 / divisor
         return price * coin_qty * prices[try_symbol]
 
     else:
@@ -1196,7 +1212,8 @@ def statistics_24h(decimal_mode: bool,
                                                          info_dic=info_dic,
                                                          decimal_mode=decimal_mode)
 
-            df.loc[df['symbol'] == pair, stable_coin_value_name] = float(usdt_val)  # float for pandas
+            if pair in df.index and usdt_val is not None:
+                df.loc[pair, stable_coin_value_name] = float(usdt_val)
 
         stable_coin_volumen_name = f"{stablecoin_value}_volume"
         df[stable_coin_volumen_name] = df[stable_coin_value_name] * df['volume']

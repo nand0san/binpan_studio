@@ -37,8 +37,10 @@ from handlers.market import (get_candles_by_time_stamps, parse_candles_to_datafr
                              get_historical_agg_trades, parse_agg_trades_to_dataframe, get_historical_atomic_trades,
                              parse_atomic_trades_to_dataframe, get_order_book)
 
-from handlers.plotting import (plotly_colors, plot_trades, candles_ta, plot_pie, plot_hists_vs, candles_tagged, bar_plot, plot_scatter,
-                               orderbook_depth, dist_plot, profile_plot)
+# handlers.plotting se importa lazy para evitar cargar plotly+scipy al importar binpan
+def _plotting():
+    from handlers import plotting
+    return plotting
 
 from handlers.time_helper import (check_tick_interval, convert_milliseconds_to_str, get_dataframe_time_index_ranges,
                                   remove_initial_included_ranges, tick_interval_values, pandas_freq_tick_interval)
@@ -46,7 +48,7 @@ from handlers.time_helper import (check_tick_interval, convert_milliseconds_to_s
 from handlers.tags import (tag_column_to_strategy_group, backtesting, backtesting_short, tag_comparison, tag_cross, merge_series,
                            clean_in_out)
 
-from handlers.aggregations import resample_klines
+# handlers.aggregations se importa lazy para evitar cargar scipy al importar binpan
 
 from handlers.standards import (binance_api_candles_cols, agg_trades_api_map_columns, atomic_trades_api_map_columns, time_cols,
                                 dts_time_cols, reversal_columns_order, agg_trades_columns_from_binance, atomic_trades_columns_from_binance)
@@ -55,10 +57,7 @@ from handlers.quest import tick_seconds
 from handlers.wallet import convert_str_date_to_ms
 import warnings
 
-with warnings.catch_warnings():
-    warnings.simplefilter("ignore")
-
-from handlers.numba_tools import sma_numba, rsi_numba, ema_numba
+# handlers.numba_tools se importa lazy para evitar cargar numba al importar binpan
 
 
 from objects.timeframes import Timeframe
@@ -811,7 +810,7 @@ class Symbol(object):
         if color and not colors:
             colors = [color]
         if not colors:
-            colors = [choice(plotly_colors) for _ in range(data_qty)]
+            colors = [choice(_plotting().plotly_colors) for _ in range(data_qty)]
 
         if not color_fills:
             color_fills = [False for _ in range(data_qty)]
@@ -863,7 +862,7 @@ class Symbol(object):
         elif type(source_data) == list:
             assert len(source_data) == len(plotting_rows)
             # if not colors:
-            #     colors = [choice(plotly_colors) for _ in range(len(rows))]
+            #     colors = [choice(_plotting().plotly_colors) for _ in range(len(rows))]
             # if not color_fills:
             #     color_fills = [False for _ in range(len(rows))]
 
@@ -1346,10 +1345,12 @@ class Symbol(object):
             self.timestamps = self.get_timestamps()
             self.dates = self.get_dates()
             self.start_time, self.end_time = self.timestamps
+            from handlers.aggregations import resample_klines
             self.df = resample_klines(data=self.df, tick_interval=tick_interval)
             self.discontinuities = check_continuity(df=self.df, time_zone=self.time_zone)
             return self.df
         else:
+            from handlers.aggregations import resample_klines
             return resample_klines(data=self.df, tick_interval=tick_interval)
 
     def repair_continuity(self):
@@ -1389,12 +1390,12 @@ class Symbol(object):
         if indicator_column and color:
             if type(color) == int:
                 self.color_control.update({indicator_column: color})
-            elif color in plotly_colors:
+            elif color in _plotting().plotly_colors:
                 self.color_control.update({indicator_column: color})
             else:
-                self.color_control.update({indicator_column: choice(plotly_colors)})
+                self.color_control.update({indicator_column: choice(_plotting().plotly_colors)})
         elif indicator_column:
-            self.color_control.update({indicator_column: choice(plotly_colors)})
+            self.color_control.update({indicator_column: choice(_plotting().plotly_colors)})
         return self.color_control
 
     def set_plot_color_fill(self, indicator_column: str = None, color_fill: str or bool = None) -> dict:
@@ -1409,8 +1410,8 @@ class Symbol(object):
         """
         if indicator_column and color_fill:
             if type(color_fill) == int:
-                self.color_fill_control.update({indicator_column: plotly_colors[color_fill]})
-            elif color_fill in plotly_colors or color_fill.startswith('rgba'):
+                self.color_fill_control.update({indicator_column: _plotting().plotly_colors[color_fill]})
+            elif color_fill in _plotting().plotly_colors or color_fill.startswith('rgba'):
                 self.color_fill_control.update({indicator_column: color_fill})
             else:
                 self.color_fill_control.update({indicator_column: None})
@@ -1590,7 +1591,7 @@ class Symbol(object):
         indicators_series = [temp_df[k] for k in self.row_control.keys()]
         indicator_names = [temp_df[k].name for k in self.row_control.keys()]
         indicators_colors = [self.color_control[k] for k in self.row_control.keys()]
-        indicators_colors = [c if type(c) == str else plotly_colors[c] for c in indicators_colors]
+        indicators_colors = [c if type(c) == str else _plotting().plotly_colors[c] for c in indicators_colors]
 
         rows_pos = [self.row_control[k] for k in self.row_control.keys()]
 
@@ -1610,7 +1611,7 @@ class Symbol(object):
                                                                        start_idx=zoom_start_idx, end_idx=zoom_end_idx)
         else:
             zoomed_plot_splitted_serie_couples = self.plot_splitted_serie_couples
-        return candles_tagged(data=temp_df,
+        return _plotting().candles_tagged(data=temp_df,
                               width=width,
                               height=height,
                               candles_ta_height_ratio=candles_ta_height_ratio,
@@ -1669,7 +1670,7 @@ class Symbol(object):
             overlap_prices = self.df
 
         if not group_big_data:
-            return plot_trades(data=managed_data,
+            return _plotting().plot_trades(data=managed_data,
                                max_size=max_size,
                                height=height,
                                logarithmic=logarithmic,
@@ -1677,7 +1678,7 @@ class Symbol(object):
                                shifted=shifted,
                                title=title)
         else:
-            return plot_trades(data=managed_data,
+            return _plotting().plot_trades(data=managed_data,
                                max_size=max_size,
                                height=height,
                                logarithmic=logarithmic,
@@ -1715,7 +1716,7 @@ class Symbol(object):
             overlap_prices = self.df
 
         if not group_big_data:
-            return plot_trades(data=managed_data,
+            return _plotting().plot_trades(data=managed_data,
                                max_size=max_size,
                                height=height,
                                logarithmic=logarithmic,
@@ -1723,7 +1724,7 @@ class Symbol(object):
                                shifted=shifted,
                                title=title)
         else:
-            return plot_trades(data=managed_data,
+            return _plotting().plot_trades(data=managed_data,
                                max_size=max_size,
                                height=height,
                                logarithmic=logarithmic,
@@ -1789,10 +1790,10 @@ class Symbol(object):
             kwargs['candles_ta_height_ratio'] = 0.7
 
         if from_atomic:
-            return candles_ta(data=self.reversal_atomic_klines, plot_volume='Quantity', text_index=text_index,
+            return _plotting().candles_ta(data=self.reversal_atomic_klines, plot_volume='Quantity', text_index=text_index,
                               volume_window=self.plotting_volume_ma, **kwargs)
         else:
-            return candles_ta(data=self.reversal_agg_klines, plot_volume='Quantity', text_index=text_index,
+            return _plotting().candles_ta(data=self.reversal_agg_klines, plot_volume='Quantity', text_index=text_index,
                               volume_window=self.plotting_volume_ma, **kwargs)
 
     def set_plotting_volume_ma(self, window: int = 21) -> None:
@@ -1822,7 +1823,7 @@ class Symbol(object):
             return
         if not title:
             title = f"Size trade categories {self.symbol}"
-        return plot_pie(serie=self.agg_trades['Quantity'], categories=categories, logarithmic=logarithmic, title=title)
+        return _plotting().plot_pie(serie=self.agg_trades['Quantity'], categories=categories, logarithmic=logarithmic, title=title)
 
     def plot_aggression_sizes(self, bins=50, hist_funct='sum', height=900, from_trades=False, title: str = None,
                               total_volume_column: str = None, partial_vol_column: str = None, **kwargs_update_layout):
@@ -1879,7 +1880,7 @@ class Symbol(object):
         if not title:
             title = f"Histogram for sizes in aggressive sellers vs aggressive byers {self.symbol} ({hist_funct})"
 
-        return plot_hists_vs(x0=aggressive_sellers, x1=aggressive_byers, x0_name="Aggressive sellers", x1_name='Aggressive byers',
+        return _plotting().plot_hists_vs(x0=aggressive_sellers, x1=aggressive_byers, x0_name="Aggressive sellers", x1_name='Aggressive byers',
                              bins=bins, hist_funct=hist_funct, height=height, title=title, **kwargs_update_layout)
 
     def plot_market_profile(self, bins: int = 100, hours: int = None, minutes: int = None, startTime: int or str = None,
@@ -1941,7 +1942,7 @@ class Symbol(object):
                 _df = _df[_df['Timestamp'] >= startTime]
             if endTime:
                 _df = _df[_df['Timestamp'] <= endTime]
-            return bar_plot(df=_df, x_col_to_bars='Price', y_col='Quantity', bar_segments='Buyer was maker', split_colors=True,
+            return _plotting().bar_plot(df=_df, x_col_to_bars='Price', y_col='Quantity', bar_segments='Buyer was maker', split_colors=True,
                             bins=bins, title=title, height=height, y_axis_title='Buy takers VS Buy makers', horizontal_bars=True,
                             **kwargs_update_layout)
         elif from_atomic_trades:
@@ -1951,7 +1952,7 @@ class Symbol(object):
                 _df = _df[_df['Timestamp'] >= startTime]
             if endTime:
                 _df = _df[_df['Timestamp'] <= endTime]
-            return bar_plot(df=_df, x_col_to_bars='Price', y_col='Quantity', bar_segments='Buyer was maker', split_colors=True,
+            return _plotting().bar_plot(df=_df, x_col_to_bars='Price', y_col='Quantity', bar_segments='Buyer was maker', split_colors=True,
                             bins=bins, title=title, height=height, y_axis_title='Buy takers VS Buy makers', horizontal_bars=True,
                             **kwargs_update_layout)
         else:
@@ -1965,7 +1966,7 @@ class Symbol(object):
             # todo: market_profile sacado de las velas en modo melt para plotly
             profile = market_profile_from_klines_melt(df=_df)
             profile.reset_index(inplace=True)
-            return bar_plot(df=profile, x_col_to_bars='Market_Profile', y_col='Volume', bar_segments='Is_Maker', split_colors=True,
+            return _plotting().bar_plot(df=profile, x_col_to_bars='Market_Profile', y_col='Volume', bar_segments='Is_Maker', split_colors=True,
                             bins=bins, title=title + " from klines", height=height, y_axis_title='Buy takers VS Buy makers',
                             horizontal_bars=True,
                             **kwargs_update_layout)
@@ -2014,7 +2015,7 @@ class Symbol(object):
                     # kwargs.update({'hover_data': color})
                     kwargs.update({'labels': {"color": "Maker buyer volume / Total volume"}})
             title = f"Priced volume for {self.symbol} data obtained from volume and candlesticks."
-            return plot_scatter(df=data, x_col=x, y_col=y, color=color, marginal=marginal, title=title, height=height, **kwargs)
+            return _plotting().plot_scatter(df=data, x_col=x, y_col=y, color=color, marginal=marginal, title=title, height=height, **kwargs)
         else:
             data = self.agg_trades.copy(deep=True)
             if not (type(x) == str and type(y) == str) and type(color):
@@ -2022,7 +2023,7 @@ class Symbol(object):
                 y = y[0]
                 color = color[0]
             title = f"Priced volume for {self.symbol} data obtained from historical trades."
-            return plot_scatter(df=data, x_col=x, y_col=y, symbol=dot_symbol, color=color, marginal=marginal, title=title, height=height,
+            return _plotting().plot_scatter(df=data, x_col=x, y_col=y, symbol=dot_symbol, color=color, marginal=marginal, title=title, height=height,
                                 **kwargs)
 
     def plot_orderbook(self, accumulated=True, title='Depth orderbook plot', height=800, plot_y="Quantity", **kwargs):
@@ -2032,7 +2033,7 @@ class Symbol(object):
         if self.orderbook.empty:
             binpan_logger.info("Orderbook not downloaded. Please add orderbook data with: my_binpan.get_orderbook()")
             return
-        return orderbook_depth(df=self.orderbook, accumulated=accumulated, title=title, height=height, plot_y=plot_y, **kwargs)
+        return _plotting().orderbook_depth(df=self.orderbook, accumulated=accumulated, title=title, height=height, plot_y=plot_y, **kwargs)
 
     def plot_orderbook_density(self, x_col="Price", color='Side', bins=300, histnorm: str = 'density', height: int = 800, title: str = None,
                                **update_layout_kwargs):
@@ -2056,7 +2057,7 @@ class Symbol(object):
         if not title:
             title = f"Distribution plot for order book {self.symbol}"
 
-        return dist_plot(df=self.orderbook, x_col=x_col, color=color, bins=bins, histnorm=histnorm, height=height, title=title,
+        return _plotting().dist_plot(df=self.orderbook, x_col=x_col, color=color, bins=bins, histnorm=histnorm, height=height, title=title,
                          **update_layout_kwargs)
 
     def plot_taker_maker_ratio_profile(self, bins: int = 100, hours: int = None, minutes: int = None, startTime: int or str = None,
@@ -2087,7 +2088,7 @@ class Symbol(object):
         profile = self.get_taker_maker_ratio_profile(bins=bins, hours=hours, minutes=minutes, startTime=startTime, endTime=endTime,
                                                      from_agg_trades=from_agg_trades, from_atomic_trades=from_atomic_trades,
                                                      time_zone=time_zone)
-        return profile_plot(serie=profile, title=title, height=height, width=width, x_axis_title="Price Buckets",
+        return _plotting().profile_plot(serie=profile, title=title, height=height, width=width, x_axis_title="Price Buckets",
                             y_axis_title="Taker/Maker ratio", vertical_bar=0.5, **kwargs_update_layout)
 
     #################
@@ -2354,10 +2355,12 @@ class Symbol(object):
         df = self.df.copy(deep=True)
 
         if ma_name == 'ema':
+            from handlers.numba_tools import ema_numba
             ma_ = ema_numba(df[column_source].values, window=kwargs['length'])
             ma = pd.Series(data=ma_, index=df.index, name=f"EMA_{kwargs['length']}")
 
         elif ma_name == 'sma':
+            from handlers.numba_tools import sma_numba
             ma_ = sma_numba(df[column_source].values, window=kwargs['length'])
             ma = pd.Series(data=ma_, index=df.index, name=f"SMA_{kwargs['length']}")
 
@@ -2539,6 +2542,7 @@ class Symbol(object):
         """
 
         # if self.is_numba:
+        from handlers.numba_tools import rsi_numba
         rsi_ = rsi_numba(self.df['Close'].values, window=length)
         rsi = pd.Series(data=rsi_, index=self.df.index, name=f"RSI_{length}")
         # else:

@@ -11,7 +11,15 @@ from .exceptions import BinPanException, MissingBinanceApiData
 
 files_logger = LogManager(filename='./logs/files_logger.log', name='files_logger', info_level='INFO')
 
-cipher_object = AesCipher()
+# cipher_object se inicializa lazy para evitar get_cpu_info() al importar
+_cipher_object = None
+
+
+def _get_cipher():
+    global _cipher_object
+    if _cipher_object is None:
+        _cipher_object = AesCipher()
+    return _cipher_object
 
 
 ################
@@ -373,7 +381,7 @@ def add_api_key(api_key_value: str) -> None:
     for line in saved_data:
         if not line.startswith('api_key') and line:
             lines.append(line + "\n")
-    encryptor = cipher_object.encrypt(api_key_value)
+    encryptor = _get_cipher().encrypt(api_key_value)
     lines.append(f'api_key = "{encryptor}"\n')
     save_file(filename=filename, data=lines)
 
@@ -387,7 +395,7 @@ def add_api_secret(api_secret_value: str) -> None:
     filename = "secret.py"
     saved_data = read_file(filename=filename)
     lines = [line + '\n' for line in saved_data if (not line.startswith('api_secret')) and line]
-    encryptor = cipher_object.encrypt(api_secret_value)
+    encryptor = _get_cipher().encrypt(api_secret_value)
     lines.append(f'api_secret = "{encryptor}"\n')
     save_file(filename=filename, data=lines)
 
@@ -417,6 +425,6 @@ def add_any_key(key: str, key_name: str) -> None:
         if line:
             if not line.startswith(key_name):
                 lines.append(line + '\n')
-    encryptor = cipher_object.encrypt(key)
+    encryptor = _get_cipher().encrypt(key)
     lines.append(f'{key_name} = "{encryptor}"\n')
     save_file(filename=filename, data=lines)

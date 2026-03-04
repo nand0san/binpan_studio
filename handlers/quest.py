@@ -31,44 +31,79 @@ tick_interval_values = ['1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '6h', 
 weight_logger = LogManager(filename='./logs/weight.log', name='weight', info_level='INFO')
 quest_logger = LogManager(filename='./logs/quest.log', name='quest', info_level='INFO')
 
-cipher_object = AesCipher()
+# cipher_object se inicializa lazy para evitar get_cpu_info() al importar
+_cipher_object = None
 
-# rate limits
 
-# api_rate_limits = get_exchange_limits()
+def _get_cipher():
+    global _cipher_object
+    if _cipher_object is None:
+        _cipher_object = AesCipher()
+    return _cipher_object
 
-try:
-    api_rate_limits = get_exchange_limits()
-except ConnectionError as exc:
-    weight_logger.warning(f"Cannot connect to Binance API for rate limits")
-    # api_rate_limits = {'X-SAPI-USED-IP-WEIGHT-1M': 1200,
-    #                    'X-SAPI-USED-UID-WEIGHT-1M': 1200,
-    #                    'x-mbx-used-weight': 6100,
-    #                    'x-mbx-used-weight-1m': 1200,
-    #                    'x-mbx-order-count-10s': 50,
-    #                    'x-mbx-order-count-1d': 160000}
-    api_rate_limits = {"REQUEST_1M": 1200,
-                       "REQUEST_5M": 1200*5,
-                       "ORDERS_10S": 1200/6,
-                       "ORDERS_1D": 1200*60*24}
+
+# propiedad para compatibilidad con código que use cipher_object directamente
+class _CipherProxy:
+    def decrypt(self, *args, **kwargs):
+        return _get_cipher().decrypt(*args, **kwargs)
+
+    def encrypt(self, *args, **kwargs):
+        return _get_cipher().encrypt(*args, **kwargs)
+
+
+cipher_object = _CipherProxy()
+
+# rate limits: se inicializan con valores por defecto y se actualizan en la primera petición real
+_rate_limits_initialized = False
+
+# valores por defecto conservadores (los de Binance 2026)
+api_rate_limits = {"REQUEST_1M": 1200,
+                   "REQUEST_5M": 6100,
+                   "ORDERS_10S": 50,
+                   "ORDERS_1D": 160000}
 
 current_weight = {}
-endpoint_headers = {}  # read temp file
+endpoint_headers = {}
 
-aplicable_limits = {'X-SAPI-USED-IP-WEIGHT-1M': api_rate_limits['REQUEST_1M'],
-                    'X-SAPI-USED-UID-WEIGHT-1M': api_rate_limits['REQUEST_1M'],
-                    'x-mbx-used-weight': api_rate_limits['REQUEST_5M'],
-                    'x-mbx-used-weight-1m': api_rate_limits['REQUEST_1M'],
-                    'x-mbx-order-count-10s': api_rate_limits['ORDERS_10S'],
-                    'x-mbx-order-count-1d': api_rate_limits['ORDERS_1D']}
 
-api_limits_weight_decrease_per_seconds = {'X-SAPI-USED-IP-WEIGHT-1M': api_rate_limits['REQUEST_1M'] // 60,
-                                          'X-SAPI-USED-UID-WEIGHT-1M': api_rate_limits['REQUEST_1M'] // 60,
-                                          'x-mbx-used-weight-1m': api_rate_limits['REQUEST_1M'] // 60,
-                                          'x-mbx-used-weight': api_rate_limits['REQUEST_5M'] // (60 * 5),
-                                          'x-mbx-order-count-10s': api_rate_limits['ORDERS_10S'] // 10,
-                                          'x-mbx-order-count-1d': api_rate_limits['ORDERS_1D'] // (
-                                                  24 * 60 * 60)}  # is the five minutes api limit?
+def _ensure_rate_limits():
+    """Obtiene los rate limits reales de Binance en la primera petición."""
+    global api_rate_limits, aplicable_limits, api_limits_weight_decrease_per_seconds, _rate_limits_initialized
+    if _rate_limits_initialized:
+        return
+    _rate_limits_initialized = True
+    try:
+        api_rate_limits.update(get_exchange_limits())
+        weight_logger.info("Rate limits obtenidos de Binance API")
+    except Exception as exc:
+        weight_logger.warning(f"No se pudieron obtener rate limits de Binance API: {exc}. Usando valores por defecto.")
+    _rebuild_limit_dicts()
+
+
+def _rebuild_limit_dicts():
+    """Reconstruye los dicts de límites a partir de api_rate_limits."""
+    global aplicable_limits, api_limits_weight_decrease_per_seconds
+    aplicable_limits = {'X-SAPI-USED-IP-WEIGHT-1M': api_rate_limits['REQUEST_1M'],
+                        'X-SAPI-USED-UID-WEIGHT-1M': api_rate_limits['REQUEST_1M'],
+                        'x-mbx-used-weight': api_rate_limits['REQUEST_5M'],
+                        'x-mbx-used-weight-1m': api_rate_limits['REQUEST_1M'],
+                        'x-mbx-order-count-10s': api_rate_limits['ORDERS_10S'],
+                        'x-mbx-order-count-1d': api_rate_limits['ORDERS_1D']}
+
+    api_limits_weight_decrease_per_seconds = {
+        'X-SAPI-USED-IP-WEIGHT-1M': api_rate_limits['REQUEST_1M'] // 60,
+        'X-SAPI-USED-UID-WEIGHT-1M': api_rate_limits['REQUEST_1M'] // 60,
+        'x-mbx-used-weight-1m': api_rate_limits['REQUEST_1M'] // 60,
+        'x-mbx-used-weight': api_rate_limits['REQUEST_5M'] // (60 * 5),
+        'x-mbx-order-count-10s': api_rate_limits['ORDERS_10S'] // 10,
+        'x-mbx-order-count-1d': api_rate_limits['ORDERS_1D'] // (24 * 60 * 60),
+    }
+
+
+# inicializar los dicts con valores por defecto
+aplicable_limits = {}
+api_limits_weight_decrease_per_seconds = {}
+_rebuild_limit_dicts()
 
 
 # TODO: identify new headers for order endpoints
@@ -140,6 +175,7 @@ def check_weight(weight: int,
     """
     global current_weight, endpoint_headers, aplicable_limits, api_limits_weight_decrease_per_seconds
 
+    _ensure_rate_limits()
     weight_logger.debug(f"Checking weight for {endpoint}")
 
     future_weights = copy.deepcopy(current_weight)
