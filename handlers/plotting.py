@@ -1077,7 +1077,7 @@ def plot_trades(data: pd.DataFrame, max_size: int = 60, height: int = 1000, loga
            :width: 1000
 
     """
-    data['Buyer was maker'].replace({False: 'Taker buyer', True: 'Taker Seller'}, inplace=True)
+    data['Buyer was maker'] = data['Buyer was maker'].replace({False: 'Taker buyer', True: 'Taker Seller'})
     fig = px.scatter(x=data.index, y=data['Price'], color=data['Buyer was maker'], size=data[
         'Quantity'], size_max=max_size, log_y=logarithmic)
     if not title:
@@ -1403,7 +1403,7 @@ def bar_plot(df: pd.DataFrame, x_col_to_bars: str, y_col: str, bar_segments: str
 
     # Aggregate data
     if split_colors:
-        grouped_data = df.groupby(['bin', bar_segments])[y_col].agg(aggregation).unstack()
+        grouped_data = df.groupby(['bin', bar_segments], observed=False)[y_col].agg(aggregation).unstack()
     else:
         grouped_data = df.groupby('bin')[y_col].agg(aggregation).to_frame()
 

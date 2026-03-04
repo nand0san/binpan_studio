@@ -34,5 +34,5 @@ def random_strategy(data: pd.DataFrame,
     df.loc[buys, new_actions_col] = labels['buy']
     df.loc[sells, new_actions_col] = labels['sell']
     if fill:
-        df[new_actions_col].fillna(fill, inplace=True)
+        df[new_actions_col] = df[new_actions_col].fillna(fill)
     return df

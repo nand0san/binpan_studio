@@ -331,8 +331,8 @@ def generate_volume_column(data: pd.DataFrame, add_cols: tuple, quote_column: bo
     :return pd.DataFrame: A copy with volume added.
     """
     df = data.copy(deep=True)
-    df[add_cols[0]].fillna(value=0, inplace=True)
-    df[add_cols[1]].fillna(value=0, inplace=True)
+    df[add_cols[0]] = df[add_cols[0]].fillna(value=0)
+    df[add_cols[1]] = df[add_cols[1]].fillna(value=0)
     df.loc[:, 'Volume'] = df.loc[:, add_cols[0]] + df.loc[:, add_cols[1]]
     if quote_column:
         df.loc[:, 'Volume quote'] = df['Close'] * df['Volume']
@@ -366,7 +366,7 @@ def sign_of_price(data: pd.DataFrame, col_name: str = 'sign') -> pd.DataFrame:
     df[col_name] = df['Price'].diff().astype(float)
 
     df[col_name] = np.where(df[col_name] == 0., np.nan, np.sign(df[col_name]))
-    df[col_name].fillna(method='ffill', inplace=True)
+    df[col_name] = df[col_name].ffill()
     df[col_name] = df[col_name].fillna(0).astype(int)
     return df
 
@@ -807,7 +807,7 @@ def tick_imbalance_bars_chat_gpt(trades: pd.DataFrame, window: int = 10):
     # tick rule
     df['delta_p'] = df['Price'].diff()
     df['b_t'] = np.where(df['delta_p'] == 0, np.nan, np.sign(df['delta_p']))
-    df['b_t'].fillna(method='ffill', inplace=True)
+    df['b_t'] = df['b_t'].ffill()
 
     df['theta_T'] = df['b_t'].cumsum()
 

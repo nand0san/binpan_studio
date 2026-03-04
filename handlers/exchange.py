@@ -606,11 +606,17 @@ def get_coins_and_networks_info(decimal_mode: bool,
 
     coins_df = pd.DataFrame(coins).drop_duplicates().set_index('coin')
     for col in coins_df.columns:
-        coins_df[col] = pd.to_numeric(arg=coins_df[col], downcast='integer', errors='ignore')
+        try:
+            coins_df[col] = pd.to_numeric(arg=coins_df[col])
+        except (ValueError, TypeError):
+            pass
 
     networks_df = pd.DataFrame(networks).drop_duplicates().set_index('coin')
     for col in networks_df.columns:
-        networks_df[col] = pd.to_numeric(arg=networks_df[col], downcast='integer', errors='ignore')
+        try:
+            networks_df[col] = pd.to_numeric(arg=networks_df[col])
+        except (ValueError, TypeError):
+            pass
 
     return coins_df.sort_index(), networks_df.sort_index()
 
@@ -1157,7 +1163,11 @@ def statistics_24h(decimal_mode: bool,
     # filter just coins not legal and with spot and tradeable
     df = df[df['symbol'].isin(filtered_pairs)]
 
-    df = df.apply(pd.to_numeric, errors='ignore')
+    for col in df.columns:
+        try:
+            df[col] = pd.to_numeric(df[col])
+        except (ValueError, TypeError):
+            pass
 
     df['openTime'] = df['openTime'].apply(lambda x: convert_utc_milliseconds(x))
     df['closeTime'] = df['closeTime'].apply(lambda x: convert_utc_milliseconds(x))

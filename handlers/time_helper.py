@@ -47,13 +47,13 @@ def convert_ms_column_to_datetime_with_zone(df: pd.DataFrame, col: str, time_zon
     :param ambiguous: A string or list to resolve ambiguous times during DST transitions. Default is 'infer'.
     :return: Modified dataframe.
     """
-    df[col] = pd.to_datetime(df[col], unit='ms')
+    dt_series = pd.to_datetime(df[col], unit='ms')
 
     # Add timezone check
-    if df[col].dt.tz is None:
-        return df[col].dt.tz_localize('utc', ambiguous=ambiguous).dt.tz_convert(time_zone)
+    if dt_series.dt.tz is None:
+        return dt_series.dt.tz_localize('utc', ambiguous=ambiguous).dt.tz_convert(time_zone)
     else:
-        return df[col].dt.tz_convert(time_zone)
+        return dt_series.dt.tz_convert(time_zone)
 
 
 def convert_datetime_to_string(dt) -> str:

@@ -56,7 +56,7 @@ def tag_value(serie: pd.Series,
     ret.loc[ret] = match_tag
     ret.loc[ret == False] = mismatch_tag
     if to_numeric:
-        return pd.to_numeric(arg=ret, downcast='integer')
+        return pd.to_numeric(arg=ret)
     else:
         return ret
 
@@ -104,7 +104,7 @@ def tag_comparison(serie_a: pd.Series,
     ret.loc[ret == False] = mismatch_tag
 
     if to_numeric:
-        return pd.to_numeric(arg=ret, downcast='integer')
+        return pd.to_numeric(arg=ret)
     else:
         return ret
 

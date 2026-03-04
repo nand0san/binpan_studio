@@ -222,7 +222,10 @@ def create_empty_typed_dataframe(index_data: list,
             else:
                 df_[col] = pd.to_datetime(df_[col]).astype(dtype)
         else:
-            df_[col] = df_[col].astype(dtype, errors='ignore')
+            try:
+                df_[col] = df_[col].astype(dtype)
+            except (ValueError, TypeError):
+                pass
     # print(type(df_.index))
     # replace zeros with nans
     df_.replace(0, pd.NA, inplace=True)

@@ -2756,6 +2756,8 @@ class Symbol(object):
 
         """
 
+        if scaling is None:
+            scaling = 0.015
         cci = cci_indicator(high=self.df['High'], low=self.df['Low'], close=self.df['Close'], length=length, c=scaling)
 
         column_name = str(cci.name) + suffix

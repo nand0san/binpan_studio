@@ -162,7 +162,7 @@ def get_candles_by_time_stamps(symbol: str,
     raw_candles = []
     for start, end in ranges:
         loop_limit = min(limit, 1000)
-        end = min(end, int(1000 * time()))
+        end = min(end, int(1000 * time()), end_time)
         params = {'symbol': symbol, 'interval': tick_interval, 'startTime': start, 'endTime': end, 'limit': loop_limit}
         params = {k: v for k, v in params.items() if v}
         check_weight(1, endpoint=endpoint)
@@ -170,8 +170,7 @@ def get_candles_by_time_stamps(symbol: str,
         start_str = convert_milliseconds_to_str(start, timezoned=time_zone)
         end_str = convert_milliseconds_to_str(end, timezoned=time_zone)
 
-        # expected_klines = int((end - start) / tick_milliseconds)
-        expected_klines = int(-((end - start) // -tick_milliseconds))  # round up
+        expected_klines = min(int(-((end - start) // -tick_milliseconds)), loop_limit)  # ceil, capped by API limit
         market_logger.debug(f"API request: {symbol} {start_str} to {end_str}. Expected klines: {expected_klines}")
 
         response = get_response(url=endpoint, params=params)
@@ -345,9 +344,7 @@ def parse_candles_to_dataframe(raw_response: list,
 
     if type(time_zone) is str and time_zone != 'UTC':  # converts to time zone the time columns
         for col in time_cols:
-            df.loc[:, col] = convert_ms_column_to_datetime_with_zone(df, col, time_zone=time_zone)
-            # df.loc[:, col] = df[col].apply(lambda x:convert_datetime_to_string(x))
-            df.loc[:, col] = convert_ms_column_to_datetime_with_zone(df, col, time_zone=time_zone, ambiguous='infer')
+            df[col] = convert_ms_column_to_datetime_with_zone(df, col, time_zone=time_zone, ambiguous='infer')
 
     else:
         for col in time_cols:
@@ -412,7 +409,10 @@ def convert_to_numeric(data: pd.DataFrame) -> pd.DataFrame:
             continue
         elif col == "Date":  # when data is previously parsed
             continue
-        df[col] = pd.to_numeric(arg=df[col], downcast='integer', errors='ignore')
+        try:
+            df[col] = pd.to_numeric(arg=df[col])
+        except (ValueError, TypeError):
+            pass
     return df
 
 
@@ -802,12 +802,12 @@ def parse_agg_trades_to_dataframe(response: list, columns: dict, symbol: str, ti
     timestamps_col = 'Timestamp'
     timestamps_serie = df[timestamps_col].copy()
     col = 'Date'
-    df.loc[:, col] = df[timestamps_col]
+    df[col] = df[timestamps_col]
     if time_zone != 'UTC':  # converts to time zone the time columns
-        df.loc[:, col] = convert_ms_column_to_datetime_with_zone(df, col, time_zone=time_zone)
-        df.loc[:, col] = df[col].apply(lambda x: convert_datetime_to_string(x))
+        df[col] = convert_ms_column_to_datetime_with_zone(df, col, time_zone=time_zone)
+        df[col] = df[col].apply(lambda x: convert_datetime_to_string(x))
     else:
-        df.loc[:, col] = df[timestamps_col].apply(lambda x: convert_milliseconds_to_utc_string(x))
+        df[col] = df[timestamps_col].apply(lambda x: convert_milliseconds_to_utc_string(x))
 
     if time_index:
         date_index = timestamps_serie.apply(convert_milliseconds_to_time_zone_datetime, timezoned=time_zone)
@@ -1022,12 +1022,12 @@ def parse_atomic_trades_to_dataframe(response: list,
     timestamps_col = 'Timestamp'
     timestamps_serie = df[timestamps_col].copy()
     col = 'Date'
-    df.loc[:, col] = df[timestamps_col]
+    df[col] = df[timestamps_col]
     if time_zone != 'UTC':  # converts to time zone the time columns
-        df.loc[:, col] = convert_ms_column_to_datetime_with_zone(df, col, time_zone=time_zone)
-        df.loc[:, col] = df[col].apply(lambda x: convert_datetime_to_string(x))
+        df[col] = convert_ms_column_to_datetime_with_zone(df, col, time_zone=time_zone)
+        df[col] = df[col].apply(lambda x: convert_datetime_to_string(x))
     else:
-        df.loc[:, col] = df[timestamps_col].apply(lambda x: convert_milliseconds_to_utc_string(x))
+        df[col] = df[timestamps_col].apply(lambda x: convert_milliseconds_to_utc_string(x))
 
     if time_index:
         date_index = timestamps_serie.apply(convert_milliseconds_to_time_zone_datetime, timezoned=time_zone)
