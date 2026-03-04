@@ -1,32 +1,26 @@
-numpy~=1.26.2 
-pandas-ta>=0.3.14b0
-pandas~=2.1.3
-plotly>=5.18.0
-py-cpuinfo>=9.0.0
-pycryptodome>=3.19.0
-pytz>=2023.3.post1
+# core
+numpy>=1.26.2            # desclaveado: pandas_ta eliminado, numpy 2.x compatible
+pandas>=2.1.3,<3         # pandas 3.0 rompe errors='ignore', downcast, tz-naive/aware
 requests>=2.31.0
-scipy>=1.11.4
+pytz>=2023.3
+pycryptodome>=3.19.0
 tqdm>=4.66.1
-typing~=3.7.4.3
-kaleido~=0.2.1 # do not update to newer version, it will break plotly
+py-cpuinfo>=9.0.0
 ipykernel>=6.27.1
+setuptools>=69.0.2       # desclaveado: pandas_ta eliminado, setuptools 78+ compatible
 
-# optionally required for some features
-scikit-learn>=1.3.2  # optional for kmeans with support and resistance levels
-numba>=0.58.1
+# plotting
+plotly>=5.18.0
+kaleido>=0.2.1,<0.3      # 0.2.x estable con plotly, 0.3+ rompe export
 
-# alternative databases
-# redis~=5.0.0
-# influxdb-client==1.37.0
-psycopg2-binary>=2.9.9
+# indicadores (nativos, sin pandas_ta)
+scipy>=1.11.4
 
-# docs & pypi
-# setuptools==68.2.2
-# sphinx==7.2.6
-# autodocsumm==0.2.11
-# shibuya==2023.9.3
-# twine==3.4.2
-# setuptools==69.0.2
+# opcionales (import lazy, instalar solo si se necesitan)
+scikit-learn>=1.3.2       # kmeans en support/resistance levels
+numba>=0.58.1             # aceleración de indicadores
+psycopg2-binary>=2.9.9    # PostgreSQL
 
-setuptools~=69.0.2
+# bases de datos alternativas (descomentar si se necesitan)
+# redis>=5.0.0
+# influxdb-client>=1.37.0

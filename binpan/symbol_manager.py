@@ -9,7 +9,6 @@ import os
 from sys import path
 import pandas as pd
 from typing import Tuple, List, Union, Optional
-import pandas_ta as ta
 from random import choice
 from time import time
 import numpy as np
@@ -25,7 +24,12 @@ from handlers.files import select_file, read_csv_to_dataframe, save_dataframe_to
 from handlers.indicators import (df_splitter, reversal_candles, zoom_cloud_indicators, ichimoku, fractal_w_indicator,
                                  support_resistance_levels, ffill_indicator, shift_indicator, market_profile_from_klines_melt,
                                  alternating_fractal_indicator, fractal_trend_indicator, market_profile_from_klines_grouped,
-                                 market_profile_from_trades_grouped, support_resistance_levels_merged, time_active_zones)
+                                 market_profile_from_trades_grouped, support_resistance_levels_merged, time_active_zones,
+                                 atr as atr_indicator, supertrend as supertrend_indicator,
+                                 macd as macd_indicator, stoch_rsi as stoch_rsi_indicator,
+                                 obv as obv_indicator, ad as ad_indicator, vwap as vwap_indicator,
+                                 cci as cci_indicator, eom as eom_indicator, roc as roc_indicator,
+                                 bbands as bbands_indicator, stoch as stoch_indicator)
 
 from handlers.logs import LogManager
 
@@ -2349,18 +2353,16 @@ class Symbol(object):
 
         df = self.df.copy(deep=True)
 
-        # if self.is_numba and ma_name == 'ema':
         if ma_name == 'ema':
             ma_ = ema_numba(df[column_source].values, window=kwargs['length'])
             ma = pd.Series(data=ma_, index=df.index, name=f"EMA_{kwargs['length']}")
 
-        # elif self.is_numba and ma_name == 'sma':
         elif ma_name == 'sma':
             ma_ = sma_numba(df[column_source].values, window=kwargs['length'])
             ma = pd.Series(data=ma_, index=df.index, name=f"SMA_{kwargs['length']}")
 
         else:
-            ma = ta.ma(name=ma_name, source=df[column_source], **kwargs)
+            raise BinPanException(f"BinPan Error: Moving average type '{ma_name}' not supported. Use 'ema' or 'sma'.")
 
         if inplace and self.is_new(ma):
             # plot ready
@@ -2432,11 +2434,9 @@ class Symbol(object):
            :alt: Candles with some indicators
 
         """
-        if suffix:
-            kwargs.update({'suffix': suffix})
-        supertrend_df = ta.supertrend(high=self.df['High'], low=self.df['Low'], close=self.df[
-            'Close'], length=length, multiplier=int(multiplier), **kwargs)
-        supertrend_df.replace(0, np.nan, inplace=True)  # pandas_ta puts a zero at the beginning sometimes that can break the plot scale
+        supertrend_df = supertrend_indicator(high=self.df['High'], low=self.df['Low'], close=self.df['Close'],
+                                              length=length, multiplier=float(multiplier))
+        supertrend_df.replace(0, np.nan, inplace=True)
 
         if inplace and self.is_new(supertrend_df):
             column_names = supertrend_df.columns
@@ -2483,7 +2483,7 @@ class Symbol(object):
         """
         if not colors:
             colors = ['black', 'orange', 'green', 'blue']
-        macd = self.df.ta.macd(fast=fast, slow=slow, signal=smooth, **kwargs)
+        macd = macd_indicator(close=self.df['Close'], fast=fast, slow=slow, signal=smooth)
         zeros = macd.iloc[:, 0].copy()
         zeros.loc[:] = 0
         zeros.name = 'zeros'
@@ -2579,8 +2579,8 @@ class Symbol(object):
         """
         if not colors:
             colors = ['orange', 'blue']
-        stoch_df = ta.stochrsi(close=self.df[
-            'Close'], length=rsi_length, rsi_length=rsi_length, k_smooth=k_smooth, d_smooth=d_smooth, **kwargs)
+        stoch_df = stoch_rsi_indicator(close=self.df['Close'], rsi_length=rsi_length,
+                                       stoch_length=rsi_length, k_smooth=k_smooth, d_smooth=d_smooth)
         if inplace and self.is_new(stoch_df):
             self.row_counter += 1
             for i, c in enumerate(stoch_df.columns):
@@ -2610,7 +2610,7 @@ class Symbol(object):
 
         """
 
-        on_balance = ta.obv(close=self.df['Close'], volume=self.df['Volume'], **kwargs)
+        on_balance = obv_indicator(close=self.df['Close'], volume=self.df['Volume'])
 
         column_name = str(on_balance.name) + suffix
 
@@ -2645,7 +2645,7 @@ class Symbol(object):
 
         """
 
-        ad = ta.ad(high=self.df['High'], low=self.df['Low'], close=self.df['Close'], volume=self.df['Volume'], **kwargs)
+        ad = ad_indicator(high=self.df['High'], low=self.df['Low'], close=self.df['Close'], volume=self.df['Volume'])
 
         column_name = str(ad.name) + suffix
 
@@ -2681,7 +2681,7 @@ class Symbol(object):
            :alt: Candles with some indicators
         """
 
-        vwap = ta.vwap(high=self.df['High'], low=self.df['Low'], close=self.df['Close'], volume=self.df['Volume'], anchor=anchor, **kwargs)
+        vwap = vwap_indicator(high=self.df['High'], low=self.df['Low'], close=self.df['Close'], volume=self.df['Volume'])
 
         column_name = str(vwap.name) + suffix
 
@@ -2714,7 +2714,7 @@ class Symbol(object):
 
         """
 
-        atr = ta.atr(high=self.df['High'], low=self.df['Low'], close=self.df['Close'], length=length, **kwargs)
+        atr = atr_indicator(high=self.df['High'], low=self.df['Low'], close=self.df['Close'], length=length)
 
         column_name = str(atr.name) + suffix
 
@@ -2756,7 +2756,7 @@ class Symbol(object):
 
         """
 
-        cci = ta.cci(high=self.df['High'], low=self.df['Low'], close=self.df['Close'], length=length, c=scaling, **kwargs)
+        cci = cci_indicator(high=self.df['High'], low=self.df['Low'], close=self.df['Close'], length=length, c=scaling)
 
         column_name = str(cci.name) + suffix
 
@@ -2796,8 +2796,8 @@ class Symbol(object):
 
         """
 
-        eom = ta.eom(high=self.df['High'], low=self.df['Low'], close=self.df['Close'], volume=self.df[
-            'Volume'], length=length, divisor=divisor, drift=drift, **kwargs)
+        eom = eom_indicator(high=self.df['High'], low=self.df['Low'], volume=self.df['Volume'],
+                            length=length, divisor=divisor)
 
         column_name = str(eom.name) + suffix
 
@@ -2832,7 +2832,7 @@ class Symbol(object):
 
         """
 
-        roc = ta.roc(close=self.df['Close'], length=length, escalar=escalar, **kwargs)
+        roc = roc_indicator(close=self.df['Close'], length=length, scalar=escalar)
 
         column_name = str(roc.name) + suffix
 
@@ -2876,7 +2876,7 @@ class Symbol(object):
         """
         if not colors:
             colors = ['red', 'orange', 'green']
-        bbands = self.df.ta.bbands(close=self.df['Close'], length=length, std=std, ddof=ddof, suffix=suffix, **kwargs)
+        bbands = bbands_indicator(close=self.df['Close'], length=length, std=std, ddof=ddof)
 
         if inplace and self.is_new(bbands):
             self.global_axis_group -= 1
@@ -2927,8 +2927,8 @@ class Symbol(object):
         """
         if not colors:
             colors = ['orange', 'blue']
-        stoch_df = ta.stoch(high=self.df['High'], low=self.df['Low'], close=self.df[
-            'Close'], k=k_length, d=stoch_d, k_smooth=k_smooth, **kwargs)
+        stoch_df = stoch_indicator(high=self.df['High'], low=self.df['Low'], close=self.df['Close'],
+                                   k=k_length, d=stoch_d, smooth_k=k_smooth)
         if inplace and self.is_new(stoch_df):
             self.row_counter += 1
             for i, c in enumerate(stoch_df.columns):
@@ -3322,15 +3322,14 @@ class Symbol(object):
                          [26 rows x 2 columns])
 
                 """
-        # Verificar si el atributo 'name' existe en el módulo 'ta'
-        if hasattr(ta, name):
-            # Obtener el atributo y llamarlo con los argumentos de 'kwargs'
-            indicator_func = getattr(ta, name)
-            print(f"This indicator should be plotted manually with the plotting module. Check docs for candles_ta functions and pass it "
-                  f"as an indicator serie. Example: candles_ta(data=btcusdt.df, indicators_series=[rsi])")
-            return indicator_func(**kwargs)
-        else:
-            raise ValueError(f"Indicator '{name}' not found in the 'pandas_ta' module.")
+        import warnings
+        warnings.warn(
+            "pandas_ta_indicator() está deprecado. pandas_ta ha sido eliminado. "
+            "Usa los métodos nativos de Symbol (ema, sma, rsi, macd, supertrend, etc.).",
+            DeprecationWarning, stacklevel=2)
+        raise BinPanException(
+            f"Indicator '{name}' not available. pandas_ta has been removed. "
+            f"Use the native Symbol methods instead (ema, sma, rsi, macd, supertrend, etc.).")
 
     def support_resistance(self,
                            from_atomic: bool = False,

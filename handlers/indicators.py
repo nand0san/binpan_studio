@@ -1130,3 +1130,335 @@ def market_profile_from_trades_grouped(df: pd.DataFrame, num_bins: int = 100) ->
     volume_by_price_bin = volume_by_price_bin.sort_index(key=lambda x: x.left)
     volume_by_price_bin.index.name += f"_{df_.index.name}_Trades"
     return volume_by_price_bin
+
+
+########################################
+# Indicadores nativos (sin pandas_ta) #
+########################################
+
+# Reutilizan ema_numba, rma_numba, sma_numba, rsi_numba de handlers.numba_tools.
+# Los nombres de columna son compatibles con los que usaba pandas_ta para mantener
+# compatibilidad con el sistema de plots existente.
+
+
+def atr(high: pd.Series, low: pd.Series, close: pd.Series, length: int = 14) -> pd.Series:
+    """
+    Average True Range using Wilder's smoothing (RMA).
+
+    :param pd.Series high: High prices.
+    :param pd.Series low: Low prices.
+    :param pd.Series close: Close prices.
+    :param int length: Period. Default 14.
+    :return pd.Series: ATR values with column name ``ATRr_{length}``.
+    """
+    from .numba_tools import rma_numba
+
+    prev_close = close.shift(1)
+    tr1 = high - low
+    tr2 = (high - prev_close).abs()
+    tr3 = (low - prev_close).abs()
+    tr = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
+
+    atr_vals = rma_numba(tr.values.astype(np.float64), window=length)
+    return pd.Series(atr_vals, index=close.index, name=f"ATRr_{length}")
+
+
+def supertrend(high: pd.Series, low: pd.Series, close: pd.Series,
+               length: int = 10, multiplier: float = 3.0) -> pd.DataFrame:
+    """
+    Supertrend indicator (Binance-compatible).
+
+    :param pd.Series high: High prices.
+    :param pd.Series low: Low prices.
+    :param pd.Series close: Close prices.
+    :param int length: ATR period. Default 10.
+    :param float multiplier: ATR multiplier. Default 3.0.
+    :return pd.DataFrame: Columns ``SUPERT_{length}_{multiplier}``, ``SUPERTd_...``, ``SUPERTl_...``, ``SUPERTs_...``.
+    """
+    atr_series = atr(high, low, close, length)
+    hl2 = (high + low) / 2.0
+
+    basic_upper = hl2 + multiplier * atr_series
+    basic_lower = hl2 - multiplier * atr_series
+
+    n = len(close)
+    final_upper = np.empty(n, dtype=np.float64)
+    final_lower = np.empty(n, dtype=np.float64)
+    supertrend_val = np.empty(n, dtype=np.float64)
+    direction = np.empty(n, dtype=np.float64)
+
+    close_arr = close.values.astype(np.float64)
+    bu = basic_upper.values.astype(np.float64)
+    bl = basic_lower.values.astype(np.float64)
+
+    final_upper[0] = bu[0]
+    final_lower[0] = bl[0]
+    direction[0] = 1.0
+    supertrend_val[0] = final_lower[0]
+
+    for i in range(1, n):
+        # final lower band
+        if bl[i] > final_lower[i - 1] or close_arr[i - 1] < final_lower[i - 1]:
+            final_lower[i] = bl[i]
+        else:
+            final_lower[i] = final_lower[i - 1]
+
+        # final upper band
+        if bu[i] < final_upper[i - 1] or close_arr[i - 1] > final_upper[i - 1]:
+            final_upper[i] = bu[i]
+        else:
+            final_upper[i] = final_upper[i - 1]
+
+        # dirección
+        if direction[i - 1] == 1.0:  # alcista
+            if close_arr[i] < final_lower[i]:
+                direction[i] = -1.0
+                supertrend_val[i] = final_upper[i]
+            else:
+                direction[i] = 1.0
+                supertrend_val[i] = final_lower[i]
+        else:  # bajista
+            if close_arr[i] > final_upper[i]:
+                direction[i] = 1.0
+                supertrend_val[i] = final_lower[i]
+            else:
+                direction[i] = -1.0
+                supertrend_val[i] = final_upper[i]
+
+    mult_str = f"{multiplier:g}"
+    idx = close.index
+    supert_line = pd.Series(supertrend_val, index=idx, name=f"SUPERT_{length}_{mult_str}")
+    supert_dir = pd.Series(direction, index=idx, name=f"SUPERTd_{length}_{mult_str}")
+    supert_long = pd.Series(np.where(direction == 1.0, final_lower, np.nan), index=idx,
+                            name=f"SUPERTl_{length}_{mult_str}")
+    supert_short = pd.Series(np.where(direction == -1.0, final_upper, np.nan), index=idx,
+                             name=f"SUPERTs_{length}_{mult_str}")
+
+    return pd.DataFrame({
+        supert_line.name: supert_line,
+        supert_dir.name: supert_dir,
+        supert_long.name: supert_long,
+        supert_short.name: supert_short,
+    })
+
+
+def macd(close: pd.Series, fast: int = 12, slow: int = 26, signal: int = 9) -> pd.DataFrame:
+    """
+    Moving Average Convergence/Divergence.
+
+    :param pd.Series close: Close prices.
+    :param int fast: Fast EMA period. Default 12.
+    :param int slow: Slow EMA period. Default 26.
+    :param int signal: Signal EMA period. Default 9.
+    :return pd.DataFrame: Columns ``MACD_{fast}_{slow}_{signal}``, ``MACDh_...``, ``MACDs_...``.
+    """
+    from .numba_tools import ema_numba
+
+    arr = close.values.astype(np.float64)
+    fast_ema = ema_numba(arr, window=fast)
+    slow_ema = ema_numba(arr, window=slow)
+    macd_line = fast_ema - slow_ema
+    signal_line = ema_numba(macd_line, window=signal)
+    histogram = macd_line - signal_line
+
+    idx = close.index
+    sfx = f"{fast}_{slow}_{signal}"
+    return pd.DataFrame({
+        f"MACD_{sfx}": pd.Series(macd_line, index=idx),
+        f"MACDh_{sfx}": pd.Series(histogram, index=idx),
+        f"MACDs_{sfx}": pd.Series(signal_line, index=idx),
+    })
+
+
+def stoch_rsi(close: pd.Series, rsi_length: int = 14, stoch_length: int = 14,
+              k_smooth: int = 3, d_smooth: int = 3) -> pd.DataFrame:
+    """
+    Stochastic RSI.
+
+    :param pd.Series close: Close prices.
+    :param int rsi_length: RSI period. Default 14.
+    :param int stoch_length: Stochastic lookback. Default 14.
+    :param int k_smooth: %K smoothing. Default 3.
+    :param int d_smooth: %D smoothing. Default 3.
+    :return pd.DataFrame: Columns ``STOCHRSIk_...``, ``STOCHRSId_...``.
+    """
+    from .numba_tools import rsi_numba, sma_numba
+
+    rsi_vals = rsi_numba(close.values.astype(np.float64), window=rsi_length)
+    rsi_series = pd.Series(rsi_vals, index=close.index)
+
+    rsi_min = rsi_series.rolling(stoch_length, min_periods=stoch_length).min()
+    rsi_max = rsi_series.rolling(stoch_length, min_periods=stoch_length).max()
+    stoch_rsi_raw = (rsi_series - rsi_min) / (rsi_max - rsi_min)
+    stoch_rsi_raw = stoch_rsi_raw.fillna(0.0)
+
+    k_vals = sma_numba(stoch_rsi_raw.values.astype(np.float64), window=k_smooth) * 100.0
+    k_series = pd.Series(k_vals, index=close.index)
+    d_vals = sma_numba(k_series.values.astype(np.float64), window=d_smooth)
+    d_series = pd.Series(d_vals, index=close.index)
+
+    sfx = f"{rsi_length}_{stoch_length}_{k_smooth}_{d_smooth}"
+    return pd.DataFrame({
+        f"STOCHRSIk_{sfx}": k_series,
+        f"STOCHRSId_{sfx}": d_series,
+    })
+
+
+def obv(close: pd.Series, volume: pd.Series) -> pd.Series:
+    """
+    On Balance Volume.
+
+    :param pd.Series close: Close prices.
+    :param pd.Series volume: Volume.
+    :return pd.Series: OBV values.
+    """
+    direction = np.sign(close.diff())
+    direction.iloc[0] = 0.0
+    obv_vals = (direction * volume).cumsum()
+    return pd.Series(obv_vals.values, index=close.index, name="OBV")
+
+
+def ad(high: pd.Series, low: pd.Series, close: pd.Series, volume: pd.Series) -> pd.Series:
+    """
+    Accumulation/Distribution line.
+
+    :param pd.Series high: High prices.
+    :param pd.Series low: Low prices.
+    :param pd.Series close: Close prices.
+    :param pd.Series volume: Volume.
+    :return pd.Series: AD values.
+    """
+    hl_range = high - low
+    clv = ((close - low) - (high - close)) / hl_range.replace(0, np.nan)
+    ad_vals = (clv * volume).cumsum()
+    return pd.Series(ad_vals.values, index=close.index, name="AD")
+
+
+def vwap(high: pd.Series, low: pd.Series, close: pd.Series, volume: pd.Series) -> pd.Series:
+    """
+    Volume Weighted Average Price (cumulative over the full series).
+
+    :param pd.Series high: High prices.
+    :param pd.Series low: Low prices.
+    :param pd.Series close: Close prices.
+    :param pd.Series volume: Volume.
+    :return pd.Series: VWAP values.
+    """
+    typical_price = (high + low + close) / 3.0
+    cum_tp_vol = (typical_price * volume).cumsum()
+    cum_vol = volume.cumsum()
+    vwap_vals = cum_tp_vol / cum_vol
+    return pd.Series(vwap_vals.values, index=close.index, name="VWAP_D")
+
+
+def cci(high: pd.Series, low: pd.Series, close: pd.Series,
+        length: int = 14, c: float = 0.015) -> pd.Series:
+    """
+    Commodity Channel Index.
+
+    :param pd.Series high: High prices.
+    :param pd.Series low: Low prices.
+    :param pd.Series close: Close prices.
+    :param int length: Period. Default 14.
+    :param float c: Scaling constant. Default 0.015.
+    :return pd.Series: CCI values.
+    """
+    tp = (high + low + close) / 3.0
+    sma_tp = tp.rolling(length, min_periods=length).mean()
+    mean_dev = tp.rolling(length, min_periods=length).apply(lambda x: np.abs(x - x.mean()).mean(), raw=True)
+    cci_vals = (tp - sma_tp) / (c * mean_dev)
+    return pd.Series(cci_vals.values, index=close.index, name=f"CCI_{length}_{c}")
+
+
+def eom(high: pd.Series, low: pd.Series, volume: pd.Series,
+        length: int = 14, divisor: int = 100_000_000) -> pd.Series:
+    """
+    Ease of Movement.
+
+    :param pd.Series high: High prices.
+    :param pd.Series low: Low prices.
+    :param pd.Series volume: Volume.
+    :param int length: Smoothing period. Default 14.
+    :param int divisor: Volume divisor. Default 100_000_000.
+    :return pd.Series: EOM values.
+    """
+    hl2 = (high + low) / 2.0
+    distance = hl2.diff()
+    hl_range = high - low
+    box_ratio = (volume / divisor) / hl_range.replace(0, np.nan)
+    raw_eom = distance / box_ratio
+    eom_vals = raw_eom.rolling(length, min_periods=length).mean()
+    return pd.Series(eom_vals.values, index=high.index, name=f"EOM_{length}_{divisor}")
+
+
+def roc(close: pd.Series, length: int = 1, scalar: int = 100) -> pd.Series:
+    """
+    Rate of Change.
+
+    :param pd.Series close: Close prices.
+    :param int length: Lookback period. Default 1.
+    :param int scalar: Scaling factor. Default 100.
+    :return pd.Series: ROC values.
+    """
+    roc_vals = ((close - close.shift(length)) / close.shift(length)) * scalar
+    return pd.Series(roc_vals.values, index=close.index, name=f"ROC_{length}")
+
+
+def bbands(close: pd.Series, length: int = 5, std: float = 2.0,
+           ddof: int = 0) -> pd.DataFrame:
+    """
+    Bollinger Bands.
+
+    :param pd.Series close: Close prices.
+    :param int length: SMA period. Default 5.
+    :param float std: Standard deviation multiplier. Default 2.0.
+    :param int ddof: Degrees of freedom for std. Default 0.
+    :return pd.DataFrame: Columns ``BBL_...``, ``BBM_...``, ``BBU_...``, ``BBB_...``, ``BBP_...``.
+    """
+    mid = close.rolling(length, min_periods=length).mean()
+    stdev = close.rolling(length, min_periods=length).std(ddof=ddof)
+    upper = mid + std * stdev
+    lower = mid - std * stdev
+    bandwidth = (upper - lower) / mid
+    pct_b = (close - lower) / (upper - lower)
+
+    sfx = f"{length}_{std:g}"
+    idx = close.index
+    return pd.DataFrame({
+        f"BBL_{sfx}": pd.Series(lower.values, index=idx),
+        f"BBM_{sfx}": pd.Series(mid.values, index=idx),
+        f"BBU_{sfx}": pd.Series(upper.values, index=idx),
+        f"BBB_{sfx}": pd.Series(bandwidth.values, index=idx),
+        f"BBP_{sfx}": pd.Series(pct_b.values, index=idx),
+    })
+
+
+def stoch(high: pd.Series, low: pd.Series, close: pd.Series,
+          k: int = 14, d: int = 3, smooth_k: int = 1) -> pd.DataFrame:
+    """
+    Stochastic Oscillator.
+
+    :param pd.Series high: High prices.
+    :param pd.Series low: Low prices.
+    :param pd.Series close: Close prices.
+    :param int k: %K lookback period. Default 14.
+    :param int d: %D smoothing period. Default 3.
+    :param int smooth_k: %K smoothing. Default 1.
+    :return pd.DataFrame: Columns ``STOCHk_{k}_{d}_{smooth_k}``, ``STOCHd_{k}_{d}_{smooth_k}``.
+    """
+    from .numba_tools import sma_numba
+
+    lowest_low = low.rolling(k, min_periods=k).min()
+    highest_high = high.rolling(k, min_periods=k).max()
+    k_raw = ((close - lowest_low) / (highest_high - lowest_low)) * 100.0
+
+    k_vals = sma_numba(k_raw.fillna(0.0).values.astype(np.float64), window=smooth_k)
+    k_series = pd.Series(k_vals, index=close.index)
+    d_vals = sma_numba(k_series.values.astype(np.float64), window=d)
+    d_series = pd.Series(d_vals, index=close.index)
+
+    sfx = f"{k}_{d}_{smooth_k}"
+    return pd.DataFrame({
+        f"STOCHk_{sfx}": k_series,
+        f"STOCHd_{sfx}": d_series,
+    })
