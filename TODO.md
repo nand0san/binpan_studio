@@ -4,21 +4,12 @@ Próximos pasos de desarrollo, ordenados por prioridad.
 
 ---
 
-## 1. Correctitud e imports (prioridad alta)
+## ~~1. Correctitud e imports~~ (COMPLETADO)
 
-### 1.1 Eliminar fallbacks silenciosos en imports
-
-Según la política de CLAUDE.md: si una dependencia no está, que dé error claro.
-
-| Archivo | Problema | Acción |
-|---------|----------|--------|
-| `handlers/redis_fetch.py` | `try: from redis import StrictRedis` → `StrictRedis = None` | Import directo, sin try/except |
-| `handlers/influx_manager.py` | `try: import influxdb_client` → `= None` | Import directo, sin try/except |
-| `handlers/starters.py` | `importlib.import_module('secret')` con fallback silencioso | Hacer fallar explícitamente si se necesitan credenciales |
-
-### 1.2 Eliminar código duplicado
-
-- `handlers/wallet.py`: `convert_str_date_to_ms_old()` es duplicado de `convert_str_date_to_ms()`. Eliminar la versión `_old`.
+- [x] `handlers/redis_fetch.py`: import directo de `StrictRedis` (sin try/except)
+- [x] `handlers/influx_manager.py`: import directo de `influxdb_client` (sin try/except)
+- [x] `handlers/starters.py`: `import_secret_module()` lanza `ModuleNotFoundError` con mensaje claro
+- [x] `handlers/wallet.py`: eliminado `convert_str_date_to_ms_old()` duplicado, corregido import mixto
 
 ---
 

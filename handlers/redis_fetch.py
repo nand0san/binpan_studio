@@ -14,13 +14,7 @@ from .exceptions import RedisConfigError
 
 redis_logger = LogManager(filename='./logs/redis_fetch.log', name='redis_fetch', info_level='INFO')
 
-try:
-    from redis import StrictRedis
-
-except ImportError:
-    StrictRedis = None
-    redis_logger.info("Redis module not found. Redis functions will not work.")
-    pass
+from redis import StrictRedis
 
 klines_columns = {"t": "Open timestamp",
                   "o": "Open",

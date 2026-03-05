@@ -39,8 +39,11 @@ def import_secret_module():
 
             # Si ya estamos en la raíz del sistema de archivos, detener la búsqueda
             if parent_dir == current_dir:
-                print("SECRET module not found!")
-                return None
+                raise ModuleNotFoundError(
+                    "BinPan: 'secret.py' no encontrado en ningún directorio padre. "
+                    "Necesario para operaciones con claves API. "
+                    "Ejecuta las funciones de setup de credenciales primero."
+                )
 
             current_dir = parent_dir
             sys.path.insert(0, current_dir)

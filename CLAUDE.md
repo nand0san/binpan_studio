@@ -560,10 +560,9 @@ La simplificación se ejecuta en este orden. Cada fase es un commit independient
 - **Star imports eliminados**: `binpan/__init__.py` y `handlers/postgresql.py` ahora usan imports explícitos.
 - **`handlers/__init__.py`**: Ya es lazy via `__getattr__` + `importlib`.
 
+- **Fallbacks silenciosos eliminados**: `redis_fetch.py` y `influx_manager.py` usan import directo. `starters.py` lanza `ModuleNotFoundError` explícito.
+- **Código duplicado eliminado**: `wallet.py` ya no tiene `convert_str_date_to_ms_old()`.
+
 ### Pendiente
 
-| Archivo | Import con fallback |
-|---------|-------------------|
-| `handlers/redis_fetch.py` | `from redis import StrictRedis` (try/except) |
-| `handlers/influx_manager.py` | `import influxdb_client` (try/except) |
-| `handlers/starters.py` | `importlib.import_module('secret')` |
+- Ver `TODO.md` para próximos pasos (refactorización symbol_manager.py, tests, docs Sphinx).

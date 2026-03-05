@@ -4,13 +4,9 @@ from .logs import LogManager
 
 influx_logger = LogManager(filename='./logs/influx_manager.log', name='influx_manager', info_level='DEBUG')
 
-try:
-    import influxdb_client
-    from influxdb_client.client.write_api import SYNCHRONOUS
-    from influxdb_client import Point
-except ImportError:
-    influx_logger.warning("InfluxDB Client is not installed. Please install it with: pip install influxdb-client")
-    influxdb_client, SYNCHRONOUS, Point = None, None, None
+import influxdb_client
+from influxdb_client.client.write_api import SYNCHRONOUS
+from influxdb_client import Point
 
 
 def time_clause(timestamp_ms: int) -> str or None:
