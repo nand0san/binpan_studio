@@ -6,12 +6,10 @@ import pandas as pd
 from datetime import datetime
 from decimal import Decimal as dd
 import numpy as np
-from typing import Union
-from .market import get_prices_dic
-from .quest import api_raw_get, api_raw_signed_get, check_weight
-from .logs import LogManager
 
-base_url = 'https://api.binance.com'
+from .market import get_prices_dic, _get_panzer
+from .quest import api_raw_signed_get
+from .logs import LogManager
 
 stablecoins = ['PAX', 'TUSD', 'USDC', 'USDS', 'USDT', 'BUSD', 'DAI', 'UST', 'USDP', 'TRIBE', 'UST', 'USSD', 'FDUSD', 'FRAX', 'USDP', 'USDJ']
 
@@ -87,9 +85,8 @@ def get_exchange_info() -> dict:
               ]
             }
     """
-    endpoint = '/api/v3/exchangeInfo'
-    return api_raw_get(endpoint=endpoint,
-                       weight=10)
+    client = _get_panzer()
+    return client.exchange_info()
 
 
 def get_info_dic() -> dict:
@@ -586,8 +583,8 @@ def get_system_status():
         }
 
     """
-    return api_raw_get(endpoint='/sapi/v1/system/status',
-                       weight=1)['msg']
+    client = _get_panzer()
+    return client.get('/sapi/v1/system/status', weight=1)['msg']
 
 
 def get_coins_and_networks_info(decimal_mode: bool,
@@ -911,13 +908,10 @@ def get_24h_statistics(symbol: str = None) -> dict:  # 24h rolling window
           "count": 76         // Trade count
         }
     """
-    endpoint = '/api/v3/ticker/24hr?'
-    if symbol:
-        check_weight(endpoint=endpoint, weight=1)
-        return api_raw_get(endpoint=endpoint, params={'symbol': symbol}, weight=1)
-    else:
-        check_weight(endpoint=endpoint, weight=40)
-        return api_raw_get(endpoint=endpoint, weight=40)
+    client = _get_panzer()
+    params = {'symbol': symbol} if symbol else {}
+    weight = 1 if symbol else 40
+    return client.get('/api/v3/ticker/24hr', params=params, weight=weight)
 
 
 def try_coin_conversion_to_stablecoin_by_intermediate_symbol(coin: str,
@@ -1319,7 +1313,7 @@ def get_top_gainers(decimal_mode: bool,
 #################
 
 
-def get_decimal_positions(num: Union[float, dd]) -> int:
+def get_decimal_positions(num: float | dd) -> int:
     """
     Count decimal positions for a value, correctly handling floats and Decimal numbers,
     including those in scientific notation.

@@ -1,13 +1,10 @@
 from time import time
-from typing import Tuple, List
 import pandas as pd
-
 
 from handlers.files import select_file, read_csv_to_dataframe, extract_filename_metadata
 from handlers.logs import LogManager
 from handlers.market import (convert_to_numeric)
 from handlers.time_helper import (pandas_freq_tick_interval, open_from_milliseconds, time_interval)
-from objects.timestamps import Timestamp
 
 # from handlers.starters import is_running_in_jupyter
 # if is_running_in_jupyter():
@@ -164,7 +161,7 @@ def check_continuity(df: pd.DataFrame, time_zone: str) -> pd.DataFrame:
         return gaps
 
 
-def find_common_interval_and_generate_timestamps(data: pd.DataFrame, timestamp_col="Open timestamp") -> Tuple[int, List]:
+def find_common_interval_and_generate_timestamps(data: pd.DataFrame, timestamp_col="Open timestamp") -> tuple[int, list]:
     """
     Find the most common interval between timestamps and generate a list of timestamps that should be present in the
      dataframe.
@@ -232,7 +229,7 @@ def create_empty_typed_dataframe(index_data: list,
     return df_.sort_index(ascending=True)
 
 
-def add_missing_klines(df, expected_timestamps: List[int], timestamp_col="Open timestamp"):
+def add_missing_klines(df, expected_timestamps: list[int], timestamp_col="Open timestamp"):
     """
     Add missing rows with nan to the DataFrame based on the list of expected timestamps.
 

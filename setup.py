@@ -34,5 +34,5 @@ setup(name='binpan',
       long_description=README_TEXT,
       long_description_content_type="text/markdown",
       package_dir={"": "."},
-      packages=["handlers", "binpan"]
+      packages=["handlers", "binpan", "objects"]
       )

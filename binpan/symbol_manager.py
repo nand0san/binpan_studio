@@ -8,7 +8,7 @@ __version__ = "0.8.14"
 import os
 from sys import path
 import pandas as pd
-from typing import Tuple, List, Union, Optional
+
 from random import choice
 from time import time
 import numpy as np
@@ -53,7 +53,7 @@ from handlers.tags import (tag_column_to_strategy_group, backtesting, backtestin
 from handlers.standards import (binance_api_candles_cols, agg_trades_api_map_columns, atomic_trades_api_map_columns, time_cols,
                                 dts_time_cols, reversal_columns_order, agg_trades_columns_from_binance, atomic_trades_columns_from_binance)
 
-from handlers.quest import tick_seconds
+from handlers.time_helper import tick_seconds
 from handlers.wallet import convert_str_date_to_ms
 import warnings
 
@@ -224,7 +224,7 @@ class Symbol(object):
                  display_max_rows: int = 10,
                  display_min_rows: int = 25,
                  display_width: int = 320,
-                 from_csv: Union[bool, str] = False,
+                 from_csv: bool | str = False,
                  info_dic: dict = None):
 
         if not symbol and not from_csv:
@@ -292,12 +292,12 @@ class Symbol(object):
                                        hours=hours,
                                        closed=closed)
 
-            self.start_time = self.timeframe.start.get_open()
-            self.end_time = self.timeframe.end.get_close()
+            self.start_time = self.timeframe.start.open
+            self.end_time = self.timeframe.end.close
             self.tick_interval = self.timeframe.tick_interval
             self.limit = self.timeframe.get_limit()
             self.hours = self.timeframe.get_hours()
-            self.time_zone = str(self.timeframe.timezone)
+            self.time_zone = str(self.timeframe.timezone_IANA)
 
             # self.start_time, self.end_time = setup_startime_endtime(start_time=start_time,
             #                                                         end_time=end_time,
@@ -767,17 +767,17 @@ class Symbol(object):
         return self.df
 
     def insert_indicator(self,
-                         source_data: Union[pd.Series, pd.DataFrame, np.ndarray, list],
-                         strategy_group: Optional[str] = None,
-                         plotting_row: Optional[int] = None,
-                         plotting_rows: Optional[List[int]] = None,
-                         color: Optional[str] = None,
+                         source_data: pd.Series | pd.DataFrame | np.ndarray | list,
+                         strategy_group: str | None = None,
+                         plotting_row: int | None = None,
+                         plotting_rows: list[int] | None = None,
+                         color: str | None = None,
                          no_overlapped_plot_rows: bool = True,
-                         colors: Optional[List[str]] = None,
-                         color_fills: Optional[List[Union[str, bool]]] = None,
-                         name: Optional[str] = None,
-                         names: Optional[List[str]] = None,
-                         suffix: str = '') -> Optional[pd.DataFrame]:
+                         colors: list[str] | None = None,
+                         color_fills: list[str | bool] | None = None,
+                         name: str | None = None,
+                         names: list[str] | None = None,
+                         suffix: str = '') -> pd.DataFrame | None:
         """
          Adds one or more indicators to the DataFrame in place.
 
@@ -955,7 +955,7 @@ class Symbol(object):
         else:
             return df_
 
-    def get_timestamps(self) -> Tuple[int, int]:
+    def get_timestamps(self) -> tuple[int, int]:
         """
         Get the first Open timestamp and the last Close timestamp.
 
@@ -971,7 +971,7 @@ class Symbol(object):
         binpan_logger.debug(f"From first Open timestamp {start} to last Open timestamp {end}")
         return int(start), int(end)
 
-    def get_dates(self) -> Tuple[str, str]:
+    def get_dates(self) -> tuple[str, str]:
         """
         Get the first Open timestamp and the last Open timestamp, and converts to timezoned dates.
 
@@ -3022,7 +3022,7 @@ class Symbol(object):
         return ichimoku_data
 
     def alternating_fractal(self, max_period: int = None, inplace: bool = True, overlap_plot=True, with_trend: bool = True,
-                            suffix: str = '', colors: list = None) -> Tuple[pd.Series or None, float or None, float or None]:
+                            suffix: str = '', colors: list = None) -> tuple[pd.Series | None, float | None, float | None]:
         """
         Obtains the minim value for fractal_w periods as fractal is pure alternating from max to min to max etc. In other words,
         max and mins alternates in regular rhythm without any tow max or two mins consecutively.
@@ -3348,7 +3348,7 @@ class Symbol(object):
                            by_quantity: float = None,
                            simple: bool = True,
                            inplace=True,
-                           colors: list = None) -> Tuple[List[float], List[float]]:
+                           colors: list = None) -> tuple[list[float], list[float]]:
         """
         Calculate support and resistance levels for the Symbol based on either atomic trades or aggregated trades.
 
@@ -3610,7 +3610,7 @@ class Symbol(object):
                        from_aggregated: bool = False,
                        max_clusters: int = 5,
                        by_quantity: float = None,
-                       simple: bool = True) -> Tuple[List[float], List[float]]:
+                       simple: bool = True) -> tuple[list[float], list[float]]:
         """
         Calculate centroids for timestamps of more activity in taker buys or takers sells.
 

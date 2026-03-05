@@ -6,7 +6,7 @@ BinPan own indicators and utils.
 import pandas as pd
 import pytz
 import numpy as np
-from typing import Tuple, List
+
 import os
 import multiprocessing
 
@@ -100,7 +100,7 @@ def fractal_trend_indicator(df: pd.DataFrame,
     return max_trend.mean(), min_trend.mean()
 
 
-def calculate_fractal_trend_on_flags(df: pd.DataFrame, flags: pd.Series, period: int = None, suffix: str = "") -> List[tuple]:
+def calculate_fractal_trend_on_flags(df: pd.DataFrame, flags: pd.Series, period: int = None, suffix: str = "") -> list[tuple]:
     """
     Applies the fractal_trend_indicator function to the dataframe df for each index flagged with 1 in the flags series.
 
@@ -762,7 +762,7 @@ def support_resistance_levels(df: pd.DataFrame,
                               max_clusters: int = 5,
                               by_quantity: bool = None,
                               by_klines=True,
-                              optimize_clusters_qty: bool = False) -> Tuple:
+                              optimize_clusters_qty: bool = False) -> tuple:
     """
     Calculate support and resistance levels for a given set of trades using K-means clustering.
 
@@ -969,7 +969,7 @@ def time_active_zones(df: pd.DataFrame,
                       simple: bool = True,
                       by_quantity: float = True,
                       quiet=False,
-                      optimize_clusters_qty: bool = False) -> Tuple:
+                      optimize_clusters_qty: bool = False) -> tuple:
     """
     Calculate support and resistance levels timestamp centroids for a given set of trades using K-means clustering.
 

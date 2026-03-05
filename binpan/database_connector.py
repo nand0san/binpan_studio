@@ -5,7 +5,7 @@ from handlers.postgresql import (create_connection, get_valid_table_list, is_cur
                                  list_tables_with_suffix, data_type_from_table, count_rows_in_tables)
 from handlers import postgresql_database
 from handlers.starters import AesCipher
-from typing import List
+
 
 cipher_object = AesCipher()
 
@@ -113,7 +113,7 @@ class Database:
         # mostrar una tabla con todos los datos recopilados
         print(f"Table: {table_name}\nExists: {exists}\nHyper: {hyper}\nColumns: {columns}\nIndex: {index}\nHyper Index: {hyper_index}")
 
-    def get_table_counts(self, tables: List[str] = None, drop_missed: bool = True) -> pd.Series:
+    def get_table_counts(self, tables: list[str] = None, drop_missed: bool = True) -> pd.Series:
         if not tables:
             tables = self.tables
         ret = count_rows_in_tables(cursor=self.cursor, table_names=tables)

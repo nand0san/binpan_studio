@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from .logs import LogManager
-from typing import List, Dict
+
 
 influx_logger = LogManager(filename='./logs/influx_manager.log', name='influx_manager', info_level='DEBUG')
 
@@ -371,7 +371,7 @@ def create_bulk_points(client: influxdb_client.InfluxDBClient,
                        bucket: str,
                        org: str,
                        measurement: str,
-                       data_list: List[Dict]):
+                       data_list: list[dict]):
     """
     Function to create a new measurement in InfluxDB 2.x.
 

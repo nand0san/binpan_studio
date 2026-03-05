@@ -12,7 +12,7 @@ import numpy as np
 import os
 from random import choice
 from datetime import datetime
-from typing import List, Tuple, Literal
+from typing import Literal
 
 
 from .logs import LogManager
@@ -1472,7 +1472,7 @@ def profile_plot(serie: pd.Series, title: str = "Profile Plot", x_axis_title: st
     return os.path.join(os.getcwd(), "last_plot.png")
 
 
-def plot_orderbook_value(ask_data: List[Tuple[List, float]], bid_data: List[Tuple[List, float]], close_prices: pd.Series):
+def plot_orderbook_value(ask_data: list[tuple[list, float]], bid_data: list[tuple[list, float]], close_prices: pd.Series):
     """
     Plots orderbook levels quantities.
 

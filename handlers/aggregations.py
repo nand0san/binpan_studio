@@ -3,7 +3,7 @@ Data Aggregation.
 """
 import pandas as pd
 import numpy as np
-from typing import Tuple
+
 
 from .exceptions import BinPanException
 from .time_helper import pandas_freq_tick_interval
@@ -615,7 +615,7 @@ class ImbalanceBars(object):
             new_data.update({'group': self.bar_counter})
             self.rows_with_bar_counter.append(new_data)
 
-    def decide_sampling(self, my_molecule_sign: list, my_molecule_cum_size: int) -> Tuple[list, int]:
+    def decide_sampling(self, my_molecule_sign: list, my_molecule_cum_size: int) -> tuple[list, int]:
         """
         Decide whether to sample the current bar and update variables accordingly.
 

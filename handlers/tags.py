@@ -4,7 +4,7 @@ Tagging utils.
 
 """
 import pandas as pd
-from typing import Tuple
+
 import numpy as np
 
 from .exchange import get_info_dic, get_bases_dic, get_quotes_dic
@@ -287,7 +287,7 @@ def evaluate_wallets(df_: pd.DataFrame,
                      evaluating_quote: str,
                      info_dic: dict = None,
                      suffix: str = ''
-                     ) -> Tuple[pd.Series, pd.Series, pd.Series]:
+                     ) -> tuple[pd.Series, pd.Series, pd.Series]:
     """
     Obtains total wallet values in a quote value through time.
 
@@ -375,7 +375,7 @@ def evaluate_wallets(df_: pd.DataFrame,
 def check_action_labels_for_backtesting(actions: pd.Series,
                                         label_in: int,
                                         label_out: int
-                                        ) -> Tuple[any, any]:
+                                        ) -> tuple[any, any]:
     """
     This function verify labels in actions series, if labels for in actions and labels for out actions are or not the specified ones. Also
      if there are any other label it will throw an exception.

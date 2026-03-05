@@ -9,9 +9,11 @@ import pandas as pd
 from decimal import Decimal as dd
 from datetime import datetime
 
+from panzer import BinancePublicClient
+
 from .exceptions import BinPanException
 from .logs import LogManager
-from .quest import check_weight, get_response, api_raw_get, get_semi_signed_request
+from .quest import get_semi_signed_request
 from .time_helper import (tick_seconds, convert_milliseconds_to_str, convert_ms_column_to_datetime_with_zone,
                           convert_milliseconds_to_utc_string, convert_datetime_to_string, open_from_milliseconds, next_open_by_milliseconds,
                           convert_milliseconds_to_time_zone_datetime)
@@ -21,7 +23,16 @@ from .files import get_encoded_secrets
 
 market_logger = LogManager(filename='./logs/market_logger.log', name='market_logger', info_level='INFO')
 
-base_url = 'https://api.binance.com'
+# cliente panzer compartido (lazy singleton)
+_panzer_client = None
+
+
+def _get_panzer(market: str = "spot") -> BinancePublicClient:
+    """Returns the shared panzer client, creating it on first use."""
+    global _panzer_client
+    if _panzer_client is None:
+        _panzer_client = BinancePublicClient(market=market)
+    return _panzer_client
 
 
 ##########
@@ -37,13 +48,9 @@ def get_last_price(symbol: str = None) -> dict or list:
     :return dict or list:
 
     """
-    endpoint = '/api/v3/ticker/price'
-    if symbol:
-        weight = 1
-        symbol = symbol.upper()
-    else:
-        weight = 2
-    res = api_raw_get(endpoint=endpoint, weight=weight, params={'symbol': symbol})
+    client = _get_panzer()
+    params = {'symbol': symbol.upper()} if symbol else {}
+    res = client.get('/api/v3/ticker/price', params=params, weight=2 if not symbol else 1)
     market_logger.debug(f"get_last_price: {res}")
 
     if type(res) is dict:
@@ -58,9 +65,8 @@ def get_prices_dic(decimal_mode: bool) -> dict:
     :decimal_mode bool: It flags to work in decimal mode.
     :return dict:
     """
-    endpoint = '/api/v3/ticker/price'
-    check_weight(2, endpoint=endpoint)
-    ret = get_response(url=endpoint)
+    client = _get_panzer()
+    ret = client.get('/api/v3/ticker/price', weight=2)
     if decimal_mode:
         return {d['symbol']: dd(d['price']) for d in ret}
     else:
@@ -149,29 +155,26 @@ def get_candles_by_time_stamps(symbol: str,
     start_string = convert_milliseconds_to_str(ms=start_time, timezoned=time_zone)
     end_string = convert_milliseconds_to_str(ms=end_time, timezoned=time_zone)
 
-    # chan = f"{symbol.lower()}@kline_{tick_interval}"
     market_logger.info(f"get_candles_by_time_stamps -> symbol={symbol} tick_interval={tick_interval} start={start_string} end="
                        f"{end_string} limit={limit}")
 
-    # prepare iteration for big loops
+    client = _get_panzer()
+
+    # preparar iteración por bloques de 1000 velas
     ranges = [(i, i + (1000 * tick_milliseconds)) for i in range(start_time, end_time, tick_milliseconds * 1000)]
 
-    # loop
     raw_candles = []
     for start, end in ranges:
         loop_limit = min(limit, 1000)
         end = min(end, int(1000 * time()), end_time)
-        params = {'symbol': symbol, 'interval': tick_interval, 'startTime': start, 'endTime': end, 'limit': loop_limit}
-        params = {k: v for k, v in params.items() if v}
-        check_weight(1, endpoint=endpoint)
 
         start_str = convert_milliseconds_to_str(start, timezoned=time_zone)
         end_str = convert_milliseconds_to_str(end, timezoned=time_zone)
 
-        expected_klines = min(int(-((end - start) // -tick_milliseconds)), loop_limit)  # ceil, capped by API limit
+        expected_klines = min(int(-((end - start) // -tick_milliseconds)), loop_limit)
         market_logger.debug(f"API request: {symbol} {start_str} to {end_str}. Expected klines: {expected_klines}")
 
-        response = get_response(url=endpoint, params=params)
+        response = client.klines(symbol=symbol, interval=tick_interval, start_time=start, end_time=end, limit=loop_limit)
 
         if len(response) < expected_klines:
             market_logger.warning(f"API response missing {expected_klines - len(response)} klines for {symbol} {start_str} to "
@@ -183,12 +186,11 @@ def get_candles_by_time_stamps(symbol: str,
                f"and {end_string}")
         market_logger.warning(msg)
         return []
-        # raise Exception(msg)
 
     # descarta sobrantes
     overtime_candle_ts = next_open_by_milliseconds(ms=end_time, tick_interval=tick_interval)
 
-    if type(raw_candles[0]) is list:  # if from binance
+    if type(raw_candles[0]) is list:
         raw_candles_ = [i for i in raw_candles if int(i[0]) < overtime_candle_ts]
     else:
         open_ts_key = list(raw_candles[0].keys())[0]
@@ -481,10 +483,8 @@ def get_last_agg_trades(symbol: str, limit=1000) -> list[dict]:
         ]
 
     """
-    endpoint = '/api/v3/aggTrades?'
-    check_weight(4, endpoint=endpoint)
-    query = {'symbol': symbol, 'limit': limit}
-    return get_response(url=endpoint, params=query)
+    client = _get_panzer()
+    return client.agg_trades(symbol=symbol, limit=limit)
 
 
 def get_aggregated_trades(symbol: str, fromId: int = None, limit: int = None, decimal_mode: bool = False) -> list[dict]:
@@ -551,10 +551,8 @@ def get_aggregated_trades_by_time(symbol: str, startTime: int, endTime: int, lim
     :param int limit: Max trades per request (API max 1000).
     :return list[dict]: Returns a list of aggregated trade dicts from the Binance API.
     """
-    endpoint = '/api/v3/aggTrades?'
-    check_weight(4, endpoint=endpoint)
-    query = {'symbol': symbol, 'startTime': startTime, 'endTime': endTime, 'limit': limit}
-    return get_response(url=endpoint, params=query)
+    client = _get_panzer()
+    return client.agg_trades(symbol=symbol, start_time=startTime, end_time=endTime, limit=limit)
 
 
 def get_historical_agg_trades(symbol: str,
@@ -792,10 +790,8 @@ def get_last_atomic_trades(symbol: str, limit=1000) -> list[dict]:
 
     """
 
-    endpoint = '/api/v3/trades?'
-    check_weight(25, endpoint=endpoint)
-    query = {'symbol': symbol, 'limit': limit}
-    return get_response(url=endpoint, params=query)
+    client = _get_panzer()
+    return client.trades(symbol=symbol, limit=limit)
 
 
 def get_atomic_trades(symbol: str,
@@ -1137,11 +1133,8 @@ def get_order_book(symbol: str, limit=5000) -> dict:
 
     """
 
-    endpoint = '/api/v3/depth?'
-    check_weight(limit // 100 or 1, endpoint=endpoint)
-
-    query = {'symbol': symbol, 'limit': limit}
-    return get_response(url=endpoint, params=query)
+    client = _get_panzer()
+    return client.depth(symbol=symbol, limit=limit)
 
 
 #####################
@@ -1207,14 +1200,9 @@ def get_orderbook_tickers(symbol: str = None, decimal_mode: bool = False) -> dic
             ]
 
     """
-    endpoint = '/api/v3/ticker/bookTicker?'
-    if symbol:
-        weight = 1
-    else:
-        weight = 2
-    check_weight(weight, endpoint=endpoint)
-    query = {'symbol': symbol}
-    response = get_response(url=endpoint, params=query)
+    client = _get_panzer()
+    params = {'symbol': symbol} if symbol else {}
+    response = client.get('/api/v3/ticker/bookTicker', params=params, weight=2 if not symbol else 1)
     if type(response) is dict:
         ret = {response['symbol']: response}
     else:

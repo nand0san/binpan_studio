@@ -1,7 +1,7 @@
 import pandas as pd
 import psycopg2
 from psycopg2 import sql
-from typing import Tuple, List, Dict, Optional
+
 from time import sleep
 
 import warnings
@@ -11,7 +11,12 @@ with warnings.catch_warnings():
     from tqdm.autonotebook import tqdm
 
 from .exceptions import BinPanException
-from .standards import *
+from .standards import (postgresql2binpan_map_dict, postgresql_presentation_type_columns_dict,
+                        stream_uniqueness_id_in_timescale,
+                        trade_date_col, trade_timestamp_col, trade_trade_id_col,
+                        kline_open_time_col, kline_open_timestamp_col,
+                        kline_close_time_col, kline_close_timestamp_col,
+                        agg_time_col, agg_date_col, agg_trade_id_col)
 from .files import get_encoded_database_secrets
 from .starters import AesCipher
 from .logs import LogManager
@@ -207,7 +212,7 @@ def create_connection(user: str,
                       port: int,
                       database: str,
                       timeout: int = 10
-                      ) -> Tuple[psycopg2.extensions.connection, psycopg2.extensions.cursor]:
+                      ) -> tuple[psycopg2.extensions.connection, psycopg2.extensions.cursor]:
     """
     Crea una conexión a la base de datos PostgreSQL.
 
@@ -325,7 +330,7 @@ def list_tables_with_suffix(cursor, suffix="") -> list:
     return [row[0] for row in cursor.fetchall()]
 
 
-def count_rows_in_tables(cursor, table_names: List[str], approximated: bool = True) -> Dict[str, int]:
+def count_rows_in_tables(cursor, table_names: list[str], approximated: bool = True) -> dict[str, int]:
     counts = {}
     for table in table_names:
         if approximated:
@@ -385,7 +390,7 @@ def get_column_names(cursor,
     return columns
 
 
-def fetch_hypertable(cursor, table: str, startime: int = None, endtime: int = None) -> List[tuple]:
+def fetch_hypertable(cursor, table: str, startime: int = None, endtime: int = None) -> list[tuple]:
     """
     Returns a list with integrity data, that is, trades or klines. Obtained from the table.
 
@@ -424,9 +429,9 @@ def fetch_hypertable(cursor, table: str, startime: int = None, endtime: int = No
 
 def fetch_hypertable_selective(cursor,
                                table: str,
-                               columns: Optional[List[str]] = None,
+                               columns: list[str] | None = None,
                                startime: int = None,
-                               endtime: int = None) -> List[tuple]:
+                               endtime: int = None) -> list[tuple]:
     """
     Returns a list with the specified data from a table.
 
@@ -703,7 +708,7 @@ def create_table_and_hypertable(cursor,
         raise e
 
 
-def insert_data(cursor, table_name: str, records: List[dict], time_column: str, unique_column: str = None):
+def insert_data(cursor, table_name: str, records: list[dict], time_column: str, unique_column: str = None):
     """
     Inserts data into a table.
 
@@ -776,11 +781,11 @@ def update_table_columns(cursor, table_name: str, record: dict, checked_columns:
 
 
 def flexible_tables_and_data_insert(cursor,
-                                    parsed_dict: Dict[str, List[dict]],
+                                    parsed_dict: dict[str, list[dict]],
                                     verified_tables: list = None,
                                     checked_columns: list = None,
                                     time_column="time",
-                                    batch=10) -> Tuple[list, list]:
+                                    batch=10) -> tuple[list, list]:
     """
     Checks if the tables exist and creates them if they do not exist. Then insert the data into the tables.
 
@@ -858,7 +863,7 @@ def data_type_table(table_name: str) -> str:
 
 def delete_dupes(cursor,
                  table: str,
-                 dupes: List[int],
+                 dupes: list[int],
                  column: str,
                  is_timestamp: bool,
                  ignore_errors: bool = False):
@@ -1089,7 +1094,7 @@ def get_missed_ids(cursor,
                    table: str,
                    continuity_field: str,
                    previously_used_missed_tables: list,
-                   own_transaction: bool = True) -> Tuple[list, list]:
+                   own_transaction: bool = True) -> tuple[list, list]:
     """
     Get the missed timestamps or trade_id from the database for each table. Each table has a parallel table with api misses.
 
@@ -1126,7 +1131,7 @@ def get_missed_ids(cursor,
 
 def insert_missed_from_api_ids(cursor,
                                table: str,
-                               misses: List[int],
+                               misses: list[int],
                                continuity_field: str,
                                previously_used_missed_tables: list = None,
                                own_transaction: bool = True) -> list:

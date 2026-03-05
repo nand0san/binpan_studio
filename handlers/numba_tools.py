@@ -1,10 +1,10 @@
 import numpy as np
-from typing import Tuple, List
+
 from numba import njit, prange
 
 
 @njit(cache=True)
-def rolling_max_with_steps_back_numba(values, window, pct_diff) -> Tuple[np.ndarray, np.ndarray]:
+def rolling_max_with_steps_back_numba(values, window, pct_diff) -> tuple[np.ndarray, np.ndarray]:
     """
     Calculate the rolling maximum and the number of steps back to the rolling maximum within a moving window.
 
@@ -35,7 +35,7 @@ def rolling_max_with_steps_back_numba(values, window, pct_diff) -> Tuple[np.ndar
 
 
 @njit(cache=True)
-def rolling_max_with_steps_back_last_value_numba(values: np.ndarray, window: int, pct_diff: bool) -> Tuple[float, int]:
+def rolling_max_with_steps_back_last_value_numba(values: np.ndarray, window: int, pct_diff: bool) -> tuple[float, int]:
     """
     Calculate the rolling maximum and the steps back to the maximum for the last value in the input array.
 
@@ -71,7 +71,7 @@ def rolling_max_with_steps_back_last_value_numba(values: np.ndarray, window: int
 
 
 @njit(cache=True)
-def rolling_min_with_steps_back_numba(values, window, pct_diff) -> Tuple[np.ndarray, np.ndarray]:
+def rolling_min_with_steps_back_numba(values, window, pct_diff) -> tuple[np.ndarray, np.ndarray]:
     """
     Calculate the rolling minimum and the number of steps back to the rolling minimum within a moving window.
 
@@ -102,7 +102,7 @@ def rolling_min_with_steps_back_numba(values, window, pct_diff) -> Tuple[np.ndar
 
 
 @njit(cache=True)
-def rolling_min_with_steps_back_last_value_numba(values: np.ndarray, window: int, pct_diff: bool) -> Tuple[float, int]:
+def rolling_min_with_steps_back_last_value_numba(values: np.ndarray, window: int, pct_diff: bool) -> tuple[float, int]:
     """
     Calculate the rolling minimum for the last value in the given array using NumPy.
 
@@ -392,7 +392,7 @@ def close_resistance_log_single_numba(close: np.ndarray, resistance: np.ndarray)
 
 
 @njit(parallel=True)
-def calculate_ema_relations(arr: np.ndarray, windows: np.ndarray, epsilon: float = 1e-8) -> List[np.ndarray]:
+def calculate_ema_relations(arr: np.ndarray, windows: np.ndarray, epsilon: float = 1e-8) -> list[np.ndarray]:
     """
     Calcula las relaciones de media móvil exponencial (EMA) para una serie de valores, utilizando un conjunto de ventanas especificadas.
 

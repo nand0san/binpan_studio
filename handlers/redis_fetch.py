@@ -1,6 +1,6 @@
 import json
 from time import sleep, time
-from typing import Tuple, List, Union, Dict
+
 import pandas as pd
 import numpy as np
 
@@ -56,7 +56,7 @@ def redis_client(ip: str = '127.0.0.1', port: int = 6379, db: int = 0, decode_re
         return StrictRedis(host=ip, port=port, db=db, decode_responses=decode_responses)
 
 
-def manage_sentinel(sentinel_redis: Union[dict, bool]) -> StrictRedis:
+def manage_sentinel(sentinel_redis: dict | bool) -> StrictRedis:
     """
     Manage the Redis Sentinel configuration and return a StrictRedis instance.
 
@@ -95,7 +95,7 @@ def manage_sentinel(sentinel_redis: Union[dict, bool]) -> StrictRedis:
                                password=sentinel_redis['password'])
 
 
-def manage_redis(redis_args: Union[bool, Dict, StrictRedis]) -> StrictRedis or None:
+def manage_redis(redis_args: bool | dict | StrictRedis) -> StrictRedis | None:
     """
     Manage the Redis configuration and return a StrictRedis instance or None.
 
@@ -136,7 +136,7 @@ def manage_redis(redis_args: Union[bool, Dict, StrictRedis]) -> StrictRedis or N
 # Parser #
 ##########
 
-def redis_klines_parser(json_list: List[str],
+def redis_klines_parser(json_list: list[str],
                         symbol: str,
                         tick_interval: str,
                         time_zone: str = 'Europe/madrid',
@@ -210,7 +210,7 @@ def orderbook_value_to_dataframe(data: list):
     return df.sort_values(["Timestamp", "Price"], ascending=[True, False]).reset_index(drop=True)
 
 
-def redis_extract_orderbook_value_quantities(data: list) -> Tuple[List, List]:
+def redis_extract_orderbook_value_quantities(data: list) -> tuple[list, list]:
     """
     Prepares data for plotting.
 

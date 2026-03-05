@@ -1,22 +1,21 @@
 import pandas as pd
 
-from objects.timestamps import Timestamp
-from objects.timeframes import Timeframe
-from typing import Union, List
 from datetime import datetime
+from kline_timestamp import KlineTimestamp
+from objects.timeframes import Timeframe
 from handlers.standards import (atomic_trades_api_map_columns, postgresql2binpan_map_dict, agg_trades_columns_from_binance)
 
 
-class Trades(Timeframe):  # Fetcher objeto para trincar de api, postgresql, csv, etc
+class Trades(Timeframe):
     def __init__(self,
                  symbol: str,
-                 start: Union[str, int, datetime, Timestamp, None],
-                 end: Union[str, int, datetime, Timestamp, None],
-                 trades: Union[List[dict], pd.DataFrame],
+                 start: str | int | datetime | KlineTimestamp | None,
+                 end: str | int | datetime | KlineTimestamp | None,
+                 trades: list[dict] | pd.DataFrame,
                  trade_type: str = 'trade',
                  origin: str = 'binance_api',
                  timezone_IANA: str = 'Europe/Madrid',
-                 tick_interval: Union[str, None] = None,
+                 tick_interval: str | None = None,
                  closed: bool = False):
 
         Timeframe.__init__(self,

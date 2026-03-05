@@ -1,7 +1,8 @@
 from .symbol_manager import Symbol, __version__
 from .wallet_manager import Wallet
 from .exchange_manager import Exchange
-from .auxiliar import *
+from .auxiliar import (csv_klines_setup, check_continuity, repair_kline_discontinuity,
+                       find_common_interval_and_generate_timestamps, add_missing_klines, fill_missing_values)
 
 
 def __getattr__(name):

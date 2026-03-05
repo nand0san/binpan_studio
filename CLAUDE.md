@@ -28,26 +28,26 @@ binpan_studio/
 │   ├── database_connector.py
 │   └── auxiliar.py         # Utilidades auxiliares
 ├── handlers/            # Módulos de funciones (lógica de bajo nivel)
-│   ├── exchange.py         # Llamadas a API de exchange
-│   ├── market.py           # Llamadas a API de mercado (velas, trades)
-│   ├── indicators.py       # Indicadores técnicos propios
-│   ├── plotting.py         # Plots con Plotly
-│   ├── tags.py             # Etiquetado y backtesting
-│   ├── time_helper.py      # Utilidades de tiempo
-│   ├── files.py            # Lectura/escritura de archivos
-│   ├── quest.py            # Peticiones HTTP a API
-│   ├── standards.py        # Constantes y mapeos de columnas
-│   ├── logs.py             # LogManager (logging rotativo)
-│   ├── exceptions.py       # Excepciones personalizadas
-│   ├── aggregations.py     # Resampleo de klines
-│   ├── postgresql.py       # Conector PostgreSQL
-│   ├── numba_tools.py      # Indicadores acelerados con Numba
+│   ├── exchange.py         # Llamadas a API de exchange → SIMPLIFICAR con panzer
+│   ├── market.py           # Llamadas a API de mercado → SIMPLIFICAR con panzer
+│   ├── indicators.py       # Indicadores técnicos propios (mantener)
+│   ├── plotting.py         # Plots con Plotly (mantener)
+│   ├── tags.py             # Etiquetado y backtesting (mantener)
+│   ├── time_helper.py      # Utilidades de tiempo → REDUCIR con kline-timestamp
+│   ├── files.py            # Lectura/escritura de archivos (mantener)
+│   ├── quest.py            # Peticiones HTTP a API → ELIMINAR parte pública (panzer)
+│   ├── standards.py        # Constantes y mapeos de columnas (mantener)
+│   ├── logs.py             # LogManager (logging rotativo) (mantener)
+│   ├── exceptions.py       # Excepciones personalizadas (mantener)
+│   ├── aggregations.py     # Resampleo de klines (mantener)
+│   ├── postgresql.py       # Conector PostgreSQL (mantener)
+│   ├── numba_tools.py      # Indicadores acelerados con Numba (mantener)
 │   └── ...
-├── objects/             # Nuevas clases de dominio (en desarrollo)
-│   ├── timestamps.py       # Clase Timestamp
-│   ├── timeframes.py       # Clase Timeframe
+├── objects/             # Clases de dominio
+│   ├── timestamps.py       # ELIMINAR → reemplazar por kline-timestamp
+│   ├── timeframes.py       # SIMPLIFICAR → usar KlineTimestamp internamente
 │   ├── trades.py           # Clase Trades (hereda de Timeframe)
-│   └── api.py              # ApiClient básico
+│   └── api.py              # ApiClient básico → ELIMINAR (panzer)
 ├── docs/                # Documentación Sphinx
 ├── setup.py             # Empaquetado (PyPI)
 ├── requirements.txt     # Dependencias
@@ -64,7 +64,7 @@ binpan_studio/
 |--------|-----------|
 | `dev`  | **Rama principal de desarrollo**. Todo el trabajo diario se hace aquí. |
 | `main` | Rama estable / publicación. Solo se actualiza con squash merges desde `dev`. |
-| `simp` | Rama experimental (simplificación). |
+| `simp` | **DEPRECADA**. La simplificación se aplica directamente en `dev`. |
 
 **Trabajar siempre en `dev`**. No hacer commits directos en `main`.
 
@@ -303,7 +303,9 @@ from .auxiliar import csv_klines_setup
 |---------|-----|--------|
 | `pandas` | DataFrames de velas y trades | Top-level |
 | `numpy` | Cálculos numéricos | Top-level |
-| `requests` | Llamadas HTTP a API de Binance | Top-level |
+| `panzer` | Cliente REST Binance API (rate limiting, multi-market) | Top-level |
+| `kline-timestamp` | Timestamps de velas (open/close, navegación, timezone) | Top-level |
+| `requests` | Llamadas HTTP (solo para endpoints firmados; panzer lo trae como dep) | Top-level |
 | `pytz` | Zonas horarias | Top-level |
 | `pycryptodome` | Encriptación de claves API | Top-level |
 
@@ -361,43 +363,207 @@ scikit-learn==1.8.0  numba==0.64.0  requests==2.32.5  pycryptodome==3.23.0
 ## Notas para el desarrollo
 
 - `symbol_manager.py` es el archivo más grande (~215K). Evaluar refactorización progresiva.
-- El directorio `objects/` contiene el nuevo diseño (Timestamp, Timeframe, Trades) que busca
-  modularizar la lógica. Está en desarrollo activo.
 - Los Jupyter Notebooks de investigación se gitignorean (`investigacion*`, `pruebas*`).
 - El entorno virtual está en `venv/` (gitignored).
 - IDE: PyCharm (`.idea/` gitignored).
 
 ---
 
+## Simplificación: delegación a librerías propias (marzo 2026)
+
+**Rama `simp` DEPRECADA**. La simplificación se aplica directamente en `dev`.
+
+BinPan delega funcionalidad de bajo nivel a dos librerías del mismo autor (nand0san),
+publicadas en PyPI, para reducir complejidad y código duplicado.
+
+### `panzer` — cliente REST para Binance API
+
+- **PyPI**: `pip install panzer`
+- **Requiere**: Python >=3.11, `requests`
+- **Clase principal**: `BinancePublicClient(market, safety_ratio, timeout)`
+- **Markets**: `"spot"`, `"um"` (USDT-M futures), `"cm"` (COIN-M futures)
+- **Endpoints**: `klines()`, `trades()`, `agg_trades()`, `depth()`, `exchange_info()`,
+  `ping()`, `server_time()`, `get()` (genérico)
+- **Rate limiting automático**: fixed-window sincronizado con header `X-MBX-USED-WEIGHT-1M`
+- **Clock sync**: `ensure_time_offset_ready()`, `now_server_ms()`
+
+**Qué reemplaza en binpan**:
+
+| Módulo binpan | Acción |
+|---------------|--------|
+| `handlers/quest.py` (endpoints públicos) | **Eliminar**: GET público, rate limiting, weight tracking → `panzer` |
+| `handlers/quest.py` (endpoints firmados) | **Mantener**: POST/DELETE con API key/secret (panzer no tiene auth) |
+| `handlers/market.py` (llamadas API) | **Simplificar**: `api_raw_get` → `client.klines()`, etc. Mantener transformación a DataFrame |
+| `handlers/exchange.py` (llamadas API) | **Simplificar**: `api_raw_get` → `client.exchange_info()`. Mantener lógica de parseo |
+| `handlers/starters.py` (rate limits) | **Simplificar**: `get_exchange_limits()` ya no es necesario |
+| `objects/api.py` | **Eliminar**: ApiClient básico redundante con panzer |
+
+### `kline-timestamp` — timestamps de velas
+
+- **PyPI**: `pip install kline-timestamp`
+- **Requiere**: Python >=3.9, `pandas>=2.3.3,<3.0`, `pytz>=2025.2`
+- **Clase principal**: `KlineTimestamp(timestamp_ms: int, interval: str, tzinfo: str)`
+- **Inmutable**: cada transformación devuelve nueva instancia
+- **Properties**: `open`, `close`, `tick_ms`
+- **Métodos**: `next()`, `prev()`, `with_timezone()`, `with_interval()`,
+  `to_datetime()`, `to_pandas_timestamp()`
+- **Comparadores**: `==`, `<`, `>`, `<=`, `>=` (por `(open, tick_ms)`)
+- **Aritmética**: `+` / `-` con `timedelta` o entre instancias
+- **Intervalos**: 1m, 3m, 5m, 15m, 30m, 1h, 2h, 4h, 6h, 8h, 12h, 1d, 3d, 1w
+
+**Qué reemplaza en binpan**:
+
+| Módulo binpan | Acción |
+|---------------|--------|
+| `objects/timestamps.py` (~520 líneas) | **Eliminar**: `Timestamp` → `KlineTimestamp` directo |
+| `objects/timeframes.py` | **Simplificar**: usar `KlineTimestamp` como tipo interno en vez de `Timestamp` propio |
+| `handlers/time_helper.py` (funciones kline) | **Reducir**: `open_from_milliseconds` → `KlineTimestamp(ms, tick, tz).open`, etc. |
+| Dicts `tick_seconds` / `tick_milliseconds` duplicados | **Eliminar**: usar `KlineTimestamp(...).tick_ms` |
+
+**Mapeo de funciones a eliminar/reemplazar**:
+
+```python
+# ANTES (binpan propio)
+from objects.timestamps import Timestamp
+ts = Timestamp(ms, "Europe/Madrid", "15m")
+ts.open        # int ms
+ts.close       # int ms
+ts.get_next_open()
+ts.get_prev_close()
+ts.to_datetime()
+
+# DESPUÉS (kline-timestamp)
+from kline_timestamp import KlineTimestamp
+kt = KlineTimestamp(ms, "15m", "Europe/Madrid")
+kt.open        # int ms
+kt.close       # int ms
+kt.next().open
+kt.prev().close
+kt.to_datetime()
+```
+
+**Lo que NO cubre `kline-timestamp`** (se mantiene en binpan):
+
+- Parseo de strings a timestamp (`parse_timestamp()` de `objects/timestamps.py`).
+  `KlineTimestamp` solo acepta `int` ms → mover a util o a `time_helper.py`.
+- Conversiones genéricas datetime↔string↔ms (no específicas de klines).
+- Clase `Timeframe` (rango de velas) — simplificar, no eliminar.
+- Funciones pandas (inferir frecuencia, crear índices, etc.).
+
+### Módulos que NO se tocan (valor propio de binpan)
+
+- `binpan/symbol_manager.py` — clase `Symbol`, interfaz principal
+- `handlers/indicators.py` — indicadores técnicos nativos + numba
+- `handlers/numba_tools.py` — kernels numba (ema, rma, sma, rsi)
+- `handlers/plotting.py` — charts con Plotly
+- `handlers/tags.py` — backtesting/etiquetado
+- `handlers/aggregations.py` — resampleo de klines
+- `handlers/standards.py` — mapeos de columnas
+- `handlers/files.py` — lectura/escritura de archivos
+- `handlers/logs.py` — LogManager
+- `handlers/exceptions.py` — excepciones personalizadas
+
+---
+
+## Plan de ejecución priorizado
+
+La simplificación se ejecuta en este orden. Cada fase es un commit independiente.
+
+### Fase 1: Instalar dependencias y preparar base
+
+1. Añadir `panzer` y `kline-timestamp` a `requirements.txt` y `setup.py`.
+2. Verificar compatibilidad de versiones con el entorno actual.
+
+### Fase 2: Eliminar `objects/timestamps.py` → `kline-timestamp`
+
+**Prioridad máxima**: es la base de la que dependen `Timeframe` y `time_helper`.
+
+1. Identificar todos los usos de `Timestamp` en el código (`import`, instanciación, atributos).
+2. Reemplazar por `KlineTimestamp` en cada punto de uso.
+3. Extraer `parse_timestamp()` a `handlers/time_helper.py` (es la única función que no
+   cubre `kline-timestamp`, ya que este solo acepta `int` ms).
+4. Eliminar `objects/timestamps.py`.
+5. Verificar: importar binpan y ejecutar operaciones con timestamps.
+
+### Fase 3: Simplificar `objects/timeframes.py`
+
+**Depende de fase 2**.
+
+1. Refactorizar `Timeframe` para usar `KlineTimestamp` en vez de `Timestamp`.
+2. Eliminar dict `tick_milliseconds` duplicado (usar `KlineTimestamp(...).tick_ms`).
+3. Simplificar métodos que reimplementaban lógica de open/close.
+4. Verificar: iterar timeframes, `len()`, `__contains__`, indexing.
+
+### Fase 4: Reducir `handlers/time_helper.py`
+
+**Depende de fase 2 y 3**.
+
+1. Eliminar funciones de kline boundaries ya cubiertas por `KlineTimestamp`:
+   `open_from_milliseconds`, `next_open_by_milliseconds`, `close_from_milliseconds`,
+   `next_open_utc`.
+2. Eliminar dict `tick_seconds` duplicado.
+3. Mantener: conversiones genéricas (string↔datetime↔ms), `parse_timestamp()`,
+   funciones pandas, `calculate_iterations`, `check_tick_interval`.
+4. Actualizar callers en `market.py` y `symbol_manager.py`.
+
+### Fase 5: Integrar `panzer` en `handlers/market.py`
+
+**Independiente de fases 2-4** (se puede paralelizar).
+
+1. Crear instancia compartida de `BinancePublicClient` (lazy, al primer uso).
+2. Reemplazar llamadas `api_raw_get()` por métodos de panzer:
+   - `get_candles_api()` → `client.klines()`
+   - `get_agg_trades_api()` → `client.agg_trades()`
+   - `get_last_price()` → `client.get("/api/v3/ticker/price", ...)`
+3. Mantener toda la lógica de transformación API response → DataFrame.
+4. Eliminar imports de `quest.py` para endpoints públicos.
+
+### Fase 6: Integrar `panzer` en `handlers/exchange.py`
+
+**Depende de fase 5** (comparten el cliente panzer).
+
+1. Reemplazar `api_raw_get()` → `client.exchange_info()`, `client.get()`.
+2. Mantener parseo de exchange info (filtros, símbolos, etc.).
+3. Eliminar imports de `quest.py` para endpoints públicos.
+
+### Fase 7: Reducir `handlers/quest.py`
+
+**Depende de fases 5 y 6**.
+
+1. Eliminar: `get_response()`, `check_weight()`, `update_weights()`, `get_server_time()`,
+   `api_raw_get()`, toda la maquinaria de rate limiting para endpoints públicos.
+2. Mantener: `sign_request()`, `get_signed_request()`, `post_signed_request()`,
+   `delete_signed_request()`, `hashed_signature()` (endpoints con autenticación).
+3. Evaluar si renombrar el módulo (`quest.py` → `auth.py` o similar).
+
+### Fase 8: Eliminar `objects/api.py`
+
+**Tras fase 5**. Es redundante con panzer. Eliminar y actualizar imports.
+
+### Fase 9: Limpieza final
+
+1. Migrar `typing` deprecado → builtins en archivos tocados (aprovechar cada fase).
+2. Eliminar star imports pendientes.
+3. Actualizar `handlers/__init__.py` (lazy o vacío).
+4. Actualizar `requirements.txt` y `setup.py` (quitar `requests` si ya no se usa directamente
+   en endpoints públicos; panzer lo trae como dependencia).
+5. Actualizar documentación Sphinx (`.rst` de módulos eliminados/renombrados).
+6. Test completo: `import binpan; s = binpan.Symbol('BTCUSDT', '15m', limit=50); s.ema(21); s.plot()`
+
+---
+
 ## Deuda técnica conocida - Imports (estado actual)
 
-Inventario de lo que hay que migrar progresivamente:
+### Completado (marzo 2026)
 
-### Fallbacks a eliminar (hacer import directo, sin try/except)
+- **`typing` deprecado → builtins**: Migrado en todos los archivos. Solo queda `from typing import Literal` en `plotting.py` (correcto, no tiene equivalente builtin).
+- **Star imports eliminados**: `binpan/__init__.py` y `handlers/postgresql.py` ahora usan imports explícitos.
+- **`handlers/__init__.py`**: Ya es lazy via `__getattr__` + `importlib`.
+
+### Pendiente
 
 | Archivo | Import con fallback |
 |---------|-------------------|
-| `handlers/redis_fetch.py` | `from redis import StrictRedis` |
-| `handlers/influx_manager.py` | `import influxdb_client` |
+| `handlers/redis_fetch.py` | `from redis import StrictRedis` (try/except) |
+| `handlers/influx_manager.py` | `import influxdb_client` (try/except) |
 | `handlers/starters.py` | `importlib.import_module('secret')` |
-
-### `typing` deprecado a migrar → builtins
-
-18 archivos usan `from typing import Tuple, List, Dict, Union, Optional`.
-Migrar a `tuple`, `list`, `dict`, `X | Y`, `X | None`.
-
-Archivos afectados: `symbol_manager.py`, `auxiliar.py`, `aggregations.py`, `exchange.py`,
-`indicators.py`, `market.py`, `numba_tools.py`, `postgresql.py`, `quest.py`, `redis_fetch.py`,
-`tags.py`, `time_helper.py`, `influx_manager.py`, `plotting.py`, `stat_tests.py`,
-`database_connector.py`, `objects/trades.py`, `objects/timeframes.py`, `objects/timestamps.py`.
-
-### Star imports a eliminar
-
-| Archivo | Import |
-|---------|--------|
-| `binpan/__init__.py` | `from .auxiliar import *` |
-| `handlers/postgresql.py` | `from .standards import *` |
-
-### `handlers/__init__.py` - carga eager de 20 módulos
-
-Actualmente importa todos los submódulos al cargar el paquete. Vaciar o hacer lazy.
