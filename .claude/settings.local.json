@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pip uninstall:*)",
+      "Bash(pip install:*)",
+      "Bash(python:*)",
+      "Bash(python 2:*)",
+      "WebSearch",
+      "WebFetch(domain:developers.binance.com)",
+      "WebFetch(domain:github.com)",
+      "mcp__ide__getDiagnostics",
+      "Bash(ls:*)",
+      "Bash(pip show:*)",
+      "Bash(grep:*)",
+      "Bash(jupyter:*)",
+      "Bash(rm:*)",
+      "Bash(git push:*)"
+    ]
+  }
+}
