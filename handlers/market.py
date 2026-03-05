@@ -525,7 +525,6 @@ def get_aggregated_trades(symbol: str, fromId: int = None, limit: int = None, de
     """
 
     endpoint = '/api/v3/aggTrades?'
-    check_weight(4, endpoint=endpoint)
     query = {'symbol': symbol, 'limit': limit, 'fromId': fromId, 'recWindow': None}
     try:
         api_key, _ = get_encoded_secrets()
@@ -831,7 +830,6 @@ def get_atomic_trades(symbol: str,
     """
 
     endpoint = '/api/v3/historicalTrades?'
-    check_weight(25, endpoint=endpoint)
     query = {'symbol': symbol, 'limit': limit, 'fromId': fromId, 'recWindow': None}
     try:
         api_key, _ = get_encoded_secrets()

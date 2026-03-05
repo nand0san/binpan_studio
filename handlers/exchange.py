@@ -648,7 +648,6 @@ def get_coins_info_list(decimal_mode: bool,
     """
 
     endpoint = '/sapi/v1/capital/config/getall'
-    check_weight(weight=10, endpoint=endpoint)
     ret = api_raw_signed_get(endpoint=endpoint,
                              decimal_mode=decimal_mode,
                              api_key=api_key,
