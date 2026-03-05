@@ -164,3 +164,9 @@ AFML_02.2.ipynb
 orderbook cost.ipynb
 orderbook*.ipynb
 Support and resistance.ipynb
+
+# Archivos de desarrollo (solo en rama dev, no publicar a GitHub)
+CLAUDE.md
+AGENTS.md
+TODO.md
+.claude/
