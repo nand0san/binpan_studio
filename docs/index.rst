@@ -149,6 +149,8 @@ If you encounter import errors in Jupyter, install packages directly to the kern
    indicators.rst
    market.rst
    plotting.rst
+   strategies.rst
+   stat_tests.rst
    tags.rst
    time_helper.rst
    logs.rst
@@ -161,7 +163,9 @@ If you encounter import errors in Jupyter, install packages directly to the kern
    :caption: Database & External:
 
    postgresql.rst
+   postgresql_database.rst
    influx_manager.rst
+   redis_fetch.rst
    messages.rst
 
 .. toctree::
