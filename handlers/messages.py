@@ -17,7 +17,7 @@ msg_logger = LogManager(filename='./logs/msg_logger.log', name='msg_logger', inf
 cipher_object = AesCipher()
 
 
-def telegram_bot_send_text(msg: dict or str,
+def telegram_bot_send_text(msg: dict | str,
                            parse_mode='Markdown&text',
                            disable_notification=False,
                            alt_enc_bot_id: str = None,

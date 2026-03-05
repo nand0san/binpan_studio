@@ -178,5 +178,7 @@ docstring_extractor.py
 venv_no_numba/
 last_plot.png
 test*
-!CLAUDE.md
-!AGENTS.md
+CLAUDE.md
+AGENTS.md
+TODO.md
+.claude/

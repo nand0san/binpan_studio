@@ -40,7 +40,7 @@ def _get_panzer(market: str = "spot") -> BinancePublicClient:
 ##########
 
 
-def get_last_price(symbol: str = None) -> dict or list:
+def get_last_price(symbol: str = None) -> dict | list:
     """
     Returns all prices of symbols in a dict or if symbol specified, the float price of symbol.
 
@@ -285,7 +285,7 @@ def parse_candles_to_dataframe(raw_response: list,
                                tick_interval: str,
                                columns: list = None,
                                time_cols: list = None,
-                               time_zone: str or None = 'UTC') -> pd.DataFrame:
+                               time_zone: str | None = 'UTC') -> pd.DataFrame:
     """
     Format a list of lists by changing the indicated time fields to string format.
 
@@ -1218,7 +1218,7 @@ def get_orderbook_tickers(symbol: str = None, decimal_mode: bool = False) -> dic
 
 
 def intermediate_conversion(coin: str, decimal_mode: bool, prices: dict = None, try_coin: str = 'BTC',
-                            coin_qty: float = 1) -> float or None:
+                            coin_qty: float = 1) -> float | None:
     """
     Uses an intermediate symbol for conversion. Uses stablecoin USDT versus other "try" coin.
 
@@ -1249,7 +1249,7 @@ def intermediate_conversion(coin: str, decimal_mode: bool, prices: dict = None, 
         return None
 
 
-def convert_coin(coin: str, decimal_mode: bool, convert_to: str = 'BUSD', coin_qty: float or dd = 1, prices: dict = None) -> float or None:
+def convert_coin(coin: str, decimal_mode: bool, convert_to: str = 'BUSD', coin_qty: float | dd = 1, prices: dict = None) -> float | None:
     """
     Calculates a coin quantity value converted to other coin with current exchange prices.
 

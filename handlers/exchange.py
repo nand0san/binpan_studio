@@ -178,7 +178,6 @@ def get_account_status(decimal_mode: bool,
     """
     endpoint = '/sapi/v1/account/status'
     return api_raw_signed_get(endpoint=endpoint,
-                              weight=1,
                               decimal_mode=decimal_mode,
                               api_key=api_key,
                               api_secret=api_secret)
@@ -206,7 +205,6 @@ def get_margin_bnb_interest_status(decimal_mode: bool,
     """
     endpoint = '/sapi/v1/bnbBurn'
     return api_raw_signed_get(endpoint=endpoint,
-                              weight=1,
                               decimal_mode=decimal_mode,
                               api_key=api_key,
                               api_secret=api_secret)
@@ -532,7 +530,6 @@ def get_fees_dict(decimal_mode: bool,
         symbol = symbol.upper()
     ret = api_raw_signed_get(endpoint,
                              params={'symbol': symbol},
-                             weight=1,
                              decimal_mode=decimal_mode,
                              api_key=api_key,
                              api_secret=api_secret)
@@ -597,7 +594,7 @@ def get_coins_and_networks_info(decimal_mode: bool,
     """
 
     ret = api_raw_signed_get(endpoint='/sapi/v1/capital/config/getall',
-                             weight=10, decimal_mode=decimal_mode,
+                             decimal_mode=decimal_mode,
                              api_key=api_key,
                              api_secret=api_secret)
     networks = []
@@ -915,7 +912,7 @@ def try_coin_conversion_to_stablecoin_by_intermediate_symbol(coin: str,
                                                              coin_to_check_with_stablecoin: str = 'BTC',
                                                              stablecoin: str = 'USDT',
                                                              decimal_mode: bool = None,
-                                                             ) -> float or None:
+                                                             ) -> float | None:
     """
     Converts any coin quantity value to a reference coin. I tries to build a symbol name from coin and coin_to_check_with_usdt and then
     checks if it's in prices dict. If not, it tries to build a symbol name from coin_to_check_with_usdt and coin (reversed) and then checks
@@ -1024,7 +1021,7 @@ def convert_symbol_base_to_other_coin(symbol_to_convert_base: str,
                                       convert_to: str = 'USDT',
                                       prices: dict = None,
                                       info_dic: dict = None,
-                                      decimal_mode: bool = False) -> float or dd:
+                                      decimal_mode: bool = False) -> float | dd:
     """
     Convert value of a quantity of coins to value in other coin. It tries to convert to a reference coin but if that symbol is not found,
     it tries to convert to BTC, BUSD, BNB, ETH, TUSD, USDC.

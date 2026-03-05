@@ -12,6 +12,7 @@ ipykernel>=6.27.1
 setuptools>=69.0.2       # desclaveado: pandas_ta eliminado, setuptools 78+ compatible
 
 # plotting
+matplotlib>=3.8.0          # requerido por pandas .plot()
 plotly>=5.18.0
 kaleido>=0.2.1,<0.3      # 0.2.x estable con plotly, 0.3+ rompe export
 

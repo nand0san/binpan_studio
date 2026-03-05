@@ -9,7 +9,7 @@ from influxdb_client.client.write_api import SYNCHRONOUS
 from influxdb_client import Point
 
 
-def time_clause(timestamp_ms: int) -> str or None:
+def time_clause(timestamp_ms: int) -> str | None:
     """
     If a timestamp is provided as a string (delta) or int, it converts it to a delta string or ISO format.
 

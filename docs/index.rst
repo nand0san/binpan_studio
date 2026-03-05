@@ -1,92 +1,50 @@
 Welcome to BinPan's documentation!
 ==================================
 
-BinPan is a Python wrapper for Binance API. Useful creating objects with many capabilities in data analysis.
+BinPan is a Python wrapper for the Binance API oriented towards market data analysis:
+candlestick (kline) data, trades, technical indicators, plotting, and strategy backtesting.
 
-BinPan can show plots easily and fetch API requests into the same object. It can also obtain some technical indicators.
+**Requires Python >= 3.12.** Published on `PyPI <https://pypi.org/project/binpan/>`_ under the MIT license.
 
-The target of this module is to have a fast tool for collecting and handling data from the Binance API easily.
+Features
+--------
 
-It is intended to be useful in Jupyter Notebooks or even the python console, but it can be used in many other ways.
-
-BinPan manages symbol objects that can do:
-
-- get candles with time zone and indexing options.
-- get trades.
-- calculate technical indicators.
-- plot candles, histograms, indicators, etc in a very simple and beautiful way.
-- check applied fees.
-- review Exchange policies.
-
-An example of a plot for candles and indicators:
+- Fetch candlestick (OHLCV) data with timezone and indexing options.
+- Fetch atomic and aggregated trades.
+- Native technical indicators (EMA, SMA, RSI, MACD, Bollinger Bands, Supertrend, Ichimoku, VWAP, Stochastic, fractals, and more).
+- Interactive candlestick charts with Plotly: indicators, buy/sell markers, trade bubble charts, order book, market profile.
+- Support and resistance detection via K-Means clustering (static, rolling, discrete interval).
+- Strategy tagging and backtesting engine with stop loss, target, entry filters, and ROI/profit metrics.
+- Exchange metadata: order types, filters, fees, coin networks, 24h volume ranking.
+- CSV export/import for klines and trades.
+- PostgreSQL/TimescaleDB integration for historical data storage.
+- Heikin-Ashi candles, reversal charts from tick data, kline resampling.
 
 .. image:: images/candles.png
    :width: 1000
-   :alt: Candles with some indicators
+   :alt: Candlestick chart with indicators
 
 .. note::
 
     BinPan contains no Binance order method, withdraw method or any dangerous command.
 
-    If you decide to add API keys for using some account methods, BinPan will encrypt it in a file, and in memory,
-    but it is better not enabling trading capability on the Binance API key configuration, just for your own peace of mind.
-
-    You will be asked for the API key and secret the first time you need it. It will be encrypted and stored in a file.
+    If you decide to add API keys for account methods, BinPan will encrypt them in a file
+    and in memory, but it is recommended not to enable trading capability in your Binance API
+    key configuration.
 
     Be careful out there!
-
-
-Hope you find it useful breaking the market!!!
-
-
-Documentation
--------------
-
-Full documentation can be found at:
-
-https://nand0san.github.io/binpan_studio/
-
-Take a look to the basic **tutorial**. Find it in the Jupyter Notebook file **tutorial.ipynb**
-
-There are many more tutorials in Jupyter Notebooks at https://github.com/nand0san/binpan_studio
-
-Hope you find it useful breaking the market!!!
-
-Google Colab
--------------------------------
-
-Google Colab is not available for the Binance API. Maybe Colab's IPs are restricted in the Binance servers.
-
-.. code-block::
-
-    BinanceAPIException: APIError(code=0): Service unavailable from a restricted location according to 'b. Eligibility' in https://www.binance.com/en/terms. Please contact customer service if you believe you received this message in error.
-
-
-
-GitHub repo
------------
-https://github.com/nand0san/binpan_studio
 
 
 Installation
 ------------
 
-Pypi repository: https://pypi.org/project/binpan/
-
 .. code-block:: bash
 
    pip install binpan
 
-Any API key or secret will be prompted when needed and encrypted in a file.
 
-Usage
------
-
-There is a tutorial in a Jupyter Notebook file in  the github repo.
-
-https://github.com/nand0san/binpan_studio/blob/main/basic%20tutorial.ipynb
-
-Importing just like this:
+Quick Start
+-----------
 
 .. code-block:: python
 
@@ -95,68 +53,124 @@ Importing just like this:
     btcusdt = binpan.Symbol(symbol='btcusdt',
                             tick_interval='15m',
                             time_zone='Europe/Madrid',
-                            end_time='2021-10-31 03:00:00')
-    btcusdt.sma(21)
+                            limit=200)
+    btcusdt.ema(21)
+    btcusdt.supertrend()
     btcusdt.plot()
 
-
-.. image:: images/index_example.png
+.. image:: images/candles_ta.png
    :width: 1000
+   :alt: Candlestick chart with EMA and Supertrend
 
-Jupyter Import Problems Troubleshooting
----------------------------------------
 
-When working with Jupyter, you may encounter import errors while trying to import packages such as BinPan. These errors can be caused by various reasons such as package installation order, virtual environment issues, etc. To resolve such errors, you can try installing the required modules directly to the Jupyter Notebook kernel by following the steps below:
+Example Notebooks
+-----------------
 
-First, import the sys module in your Jupyter notebook.
+The ``notebooks/`` folder contains Jupyter Notebooks organized by topic:
 
-Next, install the required packages using the following command:
+.. list-table::
+   :header-rows: 1
+   :widths: 5 30 65
 
-  .. code-block::
+   * - #
+     - Notebook
+     - Topic
+   * - 01
+     - basic_tutorial
+     - Getting started: data, indicators, plots, trades
+   * - 02
+     - data_analysis
+     - Analysis: indicators, trades, market profile, order book
+   * - 03
+     - technical_indicators
+     - Full indicator catalogue
+   * - 04
+     - plotting
+     - All visualization capabilities
+   * - 05
+     - reversal_charts
+     - Reversal candles from atomic trades
+   * - 06
+     - tagging_and_backtesting
+     - Strategy signals and backtesting
+   * - 07
+     - support_resistance_kmeans
+     - S/R with K-Means clustering
+   * - 08-10
+     - ichimoku_*
+     - Ichimoku analysis and backtesting
+   * - 11
+     - exchange_info
+     - Exchange class: metadata, filters, fees
+   * - 12
+     - export_csv
+     - CSV export/import
+   * - 13-15
+     - database_*
+     - PostgreSQL/TimescaleDB integration
+
+
+GitHub repo
+-----------
+
+https://github.com/nand0san/binpan_studio
+
+
+Google Colab
+------------
+
+Google Colab is not available for the Binance API due to IP restrictions.
+
+
+Jupyter Import Troubleshooting
+------------------------------
+
+If you encounter import errors in Jupyter, install packages directly to the kernel:
+
+.. code-block:: python
 
     import sys
-
-    !{sys.executable} -m pip install <package_name>
-
-Replace <package_name> with the name of the package that you want to install.
-
-By following these steps, you can install the required packages directly to the Jupyter Notebook kernel and resolve any import
-errors that you may encounter. In addition, it is recommended to ensure that the virtual environment used by Jupyter is
-configured correctly to avoid any conflicts with package installations.
-
-Greetings
----------
-
-I would like to express my gratitude to the pandas_ta team for developing such a fantastic library.
-Thank you for your hard work and dedication in creating a powerful tool that enables data analysts and
-traders to perform technical analysis in Python with ease. Your contribution to the Python community is
-greatly appreciated.
+    !{sys.executable} -m pip install binpan
 
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Main Classes:
 
    binpan.rst
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Handlers:
+
    aggregations.rst
-   exceptions.rst
    exchange.rst
    files.rst
    indicators.rst
-   influx_manager.rst
    market.rst
-   messages.rst
    plotting.rst
-   postgresql.rst
-   postgresql_database.rst
-   quest.rst
-   redis_fetch.rst
-   stat_tests.rst
-   starters.rst
-   strategies.rst
    tags.rst
    time_helper.rst
+   logs.rst
+   numba_tools.rst
+   standards.rst
+   exceptions.rst
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Database & External:
+
+   postgresql.rst
+   influx_manager.rst
+   messages.rst
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Authentication:
+
+   quest.rst
    wallet.rst
+   starters.rst
 
 
 Indices and tables

@@ -15,7 +15,7 @@ from handlers.time_helper import (pandas_freq_tick_interval, open_from_milliseco
 binpan_logger = LogManager(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 
 
-def csv_klines_setup(from_csv: str or bool,
+def csv_klines_setup(from_csv: str | bool,
                      symbol: str,
                      tick_interval: str,
                      cwd: str,

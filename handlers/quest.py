@@ -144,7 +144,8 @@ def get_server_time() -> int:
     """
     from .market import _get_panzer
     client = _get_panzer()
-    return client.server_time()
+    resp = client.server_time()
+    return resp['serverTime']
 
 
 def hashed_signature(url_params: str, api_secret: str) -> str:

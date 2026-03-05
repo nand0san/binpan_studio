@@ -41,7 +41,7 @@ class PlottingMixin:
             self.row_control.update({indicator_column: row_position})
         return self.row_control
 
-    def set_plot_color(self, indicator_column: str = None, color: int or str = None) -> dict:
+    def set_plot_color(self, indicator_column: str = None, color: int | str = None) -> dict:
         """
         Internal control formatting plots. Can be used to change plot color of an indicator.
 
@@ -61,7 +61,7 @@ class PlottingMixin:
             self.color_control.update({indicator_column: choice(_plotting().plotly_colors)})
         return self.color_control
 
-    def set_plot_color_fill(self, indicator_column: str = None, color_fill: str or bool = None) -> dict:
+    def set_plot_color_fill(self, indicator_column: str = None, color_fill: str | bool = None) -> dict:
         """
         Internal control formatting plots. Can be used to change plot color of an indicator.
 
@@ -367,6 +367,10 @@ class PlottingMixin:
         :param bool overlap_prices: If True, plots overlap line with High and Low prices.
         :param title: Graph title
 
+        .. image:: images/plot_trades_size_log.png
+           :width: 800
+           :alt: Atomic trades size bubble chart
+
         """
         if self.atomic_trades.empty:
             binpan_logger.info(empty_atomic_trades_msg)
@@ -546,8 +550,8 @@ class PlottingMixin:
         return _plotting().plot_hists_vs(x0=aggressive_sellers, x1=aggressive_byers, x0_name="Aggressive sellers", x1_name='Aggressive byers',
                              bins=bins, hist_funct=hist_funct, height=height, title=title, **kwargs_update_layout)
 
-    def plot_market_profile(self, bins: int = 100, hours: int = None, minutes: int = None, startTime: int or str = None,
-                            endTime: int or str = None, height=900, from_agg_trades=False, from_atomic_trades=False, title: str = None,
+    def plot_market_profile(self, bins: int = 100, hours: int = None, minutes: int = None, startTime: int | str = None,
+                            endTime: int | str = None, height=900, from_agg_trades=False, from_atomic_trades=False, title: str = None,
                             time_zone: str = None, **kwargs_update_layout):
         """
         Plots volume histogram by prices segregated aggressive buyers from sellers.
@@ -556,10 +560,12 @@ class PlottingMixin:
         :param int bins: How many bars.
         :param int hours: If passed, it use just last passed hours for the plot.
         :param int minutes: If passed, it use just last passed minutes for the plot.
-        :param int or str startTime: If passed, it use just from the timestamp or date in format
+        :param startTime: If passed, it use just from the timestamp or date in format
          (%Y-%m-%d %H:%M:%S: **2022-05-11 06:45:42**)) for the plot.
-        :param int or str endTime: If passed, it use just until the timestamp or date in format
+        :type startTime: int | str
+        :param endTime: If passed, it use just until the timestamp or date in format
          (%Y-%m-%d %H:%M:%S: **2022-05-11 06:45:42**)) for the plot.
+        :type endTime: int | str
         :param height: Height of the graph.
         :param from_agg_trades: Requieres grabbing aggregated trades before.
         :param from_atomic_trades: Requieres grabbing atomic trades before.
@@ -692,6 +698,11 @@ class PlottingMixin:
     def plot_orderbook(self, accumulated=True, title='Depth orderbook plot', height=800, plot_y="Quantity", **kwargs):
         """
         Plots orderbook depth.
+
+        .. image:: images/plot_orderbook.png
+           :width: 800
+           :alt: Order book depth chart
+
         """
         if self.orderbook.empty:
             binpan_logger.info("Orderbook not downloaded. Please add orderbook data with: my_binpan.get_orderbook()")
@@ -711,6 +722,10 @@ class PlottingMixin:
         :param int height: Plot sizing.
         :param str title: A title string
 
+        .. image:: images/orderbook_density.png
+           :width: 800
+           :alt: Order book density plot
+
         """
 
         if self.orderbook.empty:
@@ -723,8 +738,8 @@ class PlottingMixin:
         return _plotting().dist_plot(df=self.orderbook, x_col=x_col, color=color, bins=bins, histnorm=histnorm, height=height, title=title,
                          **update_layout_kwargs)
 
-    def plot_taker_maker_ratio_profile(self, bins: int = 100, hours: int = None, minutes: int = None, startTime: int or str = None,
-                                       endTime: int or str = None, from_agg_trades=False, from_atomic_trades=False, time_zone: str = None,
+    def plot_taker_maker_ratio_profile(self, bins: int = 100, hours: int = None, minutes: int = None, startTime: int | str = None,
+                                       endTime: int | str = None, from_agg_trades=False, from_atomic_trades=False, time_zone: str = None,
                                        title: str = "Taker Buy Ratio Profile", height=1200, width=800, **kwargs_update_layout):
         """
         Plots taker vs maker ratio profile.
@@ -732,10 +747,12 @@ class PlottingMixin:
         :param int bins: How many bars.
         :param int hours: If passed, it use just last passed hours for the plot.
         :param int minutes: If passed, it use just last passed minutes for the plot.
-        :param int or str startTime: If passed, it use just from the timestamp or date in format
+        :param startTime: If passed, it use just from the timestamp or date in format
          (%Y-%m-%d %H:%M:%S: **2022-05-11 06:45:42**)) for the plot.
-        :param int or str endTime: If passed, it use just until the timestamp or date in format
+        :type startTime: int | str
+        :param endTime: If passed, it use just until the timestamp or date in format
          (%Y-%m-%d %H:%M:%S: **2022-05-11 06:45:42**)) for the plot.
+        :type endTime: int | str
         :param height: Height of the graph.
         :param width: Width of the graph.
         :param from_agg_trades: Requieres grabbing aggregated trades before.

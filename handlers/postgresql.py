@@ -899,7 +899,7 @@ def delete_dupes(cursor,
             raise BinPanException(msg)
 
 
-def data_type_from_table(table: str) -> str or None:
+def data_type_from_table(table: str) -> str | None:
     """
     Gets the data type of the table name.
 

@@ -39,7 +39,7 @@ class Wallet(object):
         self.spot = get_spot_balances_df(decimal_mode=decimal_mode, api_key=self.api_key, api_secret=self.api_secret)
         return self.spot
 
-    def spot_snapshot(self, startTime: int or str = None, endTime: int or str = None, snapshot_days=30, time_zone=None):
+    def spot_snapshot(self, startTime: int | str = None, endTime: int | str = None, snapshot_days=30, time_zone=None):
         """
         Updates spot wallet snapshot.
 
@@ -78,7 +78,7 @@ class Wallet(object):
         self.margin.index.name = 'asset'
         return self.margin
 
-    def margin_snapshot(self, startTime: int or str = None, endTime: int or str = None, snapshot_days=30, time_zone=None):
+    def margin_snapshot(self, startTime: int | str = None, endTime: int | str = None, snapshot_days=30, time_zone=None):
         """
         Updates margin wallet snapshot.
 

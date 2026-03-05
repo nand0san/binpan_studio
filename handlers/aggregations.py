@@ -560,7 +560,7 @@ class ImbalanceBars(object):
             print(f"Boot current_size: {self.boot_trades}")
             print(f"Boot expected_imbalance: {self.expected_imbalance}")
 
-    def get_expected_size(self) -> float or np.ndarray:
+    def get_expected_size(self) -> float | np.ndarray:
         """
         Calculate the expected size of the imbalance bars using the chosen method.
         """
@@ -568,8 +568,9 @@ class ImbalanceBars(object):
             return ema_numba(self.sampled_sizes, window=self.window)[-1]
         elif self.method == "sma":
             return sma_numba(self.sampled_sizes, window=self.window)[-1]
+        return None
 
-    def get_expected_probability(self) -> float or np.ndarray:
+    def get_expected_probability(self) -> float | np.ndarray:
         """
         Calculate the expected probability of the imbalance bars using the chosen method.
         """
@@ -580,7 +581,7 @@ class ImbalanceBars(object):
             ret = sma_numba(self.sampled_probabilities, window=self.window)[-1]
         return ret
 
-    def get_expected_imbalance(self) -> float or int:
+    def get_expected_imbalance(self) -> float | int:
         """
         Calculate the expected imbalance value based on the bar type and chosen method.
         """
@@ -800,7 +801,7 @@ def imbalance_bars_fixed(trades: pd.DataFrame, imbalance: float) -> pd.DataFrame
     return df
 
 
-def tick_imbalance_bars_chat_gpt(trades: pd.DataFrame, window: int = 10):
+def tick_imbalance_bars(trades: pd.DataFrame, window: int = 10):
     df = trades.copy(deep=True)
     index_name = df.index.name
 

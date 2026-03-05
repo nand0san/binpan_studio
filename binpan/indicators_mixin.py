@@ -42,7 +42,7 @@ class IndicatorsMixin:
            column_source: str = 'Close',
            inplace: bool = False,
            suffix: str = None,
-           color: str or int = None,
+           color: str | int = None,
            **kwargs):
         """
         Generic moving average method. Calls pandas_ta 'ma' method.
@@ -94,7 +94,7 @@ class IndicatorsMixin:
 
         return ma
 
-    def sma(self, window: int = 21, column: str = 'Close', inplace=True, suffix: str = '', color: str or int = None, **kwargs):
+    def sma(self, window: int = 21, column: str = 'Close', inplace=True, suffix: str = '', color: str | int = None, **kwargs):
         """
         Generate technical indicator Simple Moving Average.
 
@@ -114,7 +114,7 @@ class IndicatorsMixin:
         """
         return self.ma(ma_name='sma', column_source=column, inplace=inplace, length=window, suffix=suffix, color=color, **kwargs)
 
-    def ema(self, window: int = 21, column: str = 'Close', inplace=True, suffix: str = '', color: str or int = None, **kwargs):
+    def ema(self, window: int = 21, column: str = 'Close', inplace=True, suffix: str = '', color: str | int = None, **kwargs):
         """
         Generate technical indicator Exponential Moving Average.
 
@@ -239,7 +239,7 @@ class IndicatorsMixin:
 
         return macd
 
-    def rsi(self, length: int = 14, inplace: bool = True, suffix: str = '', color: str or int = None):
+    def rsi(self, length: int = 14, inplace: bool = True, suffix: str = '', color: str | int = None):
         """
         Relative Strength Index (RSI).
 
@@ -312,7 +312,7 @@ class IndicatorsMixin:
                 self.df.loc[:, column_name] = col
         return stoch_df
 
-    def on_balance_volume(self, inplace: bool = True, suffix: str = '', color: str or int = None, **kwargs):
+    def on_balance_volume(self, inplace: bool = True, suffix: str = '', color: str | int = None, **kwargs):
         """
         On balance indicator.
 
@@ -347,7 +347,7 @@ class IndicatorsMixin:
 
         return on_balance
 
-    def accumulation_distribution(self, inplace: bool = True, suffix: str = '', color: str or int = None, **kwargs):
+    def accumulation_distribution(self, inplace: bool = True, suffix: str = '', color: str | int = None, **kwargs):
         """
         Accumulation/Distribution indicator.
 
@@ -381,7 +381,7 @@ class IndicatorsMixin:
 
         return ad
 
-    def vwap(self, anchor: str = "D", inplace: bool = True, suffix: str = '', color: str or int = None, **kwargs):
+    def vwap(self, anchor: str = "D", inplace: bool = True, suffix: str = '', color: str | int = None, **kwargs):
         """
         Volume Weighted Average Price.
 
@@ -415,7 +415,7 @@ class IndicatorsMixin:
             self.df.loc[:, column_name] = vwap
         return vwap
 
-    def atr(self, length: int = 14, inplace: bool = True, suffix: str = '', color: str or int = None, **kwargs):
+    def atr(self, length: int = 14, inplace: bool = True, suffix: str = '', color: str | int = None, **kwargs):
         """
         Average True Range.
 
@@ -449,7 +449,7 @@ class IndicatorsMixin:
 
         return atr
 
-    def cci(self, length: int = 14, scaling: int = None, inplace: bool = True, suffix: str = '', color: str or int = None, **kwargs):
+    def cci(self, length: int = 14, scaling: int = None, inplace: bool = True, suffix: str = '', color: str | int = None, **kwargs):
         """
         Compute the Commodity Channel Index (CCI) for NIFTY based on the 14-day moving average.
         CCI can be used to determine overbought and oversold levels.
@@ -494,7 +494,7 @@ class IndicatorsMixin:
         return cci
 
     def eom(self, length: int = 14, divisor: int = 100000000, drift: int = 1, inplace: bool = True, suffix: str = '',
-            color: str or int = None, **kwargs):
+            color: str | int = None, **kwargs):
         """
         Ease of Movement (EMV) can be used to confirm a bullish or a bearish trend. A sustained positive Ease of Movement
         together with a rising market confirms a bullish trend, while a negative Ease of Movement values with falling
@@ -533,7 +533,7 @@ class IndicatorsMixin:
             self.df.loc[:, column_name] = eom
         return eom
 
-    def roc(self, length: int = 1, escalar: int = 100, inplace: bool = True, suffix: str = '', color: str or int = None, **kwargs):
+    def roc(self, length: int = 1, escalar: int = 100, inplace: bool = True, suffix: str = '', color: str | int = None, **kwargs):
         """
         The Rate of Change (ROC) is a technical indicator that measures the percentage change between the most recent price
         and the price "n" day's ago. The indicator fluctuates around the zero line.
@@ -754,6 +754,10 @@ class IndicatorsMixin:
         :return pd.DataFrame: A dataframe with two columns, one with 1 or -1 for local max or local min to tag,
          and other with price values for that points. Alternatively, maximums and minimums diff mean will be returned.
 
+        .. image:: images/indicators/fractal_w.png
+           :width: 800
+           :alt: Alternating fractal indicator
+
         """
         fractal = alternating_fractal_indicator(self.df, suffix=suffix, max_period=max_period)
         max_mean, min_mean = None, None
@@ -777,7 +781,7 @@ class IndicatorsMixin:
 
             binpan_logger.info(f"Max mean: {max_mean} Min mean: {min_mean}")
         if not colors:
-            colors = ['black', 'black']
+            colors = ['cyan', 'magenta']
 
         if inplace and self.is_new(fractal):
             binpan_logger.debug(fractal.columns)
@@ -819,9 +823,13 @@ class IndicatorsMixin:
 
         :return pd.Series: A serie with 1 or -1 for local max or local min to tag.
 
+        .. image:: images/indicators/fractal_w.png
+           :width: 800
+           :alt: Fractal indicator
+
         """
         if not colors:
-            colors = ['black', 'black']
+            colors = ['cyan', 'magenta']
         fractal = fractal_w_indicator(df=self.df, period=period, suffix=suffix, fill_with_zero=True)
 
         if inplace and self.is_new(fractal):
@@ -847,9 +855,9 @@ class IndicatorsMixin:
 
         return fractal
 
-    def get_market_profile(self, bins: int = 100, hours: int = None, minutes: int = None, startTime: int or str = None,
-                           endTime: int or str = None, from_agg_trades=False, from_atomic_trades=False,
-                           time_zone: str = None) -> pd.DataFrame or None:
+    def get_market_profile(self, bins: int = 100, hours: int = None, minutes: int = None, startTime: int | str = None,
+                           endTime: int | str = None, from_agg_trades=False, from_atomic_trades=False,
+                           time_zone: str = None) -> pd.DataFrame | None:
         """
         Generates a market profile dataframe from trade or kline data. The market profile is a histogram of trading
         volumes at different price levels.
@@ -864,6 +872,11 @@ class IndicatorsMixin:
         :param time_zone: The time zone to use for time index conversion (e.g., "Europe/Madrid").
 
         :return: A DataFrame representing the market profile, or None if no suitable data are available.
+
+        .. image:: images/plotting/market_profile.png
+           :width: 800
+           :alt: Market profile
+
         """
         try:
             assert not (from_agg_trades and from_atomic_trades)
@@ -962,9 +975,9 @@ class IndicatorsMixin:
 
         return pd.DataFrame({ratios.name: ratios, ema.name: ema}, index=self.df.index).sort_index(ascending=True)
 
-    def get_taker_maker_ratio_profile(self, bins: int = 100, hours: int = None, minutes: int = None, startTime: int or str = None,
-                                      endTime: int or str = None, from_agg_trades=False, from_atomic_trades=False,
-                                      time_zone: str = None) -> pd.DataFrame or None:
+    def get_taker_maker_ratio_profile(self, bins: int = 100, hours: int = None, minutes: int = None, startTime: int | str = None,
+                                      endTime: int | str = None, from_agg_trades=False, from_atomic_trades=False,
+                                      time_zone: str = None) -> pd.DataFrame | None:
         """
         Generates a market profile of the makers versus makers+takers volume ratio by each_kline.
 
@@ -1074,6 +1087,11 @@ class IndicatorsMixin:
          It can be any color from plotly library or a number in the list of those. Default colors defined.
          https://community.plotly.com/t/plotly-colours-list/11730
         :return: A tuple containing two lists: the first list contains support levels, and the second list contains resistance levels.
+
+        .. image:: images/indicators/support_resistance.png
+           :width: 800
+           :alt: Support and resistance levels from K-Means clustering
+
         """
 
         if from_atomic:
@@ -1169,7 +1187,7 @@ class IndicatorsMixin:
                                    simple: bool = True,
                                    inplace: bool = True,
                                    delayed: int = 0,
-                                   colors: list = None) -> pd.DataFrame or None:
+                                   colors: list = None) -> pd.DataFrame | None:
         """
         Calculate support and resistance levels for the Symbol based on either atomic trades or aggregated trades in a rolling window. Also
         from klines supported, but less accurate. It returns a pandas dataframe with each column representing ordered levels from lower to

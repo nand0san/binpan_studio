@@ -14,7 +14,7 @@ wallet_logger = LogManager(filename='./logs/wallet_logger.log', name='wallet_log
 # Helper #
 ##########
 
-def convert_str_date_to_ms(date: str or int,
+def convert_str_date_to_ms(date: str | int,
                            time_zone: str):
     """
     Converts dates strings formatted as "2022-05-11 06:45:42" to timestamp in milliseconds. If timestamp passed
@@ -38,8 +38,8 @@ def daily_account_snapshot(account_type: str,
                            decimal_mode: bool,
                            api_key: str,
                            api_secret: str,
-                           startTime: int or str = None,
-                           endTime: int or str = None,
+                           startTime: int | str = None,
+                           endTime: int | str = None,
                            limit=30,
                            time_zone=None) -> pd.DataFrame:
     """
@@ -78,7 +78,7 @@ def daily_account_snapshot(account_type: str,
                                      'startTime': startTime,
                                      'endTime': endTime,
                                      'limit': limit},
-                             weight=2400, decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
+                             decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
     rows = []
     for update in ret['snapshotVos']:
         updateTime = update['updateTime']
@@ -149,7 +149,6 @@ def assets_convertible_dust(decimal_mode: bool,
     yn = input(f"This command may change or convert assets from your wallet!!! are you sure? (y/n)")
     if yn.upper().startswith('Y'):
         return api_raw_signed_post(endpoint='/sapi/v1/asset/dust-btc',
-                                   weight=1,
                                    decimal_mode=decimal_mode,
                                    api_key=api_key,
                                    api_secret=api_secret)
@@ -401,7 +400,7 @@ def get_fills_qty(original_order_dict: dict,
                   margin: bool,
                   isBuyer: bool,
                   operation_time: int,
-                  decimal_mode: bool) -> float or dd:
+                  decimal_mode: bool) -> float | dd:
     """
     Extracts order quantity from an order response or checks a trade from API.
 
@@ -529,7 +528,7 @@ def get_spot_trades_list(symbol: str,
                                       'endTime': endTime,
                                       'fromId': fromId,
                                       'recvWindow': recvWindow},
-                              weight=10, decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
+                              decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
 
 
 def get_margin_trades_list(symbol: str,
@@ -597,7 +596,7 @@ def get_margin_trades_list(symbol: str,
                                       'endTime': endTime,
                                       'fromId': fromId,
                                       'recvWindow': recvWindow},
-                              weight=10, decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
+                              decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
 
 
 ############
@@ -645,7 +644,6 @@ def get_spot_account_info(decimal_mode: bool,
     endpoint = '/api/v3/account'
     return api_raw_signed_get(endpoint=endpoint,
                               params={'recvWindow': recvWindow},
-                              weight=10,
                               decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
 
 
@@ -887,7 +885,7 @@ def get_margin_account_details(decimal_mode: bool, api_key: str, api_secret: str
     margin_endpoint = '/sapi/v1/margin/account'
     ret = api_raw_signed_get(endpoint=margin_endpoint,
                              params={},
-                             weight=10, decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
+                             decimal_mode=decimal_mode, api_key=api_key, api_secret=api_secret)
     return ret
 
 
@@ -1058,7 +1056,7 @@ def get_margin_balances_total_value(decimal_mode: bool,
                                     api_secret: str,
                                     balances: dict = None,
                                     convert_to: str = 'BUSD'
-                                    ) -> float or dd:
+                                    ) -> float | dd:
     """
     Returns total value expressed in a quote coin. Counts free, locked, borrowed and interest assets.
 

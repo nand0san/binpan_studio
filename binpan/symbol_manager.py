@@ -204,21 +204,58 @@ class Symbol(IndicatorsMixin, PlottingMixin, StrategyMixin):
     def __init__(self,
                  symbol: str = None,
                  tick_interval: str = None,
-                 start_time: int or str = None,
-                 end_time: int or str = None,
+                 start_time: int | str = None,
+                 end_time: int | str = None,
                  limit: int = 1000,
                  time_zone: str = 'Europe/Madrid',
                  closed: bool = True,
                  hours: float = None,
-                 postgres_klines: bool or str = False,
-                 postgres_agg_trades: bool or str = False,
-                 postgres_atomic_trades: bool or str = False,
+                 postgres_klines: bool | str = False,
+                 postgres_agg_trades: bool | str = False,
+                 postgres_atomic_trades: bool | str = False,
                  display_columns: int = 25,
                  display_max_rows: int = 10,
                  display_min_rows: int = 25,
                  display_width: int = 320,
                  from_csv: bool | str = False,
                  info_dic: dict = None):
+        """
+        Create a Symbol instance for a Binance trading pair.
+
+        Fetches candlestick (kline) data from the Binance API and stores it as a pandas DataFrame.
+        The resulting object provides methods for technical indicators, plotting, trade analysis,
+        and strategy backtesting.
+
+        :param str symbol: Trading pair symbol (e.g. ``'BTCUSDT'``, ``'ethbtc'``). Case-insensitive.
+        :param str tick_interval: Candle timeframe (``'1m'``, ``'5m'``, ``'15m'``, ``'1h'``, ``'4h'``, ``'1d'``, etc.).
+        :param str | int start_time: Start of the time range. String (``'2024-01-01 00:00:00'``) or millisecond timestamp.
+        :param str | int end_time: End of the time range. String or millisecond timestamp.
+        :param int limit: Maximum number of candles to fetch. Default 1000.
+        :param str time_zone: IANA timezone for the DataFrame index. Default ``'Europe/Madrid'``.
+        :param bool closed: If True, only return closed candles. Default True.
+        :param float hours: Fetch the last N hours of data. Overrides ``limit`` when set.
+        :param bool | str postgres_klines: Load klines from PostgreSQL instead of API. Pass connection string or True.
+        :param bool | str postgres_agg_trades: Load aggregated trades from PostgreSQL.
+        :param bool | str postgres_atomic_trades: Load atomic trades from PostgreSQL.
+        :param int display_columns: Max columns to display in repr. Default 25.
+        :param int display_max_rows: Max rows to display. Default 10.
+        :param int display_min_rows: Min rows to display. Default 25.
+        :param int display_width: Display width in characters. Default 320.
+        :param bool | str from_csv: Load data from a CSV file. Pass filename or True for interactive selection.
+        :param dict info_dic: Pre-loaded exchange info dictionary (avoids API call).
+
+        Example:
+
+            .. code-block:: python
+
+                import binpan
+
+                sym = binpan.Symbol(symbol='BTCUSDT',
+                                    tick_interval='15m',
+                                    time_zone='Europe/Madrid',
+                                    limit=200)
+                sym.df  # pandas DataFrame with OHLCV data
+        """
 
         if not symbol and not from_csv:
             raise BinPanException(f"BinPan Exception: symbol needed or CSV file to load data using from_csv='filename.csv'")
@@ -742,7 +779,7 @@ class Symbol(IndicatorsMixin, PlottingMixin, StrategyMixin):
             binpan_logger.error(msg)
             raise Exception(msg)
 
-    def delete_indicator_family(self, indicator_name_root: str) -> pd.DataFrame or None:
+    def delete_indicator_family(self, indicator_name_root: str) -> pd.DataFrame | None:
         """
         Deletes indicator from dataframe. It search for plot info and also deletes other indicators in the same plot row level.
 
@@ -950,10 +987,9 @@ class Symbol(IndicatorsMixin, PlottingMixin, StrategyMixin):
 
     def get_timestamps(self) -> tuple[int, int]:
         """
-        Get the first Open timestamp and the last Close timestamp.
+        Get the first Open timestamp and the last Open timestamp.
 
-        :return tuple(int, int): Start Open timestamp and end close timestamp
-
+        :return tuple[int, int]: Tuple of (start_ms, end_ms) open timestamps.
         """
         if self.df.empty:
             binpan_logger.warning(f"BinPan Warning: Empty dataframe, no timestamps available.")
@@ -968,8 +1004,7 @@ class Symbol(IndicatorsMixin, PlottingMixin, StrategyMixin):
         """
         Get the first Open timestamp and the last Open timestamp, and converts to timezoned dates.
 
-        :return tuple(int, int): Start Open date and end close date
-
+        :return tuple[str, str]: Tuple of (start_date, end_date) as formatted strings.
         """
         start, end = self.get_timestamps()
         ret_start = convert_milliseconds_to_str(ms=start, timezoned=self.time_zone)
@@ -980,8 +1015,8 @@ class Symbol(IndicatorsMixin, PlottingMixin, StrategyMixin):
     def get_agg_trades(self,
                        hours: int = None,
                        minutes: int = None,
-                       startTime: int or str = None,
-                       endTime: int or str = None,
+                       startTime: int | str = None,
+                       endTime: int | str = None,
                        time_zone: str = None,
                        from_csv: str = None) -> pd.DataFrame:
         """
@@ -1119,8 +1154,8 @@ class Symbol(IndicatorsMixin, PlottingMixin, StrategyMixin):
     def get_atomic_trades(self,
                           hours: int = None,
                           minutes: int = None,
-                          startTime: int or str = None,
-                          endTime: int or str = None,
+                          startTime: int | str = None,
+                          endTime: int | str = None,
                           time_zone: str = None,
                           from_csv: str = None) -> pd.DataFrame:
         """
@@ -1223,7 +1258,7 @@ class Symbol(IndicatorsMixin, PlottingMixin, StrategyMixin):
         self.atomic_trades = convert_to_numeric(data=self.atomic_trades)
         return self.atomic_trades
 
-    def is_new(self, source_data: pd.Series or pd.DataFrame, suffix: str = '') -> bool:
+    def is_new(self, source_data: pd.Series | pd.DataFrame, suffix: str = '') -> bool:
         """
         Verify if indicator columns are previously created to avoid allocating new rows and colors etc.
 
@@ -1261,7 +1296,7 @@ class Symbol(IndicatorsMixin, PlottingMixin, StrategyMixin):
 
         return True
 
-    def get_reversal_agg_candles(self, min_height: int = 7, min_reversal: int = 4) -> pd.DataFrame or None:
+    def get_reversal_agg_candles(self, min_height: int = 7, min_reversal: int = 4) -> pd.DataFrame | None:
         """
         Resamples aggregated API trades to reversal klines:
            https://atas.net/atas-possibilities/charts/how-to-set-reversal-charts-for-finding-the-market-reversal/
@@ -1285,7 +1320,7 @@ class Symbol(IndicatorsMixin, PlottingMixin, StrategyMixin):
                                                         min_reversal=self.min_reversal)
         return self.reversal_agg_klines
 
-    def get_reversal_atomic_candles(self, min_height: int = 7, min_reversal: int = 4) -> pd.DataFrame or None:
+    def get_reversal_atomic_candles(self, min_height: int = 7, min_reversal: int = 4) -> pd.DataFrame | None:
         """
         Resamples API atomic trades to reversal klines:
            https://atas.net/atas-possibilities/charts/how-to-set-reversal-charts-for-finding-the-market-reversal/
@@ -1351,6 +1386,11 @@ class Symbol(IndicatorsMixin, PlottingMixin, StrategyMixin):
             return resample_klines(data=self.df, tick_interval=tick_interval)
 
     def repair_continuity(self):
+        """
+        Repair kline discontinuities by filling missing candles.
+
+        Updates the instance DataFrame in place and re-checks continuity.
+        """
         self.df = repair_kline_discontinuity(df=self.df, time_zone=self.time_zone)
         binpan_logger.info(f"Klines continuity verification after repair")
         # verify discontinuity
@@ -1366,7 +1406,7 @@ class Symbol(IndicatorsMixin, PlottingMixin, StrategyMixin):
         Returns exchangeInfo data when instantiated. It includes, filters, fees, and many other data for all symbols in the
         exchange.
 
-        :return dict:
+        :return dict: Full exchange info dictionary for all symbols.
         """
         self.info_dic = get_info_dic()
         return self.info_dic
@@ -1374,25 +1414,28 @@ class Symbol(IndicatorsMixin, PlottingMixin, StrategyMixin):
     def get_order_filters(self) -> dict:
         """
         Get exchange info about the symbol for order filters.
-        :return dict:
+
+        :return dict: Dictionary of order filters for the symbol.
         """
         filters = get_symbols_filters(info_dic=self.info_dic)
         self.order_filters = filters[self.symbol]
         return self.order_filters
 
-    def get_order_types(self) -> dict:
+    def get_order_types(self) -> list:
         """
         Get exchange info about the symbol for order types.
-        :return dict:
+
+        :return list: List of available order types for the symbol.
         """
         order_types_precision = get_orderTypes_and_permissions(info_dic=self.info_dic)
         self.order_types = order_types_precision[self.symbol]['orderTypes']
         return self.order_types
 
-    def get_permissions(self) -> dict:
+    def get_permissions(self) -> list:
         """
         Get exchange info about the symbol for trading permissions.
-        :return dict:
+
+        :return list: Trading permissions for the symbol.
         """
         permissions = get_orderTypes_and_permissions(info_dic=self.info_dic)
         self.permissions = permissions[self.symbol]['permissions']
@@ -1401,7 +1444,8 @@ class Symbol(IndicatorsMixin, PlottingMixin, StrategyMixin):
     def get_precision(self) -> dict:
         """
         Get exchange info about the symbol for assets precision.
-        :return dict:
+
+        :return dict: Precision settings for base and quote assets.
         """
         precision = get_precision(info_dic=self.info_dic)
         self.precision = precision[self.symbol]
@@ -1410,6 +1454,8 @@ class Symbol(IndicatorsMixin, PlottingMixin, StrategyMixin):
     def get_api_status(self) -> str:
         """
         Return the symbol status, TRADING, BREAK, etc.
+
+        :return str: Current trading status (e.g. ``'TRADING'``, ``'BREAK'``).
         """
         return Exchange().df.loc[self.symbol].to_dict()['status']
 

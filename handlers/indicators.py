@@ -33,7 +33,7 @@ indicator_logger = LogManager(filename='./logs/indicators.log', name='indicators
 ##############
 
 
-def alternating_fractal_indicator(df: pd.DataFrame, max_period: int = None, suffix: str = "") -> pd.DataFrame or None:
+def alternating_fractal_indicator(df: pd.DataFrame, max_period: int = None, suffix: str = "") -> pd.DataFrame | None:
     """
     Obtains the minim value for fractal_w periods as fractal is pure alternating max to mins. In other words, max and mins alternates
      in regular rhythm without any tow max or two mins consecutively.
@@ -69,7 +69,7 @@ def alternating_fractal_indicator(df: pd.DataFrame, max_period: int = None, suff
 def fractal_trend_indicator(df: pd.DataFrame,
                             period: int = None,
                             fractal: pd.DataFrame = None,
-                            suffix: str = "") -> tuple or None:
+                            suffix: str = "") -> tuple | None:
     """
     Obtains the trend of the fractal_w indicator. It will return maximums diff mean and minimums diff mean also in a tuple.
 
@@ -326,7 +326,7 @@ def support_resistance_volume(df, num_bins=100, price_col='Close', volume_col='V
 ##############################
 
 
-def count_smaller_values_backward(s: pd.Series or list) -> pd.Series:
+def count_smaller_values_backward(s: pd.Series | list) -> pd.Series:
     """
     Calcula el número de valores que cada entrada en la serie supera hacia atrás
     hasta encontrar un valor superior o llegar al inicio de la serie.
@@ -352,7 +352,7 @@ def count_smaller_values_backward(s: pd.Series or list) -> pd.Series:
     return result
 
 
-def count_larger_values_backward(s: pd.Series or list) -> pd.Series:
+def count_larger_values_backward(s: pd.Series | list) -> pd.Series:
     """
     Calcula el número de valores que son superiores a cada entrada en la serie hacia atrás
     hasta encontrar un valor igual o menor o llegar al inicio de la serie.
@@ -734,7 +734,7 @@ def kmeans_custom_init(data: np.ndarray, max_clusters: int):
 
 
 def find_optimal_clusters(KMeans_lib, data: np.ndarray, max_clusters: int, quiet: bool = False,
-                          initial_centroids: list or np.ndarray = None, sample_weight: np.ndarray = None) -> int:
+                          initial_centroids: list | np.ndarray = None, sample_weight: np.ndarray = None) -> int:
     """
     Find the optimal quantity of centroids for support and resistance methods using the elbow method.
 
@@ -795,7 +795,6 @@ def support_resistance_levels(df: pd.DataFrame,
             df_["qty"] = (df_['Quantity'] / quantity).astype(int)
         buy_data = df_.loc[df_['Buyer was maker'] == False]
         sell_data = df_.loc[df_['Buyer was maker'] == True]
-        initial_centroids = kmeans_custom_init(data=df_['Price'].values, max_clusters=max_clusters)
         if by_quantity:
 
             buy_prices = repeat_prices_by_quantity(data=buy_data, price_col="Price", qty_col="qty")
@@ -809,22 +808,34 @@ def support_resistance_levels(df: pd.DataFrame,
             indicator_logger.warning(f"There is no trade data to calculate support and resistance levels: {len(buy_prices)} buys and {len(sell_prices)} sells.")
             return [], []
 
-        if optimize_clusters_qty:
-            optimal_buy_clusters = find_optimal_clusters(KMeans_lib=KMeans, data=buy_prices, max_clusters=max_clusters, initial_centroids=initial_centroids)
-            optimal_sell_clusters = find_optimal_clusters(KMeans_lib=KMeans, data=sell_prices, max_clusters=max_clusters, initial_centroids=initial_centroids)
+        support_levels_list = []
+        resistance_levels_list = []
+
+        if len(buy_prices) > 0:
+            buy_centroids = kmeans_custom_init(data=buy_data['Price'].values, max_clusters=max_clusters)
+            if optimize_clusters_qty:
+                optimal_buy_clusters = find_optimal_clusters(KMeans_lib=KMeans, data=buy_prices, max_clusters=max_clusters, initial_centroids=buy_centroids)
+            else:
+                optimal_buy_clusters = max_clusters
+            kmeans_buy = KMeans(n_clusters=optimal_buy_clusters, n_init=1, init=buy_centroids).fit(buy_prices)
+            support_levels_list = np.sort(kmeans_buy.cluster_centers_, axis=0).flatten().tolist()
+            indicator_logger.info(f"Found {optimal_buy_clusters} support levels from buys.")
         else:
-            optimal_buy_clusters = max_clusters
-            optimal_sell_clusters = max_clusters
+            indicator_logger.warning("No buy trades found, skipping support levels.")
 
-        indicator_logger.info(f"Found {optimal_buy_clusters} support levels from buys and {optimal_sell_clusters} resistance levels from sells.")
+        if len(sell_prices) > 0:
+            sell_centroids = kmeans_custom_init(data=sell_data['Price'].values, max_clusters=max_clusters)
+            if optimize_clusters_qty:
+                optimal_sell_clusters = find_optimal_clusters(KMeans_lib=KMeans, data=sell_prices, max_clusters=max_clusters, initial_centroids=sell_centroids)
+            else:
+                optimal_sell_clusters = max_clusters
+            kmeans_sell = KMeans(n_clusters=optimal_sell_clusters, n_init=1, init=sell_centroids).fit(sell_prices)
+            resistance_levels_list = np.sort(kmeans_sell.cluster_centers_, axis=0).flatten().tolist()
+            indicator_logger.info(f"Found {optimal_sell_clusters} resistance levels from sells.")
+        else:
+            indicator_logger.warning("No sell trades found, skipping resistance levels.")
 
-        kmeans_buy = KMeans(n_clusters=optimal_buy_clusters, n_init=1, init=initial_centroids).fit(buy_prices)
-        kmeans_sell = KMeans(n_clusters=optimal_sell_clusters, n_init=1, init=initial_centroids).fit(sell_prices)
-
-        support_levels = np.sort(kmeans_buy.cluster_centers_, axis=0)
-        resistance_levels = np.sort(kmeans_sell.cluster_centers_, axis=0)
-
-        return support_levels.flatten().tolist(), resistance_levels.flatten().tolist()
+        return support_levels_list, resistance_levels_list
 
     else:
         indicator_logger.info("Calculating support and resistance levels from klines in simple mode...")

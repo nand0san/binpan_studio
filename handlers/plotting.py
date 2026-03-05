@@ -131,7 +131,7 @@ def set_ta_scatter(df: pd.DataFrame, serie: pd.Series, annotations: list = None,
 
 
 def set_ta_line(df_index: pd.DataFrame.index, serie: pd.Series, color='blue', name='Indicator', line_width: float = 0.5,
-                fill_color: str or bool = None, fill_mode: str = 'none', yaxis: str = 'y', show_legend=True):
+                fill_color: str | bool = None, fill_mode: str = 'none', yaxis: str = 'y', show_legend=True):
     """
     Plot a line plot for an indicator.
 
@@ -338,7 +338,7 @@ def generate_vertical_shapes(timestamps: list, y0: float, y1: float, color='blue
 ###################
 
 def candles_ta(data: pd.DataFrame,
-               indicators_series: list or pd.DataFrame = None,
+               indicators_series: list | pd.DataFrame = None,
                rows_pos=None,
                indicator_names=None,
                indicators_colors=None,
@@ -352,7 +352,7 @@ def candles_ta(data: pd.DataFrame,
                red_timestamps=None,
                blue_timestamps=None,
                candles_ta_height_ratio: float = 0.5,
-               plot_volume: bool or str = True,
+               plot_volume: bool | str = True,
                volume_window: int = 21,
                title: str = 'Candlesticks, indicators, and Volume plot',
                yaxis_title: str = 'Symbol Price',
@@ -714,8 +714,8 @@ def candles_tagged(data: pd.DataFrame,
                    indicator_series=None,
                    indicator_names=None,
                    indicator_colors=None,
-                   fill_control: dict or list = None,
-                   indicators_filled_mode: dict or list = None,
+                   fill_control: dict | list = None,
+                   indicators_filled_mode: dict | list = None,
                    axis_groups=None,
                    plot_splitted_serie_couple=None,
                    rows_pos=None, plot_bgcolor=None,
@@ -1076,8 +1076,8 @@ def plot_trades(data: pd.DataFrame, max_size: int = 60, height: int = 1000, loga
            :width: 1000
 
     """
-    data['Buyer was maker'] = data['Buyer was maker'].replace({False: 'Taker buyer', True: 'Taker Seller'})
-    fig = px.scatter(x=data.index, y=data['Price'], color=data['Buyer was maker'], size=data[
+    maker_labels = data['Buyer was maker'].replace({False: 'Taker buyer', True: 'Taker Seller'})
+    fig = px.scatter(x=data.index, y=data['Price'], color=maker_labels, size=data[
         'Quantity'], size_max=max_size, log_y=logarithmic)
     if not title:
         title = f"Trades size {data.index.name}"
@@ -1525,7 +1525,7 @@ def plot_orderbook_value(ask_data: list[tuple[list, float]], bid_data: list[tupl
 # plot tools #
 ##############
 
-def normalize(max_value: int or float, min_value: int or float, data: list or np.ndarray):
+def normalize(max_value: int | float, min_value: int | float, data: list | np.ndarray):
     """
     Normalize data from minimum as 0 to maximum as 1.
 

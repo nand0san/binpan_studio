@@ -22,10 +22,10 @@ class StrategyMixin:
     ###############
 
     def backtesting(self,
-                    actions_col: str or int,
-                    target_column: str or pd.Series = None,
-                    stop_loss_column: str or pd.Series = None,
-                    entry_filter_column: str or pd.Series = None,
+                    actions_col: str | int,
+                    target_column: str | pd.Series = None,
+                    stop_loss_column: str | pd.Series = None,
+                    entry_filter_column: str | pd.Series = None,
                     fixed_target: bool = True,
                     fixed_stop_loss: bool = True,
                     base: float = 0,
@@ -37,29 +37,33 @@ class StrategyMixin:
                     short: bool = False,
                     inplace=True,
                     suffix: str = None,
-                    colors: list = None) -> pd.DataFrame or pd.Series:
+                    colors: list = None) -> pd.DataFrame | pd.Series:
         """
         Simulates buys and sells using labels in a tagged column with actions. Actions are considered before the tag, in the next
         candle using priced_actions_col price of that candle before.
 
-        :param str or int actions_col: A column name or index.
+        :param str | int actions_col: A column name or index.
         :param target_column: Column with data for operation target values.
         :param stop_loss_column: Column with data for operation stop loss values.
-        :param pd.Series or str entry_filter_column: A serie or colum with ones or zeros to allow or avoid entries.
+        :param pd.Series | str entry_filter_column: A serie or colum with ones or zeros to allow or avoid entries.
         :param bool fixed_target: Target for any operation will be calculated and fixed at the beginning of the operation.
         :param bool fixed_stop_loss: Stop loss for any operation will be calculated and fixed at the beginning of the operation.
         :param float base: Base inverted quantity.
         :param float quote: Quote inverted quantity.
-        :param str or int priced_actions_col: Columna name or index with prices to use when action label in a row.
-        :param str or int label_in: A label consider as trade in trigger.
-        :param str or int label_out: A label consider as trade out trigger.
+        :param str | int priced_actions_col: Columna name or index with prices to use when action label in a row.
+        :param str | int label_in: A label consider as trade in trigger.
+        :param str | int label_out: A label consider as trade out trigger.
         :param float fee: Fees applied to the simulation.
         :param str evaluating_quote: A quote used to convert value of the backtesting line for better reference.
         :param bool short: Backtest in short mode, with in as shorts and outs as repays.
         :param bool inplace: Make it permanent in the instance or not.
         :param str suffix: A decorative suffix for the name of the column created.
         :param list colors: Defaults to red and green.
-        :return pd.DataFrame or pd.Series:
+        :return pd.DataFrame | pd.Series:
+
+        .. image:: images/plot_tagged.png
+           :width: 800
+           :alt: Backtesting results with buy/sell markers
 
         """
 
@@ -157,19 +161,19 @@ class StrategyMixin:
     #############
 
     def tag(self,
-            column: str or int or pd.Series,
-            reference: str or int or float or pd.Series,
+            column: str | int | pd.Series,
+            reference: str | int | float | pd.Series,
             relation: str = 'gt',
-            match_tag: str or int = 1,
-            mismatch_tag: str or int = 0,
+            match_tag: str | int = 1,
+            mismatch_tag: str | int = 0,
             strategy_group: str = '',
             inplace=True, suffix: str = '',
-            color: str or int = 'green') -> pd.Series:
+            color: str | int = 'green') -> pd.Series:
         """
         It tags values of a column/serie compared to other serie or value by methods gt,ge,eq,le,lt as condition.
 
-        :param pd.Series or str column: A numeric serie or column name or column index. Default is Close price.
-        :param pd.Series or str or int or float reference: A number or numeric serie or column name.
+        :param pd.Series | str column: A numeric serie or column name or column index. Default is Close price.
+        :param pd.Series | str | int | float reference: A number or numeric serie or column name.
         :param str relation: The condition to apply comparing column to reference (default is greater than):
             eq (equivalent to ==) — equals to
             ne (equivalent to !=) — not equals to
@@ -177,12 +181,12 @@ class StrategyMixin:
             lt (equivalent to <) — less than
             ge (equivalent to >=) — greater than or equals to
             gt (equivalent to >) — greater than
-        :param int or str match_tag: Value or string to tag matched relation.
-        :param int or str mismatch_tag: Value or string to tag mismatched relation.
+        :param int | str match_tag: Value or string to tag matched relation.
+        :param int | str mismatch_tag: Value or string to tag mismatched relation.
         :param str strategy_group: A name for a group of columns to assign to a strategy.
         :param bool inplace: Permanent or not. Default is false, because of some testing required sometimes.
         :param str suffix: A string to decorate resulting Pandas series name.
-        :param str or int color: A color from plotly list of colors or its index in that list.
+        :param str | int color: A color from plotly list of colors or its index in that list.
         :return pd.Series: A serie with tags as values.
 
 
@@ -245,29 +249,29 @@ class StrategyMixin:
         return compared
 
     def cross(self,
-              slow: str or int or float or pd.Series,
-              fast: str or int or pd.Series = 'Close',
-              cross_over_tag: str or int = 1,
-              cross_below_tag: str or int = -1, echo=0,
+              slow: str | int | float | pd.Series,
+              fast: str | int | pd.Series = 'Close',
+              cross_over_tag: str | int = 1,
+              cross_below_tag: str | int = -1, echo=0,
               non_zeros: bool = True,
               strategy_group: str = None,
               inplace=True,
               suffix: str = '',
-              color: str or int = 'green') -> pd.Series:
+              color: str | int = 'green') -> pd.Series:
         """
         It tags crossing values from a column/serie (fast) over a serie or value (slow).
 
-        :param pd.Series or str or int or float slow: A number or numeric serie or column name.
-        :param pd.Series or str fast: A numeric serie or column name or column index. Default is Close price.
-        :param int or str cross_over_tag: Value or string to tag matched crossing fast over slow.
-        :param int or str cross_below_tag: Value or string to tag crossing slow over fast.
+        :param pd.Series | str | int | float slow: A number or numeric serie or column name.
+        :param pd.Series | str fast: A numeric serie or column name or column index. Default is Close price.
+        :param int | str cross_over_tag: Value or string to tag matched crossing fast over slow.
+        :param int | str cross_below_tag: Value or string to tag crossing slow over fast.
         :param bool non_zeros: Result will not contain zeros as non tagged values, instead will be nans.
         :param int echo: It tags a fixed amount of candles forward the crossed point not including cross candle. If echo want to be used,
          must be used non_zeros.
         :param str strategy_group: A name for a group of columns to assign to a strategy.
         :param bool inplace: Permanent or not. Default is false, because of some testing required sometimes.
         :param str suffix: A string to decorate resulting Pandas series name.
-        :param str or int color: A color from plotly list of colors or its index in that list.
+        :param str | int color: A color from plotly list of colors or its index in that list.
         :return pd.Series: A serie with tags as values. 1 and -1 for both crosses.
 
         .. code-block::
@@ -330,19 +334,19 @@ class StrategyMixin:
         return cross
 
     def shift(self,
-              column: str or int or pd.Series, window=1,
+              column: str | int | pd.Series, window=1,
               strategy_group: str = '',
               inplace=True, suffix: str = '',
-              color: str or int = 'grey'):
+              color: str | int = 'grey'):
         """
         It shifts a candle ahead by the window argument value (or backwards if negative)
 
-        :param str or int or pd.Series column: Column to shift values.
+        :param str | int | pd.Series column: Column to shift values.
         :param int window: Number of candles moved ahead.
         :param str strategy_group: A name for a group of columns to assign to a strategy.
         :param bool inplace: Permanent or not. Default is false, because of some testing required sometimes.
         :param str suffix: A string to decorate resulting Pandas series name.
-        :param str or int color: A color from plotly list of colors or its index in that list.
+        :param str | int color: A color from plotly list of colors or its index in that list.
         :return pd.Series: A serie with tags as values.
         """
         if type(column) == str:
@@ -380,13 +384,13 @@ class StrategyMixin:
         return shift
 
     def merge_columns(self,
-                      main_column: str or int or pd.Series,
-                      other_column: str or int or pd.Series,
+                      main_column: str | int | pd.Series,
+                      other_column: str | int | pd.Series,
                       sign_other: dict = None,
                       strategy_group: str = '',
                       inplace=True,
                       suffix: str = '',
-                      color: str or int = 'grey'):
+                      color: str | int = 'grey'):
         """
         Predominant serie will be filled nans with values, if existing, from the other serie.
 
@@ -398,7 +402,7 @@ class StrategyMixin:
         :param str strategy_group: A name for a group of columns to assign to a strategy.
         :param bool inplace: Permanent or not. Default is false, because of some testing required sometimes.
         :param str suffix: A string to decorate resulting Pandas series name.
-        :param str or int color: A color from plotly list of colors or its index in that list.
+        :param str | int color: A color from plotly list of colors or its index in that list.
         :return pd.Series: A merged serie.
         """
         if not sign_other:
@@ -447,12 +451,12 @@ class StrategyMixin:
         return merged
 
     def clean_in_out(self,
-                     column: str or int or pd.Series,
+                     column: str | int | pd.Series,
                      in_tag=1,
                      out_tag=-1,
                      strategy_group: str = '',
                      inplace=True, suffix: str = '',
-                     color: str or int = 'grey'):
+                     color: str | int = 'grey'):
         """
         It cleans a serie with in and out tags by eliminating in streaks and out streaks.
 
@@ -464,7 +468,7 @@ class StrategyMixin:
         :param str strategy_group: A name for a group of columns to assign to a strategy.
         :param bool inplace: Permanent or not. Default is false, because of some testing required sometimes.
         :param str suffix: A string to decorate resulting Pandas series name.
-        :param str or int color: A color from plotly list of colors or its index in that list.
+        :param str | int color: A color from plotly list of colors or its index in that list.
         :return pd.Series: A merged serie.
         """
         if type(column) == str:
@@ -532,7 +536,7 @@ class StrategyMixin:
                                    tag_reversed_match: bool = False,
                                    inplace=True,
                                    suffix: str = '',
-                                   color: str or int = 'magenta',
+                                   color: str | int = 'magenta',
                                    reversed_match=-1):
         """
         Checks where all tags and cross columns get value "1" at the same time. And also gets points where all tags gets value of "0" and
@@ -548,7 +552,7 @@ class StrategyMixin:
         :param any reversed_match: A tag for the all/any not matched strategy rows.
         :param bool inplace: Permanent or not. Default is false, because of some testing required sometimes.
         :param str suffix: A string to decorate resulting Pandas series name.
-        :param str or int color: A color from plotly list of colors or its index in that list.
+        :param str | int color: A color from plotly list of colors or its index in that list.
         :return pd.Series: A serie with "1" value where all columns are ones and "-1" where all columns are minus ones.
         """
         if columns:
@@ -622,21 +626,21 @@ class StrategyMixin:
         return ret
 
     def ffill_window(self,
-                     column: str or int or pd.Series,
+                     column: str | int | pd.Series,
                      window: int = 1,
                      inplace=True,
                      replace=False,
                      suffix: str = '',
-                     color: str or int = 'blue'):
+                     color: str | int = 'blue'):
         """
         It forward fills a value through nans a window ahead.
 
-        :param str or int or pd.Series column: A pandas Series.
+        :param str | int | pd.Series column: A pandas Series.
         :param int window: Times values are shifted ahead. Default is 1.
         :param bool replace: Permanent replace for a column with results.
         :param bool inplace: Permanent or not. Default is false, because of some testing required sometimes.
         :param str suffix: A string to decorate resulting Pandas series name.
-        :param str or int color: A color from plotly list of colors or its index in that list.
+        :param str | int color: A color from plotly list of colors or its index in that list.
         :return pd.Series: A series with index adjusted to the new shifted positions of values.
         """
         if type(column) == str:

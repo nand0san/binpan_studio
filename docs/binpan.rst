@@ -1,9 +1,7 @@
 BinPan Module
 =============
 
-Can be imported this way:
-
-.. code-block::
+.. code-block:: python
 
    import binpan
 
@@ -13,22 +11,32 @@ Can be imported this way:
 Symbol Class
 ------------
 
-This class can manage klines, trades, and many more data.
+The main entry point in BinPan. Fetches candlestick (kline) data from the Binance API
+and provides methods for technical indicators, plotting, trade analysis, and strategy
+backtesting.
 
-Also includes technical indicators, makes plots, and gets some exchange data.
+The ``Symbol`` class uses a mixin architecture:
 
-There are tutorials in a Jupyter Notebook file at https://github.com/nand0san/binpan_studio
+- **IndicatorsMixin**: technical indicators (EMA, RSI, MACD, Bollinger Bands, etc.)
+- **PlottingMixin**: candlestick charts, trade visualizations, order book plots
+- **StrategyMixin**: tagging, cross detection, backtesting engine
+
+Example notebooks are in the ``notebooks/`` folder of the repository.
+
+.. image:: images/candles_ta.png
+   :width: 1000
+   :alt: Symbol chart with EMA and Supertrend indicators
 
 .. autoclass:: Symbol
    :members:
+   :inherited-members:
 
 
 Exchange Class
 --------------
 
-This class is oriented towards managing data from exchanges, like Symbols status, coins networks, etc.
-
-There is a tutorial in a Jupyter Notebook file at https://github.com/nand0san/binpan_studio
+Provides access to Binance exchange-level metadata: trading pairs, order types, filters,
+fees, coin information, blockchain network details, and 24h volume rankings.
 
 .. autoclass:: Exchange
    :members:
@@ -37,9 +45,18 @@ There is a tutorial in a Jupyter Notebook file at https://github.com/nand0san/bi
 Wallet Class
 ------------
 
-This class can show wallet data for you. Free assets, locked assets, or wallet snapshots for
-performance analysis.
+Shows wallet data: free and locked assets, wallet snapshots for performance analysis.
+Requires API key and secret.
 
 .. autoclass:: Wallet
    :members:
 
+
+Database Class
+--------------
+
+Connector for PostgreSQL/TimescaleDB databases for storing and retrieving historical
+market data (klines, trades).
+
+.. autoclass:: Database
+   :members:
