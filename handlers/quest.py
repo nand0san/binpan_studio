@@ -20,11 +20,6 @@ quest_logger = LogManager(filename='./logs/quest.log', name='quest', info_level=
 
 base_url = 'https://api.binance.com'
 
-# tick_seconds se mantiene aquí por compatibilidad con imports existentes (legacy)
-tick_seconds = {'1m': 60, '3m': 60 * 3, '5m': 5 * 60, '15m': 15 * 60, '30m': 30 * 60, '1h': 60 * 60, '2h': 60 * 60 * 2,
-                '4h': 60 * 60 * 4, '6h': 60 * 60 * 6, '8h': 60 * 60 * 8, '12h': 60 * 60 * 12, '1d': 60 * 60 * 24,
-                '3d': 60 * 60 * 24 * 3, '1w': 60 * 60 * 24 * 7, '1M': 60 * 60 * 24 * 30}
-
 float_api_items = ['price', 'origQty', 'executedQty', 'cummulativeQuoteQty', 'stopLimitPrice', 'stopPrice', 'commission', 'qty',
                    'origQuoteOrderQty', 'makerCommission', 'takerCommission']
 int_api_items = ['orderId', 'orderListId', 'transactTime', 'tradeId', 'transactionTime', 'updateTime', 'time']
@@ -306,8 +301,7 @@ def api_raw_signed_get(endpoint: str,
                        api_key: str,
                        api_secret: str,
                        base_url: str = '',
-                       params: dict | list[tuple] = None,
-                       weight: int = 1) -> dict | list:
+                       params: dict | list[tuple] = None) -> dict | list:
     """
     Shortcut to request signed GET to API.
 
@@ -317,7 +311,6 @@ def api_raw_signed_get(endpoint: str,
     :param str api_secret: Encoded API secret.
     :param str base_url: Base URL.
     :param dict params: Params for the request.
-    :param int weight: Expected weight for the request.
     :return dict or list: API response.
     """
     return get_signed_request(url=base_url + endpoint,
@@ -329,8 +322,7 @@ def api_raw_signed_post(endpoint: str,
                         api_key: str,
                         api_secret: str,
                         base_url: str = '',
-                        params: dict | list[tuple] = None,
-                        weight: int = 1) -> dict | list:
+                        params: dict | list[tuple] = None) -> dict | list:
     """
     Shortcut to request signed POST to API.
 
@@ -340,7 +332,6 @@ def api_raw_signed_post(endpoint: str,
     :param str api_secret: Encoded API secret.
     :param str base_url: Base URL.
     :param dict params: Params for the request.
-    :param int weight: Expected weight for the request.
     :return dict or list: API response.
     """
     return post_signed_request(url=base_url + endpoint,

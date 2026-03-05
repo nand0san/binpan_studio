@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from .logs import LogManager
 
 
@@ -26,7 +26,7 @@ def time_clause(timestamp_ms: int) -> str or None:
         assert isinstance(timestamp_ms, int), f"Timestamp must be an integer, not {type(timestamp_ms)}"
         assert timestamp_ms > 0, f"Timestamp must be positive, not {timestamp_ms}"
         assert len(str(timestamp_ms)) == 13, f"Timestamp must be in milliseconds, not {timestamp_ms}"
-        return datetime.utcfromtimestamp(timestamp_ms / 1000.0).isoformat() + "Z"
+        return datetime.fromtimestamp(timestamp_ms / 1000.0, tz=timezone.utc).isoformat().replace('+00:00', 'Z')
     except AssertionError as exc:
         influx_logger.error(f"Error converting milliseconds to ISO: {timestamp_ms} ---> {exc}")
         return None
@@ -316,8 +316,8 @@ def delete_measurement(client: influxdb_client.InfluxDBClient,
     :return: None
     """
 
-    start_time = (datetime.utcnow() - timedelta(days=days)).isoformat("T") + "Z"
-    stop_time = datetime.utcnow().isoformat("T") + "Z"
+    start_time = (datetime.now(timezone.utc) - timedelta(days=days)).isoformat("T") + "Z"
+    stop_time = datetime.now(timezone.utc).isoformat("T") + "Z"
     delete_api = client.delete_api()
     query = f'_measurement="{measurement}"'
 
@@ -346,8 +346,8 @@ def delete_entries_by_tag_value(client: influxdb_client.InfluxDBClient,
     :param days: Number of days to delete.
     :return: None
     """
-    start_time = (datetime.utcnow() - timedelta(days=days)).isoformat("T") + "Z"
-    stop_time = datetime.utcnow().isoformat("T") + "Z"
+    start_time = (datetime.now(timezone.utc) - timedelta(days=days)).isoformat("T") + "Z"
+    stop_time = datetime.now(timezone.utc).isoformat("T") + "Z"
 
     delete_api = client.delete_api()
     query = f'_measurement="{measurement}" and {tag_key}="{tag_value}"'

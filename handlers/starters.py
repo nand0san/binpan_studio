@@ -1,7 +1,6 @@
 """
 Functions to initialize before starting anything.
 """
-import requests
 from base64 import b64encode, b64decode
 import hashlib
 from binascii import unhexlify
@@ -86,83 +85,3 @@ class AesCipher(object):
         return plaintext
 
 
-def get_exchange_limits() -> dict:
-    """
-    Binance manage several limits: RAW_REQUESTS, REQUEST_WEIGHT, and ORDERS rate limits.
-
-    The headers for those limits, I assume that are:
-    - RAW_REQUESTS: x-mbx-used-weight. Is cross all the api calls.
-    - REQUEST_WEIGHT: Example: x-mbx-order-count-10s. Time interval limited requests.
-    - ORDERS: Example: x-mbx-order-count-10s. Rate limit for orders.
-    - X-SAPI-USED-IP-WEIGHT-1M: For sapi endpoint requests.
-
-    Example response:
-
-        {'X-SAPI-USED-IP-WEIGHT-1M': 1200,
-         'X-SAPI-USED-UID-WEIGHT-1M': 1200,
-         'x-mbx-used-weight': 6100,
-         'x-mbx-used-weight-1m': 1200,
-         'x-mbx-order-count-10s': 50,
-         'x-mbx-order-count-1d': 160000}
-
-         {"REQUEST_1M": 1200,
-          "REQUEST_5M": 1200*5,
-          "ORDERS_10S": 1200/6,
-          "ORDERS_1D": 1200*60*24}
-
-    :return dict:
-    """
-    base_url = 'https://api.binance.com'
-    endpoint = '/api/v3/exchangeInfo'
-    response = requests.get(base_url + endpoint).json()
-    # info_dic = {k['symbol']: k for k in response['symbols']}
-    try:
-        limits = response['rateLimits']
-    except KeyError:
-        print(response)
-        print(response.keys())
-        limits = [{'rateLimitType': 'REQUEST_WEIGHT', 'interval': 'MINUTE', 'intervalNum': 1, 'limit': 1200},
-                  {'rateLimitType': 'ORDERS', 'interval': 'SECOND', 'intervalNum': 10, 'limit': 50},
-                  {'rateLimitType': 'ORDERS', 'interval': 'DAY', 'intervalNum': 1, 'limit': 160000},
-                  {'rateLimitType': 'RAW_REQUESTS', 'interval': 'MINUTE', 'intervalNum': 5, 'limit': 6100}]
-
-    limits_dict = {}
-    for limit in limits:
-        if 'REQUEST' in limit['rateLimitType']:
-            interval = str(limit['intervalNum'])
-            interval += limit['interval'][0]
-            limits_dict[f'REQUEST_{interval}'] = limit['limit']
-        elif 'ORDERS' in limit['rateLimitType']:
-            interval = str(limit['intervalNum'])
-            interval += limit['interval'][0]
-            limits_dict[f'ORDERS_{interval}'] = limit['limit']
-        else:
-            msg = f"BinPan error: Unknown limit from API: {limit}"
-            raise Exception(msg)
-
-    return limits_dict
-
-
-def is_python_version_numba_supported() -> bool:
-    """
-    Verify if python version is numba supported.
-
-    :return bool: True if supported, False otherwise.
-    """
-    min_version = (3, 7)
-    max_version = (3, 11)  # Numba supports up to Python 3.10, so we set the maximum version to 3.11
-    current_version = sys.version_info[:2]  # Get the first two elements of the version info tuple
-    return min_version <= current_version <= max_version
-
-
-def is_running_in_jupyter():
-    """
-    Check if the code is running in a Jupyter notebook.
-
-    :return bool: True if running in Jupyter, False otherwise.
-    """
-    try:
-        from ipykernel import connect
-        return True
-    except ImportError:
-        return False

@@ -3,7 +3,7 @@ BinPan Classes Main Module
 """
 
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timezone
 from decimal import Decimal as dd
 import numpy as np
 
@@ -12,10 +12,6 @@ from .quest import api_raw_signed_get
 from .logs import LogManager
 
 stablecoins = ['PAX', 'TUSD', 'USDC', 'USDS', 'USDT', 'BUSD', 'DAI', 'UST', 'USDP', 'TRIBE', 'UST', 'USSD', 'FDUSD', 'FRAX', 'USDP', 'USDJ']
-
-float_api_items = ['price', 'origQty', 'executedQty', 'cummulativeQuoteQty', 'stopLimitPrice', 'stopPrice', 'commission', 'qty',
-                   'origQuoteOrderQty', 'makerCommission', 'takerCommission']
-int_api_items = ['orderId', 'orderListId', 'transactTime', 'tradeId', 'transactionTime', 'updateTime', 'time']
 
 exchange_logger = LogManager(filename='./logs/exchange_logger.log', name='exchange_logger', info_level='INFO')
 
@@ -1116,7 +1112,7 @@ def convert_utc_milliseconds(ms: int) -> str:
     :return str: Formatted date.
     """
     seconds = int(ms) / 1000
-    return str(datetime.utcfromtimestamp(seconds).strftime('%Y-%m-%d %H:%M:%S.%f'))
+    return str(datetime.fromtimestamp(seconds, tz=timezone.utc).strftime('%Y-%m-%d %H:%M:%S.%f'))
 
 
 def statistics_24h(decimal_mode: bool,

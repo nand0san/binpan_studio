@@ -230,9 +230,9 @@ class Symbol(IndicatorsMixin, PlottingMixin, StrategyMixin):
         # if not from_csv:
         # tick_interval = check_tick_interval(tick_interval)
 
-        # self.is_numba = is_numba
-        # self.tick_interval = tick_interval
-        # self.time_zone = time_zone
+        # inicialización temprana para from_csv (se sobreescriben luego)
+        self.tick_interval = tick_interval
+        self.time_zone = time_zone
 
         # dataframe columns
         self.original_columns = binance_api_candles_cols

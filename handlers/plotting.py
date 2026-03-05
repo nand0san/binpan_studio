@@ -210,8 +210,7 @@ def add_traces(fig, list_of_plots: list, rows: list, cols: list):
     :return: Set figure.
     """
     for i, p in enumerate(list_of_plots):
-        # fig.add_trace(p, row=rows[i], col=cols[i], secondary_y=secondary_y)
-        fig.append_trace(p, row=rows[i], col=cols[i])
+        fig.add_trace(p, row=rows[i], col=cols[i])
     return fig
 
 

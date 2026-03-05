@@ -6,7 +6,7 @@ Uses KlineTimestamp from kline-timestamp library for candle boundary calculation
 
 """
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import pandas as pd
 from time import time
 import pytz
@@ -14,21 +14,21 @@ import pytz
 from kline_timestamp import KlineTimestamp
 from handlers.time_helper import parse_timestamp, tick_seconds
 
-pandas_freq_tick_interval = {'1m': '1T',
-                             '3m': '3T',
-                             '5m': '5T',
-                             '15m': '15T',
-                             '30m': '30T',
-                             '1h': '1H',
-                             '2h': '2H',
-                             '4h': '4H',
-                             '6h': '6H',
-                             '8h': '8H',
-                             '12h': '12H',
+pandas_freq_tick_interval = {'1m': '1min',
+                             '3m': '3min',
+                             '5m': '5min',
+                             '15m': '15min',
+                             '30m': '30min',
+                             '1h': '1h',
+                             '2h': '2h',
+                             '4h': '4h',
+                             '6h': '6h',
+                             '8h': '8h',
+                             '12h': '12h',
                              '1d': '1D',
                              '3d': '3D',
                              '1w': '1W',
-                             '1M': '1M'}
+                             '1M': '1ME'}
 
 
 def _to_ms(value: str | int | datetime | KlineTimestamp, timezone: str | None = "UTC") -> int:
@@ -277,8 +277,8 @@ class Timeframe:
 
         :param name: The name of the index.
         """
-        start_dt = self.start.to_datetime() if self.is_discrete else datetime.utcfromtimestamp(self.start_ms / 1000)
-        end_dt = self.end.to_datetime() if self.is_discrete else datetime.utcfromtimestamp(self.end_ms / 1000)
+        start_dt = self.start.to_datetime() if self.is_discrete else datetime.fromtimestamp(self.start_ms / 1000, tz=timezone.utc)
+        end_dt = self.end.to_datetime() if self.is_discrete else datetime.fromtimestamp(self.end_ms / 1000, tz=timezone.utc)
         return pd.date_range(start=start_dt,
                              end=end_dt,
                              freq=pandas_freq_tick_interval[self.tick_interval],

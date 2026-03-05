@@ -7,7 +7,7 @@ Generic datetime/string/ms conversions kept here.
 
 """
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import pytz
 from time import time
 import pandas as pd
@@ -21,21 +21,21 @@ tick_seconds = {'1m': 60, '3m': 60 * 3, '5m': 5 * 60, '15m': 15 * 60, '30m': 30 
                 '4h': 60 * 60 * 4, '6h': 60 * 60 * 6, '8h': 60 * 60 * 8, '12h': 60 * 60 * 12, '1d': 60 * 60 * 24,
                 '3d': 60 * 60 * 24 * 3, '1w': 60 * 60 * 24 * 7, '1M': 60 * 60 * 24 * 30}
 
-pandas_freq_tick_interval = {'1m': '1T',
-                             '3m': '3T',
-                             '5m': '5T',
-                             '15m': '15T',
-                             '30m': '30T',
-                             '1h': '1H',
-                             '2h': '2H',
-                             '4h': '4H',
-                             '6h': '6H',
-                             '8h': '8H',
-                             '12h': '12H',
+pandas_freq_tick_interval = {'1m': '1min',
+                             '3m': '3min',
+                             '5m': '5min',
+                             '15m': '15min',
+                             '30m': '30min',
+                             '1h': '1h',
+                             '2h': '2h',
+                             '4h': '4h',
+                             '6h': '6h',
+                             '8h': '8h',
+                             '12h': '12h',
                              '1d': '1D',
                              '3d': '3D',
                              '1w': '1W',
-                             '1M': '1M'}
+                             '1M': '1ME'}
 
 tick_interval_values = ['1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '6h', '8h', '12h', '1d', '3d', '1w', '1M']
 
@@ -100,18 +100,6 @@ def parse_timestamp(timestamp_str: str, timezone: str | pytz.BaseTzInfo | None =
     return dt
 
 
-def string_to_ms(ts: str, timezone: str | None = None) -> int:
-    """
-    Converts a timestamp string to milliseconds from epoch.
-
-    :param str ts: A string with a date and time.
-    :param str timezone: A timezone like 'Europe/Madrid'. If None, assumes UTC.
-    :return int: Timestamp in milliseconds.
-    """
-    dt = parse_timestamp(timestamp_str=ts, timezone=timezone)
-    return int(dt.timestamp() * 1000)
-
-
 ##########################
 # time control functions #
 ##########################
@@ -145,16 +133,6 @@ def convert_datetime_to_string(dt) -> str:
     return dt.strftime("%Y-%m-%d %H:%M:%S")
 
 
-def convert_datetime_utc2ms(date_object: datetime) -> int:
-    """
-    Convert datetime object to milliseconds.
-
-    :param date_object: A datetime object.
-    :return: A Unix timestamp in milliseconds.
-    """
-    return int(date_object.timestamp() * 1000)
-
-
 def convert_datetime_to_milliseconds(dt: datetime, timezoned: str = None) -> float:
     """
     Converts a datetime to milliseconds. If timezoned, assumes the datetime is in that timezone.
@@ -164,10 +142,9 @@ def convert_datetime_to_milliseconds(dt: datetime, timezoned: str = None) -> flo
     :return: A Unix timestamp in milliseconds.
     """
     if not timezoned:
-        epoch = datetime.utcfromtimestamp(0)
+        epoch = datetime.fromtimestamp(0, tz=timezone.utc).replace(tzinfo=None)
     else:
-        time_zone = pytz.UTC
-        epoch = time_zone.localize(datetime.utcfromtimestamp(0))
+        epoch = datetime.fromtimestamp(0, tz=timezone.utc)
     return (dt - epoch).total_seconds() * 1000.0
 
 
@@ -183,53 +160,6 @@ def convert_string_to_milliseconds(ts: str, timezoned: str = None) -> int:
     return int(convert_datetime_to_milliseconds(dt=dt, timezoned=timezoned))
 
 
-def datetime_utc_to_milliseconds(dt: datetime):
-    """
-    Convert datetime object to milliseconds.
-
-    :param dt: A datetime object.
-    :return: A Unix timestamp in milliseconds.
-    """
-    dt = dt.replace(tzinfo=pytz.UTC)
-    epoch = datetime.utcfromtimestamp(0).replace(tzinfo=pytz.UTC)
-    return (dt - epoch).total_seconds() * 1000.0
-
-
-def end_time_from_start_time(startTime: int, limit=1000, tick_interval='1h') -> int:
-    """
-    Calculates end time by tick interval and limit.
-
-    :param int startTime: A timestamp in milliseconds.
-    :param int limit: Klines. Maximum is 1000.
-    :param str tick_interval: Kline interval.
-    :return int: Endtime timestamp in milliseconds.
-    """
-    return startTime + (limit * tick_seconds[tick_interval] * 1000)
-
-
-def start_time_from_end_time(endTime: int, limit=1000, tick_interval='1h') -> int:
-    """
-    Calculates startime from a timestamp and a limit of klines before.
-
-    :param int endTime: Timestamp in ms.
-    :param int limit: API klines limit is 1000.
-    :param str tick_interval: Kline interval.
-    :return int: Timestamp in ms.
-    """
-    return endTime - (limit * tick_seconds[tick_interval] * 1000)
-
-
-def convert_milliseconds_to_local_timezone_string(ms: int) -> str:
-    """
-    Converts a timestamp in milliseconds to a local timezone string.
-
-    :param ms: A timestamp in milliseconds.
-    :return: A string with a date and time.
-    """
-    seconds = int(ms) / 1000
-    return str(datetime.fromtimestamp(seconds).strftime('%Y-%m-%d %H:%M:%S.%f'))
-
-
 def convert_milliseconds_to_utc_string(ms: int) -> str:
     """
     Converts a timestamp in milliseconds to a UTC string.
@@ -238,18 +168,7 @@ def convert_milliseconds_to_utc_string(ms: int) -> str:
     :return: A string with a date and time.
     """
     seconds = int(ms) / 1000
-    return str(datetime.utcfromtimestamp(seconds).strftime('%Y-%m-%d %H:%M:%S.%f'))
-
-
-def convert_milliseconds_to_utc_datetime(ms: int) -> datetime:
-    """
-    Converts a timestamp in milliseconds to a UTC datetime.
-
-    :param ms: A timestamp in milliseconds.
-    :return: A datetime object.
-    """
-    seconds = int(ms) / 1000
-    return datetime.utcfromtimestamp(seconds)
+    return str(datetime.fromtimestamp(seconds, tz=timezone.utc).strftime('%Y-%m-%d %H:%M:%S.%f'))
 
 
 def convert_milliseconds_to_time_zone_datetime(ms: int, timezoned: str = None) -> datetime:
@@ -261,9 +180,7 @@ def convert_milliseconds_to_time_zone_datetime(ms: int, timezoned: str = None) -
     :return: A datetime object.
     """
     seconds = int(ms) / 1000
-    dt = datetime.utcfromtimestamp(seconds)
-    utc_tz = pytz.UTC
-    utc_datetime = utc_tz.localize(dt)
+    utc_datetime = datetime.fromtimestamp(seconds, tz=timezone.utc)
     time_zone = pytz.timezone(timezoned)
     return utc_datetime.astimezone(time_zone)
 
@@ -278,50 +195,6 @@ def convert_milliseconds_to_str(ms: int, timezoned: str) -> str:
     """
     dt = convert_milliseconds_to_time_zone_datetime(ms=ms, timezoned=timezoned)
     return convert_datetime_to_string(dt)
-
-
-def utc_start_of_day_ms() -> int:
-    """
-    Returns UTC time in milliseconds from epoch for the start of the day.
-
-    :return: A timestamp in milliseconds.
-    """
-    now = int(time() * 1000)
-    dt = convert_milliseconds_to_utc_datetime(now).replace(hour=0, minute=0, second=0, microsecond=0)
-    return int(convert_datetime_to_milliseconds(dt))
-
-
-def ms_day_begin_end(ts: int) -> tuple[int, int]:
-    """
-    Given a timestamp in milliseconds, it returns the start and end timestamps of the day.
-
-    :param ts: A timestamp in milliseconds.
-    :return: A tuple with the start and end timestamps of the day.
-    """
-    day_ini_df = convert_milliseconds_to_utc_datetime(ts).replace(hour=0, minute=0, second=0, microsecond=0)
-    day_ini_ms = convert_utc_datetime_to_milliseconds(day_ini_df)
-    day_end_ms = day_ini_ms + (24 * 60 * 60 * 1000) - 1
-    return int(day_ini_ms), int(day_end_ms)
-
-
-def split_time_interval_in_full_days(ts_ini: int, ts_end: int) -> list:
-    """
-    Given two timestamps in milliseconds, it returns a list of tuples with the start and end timestamps of each day.
-
-    :param ts_ini: A timestamp in milliseconds.
-    :param ts_end: A timestamp in milliseconds.
-    :return: A list of tuples with the start and end timestamps of each day in the interval.
-    """
-    ini_first_day, end_first_day_ = ms_day_begin_end(ts_ini)
-    ini_last_day_, end_last_day = ms_day_begin_end(ts_end)
-    day_ms = 24 * 60 * 60 * 1000
-    days = int(ceil_division((end_last_day - ini_first_day), day_ms))
-    ret = []
-    for i in range(days):
-        day_ts_ini = ini_first_day + i * day_ms
-        day_ts_end = day_ts_ini + day_ms - 1
-        ret.append((int(day_ts_ini), int(day_ts_end)))
-    return ret
 
 
 def time_interval(tick_interval: str,
@@ -365,39 +238,6 @@ def ceil_division(a: float, b: float) -> int:
     return int(-(a // -b))
 
 
-def ticks_between_timestamps(start: int, end: int, tick_interval: str) -> int:
-    """
-    Given two timestamps in milliseconds and a tick interval, returns the number of ticks between them.
-
-    :param start: A timestamp in milliseconds.
-    :param end: A timestamp in milliseconds.
-    :param tick_interval: A tick interval like '1m', '1h', etc.
-    :return: Returns the number of ticks between them.
-    """
-    kt_start = KlineTimestamp(start, tick_interval, "UTC")
-    start_open = kt_start.open
-    if start_open != start:
-        start_open = kt_start.next().open
-    kt_end = KlineTimestamp(end, tick_interval, "UTC")
-    end_close = kt_end.close
-    ret = ceil_division(end_close - start_open, tick_seconds[tick_interval] * 1000)
-    return ret
-
-
-def get_ticks_to_timestamp_utc(ticks_interval: str, timestamp: int = None) -> int:
-    """
-    Returns the number of ticks from a timestamp to now.
-
-    :param ticks_interval: A tick interval like '1m', '1h', etc.
-    :param timestamp: A timestamp in milliseconds.
-    :return: Returns the number of ticks.
-    """
-    now = int(time() * 1000)
-    tick_ms = tick_seconds[ticks_interval] * 1000
-    interval_ms = now - timestamp
-    return interval_ms // tick_ms
-
-
 def convert_string_to_datetime(ts: str, timezoned: str = None) -> datetime:
     """
     Converts a string to datetime. If timezoned, localizes the result.
@@ -418,35 +258,6 @@ def convert_string_to_datetime(ts: str, timezoned: str = None) -> datetime:
         return mytz.localize(ret)
     else:
         return ret
-
-
-def convert_utc_datetime_to_milliseconds(dt):
-    """
-    Convert datetime object to milliseconds.
-
-    :param dt: A datetime object.
-    :return: A Unix timestamp in milliseconds.
-    """
-    epoch = datetime.utcfromtimestamp(0)
-    return (dt - epoch).total_seconds() * 1000.0
-
-
-def utc() -> int:
-    """
-    Returns UTC time in milliseconds from epoch.
-
-    :return: A timestamp in milliseconds.
-    """
-    return int(datetime.now().timestamp() * 1000)
-
-
-def utc_datetime() -> datetime:
-    """
-    Returns UTC datetime.
-
-    :return: A datetime object.
-    """
-    return datetime.now(pytz.utc)
 
 
 #######################
@@ -500,39 +311,6 @@ def next_open_by_milliseconds(ms: int, tick_interval: str) -> int:
     :return: Next open timestamp in milliseconds.
     """
     return KlineTimestamp(int(ms), tick_interval, "UTC").next().open
-
-
-def close_from_milliseconds(ms: int, tick_interval: str) -> int:
-    """
-    Returns the close timestamp in milliseconds for a tick interval.
-
-    :param ms: A timestamp in milliseconds.
-    :param tick_interval: A tick interval like '1m', '1h', etc.
-    :return: Close timestamp in milliseconds.
-    """
-    return KlineTimestamp(int(ms), tick_interval, "UTC").close
-
-
-def next_open_utc(tick_interval: str) -> int:
-    """
-    Calculates the next open timestamp in milliseconds for a tick interval from now.
-
-    :param tick_interval: A tick interval like '1m', '1h', etc.
-    :return: Next open timestamp in milliseconds.
-    """
-    now = int(time() * 1000)
-    return KlineTimestamp(now, tick_interval, "UTC").next().open
-
-
-def wait_seconds_until_next_minute():
-    """
-    Returns the seconds to wait until the next minute.
-
-    :return: Seconds to wait.
-    """
-    server_time = int(time() * 1000)
-    now = datetime.fromtimestamp(server_time / 1000.0).replace(tzinfo=pytz.UTC)
-    return 60 - now.second
 
 
 def calculate_iterations(start_time: int, end_time: int, tick_interval_ms: int, limit: int = 1000) -> int:
@@ -630,13 +408,3 @@ def remove_initial_included_ranges(time_ranges, initial_minutes) -> list[tuple]:
         final_ranges.append((start_time, end_time))
 
     return final_ranges
-
-
-def adjust_timestamp_unit_nano_or_ms(ts):
-    """
-    Adjusts a timestamp to nanoseconds if it's in milliseconds.
-    """
-    num_digits = len(str(ts))
-    if num_digits <= 13:
-        ts *= 1_000_000
-    return ts
