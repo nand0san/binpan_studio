@@ -13,21 +13,17 @@ Próximos pasos de desarrollo, ordenados por prioridad.
 
 ---
 
-## 2. Refactorización de symbol_manager.py (prioridad alta)
+## ~~2. Refactorización de symbol_manager.py~~ (COMPLETADO)
 
-`binpan/symbol_manager.py` tiene **4.192 líneas** y viola el principio de responsabilidad única.
-Contiene ~90 métodos que mezclan: datos OHLC, trades, indicadores, plotting y backtesting.
+`symbol_manager.py` reducido de **4.192 → 1.449 líneas** (-65%) usando patrón mixin:
 
-### Plan progresivo de extracción
+| Mixin | Archivo | Líneas | Métodos |
+|-------|---------|--------|---------|
+| `IndicatorsMixin` | `binpan/indicators_mixin.py` | 1.389 | 26 (ema, rsi, macd, bbands, supertrend, etc.) |
+| `PlottingMixin` | `binpan/plotting_mixin.py` | 755 | 20 (plot, set_plot_*, plot_trades_*, etc.) |
+| `StrategyMixin` | `binpan/strategy_mixin.py` | 668 | 12 (backtesting, tag, cross, roi, etc.) |
 
-| Grupo de métodos | Destino propuesto | Líneas aprox. |
-|-----------------|-------------------|---------------|
-| Indicadores técnicos (`ema`, `sma`, `rsi`, `macd`, `bbands`, `stoch`, `ichimoku`, etc.) | Mixin o módulo `binpan/indicators_mixin.py` | ~800 |
-| Configuración de plots (`set_plot_*`, `plot`) | Mixin o módulo `binpan/plotting_mixin.py` | ~600 |
-| Backtesting y tagging (`tag_*`, `backtesting`) | Mixin o módulo `binpan/backtesting_mixin.py` | ~400 |
-| Gestión de trades (`get_agg_trades`, `get_atomic_trades`) | Integrar con `objects/trades.py` | ~300 |
-
-**Estrategia**: Usar mixins para mantener la API `s.ema(21)` intacta, sin romper código existente.
+`class Symbol(IndicatorsMixin, PlottingMixin, StrategyMixin):` - API pública intacta.
 
 ---
 
@@ -112,8 +108,8 @@ Comentarios `TODO` encontrados en el código fuente:
 
 | # | Tarea | Esfuerzo | Impacto |
 |---|-------|----------|---------|
-| 1 | Eliminar fallbacks silenciosos | Bajo | Alto (correctitud) |
-| 2 | Refactorizar symbol_manager.py | Alto | Alto (mantenibilidad) |
+| ~~1~~ | ~~Eliminar fallbacks silenciosos~~ | ~~Bajo~~ | ~~Alto (correctitud)~~ |
+| ~~2~~ | ~~Refactorizar symbol_manager.py~~ | ~~Alto~~ | ~~Alto (mantenibilidad)~~ |
 | 3 | Documentar módulos objects/ en Sphinx | Medio | Medio (documentación) |
 | 4 | Crear test suite pytest | Medio | Alto (calidad) |
 | 5 | Migrar pytz → zoneinfo | Bajo | Bajo (modernización) |
