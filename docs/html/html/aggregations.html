@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Aggregations Module - BinPan 0.4.19 documentation</title>
+      <title>Aggregations Module - BinPan 0.8.13 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Exceptions Module" href="exceptions.html" /><link rel="prev" title="BinPan Module" href="binpan.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -13,10 +13,10 @@
     } else if (isDarkTheme) {
       document.documentElement.classList.add('dark')
     }
-  </script><link rel="stylesheet" href="_static/pygments.css?v=2023.3.19" type="text/css" />
-    <link rel="stylesheet" href="_static/shibuya.css?v=2023.3.19" type="text/css" />
+  </script><link rel="stylesheet" href="_static/pygments.css?v=2023.6.8" type="text/css" />
+    <link rel="stylesheet" href="_static/shibuya.css?v=2023.6.8" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/style.css" />
-    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=2023.3.19" />
+    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=2023.6.8" />
     <style>
 :root {
   --sy-f-sys:-apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Droid Sans, Helvetica Neue;--sy-f-cjk:PingFang SC, Hiragino Sans GB, Droid Sans Fallback, Microsoft YaHei;--sy-f-heading:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-text:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-mono:Menlo, Monaco, Consolas, "Courier New", monospace;--sy-c-divider:rgba(var(--sy-rc-text), 0.1);--sy-c-divider-weak:rgba(var(--sy-rc-text), 0.05);--sy-c-border:rgba(var(--sy-rc-text), 0.14);--sy-s-banner-height:0rem;--sy-s-navbar-height:4rem;--sy-s-offset-top:calc(var(--sy-s-navbar-height) + var(--sy-s-banner-height));--sy-c-link:rgb(var(--sy-rc-theme));
@@ -52,7 +52,7 @@ html.dark {
 <body><div class="document"><div class="sy-head">
   <div class="sy-head-blur"></div>
   <div class="sy-head-inner sy-container mx-auto">
-    <div class="sy-head-brand flex items-center">
+    <div class="sy-head-links flex items-center">
       <div class="md:hidden flex items-center">
         <button class="hamburger js-menu mr-3" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
           <span class="hamburger_1"></span>
@@ -60,16 +60,13 @@ html.dark {
           <span class="hamburger_3 -translate-x-1"></span>
         </button>
       </div>
-      <a href="index.html">
+      <a class="sy-head-brand" href="index.html">
         
         
         <strong>BinPan</strong>
-      </a>
-      
-    </div>
+      </a></div>
     <div class="sy-head-actions flex gap-2 items-center print:hidden">
-      <nav class="sy-head-nav hidden md:block">
-      </nav>
+      
       <div class="hidden md:block"><form class="searchbox flex items-center" action="search.html" method="get">
   <input type="text" name="q" placeholder="Search" />
   <kbd>/</kbd>
@@ -88,13 +85,12 @@ html.dark {
 <div class="sy-page sy-container flex mx-auto">
   <aside id="lside" class="sy-lside md:w-64 md:shrink-0 print:hidden">
     <div class="sy-lside-inner md:sticky">
-      <div class="md:hidden pt-6 px-6"><form class="searchbox flex items-center" action="search.html" method="get">
+      <div class="sy-lside-top md:hidden pt-3 pb-3 px-6">
+        <div class="pt-3"><form class="searchbox flex items-center" action="search.html" method="get">
   <input type="text" name="q" placeholder="Search" />
   <button>Go</button>
 </form>
-      </div>
-      <div class="md:hidden pt-3 px-6">
-      </div>
+        </div></div>
       <div class="sy-scrollbar p-6">
         <div class="globaltoc">
           <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
@@ -105,16 +101,19 @@ html.dark {
 <li class="toctree-l1"><a class="reference internal" href="exchange.html">Exchange Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="files.html">Files Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="indicators.html">Indicators Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="influx_manager.html">Influx Manager Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="messages.html">Messages Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="messages.html#module-handlers.messages">Exceptions Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="redis_fetch.html#id1">Redis Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postgresql.html">PostgreSQL Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postgresql_database.html">PostgreSQL Database Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quest.html">Requests Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stat_tests.html">Statistical Tests and Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="starters.html">Starters Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tags.html">Tags &amp; Backtesting Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="time_helper.html">Time Helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Module</a></li>
 </ul>
 
@@ -136,6 +135,8 @@ html.dark {
 <li><a class="reference internal" href="#handlers.aggregations.count_trues_cumulative"><code class="docutils literal notranslate"><span class="pre">count_trues_cumulative()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.aggregations.drop_aggregated"><code class="docutils literal notranslate"><span class="pre">drop_aggregated()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.aggregations.tag_by_accumulation"><code class="docutils literal notranslate"><span class="pre">tag_by_accumulation()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.aggregations.resample_klines"><code class="docutils literal notranslate"><span class="pre">resample_klines()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.aggregations.oversample"><code class="docutils literal notranslate"><span class="pre">oversample()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.aggregations.time_index_from_timestamps"><code class="docutils literal notranslate"><span class="pre">time_index_from_timestamps()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.aggregations.columns_restriction"><code class="docutils literal notranslate"><span class="pre">columns_restriction()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.aggregations.generate_volume_column"><code class="docutils literal notranslate"><span class="pre">generate_volume_column()</span></code></a></li>
@@ -160,7 +161,7 @@ html.dark {
 </ul>
 
 
-  </div><div id="ethical-ad-placement"></div>
+  </div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div>
     </div>
   </aside>
   <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
@@ -168,9 +169,10 @@ html.dark {
     <div class="flex flex-col break-words justify-between">
       <div class="min-w-0 max-w-6xl px-6 pb-6 pt-6 xl:px-12">
         <article class="yue" role="main">
-          <section id="module-handlers.aggregations">
-<span id="aggregations-module"></span><h1>Aggregations Module<a class="headerlink" href="#module-handlers.aggregations" title="Permalink to this heading">¶</a></h1>
-<p>Data Aggregation.</p>
+          <section id="aggregations-module">
+<h1>Aggregations Module<a class="headerlink" href="#aggregations-module" title="Permalink to this heading">¶</a></h1>
+<p>This module is inspired by the exercises in the book “Advances in Financial Machine Learning” by Marcos Lopez de Prado.</p>
+<span class="target" id="module-handlers.aggregations"></span><p>Data Aggregation.</p>
 <p><strong>Functions:</strong></p>
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
@@ -192,6 +194,12 @@ html.dark {
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#handlers.aggregations.tag_by_accumulation" title="handlers.aggregations.tag_by_accumulation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tag_by_accumulation</span></code></a>(trades, threshold[, ...])</p></td>
 <td><p>Creates integer sequence by column value threshold accumulation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.aggregations.resample_klines" title="handlers.aggregations.resample_klines"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resample_klines</span></code></a>(data, tick_interval)</p></td>
+<td><p>Resamples a DataFrame of klines to a different frequency.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.aggregations.oversample" title="handlers.aggregations.oversample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">oversample</span></code></a>(data, new_interval)</p></td>
+<td><p>Expands a DataFrame of klines by calculating aggregated values for new columns from the start of the oversampled interval to each row.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.aggregations.time_index_from_timestamps" title="handlers.aggregations.time_index_from_timestamps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time_index_from_timestamps</span></code></a>(data[, ...])</p></td>
 <td><p>Assumes existing timestamp column or at least Open timestamp column.</p></td>
@@ -341,7 +349,7 @@ of the specified numeric column for each group and filling the remaining cells w
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.aggregations.tag_by_accumulation">
-<span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">tag_by_accumulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">agg_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Quantity'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grouper_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.aggregations.tag_by_accumulation" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">tag_by_accumulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">agg_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Quantity'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grouper_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.aggregations.tag_by_accumulation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates integer sequence by column value threshold accumulation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -349,11 +357,46 @@ of the specified numeric column for each group and filling the remaining cells w
 <li><p><strong>trades</strong> (<em>pd.DataFrame</em>) – Expected binpan aggregated trades or atomic trades dataframe.</p></li>
 <li><p><strong>agg_column</strong> (<em>str</em>) – Name of the column to group by volume accumulation.</p></li>
 <li><p><strong>grouper_name</strong> (<em>str</em>) – Name for the column to be used as grouper.</p></li>
-<li><p><strong>threshold</strong> (<em>int</em>) – Size of volume aggregated in bars to be compiled.</p></li>
+<li><p><strong>threshold</strong> (<em>float</em>) – Size of volume aggregated in bars to be compiled.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.aggregations.resample_klines">
+<span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">resample_klines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.aggregations.resample_klines" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resamples a DataFrame of klines to a different frequency.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>pd.DataFrame</em>) – The original DataFrame of klines. The index must be a DatetimeIndex.</p></li>
+<li><p><strong>tick_interval</strong> (<em>str</em>) – The new frequency for the klines. This can be any Binance frequency.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A new DataFrame with the resampled klines.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.aggregations.oversample">
+<span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">oversample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.aggregations.oversample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Expands a DataFrame of klines by calculating aggregated values for new columns
+from the start of the oversampled interval to each row.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>pd.DataFrame</em>) – The original DataFrame of klines. The index must be a DatetimeIndex.</p></li>
+<li><p><strong>new_interval</strong> (<em>str</em>) – The new frequency for oversampling. This can be any Binance frequency.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An expanded DataFrame with oversampled data.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -474,13 +517,13 @@ of the specified numeric column for each group and filling the remaining cells w
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.aggregations.dollar_bars">
-<span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">dollar_bars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.aggregations.dollar_bars" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.aggregations.</span></span><span class="sig-name descname"><span class="pre">dollar_bars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#handlers.aggregations.dollar_bars" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates Dollar (or quote) Bars OHLC bars from trades.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>trades</strong> (<em>pd.DataFrame</em>) – Expected binpan aggregated trades or atomic trades dataframe.</p></li>
-<li><p><strong>threshold</strong> (<em>int</em>) – Size of Dollar (or quote) threshold in bars to be compiled.</p></li>
+<li><p><strong>threshold</strong> (<em>float</em>) – Size of Dollar (or quote) threshold in bars to be compiled.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -722,7 +765,7 @@ threshold in other function.</p>
       <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
       <script src="_static/doctools.js"></script>
       <script src="_static/sphinx_highlight.js"></script>
-      <script src="_static/shibuya.js?v=2023.3.19"></script>
+      <script src="_static/shibuya.js?v=2023.6.8"></script>
       <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
 </body>

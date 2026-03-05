@@ -4,18 +4,18 @@ Tagging utils.
 
 """
 import pandas as pd
-from typing import Tuple
+
 import numpy as np
 
 from .exchange import get_info_dic, get_bases_dic, get_quotes_dic
 from .market import get_candles_by_time_stamps, parse_candles_to_dataframe
-from .logs import Logs
+from .logs import LogManager
 
-logger = Logs(filename='./logs/tags.log', name='tags', info_level='INFO')
+logger = LogManager(filename='./logs/tags.log', name='tags', info_level='INFO')
 
 
 def tag_value(serie: pd.Series,
-              value: int or float,
+              value: int | float,
               gt: bool = False,
               ge: bool = False,
               eq: bool = False,
@@ -56,7 +56,7 @@ def tag_value(serie: pd.Series,
     ret.loc[ret] = match_tag
     ret.loc[ret == False] = mismatch_tag
     if to_numeric:
-        return pd.to_numeric(arg=ret, downcast='integer')
+        return pd.to_numeric(arg=ret)
     else:
         return ret
 
@@ -87,24 +87,23 @@ def tag_comparison(serie_a: pd.Series,
     :param bool to_numeric: If true, if possible, downcast type until the most basic numeric type (integer)
     :return pd.Series: A serie with tags (argument) as values.
     """
-    ret = pd.Series(index=serie_a.index, dtype=type(match_tag))
-
     if gt:
-        ret = serie_a.gt(serie_b)
-    if ge:
-        ret = serie_a.ge(serie_b)
-    if eq:
-        ret = serie_a.eq(serie_b)
-    if le:
-        ret = serie_a.le(serie_b)
-    if lt:
-        ret = serie_a.lt(serie_b)
+        mask = serie_a.gt(serie_b)
+    elif ge:
+        mask = serie_a.ge(serie_b)
+    elif eq:
+        mask = serie_a.eq(serie_b)
+    elif le:
+        mask = serie_a.le(serie_b)
+    elif lt:
+        mask = serie_a.lt(serie_b)
+    else:
+        mask = pd.Series(False, index=serie_a.index)
 
-    ret.loc[ret] = match_tag
-    ret.loc[ret == False] = mismatch_tag
+    ret = pd.Series(np.where(mask, match_tag, mismatch_tag), index=serie_a.index)
 
     if to_numeric:
-        return pd.to_numeric(arg=ret, downcast='integer')
+        return pd.to_numeric(arg=ret)
     else:
         return ret
 
@@ -288,7 +287,7 @@ def evaluate_wallets(df_: pd.DataFrame,
                      evaluating_quote: str,
                      info_dic: dict = None,
                      suffix: str = ''
-                     ) -> Tuple[pd.Series, pd.Series, pd.Series]:
+                     ) -> tuple[pd.Series, pd.Series, pd.Series]:
     """
     Obtains total wallet values in a quote value through time.
 
@@ -376,7 +375,7 @@ def evaluate_wallets(df_: pd.DataFrame,
 def check_action_labels_for_backtesting(actions: pd.Series,
                                         label_in: int,
                                         label_out: int
-                                        ) -> Tuple[any, any]:
+                                        ) -> tuple[any, any]:
     """
     This function verify labels in actions series, if labels for in actions and labels for out actions are or not the specified ones. Also
      if there are any other label it will throw an exception.
@@ -485,11 +484,11 @@ def simple_backtesting(df: pd.DataFrame,
 
 
 def backtesting(df: pd.DataFrame,
-                actions_column: pd.Series or str,
-                target_column: str or pd.Series,
-                stop_loss_column: str or pd.Series,
-                entry_filter_column: str or pd.Series = None,
-                priced_actions_col: str or pd.Series = 'Open',
+                actions_column: pd.Series | str,
+                target_column: str | pd.Series,
+                stop_loss_column: str | pd.Series,
+                entry_filter_column: str | pd.Series = None,
+                priced_actions_col: str | pd.Series = 'Open',
                 fixed_target: bool = True,
                 fixed_stop_loss: bool = True,
                 base: float = 0,
@@ -673,11 +672,11 @@ def backtesting(df: pd.DataFrame,
 
 
 def backtesting_short(df: pd.DataFrame,
-                      actions_column: pd.Series or str,
-                      target_column: str or pd.Series,
-                      stop_loss_column: str or pd.Series,
-                      entry_filter_column: str or pd.Series = None,
-                      priced_actions_col: str or pd.Series = 'Open',
+                      actions_column: pd.Series | str,
+                      target_column: str | pd.Series,
+                      stop_loss_column: str | pd.Series,
+                      entry_filter_column: str | pd.Series = None,
+                      priced_actions_col: str | pd.Series = 'Open',
                       fixed_target: bool = True,
                       fixed_stop_loss: bool = True,
                       base: float = 10,
@@ -855,3 +854,70 @@ def backtesting_short(df: pd.DataFrame,
                                                        suffix=suffix)
 
     return pd.DataFrame([base_serie, quote_serie, merged, resulting_actions, executed_prices]).T
+
+
+######################
+# dataframe labeling #
+######################
+
+
+def add_future_index_threshold_label(data: pd.DataFrame, thresholds: list = [0.002, -0.002, 0.006, -0.006], max_lookahead=30):
+    """
+    Adds next indices for each kline touching prices percentage thresholds as usable target labels for a given threshold to a DataFrame.
+
+    :param data: DataFrame containing the OHLC (Open, High, Low, Close) price data.
+    :param thresholds: List of thresholds for which to create future action labels. Positive values indicate a
+                       price increase, negative values indicate a price decrease.
+    :param max_lookahead: Maximum number of bars to look ahead to determine if a threshold is met. Default is 30.
+    :return: DataFrame with additional columns for each threshold. Each column contains the number of bars until
+             the price change defined by the threshold is met. If the price change is not met within max_lookahead
+             bars, the value is NaN.
+    """
+    df = data.copy(deep=True)
+    close_prices = df['Close'].values
+    high_prices = df['High'].values
+    low_prices = df['Low'].values
+
+    # Crear nuevas columnas para los umbrales
+    for threshold in thresholds:
+        col_name = 'future_' + str(threshold)
+        df[col_name] = np.nan
+
+        # Calcular los precios objetivo
+        target_prices = close_prices * (1 + threshold)
+        print(f"Adding threshold: {threshold}")
+        # Para cada fila en el DataFrame
+        for i in range(len(df)):
+
+            # Si el umbral es positivo, buscar en los precios altos, de lo contrario en los precios bajos
+            if threshold > 0:
+                # Obtener los índices donde los precios altos son mayores o iguales al precio objetivo
+                indices = np.where(high_prices[i + 1:i + 1 + max_lookahead] >= target_prices[i])[0]
+            else:
+                # Obtener los índices donde los precios bajos son menores o iguales al precio objetivo
+                indices = np.where(low_prices[i + 1:i + 1 + max_lookahead] <= target_prices[i])[0]
+
+            # Si se encontraron índices
+            if len(indices) > 0:
+                # Guardar el índice de la fila en el futuro
+                # df.at[df.index[i], col_name] = df.index[i + indices[0] + 1]
+                df.at[df.index[i], col_name] = indices[0] + 1
+    return df
+
+
+def is_alternating(lst: list) -> bool:
+    """
+    Verify if a list is alternating 1 to -1 or -1 to 1 alternatively.
+    :param lst: A list of integers.
+    :return:
+    """
+    last_non_zero = 0
+    for num in lst:
+        # Si el número es cero, continuar con el siguiente número
+        if num == 0:
+            continue
+        # Si el número es igual al último valor no cero, la lista no es alternante
+        if num == last_non_zero:
+            return False
+        last_non_zero = num
+    return True

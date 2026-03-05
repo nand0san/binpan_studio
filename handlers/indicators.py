@@ -4,25 +4,137 @@ BinPan own indicators and utils.
 
 """
 import pandas as pd
-from tqdm import tqdm
 import pytz
 import numpy as np
 
+import os
+import multiprocessing
+
+# from .starters import is_running_in_jupyter
 from .time_helper import convert_milliseconds_to_time_zone_datetime
 from .time_helper import pandas_freq_tick_interval
+from .tags import is_alternating
+from .logs import LogManager
+
+import warnings
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    from tqdm.autonotebook import tqdm
+
+# this is to avoid the error: "RuntimeError: can't set attribute" when using multiprocessing
+cpus = multiprocessing.cpu_count() // 2
+os.environ["LOKY_MAX_CPU_COUNT"] = str(cpus)
+
+indicator_logger = LogManager(filename='./logs/indicators.log', name='indicators', info_level='INFO')
 
 
 ##############
 # INDICATORS #
 ##############
 
-def ichimoku(data: pd.DataFrame,
-             tenkan: int = 9,
-             kijun: int = 26,
-             chikou_span: int = 26,
-             senkou_cloud_base: int = 52,
-             suffix: str = '',
-             ) -> pd.DataFrame:
+
+def alternating_fractal_indicator(df: pd.DataFrame, max_period: int = None, suffix: str = "") -> pd.DataFrame | None:
+    """
+    Obtains the minim value for fractal_w periods as fractal is pure alternating max to mins. In other words, max and mins alternates
+     in regular rhythm without any tow max or two mins consecutively.
+
+    This custom indicator shows the minimum period in finding a pure alternating fractal. It is some kind of volatility in price
+     indicator, the most period needed, the most volatile price.
+
+    :param pd.DataFrame df: BinPan Symbol dataframe.
+    :param int max_period: Default is len of df. This method will check from 2 to the max period value to find a puer alternating max to
+     mins.
+    :param str suffix: A decorative suffix for the name of the column created.
+    :return pd.DataFrame: A dataframe with two columns, one with 1 or -1 for local max or local min to tag, and other with price values for
+     that points. If not found, it will return None.
+
+    .. image:: images/indicators/fractal_w.png
+        :width: 1000
+    """
+    fractal = None
+    if not max_period:
+        max_period = len(df)
+    print("Searching for pure alternating fractal...")
+    for i in tqdm(range(2, max_period)):
+        fractal = fractal_w_indicator(df=df, period=i, suffix=suffix, fill_with_zero=True)
+        max_min = fractal[f"Fractal_W_{i}"].fillna(0)
+        if is_alternating(lst=max_min.tolist()):
+            print(f"Pure alternating fractal found at period={i}")
+            break
+        else:
+            fractal = None
+    return fractal
+
+
+def fractal_trend_indicator(df: pd.DataFrame,
+                            period: int = None,
+                            fractal: pd.DataFrame = None,
+                            suffix: str = "") -> tuple | None:
+    """
+    Obtains the trend of the fractal_w indicator. It will return maximums diff mean and minimums diff mean also in a tuple.
+
+    :param pd.DataFrame df: BinPan Symbol dataframe.
+    :param int period: Period to obtain fractal_w. Default is len df.
+    :param pd.DataFrame fractal: Optional. If not provided, it will be calculated.
+    :param str suffix: A decorative suffix for the name of the column created.
+    :return tuple: Max min diffs mean and Min diffs mean.
+
+    .. image:: images/indicators/fractal_w.png
+        :width: 1000
+    """
+    if not period:
+        period = len(df)
+    if type(fractal) != pd.DataFrame:
+        fractal = alternating_fractal_indicator(df=df, max_period=period, suffix=suffix)
+    if type(fractal) != pd.DataFrame:
+        return
+    max_min_col, values_col = fractal.columns[0], fractal.columns[1]
+    max_prices = fractal.loc[fractal[max_min_col] == 1][values_col].reindex(df.index).ffill()
+    min_prices = fractal.loc[fractal[max_min_col] == -1][values_col].reindex(df.index).ffill()
+    max_trend = max_prices.diff().replace(0, np.nan)
+    min_trend = min_prices.diff().replace(0, np.nan)
+    print(f"Maximum_max_diff={max_trend.max()}")
+    print(f"Minimum_max_diff={max_trend.min()}")
+    print(f"Maximum_min_diff={min_trend.max()}")
+    print(f"Minimum_min_diff={min_trend.min()}")
+    return max_trend.mean(), min_trend.mean()
+
+
+def calculate_fractal_trend_on_flags(df: pd.DataFrame, flags: pd.Series, period: int = None, suffix: str = "") -> list[tuple]:
+    """
+    Applies the fractal_trend_indicator function to the dataframe df for each index flagged with 1 in the flags series.
+
+    This function is designed to work with a DatetimeIndex.
+
+    :param pd.DataFrame df: BinPan Symbol dataframe.
+    :param pd.Series flags: Series containing flags (1 for indices to include).
+    :param int period: Number of periods (rows) to look back for calculating fractal trend. Defaults to length of df.
+    :param str suffix: A decorative suffix for the name of the column created.
+    :return: A list of tuples with the results of fractal_trend_indicator for each flagged index.
+    """
+    results = []
+    # Ensure flags index aligns with df index
+    # flags = flags.reindex(df.index, fill_value=0)
+    flagged_indices = flags[flags == 1].index
+
+    for flag_date in flagged_indices:
+        print(f"\nCalculating fractal trend for {flag_date}")
+        # Find the starting index for the period
+        start_period_index = df.index.get_loc(flag_date) - period
+        if start_period_index < 0:
+            continue
+
+        # Obtain the molecule dataframe based on the current index and period
+        molecule_df = df.iloc[start_period_index:df.index.get_loc(flag_date)]
+        # Calculate the fractal trend indicator for this molecule
+        trend_result = fractal_trend_indicator(df=molecule_df, period=period, suffix=suffix)
+        results.append((flag_date, trend_result))
+
+    return results
+
+
+def ichimoku(data: pd.DataFrame, tenkan: int = 9, kijun: int = 26, chikou_span: int = 26, senkou_cloud_base: int = 52,
+             suffix: str = '', ) -> pd.DataFrame:
     """
     The Ichimoku Cloud is a collection of technical indicators that show support and resistance levels, as well as momentum and trend
     direction. It does this by taking multiple averages and plotting them on a chart. It also uses these figures to compute a “cloud”
@@ -43,7 +155,7 @@ def ichimoku(data: pd.DataFrame,
 
        .. code-block:: python
 
-            from binpan import binpan
+            import binpan
 
             sym = binpan.Symbol(symbol='LUNCBUSD', tick_interval='1m', limit=500)
             sym.ichimoku()
@@ -87,19 +199,15 @@ def ichimoku(data: pd.DataFrame,
     if suffix:
         suffix = '_' + suffix
 
-    ret.columns = [f"Ichimoku_tenkan_{tenkan}" + suffix,
-                   f"Ichimoku_kijun_{kijun}" + suffix,
-                   f"Ichimoku_chikou_span{chikou_span}" + suffix,
-                   f"Ichimoku_cloud_{tenkan}_{kijun}" + suffix,
-                   f"Ichimoku_cloud_{senkou_cloud_base}" + suffix]
+    ret.columns = [f"Ichimoku_tenkan_{tenkan}" + suffix, f"Ichimoku_kijun_{kijun}" + suffix, f"Ichimoku_chikou_span{chikou_span}" + suffix,
+                   f"Ichimoku_cloud_{tenkan}_{kijun}" + suffix, f"Ichimoku_cloud_{senkou_cloud_base}" + suffix]
     return ret
 
 
-def ker(close: pd.Series,
-        window: int,
-        ) -> pd.Series:
+def ker(close: pd.Series, window: int, ) -> pd.Series:
     """
-    Kaufman's Efficiency Ratio based in: https://stackoverflow.com/questions/36980238/calculating-kaufmans-efficiency-ratio-in-python-with-pandas
+    Kaufman's Efficiency Ratio based in: https://stackoverflow.com/questions/36980238/calculating-kaufmans-efficiency-ratio-in-python
+    -with-pandas
 
     :param pd.Series close: Close prices serie.
     :param int window: Window to check indicator.
@@ -111,32 +219,32 @@ def ker(close: pd.Series,
     return direction / volatility
 
 
-def fractal_w(data: pd.DataFrame,
-              period=2,
-              merged: bool = True,
-              suffix: str = '',
-              fill_with_zero: bool = None,
-              ) -> pd.DataFrame:
+def fractal_w_indicator(df: pd.DataFrame, period=2, merged: bool = True, suffix: str = '', fill_with_zero: bool = None, ) -> pd.DataFrame:
     """
     The fractal indicator is based on a simple price pattern that is frequently seen in financial markets. Outside of trading, a fractal
     is a recurring geometric pattern that is repeated on all time frames. From this concept, the fractal indicator was devised.
     The indicator isolates potential turning points on a price chart. It then draws arrows to indicate the existence of a pattern.
 
-    https://www.investopedia.com/terms/f/fractal.asp
+        https://www.investopedia.com/terms/f/fractal.asp
 
-    From: https://codereview.stackexchange.com/questions/259703/william-fractal-technical-indicator-implementation
+        From: https://codereview.stackexchange.com/questions/259703/william-fractal-technical-indicator-implementation
 
-    :param pd.DataFrame data: BinPan dataframe with High prices.
+    :param pd.DataFrame df: BinPan dataframe with High prices.
     :param int period: Default is 2. Count of neighbour candles to match max or min tags.
     :param bool merged: If True, values are merged into one pd.Serie. minimums overwrite maximums in case of coincidence.
     :param str suffix: A decorative suffix for the name of the column created.
     :param bool fill_with_zero: If true fills nans with zeros. Its better to plot with binpan.
-    :return pd.Series: A serie with 1 or -1 for local max or local min to tag.
+    :return pd.DataFrame: A dataframe with two columns, one with 1 or -1 for local max or local min to tag, and other with price values for
+     that points.
+
+    .. image:: images/indicators/fractal_w.png
+        :width: 1000
     """
+    df = df.copy(deep=True)
     window = 2 * period + 1  # default 5
 
-    mins = data['Low'].rolling(window, center=True).apply(lambda x: x[period] == min(x), raw=True)
-    maxs = data['High'].rolling(window, center=True).apply(lambda x: x[period] == max(x), raw=True)
+    mins = df['Low'].rolling(window, center=True).apply(lambda x: x[period] == min(x), raw=True)
+    maxs = df['High'].rolling(window, center=True).apply(lambda x: x[period] == max(x), raw=True)
 
     mins = mins.replace({0: np.nan})
     maxs = maxs.replace({0: np.nan})
@@ -153,9 +261,9 @@ def fractal_w(data: pd.DataFrame,
     min_idx = mins.dropna().index
     max_idx = maxs.dropna().index
 
-    values = pd.Series(np.nan, index=data.index)
-    values.loc[min_idx] = data['Low']
-    values.loc[max_idx] = data['High']
+    values = pd.Series(np.nan, index=df.index)
+    values.loc[min_idx] = df['Low']
+    values.loc[max_idx] = df['High']
     values.name = f"Fractal_W_{period}_values" + suffix
 
     if not merged:
@@ -175,25 +283,16 @@ def fractal_w(data: pd.DataFrame,
 
 def support_resistance_volume(df, num_bins=100, price_col='Close', volume_col='Volume', threshold=90):
     """
-    Calculate support and resistance levels based on volume and prices in the given dataframe.
+    Calculates support and resistance levels based on volume and prices in the given dataframe.
 
-    Parameters
-    ----------
-    df : pandas.DataFrame
-        The dataframe containing price and volume data.
-    num_bins : int, optional
-        The number of bins to use for accumulating volume, by default 100.
-    price_col : str, optional
-        The name of the column containing price data, by default 'Close'.
-    volume_col : str, optional
-        The name of the column containing volume data, by default 'Volume'.
-    threshold : int
-        Percentil to show most traded levels. Default is 90.
-
-    Returns
-    -------
-    list
-        A sorted list of support and resistance levels.
+    :param pd.DataFrame df: The dataframe containing price and volume data.
+    :param int num_bins: Optional. The number of bins to use for accumulating volume. Default is 100.
+    :param str price_col: Optional. The name of the column containing price data. Default is 'Close'.
+    :param str volume_col: Optional. The name of the column containing volume data. Default is 'Volume'.
+    :param int threshold: Percentil to show most traded levels. Default is 90. The threshold variable filters the volume levels
+     considered when calculating support and resistance levels. A higher threshold results in fewer levels, based on higher transaction
+     volumes, while a lower threshold yields more levels, based on a broader range of transaction volumes.
+    :return list: A sorted list of support and resistance levels.
     """
 
     # Calculate the price range
@@ -222,13 +321,114 @@ def support_resistance_volume(df, num_bins=100, price_col='Close', volume_col='V
     return sorted(support_resistance_levels)
 
 
+##############################
+# HIGH OF THE DAY INDICATORS #
+##############################
+
+
+def count_smaller_values_backward(s: pd.Series | list) -> pd.Series:
+    """
+    Calcula el número de valores que cada entrada en la serie supera hacia atrás
+    hasta encontrar un valor superior o llegar al inicio de la serie.
+
+    :param s: Serie de pandas o lista de números.
+    :return: Serie de pandas con el número de valores que cada entrada supera hacia atrás.
+    """
+    if isinstance(s, list):
+        s = pd.Series(s)
+
+    # Inicializar una serie para almacenar los resultados
+    result = pd.Series(index=s.index, dtype=int)
+
+    # Calcular el número de valores que cada entrada supera hacia atrás
+    for i in range(len(s)):
+        count = 0
+        for j in range(i - 1, -1, -1):
+            if s.iloc[j] > s.iloc[i]:
+                break
+            count += 1
+        result.iloc[i] = count
+
+    return result
+
+
+def count_larger_values_backward(s: pd.Series | list) -> pd.Series:
+    """
+    Calcula el número de valores que son superiores a cada entrada en la serie hacia atrás
+    hasta encontrar un valor igual o menor o llegar al inicio de la serie.
+
+    :param s: Serie de pandas o lista de números.
+    :return: Serie de pandas con el número de valores que son superiores a cada entrada hacia atrás.
+    """
+    if isinstance(s, list):
+        s = pd.Series(s)
+
+    # Inicializar una serie para almacenar los resultados
+    result = pd.Series(index=s.index, dtype=int)
+
+    # Calcular el número de valores superiores a cada entrada hacia atrás
+    for i in range(len(s)):
+        count = 0
+        for j in range(i - 1, -1, -1):
+            if s.iloc[j] <= s.iloc[i]:
+                break
+            count += 1
+        result.iloc[i] = count
+
+    return result
+
+
+def rolling_max_with_steps_back(ser: pd.Series, window: int, pct_diff: bool = True) -> (pd.Series, pd.Series):
+    """
+    Calculate the rolling maximum and the steps back to the maximum for each point in the series.
+
+    Parameters:
+    series (pd.Series): The time series of prices.
+    window (int): The rolling window size.
+    pct_result (bool): If True, the maximum values are returned as percentages instead of absolute values (default True).
+
+    Returns:
+    pd.Series: A series of the rolling maximum values.
+    pd.Series: A series indicating the number of steps back to the maximum value within the window.
+    """
+    if pct_diff:
+        # rolling_max = ser.rolling(window=window).max() / ser - 1
+        rolling_max = ser / ser.rolling(window=window).max() - 1
+    else:
+        rolling_max = ser.rolling(window=window).max()
+    max_indices = ser.rolling(window=window).apply(lambda x: np.where(x == x.max())[0][-1], raw=False)
+    steps_back = window - 1 - max_indices
+    return rolling_max, steps_back
+
+
+def rolling_min_with_steps_back(ser: pd.Series, window: int, pct_diff: bool = True) -> (pd.Series, pd.Series):
+    """
+    Calculate the rolling minimum and the steps back to the minimum for each point in the series.
+
+    Parameters:
+    series (pd.Series): The time series of prices.
+    window (int): The rolling window size.
+    pct_result (bool): If True, the minimum values are returned as percentages instead of absolute values (default True).
+
+    Returns:
+    pd.Series: A series of the rolling minimum values.
+    pd.Series: A series indicating the number of steps back to the minimum value within the window.
+    """
+    if pct_diff:
+        # rolling_min = series.rolling(window=window).min() / series - 1
+        rolling_min = ser / ser.rolling(window=window).min() - 1
+    else:
+        rolling_min = ser.rolling(window=window).min()
+    min_indices = ser.rolling(window=window).apply(lambda x: np.where(x == x.min())[0][-1], raw=False)
+    steps_back = window - 1 - min_indices
+    return rolling_min, steps_back
+
+
 ####################
 # INDICATORS UTILS #
 ####################
 
-def split_serie_by_position(serie: pd.Series,
-                            splitter_serie: pd.Series,
-                            fill_with_zeros: bool = True) -> pd.DataFrame:
+def split_serie_by_position(serie: pd.Series, splitter_serie: pd.Series, fill_with_zeros: bool = True) -> pd.DataFrame:
     """
     Splits a serie by values of other serie in four series by relative positions for plotting colored clouds with plotly.
 
@@ -300,10 +500,7 @@ def df_splitter(data: pd.DataFrame, up_column: str, down_column: str) -> list:
     return dfs
 
 
-def zoom_cloud_indicators(plot_splitted_serie_couples: dict,
-                          main_index: list,
-                          start_idx: int,
-                          end_idx: int) -> dict:
+def zoom_cloud_indicators(plot_splitted_serie_couples: dict, main_index: list, start_idx: int, end_idx: int) -> dict:
     """
     It zooms the cloud indicators in an index interval for a plot zoom.
 
@@ -314,14 +511,17 @@ def zoom_cloud_indicators(plot_splitted_serie_couples: dict,
     :return dict: All indicators cut.
     """
     try:
-        assert start_idx < end_idx <= len(main_index)
+        if end_idx:
+            assert start_idx < end_idx <= len(main_index)
     except AssertionError:
-        raise Exception(
-            f"BinPan Plot Error: Zoom index not valid. Not start={start_idx} < end={end_idx} < len={len(main_index)}")
+        raise Exception(f"BinPan Plot Error: Zoom index not valid. Not start={start_idx} < end={end_idx} < len={len(main_index)}")
 
     ret = {}
     my_start = main_index[start_idx]
-    my_end = main_index[end_idx]
+    if end_idx:
+        my_end = main_index[end_idx]
+    else:
+        my_end = None
     for k, v in plot_splitted_serie_couples.items():
         splits = v[2]
         cut_splits = []
@@ -362,17 +562,15 @@ def ffill_indicator(serie: pd.Series, window: int = 1):
 # From trades #
 ###############
 
-def reversal_candles(trades: pd.DataFrame,
-                     decimal_positions: int,
-                     time_zone: str,
-                     min_height: int = 7,
+def reversal_candles(trades: pd.DataFrame, decimal_positions: int, time_zone: str, min_height: int = 7,
                      min_reversal: int = 4) -> pd.DataFrame:
     """
     Generate reversal candles for reversal charts:
        https://atas.net/atas-possibilities/charts/how-to-set-reversal-charts-for-finding-the-market-reversal/
 
     :param pd.Series trades: A dataframe with trades sizes, side and prices.
-    :param int decimal_positions: Because this function uses integer numbers for prices, is needed to convert prices. Just steps are relevant.
+    :param int decimal_positions: Because this function uses integer numbers for prices, is needed to convert prices. Just steps are
+     relevant.
     :param str time_zone: A time zone like "Europe/Madrid".
     :param int min_height: Minimum candles height in pips.
     :param int min_reversal: Maximum reversal to close the candles
@@ -381,7 +579,7 @@ def reversal_candles(trades: pd.DataFrame,
      Example:
         .. code-block:: python
 
-           from binpan import binpan
+           import binpan
 
             ltc = binpan.Symbol(symbol='ltcbtc',
                                 tick_interval='5m',
@@ -447,7 +645,8 @@ def reversal_candles(trades: pd.DataFrame,
             height = 0
             prices_pool = []
 
-        # reversal_control.append((max(prices_pool, default=current_open) - current_price, min(prices_pool, default=current_open) - current_price))
+        # reversal_control.append((max(prices_pool, default=current_open) - current_price, min(prices_pool, default=current_open) -
+        # current_price))
 
     candles = pd.Series(data=candle_ids, index=trades.index, name='Candle')
     highs = pd.Series(data=high, index=trades.index, name='High')
@@ -463,8 +662,8 @@ def reversal_candles(trades: pd.DataFrame,
 
     ret = pd.concat(data, axis=1, keys=[s.name for s in data])
 
-    klines = ret.groupby(['Candle']).agg(
-        {'Open': 'first', 'High': 'last', 'Low': 'last', 'Close': 'last', 'Quantity': 'sum', 'Timestamp': 'first'})
+    klines = ret.groupby(['Candle']).agg({'Open': 'first', 'High': 'last', 'Low': 'last', 'Close': 'last', 'Quantity': 'sum',
+                                          'Timestamp': 'first'})
 
     date_index = klines['Timestamp'].apply(convert_milliseconds_to_time_zone_datetime, timezoned=time_zone)
     klines.set_index(date_index, inplace=True)
@@ -478,147 +677,830 @@ def reversal_candles(trades: pd.DataFrame,
     return klines
 
 
-def repeat_prices_by_quantity(data: pd.DataFrame, epsilon_quantity: float) -> np.ndarray:
-    repeated_prices = []
-    for price, quantity in data[['Price', 'Quantity']].values:
-        repeat_count = int(-(quantity // -epsilon_quantity))  # ceil division
-        repeated_prices.extend([price] * repeat_count)
+# def repeat_prices_by_quantity_old(data: pd.DataFrame, epsilon_quantity: float, price_col="Price", qty_col='Quantity') -> np.ndarray:
+#     """
+#     Repeat prices by quantity to use in K-means clustering.
+#
+#     :param pd.DataFrame data: A pandas DataFrame with trades or klines, containing a 'Price', 'Quantity' columns and a 'Buyer was maker' column,
+#         if trades passed, else "Close", "Volume" and "Taker buy base volume"
+#     :param float epsilon_quantity: The epsilon quantity to use for repeating prices.
+#     :param str price_col: The name of the column containing price data. Default is 'Price'.
+#     :param str qty_col: The name of the column containing quantity data. Default is 'Quantity'.
+#     :return np.ndarray: A numpy array with the prices repeated by quantity.
+#     """
+#     quantities = np.ceil(data[qty_col].values / epsilon_quantity).astype(int)
+#     repeated_prices = np.repeat(data[price_col].values, quantities)
+#     return repeated_prices.reshape(-1, 1)
 
-    return np.array(repeated_prices).reshape(-1, 1)
+
+def repeat_prices_by_quantity(data: pd.DataFrame, price_col="Price", qty_col='Quantity', alt_qty_col='Quote quantity') -> np.ndarray:
+    """
+    Optimized version of repeating prices by quantity for K-means clustering, with a comparison between 'Quantity' and 'Quote quantity'
+    to choose the column with larger values for repeating prices.
+
+    :param pd.DataFrame data: A pandas DataFrame with trades or klines, containing 'Price', 'Quantity', and optionally 'Quote quantity' columns.
+    :param str price_col: The name of the column containing price data. Default is 'Price'.
+    :param str qty_col: The primary name of the column containing quantity data. Default is 'Quantity'.
+    :param str alt_qty_col: The alternative name of the column containing quantity data to compare with qty_col. Default is 'Quote quantity'.
+    :return np.ndarray: A numpy array with the prices repeated by the chosen quantity.
+    """
+    # Elegir la columna con valores más grandes para minimizar el error al pasar a int
+    if qty_col in data.columns and alt_qty_col in data.columns:
+        # Seleccionar una línea aleatoria para comparar los valores
+        random_index = np.random.randint(0, len(data))
+        if data[qty_col].iloc[random_index] < data[alt_qty_col].iloc[random_index]:
+            qty_col = alt_qty_col
+
+    # Asumiendo que los valores en la columna elegida pueden ser flotantes, redondear hacia abajo antes de convertir a enteros
+    quantities = np.floor(data[qty_col].values).astype(int)
+    repeated_prices = np.repeat(data[price_col].values, quantities)
+
+    return repeated_prices.reshape(-1, 1)
 
 
-def support_resistance_levels(data: pd.DataFrame, max_clusters: int = 10, by_quantity: float = None) -> tuple:
+def kmeans_custom_init(data: np.ndarray, max_clusters: int):
+    """
+    Generate initial centroids for K-means clustering with equally spaced values between min and max values in data.
+    :param data: A data array.
+    :param max_clusters: Max clusters expected.
+    :return: A numpy array with initial centroids.
+    """
+
+    min_value = np.min(data)
+    max_value = np.max(data)
+    # Genera un array equidistante entre min_price y max_price con longitud max_clusters
+    initial_centroids = np.linspace(min_value, max_value, max_clusters).reshape(-1, 1)
+    return initial_centroids
+
+
+def find_optimal_clusters(KMeans_lib, data: np.ndarray, max_clusters: int, quiet: bool = False,
+                          initial_centroids: list | np.ndarray = None, sample_weight: np.ndarray = None) -> int:
+    """
+    Find the optimal quantity of centroids for support and resistance methods using the elbow method.
+
+    :param KMeans_lib: A KMeans library to use.
+    :param data: A numpy array with the data to analyze.
+    :param max_clusters: Maximum number of clusters to consider.
+    :param bool quiet: If true, do not print progress bar.
+    :param list initial_centroids: Initial centroids to use optionally for faster results.
+    :param np.ndarray sample_weight: Optional sample weights for weighted KMeans.
+    :return: The optimal number of clusters (centroids) as an integer.
+    """
+
+    inertia = []
+    if quiet:
+        pbar = range(1, max_clusters + 1)
+    else:
+        pbar = tqdm(range(1, max_clusters + 1))
+    for n_clusters in pbar:
+        kmeans = KMeans_lib(n_clusters=n_clusters, n_init=10, random_state=0, init=initial_centroids).fit(data, sample_weight=sample_weight)
+        inertia.append(kmeans.inertia_)
+    return np.argmin(np.gradient(np.gradient(inertia))) + 1
+
+
+def support_resistance_levels(df: pd.DataFrame,
+                              max_clusters: int = 5,
+                              by_quantity: bool = None,
+                              by_klines=True,
+                              optimize_clusters_qty: bool = False) -> tuple:
     """
     Calculate support and resistance levels for a given set of trades using K-means clustering.
 
     .. image:: images/indicators/support_resistance.png
            :width: 1000
 
-    :param data: A pandas DataFrame with trade data, containing a 'Price', 'Quantity' columns and a 'Buyer was maker' column.
-    :param max_clusters: Maximum number of clusters to consider for finding the optimal number of centroids.
+    :param df: A pandas DataFrame with trades or klines, containing a 'Price', 'Quantity' columns and a 'Buyer was maker' column,
+     if trades passed, else "Close", "Volume" and "Taker buy base volume"
+    :param max_clusters: Maximum number of clusters to consider for finding the optimal number of centroids. Default: 5.
     :param float by_quantity: Count each price as many times the quantity contains a float of a the passed amount.
         Example: If a price 0.001 has a quantity of 100 and by_quantity is 0.1, quantity/by_quantity = 100/0.1 = 1000, then this prices
         is taken into account 1000 times instead of 1.
+    :param bool by_klines: If true, data is assumed to be klines.
+    :param bool optimize_clusters_qty: If true, find the optimal number of clusters to use for calculating support and resistance levels.
     :return: A tuple containing two lists: the first list contains the support levels, and the second list contains
         the resistance levels. Both lists contain float values.
     """
     try:
         from sklearn.cluster import KMeans
     except ImportError:
-        print(f"Please install sklearn: `pip install -U scikit-learn` to use Clustering")
+        indicator_logger.warning(f"Please install sklearn: `pip install -U scikit-learn` to use Clustering")
         return [], []
-    data = data.copy(deep=True)
 
-    def find_optimal_clusters(data: np.ndarray, max_clusters: int) -> int:
-        """
-        Find the optimal quantity of centroids for support and resistance methods using the elbow method.
+    df_ = df.copy(deep=True)
 
-        :param data: A numpy array with the data to analyze.
-        :param max_clusters: Maximum number of clusters to consider.
-        :return: The optimal number of clusters (centroids) as an integer.
-        """
+    # function core starts here
+    if not by_klines:
+        if by_quantity:
+            quantity = np.mean(df_['Quantity'])
+            df_["qty"] = (df_['Quantity'] / quantity).astype(int)
+        buy_data = df_.loc[df_['Buyer was maker'] == False]
+        sell_data = df_.loc[df_['Buyer was maker'] == True]
+        if by_quantity:
 
-        inertia = []
-        for n_clusters in tqdm(range(1, max_clusters + 1)):
-            kmeans = KMeans(n_clusters=n_clusters, n_init=10, random_state=0).fit(data)
-            inertia.append(kmeans.inertia_)
-        return np.argmin(np.gradient(np.gradient(inertia))) + 1
+            buy_prices = repeat_prices_by_quantity(data=buy_data, price_col="Price", qty_col="qty")
+            sell_prices = repeat_prices_by_quantity(data=sell_data, price_col="Price", qty_col="qty")
+            df_.drop(columns=["qty"], inplace=True)
+        else:
+            buy_prices = buy_data['Price'].values.reshape(-1, 1)
+            sell_prices = sell_data['Price'].values.reshape(-1, 1)
 
-    buy_data = data.loc[data['Buyer was maker'] == False]
-    sell_data = data.loc[data['Buyer was maker'] == True]
-    if by_quantity:
-        buy_prices = repeat_prices_by_quantity(data=buy_data, epsilon_quantity=by_quantity)
-        sell_prices = repeat_prices_by_quantity(data=buy_data, epsilon_quantity=by_quantity)
+        if len(buy_prices) == 0 and len(sell_prices) == 0:
+            indicator_logger.warning(f"There is no trade data to calculate support and resistance levels: {len(buy_prices)} buys and {len(sell_prices)} sells.")
+            return [], []
+
+        support_levels_list = []
+        resistance_levels_list = []
+
+        if len(buy_prices) > 0:
+            buy_centroids = kmeans_custom_init(data=buy_data['Price'].values, max_clusters=max_clusters)
+            if optimize_clusters_qty:
+                optimal_buy_clusters = find_optimal_clusters(KMeans_lib=KMeans, data=buy_prices, max_clusters=max_clusters, initial_centroids=buy_centroids)
+            else:
+                optimal_buy_clusters = max_clusters
+            kmeans_buy = KMeans(n_clusters=optimal_buy_clusters, n_init=1, init=buy_centroids).fit(buy_prices)
+            support_levels_list = np.sort(kmeans_buy.cluster_centers_, axis=0).flatten().tolist()
+            indicator_logger.info(f"Found {optimal_buy_clusters} support levels from buys.")
+        else:
+            indicator_logger.warning("No buy trades found, skipping support levels.")
+
+        if len(sell_prices) > 0:
+            sell_centroids = kmeans_custom_init(data=sell_data['Price'].values, max_clusters=max_clusters)
+            if optimize_clusters_qty:
+                optimal_sell_clusters = find_optimal_clusters(KMeans_lib=KMeans, data=sell_prices, max_clusters=max_clusters, initial_centroids=sell_centroids)
+            else:
+                optimal_sell_clusters = max_clusters
+            kmeans_sell = KMeans(n_clusters=optimal_sell_clusters, n_init=1, init=sell_centroids).fit(sell_prices)
+            resistance_levels_list = np.sort(kmeans_sell.cluster_centers_, axis=0).flatten().tolist()
+            indicator_logger.info(f"Found {optimal_sell_clusters} resistance levels from sells.")
+        else:
+            indicator_logger.warning("No sell trades found, skipping resistance levels.")
+
+        return support_levels_list, resistance_levels_list
+
     else:
-        buy_prices = buy_data['Price'].values.reshape(-1, 1)
-        sell_prices = sell_data['Price'].values.reshape(-1, 1)
-
-    if len(buy_prices) == 0 and len(sell_prices) == 0:
-        print("There is not enough trade data to calculate support and resistance levels.")
-        return [], []
-
-    print("Clustering data...")
-    optimal_buy_clusters = find_optimal_clusters(buy_prices, max_clusters)
-    optimal_sell_clusters = find_optimal_clusters(sell_prices, max_clusters)
-
-    print(
-        f"Found {optimal_buy_clusters} support levels from buys and {optimal_sell_clusters} resistance levels from sells.")
-
-    kmeans_buy = KMeans(n_clusters=optimal_buy_clusters, n_init=10).fit(buy_prices)
-    kmeans_sell = KMeans(n_clusters=optimal_sell_clusters, n_init=10).fit(sell_prices)
-
-    support_levels = np.sort(kmeans_buy.cluster_centers_, axis=0)
-    resistance_levels = np.sort(kmeans_sell.cluster_centers_, axis=0)
-
-    return support_levels.flatten().tolist(), resistance_levels.flatten().tolist()
+        indicator_logger.info("Calculating support and resistance levels from klines in simple mode...")
+        support_levels = support_resistance_levels_merged(df=df_,
+                                                          by_klines=True,
+                                                          max_clusters=max_clusters,
+                                                          by_quantity=by_quantity,
+                                                          optimize_clusters_qty=optimize_clusters_qty)
+        return support_levels, []
 
 
-def repeat_timestamps_by_quantity(data: pd.DataFrame, epsilon_quantity: float) -> np.ndarray:
-    repeated_prices = []
-    for price, quantity, timestamp in data[['Price', 'Quantity', 'Timestamp']].values:
-        repeat_count = int(-(quantity // -epsilon_quantity))  # ceil division
-        repeated_prices.extend([timestamp] * repeat_count)
-    return np.array(repeated_prices).reshape(-1, 1)
-
-
-def time_active_zones(data: pd.DataFrame, max_clusters: int = 10, by_quantity: float = None) -> tuple:
+def _get_prices_and_weights(df: pd.DataFrame, by_klines: bool, by_quantity: bool) -> tuple:
     """
-    Calculate active points in time by clustering timestamps of trades.
+    Extract price array and optional sample weights for KMeans clustering.
 
-    .. image:: images/indicators/support_resistance.png
-           :width: 1000
+    Uses sample_weight instead of np.repeat to avoid MemoryError with large volumes.
 
-    :param data: A pandas DataFrame with trade data, containing a 'Price', 'Timestamp', 'Quantity' columns and a 'Buyer was maker' column.
-    :param max_clusters: Maximum number of clusters to consider for finding the optimal number of centroids.
-    :param float by_quantity: Count each price as many times the quantity contains a float of a the passed amount.
-        Example: If a price 0.001 has a quantity of 100 and by_quantity is 0.1, quantity/by_quantity = 100/0.1 = 1000, then this prices
-        is taken into account 1000 times instead of 1.
-    :return: A tuple containing the most traded centroides timestamps..
+    :param pd.DataFrame df: DataFrame with trades or klines data.
+    :param bool by_klines: If true, use kline columns (Close, Trades/Quote volume).
+    :param bool by_quantity: If true, return quantity-based weights.
+    :return tuple: (prices as 2D array, sample_weight array or None).
+    """
+    if by_klines:
+        prices = df['Close'].values.reshape(-1, 1)
+        if by_quantity:
+            # elegir la columna con valores más grandes para mejor ponderación
+            qty_col, alt_col = 'Trades', 'Quote volume'
+            if qty_col in df.columns and alt_col in df.columns:
+                random_idx = np.random.randint(0, len(df))
+                if df[qty_col].iloc[random_idx] < df[alt_col].iloc[random_idx]:
+                    qty_col = alt_col
+            weights = df[qty_col].values.astype(float)
+        else:
+            weights = None
+    else:
+        prices = df['Price'].values.reshape(-1, 1)
+        if by_quantity:
+            qty_col, alt_col = 'Quantity', 'Quote quantity'
+            if qty_col in df.columns and alt_col in df.columns:
+                random_idx = np.random.randint(0, len(df))
+                if df[qty_col].iloc[random_idx] < df[alt_col].iloc[random_idx]:
+                    qty_col = alt_col
+            weights = df[qty_col].values.astype(float)
+        else:
+            weights = None
+    return prices, weights
+
+
+def support_resistance_levels_merged(df: pd.DataFrame,
+                                     by_klines: bool,
+                                     max_clusters: int = 5,
+                                     by_quantity: float = True,
+                                     optimize_clusters_qty: bool = False):
+    """
+    Calculate support and resistance levels merged for a given set of trades using K-means clustering.
+
+    Uses ``sample_weight`` in KMeans instead of repeating prices, avoiding MemoryError with large volumes.
+
+    :param df: A pandas DataFrame with trades or klines, containing a 'Price', 'Quantity' columns or "Close", "Volume".
+    :param by_klines: If true, assume data is from klines.
+    :param max_clusters: Quantity of clusters to consider initially. Default: 5.
+    :param by_quantity: If true, use quantity to weight prices. It gives more importance to prices with more quantity.
+    :param optimize_clusters_qty: If true, find the optimal number of clusters to use for calculating support and resistance levels.
+    :return: A list containing the support and resistance levels merged. It would be just levels.
     """
     try:
         from sklearn.cluster import KMeans
     except ImportError:
-        print(f"Please install sklearn: `pip install -U scikit-learn` to use Clustering")
+        indicator_logger.warning(f"Please install sklearn: `pip install -U scikit-learn` to use Clustering")
         return [], []
-    data = data.copy(deep=True)
 
-    def find_optimal_clusters(data: np.ndarray, max_clusters: int) -> int:
-        """
-        Find the optimal quantity of centroids for support and resistance methods using the elbow method.
+    df_ = df.copy(deep=True)
+    prices, weights = _get_prices_and_weights(df_, by_klines=by_klines, by_quantity=by_quantity)
+    initial_centroids = kmeans_custom_init(data=prices.ravel(), max_clusters=max_clusters)
 
-        :param data: A numpy array with the data to analyze.
-        :param max_clusters: Maximum number of clusters to consider.
-        :return: The optimal number of clusters (centroids) as an integer.
-        """
+    if len(prices) == 0:
+        indicator_logger.warning(f"There is no data to calculate support and resistance merged levels: {len(prices)}")
+        return [], []
 
-        inertia = []
-        for n_clusters in tqdm(range(1, max_clusters + 1)):
-            kmeans = KMeans(n_clusters=n_clusters, n_init=10, random_state=0).fit(data)
-            inertia.append(kmeans.inertia_)
-        return np.argmin(np.gradient(np.gradient(inertia))) + 1
+    indicator_logger.warning("Clustering data...")
 
-    buy_data = data.loc[data['Buyer was maker'] == False]
-    sell_data = data.loc[data['Buyer was maker'] == True]
-    if by_quantity:
-        buy_timestamps = repeat_timestamps_by_quantity(data=buy_data, epsilon_quantity=by_quantity)
-        sell_timestamps = repeat_timestamps_by_quantity(data=buy_data, epsilon_quantity=by_quantity)
+    if optimize_clusters_qty:
+        optimal_clusters = find_optimal_clusters(KMeans_lib=KMeans, data=prices, max_clusters=max_clusters,
+                                                 initial_centroids=initial_centroids, sample_weight=weights)
+        indicator_logger.info(f"Found {optimal_clusters} levels.")
     else:
-        buy_timestamps = buy_data['Timestamp'].values.reshape(-1, 1)
-        sell_timestamps = sell_data['Timestamp'].values.reshape(-1, 1)
+        optimal_clusters = max_clusters
 
-    if len(buy_timestamps) == 0 and len(sell_timestamps) == 0:
-        print("There is not enough trade data to calculate time activity clusters.")
-        return [], []
-    print("Clustering data...")
-    optimal_buy_clusters = find_optimal_clusters(buy_timestamps, max_clusters)
-    optimal_sell_clusters = find_optimal_clusters(sell_timestamps, max_clusters)
+    kmeans_result = KMeans(n_clusters=optimal_clusters, n_init=1, init=initial_centroids).fit(prices, sample_weight=weights)
+    levels = np.sort(kmeans_result.cluster_centers_, axis=0)
+    return levels.flatten().tolist()
 
-    print(f"Found {optimal_buy_clusters} clusters from buys and {optimal_sell_clusters} clusters from sells.")
 
-    kmeans_buy = KMeans(n_clusters=optimal_buy_clusters, n_init=10).fit(buy_timestamps)
-    kmeans_sell = KMeans(n_clusters=optimal_sell_clusters, n_init=10).fit(sell_timestamps)
+def repeat_timestamps_by_quantity(df: pd.DataFrame,
+                                  epsilon_quantity: float,
+                                  buy_maker: bool = None,
+                                  buy_taker: bool = None,
+                                  trades_col_from_kline: str = "Trades") -> np.ndarray:
+    """
+    Repeat timestamps by quantity to give more importance to prices with more quantity. It detects if data is from trades or klines by
+    column names.
 
-    support_levels = np.sort(kmeans_buy.cluster_centers_, axis=0)
-    resistance_levels = np.sort(kmeans_sell.cluster_centers_, axis=0)
+    :param df: A pandas DataFrame with trades or klines, containing a 'Price', 'Quantity' columns or "Close", "Volume" respectively.
+    :param epsilon_quantity: Quantity to repeat timestamps by.
+    :param buy_maker: If true, use maker side volume.
+    :param buy_taker: If true, use taker side volume.
+    :param trades_col_from_kline: If true, use taker side volume.
+    :return:
+    """
+    data = df.copy()
+    repeated_timestamps = []
+    if 'Close' in data.columns:
+        if buy_maker:
+            data['Maker buy base volume'] = data['Volume'] - data['Taker buy base volume']
+            col = 'Maker buy base volume'
+        elif buy_taker:
+            col = 'Taker buy base volume'
+        else:
+            col = 'Volume'
+        # TODO: si los trades rulan dejamos esto como referencia para las klines
+        if trades_col_from_kline:
+            repeated_timestamps = np.repeat(df["Close"], df[trades_col_from_kline])
+        else:
+            for price, quantity, timestamp in data[['Close', col, 'Open timestamp']].values:
+                repeat_count = int(-(quantity // -epsilon_quantity))  # ceil division
+                repeated_timestamps.extend([timestamp] * repeat_count)
+    else:  # entonces deben ser trades y Quantity aparecerá como columna a manejar
+        if buy_maker:
+            data_filtered = data.loc[data['Buyer was maker'] == True]
+        elif buy_taker:
+            data_filtered = data.loc[data['Buyer was maker'] == False]
+        else:
+            data_filtered = data
+        for price, quantity, timestamp in data_filtered[['Price', 'Quantity', 'Timestamp']].values:
+            repeat_count = int(-(quantity // -epsilon_quantity))  # ceil division
+            repeated_timestamps.extend([timestamp] * repeat_count)
+    return np.array(repeated_timestamps).reshape(-1, 1)
 
-    return support_levels.flatten().tolist(), resistance_levels.flatten().tolist()
+
+def time_active_zones(df: pd.DataFrame,
+                      max_clusters: int = 5,
+                      simple: bool = True,
+                      by_quantity: float = True,
+                      quiet=False,
+                      optimize_clusters_qty: bool = False) -> tuple:
+    """
+    Calculate support and resistance levels timestamp centroids for a given set of trades using K-means clustering.
+
+
+    :param df: A pandas DataFrame with trades or klines, containing a 'Price', 'Quantity' columns and a 'Buyer was maker' column,
+     if trades passed, else "Close", "Volume" and "Taker buy base volume"
+    :param max_clusters: Maximum number of clusters to consider for finding the optimal number of centroids. Default: 5.
+    :param bool simple: If true, use all trades to calculate time activity clusters.
+    :param float by_quantity: Count each price as many times the quantity contains a float of a the passed amount.
+        Example: If a price 0.001 has a quantity of 100 and by_quantity is 0.1, quantity/by_quantity = 100/0.1 = 1000, then this prices
+        is taken into account 1000 times instead of 1.
+    :param bool quiet: If true, do not print progress bar.
+    :param bool optimize_clusters_qty: If true, find the optimal number of clusters to use for calculating support and resistance levels.
+    :return: A tuple containing two lists: the first list contains the support levels, and the second list contains
+        the resistance levels. Both lists contain float values.
+
+    .. image:: images/indicators/time_action.png
+           :width: 1000
+
+    """
+    from sklearn.cluster import KMeans
+
+    # copy data to avoid side effects
+    df_, my_timestamps, buy_timestamps, sell_timestamps = df.copy(deep=True), [], [], []
+
+    # function core starts here
+    if not 'Close' in df_.columns:
+        initial_centroids = kmeans_custom_init(data=df_['Timestamp'].values, max_clusters=max_clusters)
+        if not simple:
+            buy_data = df_.loc[df_['Buyer was maker'] == False]
+            sell_data = df_.loc[df_['Buyer was maker'] == True]
+            buy_timestamps = repeat_timestamps_by_quantity(df=buy_data, epsilon_quantity=by_quantity, buy_maker=False, buy_taker=True)
+            sell_timestamps = repeat_timestamps_by_quantity(df=sell_data, epsilon_quantity=by_quantity, buy_maker=True, buy_taker=False)
+        else:
+            my_timestamps = repeat_timestamps_by_quantity(df=df_, epsilon_quantity=by_quantity, trades_col_from_kline="Trades")  # tomara todo el quantity
+    else:
+        initial_centroids = kmeans_custom_init(data=df_['Open timestamp'].values, max_clusters=max_clusters)
+        assert by_quantity, "If simple is true, by_quantity must be true too because KMEANS from evenly spaced klines has no sense."
+        if not simple:
+            buy_timestamps = repeat_timestamps_by_quantity(df=df_, epsilon_quantity=by_quantity, buy_maker=False, buy_taker=True, trades_col_from_kline="Trades")
+            sell_timestamps = repeat_timestamps_by_quantity(df=df_, epsilon_quantity=by_quantity, buy_maker=True, buy_taker=False, trades_col_from_kline="Trades")
+        else:
+            my_timestamps = repeat_timestamps_by_quantity(df=df_, epsilon_quantity=by_quantity, trades_col_from_kline="Trades")
+
+    if simple:
+        if len(my_timestamps) == 0:
+            print(f"There is not enough trade data to calculate time activity clusters: {len(my_timestamps)} timestamps.")
+            return [], []
+    else:
+        if len(buy_timestamps) == 0 and len(sell_timestamps) == 0:
+            print(f"There is not enough trade data to calculate time activity clusters: {len(buy_timestamps)} buys and "
+                  f"{len(sell_timestamps)} sells.")
+            return [], []
+
+    if not quiet:
+        print("Clustering data...")
+    optimal_buy_clusters, optimal_sell_clusters, optimal_clusters = max_clusters, max_clusters, max_clusters
+    if optimize_clusters_qty and not simple:
+        optimal_buy_clusters = find_optimal_clusters(KMeans_lib=KMeans, data=buy_timestamps, max_clusters=max_clusters, quiet=quiet,
+                                                     initial_centroids=initial_centroids)
+        optimal_sell_clusters = find_optimal_clusters(KMeans_lib=KMeans, data=sell_timestamps, max_clusters=max_clusters, quiet=quiet,
+                                                      initial_centroids=initial_centroids)
+        print(f"Found {optimal_buy_clusters} clusters from buys timestamps and {optimal_sell_clusters} clusters from sells timestamps.")
+    elif optimize_clusters_qty and simple:
+        optimal_clusters = find_optimal_clusters(KMeans_lib=KMeans, data=my_timestamps, max_clusters=max_clusters, quiet=quiet,
+                                                 initial_centroids=initial_centroids)
+        print(f"Found {optimal_clusters} clusters from timestamps.")
+
+    n_init = 10
+    if initial_centroids is not None:
+        n_init = 1
+
+    if not simple:
+        kmeans_buy = KMeans(n_clusters=optimal_buy_clusters, n_init=n_init, init=initial_centroids).fit(buy_timestamps)
+        kmeans_sell = KMeans(n_clusters=optimal_sell_clusters, n_init=n_init, init=initial_centroids).fit(sell_timestamps)
+        support_levels = np.sort(kmeans_buy.cluster_centers_, axis=0)
+        resistance_levels = np.sort(kmeans_sell.cluster_centers_, axis=0)
+        return support_levels.flatten().tolist(), resistance_levels.flatten().tolist()
+
+    else:
+        kmeans_result = KMeans(n_clusters=optimal_clusters, n_init=n_init, init=initial_centroids).fit(my_timestamps)
+        support_levels = np.sort(kmeans_result.cluster_centers_, axis=0)
+        return support_levels.flatten().tolist(), []
+
+
+def market_profile_from_klines_melt(df: pd.DataFrame):
+    """
+    Calculate the market profile for a given OHLC data. The function calculates the average price for each candle
+    (high + low + close) / 3, and then calculates the 'maker' and 'taker' volumes for each average price.
+
+    :param df: A pandas DataFrame with the OHLC data. It should contain 'High', 'Low', 'Close', 'Volume', and
+               'Taker buy base volume' columns.
+    :return: A pandas DataFrame grouped by the average price ('Market_Profile') with the sum of 'Taker buy base volume'
+             and 'Maker_Volume' for each average price.
+    """
+    df_ = df.copy(deep=True)
+    df_['Market_Profile'] = (df_['High'] + df_['Low'] + df_['Close']) / 3
+    df_['Maker buy base volume'] = df_['Volume'] - df_['Taker buy base volume']
+
+    # Rename the existing 'Volume' column
+    df_.rename(columns={'Volume': 'Total_Volume'}, inplace=True)
+
+    # Melt the dataframe to unpivot the volume columns
+    df_melt = df_.melt(id_vars='Market_Profile', value_vars=['Taker buy base volume',
+                                                             'Maker buy base volume'], var_name='Is_Maker', value_name='Volume')
+
+    # Convert the 'Is_Maker' column to boolean
+    df_melt['Is_Maker'] = df_melt['Is_Maker'] == 'Maker buy base volume'
+
+    # Group by 'Market_Profile' and 'Is_Maker' and sum the volumes
+    df_grouped = df_melt.groupby(['Market_Profile', 'Is_Maker']).agg({'Volume': 'sum'})
+
+    return df_grouped.sort_index(level='Market_Profile')
+
+
+def taker_maker_profile_from_klines_melt(df: pd.DataFrame):
+    """
+    Calculate the ratio of taker and maker volume for a given OHLC data.
+
+    :param df: A pandas DataFrame with the OHLC data. It should contain 'High', 'Low', 'Close', 'Volume', and
+               'Taker buy base volume' columns.
+    :return: A pandas DataFrame grouped by the average price ('Market_Profile') with the sum of 'Taker buy base volume'
+             and 'Maker_Volume' for each average price.
+    """
+    df_ = df.copy(deep=True)
+
+    df_['Maker buy base volume'] = df_['Volume'] - df_['Taker buy base volume']
+    df_['Ratio_Profile'] = df_['Taker buy base volume'] / df_["Volume"]
+
+    # Rename the existing 'Volume' column
+    df_.rename(columns={'Volume': 'Total_Volume'}, inplace=True)
+
+    # Melt the dataframe to unpivot the volume columns
+    df_melt = df_.melt(id_vars='Ratio_Profile', value_vars=['Taker buy base volume',
+                                                            'Maker buy base volume'], var_name='Is_Maker', value_name='Volume')
+
+    # Convert the 'Is_Maker' column to boolean
+    df_melt['Is_Maker'] = df_melt['Is_Maker'] == 'Maker buy base volume'
+
+    # Group by 'Market_Profile' and 'Is_Maker' and sum the volumes
+    df_grouped = df_melt.groupby(['Ratio_Profile', 'Is_Maker']).agg({'Volume': 'sum'})
+
+    return df_grouped.sort_index(level='Ratio_Profile')
+
+
+def market_profile_from_klines_grouped(df: pd.DataFrame, num_bins: int = 100) -> pd.DataFrame:
+    """
+    Calculate the market profile for a given OHLC data. The function calculates the average price for each candle
+    (high + low + close) / 3, and then calculates the 'maker' and 'taker' volumes for each average price.
+
+    :param df: A pandas DataFrame with the OHLC data. It should contain 'High', 'Low', 'Close', 'Volume', and
+               'Taker buy base volume' columns.
+    :param int num_bins: Number of bins to use for the market profile.
+    :return: A pandas DataFrame grouped by the average price ('Market_Profile') with the sum of 'Taker buy base volume'
+             and 'Maker_Volume' for each average price.
+    """
+    df_ = df.copy(deep=True)
+    df_['Maker buy base volume'] = df_['Volume'] - df_['Taker buy base volume']
+    df_['Market_Profile'] = (df_['High'] + df_['Low'] + df_['Close']) / 3
+    df_['Price_Bin'] = pd.cut(df_['Market_Profile'], bins=num_bins)
+    volume_by_price_bin = df_.groupby('Price_Bin', observed=True).agg({'Taker buy base volume': 'sum', 'Maker buy base volume': 'sum'})
+    # Convertir el índice a un IntervalIndex
+    volume_by_price_bin.index = pd.IntervalIndex(volume_by_price_bin.index)
+    # Ordenar por el límite inferior de cada intervalo
+    volume_by_price_bin = volume_by_price_bin.sort_index(key=lambda x: x.left)
+    volume_by_price_bin.index.name += f"_{df_.index.name}_Klines"
+    return volume_by_price_bin
+
+
+def market_profile_from_trades_grouped(df: pd.DataFrame, num_bins: int = 100) -> pd.DataFrame:
+    """
+    Calculate the market profile for a given trades data. The function calculates the average price for each trade
+    and then calculates the 'maker' and 'taker' volumes for each average price.
+
+    :param df: A pandas DataFrame with the trades data. It should contain 'Price', 'Quantity', 'Buyer was maker' columns.
+    :param num_bins: The number of bins to use for the market profile.
+    :return: A pandas DataFrame grouped by the average price ('Price_Bin') with the sum of 'Taker buy base volume'
+             and 'Maker buy base volume' for each average price.
+    """
+    df_ = df.copy(deep=True)
+    df_['Taker buy base volume'] = df_['Quantity'].where(~df_['Buyer was maker'], 0)
+    df_['Maker buy base volume'] = df_['Quantity'].where(df_['Buyer was maker'], 0)
+
+    df_['Price_Bin'] = pd.cut(df_['Price'], bins=num_bins)
+    volume_by_price_bin = df_.groupby('Price_Bin', observed=True).agg({'Taker buy base volume': 'sum', 'Maker buy base volume': 'sum'})
+    # Convert the index to an IntervalIndex
+    volume_by_price_bin.index = pd.IntervalIndex(volume_by_price_bin.index)
+    # Sort by the lower bound of each interval
+    volume_by_price_bin = volume_by_price_bin.sort_index(key=lambda x: x.left)
+    volume_by_price_bin.index.name += f"_{df_.index.name}_Trades"
+    return volume_by_price_bin
+
+
+########################################
+# Indicadores nativos (sin pandas_ta) #
+########################################
+
+# Reutilizan ema_numba, rma_numba, sma_numba, rsi_numba de handlers.numba_tools.
+# Los nombres de columna son compatibles con los que usaba pandas_ta para mantener
+# compatibilidad con el sistema de plots existente.
+
+
+def atr(high: pd.Series, low: pd.Series, close: pd.Series, length: int = 14) -> pd.Series:
+    """
+    Average True Range using Wilder's smoothing (RMA).
+
+    :param pd.Series high: High prices.
+    :param pd.Series low: Low prices.
+    :param pd.Series close: Close prices.
+    :param int length: Period. Default 14.
+    :return pd.Series: ATR values with column name ``ATRr_{length}``.
+    """
+    from .numba_tools import rma_numba
+
+    prev_close = close.shift(1)
+    tr1 = high - low
+    tr2 = (high - prev_close).abs()
+    tr3 = (low - prev_close).abs()
+    tr = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
+
+    atr_vals = rma_numba(tr.values.astype(np.float64), window=length)
+    return pd.Series(atr_vals, index=close.index, name=f"ATRr_{length}")
+
+
+def supertrend(high: pd.Series, low: pd.Series, close: pd.Series,
+               length: int = 10, multiplier: float = 3.0) -> pd.DataFrame:
+    """
+    Supertrend indicator (Binance-compatible).
+
+    :param pd.Series high: High prices.
+    :param pd.Series low: Low prices.
+    :param pd.Series close: Close prices.
+    :param int length: ATR period. Default 10.
+    :param float multiplier: ATR multiplier. Default 3.0.
+    :return pd.DataFrame: Columns ``SUPERT_{length}_{multiplier}``, ``SUPERTd_...``, ``SUPERTl_...``, ``SUPERTs_...``.
+    """
+    atr_series = atr(high, low, close, length)
+    hl2 = (high + low) / 2.0
+
+    basic_upper = hl2 + multiplier * atr_series
+    basic_lower = hl2 - multiplier * atr_series
+
+    n = len(close)
+    final_upper = np.empty(n, dtype=np.float64)
+    final_lower = np.empty(n, dtype=np.float64)
+    supertrend_val = np.empty(n, dtype=np.float64)
+    direction = np.empty(n, dtype=np.float64)
+
+    close_arr = close.values.astype(np.float64)
+    bu = basic_upper.values.astype(np.float64)
+    bl = basic_lower.values.astype(np.float64)
+
+    final_upper[0] = bu[0]
+    final_lower[0] = bl[0]
+    direction[0] = 1.0
+    supertrend_val[0] = final_lower[0]
+
+    for i in range(1, n):
+        # final lower band
+        if bl[i] > final_lower[i - 1] or close_arr[i - 1] < final_lower[i - 1]:
+            final_lower[i] = bl[i]
+        else:
+            final_lower[i] = final_lower[i - 1]
+
+        # final upper band
+        if bu[i] < final_upper[i - 1] or close_arr[i - 1] > final_upper[i - 1]:
+            final_upper[i] = bu[i]
+        else:
+            final_upper[i] = final_upper[i - 1]
+
+        # dirección
+        if direction[i - 1] == 1.0:  # alcista
+            if close_arr[i] < final_lower[i]:
+                direction[i] = -1.0
+                supertrend_val[i] = final_upper[i]
+            else:
+                direction[i] = 1.0
+                supertrend_val[i] = final_lower[i]
+        else:  # bajista
+            if close_arr[i] > final_upper[i]:
+                direction[i] = 1.0
+                supertrend_val[i] = final_lower[i]
+            else:
+                direction[i] = -1.0
+                supertrend_val[i] = final_upper[i]
+
+    mult_str = f"{multiplier:g}"
+    idx = close.index
+    supert_line = pd.Series(supertrend_val, index=idx, name=f"SUPERT_{length}_{mult_str}")
+    supert_dir = pd.Series(direction, index=idx, name=f"SUPERTd_{length}_{mult_str}")
+    supert_long = pd.Series(np.where(direction == 1.0, final_lower, np.nan), index=idx,
+                            name=f"SUPERTl_{length}_{mult_str}")
+    supert_short = pd.Series(np.where(direction == -1.0, final_upper, np.nan), index=idx,
+                             name=f"SUPERTs_{length}_{mult_str}")
+
+    return pd.DataFrame({
+        supert_line.name: supert_line,
+        supert_dir.name: supert_dir,
+        supert_long.name: supert_long,
+        supert_short.name: supert_short,
+    })
+
+
+def macd(close: pd.Series, fast: int = 12, slow: int = 26, signal: int = 9) -> pd.DataFrame:
+    """
+    Moving Average Convergence/Divergence.
+
+    :param pd.Series close: Close prices.
+    :param int fast: Fast EMA period. Default 12.
+    :param int slow: Slow EMA period. Default 26.
+    :param int signal: Signal EMA period. Default 9.
+    :return pd.DataFrame: Columns ``MACD_{fast}_{slow}_{signal}``, ``MACDh_...``, ``MACDs_...``.
+    """
+    from .numba_tools import ema_numba
+
+    arr = close.values.astype(np.float64)
+    fast_ema = ema_numba(arr, window=fast)
+    slow_ema = ema_numba(arr, window=slow)
+    macd_line = fast_ema - slow_ema
+    signal_line = ema_numba(macd_line, window=signal)
+    histogram = macd_line - signal_line
+
+    idx = close.index
+    sfx = f"{fast}_{slow}_{signal}"
+    return pd.DataFrame({
+        f"MACD_{sfx}": pd.Series(macd_line, index=idx),
+        f"MACDh_{sfx}": pd.Series(histogram, index=idx),
+        f"MACDs_{sfx}": pd.Series(signal_line, index=idx),
+    })
+
+
+def stoch_rsi(close: pd.Series, rsi_length: int = 14, stoch_length: int = 14,
+              k_smooth: int = 3, d_smooth: int = 3) -> pd.DataFrame:
+    """
+    Stochastic RSI.
+
+    :param pd.Series close: Close prices.
+    :param int rsi_length: RSI period. Default 14.
+    :param int stoch_length: Stochastic lookback. Default 14.
+    :param int k_smooth: %K smoothing. Default 3.
+    :param int d_smooth: %D smoothing. Default 3.
+    :return pd.DataFrame: Columns ``STOCHRSIk_...``, ``STOCHRSId_...``.
+    """
+    from .numba_tools import rsi_numba, sma_numba
+
+    rsi_vals = rsi_numba(close.values.astype(np.float64), window=rsi_length)
+    rsi_series = pd.Series(rsi_vals, index=close.index)
+
+    rsi_min = rsi_series.rolling(stoch_length, min_periods=stoch_length).min()
+    rsi_max = rsi_series.rolling(stoch_length, min_periods=stoch_length).max()
+    stoch_rsi_raw = (rsi_series - rsi_min) / (rsi_max - rsi_min)
+    stoch_rsi_raw = stoch_rsi_raw.fillna(0.0)
+
+    k_vals = sma_numba(stoch_rsi_raw.values.astype(np.float64), window=k_smooth) * 100.0
+    k_series = pd.Series(k_vals, index=close.index)
+    d_vals = sma_numba(k_series.values.astype(np.float64), window=d_smooth)
+    d_series = pd.Series(d_vals, index=close.index)
+
+    sfx = f"{rsi_length}_{stoch_length}_{k_smooth}_{d_smooth}"
+    return pd.DataFrame({
+        f"STOCHRSIk_{sfx}": k_series,
+        f"STOCHRSId_{sfx}": d_series,
+    })
+
+
+def obv(close: pd.Series, volume: pd.Series) -> pd.Series:
+    """
+    On Balance Volume.
+
+    :param pd.Series close: Close prices.
+    :param pd.Series volume: Volume.
+    :return pd.Series: OBV values.
+    """
+    direction = np.sign(close.diff())
+    direction.iloc[0] = 0.0
+    obv_vals = (direction * volume).cumsum()
+    return pd.Series(obv_vals.values, index=close.index, name="OBV")
+
+
+def ad(high: pd.Series, low: pd.Series, close: pd.Series, volume: pd.Series) -> pd.Series:
+    """
+    Accumulation/Distribution line.
+
+    :param pd.Series high: High prices.
+    :param pd.Series low: Low prices.
+    :param pd.Series close: Close prices.
+    :param pd.Series volume: Volume.
+    :return pd.Series: AD values.
+    """
+    hl_range = high - low
+    clv = ((close - low) - (high - close)) / hl_range.replace(0, np.nan)
+    ad_vals = (clv * volume).cumsum()
+    return pd.Series(ad_vals.values, index=close.index, name="AD")
+
+
+def vwap(high: pd.Series, low: pd.Series, close: pd.Series, volume: pd.Series) -> pd.Series:
+    """
+    Volume Weighted Average Price (cumulative over the full series).
+
+    :param pd.Series high: High prices.
+    :param pd.Series low: Low prices.
+    :param pd.Series close: Close prices.
+    :param pd.Series volume: Volume.
+    :return pd.Series: VWAP values.
+    """
+    typical_price = (high + low + close) / 3.0
+    cum_tp_vol = (typical_price * volume).cumsum()
+    cum_vol = volume.cumsum()
+    vwap_vals = cum_tp_vol / cum_vol
+    return pd.Series(vwap_vals.values, index=close.index, name="VWAP_D")
+
+
+def cci(high: pd.Series, low: pd.Series, close: pd.Series,
+        length: int = 14, c: float = 0.015) -> pd.Series:
+    """
+    Commodity Channel Index.
+
+    :param pd.Series high: High prices.
+    :param pd.Series low: Low prices.
+    :param pd.Series close: Close prices.
+    :param int length: Period. Default 14.
+    :param float c: Scaling constant. Default 0.015.
+    :return pd.Series: CCI values.
+    """
+    tp = (high + low + close) / 3.0
+    sma_tp = tp.rolling(length, min_periods=length).mean()
+    mean_dev = tp.rolling(length, min_periods=length).apply(lambda x: np.abs(x - x.mean()).mean(), raw=True)
+    cci_vals = (tp - sma_tp) / (c * mean_dev)
+    return pd.Series(cci_vals.values, index=close.index, name=f"CCI_{length}_{c}")
+
+
+def eom(high: pd.Series, low: pd.Series, volume: pd.Series,
+        length: int = 14, divisor: int = 100_000_000) -> pd.Series:
+    """
+    Ease of Movement.
+
+    :param pd.Series high: High prices.
+    :param pd.Series low: Low prices.
+    :param pd.Series volume: Volume.
+    :param int length: Smoothing period. Default 14.
+    :param int divisor: Volume divisor. Default 100_000_000.
+    :return pd.Series: EOM values.
+    """
+    hl2 = (high + low) / 2.0
+    distance = hl2.diff()
+    hl_range = high - low
+    box_ratio = (volume / divisor) / hl_range.replace(0, np.nan)
+    raw_eom = distance / box_ratio
+    eom_vals = raw_eom.rolling(length, min_periods=length).mean()
+    return pd.Series(eom_vals.values, index=high.index, name=f"EOM_{length}_{divisor}")
+
+
+def roc(close: pd.Series, length: int = 1, scalar: int = 100) -> pd.Series:
+    """
+    Rate of Change.
+
+    :param pd.Series close: Close prices.
+    :param int length: Lookback period. Default 1.
+    :param int scalar: Scaling factor. Default 100.
+    :return pd.Series: ROC values.
+    """
+    roc_vals = ((close - close.shift(length)) / close.shift(length)) * scalar
+    return pd.Series(roc_vals.values, index=close.index, name=f"ROC_{length}")
+
+
+def bbands(close: pd.Series, length: int = 5, std: float = 2.0,
+           ddof: int = 0) -> pd.DataFrame:
+    """
+    Bollinger Bands.
+
+    :param pd.Series close: Close prices.
+    :param int length: SMA period. Default 5.
+    :param float std: Standard deviation multiplier. Default 2.0.
+    :param int ddof: Degrees of freedom for std. Default 0.
+    :return pd.DataFrame: Columns ``BBL_...``, ``BBM_...``, ``BBU_...``, ``BBB_...``, ``BBP_...``.
+    """
+    mid = close.rolling(length, min_periods=length).mean()
+    stdev = close.rolling(length, min_periods=length).std(ddof=ddof)
+    upper = mid + std * stdev
+    lower = mid - std * stdev
+    bandwidth = (upper - lower) / mid
+    pct_b = (close - lower) / (upper - lower)
+
+    sfx = f"{length}_{std:g}"
+    idx = close.index
+    return pd.DataFrame({
+        f"BBL_{sfx}": pd.Series(lower.values, index=idx),
+        f"BBM_{sfx}": pd.Series(mid.values, index=idx),
+        f"BBU_{sfx}": pd.Series(upper.values, index=idx),
+        f"BBB_{sfx}": pd.Series(bandwidth.values, index=idx),
+        f"BBP_{sfx}": pd.Series(pct_b.values, index=idx),
+    })
+
+
+def stoch(high: pd.Series, low: pd.Series, close: pd.Series,
+          k: int = 14, d: int = 3, smooth_k: int = 1) -> pd.DataFrame:
+    """
+    Stochastic Oscillator.
+
+    :param pd.Series high: High prices.
+    :param pd.Series low: Low prices.
+    :param pd.Series close: Close prices.
+    :param int k: %K lookback period. Default 14.
+    :param int d: %D smoothing period. Default 3.
+    :param int smooth_k: %K smoothing. Default 1.
+    :return pd.DataFrame: Columns ``STOCHk_{k}_{d}_{smooth_k}``, ``STOCHd_{k}_{d}_{smooth_k}``.
+    """
+    from .numba_tools import sma_numba
+
+    lowest_low = low.rolling(k, min_periods=k).min()
+    highest_high = high.rolling(k, min_periods=k).max()
+    k_raw = ((close - lowest_low) / (highest_high - lowest_low)) * 100.0
+
+    k_vals = sma_numba(k_raw.fillna(0.0).values.astype(np.float64), window=smooth_k)
+    k_series = pd.Series(k_vals, index=close.index)
+    d_vals = sma_numba(k_series.values.astype(np.float64), window=d)
+    d_series = pd.Series(d_vals, index=close.index)
+
+    sfx = f"{k}_{d}_{smooth_k}"
+    return pd.DataFrame({
+        f"STOCHk_{sfx}": k_series,
+        f"STOCHd_{sfx}": d_series,
+    })

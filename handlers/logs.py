@@ -9,16 +9,29 @@ from os import makedirs, path
 from logging.handlers import RotatingFileHandler
 
 
-class Logs:
+class LogManager:
     """
     Main logging class.
     """
-    def __init__(self, filename='binance_cache.log', name="binance_cache", info_level='DEBUG', max_log_size_mb=10, backup_count=5):
+    def __init__(self,
+                 filename: str,
+                 name: str = None,
+                 folder: str = 'logs',
+                 info_level='DEBUG',
+                 max_log_size_mb: int = 10,
+                 backup_count: int = 5):
+
+        if name is None:
+            if '\\' in filename:
+                name = filename.split('\\')[-1].split('.')[0]
+            else:
+                name = filename.split('/')[-1].split('.')[0]
+
         try:
-            makedirs('logs', exist_ok=True)
+            makedirs(name=folder, exist_ok=True)
         except PermissionError:  # linux
             home = path.expanduser('~')
-            makedirs(f'{home}/deploy/deeplab_working', exist_ok=True)
+            makedirs(f'{home}/.binpan/', exist_ok=True)
 
         self.logger = logging.getLogger(name)
 
@@ -30,8 +43,7 @@ class Logs:
 
         # Create handlers
         self.screen_handler = logging.StreamHandler()
-        # self.file_handler = logging.FileHandler(self.log_file)
-        self.file_handler = RotatingFileHandler(self.log_file, maxBytes=max_log_size_mb * 1024 * 1024, backupCount=backup_count)
+        self.file_handler = RotatingFileHandler(self.log_file, maxBytes=max_log_size_mb * 1024 * 1024, backupCount=backup_count, encoding='utf-8')
 
         self.line_format = '%(asctime)s %(levelname)8s %(message)s'
         self.screen_format = logging.Formatter(self.line_format, datefmt='%Y-%m-%d\t %H:%M:%S')
@@ -69,6 +81,6 @@ class Logs:
         self.logger.critical(msg, exc_info=True)
 
     def read_last_lines(self, num_lines):
-        with open(self.log_file, 'r') as file:
+        with open(self.log_file, 'r', encoding='utf-8') as file:
             lines = file.readlines()
             return lines[-num_lines:]

@@ -1,10 +1,10 @@
 from random import sample
 import pandas as pd
 
-from .logs import Logs
+from .logs import LogManager
 
 
-tags_logger = Logs(filename='./logs/tags_logger.log', name='tags_logger', info_level='INFO')
+tags_logger = LogManager(filename='./logs/tags_logger.log', name='tags_logger', info_level='INFO')
 
 
 def random_strategy(data: pd.DataFrame,
@@ -34,5 +34,5 @@ def random_strategy(data: pd.DataFrame,
     df.loc[buys, new_actions_col] = labels['buy']
     df.loc[sells, new_actions_col] = labels['sell']
     if fill:
-        df[new_actions_col].fillna(fill, inplace=True)
+        df[new_actions_col] = df[new_actions_col].fillna(fill)
     return df

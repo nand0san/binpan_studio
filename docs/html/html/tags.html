@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Tags &amp; Backtesting Module - BinPan 0.4.19 documentation</title>
-    <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Wallet Module" href="wallet.html" /><link rel="prev" title="Strategies Module" href="strategies.html" />
+      <title>Tags &amp; Backtesting Module - BinPan 0.8.13 documentation</title>
+    <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Time Helpers" href="time_helper.html" /><link rel="prev" title="Strategies Module" href="strategies.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
     const sessionTheme = sessionStorage['_theme']
@@ -13,10 +13,10 @@
     } else if (isDarkTheme) {
       document.documentElement.classList.add('dark')
     }
-  </script><link rel="stylesheet" href="_static/pygments.css?v=2023.3.19" type="text/css" />
-    <link rel="stylesheet" href="_static/shibuya.css?v=2023.3.19" type="text/css" />
+  </script><link rel="stylesheet" href="_static/pygments.css?v=2023.6.8" type="text/css" />
+    <link rel="stylesheet" href="_static/shibuya.css?v=2023.6.8" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/style.css" />
-    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=2023.3.19" />
+    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=2023.6.8" />
     <style>
 :root {
   --sy-f-sys:-apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Droid Sans, Helvetica Neue;--sy-f-cjk:PingFang SC, Hiragino Sans GB, Droid Sans Fallback, Microsoft YaHei;--sy-f-heading:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-text:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-mono:Menlo, Monaco, Consolas, "Courier New", monospace;--sy-c-divider:rgba(var(--sy-rc-text), 0.1);--sy-c-divider-weak:rgba(var(--sy-rc-text), 0.05);--sy-c-border:rgba(var(--sy-rc-text), 0.14);--sy-s-banner-height:0rem;--sy-s-navbar-height:4rem;--sy-s-offset-top:calc(var(--sy-s-navbar-height) + var(--sy-s-banner-height));--sy-c-link:rgb(var(--sy-rc-theme));
@@ -52,7 +52,7 @@ html.dark {
 <body><div class="document"><div class="sy-head">
   <div class="sy-head-blur"></div>
   <div class="sy-head-inner sy-container mx-auto">
-    <div class="sy-head-brand flex items-center">
+    <div class="sy-head-links flex items-center">
       <div class="md:hidden flex items-center">
         <button class="hamburger js-menu mr-3" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
           <span class="hamburger_1"></span>
@@ -60,16 +60,13 @@ html.dark {
           <span class="hamburger_3 -translate-x-1"></span>
         </button>
       </div>
-      <a href="index.html">
+      <a class="sy-head-brand" href="index.html">
         
         
         <strong>BinPan</strong>
-      </a>
-      
-    </div>
+      </a></div>
     <div class="sy-head-actions flex gap-2 items-center print:hidden">
-      <nav class="sy-head-nav hidden md:block">
-      </nav>
+      
       <div class="hidden md:block"><form class="searchbox flex items-center" action="search.html" method="get">
   <input type="text" name="q" placeholder="Search" />
   <kbd>/</kbd>
@@ -88,13 +85,12 @@ html.dark {
 <div class="sy-page sy-container flex mx-auto">
   <aside id="lside" class="sy-lside md:w-64 md:shrink-0 print:hidden">
     <div class="sy-lside-inner md:sticky">
-      <div class="md:hidden pt-6 px-6"><form class="searchbox flex items-center" action="search.html" method="get">
+      <div class="sy-lside-top md:hidden pt-3 pb-3 px-6">
+        <div class="pt-3"><form class="searchbox flex items-center" action="search.html" method="get">
   <input type="text" name="q" placeholder="Search" />
   <button>Go</button>
 </form>
-      </div>
-      <div class="md:hidden pt-3 px-6">
-      </div>
+        </div></div>
       <div class="sy-scrollbar p-6">
         <div class="globaltoc">
           <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
@@ -105,16 +101,19 @@ html.dark {
 <li class="toctree-l1"><a class="reference internal" href="exchange.html">Exchange Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="files.html">Files Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="indicators.html">Indicators Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="influx_manager.html">Influx Manager Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="messages.html">Messages Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="messages.html#module-handlers.messages">Exceptions Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="redis_fetch.html#id1">Redis Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postgresql.html">PostgreSQL Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postgresql_database.html">PostgreSQL Database Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quest.html">Requests Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stat_tests.html">Statistical Tests and Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="starters.html">Starters Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Tags &amp; Backtesting Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="time_helper.html">Time Helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Module</a></li>
 </ul>
 
@@ -143,10 +142,12 @@ html.dark {
 <li><a class="reference internal" href="#handlers.tags.simple_backtesting"><code class="docutils literal notranslate"><span class="pre">simple_backtesting()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.tags.backtesting"><code class="docutils literal notranslate"><span class="pre">backtesting()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.tags.backtesting_short"><code class="docutils literal notranslate"><span class="pre">backtesting_short()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.tags.add_future_index_threshold_label"><code class="docutils literal notranslate"><span class="pre">add_future_index_threshold_label()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.tags.is_alternating"><code class="docutils literal notranslate"><span class="pre">is_alternating()</span></code></a></li>
 </ul>
 
 
-  </div><div id="ethical-ad-placement"></div>
+  </div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div>
     </div>
   </aside>
   <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
@@ -199,6 +200,12 @@ html.dark {
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.tags.backtesting_short" title="handlers.tags.backtesting_short"><code class="xref py py-obj docutils literal notranslate"><span class="pre">backtesting_short</span></code></a>(df, actions_column, ...[, ...])</p></td>
 <td><p>Returns two pandas series as base wallet and quote wallet over time.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.tags.add_future_index_threshold_label" title="handlers.tags.add_future_index_threshold_label"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_future_index_threshold_label</span></code></a>(data[, ...])</p></td>
+<td><p>Adds next indices for each kline touching prices percentage thresholds as usable target labels for a given threshold to a DataFrame.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.tags.is_alternating" title="handlers.tags.is_alternating"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_alternating</span></code></a>(lst)</p></td>
+<td><p>Verify if a list is alternating 1 to -1 or -1 to 1 alternatively.</p></td>
 </tr>
 </tbody>
 </table>
@@ -516,6 +523,35 @@ By ins and out I mean buys or sells, shorts and repays, etc.</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.tags.add_future_index_threshold_label">
+<span class="sig-prename descclassname"><span class="pre">handlers.tags.</span></span><span class="sig-name descname"><span class="pre">add_future_index_threshold_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thresholds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[0.002,</span> <span class="pre">-0.002,</span> <span class="pre">0.006,</span> <span class="pre">-0.006]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_lookahead</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.tags.add_future_index_threshold_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds next indices for each kline touching prices percentage thresholds as usable target labels for a given threshold to a DataFrame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – DataFrame containing the OHLC (Open, High, Low, Close) price data.</p></li>
+<li><p><strong>thresholds</strong> – List of thresholds for which to create future action labels. Positive values indicate a
+price increase, negative values indicate a price decrease.</p></li>
+<li><p><strong>max_lookahead</strong> – Maximum number of bars to look ahead to determine if a threshold is met. Default is 30.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>DataFrame with additional columns for each threshold. Each column contains the number of bars until
+the price change defined by the threshold is met. If the price change is not met within max_lookahead
+bars, the value is NaN.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.tags.is_alternating">
+<span class="sig-prename descclassname"><span class="pre">handlers.tags.</span></span><span class="sig-name descname"><span class="pre">is_alternating</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lst</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#handlers.tags.is_alternating" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify if a list is alternating 1 to -1 or -1 to 1 alternatively.
+:param lst: A list of integers.
+:return:</p>
+</dd></dl>
+
 </section>
 
         </article>
@@ -535,10 +571,10 @@ By ins and out I mean buys or sells, shorts and repays, etc.</p>
     </a>
   </div>
   <div class="navigation-next">
-    <a href="wallet.html">
+    <a href="time_helper.html">
       <div class="page-info">
         <span>Next</span>
-        <div class="title">Wallet Module</div>
+        <div class="title">Time Helpers</div>
       </div>
       <i class="i-icon chevron"></i>
     </a>
@@ -571,7 +607,7 @@ By ins and out I mean buys or sells, shorts and repays, etc.</p>
       <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
       <script src="_static/doctools.js"></script>
       <script src="_static/sphinx_highlight.js"></script>
-      <script src="_static/shibuya.js?v=2023.3.19"></script>
+      <script src="_static/shibuya.js?v=2023.6.8"></script>
     
 </body>
 </html>

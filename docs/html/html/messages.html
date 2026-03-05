@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Messages Module - BinPan 0.4.19 documentation</title>
+      <title>Messages Module - BinPan 0.8.13 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Plotting Module" href="plotting.html" /><link rel="prev" title="Market Module" href="market.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -13,10 +13,10 @@
     } else if (isDarkTheme) {
       document.documentElement.classList.add('dark')
     }
-  </script><link rel="stylesheet" href="_static/pygments.css?v=2023.3.19" type="text/css" />
-    <link rel="stylesheet" href="_static/shibuya.css?v=2023.3.19" type="text/css" />
+  </script><link rel="stylesheet" href="_static/pygments.css?v=2023.6.8" type="text/css" />
+    <link rel="stylesheet" href="_static/shibuya.css?v=2023.6.8" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/style.css" />
-    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=2023.3.19" />
+    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=2023.6.8" />
     <style>
 :root {
   --sy-f-sys:-apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Droid Sans, Helvetica Neue;--sy-f-cjk:PingFang SC, Hiragino Sans GB, Droid Sans Fallback, Microsoft YaHei;--sy-f-heading:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-text:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-mono:Menlo, Monaco, Consolas, "Courier New", monospace;--sy-c-divider:rgba(var(--sy-rc-text), 0.1);--sy-c-divider-weak:rgba(var(--sy-rc-text), 0.05);--sy-c-border:rgba(var(--sy-rc-text), 0.14);--sy-s-banner-height:0rem;--sy-s-navbar-height:4rem;--sy-s-offset-top:calc(var(--sy-s-navbar-height) + var(--sy-s-banner-height));--sy-c-link:rgb(var(--sy-rc-theme));
@@ -52,7 +52,7 @@ html.dark {
 <body><div class="document"><div class="sy-head">
   <div class="sy-head-blur"></div>
   <div class="sy-head-inner sy-container mx-auto">
-    <div class="sy-head-brand flex items-center">
+    <div class="sy-head-links flex items-center">
       <div class="md:hidden flex items-center">
         <button class="hamburger js-menu mr-3" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
           <span class="hamburger_1"></span>
@@ -60,16 +60,13 @@ html.dark {
           <span class="hamburger_3 -translate-x-1"></span>
         </button>
       </div>
-      <a href="index.html">
+      <a class="sy-head-brand" href="index.html">
         
         
         <strong>BinPan</strong>
-      </a>
-      
-    </div>
+      </a></div>
     <div class="sy-head-actions flex gap-2 items-center print:hidden">
-      <nav class="sy-head-nav hidden md:block">
-      </nav>
+      
       <div class="hidden md:block"><form class="searchbox flex items-center" action="search.html" method="get">
   <input type="text" name="q" placeholder="Search" />
   <kbd>/</kbd>
@@ -88,13 +85,12 @@ html.dark {
 <div class="sy-page sy-container flex mx-auto">
   <aside id="lside" class="sy-lside md:w-64 md:shrink-0 print:hidden">
     <div class="sy-lside-inner md:sticky">
-      <div class="md:hidden pt-6 px-6"><form class="searchbox flex items-center" action="search.html" method="get">
+      <div class="sy-lside-top md:hidden pt-3 pb-3 px-6">
+        <div class="pt-3"><form class="searchbox flex items-center" action="search.html" method="get">
   <input type="text" name="q" placeholder="Search" />
   <button>Go</button>
 </form>
-      </div>
-      <div class="md:hidden pt-3 px-6">
-      </div>
+        </div></div>
       <div class="sy-scrollbar p-6">
         <div class="globaltoc">
           <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
@@ -105,16 +101,19 @@ html.dark {
 <li class="toctree-l1"><a class="reference internal" href="exchange.html">Exchange Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="files.html">Files Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="indicators.html">Indicators Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="influx_manager.html">Influx Manager Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Messages Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#module-handlers.messages">Exceptions Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="redis_fetch.html#id1">Redis Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postgresql.html">PostgreSQL Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postgresql_database.html">PostgreSQL Database Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quest.html">Requests Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stat_tests.html">Statistical Tests and Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="starters.html">Starters Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tags.html">Tags &amp; Backtesting Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="time_helper.html">Time Helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Module</a></li>
 </ul>
 
@@ -129,9 +128,9 @@ html.dark {
     <div class="sy-scrollbar px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4">
   <div class="localtoc">
     <h3>Table of Contents</h3>
-    </li>
-<li><a class="reference internal" href="#module-handlers.messages">Exceptions Module</a><ul>
+    <ul>
 <li><a class="reference internal" href="#handlers.messages.telegram_bot_send_text"><code class="docutils literal notranslate"><span class="pre">telegram_bot_send_text()</span></code></a></li>
+<li><a class="reference internal" href="#handlers.messages.sort_mixed_dict"><code class="docutils literal notranslate"><span class="pre">sort_mixed_dict()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.messages.telegram_parse_dict"><code class="docutils literal notranslate"><span class="pre">telegram_parse_dict()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.messages.tab_str"><code class="docutils literal notranslate"><span class="pre">tab_str()</span></code></a></li>
 <li><a class="reference internal" href="#handlers.messages.telegram_parse_dataframe_markdown"><code class="docutils literal notranslate"><span class="pre">telegram_parse_dataframe_markdown()</span></code></a></li>
@@ -140,7 +139,7 @@ html.dark {
 </ul>
 
 
-  </div><div id="ethical-ad-placement"></div>
+  </div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div>
     </div>
   </aside>
   <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
@@ -148,11 +147,8 @@ html.dark {
     <div class="flex flex-col break-words justify-between">
       <div class="min-w-0 max-w-6xl px-6 pb-6 pt-6 xl:px-12">
         <article class="yue" role="main">
-          <section id="messages-module">
-<h1>Messages Module<a class="headerlink" href="#messages-module" title="Permalink to this heading">¶</a></h1>
-</section>
-<section id="module-handlers.messages">
-<span id="exceptions-module"></span><h1>Exceptions Module<a class="headerlink" href="#module-handlers.messages" title="Permalink to this heading">¶</a></h1>
+          <section id="module-handlers.messages">
+<span id="messages-module"></span><h1>Messages Module<a class="headerlink" href="#module-handlers.messages" title="Permalink to this heading">¶</a></h1>
 <p>Telegram and messages control.</p>
 <p><strong>Functions:</strong></p>
 <div class="table-wrapper autosummary longtable docutils container">
@@ -161,19 +157,22 @@ html.dark {
 <tr class="row-odd"><td><p><a class="reference internal" href="#handlers.messages.telegram_bot_send_text" title="handlers.messages.telegram_bot_send_text"><code class="xref py py-obj docutils literal notranslate"><span class="pre">telegram_bot_send_text</span></code></a>(msg[, parse_mode, ...])</p></td>
 <td><p>Sends a telegram message.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.messages.telegram_parse_dict" title="handlers.messages.telegram_parse_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">telegram_parse_dict</span></code></a>(msg_data[, timezone])</p></td>
-<td><p>Parses a dict and downcast types.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.messages.sort_mixed_dict" title="handlers.messages.sort_mixed_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sort_mixed_dict</span></code></a>(d)</p></td>
+<td><p>Sort a dictionary that may contain mixed types (int, float, str, etc.)</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.messages.tab_str" title="handlers.messages.tab_str"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tab_str</span></code></a>(text[, indentation])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.messages.telegram_parse_dict" title="handlers.messages.telegram_parse_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">telegram_parse_dict</span></code></a>(msg_data[, order, timezone])</p></td>
+<td><p>Parses a dictionary to a telegram message.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.messages.tab_str" title="handlers.messages.tab_str"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tab_str</span></code></a>(text[, indentation])</p></td>
 <td><p>Indentation for telegram messages.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.messages.telegram_parse_dataframe_markdown" title="handlers.messages.telegram_parse_dataframe_markdown"><code class="xref py py-obj docutils literal notranslate"><span class="pre">telegram_parse_dataframe_markdown</span></code></a>(data[, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.messages.telegram_parse_dataframe_markdown" title="handlers.messages.telegram_parse_dataframe_markdown"><code class="xref py py-obj docutils literal notranslate"><span class="pre">telegram_parse_dataframe_markdown</span></code></a>(data[, ...])</p></td>
 <td><p>Parses a Dataframe in telegrams message format.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.messages.telegram_parse_order_markdown" title="handlers.messages.telegram_parse_order_markdown"><code class="xref py py-obj docutils literal notranslate"><span class="pre">telegram_parse_order_markdown</span></code></a>(...[, timezoned])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#handlers.messages.telegram_parse_order_markdown" title="handlers.messages.telegram_parse_order_markdown"><code class="xref py py-obj docutils literal notranslate"><span class="pre">telegram_parse_order_markdown</span></code></a>(...[, timezoned])</p></td>
 <td><p>Parses API order response to telegram string.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#handlers.messages.send_balances" title="handlers.messages.send_balances"><code class="xref py py-obj docutils literal notranslate"><span class="pre">send_balances</span></code></a>(decimal_mode, api_key, api_secret)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#handlers.messages.send_balances" title="handlers.messages.send_balances"><code class="xref py py-obj docutils literal notranslate"><span class="pre">send_balances</span></code></a>(decimal_mode, api_key, api_secret)</p></td>
 <td><p>Sends telegram message with total value of spot wallet in selected coin.</p></td>
 </tr>
 </tbody>
@@ -213,18 +212,33 @@ variable names <em>encoded_chat_id</em>, <em>encoded_telegram_bot_id</em>.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="handlers.messages.sort_mixed_dict">
+<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">sort_mixed_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#handlers.messages.sort_mixed_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sort a dictionary that may contain mixed types (int, float, str, etc.)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>d</strong> (<em>dict</em>) – The dictionary to sort.</p>
+</dd>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
+<dd class="field-even"><p>A new sorted dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="handlers.messages.telegram_parse_dict">
-<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">telegram_parse_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'UTC'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.messages.telegram_parse_dict" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parses a dict and downcast types.</p>
+<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">telegram_parse_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Europe/Madrid'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#handlers.messages.telegram_parse_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses a dictionary to a telegram message.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>msg_data</strong> (<em>dict</em>) – Dict to parse as message.</p></li>
-<li><p><strong>timezone</strong> (<em>str</em>) – A time zone to parse more human readable any field containing “time” in the name.</p></li>
+<li><p><strong>msg_data</strong> – A dictionary with the data to be parsed.</p></li>
+<li><p><strong>order</strong> – Ascending or descending order. Example: “asc” or “desc”.</p></li>
+<li><p><strong>timezone</strong> – A string with the timezone.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return str<span class="colon">:</span></dt>
-<dd class="field-even"><p>A markdown v1 parsed telegram string.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A string with the parsed message.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -240,7 +254,7 @@ variable names <em>encoded_chat_id</em>, <em>encoded_telegram_bot_id</em>.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="handlers.messages.telegram_parse_dataframe_markdown">
-<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">telegram_parse_dataframe_markdown</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indentation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Balances'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.messages.telegram_parse_dataframe_markdown" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">handlers.messages.</span></span><span class="sig-name descname"><span class="pre">telegram_parse_dataframe_markdown</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indentation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Balances'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#handlers.messages.telegram_parse_dataframe_markdown" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parses a Dataframe in telegrams message format.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -343,7 +357,7 @@ variable names <em>encoded_chat_id</em>, <em>encoded_telegram_bot_id</em>.</p>
       <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
       <script src="_static/doctools.js"></script>
       <script src="_static/sphinx_highlight.js"></script>
-      <script src="_static/shibuya.js?v=2023.3.19"></script>
+      <script src="_static/shibuya.js?v=2023.6.8"></script>
     
 </body>
 </html>

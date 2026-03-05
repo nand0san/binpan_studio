@@ -86,7 +86,7 @@ target/
 # IPython
 profile_default/
 ipython_config.py
-
+.pypirc
 # pyenv
 .python-version
 
@@ -113,6 +113,7 @@ celerybeat.pid
 env/
 venv/
 venv37/
+vemv*/
 ENV/
 env.bak/
 venv.bak/
@@ -136,8 +137,6 @@ dmypy.json
 .pyre/
 
 # created by virtualenv automatically
-secret.py
-secret*
 .idea/
 
 *DS_Store*
@@ -158,12 +157,28 @@ pruebas*
 handlers/*backup.py
 ichimoku.ipynb
 deep data.ipynb
-AFML.ipynb
-AFML_lab.ipynb
-AFML_02.2.ipynb
+
+AFML*.ipynb
+
 orderbook cost.ipynb
 orderbook*.ipynb
 Support and resistance.ipynb
+ltcusdt.*
+ltcbtc.*
+btcusdt.*
+
+examples database maintenance.ipynb
+*redis*
+secret.py
+secret_.py
+secret*
+!secrets.py
+investigacion*
+test.ipynb
+docstring_extractor.py
+venv_no_numba/
+last_plot.png
+test*
 
 # Archivos de desarrollo (solo en rama dev, no publicar a GitHub)
 CLAUDE.md

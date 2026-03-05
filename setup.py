@@ -15,18 +15,19 @@ read_required = open('requirements.txt', 'r')
 REQUIRED = read_required.read()
 read_required.close()
 
-my_version = "v0.4.20"
+my_version = "0.9.0"
 
 setup(name='binpan',
       version=my_version,
       url='https://github.com/nand0san/binpan_studio',
       license='MIT',
       install_requires=REQUIRED,
-      python_requires='>=3.7.9',
+      python_requires='>=3.12.0',
       classifiers=[
           "License :: OSI Approved :: MIT License",
           "Programming Language :: Python :: 3",
-          "Programming Language :: Python :: 3.7",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13",
       ],
       author='Fernando Alfonso',
       author_email='hancaidolosdos@hotmail.com',
@@ -34,5 +35,5 @@ setup(name='binpan',
       long_description=README_TEXT,
       long_description_content_type="text/markdown",
       package_dir={"": "."},
-      packages=["handlers", "binpan"]
+      packages=["handlers", "binpan", "objects"]
       )

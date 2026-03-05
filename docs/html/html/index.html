@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>BinPan 0.4.19 documentation</title>
+      <title>BinPan 0.8.13 documentation</title>
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="BinPan Module" href="binpan.html" />
   <script>
     const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -13,10 +13,10 @@
     } else if (isDarkTheme) {
       document.documentElement.classList.add('dark')
     }
-  </script><link rel="stylesheet" href="_static/pygments.css?v=2023.3.19" type="text/css" />
-    <link rel="stylesheet" href="_static/shibuya.css?v=2023.3.19" type="text/css" />
+  </script><link rel="stylesheet" href="_static/pygments.css?v=2023.6.8" type="text/css" />
+    <link rel="stylesheet" href="_static/shibuya.css?v=2023.6.8" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/style.css" />
-    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=2023.3.19" />
+    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=2023.6.8" />
     <style>
 :root {
   --sy-f-sys:-apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Droid Sans, Helvetica Neue;--sy-f-cjk:PingFang SC, Hiragino Sans GB, Droid Sans Fallback, Microsoft YaHei;--sy-f-heading:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-text:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-mono:Menlo, Monaco, Consolas, "Courier New", monospace;--sy-c-divider:rgba(var(--sy-rc-text), 0.1);--sy-c-divider-weak:rgba(var(--sy-rc-text), 0.05);--sy-c-border:rgba(var(--sy-rc-text), 0.14);--sy-s-banner-height:0rem;--sy-s-navbar-height:4rem;--sy-s-offset-top:calc(var(--sy-s-navbar-height) + var(--sy-s-banner-height));--sy-c-link:rgb(var(--sy-rc-theme));
@@ -52,7 +52,7 @@ html.dark {
 <body><div class="document"><div class="sy-head">
   <div class="sy-head-blur"></div>
   <div class="sy-head-inner sy-container mx-auto">
-    <div class="sy-head-brand flex items-center">
+    <div class="sy-head-links flex items-center">
       <div class="md:hidden flex items-center">
         <button class="hamburger js-menu mr-3" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
           <span class="hamburger_1"></span>
@@ -60,16 +60,13 @@ html.dark {
           <span class="hamburger_3 -translate-x-1"></span>
         </button>
       </div>
-      <a href="#">
+      <a class="sy-head-brand" href="#">
         
         
         <strong>BinPan</strong>
-      </a>
-      
-    </div>
+      </a></div>
     <div class="sy-head-actions flex gap-2 items-center print:hidden">
-      <nav class="sy-head-nav hidden md:block">
-      </nav>
+      
       <div class="hidden md:block"><form class="searchbox flex items-center" action="search.html" method="get">
   <input type="text" name="q" placeholder="Search" />
   <kbd>/</kbd>
@@ -88,13 +85,12 @@ html.dark {
 <div class="sy-page sy-container flex mx-auto">
   <aside id="lside" class="sy-lside md:w-64 md:shrink-0 print:hidden">
     <div class="sy-lside-inner md:sticky">
-      <div class="md:hidden pt-6 px-6"><form class="searchbox flex items-center" action="search.html" method="get">
+      <div class="sy-lside-top md:hidden pt-3 pb-3 px-6">
+        <div class="pt-3"><form class="searchbox flex items-center" action="search.html" method="get">
   <input type="text" name="q" placeholder="Search" />
   <button>Go</button>
 </form>
-      </div>
-      <div class="md:hidden pt-3 px-6">
-      </div>
+        </div></div>
       <div class="sy-scrollbar p-6">
         <div class="globaltoc">
           <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
@@ -105,15 +101,19 @@ html.dark {
 <li class="toctree-l1"><a class="reference internal" href="exchange.html">Exchange Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="files.html">Files Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="indicators.html">Indicators Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="influx_manager.html">Influx Manager Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="messages.html">Messages Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="messages.html#module-handlers.messages">Exceptions Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postgresql.html">PostgreSQL Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postgresql_database.html">PostgreSQL Database Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quest.html">Requests Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stat_tests.html">Statistical Tests and Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="starters.html">Starters Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tags.html">Tags &amp; Backtesting Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="time_helper.html">Time Helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Module</a></li>
 </ul>
 
@@ -134,12 +134,13 @@ html.dark {
 <li><a class="reference internal" href="#github-repo">GitHub repo</a></li>
 <li><a class="reference internal" href="#installation">Installation</a></li>
 <li><a class="reference internal" href="#usage">Usage</a></li>
+<li><a class="reference internal" href="#jupyter-import-problems-troubleshooting">Jupyter Import Problems Troubleshooting</a></li>
 <li><a class="reference internal" href="#greetings">Greetings</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a>
 
-  </div><div id="ethical-ad-placement"></div>
+  </div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div>
     </div>
   </aside>
   <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
@@ -160,6 +161,7 @@ html.dark {
 <li><p>calculate technical indicators.</p></li>
 <li><p>plot candles, histograms, indicators, etc in a very simple and beautiful way.</p></li>
 <li><p>check applied fees.</p></li>
+<li><p>review Exchange policies.</p></li>
 </ul>
 <p>An example of a plot for candles and indicators:</p>
 <a class="reference internal image-reference" href="_images/candles.png"><img alt="Candles with some indicators" src="_images/candles.png" style="width: 1000px;" /></a>
@@ -168,17 +170,21 @@ html.dark {
 <p>BinPan contains no Binance order method, withdraw method or any dangerous command.</p>
 <p>If you decide to add API keys for using some account methods, BinPan will encrypt it in a file, and in memory,
 but it is better not enabling trading capability on the Binance API key configuration, just for your own peace of mind.</p>
+<p>You will be asked for the API key and secret the first time you need it. It will be encrypted and stored in a file.</p>
 <p>Be careful out there!</p>
 </div>
 <p>Hope you find it useful breaking the market!!!</p>
 <section id="documentation">
 <h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this heading">¶</a></h2>
-<p>Take a look to the basic <strong>tutorial</strong>. Find it in the Jupyter Notebook file <strong>tutorial.ipynb</strong></p>
+<p>Full documentation can be found at:</p>
 <p><a class="reference external" href="https://nand0san.github.io/binpan_studio/">https://nand0san.github.io/binpan_studio/</a></p>
+<p>Take a look to the basic <strong>tutorial</strong>. Find it in the Jupyter Notebook file <strong>tutorial.ipynb</strong></p>
+<p>There are many more tutorials in Jupyter Notebooks at <a class="reference external" href="https://github.com/nand0san/binpan_studio">https://github.com/nand0san/binpan_studio</a></p>
+<p>Hope you find it useful breaking the market!!!</p>
 </section>
 <section id="google-colab">
 <h2>Google Colab<a class="headerlink" href="#google-colab" title="Permalink to this heading">¶</a></h2>
-<p>Google Colab is not available for the Binance API. Maybe Colab’s IP are restricted in the binance API.</p>
+<p>Google Colab is not available for the Binance API. Maybe Colab’s IPs are restricted in the Binance servers.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="n">BinanceAPIException</span><span class="p">:</span> <span class="n">APIError</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span> <span class="n">Service</span> <span class="n">unavailable</span> <span class="kn">from</span> <span class="nn">a</span> <span class="n">restricted</span> <span class="n">location</span> <span class="n">according</span> <span class="n">to</span> <span class="s1">&#39;b. Eligibility&#39;</span> <span class="ow">in</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">binance</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">en</span><span class="o">/</span><span class="n">terms</span><span class="o">.</span> <span class="n">Please</span> <span class="n">contact</span> <span class="n">customer</span> <span class="n">service</span> <span class="k">if</span> <span class="n">you</span> <span class="n">believe</span> <span class="n">you</span> <span class="n">received</span> <span class="n">this</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">error</span><span class="o">.</span>
 </span></pre></div>
 </div>
@@ -193,13 +199,14 @@ but it is better not enabling trading capability on the Binance API key configur
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span id="1-1">pip<span class="w"> </span>install<span class="w"> </span>binpan
 </span></pre></div>
 </div>
+<p>Any API key or secret will be prompted when needed and encrypted in a file.</p>
 </section>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading">¶</a></h2>
 <p>There is a tutorial in a Jupyter Notebook file in  the github repo.</p>
-<p><a class="reference external" href="https://github.com/nand0san/binpan_studio/blob/main/tutorial.ipynb">https://github.com/nand0san/binpan_studio/blob/main/tutorial.ipynb</a></p>
+<p><a class="reference external" href="https://github.com/nand0san/binpan_studio/blob/main/basic%20tutorial.ipynb">https://github.com/nand0san/binpan_studio/blob/main/basic%20tutorial.ipynb</a></p>
 <p>Importing just like this:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="kn">from</span> <span class="nn">binpan</span> <span class="kn">import</span> <span class="n">binpan</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="kn">import</span> <span class="nn">binpan</span>
 </span><span id="1-2">
 </span><span id="1-3"><span class="n">btcusdt</span> <span class="o">=</span> <span class="n">binpan</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;btcusdt&#39;</span><span class="p">,</span>
 </span><span id="1-4">                        <span class="n">tick_interval</span><span class="o">=</span><span class="s1">&#39;15m&#39;</span><span class="p">,</span>
@@ -211,10 +218,29 @@ but it is better not enabling trading capability on the Binance API key configur
 </div>
 <a class="reference internal image-reference" href="_images/index_example.png"><img alt="_images/index_example.png" src="_images/index_example.png" style="width: 1000px;" /></a>
 </section>
+<section id="jupyter-import-problems-troubleshooting">
+<h2>Jupyter Import Problems Troubleshooting<a class="headerlink" href="#jupyter-import-problems-troubleshooting" title="Permalink to this heading">¶</a></h2>
+<p>When working with Jupyter, you may encounter import errors while trying to import packages such as BinPan. These errors can be caused by various reasons such as package installation order, virtual environment issues, etc. To resolve such errors, you can try installing the required modules directly to the Jupyter Notebook kernel by following the steps below:</p>
+<p>First, import the sys module in your Jupyter notebook.</p>
+<p>Next, install the required packages using the following command:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span id="1-1">import sys
+</span><span id="1-2">
+</span><span id="1-3">!{sys.executable} -m pip install &lt;package_name&gt;
+</span></pre></div>
+</div>
+</div></blockquote>
+<p>Replace &lt;package_name&gt; with the name of the package that you want to install.</p>
+<p>By following these steps, you can install the required packages directly to the Jupyter Notebook kernel and resolve any import
+errors that you may encounter. In addition, it is recommended to ensure that the virtual environment used by Jupyter is
+configured correctly to avoid any conflicts with package installations.</p>
+</section>
 <section id="greetings">
 <h2>Greetings<a class="headerlink" href="#greetings" title="Permalink to this heading">¶</a></h2>
-<p>Thanks to the <strong>pandas_ta</strong> people for that great library.</p>
-<p>Hope you find it useful breaking the market!!!</p>
+<p>I would like to express my gratitude to the pandas_ta team for developing such a fantastic library.
+Thank you for your hard work and dedication in creating a powerful tool that enables data analysts and
+traders to perform technical analysis in Python with ease. Your contribution to the Python community is
+greatly appreciated.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
@@ -224,15 +250,19 @@ but it is better not enabling trading capability on the Binance API key configur
 <li class="toctree-l1"><a class="reference internal" href="exchange.html">Exchange Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="files.html">Files Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="indicators.html">Indicators Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="influx_manager.html">Influx Manager Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="messages.html">Messages Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="messages.html#module-handlers.messages">Exceptions Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postgresql.html">PostgreSQL Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postgresql_database.html">PostgreSQL Database Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quest.html">Requests Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stat_tests.html">Statistical Tests and Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="starters.html">Starters Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tags.html">Tags &amp; Backtesting Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="time_helper.html">Time Helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Module</a></li>
 </ul>
 </div>
@@ -290,7 +320,7 @@ but it is better not enabling trading capability on the Binance API key configur
       <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
       <script src="_static/doctools.js"></script>
       <script src="_static/sphinx_highlight.js"></script>
-      <script src="_static/shibuya.js?v=2023.3.19"></script>
+      <script src="_static/shibuya.js?v=2023.6.8"></script>
     
 </body>
 </html>

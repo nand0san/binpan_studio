@@ -4,73 +4,35 @@ Market functions
 
 """
 
-# from tqdm import tqdm
 from time import time
 import pandas as pd
-import json
 from decimal import Decimal as dd
+from datetime import datetime
 
-# from redis import StrictRedis
-from typing import List, Dict, Union
+from panzer import BinancePublicClient
 
-from redis import StrictRedis
-
-from .starters import import_secret_module
 from .exceptions import BinPanException
-from .logs import Logs
-from .quest import check_weight, get_response, api_raw_get, get_semi_signed_request
-from .time_helper import tick_seconds, calculate_iterations, convert_milliseconds_to_str, convert_ms_column_to_datetime_with_zone, \
-    convert_milliseconds_to_utc_string, convert_datetime_to_string, open_from_milliseconds, next_open_by_milliseconds, \
-    convert_milliseconds_to_time_zone_datetime
+from .logs import LogManager
+from .quest import get_semi_signed_request
+from .time_helper import (tick_seconds, convert_milliseconds_to_str, convert_ms_column_to_datetime_with_zone,
+                          convert_milliseconds_to_utc_string, convert_datetime_to_string, open_from_milliseconds, next_open_by_milliseconds,
+                          convert_milliseconds_to_time_zone_datetime)
+from .standards import (klines_api_map_columns, agg_trades_columns_from_binance, atomic_trades_columns_from_binance,
+                        atomic_trades_columns_from_redis)
+from .files import get_encoded_secrets
 
-market_logger = Logs(filename='./logs/market_logger.log', name='market_logger', info_level='INFO')
+market_logger = LogManager(filename='./logs/market_logger.log', name='market_logger', info_level='INFO')
 
-try:
-    secret = import_secret_module()
-    api_key = secret.api_key
-    api_secret = secret.api_secret
-except Exception as exc:
-    msg = "WARNING: No Binance API Key or API Secret."
-    market_logger.warning(msg)
-    api_key = ''
-    api_secret = ''
+# cliente panzer compartido (lazy singleton)
+_panzer_client = None
 
-# try:
-#     from secret import api_key
-# except ImportError:
-#     api_key, api_secret = "PLEASE ADD API KEY", "PLEASE ADD API SECRET"
-#     msg = """\n\n-------------------------------------------------------------
-# WARNING: No Binance API Key or API Secret. API key would be needed for personal API calls. Any other calls will work.
-#
-# Adding example:
-#
-#     from binpan import handlers
-#
-#     handlers.files.add_api_key("xxxx")
-#     handlers.files.add_api_secret("xxxx")
-#
-# API keys will be added to a file called secret.py in an encrypted way. API keys in memory stay encrypted except in the API call instant.
-#
-# Create API keys: https://www.binance.com/en/support/faq/360002502072
-# """
-#     market_logger.warning(msg)
 
-base_url = 'https://api.binance.com'
-
-klines_columns = {"t": "Open time", "o": "Open", "h": "High", "l": "Low", "c": "Close", "v": "Volume", "T": "Close time",
-                  "q": "Quote volume", "n": "Trades", "V": "Taker buy base volume", "Q": "Taker buy quote volume", "B": "Ignore"}
-
-trades_columns = {'M': 'Best price match', 'm': 'Buyer was maker', 'T': 'Timestamp', 'l': 'Last tradeId', 'f': 'First tradeId',
-                  'q': 'Quantity', 'p': 'Price', 'a': 'Aggregate tradeId'}
-
-agg_trades_columns_from_binance = ['Aggregate tradeId', 'Price', 'Quantity', 'First tradeId', 'Last tradeId', 'Date', 'Timestamp',
-                                   'Buyer was maker', 'Best price match']
-agg_trades_columns_from_redis = ['Aggregate tradeId', 'Price', 'Quantity', 'First tradeId', 'Last tradeId', 'Date', 'Timestamp',
-                                 'Buyer was maker', 'Best price match']
-atomic_trades_columns_from_binance = ['Trade Id', 'Price', 'Quantity', 'Quote quantity', 'Date', 'Timestamp', 'Buyer was maker',
-                                      'Best price match']
-atomic_trades_columns_from_redis = ['Trade Id', 'Price', 'Quantity', 'Buyer Order Id', 'Seller Order Id', 'Date', 'Timestamp',
-                                    'Buyer was maker', 'Best price match']
+def _get_panzer(market: str = "spot") -> BinancePublicClient:
+    """Returns the shared panzer client, creating it on first use."""
+    global _panzer_client
+    if _panzer_client is None:
+        _panzer_client = BinancePublicClient(market=market)
+    return _panzer_client
 
 
 ##########
@@ -78,7 +40,7 @@ atomic_trades_columns_from_redis = ['Trade Id', 'Price', 'Quantity', 'Buyer Orde
 ##########
 
 
-def get_last_price(symbol: str = None) -> dict or list:
+def get_last_price(symbol: str = None) -> dict | list:
     """
     Returns all prices of symbols in a dict or if symbol specified, the float price of symbol.
 
@@ -86,18 +48,14 @@ def get_last_price(symbol: str = None) -> dict or list:
     :return dict or list:
 
     """
-    endpoint = '/api/v3/ticker/price'
-    if symbol:
-        weight = 1
-        symbol = symbol.upper()
-    else:
-        weight = 2
-    res = api_raw_get(endpoint=endpoint, weight=weight, params={'symbol': symbol})
+    client = _get_panzer()
+    params = {'symbol': symbol.upper()} if symbol else {}
+    res = client.get('/api/v3/ticker/price', params=params, weight=2 if not symbol else 1)
     market_logger.debug(f"get_last_price: {res}")
 
-    if type(res) == dict:
+    if type(res) is dict:
         return float(res['price'])
-    elif type(res) == list:
+    elif type(res) is list:
         return {k['symbol']: float(k['price']) for k in res}
 
 
@@ -107,9 +65,8 @@ def get_prices_dic(decimal_mode: bool) -> dict:
     :decimal_mode bool: It flags to work in decimal mode.
     :return dict:
     """
-    endpoint = '/api/v3/ticker/price'
-    check_weight(2, endpoint=endpoint)
-    ret = get_response(url=endpoint)
+    client = _get_panzer()
+    ret = client.get('/api/v3/ticker/price', weight=2)
     if decimal_mode:
         return {d['symbol']: dd(d['price']) for d in ret}
     else:
@@ -120,22 +77,26 @@ def get_prices_dic(decimal_mode: bool) -> dict:
 # Candles #
 ###########
 
-def get_candles_by_time_stamps(symbol: str, tick_interval: str, start_time: int = None, end_time: int = None, limit=1000,
-                               time_zone='Europe/Madrid', redis_client: Union[StrictRedis, Dict] = None) -> list:
+def get_candles_by_time_stamps(symbol: str,
+                               tick_interval: str,
+                               start_time: int = None,
+                               end_time: int = None,
+                               limit=1000,
+                               time_zone='Europe/Madrid') -> list[list]:
     """
     Calls API for a candles list using one or two timestamps, starting and ending.
 
     In case the limit is passed and exceeded by requested time intervals, the start_time prevails over the end_time,
     start_time must come in milliseconds from epoch.
 
-    In case of two timeStamps as arguments, limit is ignored.
+    In case of two timeStamps as arguments, limit is ignored and a loop is performed to get all candles in the range.
 
     The API rounds the startTime up to the next open of the next candle. That is, it does not include the candle in which there is
     that timeStamp, but the next candle of the corresponding tick_interval, except in case it exactly matches the value of an open
     timestamp, in which case it will include it in the return.
 
     The indicated endTime will include the candlestick that timestamp is on. It should be in milliseconds. It can be a not closed one if
-    is open right in between the endtime timestamp.
+    is open right in between the endtime timestamp. API is inclusive in this case.
 
     If no timestamps are passed, the last quantity candlesticks up to limit count are returned.
 
@@ -144,12 +105,10 @@ def get_candles_by_time_stamps(symbol: str, tick_interval: str, start_time: int 
     :param int start_time: A timestamp in milliseconds from epoch.
     :param int end_time: A timestamp in milliseconds from epoch.
     :param int limit: Count of candles to ask for.
-    :param bool or StrictRedis or dict redis_client: A redis instance of a connector. Also can be passed a dictionary with redis client configuration. Example:
-
-        redis_client = {'host': '192.168.89.242', 'port': 6379, 'db': 0, 'decode_responses': True}
-
     :param str time_zone: Just used for exception errors.
-    :return list: Returns a list from the Binance API
+    :return list: Returns a list from the Binance API.
+
+    .. note::    By default unique API response is inclusive for start_time and end_time, IF LESS than 1000 limit applied.
 
     .. code-block::
 
@@ -172,112 +131,161 @@ def get_candles_by_time_stamps(symbol: str, tick_interval: str, start_time: int 
 
     """
     endpoint = '/api/v3/klines?'
+    tick_milliseconds = int(tick_seconds[tick_interval] * 1000)
+    # limit = min(limit, 1000)
+    limit = (end_time - start_time) // tick_milliseconds
+
+    if not start_time and not end_time:
+        end_time = int(time()) * 1000  # la api traería la ultima vela cerrada
+        start_time = end_time - ((limit - 1) * tick_milliseconds)
+        start_time = open_from_milliseconds(ms=start_time, tick_interval=tick_interval)
+
+    if not start_time and end_time:
+        start_time = end_time - ((limit - 1) * tick_milliseconds)
+        start_time = open_from_milliseconds(ms=start_time, tick_interval=tick_interval)
+
+    elif start_time and not end_time:
+        end_time = start_time + ((limit - 1) * tick_milliseconds)  # end time is included
+        end_time = open_from_milliseconds(ms=end_time, tick_interval=tick_interval)
+
+    end_time = min(end_time,
+                   next_open_by_milliseconds(ms=int(time() * 1000), tick_interval=tick_interval),
+                   next_open_by_milliseconds(ms=end_time, tick_interval=tick_interval))
 
     start_string = convert_milliseconds_to_str(ms=start_time, timezoned=time_zone)
     end_string = convert_milliseconds_to_str(ms=end_time, timezoned=time_zone)
 
-    market_logger.debug(f"get_candles_by_time_stamps -> symbol={symbol} tick_interval={tick_interval} start={start_string} end={end_string}")
+    market_logger.info(f"get_candles_by_time_stamps -> symbol={symbol} tick_interval={tick_interval} start={start_string} end="
+                       f"{end_string} limit={limit}")
 
-    tick_milliseconds = int(tick_seconds[tick_interval] * 1000)
+    client = _get_panzer()
 
-    if not start_time and not end_time:
-        end_time = int(time()) * 1000
-
-    if not start_time and end_time:
-        start_time = end_time - (limit * tick_milliseconds)
-        start_time = open_from_milliseconds(ms=start_time, tick_interval=tick_interval)
-
-    elif start_time and not end_time:
-        end_time = start_time + (limit * tick_milliseconds)  # ??? for getting limit exactly
-        end_time = open_from_milliseconds(ms=end_time, tick_interval=tick_interval)
-
-    # prepare iteration for big loops
-    tick_milliseconds = int(tick_seconds[tick_interval] * 1000)
+    # preparar iteración por bloques de 1000 velas
     ranges = [(i, i + (1000 * tick_milliseconds)) for i in range(start_time, end_time, tick_milliseconds * 1000)]
 
-    # loop
     raw_candles = []
-    for r in ranges:
-        start = r[0]
-        end = r[1]
+    for start, end in ranges:
+        loop_limit = min(limit, 1000)
+        end = min(end, int(1000 * time()), end_time)
 
-        if redis_client:
-            from redis import StrictRedis
-            if type(redis_client) == dict:
-                try:
-                    redis_client = StrictRedis(**redis_client)
-                except Exception:
-                    msg = f"BinPan exceptionRedis client error: arguments for client={redis_client}"
-                    market_logger.error(msg)
-                    raise Exception(msg)
-            elif type(redis_client) != StrictRedis:
-                msg = f"BinPan exceptionRedis client error: type passed={type(redis_client)}"
-                market_logger.error(msg)
-                raise Exception(msg)
+        start_str = convert_milliseconds_to_str(start, timezoned=time_zone)
+        end_str = convert_milliseconds_to_str(end, timezoned=time_zone)
 
-            ret = redis_client.zrangebyscore(name=f"{symbol.lower()}@kline_{tick_interval}", min=start, max=end, withscores=False)
-            if not ret:
-                continue
-            response = [json.loads(i) for i in ret]
-        else:
-            params = {'symbol': symbol, 'interval': tick_interval, 'startTime': start, 'endTime': end, 'limit': limit}
-            params = {k: v for k, v in params.items() if v}
-            check_weight(1, endpoint=endpoint)
+        expected_klines = min(int(-((end - start) // -tick_milliseconds)), loop_limit)
+        market_logger.debug(f"API request: {symbol} {start_str} to {end_str}. Expected klines: {expected_klines}")
 
-            start_str = convert_milliseconds_to_str(start, timezoned=time_zone)
-            end_str = convert_milliseconds_to_str(min(end, int(1000 * time())), timezoned=time_zone)
-            market_logger.info(f"API request: {symbol} {start_str} to {end_str}")
-            response = get_response(url=endpoint, params=params)
+        response = client.klines(symbol=symbol, interval=tick_interval, start_time=start, end_time=end, limit=loop_limit)
 
+        if len(response) < expected_klines:
+            market_logger.warning(f"API response missing {expected_klines - len(response)} klines for {symbol} {start_str} to "
+                                  f"{end_str} expected {expected_klines} got {len(response)}")
         raw_candles += response
 
     if not raw_candles:
-        msg = f"BinPan Exception: Requested data for {symbol.lower()}@kline_{tick_interval} between {start_string} and " \
-              f"{end_string} missing in redis server."
-        market_logger.error(msg)
-        raise Exception(msg)
+        msg = (f"BinPan: Missing in API requested klines for {symbol.lower()}@kline_{tick_interval} between {start_string} "
+               f"and {end_string}")
+        market_logger.warning(msg)
+        return []
 
     # descarta sobrantes
     overtime_candle_ts = next_open_by_milliseconds(ms=end_time, tick_interval=tick_interval)
-    if raw_candles:
-        if type(raw_candles[0]) == list:  # if from binance
-            raw_candles = [i for i in raw_candles if int(i[0]) < overtime_candle_ts]
-        else:
-            open_ts_key = list(raw_candles[0].keys())[0]
-            raw_candles = [i for i in raw_candles if int(i[open_ts_key]) < overtime_candle_ts]
 
-    return raw_candles
+    if type(raw_candles[0]) is list:
+        raw_candles_ = [i for i in raw_candles if int(i[0]) < overtime_candle_ts]
+    else:
+        open_ts_key = list(raw_candles[0].keys())[0]
+        raw_candles_ = [i for i in raw_candles if int(i[open_ts_key]) < overtime_candle_ts]
+
+    if len(raw_candles) != len(raw_candles_):
+        market_logger.info(f"Pruned not closed or overtime candles {len(raw_candles) - len(raw_candles_)} candles from API response for {symbol} "
+                           f"{tick_interval}")
+
+    return raw_candles_
 
 
-def get_historical_candles(symbol: str, tick_interval: str, start_time: int, end_time: int, tick_interval_ms: int,
-                           limit: int = 1000) -> list:
+def get_historical_candles(symbol: str,
+                           tick_interval: str,
+                           start_time: int,
+                           end_time: int,
+                           tick_interval_ms: int,
+                           requests_limit: int = 1000,
+                           ignore_errors: bool = False) -> list[list]:
     """
     Retrieve all kline data within the given time range considering the API limit.
+
+    Start time and end time are rounded down to the nearest open tick interval and are included both opens rounded.
+
+    Please, check last close timestamp in klines because it can be not closed yet.
 
     :param str symbol: The trading pair symbol (e.g., "BTCUSDT").
     :param str tick_interval: Kline tick interval (e.g., "1m", "3m", "1h").
     :param int start_time: Start timestamp (milliseconds) of the time range.
     :param int end_time: End timestamp (milliseconds) of the time range.
     :param int tick_interval_ms: Kline tick interval in milliseconds.
-    :param int limit: API limit for the number of klines in a single request (default: 1000).
+    :param int requests_limit: API limit for the number of klines in a single request (default: 1000).
+    :param bool ignore_errors: If tru, just throw a warning on error. Recommended for redis filler.
     :return: A list of klines data within the given time range.
-    :rtype: list
+
+    Example of binpan response:
+
+     .. code-block:: python
+
+        [[1696786200000,
+         '27890.28000000',
+         '27892.47000000',
+         '27890.27000000',
+         '27890.45000000',
+         '5.42396000',
+         1696786259999,
+         '151280.49524920',
+         370,
+         '1.99232000',
+         '55567.81240580',
+         '0']...]
     """
-    iterations = calculate_iterations(start_time=start_time, end_time=end_time, tick_interval_ms=tick_interval_ms, limit=limit)
+    start = int((start_time // tick_interval_ms) * tick_interval_ms)
+    # end = int(-(end_time // -tick_interval_ms) * tick_interval_ms)  # trae una de mas
+    end = int((end_time // tick_interval_ms) * tick_interval_ms)
+
     all_data = []
 
-    for i in range(iterations):
-        current_start_time = start_time + i * limit * tick_interval_ms
-        current_end_time = min(current_start_time + (limit - 1) * tick_interval_ms, end_time)
+    for curr_start in range(start, end, requests_limit * tick_interval_ms):
 
-        data = get_candles_by_time_stamps(symbol=symbol, tick_interval=tick_interval, start_time=current_start_time, end_time=current_end_time)
-        all_data.extend(data)
+        curr_end = curr_start + (requests_limit * tick_interval_ms)
+        if ignore_errors:
+            try:
+                # get_candles_by_time_stamps excludes end_time
+                data = get_candles_by_time_stamps(symbol=symbol,
+                                                  tick_interval=tick_interval,
+                                                  start_time=curr_start,
+                                                  end_time=curr_end)
+            except Exception as e:
+                market_logger.warning(f"{symbol} kline_{tick_interval} missing: {e}")
+                continue
+        else:
+            # get_candles_by_time_stamps excludes end_time
+            data = get_candles_by_time_stamps(symbol=symbol,
+                                              tick_interval=tick_interval,
+                                              start_time=curr_start,
+                                              end_time=curr_end)
+        if data:
+            all_data.extend(data)
+
+    # ordena datos por primera columna. No debería haber
+    all_data = sorted(all_data, key=lambda x: x[0])
+
+    # elimina duplicados por primera columna. No debería haber
+    all_data = [i for n, i in enumerate(all_data) if i not in all_data[n + 1:]]
 
     return all_data
 
 
-def parse_candles_to_dataframe(raw_response: list, symbol: str, tick_interval: str, columns: list = None, time_cols: list = None,
-                               time_zone: str or None = 'UTC', time_index=False) -> pd.DataFrame:
+def parse_candles_to_dataframe(raw_response: list,
+                               symbol: str,
+                               tick_interval: str,
+                               columns: list = None,
+                               time_cols: list = None,
+                               time_zone: str | None = 'UTC') -> pd.DataFrame:
     """
     Format a list of lists by changing the indicated time fields to string format.
 
@@ -293,7 +301,6 @@ def parse_candles_to_dataframe(raw_response: list, symbol: str, tick_interval: s
     :param list columns:         Column names. Default is BinPan dataframe columns.
     :param list time_cols:       Columns to take dates from.
     :param str or None time_zone: Optional. Time zone to convert dates in index.
-    :param bool time_index:      True gets dates index, False just numeric index.
     :return:                    Pandas DataFrame
 
     """
@@ -308,7 +315,7 @@ def parse_candles_to_dataframe(raw_response: list, symbol: str, tick_interval: s
 
     # check if redis columns
     if raw_response:
-        if type(raw_response[0]) == list:
+        if type(raw_response[0]) is list:
             df = pd.DataFrame(raw_response, columns=columns)
         else:
             response_keys = list(raw_response[0].keys())
@@ -317,9 +324,9 @@ def parse_candles_to_dataframe(raw_response: list, symbol: str, tick_interval: s
             sort_columns.sort()
 
             if response_keys != sort_columns:  # json keys from redis different
-                columns = list(klines_columns.keys())
+                columns = list(klines_api_map_columns.keys())
                 df = pd.DataFrame(raw_response, columns=columns)
-                df.rename(columns=klines_columns, inplace=True)
+                df.rename(columns=klines_api_map_columns, inplace=True)
             else:
                 df = pd.DataFrame(raw_response, columns=columns)
     else:
@@ -335,17 +342,16 @@ def parse_candles_to_dataframe(raw_response: list, symbol: str, tick_interval: s
     df.loc[:, 'Open timestamp'] = df['Open time']
     df.loc[:, 'Close timestamp'] = df['Close time']
 
-    if type(time_zone) == str and time_zone != 'UTC':  # converts to time zone the time columns
+    if type(time_zone) is str and time_zone != 'UTC':  # converts to time zone the time columns
         for col in time_cols:
-            df.loc[:, col] = convert_ms_column_to_datetime_with_zone(df, col, time_zone=time_zone)
-            # df.loc[:, col] = df[col].apply(lambda x:convert_datetime_to_string(x))
-            df.loc[:, col] = convert_ms_column_to_datetime_with_zone(df, col, time_zone=time_zone, ambiguous='infer')
+            df[col] = convert_ms_column_to_datetime_with_zone(df, col, time_zone=time_zone, ambiguous='infer')
 
     else:
         for col in time_cols:
             df.loc[:, col] = df[col].apply(lambda x: convert_milliseconds_to_utc_string(x))
 
-    if time_index and time_zone:
+    # if time_index and time_zone:
+    if time_zone:
         date_index = df['Open timestamp'].apply(convert_milliseconds_to_time_zone_datetime, timezoned=time_zone)
         df.set_index(date_index, inplace=True)
         index_name = f"{symbol} {tick_interval} {time_zone}"
@@ -399,21 +405,59 @@ def convert_to_numeric(data: pd.DataFrame) -> pd.DataFrame:
     """
     df = data.copy(deep=True)
     for col in df.columns:
-        df[col] = pd.to_numeric(arg=df[col], downcast='integer', errors='ignore')
+        if col.endswith(' time'):
+            continue
+        elif col == "Date":  # when data is previously parsed
+            continue
+        try:
+            df[col] = pd.to_numeric(arg=df[col])
+        except (ValueError, TypeError):
+            pass
     return df
+
+
+def convert_dict_to_numeric(input_dict: dict, parse_datetime2int: bool) -> dict:
+    """
+    Converts all values in a dictionary to numeric values if possible.
+
+    :param input_dict: A dictionary.
+    :param parse_datetime2int: If True, parses datetime columns to int.
+    :return: Returns a dictionary with all values converted to numeric values if possible.
+    """
+    output_dict = dict()
+
+    for key, value in input_dict.items():
+        if isinstance(value, (datetime, pd.Timestamp)):
+            if parse_datetime2int:
+                output_dict[key] = int(value.timestamp() * 1000)
+            else:
+                output_dict[key] = value
+            continue
+        try:
+            float_val = float(value)
+            # Downgrade a int si es posible
+            if float_val.is_integer():
+                output_dict[key] = int(float_val)
+            else:
+                output_dict[key] = float_val
+        except Exception:
+            # Si falla la conversión, mantener el valor original
+            output_dict[key] = value
+    return output_dict
 
 
 ##########
 # Trades #
 ##########
 
-def get_last_agg_trades(symbol: str, limit=1000) -> list:
+def get_last_agg_trades(symbol: str, limit=1000) -> list[dict]:
     """
     Get just the last aggregated trades from API.
 
     GET /api/v3/aggTrades
 
-    Get compressed, aggregate trades. Trades that fill at the time, from the same order, with the same price will have the quantity aggregated.
+    Get compressed, aggregate trades. Trades that fill at the time, from the same order, with the same price will have the quantity
+    aggregated.
 
     Weight(IP): 1
 
@@ -439,13 +483,11 @@ def get_last_agg_trades(symbol: str, limit=1000) -> list:
         ]
 
     """
-    endpoint = '/api/v3/aggTrades?'
-    check_weight(1, endpoint=endpoint)
-    query = {'symbol': symbol, 'limit': limit}
-    return get_response(url=endpoint, params=query)
+    client = _get_panzer()
+    return client.agg_trades(symbol=symbol, limit=limit)
 
 
-def get_aggregated_trades(symbol: str, fromId: int = None, limit: int = None, decimal_mode: bool = False) -> list:
+def get_aggregated_trades(symbol: str, fromId: int = None, limit: int = None, decimal_mode: bool = False) -> list[dict]:
     """
     Returns aggregated trades from id to limit or last trades if id not specified.
 
@@ -453,9 +495,10 @@ def get_aggregated_trades(symbol: str, fromId: int = None, limit: int = None, de
 
     GET /api/v3/aggTrades
 
-    Get compressed, aggregate trades. Trades that fill at the time, from the same order, with the same price will have the quantity aggregated.
+    Get compressed, aggregate trades. Trades that fill at the time, from the same order, with the same price will have the quantity
+    aggregated.
 
-    Weight(IP): 1
+    Weight(IP): 4
 
     :param str symbol: A binance valid symbol.
     :param int fromId: Trade id to fetch from. If not passed, gets most recent trades.
@@ -482,9 +525,33 @@ def get_aggregated_trades(symbol: str, fromId: int = None, limit: int = None, de
     """
 
     endpoint = '/api/v3/aggTrades?'
-    check_weight(1, endpoint=endpoint)
     query = {'symbol': symbol, 'limit': limit, 'fromId': fromId, 'recWindow': None}
+    try:
+        api_key, _ = get_encoded_secrets()
+    except Exception as e:
+        market_logger.error(f"Missing api_key: {e}")
+        raise e
     return get_semi_signed_request(url=endpoint, decimal_mode=decimal_mode, api_key=api_key, params=query)
+
+
+def get_aggregated_trades_by_time(symbol: str, startTime: int, endTime: int, limit: int = 1000) -> list[dict]:
+    """
+    Returns aggregated trades using native startTime/endTime parameters of the API.
+
+    The API limits each request to a maximum window of 1 hour and 1000 results.
+
+    GET /api/v3/aggTrades
+
+    Weight(IP): 4
+
+    :param str symbol: A binance valid symbol.
+    :param int startTime: A timestamp in milliseconds from epoch.
+    :param int endTime: A timestamp in milliseconds from epoch.
+    :param int limit: Max trades per request (API max 1000).
+    :return list[dict]: Returns a list of aggregated trade dicts from the Binance API.
+    """
+    client = _get_panzer()
+    return client.agg_trades(symbol=symbol, start_time=startTime, end_time=endTime, limit=limit)
 
 
 def get_historical_agg_trades(symbol: str,
@@ -492,30 +559,24 @@ def get_historical_agg_trades(symbol: str,
                               endTime: int = None,
                               start_trade_id: int = None,
                               end_trade_id: int = None,
-                              limit: int = 1000,
-                              redis_client_trades: StrictRedis = None) -> List[dict]:
+                              limit_ids: int = 1000,
+                              limit_hours: float = 1) -> list[dict]:
     """
-    Returns aggregated trades from id to limit or last trades if id not specified. Also is possible to get from starTime utc in
-    milliseconds from epoch or until endtime milliseconds from epoch.
+    Returns aggregated trades between timestamps or trade IDs.
 
-    Deprecated: If it is tested with more than 1 hour of trades, it gives error 1127 and if you adjust it to one hour,
-    the maximum limit of 1000 is NOT applied.
-
-    Update: API now limits to 1000 trades requests by id.
-
-    Start time and end time not applied if trade id passed.
-
-    Limit applied in fromId mode defaults to 500. Maximum is 1000.
+    For timestamp mode, uses native startTime/endTime API parameters with 1-hour chunking.
+    For ID mode, paginates forward with fromId.
 
     :param str symbol: A binance valid symbol.
     :param int startTime: A timestamp in milliseconds from epoch.
     :param int endTime: A timestamp in milliseconds from epoch.
     :param int start_trade_id: A trade id as first one (older).
     :param int end_trade_id: A trade id as last one (newer).
-    :param int limit: Count of trades to ask for. Ignored if start and end passed.
-    :param bool redis_client_trades: A redis instance of a connector. Must be a trades redis connector, usually different configuration
-     from candles redis server.
-    :return list: Returns a list from the Binance API in dicts.
+    :param int limit_ids: Count of trades to ask for if just start_trade_id or just end_trade_id passed.
+        Ignored if startTime or endTime passed.
+    :param float limit_hours: Count of hours to ask for if just startTime or just endTime passed.
+        Ignored if start_trade_id or end_trade_id passed.
+    :return list[dict]: Returns a list from the Binance API in dicts.
 
     .. code-block::
 
@@ -532,109 +593,112 @@ def get_historical_agg_trades(symbol: str,
           }
         ]
     """
-    try:
-        assert bool(startTime or endTime) ^ bool(start_trade_id or end_trade_id)
-    except AssertionError:
-        raise BinPanException(f"BinPan Exception: get_historical_agg_trades params mixed time, timestamp and trade id: {locals()}")
 
-    if start_trade_id and not end_trade_id:
-        end_trade_id = start_trade_id + limit
-    elif end_trade_id and not start_trade_id:
-        start_trade_id = end_trade_id - limit
+    ONE_HOUR_MS = 3_600_000
+    id_field = "a"
 
-    trades = get_last_agg_trades(symbol=symbol, limit=1000)
+    has_time = bool(startTime or endTime)
+    has_ids = bool(start_trade_id or end_trade_id)
+
+    if not has_time and not has_ids:
+        raise BinPanException("BinPan Exception: get_historical_agg_trades sin parámetros de tiempo ni de ID")
+    if has_time and has_ids:
+        raise BinPanException("BinPan Exception: get_historical_agg_trades mezcla parámetros de tiempo e ID")
+
+    ################
+    # Modo por IDs #
+    ################
+
+    if has_ids:
+        if start_trade_id and not end_trade_id:
+            end_trade_id = start_trade_id + (limit_ids - 1)
+        elif end_trade_id and not start_trade_id:
+            start_trade_id = end_trade_id - (limit_ids - 1)
+
+        assert start_trade_id <= end_trade_id, (
+            f"BinPan Exception: aggTrades start_trade_id ({start_trade_id}) > end_trade_id ({end_trade_id})")
+
+        market_logger.info(f"Obteniendo aggTrades de {symbol} por ID: {start_trade_id} -> {end_trade_id}")
+
+        all_trades = []
+        current_id = start_trade_id
+        requests_cnt = 0
+
+        while current_id <= end_trade_id:
+            batch = get_aggregated_trades(symbol=symbol, fromId=current_id, limit=1000)
+            requests_cnt += 1
+            if not batch:
+                break
+            all_trades.extend(batch)
+            current_id = batch[-1][id_field] + 1
+            market_logger.info(f"Peticiones API aggTrades {symbol}: {requests_cnt}")
+            if len(batch) < 1000:
+                break
+
+        ret = [t for t in all_trades if start_trade_id <= t[id_field] <= end_trade_id]
+        return sorted(ret, key=lambda x: x[id_field])
+
+    #######################
+    # Modo por timestamps #
+    #######################
+
+    now_ms = int(time() * 1000)
+    limit_hours_ms = int(ONE_HOUR_MS * limit_hours)
+
+    if endTime and not startTime:
+        endTime = min(endTime, now_ms)
+        startTime = endTime - limit_hours_ms
+    elif startTime and not endTime:
+        endTime = min(startTime + limit_hours_ms, now_ms)
+
+    assert startTime <= endTime, (
+        f"BinPan Exception: aggTrades startTime ({startTime}) > endTime ({endTime})")
+
+    market_logger.info(
+        f"Obteniendo aggTrades de {symbol} por tiempo: "
+        f"{convert_milliseconds_to_utc_string(startTime)} -> {convert_milliseconds_to_utc_string(endTime)}")
+
+    all_trades = []
+    chunk_start = startTime
     requests_cnt = 0
 
-    # with trade ids, find start
-    if start_trade_id and end_trade_id and not redis_client_trades:
-        current_first_trade = trades[0]['a']
-        while current_first_trade > start_trade_id:
-            requests_cnt += 1
-            market_logger.info(f"Requests to API for aggregated trades of {symbol}: {requests_cnt}")
-            fetched_older_trades = get_aggregated_trades(symbol=symbol, fromId=(current_first_trade - 1000), limit=1000)
-            trades = fetched_older_trades + trades
-            current_first_trade = trades[0]['a']
+    while chunk_start < endTime:
+        chunk_end = min(chunk_start + ONE_HOUR_MS, endTime)
+        batch = get_aggregated_trades_by_time(symbol, chunk_start, chunk_end)
+        requests_cnt += 1
 
-        current_last_trade = trades[-1]['a']
-        while current_last_trade < end_trade_id:
-            requests_cnt += 1
-            market_logger.info(f"Requests to API for aggregated trades of {symbol}: {requests_cnt}")
-            fetched_older_trades = get_aggregated_trades(symbol=symbol, fromId=current_last_trade, limit=1000)
-            trades = fetched_older_trades + trades
-            current_last_trade = trades[-1]['a']
+        if not batch:
+            chunk_start = chunk_end + 1
+            continue
 
-        ret = [i for i in trades if start_trade_id <= i['a'] <= end_trade_id]
-        return sorted(ret, key=lambda x: x['a'])
+        all_trades.extend(batch)
 
-    # with timestamps or trade ids
-    if not redis_client_trades and (startTime or endTime):
-        current_first_trade_time = trades[0]['T']
-        current_first_trade = trades[0]['a']
-        # if startTime or endTime:
-        if startTime:
-            while current_first_trade_time >= startTime:
+        # sub-paginar dentro de la hora si hay >=1000 trades
+        if len(batch) == 1000:
+            while True:
+                sub_start = batch[-1]['T'] + 1
+                if sub_start > chunk_end:
+                    break
+                batch = get_aggregated_trades_by_time(symbol, sub_start, chunk_end)
                 requests_cnt += 1
-                market_logger.info(f"Requests API for aggregated trades searching STARTIME {symbol}: {requests_cnt} current_first_trade:{current_first_trade}")
-                fetched_older_trades = get_aggregated_trades(symbol=symbol, fromId=current_first_trade - 1000, limit=1000)
-                trades = fetched_older_trades + trades
-                current_first_trade_time = trades[0]['T']
-                current_first_trade = trades[0]['a']
-        if endTime:
-            current_last_trade = trades[-1]['a']
-            prev_last_trade = current_last_trade
-            current_last_trade_time = trades[-1]['T']
-            retry_count = 0  # añadido
+                if not batch:
+                    break
+                all_trades.extend(batch)
+                if len(batch) < 1000:
+                    break
 
-            while current_last_trade_time <= endTime:
-                requests_cnt += 1
-                market_logger.info(f"Requests API for aggregated trades searching ENDTIME {symbol}: {requests_cnt}  current_last_trade:{current_last_trade}")
-                fetched_newer_trades = get_aggregated_trades(symbol=symbol, fromId=current_last_trade, limit=1000)
-                trades += fetched_newer_trades
-                current_last_trade = trades[-1]['a']
-                current_last_trade_time = trades[-1]['T']
-                if current_last_trade != prev_last_trade:
-                    prev_last_trade = current_last_trade  # vigilando esto
-                    retry_count = 0
-                else:
-                    retry_count += 1
-                    if retry_count >= 3:
-                        break
+        chunk_start = chunk_end + 1
 
-        ret = [i for i in trades if startTime <= i['T'] <= endTime]
-        return sorted(ret, key=lambda x: x['a'])
+    market_logger.info(f"aggTrades {symbol}: {requests_cnt} peticiones, {len(all_trades)} trades obtenidos")
 
-    # from redis
-    response = []
-    market_logger.info(f"Fetching aggregated trades from redis server for {symbol}")
-
-    curr_trades = redis_client_trades.zrange(name=f"{symbol.lower()}@aggTrade", start=0, end=-1, withscores=True)
-
-    curr_trades = [json.loads(i[0]) for i in curr_trades]
-    market_logger.debug(f"Fetched {len(curr_trades)} aggregated trades for {symbol}")
-
-    if curr_trades:
-        timestamps_dict = {k['T']: k['a'] for k in curr_trades}  # associate timestamps with trade id
-        trade_ids = [i for t, i in timestamps_dict.items() if startTime <= t <= endTime]
-        market_logger.debug(f"List of aggregated trades {len(trade_ids)} for {symbol}")
-
-        if trade_ids:
-            response = redis_client_trades.zrangebyscore(name=f"{symbol.lower()}@aggTrade", min=trade_ids[0], max=trade_ids[
-                -1], withscores=False)
-            response = [json.loads(i) for i in response]
-        else:
-            response = []
-
-        market_logger.info(f"Clean aggregated {len(response)} trades found for {symbol}")
-
-    if not response:
-        start_str = convert_milliseconds_to_utc_string(ms=startTime)
-        end_str = convert_milliseconds_to_utc_string(ms=endTime)
-        market_logger.info(f"No aggregated trade IDs found for {symbol} for given interval {start_str} and {end_str} (UTC) in server.")
-    return response
+    # deduplicar O(n) por campo 'a'
+    seen = set()
+    result = [t for t in all_trades if t[id_field] not in seen and not seen.add(t[id_field])]
+    return sorted(result, key=lambda x: x[id_field])
 
 
 def parse_agg_trades_to_dataframe(response: list, columns: dict, symbol: str, time_zone: str = None, time_index: bool = None,
-                                  drop_dupes: str = None):
+                                  drop_dupes: str = None) -> pd.DataFrame:
     """
     Parses the API response into a pandas dataframe.
 
@@ -670,12 +734,12 @@ def parse_agg_trades_to_dataframe(response: list, columns: dict, symbol: str, ti
     timestamps_col = 'Timestamp'
     timestamps_serie = df[timestamps_col].copy()
     col = 'Date'
-    df.loc[:, col] = df[timestamps_col]
+    df[col] = df[timestamps_col]
     if time_zone != 'UTC':  # converts to time zone the time columns
-        df.loc[:, col] = convert_ms_column_to_datetime_with_zone(df, col, time_zone=time_zone)
-        df.loc[:, col] = df[col].apply(lambda x: convert_datetime_to_string(x))
+        df[col] = convert_ms_column_to_datetime_with_zone(df, col, time_zone=time_zone)
+        df[col] = df[col].apply(lambda x: convert_datetime_to_string(x))
     else:
-        df.loc[:, col] = df[timestamps_col].apply(lambda x: convert_milliseconds_to_utc_string(x))
+        df[col] = df[timestamps_col].apply(lambda x: convert_milliseconds_to_utc_string(x))
 
     if time_index:
         date_index = timestamps_serie.apply(convert_milliseconds_to_time_zone_datetime, timezoned=time_zone)
@@ -693,7 +757,7 @@ def parse_agg_trades_to_dataframe(response: list, columns: dict, symbol: str, ti
     return df[agg_trades_columns_from_binance]
 
 
-def get_last_atomic_trades(symbol: str, limit=1000) -> list:
+def get_last_atomic_trades(symbol: str, limit=1000) -> list[dict]:
     """
     Returns recent atomic (not aggregated) trades.
 
@@ -701,7 +765,7 @@ def get_last_atomic_trades(symbol: str, limit=1000) -> list:
 
     Get recent trades.
 
-    Weight(IP): 1
+    Weight(IP): 25
 
     :param str symbol: A binance valid symbol.
     :param int limit: API max limit is 1000.
@@ -725,13 +789,14 @@ def get_last_atomic_trades(symbol: str, limit=1000) -> list:
 
     """
 
-    endpoint = '/api/v3/trades?'
-    check_weight(1, endpoint=endpoint)
-    query = {'symbol': symbol, 'limit': limit}
-    return get_response(url=endpoint, params=query)
+    client = _get_panzer()
+    return client.trades(symbol=symbol, limit=limit)
 
 
-def get_atomic_trades(symbol: str, fromId: int = None, limit: int = None, decimal_mode: bool = False) -> list:
+def get_atomic_trades(symbol: str,
+                      fromId: int = None,
+                      limit: int = None,
+                      decimal_mode: bool = False) -> list[dict]:
     """
     Returns atomic (not aggregated) trades from id to limit or last trades if id not specified.
 
@@ -741,7 +806,7 @@ def get_atomic_trades(symbol: str, fromId: int = None, limit: int = None, decima
 
     Get older market trades.
 
-    Weight(IP): 5
+    Weight(IP): 25
 
     :param int fromId: Trade id to fetch from. If not passed, gets most recent trades.
     :param str symbol: A binance valid symbol.
@@ -765,146 +830,196 @@ def get_atomic_trades(symbol: str, fromId: int = None, limit: int = None, decima
     """
 
     endpoint = '/api/v3/historicalTrades?'
-    check_weight(5, endpoint=endpoint)
     query = {'symbol': symbol, 'limit': limit, 'fromId': fromId, 'recWindow': None}
+    try:
+        api_key, _ = get_encoded_secrets()
+    except Exception as e:
+        market_logger.error(f"Missing api_key: {e}")
+        raise e
     return get_semi_signed_request(url=endpoint, decimal_mode=decimal_mode, api_key=api_key, params=query)
 
 
-def get_historical_atomic_trades(symbol: str, startTime: int = None, endTime: int = None, start_trade_id: int = None,
-                                 end_trade_id: int = None, limit: int = 1000, redis_client_trades: StrictRedis = None) -> List[dict]:
+def get_historical_atomic_trades(symbol: str,
+                                 startTime: int = None,
+                                 endTime: int = None,
+                                 start_trade_id: int = None,
+                                 end_trade_id: int = None,
+                                 limit_ids: int = 1000,
+                                 limit_hours: float = 1) -> list[dict]:
     """
-    Returns atomic (not aggregated) trades between timestamps. It iterates over limit 1000 intervals to adjust to API limit.
+    Returns atomic (not aggregated) trades between timestamps or trade IDs.
 
-    This request can be very slow because the API request weight limit.
+    For timestamp mode, uses aggTrades (weight 4) to discover the atomic trade ID range,
+    then paginates with /api/v3/historicalTrades (weight 25) using fromId.
+    This avoids the old adaptive search algorithm and is deterministic.
 
+    For ID mode, paginates forward with fromId directly.
+
+    :param str symbol: A binance valid symbol.
     :param int startTime: A timestamp in milliseconds from epoch.
     :param int endTime: A timestamp in milliseconds from epoch.
     :param int start_trade_id: A trade id as first one (older).
     :param int end_trade_id: A trade id as last one (newer).
-    :param int limit: Limit for missing heads or tails of the interval requested with timestamps or trade ids. Ignored if  start and end passed.
-    :param str symbol: A binance valid symbol.
-    :param bool redis_client_trades: A redis instance of a connector. Must be a trades redis connector, usually different configuration
-     from candles redis server.
-    :return list: Returns a list from the Binance API
+    :param int limit_ids: Count of trades to ask for if just start_trade_id or just end_trade_id passed.
+        Ignored if startTime or endTime passed.
+    :param float limit_hours: Count of hours to ask for if just startTime or just endTime passed.
+        Ignored if start_trade_id or end_trade_id passed.
+    :return list[dict]: Returns a list from the Binance API in dicts.
 
     .. code-block::
 
-        Last Trades example:
-            [
-                {'id': 86206215,
-                 'price': '0.00454100',
-                 'qty': '0.02400000',
-                 'quoteQty': '0.00010898',
-                 'time': 1669579405932,
-                 'isBuyerMaker': False,
-                 'isBestMatch': True}, ...
-             ]
+        [
+            {'id': 86206215,
+             'price': '0.00454100',
+             'qty': '0.02400000',
+             'quoteQty': '0.00010898',
+             'time': 1669579405932,
+             'isBuyerMaker': False,
+             'isBestMatch': True}, ...
+        ]
     """
-    retry_limit = 10
 
-    try:
-        assert bool(startTime or endTime) ^ bool(start_trade_id or end_trade_id)
-    except AssertionError:
-        raise BinPanException(f"BinPan Exception: get_historical_atomic_trades params mixed time, timestamp and trade id: {locals()}")
+    ONE_HOUR_MS = 3_600_000
+    id_field = "id"
+    timestamp_field = "time"
 
-    if start_trade_id and not end_trade_id:
-        end_trade_id = start_trade_id + limit
-    elif end_trade_id and not start_trade_id:
-        start_trade_id = end_trade_id - limit
+    has_time = bool(startTime or endTime)
+    has_ids = bool(start_trade_id or end_trade_id)
 
-    trades = get_last_atomic_trades(symbol=symbol, limit=1000)
+    if not has_time and not has_ids:
+        raise BinPanException("BinPan Exception: get_historical_atomic_trades sin parámetros de tiempo ni de ID")
+    if has_time and has_ids:
+        raise BinPanException("BinPan Exception: get_historical_atomic_trades mezcla parámetros de tiempo e ID")
+
+    ################
+    # Modo por IDs #
+    ################
+
+    if has_ids:
+        if start_trade_id and not end_trade_id:
+            end_trade_id = start_trade_id + (limit_ids - 1)
+        elif end_trade_id and not start_trade_id:
+            start_trade_id = end_trade_id - (limit_ids - 1)
+
+        assert start_trade_id <= end_trade_id, (
+            f"BinPan Exception: atomic trades start_trade_id ({start_trade_id}) > end_trade_id ({end_trade_id})")
+
+        market_logger.info(f"Obteniendo atomic trades de {symbol} por ID: {start_trade_id} -> {end_trade_id}")
+
+        all_trades = []
+        current_id = start_trade_id
+        requests_cnt = 0
+
+        while current_id <= end_trade_id:
+            batch = get_atomic_trades(symbol=symbol, fromId=current_id, limit=1000)
+            requests_cnt += 1
+            if not batch:
+                break
+            all_trades.extend(batch)
+            current_id = batch[-1][id_field] + 1
+            market_logger.info(f"Peticiones API atomic trades {symbol}: {requests_cnt}")
+            if len(batch) < 1000:
+                break
+
+        ret = [t for t in all_trades if start_trade_id <= t[id_field] <= end_trade_id]
+        return sorted(ret, key=lambda x: x[id_field])
+
+    #######################
+    # Modo por timestamps #
+    #######################
+
+    now_ms = int(time() * 1000)
+    limit_hours_ms = int(ONE_HOUR_MS * limit_hours)
+
+    if endTime and not startTime:
+        endTime = min(endTime, now_ms)
+        startTime = endTime - limit_hours_ms
+    elif startTime and not endTime:
+        endTime = min(startTime + limit_hours_ms, now_ms)
+
+    assert startTime <= endTime, (
+        f"BinPan Exception: atomic trades startTime ({startTime}) > endTime ({endTime})")
+
+    market_logger.info(
+        f"Obteniendo atomic trades de {symbol} por tiempo: "
+        f"{convert_milliseconds_to_utc_string(startTime)} -> {convert_milliseconds_to_utc_string(endTime)}")
+
+    # descubrir rango de IDs atómicos usando aggTrades (peso 4, barato)
+    # primer aggTrade en startTime
+    search_end = min(startTime + ONE_HOUR_MS, endTime)
+    first_agg = get_aggregated_trades_by_time(symbol, startTime, search_end, limit=1)
+
+    # si no hay trades en la primera hora, ampliar progresivamente
+    if not first_agg:
+        probe_start = search_end
+        while probe_start < endTime:
+            probe_end = min(probe_start + ONE_HOUR_MS, endTime)
+            first_agg = get_aggregated_trades_by_time(symbol, probe_start, probe_end, limit=1)
+            if first_agg:
+                break
+            probe_start = probe_end
+        if not first_agg:
+            market_logger.warning(f"No se encontraron aggTrades para {symbol} en el rango solicitado")
+            return []
+
+    first_atomic_id = first_agg[0]['f']  # campo 'f' = primer ID atómico del aggTrade
+
+    # último aggTrade en endTime
+    search_start = max(startTime, endTime - ONE_HOUR_MS)
+    last_agg = get_aggregated_trades_by_time(symbol, search_start, endTime, limit=1000)
+
+    # si la última hora no tiene datos, buscar hacia atrás
+    if not last_agg:
+        probe_end = search_start
+        while probe_end > startTime:
+            probe_start = max(probe_end - ONE_HOUR_MS, startTime)
+            last_agg = get_aggregated_trades_by_time(symbol, probe_start, probe_end, limit=1000)
+            if last_agg:
+                break
+            probe_end = probe_start
+        if not last_agg:
+            market_logger.warning(f"No se encontraron aggTrades para {symbol} en el rango solicitado")
+            return []
+
+    last_atomic_id = last_agg[-1]['l']  # campo 'l' = último ID atómico del aggTrade
+
+    market_logger.info(
+        f"Rango de IDs atómicos descubierto para {symbol}: {first_atomic_id} -> {last_atomic_id} "
+        f"(estimado {last_atomic_id - first_atomic_id + 1} trades)")
+
+    # paginar forward con /api/v3/historicalTrades
+    all_trades = []
+    current_id = first_atomic_id
     requests_cnt = 0
 
-    # with trade ids, find start
-    if start_trade_id and end_trade_id and not redis_client_trades:
-        current_first_trade = trades[0]['id']
-        while current_first_trade > start_trade_id:
-            requests_cnt += 1
-            market_logger.info(f"Requests to API for atomic trades of {symbol}: {requests_cnt}")
-            fetched_older_trades = get_atomic_trades(symbol=symbol, fromId=(current_first_trade - 1000), limit=1000)
-            trades = fetched_older_trades + trades
-            current_first_trade = trades[0]['id']
+    while current_id <= last_atomic_id:
+        batch = get_atomic_trades(symbol=symbol, fromId=current_id, limit=1000)
+        requests_cnt += 1
+        if not batch:
+            break
+        all_trades.extend(batch)
+        current_id = batch[-1][id_field] + 1
+        market_logger.info(f"Peticiones API atomic trades {symbol}: {requests_cnt} (ID actual: {current_id})")
+        if len(batch) < 1000:
+            break
 
-        current_last_trade = trades[-1]['id']
-        while current_last_trade < end_trade_id:
-            requests_cnt += 1
-            market_logger.info(f"Requests to API for atomic trades of {symbol}: {requests_cnt}")
-            fetched_older_trades = get_atomic_trades(symbol=symbol, fromId=current_last_trade, limit=1000)
-            trades = fetched_older_trades + trades
-            current_last_trade = trades[-1]['id']
+    market_logger.info(f"Atomic trades {symbol}: {requests_cnt} peticiones, {len(all_trades)} trades obtenidos")
 
-        ret = [i for i in trades if start_trade_id <= i['id'] <= end_trade_id]
-        return sorted(ret, key=lambda x: x['id'])
-
-    # with timestamps or trade ids
-    if not redis_client_trades and (startTime or endTime):
-        current_first_trade_time = trades[0]['time']
-        current_first_trade = trades[0]['id']
-
-        if startTime:
-            while current_first_trade_time >= startTime:
-                requests_cnt += 1
-                market_logger.info(f"Requests API for atomic trades searching STARTIME {symbol}: {requests_cnt} current_first_trade:{current_first_trade}")
-                fetched_older_trades = get_atomic_trades(symbol=symbol, fromId=current_first_trade - 1000, limit=1000)
-                trades = fetched_older_trades + trades
-                current_first_trade_time = trades[0]['time']
-                current_first_trade = trades[0]['id']
-        if endTime:
-            current_last_trade = trades[-1]['id']
-            prev_last_trade = current_last_trade
-            current_last_trade_time = trades[-1]['time']
-            retry_count = 0
-
-            while current_last_trade_time <= endTime:
-                requests_cnt += 1
-                market_logger.info(f"Requests API for atomic trades searching ENDTIME {symbol}: {requests_cnt} current_last_trade:{current_last_trade}")
-                fetched_newer_trades = get_atomic_trades(symbol=symbol, fromId=current_last_trade, limit=1000)
-                trades += fetched_newer_trades
-                current_last_trade = trades[-1]['id']
-                current_last_trade_time = trades[-1]['time']
-                if current_last_trade != prev_last_trade:
-                    prev_last_trade = current_last_trade  # vigilando esto
-                    retry_count = 0
-                else:
-                    retry_count += 1
-                    if retry_count >= 3:
-                        break
-
-        ret = [i for i in trades if startTime <= i['time'] <= endTime]
-        return sorted(ret, key=lambda x: x['id'])
-
-    # from redis
-    response = []
-    market_logger.info(f"Fetching atomic trades from redis server for {symbol}")
-
-    curr_trades = redis_client_trades.zrange(name=f"{symbol.lower()}@trade", start=0, end=-1, withscores=True)
-
-    curr_trades = [json.loads(i[0]) for i in curr_trades]
-    market_logger.debug(f"Fetched {len(curr_trades)} atomic trades for {symbol}")
-
-    if curr_trades:
-        timestamps_dict = {k['T']: k['t'] for k in curr_trades}  # associate timestamps with trade id
-        trade_ids = [i for t, i in timestamps_dict.items() if startTime <= t <= endTime]
-        market_logger.debug(f"List of atomic trades {len(trade_ids)} for {symbol}")
-
-        if trade_ids:
-            response = redis_client_trades.zrangebyscore(name=f"{symbol.lower()}@trade", min=trade_ids[0], max=trade_ids[
-                -1], withscores=False)
-            response = [json.loads(i) for i in response]
-        else:
-            response = []
-
-        market_logger.info(f"Clean atomic {len(response)} trades found for {symbol}")
-
-    if not response:
-        start_str = convert_milliseconds_to_utc_string(ms=startTime)
-        end_str = convert_milliseconds_to_utc_string(ms=endTime)
-        market_logger.info(f"No atomic trade IDs found for {symbol} for given interval {start_str} and {end_str} (UTC) in server.")
-    return response
+    # filtrar por timestamp [startTime, endTime] y deduplicar O(n) por 'id'
+    seen = set()
+    result = [t for t in all_trades
+              if startTime <= t[timestamp_field] <= endTime
+              and t[id_field] not in seen
+              and not seen.add(t[id_field])]
+    return sorted(result, key=lambda x: x[id_field])
 
 
-def parse_atomic_trades_to_dataframe(response: list, columns: dict, symbol: str, time_zone: str = None, time_index: bool = None,
-                                     drop_dupes: str = None):
+def parse_atomic_trades_to_dataframe(response: list,
+                                     columns: dict,
+                                     symbol: str,
+                                     time_zone: str = None,
+                                     time_index: bool = None,
+                                     drop_dupes: str = None) -> pd.DataFrame:
     """
     Parses the API response into a pandas dataframe.
 
@@ -957,12 +1072,12 @@ def parse_atomic_trades_to_dataframe(response: list, columns: dict, symbol: str,
     timestamps_col = 'Timestamp'
     timestamps_serie = df[timestamps_col].copy()
     col = 'Date'
-    df.loc[:, col] = df[timestamps_col]
+    df[col] = df[timestamps_col]
     if time_zone != 'UTC':  # converts to time zone the time columns
-        df.loc[:, col] = convert_ms_column_to_datetime_with_zone(df, col, time_zone=time_zone)
-        df.loc[:, col] = df[col].apply(lambda x: convert_datetime_to_string(x))
+        df[col] = convert_ms_column_to_datetime_with_zone(df, col, time_zone=time_zone)
+        df[col] = df[col].apply(lambda x: convert_datetime_to_string(x))
     else:
-        df.loc[:, col] = df[timestamps_col].apply(lambda x: convert_milliseconds_to_utc_string(x))
+        df[col] = df[timestamps_col].apply(lambda x: convert_milliseconds_to_utc_string(x))
 
     if time_index:
         date_index = timestamps_serie.apply(convert_milliseconds_to_time_zone_datetime, timezoned=time_zone)
@@ -1016,11 +1131,8 @@ def get_order_book(symbol: str, limit=5000) -> dict:
 
     """
 
-    endpoint = '/api/v3/depth?'
-    check_weight(limit // 100 or 1, endpoint=endpoint)
-
-    query = {'symbol': symbol, 'limit': limit}
-    return get_response(url=endpoint, params=query)
+    client = _get_panzer()
+    return client.depth(symbol=symbol, limit=limit)
 
 
 #####################
@@ -1030,7 +1142,6 @@ def get_order_book(symbol: str, limit=5000) -> dict:
 def get_orderbook_tickers(symbol: str = None, decimal_mode: bool = False) -> dict:
     """
     Symbol Order Book Ticker
-
 
     GET /api/v3/ticker/bookTicker
 
@@ -1057,6 +1168,7 @@ def get_orderbook_tickers(symbol: str = None, decimal_mode: bool = False) -> dic
     :return: Api response is:
 
         .. code-block::
+
             Response:
 
             {
@@ -1086,15 +1198,10 @@ def get_orderbook_tickers(symbol: str = None, decimal_mode: bool = False) -> dic
             ]
 
     """
-    endpoint = '/api/v3/ticker/bookTicker?'
-    if symbol:
-        weight = 1
-    else:
-        weight = 2
-    check_weight(weight, endpoint=endpoint)
-    query = {'symbol': symbol}
-    response = get_response(url=endpoint, params=query)
-    if type(response) == dict:
+    client = _get_panzer()
+    params = {'symbol': symbol} if symbol else {}
+    response = client.get('/api/v3/ticker/bookTicker', params=params, weight=2 if not symbol else 1)
+    if type(response) is dict:
         ret = {response['symbol']: response}
     else:
         ret = {i['symbol']: i for i in response}
@@ -1111,7 +1218,7 @@ def get_orderbook_tickers(symbol: str = None, decimal_mode: bool = False) -> dic
 
 
 def intermediate_conversion(coin: str, decimal_mode: bool, prices: dict = None, try_coin: str = 'BTC',
-                            coin_qty: float = 1) -> float or None:
+                            coin_qty: float = 1) -> float | None:
     """
     Uses an intermediate symbol for conversion. Uses stablecoin USDT versus other "try" coin.
 
@@ -1142,7 +1249,7 @@ def intermediate_conversion(coin: str, decimal_mode: bool, prices: dict = None, 
         return None
 
 
-def convert_coin(coin: str, decimal_mode: bool, convert_to: str = 'BUSD', coin_qty: float or dd = 1, prices: dict = None) -> float or None:
+def convert_coin(coin: str, decimal_mode: bool, convert_to: str = 'BUSD', coin_qty: float | dd = 1, prices: dict = None) -> float | None:
     """
     Calculates a coin quantity value converted to other coin with current exchange prices.
 
@@ -1192,3 +1299,26 @@ def convert_coin(coin: str, decimal_mode: bool, convert_to: str = 'BUSD', coin_q
         else:
             market_logger.warning(f"No possible conversion for {coin} to {convert_to}")
             return None
+
+
+if __name__ == '__main__':
+    symbol = "renusdt".upper()
+
+    tests = [
+        (30140069, None, 1000),
+        (None, 30140069, None),
+        (30140069 - 2000, 30140069, None),
+        (30140069 - 2000, 30140069, 1000),
+        (None, None, 1000),
+        (None, None, None),
+        (None, None, 1),]
+
+
+
+    for st, ed, l in tests:
+        print(f"Start: {st} End: {ed} Limir: {l}")
+        # a = get_historical_atomic_trades("renusdt".upper(), startTime = 1699381564859- 1000, endTime=1699381564859)
+        a = get_historical_atomic_trades(symbol=symbol, start_trade_id=st, end_trade_id=ed, limit_ids=l)
+        print("Hours:", (a[-1]['time'] - a[0]['time']) / (1000 * 60 * 60))
+        print(len(a))
+        assert len(pd.Series([i["id"] for i in a]).diff().value_counts()) == 1

@@ -3,24 +3,17 @@ BinPan Classes Main Module
 """
 
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timezone
 from decimal import Decimal as dd
 import numpy as np
 
-from .market import get_prices_dic
-from .quest import api_raw_get, api_raw_signed_get, check_weight
-from .logs import Logs
+from .market import get_prices_dic, _get_panzer
+from .quest import api_raw_signed_get
+from .logs import LogManager
 
+stablecoins = ['PAX', 'TUSD', 'USDC', 'USDS', 'USDT', 'BUSD', 'DAI', 'UST', 'USDP', 'TRIBE', 'UST', 'USSD', 'FDUSD', 'FRAX', 'USDP', 'USDJ']
 
-base_url = 'https://api.binance.com'
-
-stablecoins = ['PAX', 'TUSD', 'USDC', 'USDS', 'USDT', 'BUSD', 'DAI', 'UST', 'USDP', 'TRIBE', 'UST']
-
-float_api_items = ['price', 'origQty', 'executedQty', 'cummulativeQuoteQty', 'stopLimitPrice', 'stopPrice', 'commission', 'qty',
-                   'origQuoteOrderQty', 'makerCommission', 'takerCommission']
-int_api_items = ['orderId', 'orderListId', 'transactTime', 'tradeId', 'transactionTime', 'updateTime', 'time']
-
-exchange_logger = Logs(filename='./logs/exchange_logger.log', name='exchange_logger', info_level='INFO')
+exchange_logger = LogManager(filename='./logs/exchange_logger.log', name='exchange_logger', info_level='INFO')
 
 
 #########################
@@ -88,9 +81,8 @@ def get_exchange_info() -> dict:
               ]
             }
     """
-    endpoint = '/api/v3/exchangeInfo'
-    return api_raw_get(endpoint=endpoint,
-                       weight=10)
+    client = _get_panzer()
+    return client.exchange_info()
 
 
 def get_info_dic() -> dict:
@@ -186,7 +178,6 @@ def get_account_status(decimal_mode: bool,
     """
     endpoint = '/sapi/v1/account/status'
     return api_raw_signed_get(endpoint=endpoint,
-                              weight=1,
                               decimal_mode=decimal_mode,
                               api_key=api_key,
                               api_secret=api_secret)
@@ -214,7 +205,6 @@ def get_margin_bnb_interest_status(decimal_mode: bool,
     """
     endpoint = '/sapi/v1/bnbBurn'
     return api_raw_signed_get(endpoint=endpoint,
-                              weight=1,
                               decimal_mode=decimal_mode,
                               api_key=api_key,
                               api_secret=api_secret)
@@ -408,6 +398,19 @@ def filter_tradeable(info_dic: dict) -> dict:
     return {k: v for k, v in info_dic.items() if v['status'].upper() == 'TRADING'}
 
 
+def _get_permissions(symbol_info: dict) -> set:
+    """
+    Extracts permissions from symbol info, supporting both legacy 'permissions' and new 'permissionSets' format.
+
+    :param dict symbol_info: Single symbol info dictionary from exchange API.
+    :return set: Set of permission strings (e.g. {'SPOT', 'MARGIN'}).
+    """
+    perms = set(symbol_info.get('permissions', []))
+    for pset in symbol_info.get('permissionSets', []):
+        perms.update(pset)
+    return perms
+
+
 def filter_spot(info_dic: dict) -> dict:
     """
     Returns, from BinPan exchange info dictionary currently SPOT symbols.
@@ -416,7 +419,7 @@ def filter_spot(info_dic: dict) -> dict:
     :return dict: BinPan exchange info dictionary, but, just with currently SPOT symbols.
 
     """
-    return {k: v for k, v in info_dic.items() if 'SPOT' in v['permissions'] or 'spot' in v['permissions']}
+    return {k: v for k, v in info_dic.items() if 'SPOT' in _get_permissions(v)}
 
 
 def filter_margin(info_dic: dict) -> dict:
@@ -427,7 +430,7 @@ def filter_margin(info_dic: dict) -> dict:
     :return dict: BinPan exchange info dictionary, but, just with currently MARGIN symbols.
 
     """
-    return {k: v for k, v in info_dic.items() if 'MARGIN' in v['permissions'] or 'margin' in v['permissions']}
+    return {k: v for k, v in info_dic.items() if 'MARGIN' in _get_permissions(v)}
 
 
 def filter_not_margin(symbols: list = None,
@@ -443,7 +446,7 @@ def filter_not_margin(symbols: list = None,
     if not info_dic:
         info_dic = get_info_dic()
 
-    permissions_dic = {k: v['permissions'] for k, v in info_dic.items()}
+    permissions_dic = {k: _get_permissions(v) for k, v in info_dic.items()}
 
     if symbols:
         return [s for s, p in permissions_dic.items() if 'MARGIN' in p and s in symbols]
@@ -505,7 +508,7 @@ def get_orderTypes_and_permissions(info_dic: dict = None) -> dict:
     """
     if not info_dic:
         info_dic = get_info_dic()
-    return {k: {'orderTypes': v['orderTypes'], 'permissions': v['permissions']} for k, v in info_dic.items()}
+    return {k: {'orderTypes': v['orderTypes'], 'permissions': list(_get_permissions(v))} for k, v in info_dic.items()}
 
 
 def get_fees_dict(decimal_mode: bool,
@@ -527,7 +530,6 @@ def get_fees_dict(decimal_mode: bool,
         symbol = symbol.upper()
     ret = api_raw_signed_get(endpoint,
                              params={'symbol': symbol},
-                             weight=1,
                              decimal_mode=decimal_mode,
                              api_key=api_key,
                              api_secret=api_secret)
@@ -574,8 +576,8 @@ def get_system_status():
         }
 
     """
-    return api_raw_get(endpoint='/sapi/v1/system/status',
-                       weight=1)['msg']
+    client = _get_panzer()
+    return client.get('/sapi/v1/system/status', weight=1)['msg']
 
 
 def get_coins_and_networks_info(decimal_mode: bool,
@@ -592,7 +594,7 @@ def get_coins_and_networks_info(decimal_mode: bool,
     """
 
     ret = api_raw_signed_get(endpoint='/sapi/v1/capital/config/getall',
-                             weight=10, decimal_mode=decimal_mode,
+                             decimal_mode=decimal_mode,
                              api_key=api_key,
                              api_secret=api_secret)
     networks = []
@@ -607,11 +609,17 @@ def get_coins_and_networks_info(decimal_mode: bool,
 
     coins_df = pd.DataFrame(coins).drop_duplicates().set_index('coin')
     for col in coins_df.columns:
-        coins_df[col] = pd.to_numeric(arg=coins_df[col], downcast='integer', errors='ignore')
+        try:
+            coins_df[col] = pd.to_numeric(arg=coins_df[col])
+        except (ValueError, TypeError):
+            pass
 
     networks_df = pd.DataFrame(networks).drop_duplicates().set_index('coin')
     for col in networks_df.columns:
-        networks_df[col] = pd.to_numeric(arg=networks_df[col], downcast='integer', errors='ignore')
+        try:
+            networks_df[col] = pd.to_numeric(arg=networks_df[col])
+        except (ValueError, TypeError):
+            pass
 
     return coins_df.sort_index(), networks_df.sort_index()
 
@@ -633,7 +641,6 @@ def get_coins_info_list(decimal_mode: bool,
     """
 
     endpoint = '/sapi/v1/capital/config/getall'
-    check_weight(weight=10, endpoint=endpoint)
     ret = api_raw_signed_get(endpoint=endpoint,
                              decimal_mode=decimal_mode,
                              api_key=api_key,
@@ -893,61 +900,71 @@ def get_24h_statistics(symbol: str = None) -> dict:  # 24h rolling window
           "count": 76         // Trade count
         }
     """
-    endpoint = '/api/v3/ticker/24hr?'
-    if symbol:
-        check_weight(endpoint=endpoint, weight=1)
-        return api_raw_get(endpoint=endpoint, params={'symbol': symbol}, weight=1)
-    else:
-        check_weight(endpoint=endpoint, weight=40)
-        return api_raw_get(endpoint=endpoint, weight=40)
+    client = _get_panzer()
+    params = {'symbol': symbol} if symbol else {}
+    weight = 1 if symbol else 40
+    return client.get('/api/v3/ticker/24hr', params=params, weight=weight)
 
 
-def not_iterative_coin_conversion(coin: str,
-                                  decimal_mode: bool,
-                                  prices: dict = None,
-                                  try_coin: str = 'BTC',
-                                  coin_qty: float = 1) -> float or None:
+def try_coin_conversion_to_stablecoin_by_intermediate_symbol(coin: str,
+                                                             coin_qty: float = 1,
+                                                             prices: dict = None,
+                                                             coin_to_check_with_stablecoin: str = 'BTC',
+                                                             stablecoin: str = 'USDT',
+                                                             decimal_mode: bool = None,
+                                                             ) -> float | None:
     """
-    Converts any coin quantity value to a reference coin.
+    Converts any coin quantity value to a reference coin. I tries to build a symbol name from coin and coin_to_check_with_usdt and then
+    checks if it's in prices dict. If not, it tries to build a symbol name from coin_to_check_with_usdt and coin (reversed) and then checks
+    if it's in prices dict. Else it returns None.
 
-    :param bool decimal_mode: Fixes Decimal return type and operative.
+    When it finds a symbol intermediate, it uses it to convert to stablecoin.
+
     :param str coin: A coin to convert to other coin value.
-    :param dict prices: Current prices of all symbols.
-    :param str try_coin: Reference coin to convert value to.
-    :param float coin_qty: A quantity to use in calculation.
-    :return float: Converted value result.
+    :param float coin_qty: A quantity of the coin selected to use in calculation. Default is 1.
+    :param dict prices: Current prices of all symbols. Default is None. If None, it will be fetched.
+    :param str coin_to_check_with_stablecoin: Intermediate coin to check with a stable coin. Default is USDT.
+    :param str stablecoin: A Binance existing coin to convert to. Default is USDT.
+    :param bool decimal_mode: Fixes Decimal return type and operative. Default is False.
+    :return float: Converted value result by multiplying coin_qty by the intermediate coin price and then by the USDT price. If not found,
+     returns None.
     """
     if not prices:
         prices = get_prices_dic(decimal_mode=decimal_mode)
-    if coin + try_coin in prices.keys():
-        price = prices[coin + try_coin]
-        try_symbol = f"{try_coin}USDT"
+
+    try_symbol = f"{coin_to_check_with_stablecoin}{stablecoin.upper()}"
+    # try_symbol_b = f"USDT{coin_to_check_with_usdt}"
+
+    if coin + coin_to_check_with_stablecoin in prices.keys() and try_symbol in prices.keys():
+        price = prices[coin + coin_to_check_with_stablecoin]
         return price * coin_qty * prices[try_symbol]
-    elif try_coin + coin in prices.keys():
-        price = 1 / prices[try_coin + coin]
-        try_symbol = f"USDT{try_coin}"
-        try:
-            return price * coin_qty * prices[try_symbol]
-        except KeyError:
+
+    elif coin_to_check_with_stablecoin + coin in prices.keys() and try_symbol in prices.keys():
+        divisor = prices[coin_to_check_with_stablecoin + coin]
+        if not divisor:
             return None
+        price = 1 / divisor
+        return price * coin_qty * prices[try_symbol]
+
     else:
         return None
 
 
 def convert_to_other_coin(coin: str,
-                          decimal_mode: bool,
+                          decimal_mode: bool = False,
                           convert_to: str = 'USDT',
                           coin_qty: float = 1,
                           prices: dict = None) -> float:
     """
-    Convert value of a quantity of coins to value in other coin.
+    Convert value of a quantity of coins to value in other coin.It tries to convert to a reference coin but if that symbol is not found,
+    it tries to convert to BTC, BUSD, BNB, ETH, TUSD, USDC.
 
     :param bool decimal_mode: Fixes Decimal return type and operative.
     :param str coin: Your coin.
-    :param str convert_to: A Binance existing coin.
-    :param float coin_qty: A quantity.
-    :param dict prices: A dict with all current prices.
-    :return float: Value expressed in the converted coin.
+    :param str convert_to: A Binance existing coin to convert to. Default is USDT.
+    :param float coin_qty: A quantity. Default is 1.
+    :param dict prices: A dict with all current prices. Default is None. Where None, it will be fetched.
+    :return float: Value of the quantity expressed in the converted coin.
     """
     coin = coin.upper()
     convert_to = convert_to.upper()
@@ -971,43 +988,50 @@ def convert_to_other_coin(coin: str,
     else:
         # try using btc
         # try:
-        ret1 = not_iterative_coin_conversion(coin=coin, prices=prices, try_coin='BTC', coin_qty=coin_qty, decimal_mode=decimal_mode)
+        ret1 = try_coin_conversion_to_stablecoin_by_intermediate_symbol(coin=coin, prices=prices, coin_to_check_with_stablecoin='BTC',
+                                                                        coin_qty=coin_qty, decimal_mode=decimal_mode)
         if ret1:
             return ret1
-        ret2 = not_iterative_coin_conversion(coin=coin, prices=prices, try_coin='BUSD', coin_qty=coin_qty, decimal_mode=decimal_mode)
+        ret2 = try_coin_conversion_to_stablecoin_by_intermediate_symbol(coin=coin, prices=prices, coin_to_check_with_stablecoin='BUSD',
+                                                                        coin_qty=coin_qty, decimal_mode=decimal_mode)
         if ret2:
             return ret2
-        ret3 = not_iterative_coin_conversion(coin=coin, prices=prices, try_coin='BNB', coin_qty=coin_qty, decimal_mode=decimal_mode)
+        ret3 = try_coin_conversion_to_stablecoin_by_intermediate_symbol(coin=coin, prices=prices, coin_to_check_with_stablecoin='BNB',
+                                                                        coin_qty=coin_qty, decimal_mode=decimal_mode)
         if ret3:
             return ret3
-        ret4 = not_iterative_coin_conversion(coin=coin, prices=prices, try_coin='ETH', coin_qty=coin_qty, decimal_mode=decimal_mode)
+        ret4 = try_coin_conversion_to_stablecoin_by_intermediate_symbol(coin=coin, prices=prices, coin_to_check_with_stablecoin='ETH',
+                                                                        coin_qty=coin_qty, decimal_mode=decimal_mode)
         if ret4:
             return ret4
-        ret5 = not_iterative_coin_conversion(coin=coin, prices=prices, try_coin='TUSD', coin_qty=coin_qty, decimal_mode=decimal_mode)
+        ret5 = try_coin_conversion_to_stablecoin_by_intermediate_symbol(coin=coin, prices=prices, coin_to_check_with_stablecoin='TUSD',
+                                                                        coin_qty=coin_qty, decimal_mode=decimal_mode)
         if ret5:
             return ret5
-        ret6 = not_iterative_coin_conversion(coin=coin, prices=prices, try_coin='USDC', coin_qty=coin_qty, decimal_mode=decimal_mode)
+        ret6 = try_coin_conversion_to_stablecoin_by_intermediate_symbol(coin=coin, prices=prices, coin_to_check_with_stablecoin='USDC',
+                                                                        coin_qty=coin_qty, decimal_mode=decimal_mode)
         if ret6:
             return ret6
         else:
             return np.nan
 
 
-def convert_symbol_base_to_other_coin(decimal_mode: bool,
-                                      symbol_to_convert_base: str = 'ETHBTC',
+def convert_symbol_base_to_other_coin(symbol_to_convert_base: str,
                                       base_qty: float = 1,
                                       convert_to: str = 'USDT',
                                       prices: dict = None,
-                                      info_dic: dict = None) -> float or dd:
+                                      info_dic: dict = None,
+                                      decimal_mode: bool = False) -> float | dd:
     """
-        Convert value of a quantity of coins to value in other coin.
+    Convert value of a quantity of coins to value in other coin. It tries to convert to a reference coin but if that symbol is not found,
+    it tries to convert to BTC, BUSD, BNB, ETH, TUSD, USDC.
 
     :param bool decimal_mode: Fixes Decimal return type and operative.
     :param str symbol_to_convert_base: A symbol to get it's base to convert to other coin value.
-    :param float base_qty: A quantity.
-    :param str convert_to: A Binance existing coin.
-    :param dict prices: A dict with all current prices.
-    :param dict info_dic: BinPan exchange info dictionary. It's optional to avoid an API call.
+    :param float base_qty: A quantity. Default is 1.
+    :param str convert_to: A Binance existing coin. Default is USDT.
+    :param dict prices: A dict with all current prices. Default is None. Where None, it will be fetched.
+    :param dict info_dic: BinPan exchange info dictionary. It's optional to avoid an API call. Default is None.
     :return float: Value expressed in the converted coin.
     """
     if decimal_mode:
@@ -1034,6 +1058,49 @@ def convert_symbol_base_to_other_coin(decimal_mode: bool,
         raise Exception('BinPan Error: convert_symbol_base_to_other_coin breakpoint')
 
 
+def convert_symbol_base_price_series_to_stablecoin(symbol_close_series: pd.Series,
+                                                   stable_coin_symbol_series: pd.Series,
+                                                   symbol_to_convert_base: str = None,
+                                                   stable_symbol: str = None,
+                                                   quotes: dict = None,
+                                                   bases: dict = None) -> pd.Series:
+    """
+    Converts a series of symbols to a series of stable coin converted prices. It asumes that the index of the symbol_close_series is
+    included in the index of the stable_coin_series.
+
+    The stable_coin_series is supposed to use stablecoin as quote.
+
+    :param pd.Series symbol_close_series: A series with the close prices of a symbol.
+    :param pd.Series stable_coin_symbol_series: A series with the close prices of an intermediate coin and stable coin as quote.
+    :param str symbol_to_convert_base: A symbol to convert to stable coin value. Default is None. Example: 'ETHBTC'.
+    :param str stable_symbol: A symbol to convert to stable coin value. Default is None. Example: 'ETHUSDT'.
+    :param dict quotes: A dictionary with quotes. Default is None. Optional to avoid an API call. Or
+    :param dict bases: A dictionary with bases. Default is None. Optional to avoid an API call.
+    :return pd.Series: A series with the converted prices from symbol as base and stable coin as quote.
+    """
+    # verifica que el index de la symbol_close_series esté incluido completamente en el index de la stable_coin_series
+    if not symbol_close_series.index.isin(stable_coin_symbol_series.index).all():
+        raise ValueError('Index of symbol_close_series is not included in the index of stable_coin_series')
+
+    if not symbol_to_convert_base:
+        symbol_to_convert_base = symbol_close_series.name
+
+    if not stable_symbol:
+        stable_symbol = stable_coin_symbol_series.name
+
+    if not quotes or not bases:
+        info_dic = get_info_dic()
+        quotes = get_quotes_dic(info_dic=info_dic)
+        bases = get_bases_dic(info_dic=info_dic)
+
+    quote = quotes[symbol_to_convert_base]
+    stable_base = bases[stable_symbol]
+
+    assert quote == stable_base, f'Quote {quote} is not equal to stable_base {stable_base}'
+
+    return symbol_close_series * stable_coin_symbol_series
+
+
 def convert_utc_milliseconds(ms: int) -> str:
     """
     Converts milliseconds timestamp to formatted string.
@@ -1042,7 +1109,7 @@ def convert_utc_milliseconds(ms: int) -> str:
     :return str: Formatted date.
     """
     seconds = int(ms) / 1000
-    return str(datetime.utcfromtimestamp(seconds).strftime('%Y-%m-%d %H:%M:%S.%f'))
+    return str(datetime.fromtimestamp(seconds, tz=timezone.utc).strftime('%Y-%m-%d %H:%M:%S.%f'))
 
 
 def statistics_24h(decimal_mode: bool,
@@ -1098,7 +1165,11 @@ def statistics_24h(decimal_mode: bool,
     # filter just coins not legal and with spot and tradeable
     df = df[df['symbol'].isin(filtered_pairs)]
 
-    df = df.apply(pd.to_numeric, errors='ignore')
+    for col in df.columns:
+        try:
+            df[col] = pd.to_numeric(df[col])
+        except (ValueError, TypeError):
+            pass
 
     df['openTime'] = df['openTime'].apply(lambda x: convert_utc_milliseconds(x))
     df['closeTime'] = df['closeTime'].apply(lambda x: convert_utc_milliseconds(x))
@@ -1127,7 +1198,8 @@ def statistics_24h(decimal_mode: bool,
                                                          info_dic=info_dic,
                                                          decimal_mode=decimal_mode)
 
-            df.loc[df['symbol'] == pair, stable_coin_value_name] = float(usdt_val)  # float for pandas
+            if pair in df.index and usdt_val is not None:
+                df.loc[pair, stable_coin_value_name] = float(usdt_val)
 
         stable_coin_volumen_name = f"{stablecoin_value}_volume"
         df[stable_coin_volumen_name] = df[stable_coin_value_name] * df['volume']
@@ -1233,12 +1305,26 @@ def get_top_gainers(decimal_mode: bool,
 #################
 
 
-def get_decimal_positions(num: float or dd) -> int:
+def get_decimal_positions(num: float | dd) -> int:
     """
-    Count decimal positions for a value.
+    Count decimal positions for a value, correctly handling floats and Decimal numbers,
+    including those in scientific notation.
 
-    :param float or dd num: Input.
-    :return int: Count decimal positions.
+    :param num: Input number, can be a float or a Decimal.
+    :return: Count of decimal positions.
     """
-    num = dd(num).normalize()
-    return abs(num.as_tuple().exponent)
+    num = dd(str(num)).normalize()
+    num_tuple = num.as_tuple()
+
+    # El exponente negativo indica la cantidad de posiciones decimales
+    # Un exponente positivo o cero indica que no hay posiciones decimales o que el número es entero
+    decimal_positions = -num_tuple.exponent if num_tuple.exponent < 0 else 0
+
+    # Para números con exponente positivo, debemos verificar si hay posiciones decimales no representadas por el exponente
+    if num_tuple.exponent >= 0:
+        # Contamos la cantidad de dígitos en la mantisa
+        mantissa_length = len(num_tuple.digits)
+        # Las posiciones decimales son la longitud de la mantisa menos el exponente, ajustado para números enteros
+        decimal_positions = max(0, mantissa_length - num_tuple.exponent - 1)
+
+    return decimal_positions
