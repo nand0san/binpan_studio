@@ -88,9 +88,18 @@ Eliminadas **~371 líneas** de código muerto tras integración de panzer y klin
 
 ---
 
-## 6. Documentación Sphinx (prioridad media)
+## 6. Limpieza residual (prioridad alta, esfuerzo bajo)
 
-### 6.1 RST faltantes para módulos nuevos
+Hallazgos de la auditoría de marzo 2026:
+
+- [ ] `calculate_iterations()` en `time_helper.py`: dead code (definida pero no importada ni usada en ningún módulo)
+- [ ] `pandas_freq_tick_interval` duplicado: definido en `time_helper.py` y `objects/timeframes.py`. `timeframes.py` debería importarlo de `time_helper.py`
+
+---
+
+## 7. Documentación Sphinx (prioridad media)
+
+### 7.1 RST faltantes para módulos nuevos
 
 Crear archivos `.rst` y añadir al `toctree` de `docs/index.rst`:
 
@@ -102,22 +111,22 @@ Crear archivos `.rst` y añadir al `toctree` de `docs/index.rst`:
 - [ ] `docs/numba_tools.rst` → `handlers/numba_tools.py`
 - [ ] `docs/logs.rst` → `handlers/logs.py` (clase LogManager)
 
-### 6.2 RST a limpiar (módulos eliminados)
+### 7.2 RST a limpiar (módulos eliminados)
 
 - [ ] Verificar que no haya referencias a `objects/timestamps.py` o `objects/api.py` en docs existentes
 - [ ] Actualizar cualquier referencia a la API antigua (`.get_open()` → `.open`, `.timezone` → `.timezone_IANA`)
 
-### 6.3 Actualizar notebooks de ejemplo
+### 7.3 Actualizar notebooks de ejemplo
 
 - [ ] Corregir los bugs de notebooks listados en sección 4
 
 ---
 
-## 7. Tests (prioridad media)
+## 8. Tests (prioridad media)
 
 No hay suite de tests formal. Los notebooks sirven como tests manuales pero no son automatizables.
 
-### 7.1 Test suite básica con pytest
+### 8.1 Test suite básica con pytest
 
 ```
 tests/
@@ -133,28 +142,28 @@ tests/
 
 ---
 
-## 8. Modernización (prioridad baja)
+## 9. Modernización (prioridad baja)
 
-### 8.1 Migrar pytz → zoneinfo
+### 9.1 Migrar pytz → zoneinfo
 
 3 archivos usan `pytz` (`time_helper.py`, `indicators.py`, `timeframes.py`).
 `zoneinfo` es stdlib desde Python 3.9 y el proyecto requiere 3.10+.
 
 **Precaución**: pytz y zoneinfo manejan DST de forma diferente. Testear bien antes de migrar.
 
-### 8.2 Intervalo "1M" (mensual)
+### 9.2 Intervalo "1M" (mensual)
 
 `kline-timestamp` no soporta "1M". Si se necesita, abrir issue o implementar fallback
 específico para este caso en `time_helper.py`.
 
-### 8.3 Evaluar eliminación de dependencia `requests`
+### 9.3 Evaluar eliminación de dependencia `requests`
 
 `panzer` ya trae `requests` como dependencia transitiva. Evaluar si se puede quitar
 del `requirements.txt` directo (solo necesaria en `quest.py` para requests autenticadas).
 
 ---
 
-## 9. TODOs en el código
+## 10. TODOs en el código
 
 Comentarios `TODO` encontrados en el código fuente:
 
@@ -176,7 +185,25 @@ Comentarios `TODO` encontrados en el código fuente:
 | ~~3~~ | ~~Bugs y warnings~~ | ~~Bajo~~ | ~~Alto (correctitud)~~ |
 | ~~4~~ | ~~Verificación notebooks~~ | ~~Medio~~ | ~~Alto (validación)~~ |
 | ~~5~~ | ~~Limpieza código muerto~~ | ~~Medio~~ | ~~Medio (mantenibilidad)~~ |
-| 6 | Documentar módulos en Sphinx | Medio | Medio (documentación) |
-| 7 | Crear test suite pytest | Medio | Alto (calidad) |
-| 8 | Migrar pytz → zoneinfo | Bajo | Bajo (modernización) |
-| 9 | Resolver TODOs del código | Variable | Variable |
+| 6 | Limpieza residual (auditoría) | Bajo | Medio (mantenibilidad) |
+| 7 | Documentar módulos en Sphinx | Medio | Medio (documentación) |
+| 8 | Crear test suite pytest | Medio | Alto (calidad) |
+| 9 | Migrar pytz → zoneinfo | Bajo | Bajo (modernización) |
+| 10 | Resolver TODOs del código | Variable | Variable |
+
+---
+
+## Estado del proyecto (auditoría marzo 2026)
+
+**~19.800 líneas** de código Python (5.154 binpan + 14.302 handlers + 375 objects).
+
+| Categoría | Estado |
+|-----------|--------|
+| Imports (typing, star, fallbacks) | ✅ Correcto |
+| Integración panzer / kline-timestamp | ✅ Completada |
+| Deprecation warnings | ✅ Eliminados (excepto kaleido externo) |
+| `__init__.py` lazy loading | ✅ Correcto (binpan + handlers) |
+| Versión sincronizada (setup.py / symbol_manager.py) | ✅ `0.8.14` |
+| Tests formales | ❌ No existen |
+| Documentación Sphinx | ⚠️ 7 módulos sin .rst |
+| pytz (3 archivos) | ⚠️ Pendiente migración a zoneinfo |
