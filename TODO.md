@@ -33,15 +33,20 @@ BinPan solo testea su lógica propia: transformación a DataFrame, índices, ind
 
 ## 2. Notebooks (prioridad media)
 
-Imports actualizados y métodos faltantes añadidos. Pendiente re-ejecutar para verificar.
+Imports corregidos, métodos faltantes añadidos, bugs de plotting arreglados.
 
-Métodos añadidos a notebooks:
-- `ma()` → 03_technical_indicators (wrapper genérico de medias móviles)
-- `set_plotting_volume_ma` → 04_plotting (MA en panel de volumen)
-- `dist_plot` → 04_plotting (distribución con KDE)
-- `set_plot_splitted_serie_couple` → 04_plotting (área coloreada bull/bear entre EMAs)
-- `ffill_window` → 06_tagging_and_backtesting (propagar señales N velas)
-- `set_strategy_groups` → 06_tagging_and_backtesting (agrupar columnas de estrategia)
+**Ejecutado y verificado (0 errores):**
+- `04_plotting.ipynb` — 68 celdas de código, todos los plots generados correctamente
+
+**Pendiente re-ejecutar para verificar:**
+- `01_basic_tutorial.ipynb`
+- `02_data_analysis.ipynb`
+- `03_technical_indicators.ipynb`
+- `06_tagging_and_backtesting.ipynb`
+- `07_support_resistance_kmeans.ipynb`
+- `11_exchange_info.ipynb`
+- `13_timescale_backend.ipynb`
+- `15_database_maintenance.ipynb`
 
 No demostrado: `plot_orderbook_value` (requiere datos de streaming en formato especial).
 
@@ -80,8 +85,8 @@ Monitorizar releases de kaleido 1.0+ para evaluar actualización.
 | # | Tarea | Esfuerzo | Impacto |
 |---|-------|----------|---------|
 | 1 | Tests pytest | Medio | Alto |
-| 2 | Re-ejecutar notebooks | Bajo | Medio |
-| 3 | Modernización (pytz, kaleido) · 1M resuelto | Bajo | Bajo |
+| 2 | Re-ejecutar notebooks (7 pendientes) | Bajo | Medio |
+| 3 | Modernización (pytz, kaleido) | Bajo | Bajo |
 | 4 | TODOs en el código | Variable | Variable |
 
 ---
@@ -94,13 +99,16 @@ Monitorizar releases de kaleido 1.0+ para evaluar actualización.
 | Python requerido | `>=3.12.0` |
 | Imports (typing, star, fallbacks) | OK |
 | Integración panzer 2.1.0 (público + auth) | OK |
-| Integración kline-timestamp | OK |
+| Integración kline-timestamp 0.3.0 (incl. 1M mensual) | OK |
 | Credenciales Binance | OK (`~/.panzer_creds` vía panzer) |
 | Credenciales Telegram/PostgreSQL | OK (`secret.py` + `AesCipher`) |
 | Deprecation warnings | OK (excepto kaleido externo) |
 | Lazy loading | OK (binpan + subpaquetes) |
 | Estructura de paquetes | OK (api/, core/, analysis/, plotting/, storage/) |
-| Documentación Sphinx | OK (rutas actualizadas, RST nuevos creados) |
-| Notebooks | OK (imports actualizados, pendiente re-ejecutar) |
+| Refactorización Symbol | OK (symbol.py + 3 mixins: indicators, plotting, strategy) |
+| Documentación Sphinx | OK (22 RST actualizados + 5 nuevos) |
+| Notebooks | OK (imports y plots corregidos, 04_plotting verificado) |
+| Colores taker/maker | OK (normalizados: buyer=verde, seller=rojo) |
+| Títulos S/R en plots | OK (indican fuente y calidad de datos) |
 | Tests formales | No existen |
 | pytz (3 archivos) | Pendiente migración a zoneinfo |
