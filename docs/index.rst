@@ -138,43 +138,58 @@ If you encounter import errors in Jupyter, install packages directly to the kern
    :caption: Main Classes:
 
    binpan.rst
+   symbol_indicators.rst
+   symbol_plotting.rst
+   symbol_strategy.rst
 
 .. toctree::
    :maxdepth: 2
-   :caption: Handlers:
+   :caption: API & Market:
 
-   aggregations.rst
-   exchange.rst
-   files.rst
-   indicators.rst
    market.rst
-   plotting.rst
-   strategies.rst
-   stat_tests.rst
-   tags.rst
-   time_helper.rst
-   logs.rst
-   numba_tools.rst
-   standards.rst
-   exceptions.rst
+   exchange.rst
+   quest.rst
+   wallet.rst
 
 .. toctree::
    :maxdepth: 2
-   :caption: Database & External:
+   :caption: Analysis:
 
-   postgresql.rst
-   postgresql_database.rst
-   influx_manager.rst
-   redis_fetch.rst
+   indicators.rst
+   aggregations.rst
+   strategies.rst
+   tags.rst
+   stat_tests.rst
+   numba_tools.rst
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Core:
+
+   time_helper.rst
+   timeframes.rst
+   trades.rst
+   standards.rst
+   starters.rst
+   logs.rst
+   exceptions.rst
    messages.rst
 
 .. toctree::
    :maxdepth: 2
-   :caption: Authentication:
+   :caption: Plotting:
 
-   quest.rst
-   wallet.rst
-   starters.rst
+   plotting.rst
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Storage & Database:
+
+   files.rst
+   postgresql.rst
+   postgresql_database.rst
+   influx_manager.rst
+   redis_fetch.rst
 
 
 Indices and tables

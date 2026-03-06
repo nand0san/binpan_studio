@@ -35,5 +35,5 @@ setup(name='binpan',
       long_description=README_TEXT,
       long_description_content_type="text/markdown",
       package_dir={"": "."},
-      packages=["handlers", "binpan", "objects"]
+      packages=["binpan", "binpan.core", "binpan.api", "binpan.analysis", "binpan.plotting", "binpan.storage"]
       )

@@ -3,6 +3,6 @@ Standards Module
 
 Constants, column mappings, and standard definitions used across BinPan.
 
-.. automodule:: handlers.standards
+.. automodule:: binpan.core.standards
    :members:
    :undoc-members:

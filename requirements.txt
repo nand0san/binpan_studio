@@ -1,11 +1,10 @@
 # core
 numpy>=1.26.2            # desclaveado: pandas_ta eliminado, numpy 2.x compatible
 pandas>=2.1.3,<3         # pandas 3.0 rompe errors='ignore', downcast, tz-naive/aware
-panzer>=2.0.0            # cliente REST Binance API con rate limiting
-kline-timestamp>=0.2.0   # timestamps de velas (open/close, next/prev, timezone)
-requests>=2.31.0         # solo para endpoints firmados (panzer lo trae como dep)
+panzer>=2.1.0            # cliente REST Binance API con rate limiting + auth
+kline-timestamp>=0.3.0   # timestamps de velas (open/close, next/prev, timezone, soporte 1M mensual)
 pytz>=2023.3
-pycryptodome>=3.19.0
+pycryptodome>=3.19.0     # panzer lo trae como dep, pero binpan lo usa en messages/postgresql
 tqdm>=4.66.1
 py-cpuinfo>=9.0.0
 ipykernel>=6.27.1

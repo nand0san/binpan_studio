@@ -2,7 +2,7 @@ Strategies Module
 =================
 
 
-.. automodule:: handlers.strategies
+.. automodule:: binpan.analysis.strategies
    :members:
    :undoc-members:
    :show-inheritance:

@@ -2,7 +2,7 @@ Market Module
 =============
 
 
-.. automodule:: handlers.market
+.. automodule:: binpan.api.market
    :members:
    :undoc-members:
    :show-inheritance:

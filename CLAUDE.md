@@ -104,11 +104,11 @@ git checkout dev           # volver a desarrollo
 
 ### Convenciones generales
 
-- **Python >= 3.10** requerido.
+- **Python >= 3.12** requerido.
 - **snake_case** para funciones y variables.
 - **CamelCase** para clases (`Symbol`, `Timeframe`, `Timestamp`, `Trades`, `LogManager`).
 - **UPPER_CASE** para constantes (`REQUIRED`, `README`).
-- **Type hints** con builtins de Python 3.10+ (ver sección Imports más abajo).
+- **Type hints** con builtins de Python 3.12+ (ver sección Imports más abajo).
 - Separadores visuales con comentarios `#####` para secciones dentro de módulos.
 
 ### Docstrings - Formato Sphinx
@@ -188,17 +188,17 @@ def plot_candles(df):
 **Excepción**: `pandas` y `numpy` son el core del proyecto y se usan en casi todas las
 funciones. Estos sí se importan a nivel de módulo.
 
-#### Type hints: usar builtins de Python 3.10+
+#### Type hints: usar builtins de Python 3.12+
 
 **NO usar** `typing.Tuple`, `typing.List`, `typing.Dict`, `typing.Set`. Están deprecados
-desde Python 3.9 y el proyecto requiere Python >= 3.10. Usar los builtins directamente:
+desde Python 3.9 y el proyecto requiere Python >= 3.12. Usar los builtins directamente:
 
 ```python
 # MAL (deprecado)
 from typing import Tuple, List, Dict, Optional, Union
 def mi_funcion(datos: List[str]) -> Tuple[int, str]: ...
 
-# BIEN (Python 3.10+)
+# BIEN (Python 3.12+)
 def mi_funcion(datos: list[str]) -> tuple[int, str]: ...
 # Union se reemplaza con |
 def otra_funcion(valor: str | int | None = None) -> pd.DataFrame | None: ...
@@ -288,9 +288,12 @@ from .auxiliar import csv_klines_setup
 ## Seguridad y secretos
 
 - **NUNCA commitear** claves API, secrets o credenciales.
-- `secret.py` contiene claves API encriptadas y está en `.gitignore`.
-- El patrón `secret*`, `*keys*` está en `.gitignore`.
-- Las claves se gestionan con `pycryptodome` y se piden al usuario en primera ejecución.
+- **Credenciales Binance API**: gestionadas por panzer `CredentialManager` en `~/.panzer_creds`.
+  - En primera ejecución de un endpoint autenticado, panzer solicita api_key y api_secret.
+  - Se almacenan cifradas con AES-128-CBC (derivación de clave por hardware, misma que el antiguo `secret.py`).
+  - El archivo `~/.panzer_creds` está fuera del repo, no necesita .gitignore.
+- **Credenciales no-Binance** (Telegram, PostgreSQL): siguen usando `secret.py` + `AesCipher` en `binpan/core/crypto.py`.
+- `secret.py` y `~/.panzer_creds` están en `.gitignore`. El patrón `secret*`, `*keys*` también.
 - Al pushear a GitHub, verificar que no se filtren datos sensibles en el historial (squash merge).
 
 ---
@@ -303,11 +306,10 @@ from .auxiliar import csv_klines_setup
 |---------|-----|--------|
 | `pandas` | DataFrames de velas y trades | Top-level |
 | `numpy` | Cálculos numéricos | Top-level |
-| `panzer` | Cliente REST Binance API (rate limiting, multi-market) | Top-level |
+| `panzer>=2.1.0` | Cliente REST Binance API (público + autenticado, rate limiting, credenciales) | Top-level |
 | `kline-timestamp` | Timestamps de velas (open/close, navegación, timezone) | Top-level |
-| `requests` | Llamadas HTTP (solo para endpoints firmados; panzer lo trae como dep) | Top-level |
 | `pytz` | Zonas horarias | Top-level |
-| `pycryptodome` | Encriptación de claves API | Top-level |
+| `pycryptodome` | Encriptación (panzer lo trae; binpan lo usa para Telegram/PostgreSQL) | Top-level |
 
 ### Opcionales (import lazy, dentro de funciones)
 
@@ -336,7 +338,7 @@ Todos los indicadores técnicos están ahora implementados de forma nativa en
 rsi_numba) como base de cálculo. Los nombres de columna son compatibles con los que usaba
 pandas_ta para mantener compatibilidad con el sistema de plots.
 
-**Paquete `typing` eliminado**: era innecesario en Python 3.10+ y causaba conflictos.
+**Paquete `typing` eliminado**: era innecesario en Python 3.12+ y causaba conflictos.
 
 ### Versiones actuales verificadas (funcionando)
 
@@ -387,16 +389,15 @@ publicadas en PyPI, para reducir complejidad y código duplicado.
 - **Rate limiting automático**: fixed-window sincronizado con header `X-MBX-USED-WEIGHT-1M`
 - **Clock sync**: `ensure_time_offset_ready()`, `now_server_ms()`
 
-**Qué reemplaza en binpan**:
+**Qué reemplaza en binpan** (completado):
 
-| Módulo binpan | Acción |
-|---------------|--------|
-| `handlers/quest.py` (endpoints públicos) | **Eliminar**: GET público, rate limiting, weight tracking → `panzer` |
-| `handlers/quest.py` (endpoints firmados) | **Mantener**: POST/DELETE con API key/secret (panzer no tiene auth) |
-| `handlers/market.py` (llamadas API) | **Simplificar**: `api_raw_get` → `client.klines()`, etc. Mantener transformación a DataFrame |
-| `handlers/exchange.py` (llamadas API) | **Simplificar**: `api_raw_get` → `client.exchange_info()`. Mantener lógica de parseo |
-| `handlers/starters.py` (rate limits) | **Simplificar**: `get_exchange_limits()` ya no es necesario |
-| `objects/api.py` | **Eliminar**: ApiClient básico redundante con panzer |
+| Módulo binpan | Acción | Estado |
+|---------------|--------|--------|
+| `handlers/quest.py` → `binpan/api/auth.py` | Endpoints públicos eliminados, firmados delegados a `BinanceClient` | **HECHO** |
+| `handlers/market.py` → `binpan/api/market.py` | `api_raw_get` → `client.klines()` etc. | **HECHO** |
+| `handlers/exchange.py` → `binpan/api/exchange_info.py` | `api_raw_get` → `client.exchange_info()` | **HECHO** |
+| `secret.py` + `get_encoded_secrets()` | Credenciales Binance → `CredentialManager` (`~/.panzer_creds`) | **HECHO** |
+| `handlers/starters.py`, `objects/api.py` | Eliminados | **HECHO** |
 
 ### `kline-timestamp` — timestamps de velas
 
@@ -526,15 +527,15 @@ La simplificación se ejecuta en este orden. Cada fase es un commit independient
 2. Mantener parseo de exchange info (filtros, símbolos, etc.).
 3. Eliminar imports de `quest.py` para endpoints públicos.
 
-### Fase 7: Reducir `handlers/quest.py`
+### Fase 7: ~~Reducir `handlers/quest.py`~~ → **COMPLETADO (panzer 2.1.0)**
 
-**Depende de fases 5 y 6**.
-
-1. Eliminar: `get_response()`, `check_weight()`, `update_weights()`, `get_server_time()`,
-   `api_raw_get()`, toda la maquinaria de rate limiting para endpoints públicos.
-2. Mantener: `sign_request()`, `get_signed_request()`, `post_signed_request()`,
-   `delete_signed_request()`, `hashed_signature()` (endpoints con autenticación).
-3. Evaluar si renombrar el módulo (`quest.py` → `auth.py` o similar).
+`quest.py` renombrado a `binpan/api/auth.py`. Desde panzer 2.1.0, toda la maquinaria de
+firma HTTP (HMAC-SHA256, timestamps, recvWindow) y gestión de credenciales se delega a
+`BinanceClient.signed_request()`. `auth.py` ahora solo contiene:
+- `convert_response_type()` — conversión de tipos de respuesta API
+- `signed_get/post/delete()` — wrappers finos sobre `BinanceClient.signed_request()`
+- `semi_signed_get()` — GET con API key header sin firma (USER_STREAM/MARKET_DATA)
+- `_get_binance_client()` — singleton lazy de `BinanceClient`
 
 ### Fase 8: Eliminar `objects/api.py`
 

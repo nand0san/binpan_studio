@@ -1,7 +1,7 @@
 Messages Module
 ===============
 
-.. automodule:: handlers.messages
+.. automodule:: binpan.core.messages
    :members:
    :undoc-members:
    :show-inheritance:

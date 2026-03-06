@@ -2,7 +2,7 @@
 Exceptions Module
 =================
 
-.. automodule:: handlers.exceptions
+.. automodule:: binpan.core.exceptions
    :members:
    :undoc-members:
    :show-inheritance:

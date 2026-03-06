@@ -13,7 +13,7 @@ Example of an expected data response:
 .. code-block::
 
     from binpan import binpan
-    from handlers import redis_fetch
+    from binpan.storage import redis_fetch
     from random import choice
 
     redis_client = binpan.redis_client(ip='192.168.69.43')
@@ -37,7 +37,7 @@ Example of an expected data response:
 Module Info
 -----------
 
-.. automodule:: handlers.redis_fetch
+.. automodule:: binpan.storage.redis_fetch
    :members:
    :undoc-members:
    :show-inheritance:

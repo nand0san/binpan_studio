@@ -1,6 +1,10 @@
 Welcome to BinPan's documentation!
 ==================================
 
+[![PyPI version](https://img.shields.io/pypi/v/binpan.svg)](https://pypi.org/project/binpan/)
+[![Python](https://img.shields.io/pypi/pyversions/binpan.svg)](https://pypi.org/project/binpan/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 BinPan is a Python wrapper for the Binance API oriented towards market data analysis: candlestick (kline) data,
 trades, technical indicators, plotting, and strategy backtesting.
 

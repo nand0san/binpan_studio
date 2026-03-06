@@ -1,12 +1,9 @@
-Exchange Module
-===============
+Exchange Info Module
+====================
 
-This module manage exchange data from Binance API.
+This module manages exchange data from the Binance API.
 
-Can be imported this way:
-
-
-.. automodule:: handlers.exchange
+.. automodule:: binpan.api.exchange_info
    :members:
    :undoc-members:
    :show-inheritance:
