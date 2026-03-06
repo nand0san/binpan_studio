@@ -72,6 +72,56 @@ def get_prices_dic(decimal_mode: bool) -> dict:
         return {d['symbol']: float(d['price']) for d in ret}
 
 
+################
+# Bulk methods #
+################
+
+
+def get_bulk_klines(symbols: list[str],
+                    interval: str,
+                    limit: int = 500,
+                    max_workers: int = 10) -> dict[str, list[list]]:
+    """
+    Fetch klines for multiple symbols in parallel using panzer bulk_klines.
+
+    :param list symbols: List of binance symbols (e.g. ['BTCUSDT', 'ETHUSDT']).
+    :param str interval: A binance valid time interval for candlesticks.
+    :param int limit: Number of klines per symbol (max 1000).
+    :param int max_workers: Maximum number of parallel requests.
+    :return dict: Dictionary mapping symbol -> list of kline lists.
+
+    Example:
+
+        .. code-block:: python
+
+            from binpan.api.market import get_bulk_klines
+            data = get_bulk_klines(['BTCUSDT', 'ETHUSDT', 'LTCUSDT'], '15m', limit=100)
+            # data['BTCUSDT'] -> [[open_time, open, high, low, close, ...], ...]
+
+    """
+    client = _get_panzer()
+    symbols_upper = [s.upper() for s in symbols]
+    market_logger.info(f"bulk_klines: {len(symbols_upper)} símbolos, interval={interval}, limit={limit}")
+    return client.bulk_klines(symbols=symbols_upper, interval=interval, limit=limit, max_workers=max_workers)
+
+
+def get_bulk_depth(symbols: list[str],
+                   limit: int = 100,
+                   max_workers: int = 10) -> dict[str, dict]:
+    """
+    Fetch order book depth for multiple symbols in parallel using panzer bulk_depth.
+
+    :param list symbols: List of binance symbols.
+    :param int limit: Depth levels (5, 10, 20, 50, 100, 500, 1000, 5000).
+    :param int max_workers: Maximum number of parallel requests.
+    :return dict: Dictionary mapping symbol -> depth dict with 'bids' and 'asks'.
+    """
+    client = _get_panzer()
+    symbols_upper = [s.upper() for s in symbols]
+    market_logger.info(f"bulk_depth: {len(symbols_upper)} símbolos, limit={limit}")
+    return client.bulk_depth(symbols=symbols_upper, limit=limit, max_workers=max_workers)
+
+
 ###########
 # Candles #
 ###########
@@ -159,26 +209,29 @@ def get_candles_by_time_stamps(symbol: str,
 
     client = _get_panzer()
 
-    # preparar iteración por bloques de 1000 velas
-    ranges = [(i, i + (1000 * tick_milliseconds)) for i in range(start_time, end_time, tick_milliseconds * 1000)]
+    # preparar bloques de 1000 velas
+    now_ms = int(1000 * time())
+    loop_limit = min(limit, 1000)
+    ranges = [(i, min(i + (1000 * tick_milliseconds), now_ms, end_time))
+              for i in range(start_time, end_time, tick_milliseconds * 1000)]
 
-    raw_candles = []
-    for start, end in ranges:
-        loop_limit = min(limit, 1000)
-        end = min(end, int(1000 * time()), end_time)
-
-        start_str = convert_milliseconds_to_str(start, timezoned=time_zone)
-        end_str = convert_milliseconds_to_str(end, timezoned=time_zone)
-
-        expected_klines = min(int(-((end - start) // -tick_milliseconds)), loop_limit)
-        market_logger.debug(f"API request: {symbol} {start_str} to {end_str}. Expected klines: {expected_klines}")
-
-        response = client.klines(symbol=symbol, interval=tick_interval, start_time=start, end_time=end, limit=loop_limit)
-
-        if len(response) < expected_klines:
-            market_logger.warning(f"API response missing {expected_klines - len(response)} klines for {symbol} {start_str} to "
-                                  f"{end_str} expected {expected_klines} got {len(response)}")
-        raw_candles += response
+    if len(ranges) == 1:
+        # petición única, sin overhead de paralelización
+        start, end = ranges[0]
+        raw_candles = client.klines(symbol=symbol, interval=tick_interval, start_time=start, end_time=end, limit=loop_limit)
+    else:
+        # peticiones en paralelo con panzer 2.2.0
+        jobs = [
+            (f'/api/v3/klines', {'symbol': symbol.upper(), 'interval': tick_interval,
+                                 'startTime': start, 'endTime': end, 'limit': loop_limit})
+            for start, end in ranges
+        ]
+        market_logger.info(f"Lanzando {len(jobs)} peticiones de klines en paralelo para {symbol}")
+        results = client.parallel_get(jobs)
+        raw_candles = []
+        for i, response in enumerate(results):
+            if response:
+                raw_candles += response
 
     if not raw_candles:
         msg = (f"BinPan: Missing in API requested klines for {symbol.lower()}@kline_{tick_interval} between {start_string} "
@@ -652,23 +705,38 @@ def get_historical_agg_trades(symbol: str,
         f"Obteniendo aggTrades de {symbol} por tiempo: "
         f"{convert_milliseconds_to_utc_string(startTime)} -> {convert_milliseconds_to_utc_string(endTime)}")
 
-    all_trades = []
+    # construir chunks de 1 hora
+    chunks = []
     chunk_start = startTime
-    requests_cnt = 0
-
     while chunk_start < endTime:
         chunk_end = min(chunk_start + ONE_HOUR_MS, endTime)
-        batch = get_aggregated_trades_by_time(symbol, chunk_start, chunk_end)
-        requests_cnt += 1
+        chunks.append((chunk_start, chunk_end))
+        chunk_start = chunk_end + 1
 
+    # lanzar primer batch de cada chunk en paralelo
+    client = _get_panzer()
+    if len(chunks) == 1:
+        # petición única
+        first_batches = [get_aggregated_trades_by_time(symbol, chunks[0][0], chunks[0][1])]
+    else:
+        jobs = [
+            ('/api/v3/aggTrades', {'symbol': symbol.upper(), 'startTime': cs, 'endTime': ce, 'limit': 1000})
+            for cs, ce in chunks
+        ]
+        market_logger.info(f"Lanzando {len(jobs)} peticiones de aggTrades en paralelo para {symbol}")
+        first_batches = client.parallel_get(jobs)
+
+    all_trades = []
+    requests_cnt = len(chunks)
+
+    for i, batch in enumerate(first_batches):
         if not batch:
-            chunk_start = chunk_end + 1
             continue
-
         all_trades.extend(batch)
 
-        # sub-paginar dentro de la hora si hay >=1000 trades
+        # sub-paginar dentro de la hora si hay >=1000 trades (secuencial, depende de IDs)
         if len(batch) == 1000:
+            chunk_end = chunks[i][1]
             while True:
                 sub_start = batch[-1]['T'] + 1
                 if sub_start > chunk_end:
@@ -680,8 +748,6 @@ def get_historical_agg_trades(symbol: str,
                 all_trades.extend(batch)
                 if len(batch) < 1000:
                     break
-
-        chunk_start = chunk_end + 1
 
     market_logger.info(f"aggTrades {symbol}: {requests_cnt} peticiones, {len(all_trades)} trades obtenidos")
 

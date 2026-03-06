@@ -306,7 +306,7 @@ from .auxiliar import csv_klines_setup
 |---------|-----|--------|
 | `pandas` | DataFrames de velas y trades | Top-level |
 | `numpy` | Cálculos numéricos | Top-level |
-| `panzer>=2.1.0` | Cliente REST Binance API (público + autenticado, rate limiting, credenciales) | Top-level |
+| `panzer>=2.2.0` | Cliente REST Binance API (público + auth, rate limiting, credenciales, parallel_get/bulk) | Top-level |
 | `kline-timestamp` | Timestamps de velas (open/close, navegación, timezone) | Top-level |
 | `pytz` | Zonas horarias | Top-level |
 | `pycryptodome` | Encriptación (panzer lo trae; binpan lo usa para Telegram/PostgreSQL) | Top-level |

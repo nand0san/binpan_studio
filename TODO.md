@@ -98,7 +98,7 @@ Monitorizar releases de kaleido 1.0+ para evaluar actualización.
 | Versión | `0.9.0` (setup.py + symbol.py) |
 | Python requerido | `>=3.12.0` |
 | Imports (typing, star, fallbacks) | OK |
-| Integración panzer 2.1.0 (público + auth) | OK |
+| Integración panzer 2.2.0 (público + auth + parallel_get/bulk) | OK |
 | Integración kline-timestamp 0.3.0 (incl. 1M mensual) | OK |
 | Credenciales Binance | OK (`~/.panzer_creds` vía panzer) |
 | Credenciales Telegram/PostgreSQL | OK (`secret.py` + `AesCipher`) |
