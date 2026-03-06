@@ -459,7 +459,8 @@ class SymbolPlotting:
                 self.reversal_agg_klines = self.get_reversal_agg_candles(min_height=self.min_height, min_reversal=self.min_reversal)
 
         if not 'title' in kwargs.keys():
-            kwargs['title'] = f"Reversal Candles {self.min_height}/{self.min_reversal} {self.symbol}"
+            source = "atomic trades (alta precisión)" if from_atomic else "aggregated trades (precisión media)"
+            kwargs['title'] = f"Reversal Candles {self.min_height}/{self.min_reversal} {self.symbol} — desde {source}"
         if not 'yaxis_title' in kwargs.keys():
             kwargs['yaxis_title'] = f"Price {self.symbol}"
         if not 'candles_ta_height_ratio' in kwargs.keys():
@@ -556,7 +557,7 @@ class SymbolPlotting:
         if not title:
             title = f"Histogram for sizes in aggressive sellers vs aggressive byers {self.symbol} ({hist_funct})"
 
-        return _plotting().plot_hists_vs(x0=aggressive_sellers, x1=aggressive_byers, x0_name="Aggressive sellers", x1_name='Aggressive byers',
+        return _plotting().plot_hists_vs(x0=aggressive_sellers, x1=aggressive_byers, x0_name="Taker seller", x1_name='Taker buyer',
                              bins=bins, hist_funct=hist_funct, height=height, title=title, **kwargs_update_layout)
 
     def plot_market_profile(self, bins: int = 100, hours: int = None, minutes: int = None, startTime: int | str = None,
@@ -614,7 +615,7 @@ class SymbolPlotting:
                 return
 
         if from_agg_trades:
-            title += f' Aggregated Trades'
+            title += ' — desde aggregated trades (precisión media)'
             _df = self.agg_trades.copy(deep=True)
             if startTime:
                 _df = _df[_df['Timestamp'] >= startTime]
@@ -624,7 +625,7 @@ class SymbolPlotting:
                             bins=bins, title=title, height=height, y_axis_title='Buy takers VS Buy makers', horizontal_bars=True,
                             **kwargs_update_layout)
         elif from_atomic_trades:
-            title += f' Atomic Trades'
+            title += ' — desde atomic trades (alta precisión)'
             _df = self.atomic_trades.copy(deep=True)
             if startTime:
                 _df = _df[_df['Timestamp'] >= startTime]
@@ -634,7 +635,7 @@ class SymbolPlotting:
                             bins=bins, title=title, height=height, y_axis_title='Buy takers VS Buy makers', horizontal_bars=True,
                             **kwargs_update_layout)
         else:
-            title += f' Klines'
+            title += ' — desde klines (precisión aproximada)'
             _df = self.df.copy(deep=True)
             if startTime:
                 _df = _df[_df['Timestamp'] >= startTime]
@@ -773,6 +774,13 @@ class SymbolPlotting:
             :width: 1000
 
         """
+        if title == "Taker Buy Ratio Profile":
+            if from_atomic_trades:
+                title += " — desde atomic trades (alta precisión)"
+            elif from_agg_trades:
+                title += " — desde aggregated trades (precisión media)"
+            else:
+                title += " — desde klines (precisión aproximada)"
         profile = self.get_taker_maker_ratio_profile(bins=bins, hours=hours, minutes=minutes, startTime=startTime, endTime=endTime,
                                                      from_agg_trades=from_agg_trades, from_atomic_trades=from_atomic_trades,
                                                      time_zone=time_zone)

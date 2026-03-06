@@ -21,6 +21,13 @@ from ..core.time_helper import infer_frequency_and_set_index
 
 plot_logger = LogManager(filename='./logs/plotting.log', name='plotting', info_level='INFO')
 
+# Colores estándar taker/maker: taker buyer = verde, taker seller = rojo
+TAKER_BUYER_COLOR = 'green'
+TAKER_SELLER_COLOR = 'red'
+TAKER_BUYER_LABEL = 'Taker buyer'
+TAKER_SELLER_LABEL = 'Taker seller'
+TAKER_MAKER_COLOR_MAP = {TAKER_BUYER_LABEL: TAKER_BUYER_COLOR, TAKER_SELLER_LABEL: TAKER_SELLER_COLOR}
+
 plotly_colors = ["aliceblue", "antiquewhite", "aqua", "aquamarine", "azure", "beige", "bisque", "black", "blanchedalmond", "blue",
                  "blueviolet", "brown", "burlywood", "cadetblue", "chartreuse", "chocolate", "coral", "cornflowerblue", "cornsilk",
                  "crimson", "cyan", "darkblue", "darkcyan", "darkgoldenrod", "darkgray", "darkgrey", "darkgreen", "darkkhaki",
@@ -1044,7 +1051,7 @@ def plot_trades(data: pd.DataFrame, max_size: int = 60, height: int = 1000, loga
                 title: str = None, shifted: int = 1, **kwargs_update_layout):
     """
     Plots scatter plot from trades quantity and trades sizes. Marks are size scaled to the max size. Marks are semi transparent and colored
-    using Maker buyer or Taker buyer discrete colors. Usually red and blue.
+    using Taker buyer (green) or Taker seller (red) discrete colors.
 
     Can let you see where are the big sized trades done and the taker or maker buyer side.
 
@@ -1076,9 +1083,9 @@ def plot_trades(data: pd.DataFrame, max_size: int = 60, height: int = 1000, loga
            :width: 1000
 
     """
-    maker_labels = data['Buyer was maker'].replace({False: 'Taker buyer', True: 'Taker Seller'})
+    maker_labels = data['Buyer was maker'].replace({False: TAKER_BUYER_LABEL, True: TAKER_SELLER_LABEL})
     fig = px.scatter(x=data.index, y=data['Price'], color=maker_labels, size=data[
-        'Quantity'], size_max=max_size, log_y=logarithmic)
+        'Quantity'], size_max=max_size, log_y=logarithmic, color_discrete_map=TAKER_MAKER_COLOR_MAP)
     if not title:
         title = f"Trades size {data.index.name}"
     if type(overlap_prices) == pd.DataFrame:
@@ -1218,11 +1225,18 @@ def plot_scatter(df: pd.DataFrame, x_col: str, y_col: str, symbol: str = None, c
        :width: 1000
 
     """
+    # Normalizar colores taker/maker si la columna es 'Buyer was maker'
+    color_map = None
+    if isinstance(color, str) and color == 'Buyer was maker' and color in df.columns:
+        df = df.copy()
+        df[color] = df[color].replace({False: TAKER_BUYER_LABEL, True: TAKER_SELLER_LABEL})
+        color_map = TAKER_MAKER_COLOR_MAP
     if marginal:
         fig = px.scatter(df, x=x_col, y=y_col, symbol=symbol, color=color, title=title, marginal_x="histogram", marginal_y="rug",
-                         height=height, **kwargs)
+                         height=height, color_discrete_map=color_map, **kwargs)
     else:
-        fig = px.scatter(df, x=x_col, y=y_col, symbol=symbol, color=color, title=title, height=height, **kwargs)
+        fig = px.scatter(df, x=x_col, y=y_col, symbol=symbol, color=color, title=title, height=height,
+                         color_discrete_map=color_map, **kwargs)
     fig.show()
     fig.write_image("last_plot.png")
     return os.path.join(os.getcwd(), "last_plot.png")
@@ -1280,11 +1294,17 @@ def plot_hists_vs(x0: pd.Series, x1: pd.Series, x0_name: str = None, x1_name: st
     start = min(x0.min(), x1.min())
     end = max(x0.max(), x1.max())
 
-    fig.add_trace(go.Histogram(x=x0, histfunc=hist_funct, name=x0_name, xbins=dict(start=start, end=end, size=(
-                                                                                                                      x0.max() - x0.min()) / bins)))
+    # Colores normalizados: seller=rojo, buyer=verde (si aplica)
+    x0_color = TAKER_SELLER_COLOR if 'seller' in (x0_name or '').lower() else None
+    x1_color = TAKER_BUYER_COLOR if 'buyer' in (x1_name or '').lower() else None
 
-    fig.add_trace(go.Histogram(x=x1, histfunc=hist_funct, name=x1_name, xbins=dict(start=start, end=end, size=(
-                                                                                                                      x0.max() - x0.min()) / bins)))
+    fig.add_trace(go.Histogram(x=x0, histfunc=hist_funct, name=x0_name,
+                               marker_color=x0_color,
+                               xbins=dict(start=start, end=end, size=(x0.max() - x0.min()) / bins)))
+
+    fig.add_trace(go.Histogram(x=x1, histfunc=hist_funct, name=x1_name,
+                               marker_color=x1_color,
+                               xbins=dict(start=start, end=end, size=(x0.max() - x0.min()) / bins)))
 
     fig.update_layout(bargap=0.3, title=title, xaxis_title_text=f'{x0_name} vs {x1_name} size', yaxis_title_text=f'{x0_name} vs {x1_name}'
                                                                                                                  f' {hist_funct}',
@@ -1340,7 +1360,7 @@ def orderbook_depth(df: pd.DataFrame, accumulated=True, title='Depth orderbook p
     return os.path.join(os.getcwd(), "last_plot.png")
 
 
-def dist_plot(df: pd.DataFrame, x_col: str = 'Price', color: str = 'Side', bins: int = 300, histnorm: str = 'density', height: int = 800,
+def dist_plot(df: pd.DataFrame, x_col: str = 'Price', color: str = None, bins: int = 300, histnorm: str = 'density', height: int = 800,
               title: str = "Distribution", **update_layout_kwargs):
     """
     Plot a distribution plot for a dataframe column. Plots line for kernel distribution.
@@ -1364,9 +1384,9 @@ def dist_plot(df: pd.DataFrame, x_col: str = 'Price', color: str = 'Side', bins:
     """
     filtered_df = df.copy()
 
-    fig = ff.create_distplot(hist_data=[filtered_df["Price"].tolist()], group_labels=[
-        "Price"], show_hist=False, ).add_traces(px.histogram(filtered_df, x=x_col, nbins=bins, color=color,
-                                                             histnorm=histnorm).update_traces(yaxis="y3", name=x_col).data)
+    fig = ff.create_distplot(hist_data=[filtered_df[x_col].tolist()], group_labels=[
+        x_col], show_hist=False, ).add_traces(px.histogram(filtered_df, x=x_col, nbins=bins, color=color,
+                                                            histnorm=histnorm).update_traces(yaxis="y3", name=x_col).data)
 
     fig.update_layout(height=height, title=title, yaxis3={"overlaying": "y", "side": "right"}, showlegend=True, **update_layout_kwargs)
     fig.show()
@@ -1410,13 +1430,22 @@ def bar_plot(df: pd.DataFrame, x_col_to_bars: str, y_col: str, bar_segments: str
     fig = go.Figure()
 
     if split_colors:
+        # Mapeo de colores para Buyer was maker (True=taker seller, False=taker buyer)
+        _bar_color_map = {
+            True: (TAKER_SELLER_LABEL, TAKER_SELLER_COLOR),
+            False: (TAKER_BUYER_LABEL, TAKER_BUYER_COLOR),
+        }
         for segment_value in grouped_data.columns:
+            label, color = _bar_color_map.get(segment_value, (f"{bar_segments}: {segment_value}", None))
+            bar_kwargs = dict(name=label)
+            if color:
+                bar_kwargs['marker_color'] = color
             if not horizontal_bars:
                 fig.add_trace(go.Bar(x=grouped_data.index.astype(str), y=grouped_data[
-                    segment_value].values, name=f"{bar_segments}: {segment_value}"))
+                    segment_value].values, **bar_kwargs))
             else:
                 fig.add_trace(go.Bar(y=grouped_data.index.astype(str), x=grouped_data[
-                    segment_value].values, orientation='h', name=f"{bar_segments}: {segment_value}"))
+                    segment_value].values, orientation='h', **bar_kwargs))
         fig.update_layout(barmode='stack')
     else:
         if not horizontal_bars:
