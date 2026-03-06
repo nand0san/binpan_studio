@@ -1,12 +1,12 @@
 from time import time
 import pandas as pd
 
-from handlers.files import select_file, read_csv_to_dataframe, extract_filename_metadata
-from handlers.logs import LogManager
-from handlers.market import (convert_to_numeric)
-from handlers.time_helper import (pandas_freq_tick_interval, open_from_milliseconds, time_interval)
+from .storage.files import select_file, read_csv_to_dataframe, extract_filename_metadata
+from .core.logs import LogManager
+from .api.market import (convert_to_numeric)
+from .core.time_helper import (pandas_freq_tick_interval, open_from_milliseconds, time_interval)
 
-# from handlers.starters import is_running_in_jupyter
+# from .core.crypto import is_running_in_jupyter
 # if is_running_in_jupyter():
 #     pass
 # else:

@@ -39,7 +39,7 @@ Colors can be picked with the name of the color or the index number from this li
 Module Info
 -----------
 
-.. automodule:: handlers.plotting
+.. automodule:: binpan.plotting.charts
    :members:
    :undoc-members:
    :show-inheritance:

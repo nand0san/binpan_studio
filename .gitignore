@@ -162,7 +162,6 @@ AFML*.ipynb
 
 orderbook cost.ipynb
 orderbook*.ipynb
-Support and resistance.ipynb
 ltcusdt.*
 ltcbtc.*
 btcusdt.*
@@ -179,8 +178,6 @@ docstring_extractor.py
 venv_no_numba/
 last_plot.png
 test*
-
-# Archivos de desarrollo (solo en rama dev, no publicar a GitHub)
 CLAUDE.md
 AGENTS.md
 TODO.md

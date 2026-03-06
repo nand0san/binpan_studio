@@ -1,10 +1,10 @@
 Files Module
 ============
 
-This module can manage files and API keys in an encrypted API keys and secrets file called *secret.py*.
+This module manages file operations: CSV read/write, file selection, and encrypted credential storage
+for Telegram and PostgreSQL (Binance credentials are managed by ``panzer``).
 
-
-.. automodule:: handlers.files
+.. automodule:: binpan.storage.files
    :members:
    :undoc-members:
    :show-inheritance:

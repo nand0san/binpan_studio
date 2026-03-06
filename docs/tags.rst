@@ -1,7 +1,7 @@
 Tags & Backtesting Module
 =========================
 
-.. automodule:: handlers.tags
+.. automodule:: binpan.analysis.tags
    :members:
    :undoc-members:
    :show-inheritance:

@@ -2,7 +2,7 @@ Indicators Module
 =================
 
 
-.. automodule:: handlers.indicators
+.. automodule:: binpan.analysis.indicators
    :members:
    :undoc-members:
    :show-inheritance:

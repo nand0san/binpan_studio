@@ -3,7 +3,7 @@ PostgreSQL Module
 
 This module contains the PostgreSQL handler for database operations.
 
-.. automodule:: handlers.postgresql
+.. automodule:: binpan.storage.postgresql
    :members:
    :undoc-members:
    :show-inheritance:

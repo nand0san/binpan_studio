@@ -17,9 +17,9 @@ backtesting.
 
 The ``Symbol`` class uses a mixin architecture:
 
-- **IndicatorsMixin**: technical indicators (EMA, RSI, MACD, Bollinger Bands, etc.)
-- **PlottingMixin**: candlestick charts, trade visualizations, order book plots
-- **StrategyMixin**: tagging, cross detection, backtesting engine
+- **SymbolIndicators**: technical indicators (EMA, RSI, MACD, Bollinger Bands, etc.)
+- **SymbolPlotting**: candlestick charts, trade visualizations, order book plots
+- **SymbolStrategy**: tagging, cross detection, backtesting engine
 
 Example notebooks are in the ``notebooks/`` folder of the repository.
 
