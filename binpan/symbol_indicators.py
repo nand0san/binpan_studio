@@ -43,7 +43,7 @@ class SymbolIndicators:
            inplace: bool = False,
            suffix: str = None,
            color: str | int = None,
-           **kwargs):
+           **kwargs) -> pd.Series:
         """
         Generic moving average method. Calls pandas_ta 'ma' method.
 
@@ -64,7 +64,7 @@ class SymbolIndicators:
             if kwargs['length'] >= len(self.df):
                 msg = f"BinPan Error: Ma window larger than data length."
                 binpan_logger.error(msg)
-                raise Exception(msg)
+                raise BinPanException(msg)
         if suffix:
             kwargs.update({'suffix': suffix})
 
@@ -94,7 +94,7 @@ class SymbolIndicators:
 
         return ma
 
-    def sma(self, window: int = 21, column: str = 'Close', inplace=True, suffix: str = '', color: str | int = None, **kwargs):
+    def sma(self, window: int = 21, column: str = 'Close', inplace=True, suffix: str = '', color: str | int = None, **kwargs) -> pd.Series:
         """
         Generate technical indicator Simple Moving Average.
 
@@ -114,7 +114,7 @@ class SymbolIndicators:
         """
         return self.ma(ma_name='sma', column_source=column, inplace=inplace, length=window, suffix=suffix, color=color, **kwargs)
 
-    def ema(self, window: int = 21, column: str = 'Close', inplace=True, suffix: str = '', color: str | int = None, **kwargs):
+    def ema(self, window: int = 21, column: str = 'Close', inplace=True, suffix: str = '', color: str | int = None, **kwargs) -> pd.Series:
         """
         Generate technical indicator Exponential Moving Average.
 
@@ -136,7 +136,7 @@ class SymbolIndicators:
             color = 'skyblue'
         return self.ma(ma_name='ema', column_source=column, inplace=inplace, length=window, suffix=suffix, color=color, **kwargs)
 
-    def supertrend(self, length: int = 10, multiplier: int = 3, inplace=True, suffix: str = None, colors: list = None, **kwargs):
+    def supertrend(self, length: int = 10, multiplier: int = 3, inplace=True, suffix: str = None, colors: list = None, **kwargs) -> pd.DataFrame:
         """
         Generate technical indicator Supertrend.
 
@@ -155,7 +155,7 @@ class SymbolIndicators:
         """
         supertrend_df = supertrend_indicator(high=self.df['High'], low=self.df['Low'], close=self.df['Close'],
                                               length=length, multiplier=float(multiplier))
-        supertrend_df.replace(0, np.nan, inplace=True)
+        supertrend_df = supertrend_df.replace(0, np.nan)
 
         if inplace and self.is_new(supertrend_df):
             column_names = supertrend_df.columns
@@ -176,7 +176,7 @@ class SymbolIndicators:
             self.df = pd.concat([self.df, supertrend_df], axis=1)
         return supertrend_df
 
-    def macd(self, fast: int = 12, slow: int = 26, smooth: int = 9, inplace: bool = True, suffix: str = '', colors: list = None, **kwargs):
+    def macd(self, fast: int = 12, slow: int = 26, smooth: int = 9, inplace: bool = True, suffix: str = '', colors: list = None, **kwargs) -> pd.DataFrame:
         """
         Generate technical indicator Moving Average, Convergence/Divergence (MACD).
 
@@ -239,7 +239,7 @@ class SymbolIndicators:
 
         return macd
 
-    def rsi(self, length: int = 14, inplace: bool = True, suffix: str = '', color: str | int = None):
+    def rsi(self, length: int = 14, inplace: bool = True, suffix: str = '', color: str | int = None) -> pd.Series:
         """
         Relative Strength Index (RSI).
 
@@ -312,7 +312,7 @@ class SymbolIndicators:
                 self.df.loc[:, column_name] = col
         return stoch_df
 
-    def on_balance_volume(self, inplace: bool = True, suffix: str = '', color: str | int = None, **kwargs):
+    def on_balance_volume(self, inplace: bool = True, suffix: str = '', color: str | int = None, **kwargs) -> pd.Series:
         """
         On balance indicator.
 
@@ -347,7 +347,7 @@ class SymbolIndicators:
 
         return on_balance
 
-    def accumulation_distribution(self, inplace: bool = True, suffix: str = '', color: str | int = None, **kwargs):
+    def accumulation_distribution(self, inplace: bool = True, suffix: str = '', color: str | int = None, **kwargs) -> pd.Series:
         """
         Accumulation/Distribution indicator.
 
@@ -381,7 +381,7 @@ class SymbolIndicators:
 
         return ad
 
-    def vwap(self, anchor: str = "D", inplace: bool = True, suffix: str = '', color: str | int = None, **kwargs):
+    def vwap(self, anchor: str = "D", inplace: bool = True, suffix: str = '', color: str | int = None, **kwargs) -> pd.Series:
         """
         Volume Weighted Average Price.
 
@@ -415,7 +415,7 @@ class SymbolIndicators:
             self.df.loc[:, column_name] = vwap
         return vwap
 
-    def atr(self, length: int = 14, inplace: bool = True, suffix: str = '', color: str | int = None, **kwargs):
+    def atr(self, length: int = 14, inplace: bool = True, suffix: str = '', color: str | int = None, **kwargs) -> pd.Series:
         """
         Average True Range.
 
@@ -449,7 +449,7 @@ class SymbolIndicators:
 
         return atr
 
-    def cci(self, length: int = 14, scaling: int = None, inplace: bool = True, suffix: str = '', color: str | int = None, **kwargs):
+    def cci(self, length: int = 14, scaling: int = None, inplace: bool = True, suffix: str = '', color: str | int = None, **kwargs) -> pd.Series:
         """
         Compute the Commodity Channel Index (CCI) for NIFTY based on the 14-day moving average.
         CCI can be used to determine overbought and oversold levels.
@@ -494,7 +494,7 @@ class SymbolIndicators:
         return cci
 
     def eom(self, length: int = 14, divisor: int = 100000000, drift: int = 1, inplace: bool = True, suffix: str = '',
-            color: str | int = None, **kwargs):
+            color: str | int = None, **kwargs) -> pd.Series:
         """
         Ease of Movement (EMV) can be used to confirm a bullish or a bearish trend. A sustained positive Ease of Movement
         together with a rising market confirms a bullish trend, while a negative Ease of Movement values with falling
@@ -533,7 +533,7 @@ class SymbolIndicators:
             self.df.loc[:, column_name] = eom
         return eom
 
-    def roc(self, length: int = 1, escalar: int = 100, inplace: bool = True, suffix: str = '', color: str | int = None, **kwargs):
+    def roc(self, length: int = 1, escalar: int = 100, inplace: bool = True, suffix: str = '', color: str | int = None, **kwargs) -> pd.Series:
         """
         The Rate of Change (ROC) is a technical indicator that measures the percentage change between the most recent price
         and the price "n" day's ago. The indicator fluctuates around the zero line.
@@ -569,7 +569,7 @@ class SymbolIndicators:
         return roc
 
     def bbands(self, length: int = 5, std: int = 2, ddof: int = 0, inplace: bool = True, suffix: str = '', colors: list = None,
-               my_fill_color: str = 'rgba(47, 48, 56, 0.2)', **kwargs):
+               my_fill_color: str = 'rgba(47, 48, 56, 0.2)', **kwargs) -> pd.DataFrame:
         """
         These bands consist of an upper Bollinger band and a lower Bollinger band and are placed two standard deviations
         above and below a moving average.
@@ -663,7 +663,7 @@ class SymbolIndicators:
         return stoch_df
 
     def ichimoku(self, tenkan: int = 9, kijun: int = 26, chikou_span: int = 26, senkou_cloud_base: int = 52, inplace: bool = True,
-                 suffix: str = '', colors: list = None):
+                 suffix: str = '', colors: list = None) -> pd.DataFrame:
         """
         The Ichimoku Cloud is a collection of technical indicators that show support and resistance levels, as well as momentum and trend
         direction. It does this by taking multiple averages and plotting them on a chart. It also uses these figures to compute a "cloud"
@@ -803,7 +803,7 @@ class SymbolIndicators:
 
         return fractal, max_mean, min_mean
 
-    def fractal(self, period: int = 5, inplace: bool = True, overlap_plot=True, suffix: str = '', colors: list = None):
+    def fractal(self, period: int = 5, inplace: bool = True, overlap_plot=True, suffix: str = '', colors: list = None) -> pd.DataFrame:
         """
         The fractal indicator is based on a simple price pattern that is frequently seen in financial markets. Outside of trading, a fractal
         is a recurring geometric pattern that is repeated on all time frames. From this concept, the fractal indicator was devised.
@@ -878,10 +878,8 @@ class SymbolIndicators:
            :alt: Market profile
 
         """
-        try:
-            assert not (from_agg_trades and from_atomic_trades)
-        except AssertionError:
-            raise BinPanException(f"Please specify just one source of data, atomic trades or aggregated, not both.")
+        if from_agg_trades and from_atomic_trades:
+            raise BinPanException("Please specify just one source of data, atomic trades or aggregated, not both.")
 
         if not self.market_profile_df.empty:
             binpan_logger.info(f"Market profile already generated. Updating data: startTime={startTime}, endTime={endTime}, "
@@ -952,7 +950,7 @@ class SymbolIndicators:
 
         if nans_to_zeros:
             binpan_logger.info(f"Maker vs Taker buy ratio: {ratios.isna().sum()} NaNs found. Converting to zeros.")
-            ratios.fillna(0, inplace=True)
+            ratios = ratios.fillna(0)
         else:
             binpan_logger.info(f"Maker vs Taker buy ratio: {ratios.isna().sum()} NaNs found. Use nans_to_zeros=True to convert to zeros.")
 
@@ -999,7 +997,7 @@ class SymbolIndicators:
                 self.market_profile_df['Taker buy base volume'] + self.market_profile_df['Maker buy base volume'])
 
     @staticmethod
-    def pandas_ta_indicator(name: str, **kwargs):
+    def pandas_ta_indicator(name: str, **kwargs) -> None:
         """
                 Calls any indicator in pandas_ta library with function name as first argument and any kwargs the function will use.
 
@@ -1066,6 +1064,33 @@ class SymbolIndicators:
             f"Indicator '{name}' not available. pandas_ta has been removed. "
             f"Use the native Symbol methods instead (ema, sma, rsi, macd, supertrend, etc.).")
 
+    def _resolve_sr_data_source(self, from_atomic: bool, from_aggregated: bool) -> tuple[pd.DataFrame, bool]:
+        """Resolve data source for support/resistance calculations. Returns (df_copy, by_klines)."""
+        if from_atomic:
+            return self.atomic_trades.copy(deep=True), False
+        elif from_aggregated:
+            return self.agg_trades.copy(deep=True), False
+        else:
+            return self.df.copy(deep=True), True
+
+    @staticmethod
+    def _compute_sr_time_ranges(df: pd.DataFrame, discrete_interval: str | None,
+                                time_steps_minutes: int | None, minutes_window: int | None) -> list:
+        """Compute time ranges for rolling support/resistance."""
+        if discrete_interval:
+            pandas_interval = pandas_freq_tick_interval[discrete_interval]
+            discrete_index = df.resample(pandas_interval).first().index
+            last_index = discrete_index[-1] + pd.to_timedelta(pandas_interval)
+            extended_discrete_index = discrete_index.union([last_index])
+            return [
+                (extended_discrete_index[i], extended_discrete_index[i + 1] - pd.Timedelta(seconds=1))
+                for i in range(len(extended_discrete_index) - 1)
+            ]
+        else:
+            delta_step = f"{time_steps_minutes}T"
+            update_time_ranges = get_dataframe_time_index_ranges(data=df, interval=delta_step)
+            return remove_initial_included_ranges(time_ranges=update_time_ranges, initial_minutes=minutes_window)
+
     def support_resistance(self,
                            from_atomic: bool = False,
                            from_aggregated: bool = False,
@@ -1094,58 +1119,37 @@ class SymbolIndicators:
 
         """
 
+        # resolve data source
         if from_atomic:
             from_data = "atomic trades"
             if self.atomic_trades.empty:
-                print(f"Please add atomic trades first: my_symbol.get_atomic_trades()")
-            else:
-                if not by_quantity:
-                    by_quantity = np.mean(self.atomic_trades['Quantity'].values)
-                if simple:
-                    self.support_lines = support_resistance_levels_merged(self.atomic_trades,
-                                                                          max_clusters=max_clusters,
-                                                                          by_quantity=by_quantity,
-                                                                          by_klines=False)
-                    self.resistance_lines = []
-                else:
-                    self.support_lines, self.resistance_lines = support_resistance_levels(self.atomic_trades,
-                                                                                          max_clusters=max_clusters,
-                                                                                          by_quantity=by_quantity,
-                                                                                          by_klines=False)
+                binpan_logger.warning("Please add atomic trades first: my_symbol.get_atomic_trades()")
+                return self.support_lines, self.resistance_lines
+            source_df, qty_col, by_klines = self.atomic_trades, 'Quantity', False
         elif from_aggregated:
             from_data = "aggregated trades"
             if self.agg_trades.empty:
-                print(f"Please add aggregated trades first: my_symbol.get_agg_trades()")
-            else:
-                if not by_quantity:
-                    by_quantity = np.mean(self.agg_trades['Quantity'].values)
-
-                if simple:
-                    self.support_lines = support_resistance_levels_merged(self.agg_trades,
-                                                                          max_clusters=max_clusters,
-                                                                          by_quantity=by_quantity,
-                                                                          by_klines=False)
-                    self.resistance_lines = []
-                else:
-                    self.support_lines, self.resistance_lines = support_resistance_levels(self.agg_trades,
-                                                                                          max_clusters=max_clusters,
-                                                                                          by_quantity=by_quantity,
-                                                                                          by_klines=False)
-        else:  # with klines
+                binpan_logger.warning("Please add aggregated trades first: my_symbol.get_agg_trades()")
+                return self.support_lines, self.resistance_lines
+            source_df, qty_col, by_klines = self.agg_trades, 'Quantity', False
+        else:
             from_data = "klines"
-            if not by_quantity:
-                by_quantity = np.mean(self.df['Trades'].values)
-            if simple:
-                self.support_lines = support_resistance_levels_merged(self.df,
-                                                                      max_clusters=max_clusters,
-                                                                      by_quantity=by_quantity,
-                                                                      by_klines=True)
-                self.resistance_lines = []
-            else:
-                self.support_lines, self.resistance_lines = support_resistance_levels(self.df,
-                                                                                      max_clusters=max_clusters,
-                                                                                      by_quantity=by_quantity,
-                                                                                      by_klines=True)
+            source_df, qty_col, by_klines = self.df, 'Trades', True
+
+        if not by_quantity:
+            by_quantity = np.mean(source_df[qty_col].values)
+
+        if simple:
+            self.support_lines = support_resistance_levels_merged(source_df,
+                                                                  max_clusters=max_clusters,
+                                                                  by_quantity=by_quantity,
+                                                                  by_klines=by_klines)
+            self.resistance_lines = []
+        else:
+            self.support_lines, self.resistance_lines = support_resistance_levels(source_df,
+                                                                                  max_clusters=max_clusters,
+                                                                                  by_quantity=by_quantity,
+                                                                                  by_klines=by_klines)
 
         self.sr_data_source = from_data
 
@@ -1247,21 +1251,12 @@ class SymbolIndicators:
         """
         binpan_logger.info(f"Each {time_steps_minutes} minutes, support and resistance will be calculated with the last {minutes_window} "
                            f"minutes  data. Or by a discrete interval of {discrete_interval}.")
-        by_klines = False
 
-        if from_atomic:
-            # generar columnas de minutos pasados
-            df = self.atomic_trades.copy(deep=True)
-        elif from_aggregated:
-            df = self.agg_trades.copy(deep=True)
-        else:
-            df = self.df.copy(deep=True)
-            by_klines = True
+        # resolve data source
+        df, by_klines = self._resolve_sr_data_source(from_atomic, from_aggregated)
 
-        try:
-            assert isinstance(df.index, pd.DatetimeIndex), "Index is not DatetimeIndex"
-        except AssertionError as e:
-            binpan_logger.error(f"BinPan rolling_support_resistance error: {e}")
+        if not isinstance(df.index, pd.DatetimeIndex):
+            binpan_logger.error("BinPan rolling_support_resistance error: Index is not DatetimeIndex")
             return None
 
         result = pd.DataFrame(index=df.index)
@@ -1269,24 +1264,8 @@ class SymbolIndicators:
         sup_cols = [f"Support_{k + 1}" for k in range(max_clusters)]
         res_cols = [f"Resistance_{k + 1}" for k in range(max_clusters)]
 
-        if discrete_interval:
-            pandas_interval = pandas_freq_tick_interval[discrete_interval]
-            discrete_index = df.resample(pandas_interval).first().index
-
-            # Extender el último índice para incluir el intervalo futuro. Util para delayed
-            last_index = discrete_index[-1] + pd.to_timedelta(pandas_interval)
-            extended_discrete_index = discrete_index.union([last_index])
-
-            update_time_ranges = [
-                (extended_discrete_index[i], extended_discrete_index[i + 1] - pd.Timedelta(seconds=1))
-                for i in range(len(extended_discrete_index) - 1)
-            ]
-
-        else:
-            # Lógica para calcular rangos de tiempo deslizantes
-            delta_step = f"{time_steps_minutes}T"
-            update_time_ranges = get_dataframe_time_index_ranges(data=df, interval=delta_step)
-            update_time_ranges = remove_initial_included_ranges(time_ranges=update_time_ranges, initial_minutes=minutes_window)
+        # compute time ranges
+        update_time_ranges = self._compute_sr_time_ranges(df, discrete_interval, time_steps_minutes, minutes_window)
 
         # loop por cada ventana de tiempo
         for i in range(len(update_time_ranges)):

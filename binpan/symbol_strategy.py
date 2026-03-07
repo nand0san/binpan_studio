@@ -7,9 +7,10 @@ import numpy as np
 import pandas as pd
 
 from .analysis.tags import (tag_column_to_strategy_group, backtesting as run_backtesting,
-                           backtesting_short, tag_comparison, tag_cross, merge_series,
+                           tag_comparison, tag_cross, merge_series,
                            clean_in_out as clean_in_out_func)
 from .analysis.indicators import ffill_indicator, shift_indicator
+from .core.exceptions import BinPanException
 
 
 class SymbolStrategy:
@@ -81,12 +82,13 @@ class SymbolStrategy:
                                     label_out=label_out, suffix=suffix,
                                     evaluating_quote=evaluating_quote, info_dic=self.info_dic)
         else:
-            wallet_df = backtesting_short(df=self.df, actions_column=actions, target_column=target_column,
-                                          stop_loss_column=stop_loss_column, entry_filter_column=entry_filter_column,
-                                          priced_actions_col=priced_actions_col,
-                                          fixed_target=fixed_target, fixed_stop_loss=fixed_stop_loss, base=base, quote=quote, fee=fee,
-                                          label_in=label_in,
-                                          label_out=label_out, suffix=suffix, evaluating_quote=evaluating_quote, info_dic=self.info_dic)
+            wallet_df = run_backtesting(df=self.df, actions_column=actions, target_column=target_column,
+                                        stop_loss_column=stop_loss_column, entry_filter_column=entry_filter_column,
+                                        priced_actions_col=priced_actions_col,
+                                        fixed_target=fixed_target, fixed_stop_loss=fixed_stop_loss, base=base, quote=quote, fee=fee,
+                                        label_in=label_in,
+                                        label_out=label_out, suffix=suffix, evaluating_quote=evaluating_quote, info_dic=self.info_dic,
+                                        direction='short')
 
         if inplace and self.is_new(wallet_df):
             column_names = wallet_df.columns
@@ -116,8 +118,7 @@ class SymbolStrategy:
             column = [i for i in self.df.columns if i.startswith('Eval')][-1]
             print(f"Auto selected column {column}")
 
-        my_column = self.df[column].copy(deep=True)
-        my_column.dropna(inplace=True)
+        my_column = self.df[column].dropna()
 
         first = my_column.iloc[0]
         last = my_column.iloc[-1]
@@ -140,8 +141,7 @@ class SymbolStrategy:
                 column = column[-1]
             print(f"Auto selected column {column}")
 
-        my_column = self.df[column].copy(deep=True)
-        my_column.dropna(inplace=True)
+        my_column = self.df[column].dropna()
 
         first = my_column.iloc[0]
         last = my_column.iloc[-1]
@@ -204,8 +204,8 @@ class SymbolStrategy:
 
         """
 
-        if not relation in ['gt', 'ge', 'eq', 'le', 'lt']:
-            raise Exception("BinPan Error: relation must be 'gt','ge','eq','le' or 'lt'")
+        if relation not in ('gt', 'ge', 'eq', 'le', 'lt'):
+            raise BinPanException("relation must be 'gt','ge','eq','le' or 'lt'")
 
         # parse params
         if type(column) == str:
@@ -335,7 +335,7 @@ class SymbolStrategy:
               column: str | int | pd.Series, window=1,
               strategy_group: str = '',
               inplace=True, suffix: str = '',
-              color: str | int = 'grey'):
+              color: str | int = 'grey') -> pd.Series:
         """
         It shifts a candle ahead by the window argument value (or backwards if negative)
 
@@ -388,7 +388,7 @@ class SymbolStrategy:
                       strategy_group: str = '',
                       inplace=True,
                       suffix: str = '',
-                      color: str | int = 'grey'):
+                      color: str | int = 'grey') -> pd.Series:
         """
         Predominant serie will be filled nans with values, if existing, from the other serie.
 
@@ -454,7 +454,7 @@ class SymbolStrategy:
                      out_tag=-1,
                      strategy_group: str = '',
                      inplace=True, suffix: str = '',
-                     color: str | int = 'grey'):
+                     color: str | int = 'grey') -> pd.Series:
         """
         It cleans a serie with in and out tags by eliminating in streaks and out streaks.
 
@@ -503,7 +503,7 @@ class SymbolStrategy:
                                                                 strategy_groups=self.strategy_groups)
         return clean
 
-    def set_strategy_groups(self, column: str, group: str, strategy_groups: dict = None):
+    def set_strategy_groups(self, column: str, group: str, strategy_groups: dict = None) -> dict:
         """
         Returns strategy_groups for BinPan DataFrame.
 
@@ -535,7 +535,7 @@ class SymbolStrategy:
                                    inplace=True,
                                    suffix: str = '',
                                    color: str | int = 'magenta',
-                                   reversed_match=-1):
+                                   reversed_match=-1) -> pd.Series:
         """
         Checks where all tags and cross columns get value "1" at the same time. And also gets points where all tags gets value of "0" and
         cross columns get "-1" value.
@@ -572,12 +572,10 @@ class SymbolStrategy:
 
         for col in my_columns:
             data_col = self.df[col].dropna()
-            try:
-                unique_values = data_col.value_counts().index
-                numeric_Values = [i for i in unique_values if type(i) in [int, float, complex]]
-                assert len(unique_values) == len(numeric_Values)
-            except AssertionError:
-                raise Exception(f"BinPan Strategic Exception: Not numerica labels on {col}: {list(data_col.value_counts().index)}")
+            unique_values = data_col.value_counts().index
+            numeric_values = [i for i in unique_values if isinstance(i, (int, float, complex))]
+            if len(unique_values) != len(numeric_values):
+                raise BinPanException(f"Not numeric labels on {col}: {list(unique_values)}")
 
         temp_df = self.df.copy(deep=True)
         temp_df = temp_df.loc[:, my_columns]
@@ -591,7 +589,7 @@ class SymbolStrategy:
         elif method == 'any':
             bull_serie = (temp_df > 0).any(axis=1)
         else:
-            raise Exception(f"BinPan Strategy Exception: Method not 'all' or 'any' -> {method}")
+            raise BinPanException(f"Method not 'all' or 'any' -> {method}")
 
         ret = pd.Series(matching_tag, index=bull_serie[bull_serie].index)
 
@@ -601,7 +599,7 @@ class SymbolStrategy:
             elif method == 'any':
                 bear_serie = (temp_df <= 0).any(axis=1)
             else:
-                raise Exception(f"BinPan Strategy Exception: Method not 'all' or 'any' -> {method}")
+                raise BinPanException(f"Method not 'all' or 'any' -> {method}")
 
             ret_reversed = pd.Series(reversed_match, index=bear_serie[bear_serie].index)
             ret = pd.concat([ret, ret_reversed]).sort_index()

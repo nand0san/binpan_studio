@@ -268,20 +268,20 @@ def fractal_w_indicator(df: pd.DataFrame, period=2, merged: bool = True, suffix:
 
     if not merged:
         if fill_with_zero:
-            mins.fillna(0, inplace=True)
-            maxs.fillna(0, inplace=True)
+            mins = mins.fillna(0)
+            maxs = maxs.fillna(0)
         return pd.DataFrame([mins, maxs, values]).T
 
     else:
         merged = mins
-        merged.fillna(maxs, inplace=True)
+        merged = merged.fillna(maxs)
         merged.name = f"Fractal_W_{period}" + suffix
         if fill_with_zero:
-            merged.fillna(0, inplace=True)
+            merged = merged.fillna(0)
         return pd.DataFrame([merged, values]).T
 
 
-def support_resistance_volume(df, num_bins=100, price_col='Close', volume_col='Volume', threshold=90):
+def support_resistance_volume(df, num_bins=100, price_col='Close', volume_col='Volume', threshold=90) -> list:
     """
     Calculates support and resistance levels based on volume and prices in the given dataframe.
 
@@ -534,7 +534,7 @@ def zoom_cloud_indicators(plot_splitted_serie_couples: dict, main_index: list, s
     return ret
 
 
-def shift_indicator(serie: pd.Series, window: int = 1):
+def shift_indicator(serie: pd.Series, window: int = 1) -> pd.Series:
     """
     It shifts a candle ahead by the window argument value (or backwards if negative).
 
@@ -547,7 +547,7 @@ def shift_indicator(serie: pd.Series, window: int = 1):
     return serie.shift(window, freq='infer')
 
 
-def ffill_indicator(serie: pd.Series, window: int = 1):
+def ffill_indicator(serie: pd.Series, window: int = 1) -> pd.Series:
     """
     It forward fills a value through nans while a window of candles ahead.
 
@@ -666,7 +666,7 @@ def reversal_candles(trades: pd.DataFrame, decimal_positions: int, time_zone: st
                                           'Timestamp': 'first'})
 
     date_index = klines['Timestamp'].apply(convert_milliseconds_to_time_zone_datetime, timezoned=time_zone)
-    klines.set_index(date_index, inplace=True)
+    klines = klines.set_index(date_index)
 
     repair_decimals = float(10 ** -decimal_positions)
     klines['High'] *= repair_decimals
@@ -718,7 +718,7 @@ def repeat_prices_by_quantity(data: pd.DataFrame, price_col="Price", qty_col='Qu
     return repeated_prices.reshape(-1, 1)
 
 
-def kmeans_custom_init(data: np.ndarray, max_clusters: int):
+def kmeans_custom_init(data: np.ndarray, max_clusters: int) -> np.ndarray:
     """
     Generate initial centroids for K-means clustering with equally spaced values between min and max values in data.
     :param data: A data array.
@@ -799,7 +799,7 @@ def support_resistance_levels(df: pd.DataFrame,
 
             buy_prices = repeat_prices_by_quantity(data=buy_data, price_col="Price", qty_col="qty")
             sell_prices = repeat_prices_by_quantity(data=sell_data, price_col="Price", qty_col="qty")
-            df_.drop(columns=["qty"], inplace=True)
+            df_ = df_.drop(columns=["qty"])
         else:
             buy_prices = buy_data['Price'].values.reshape(-1, 1)
             sell_prices = sell_data['Price'].values.reshape(-1, 1)
@@ -1065,7 +1065,7 @@ def time_active_zones(df: pd.DataFrame,
         return support_levels.flatten().tolist(), []
 
 
-def market_profile_from_klines_melt(df: pd.DataFrame):
+def market_profile_from_klines_melt(df: pd.DataFrame) -> pd.DataFrame:
     """
     Calculate the market profile for a given OHLC data. The function calculates the average price for each candle
     (high + low + close) / 3, and then calculates the 'maker' and 'taker' volumes for each average price.
@@ -1080,7 +1080,7 @@ def market_profile_from_klines_melt(df: pd.DataFrame):
     df_['Maker buy base volume'] = df_['Volume'] - df_['Taker buy base volume']
 
     # Rename the existing 'Volume' column
-    df_.rename(columns={'Volume': 'Total_Volume'}, inplace=True)
+    df_ = df_.rename(columns={'Volume': 'Total_Volume'})
 
     # Melt the dataframe to unpivot the volume columns
     df_melt = df_.melt(id_vars='Market_Profile', value_vars=['Taker buy base volume',
@@ -1095,7 +1095,7 @@ def market_profile_from_klines_melt(df: pd.DataFrame):
     return df_grouped.sort_index(level='Market_Profile')
 
 
-def taker_maker_profile_from_klines_melt(df: pd.DataFrame):
+def taker_maker_profile_from_klines_melt(df: pd.DataFrame) -> pd.DataFrame:
     """
     Calculate the ratio of taker and maker volume for a given OHLC data.
 
@@ -1110,7 +1110,7 @@ def taker_maker_profile_from_klines_melt(df: pd.DataFrame):
     df_['Ratio_Profile'] = df_['Taker buy base volume'] / df_["Volume"]
 
     # Rename the existing 'Volume' column
-    df_.rename(columns={'Volume': 'Total_Volume'}, inplace=True)
+    df_ = df_.rename(columns={'Volume': 'Total_Volume'})
 
     # Melt the dataframe to unpivot the volume columns
     df_melt = df_.melt(id_vars='Ratio_Profile', value_vars=['Taker buy base volume',

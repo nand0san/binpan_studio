@@ -28,7 +28,7 @@ def _plotting():
 class SymbolPlotting:
     """Plotting methods for Symbol."""
 
-    def set_plot_row(self, indicator_column: str = None, row_position: int = None):
+    def set_plot_row(self, indicator_column: str = None, row_position: int = None) -> dict:
         """
         Internal control formatting plots. Can be used to change plot subplot row of an indicator.
 
@@ -93,10 +93,8 @@ class SymbolPlotting:
 
         """
         if fill_mode:
-            try:
-                assert fill_mode == 'tonexty' or fill_mode == 'tozeroy'
-            except Exception:
-                print(f"Fill mode need to be 'tonexty' or 'tozeroy'")
+            if fill_mode not in ('tonexty', 'tozeroy'):
+                binpan_logger.warning("Fill mode need to be 'tonexty' or 'tozeroy'")
                 return self.indicators_filled_mode
         if indicator_column and fill_mode:
             self.indicators_filled_mode.update({indicator_column: fill_mode})
@@ -113,10 +111,8 @@ class SymbolPlotting:
 
         """
         if my_axis_group:
-            try:
-                assert my_axis_group[0] == 'y' and my_axis_group[1:].isnumeric()
-            except Exception:
-                print(f"Axis group name need to be y, y2, y3, etc")
+            if not (my_axis_group[0] == 'y' and (len(my_axis_group) == 1 or my_axis_group[1:].isnumeric())):
+                binpan_logger.warning("Axis group name need to be y, y2, y3, etc")
                 return self.indicators_filled_mode
         if indicator_column and my_axis_group:
             self.axis_groups.update({indicator_column: my_axis_group})
@@ -159,7 +155,7 @@ class SymbolPlotting:
             self.remove_plot_info_for_column(c)
         return list(set(associated_columns))
 
-    def remove_plot_info_for_column(self, column: str):
+    def remove_plot_info_for_column(self, column: str) -> None:
         """
         Remove plot info for a column in main dataframe of klines.
         :param column:
@@ -177,6 +173,82 @@ class SymbolPlotting:
             del self.axis_groups[column]
         if column in self.plot_splitted_serie_couples:
             del self.plot_splitted_serie_couples[column]
+
+    def _prepare_plot_data(self, title, overlapped_indicators, zoom_start_idx, zoom_end_idx, date, date_radio,
+                           support_lines, support_lines_color, resistance_lines, resistance_lines_color):
+        """Prepare filtered data and indicator lists for :meth:`plot`.
+
+        :param str title: Plot title (None to auto-generate).
+        :param list overlapped_indicators: Indicators overlapped on candles.
+        :param zoom_start_idx: Start index for zoom.
+        :param zoom_end_idx: End index for zoom.
+        :param str date: Date string for date-based zoom.
+        :param int date_radio: Number of klines around *date*.
+        :param list support_lines: Support price levels.
+        :param str support_lines_color: Color for support lines.
+        :param list resistance_lines: Resistance price levels.
+        :param str resistance_lines_color: Color for resistance lines.
+        :return: Tuple of (temp_df, title, overlapped_indicators, indicators_series,
+                 indicator_names, indicators_colors, rows_pos, zoomed_plot_splitted_serie_couples).
+        :rtype: tuple
+        """
+        if not overlapped_indicators:
+            overlapped_indicators = []
+        if (zoom_start_idx or zoom_end_idx) and date:
+            raise BinPanException("zoom_start_idx or zoom_end_idx and date are incompatible")
+
+        # --- slice dataframe by zoom or date ---
+        if not date:
+            temp_df = self.df.iloc[zoom_start_idx:zoom_end_idx]
+        else:
+            date_ms = convert_str_date_to_ms(date=date, time_zone=self.time_zone)
+            tick_ms = tick_seconds[self.tick_interval] * 1000
+            start_radio = date_ms - (tick_ms * date_radio)
+            end_radio = date_ms + (tick_ms * date_radio)
+            temp_df = self.df.loc[(self.df['Open timestamp'] >= start_radio) & (self.df['Open timestamp'] <= end_radio)]
+
+        # --- auto-generate title ---
+        if not title:
+            title = temp_df.index.name
+            has_sr = support_lines or resistance_lines or any(c for c in temp_df.columns if c.startswith(("Support", "Resistance")))
+            if has_sr and self.sr_data_source:
+                quality_map = {
+                    "atomic trades": "alta precisión",
+                    "aggregated trades": "precisión media",
+                    "klines": "precisión aproximada",
+                }
+                quality = quality_map.get(self.sr_data_source, self.sr_data_source)
+                title += f" — S/R desde {self.sr_data_source} ({quality})"
+
+        # --- build indicator lists from row_control ---
+        indicators_series = [temp_df[k] for k in self.row_control.keys()]
+        indicator_names = [temp_df[k].name for k in self.row_control.keys()]
+        indicators_colors = [self.color_control[k] for k in self.row_control.keys()]
+        indicators_colors = [c if type(c) == str else _plotting().plotly_colors[c] for c in indicators_colors]
+
+        rows_pos = [self.row_control[k] for k in self.row_control.keys()]
+
+        # --- append support / resistance horizontal lines ---
+        if support_lines:
+            for s_value in support_lines:
+                overlapped_indicators += [pd.Series(index=temp_df.index, data=s_value)]
+                indicator_names += [f"Support {s_value}"]
+                indicators_colors += [support_lines_color]
+        if resistance_lines:
+            for r_value in resistance_lines:
+                overlapped_indicators += [pd.Series(index=temp_df.index, data=r_value)]
+                indicator_names += [f"Resistance {r_value}"]
+                indicators_colors += [resistance_lines_color]
+
+        # --- zoom cloud indicators ---
+        if zoom_start_idx is not None or zoom_end_idx is not None:
+            zoomed_plot_splitted_serie_couples = zoom_cloud_indicators(self.plot_splitted_serie_couples, main_index=list(self.df.index),
+                                                                       start_idx=zoom_start_idx, end_idx=zoom_end_idx)
+        else:
+            zoomed_plot_splitted_serie_couples = self.plot_splitted_serie_couples
+
+        return (temp_df, title, overlapped_indicators, indicators_series,
+                indicator_names, indicators_colors, rows_pos, zoomed_plot_splitted_serie_couples)
 
     def plot(self,
              width: int = 1800,
@@ -199,7 +271,7 @@ class SymbolPlotting:
              resistance_lines: list = None,
              resistance_lines_color: str = 'darkred',
              date: str = None,
-             date_radio: int = 20):
+             date_radio: int = 20) -> str | None:
         """
         Plots a candles figure for the object.
 
@@ -235,54 +307,20 @@ class SymbolPlotting:
              Incompatible with zoom_start_idx and zoom_end_idx. Strings formatted as "2022-05-11 06:45:42"
         :param str date_radio: A radio in klines to plot a zoom around a date.
         """
-        if not overlapped_indicators:
-            overlapped_indicators = []
-        assert not ((zoom_start_idx or zoom_end_idx) and date), "zoom_start_idx or zoom_end_idx and date are incompatible"
-
-        if not date:
-            temp_df = self.df.iloc[zoom_start_idx:zoom_end_idx]
-        else:
-            date_ms = convert_str_date_to_ms(date=date, time_zone=self.time_zone)
-            tick_ms = tick_seconds[self.tick_interval] * 1000
-            start_radio = date_ms - (tick_ms * date_radio)
-            end_radio = date_ms + (tick_ms * date_radio)
-            temp_df = self.df.loc[(self.df['Open timestamp'] >= start_radio) & (self.df['Open timestamp'] <= end_radio)]
-
-        if not title:
-            title = temp_df.index.name
-            has_sr = support_lines or resistance_lines or any(c for c in temp_df.columns if c.startswith(("Support", "Resistance")))
-            if has_sr and self.sr_data_source:
-                quality_map = {
-                    "atomic trades": "alta precisión",
-                    "aggregated trades": "precisión media",
-                    "klines": "precisión aproximada",
-                }
-                quality = quality_map.get(self.sr_data_source, self.sr_data_source)
-                title += f" — S/R desde {self.sr_data_source} ({quality})"
-
-        indicators_series = [temp_df[k] for k in self.row_control.keys()]
-        indicator_names = [temp_df[k].name for k in self.row_control.keys()]
-        indicators_colors = [self.color_control[k] for k in self.row_control.keys()]
-        indicators_colors = [c if type(c) == str else _plotting().plotly_colors[c] for c in indicators_colors]
-
-        rows_pos = [self.row_control[k] for k in self.row_control.keys()]
-
-        if support_lines:
-            for s_value in support_lines:
-                overlapped_indicators += [pd.Series(index=temp_df.index, data=s_value)]
-                indicator_names += [f"Support {s_value}"]
-                indicators_colors += [support_lines_color]
-        if resistance_lines:
-            for r_value in resistance_lines:
-                overlapped_indicators += [pd.Series(index=temp_df.index, data=r_value)]
-                indicator_names += [f"Resistance {r_value}"]
-                indicators_colors += [resistance_lines_color]
-
-        if zoom_start_idx is not None or zoom_end_idx is not None:
-            zoomed_plot_splitted_serie_couples = zoom_cloud_indicators(self.plot_splitted_serie_couples, main_index=list(self.df.index),
-                                                                       start_idx=zoom_start_idx, end_idx=zoom_end_idx)
-        else:
-            zoomed_plot_splitted_serie_couples = self.plot_splitted_serie_couples
+        (temp_df, title, overlapped_indicators, indicators_series,
+         indicator_names, indicators_colors, rows_pos,
+         zoomed_plot_splitted_serie_couples) = self._prepare_plot_data(
+            title=title,
+            overlapped_indicators=overlapped_indicators,
+            zoom_start_idx=zoom_start_idx,
+            zoom_end_idx=zoom_end_idx,
+            date=date,
+            date_radio=date_radio,
+            support_lines=support_lines,
+            support_lines_color=support_lines_color,
+            resistance_lines=resistance_lines,
+            resistance_lines_color=resistance_lines_color,
+        )
         return _plotting().candles_tagged(data=temp_df,
                               width=width,
                               height=height,
@@ -308,15 +346,41 @@ class SymbolPlotting:
                               red_timestamps=self.red_timestamps,
                               blue_timestamps=self.blue_timestamps)
 
+    def _plot_trades_size(self, trades_df, empty_msg: str, trade_type_label: str, max_size: int = 60, height: int = 1000,
+                          logarithmic: bool = False, overlap_prices: bool = True, shifted: int = 1,
+                          title: str = None) -> str | None:
+        """Private helper for plotting trades sized by quantity.
+
+        :param trades_df: DataFrame with trades data.
+        :param str empty_msg: Message to log when trades are empty.
+        :param str trade_type_label: Label like "aggregated" or "atomic" for default title.
+        :param int max_size: Max size for the markers.
+        :param int height: Plot height.
+        :param bool logarithmic: Logarithmic y-axis scale.
+        :param bool overlap_prices: Overlap High/Low price lines.
+        :param int shifted: Shift klines for visual alignment.
+        :param str title: Graph title.
+        """
+        if trades_df.empty:
+            binpan_logger.info(empty_msg)
+            return
+        if not title:
+            title = f"Size {trade_type_label} trade categories {self.symbol}"
+        managed_data = trades_df.copy(deep=True)
+        if overlap_prices:
+            overlap_prices = self.df
+        return _plotting().plot_trades(data=managed_data,
+                                       max_size=max_size,
+                                       height=height,
+                                       logarithmic=logarithmic,
+                                       overlap_prices=overlap_prices,
+                                       shifted=shifted,
+                                       title=title)
+
     def plot_agg_trades_size(self, max_size: int = 60, height: int = 1000, logarithmic: bool = False, overlap_prices: bool = True,
-                             group_big_data: int = None, shifted: int = 1, title: str = None):
+                             group_big_data: int = None, shifted: int = 1, title: str = None) -> str | None:
         """
         It plots a time series graph plotting aggregated trades sized by quantity and color if taker or maker buyer.
-
-        Can be used with trades (requieres calling for trades before, or using candles and volume from the object to avoid
-        waiting long time intervals grabbing the trades.)
-
-        It can be useful finding support and resistance zones.
 
         .. image:: images/plot_trades_size.png
            :width: 1000
@@ -325,90 +389,39 @@ class SymbolPlotting:
         :param int max_size: Max size for the markers. Default is 60. Useful to show whales operating.
         :param int height: Default is 1000.
         :param bool logarithmic: If logarithmic, then "y" axis scale is shown in logarithmic scale.
-        :param int group_big_data: If true, groups data in height bins, this can get faster plotting for big quantity of trades.
+        :param int group_big_data: Deprecated, ignored. Kept for backward compatibility.
         :param bool shifted: If True, shifts prices to plot klines one step to the right, that's more natural to see trades action in price.
         :param bool overlap_prices: If True, plots overlap line with High and Low prices.
-        :param title: Graph title
-
+        :param title: Graph title.
         """
-        if self.agg_trades.empty:
-            binpan_logger.info(empty_agg_trades_msg)
-            return
-        if not title:
-            title = f"Size aggregated trade categories {self.symbol}"
-        managed_data = self.agg_trades.copy(deep=True)
-
-        if overlap_prices:
-            overlap_prices = self.df
-
-        if not group_big_data:
-            return _plotting().plot_trades(data=managed_data,
-                               max_size=max_size,
-                               height=height,
-                               logarithmic=logarithmic,
-                               overlap_prices=overlap_prices,
-                               shifted=shifted,
-                               title=title)
-        else:
-            return _plotting().plot_trades(data=managed_data,
-                               max_size=max_size,
-                               height=height,
-                               logarithmic=logarithmic,
-                               overlap_prices=overlap_prices,
-                               shifted=shifted,
-                               title=title)
+        return self._plot_trades_size(trades_df=self.agg_trades, empty_msg=empty_agg_trades_msg,
+                                      trade_type_label="aggregated", max_size=max_size, height=height,
+                                      logarithmic=logarithmic, overlap_prices=overlap_prices, shifted=shifted,
+                                      title=title)
 
     def plot_atomic_trades_size(self, max_size: int = 60, height: int = 1000, logarithmic: bool = False, overlap_prices: bool = True,
-                                group_big_data: int = None, shifted: int = 1, title: str = None):
+                                group_big_data: int = None, shifted: int = 1, title: str = None) -> str | None:
         """
         It plots a time series graph plotting atomic trades sized by quantity and color if taker or maker buyer.
-
-        Can be used with trades (requieres calling for trades before, or using candles and volume from the object to avoid
-        waiting long time intervals grabbing the trades.)
-
-        It can be useful finding support and resistance zones.
 
         :param int max_size: Max size for the markers. Default is 60. Useful to show whales operating.
         :param int height: Default is 1000.
         :param bool logarithmic: If logarithmic, then "y" axis scale is shown in logarithmic scale.
-        :param int group_big_data: If true, groups data in height bins, this can get faster plotting for big quantity of trades.
+        :param int group_big_data: Deprecated, ignored. Kept for backward compatibility.
         :param bool shifted: If True, shifts prices to plot klines one step to the right, that's more natural to see trades action in price.
         :param bool overlap_prices: If True, plots overlap line with High and Low prices.
-        :param title: Graph title
+        :param title: Graph title.
 
         .. image:: images/plot_trades_size_log.png
            :width: 800
            :alt: Atomic trades size bubble chart
-
         """
-        if self.atomic_trades.empty:
-            binpan_logger.info(empty_atomic_trades_msg)
-            return
-        if not title:
-            title = f"Size atomic trade categories {self.symbol}"
-        managed_data = self.atomic_trades.copy(deep=True)
+        return self._plot_trades_size(trades_df=self.atomic_trades, empty_msg=empty_atomic_trades_msg,
+                                      trade_type_label="atomic", max_size=max_size, height=height,
+                                      logarithmic=logarithmic, overlap_prices=overlap_prices, shifted=shifted,
+                                      title=title)
 
-        if overlap_prices:
-            overlap_prices = self.df
-
-        if not group_big_data:
-            return _plotting().plot_trades(data=managed_data,
-                               max_size=max_size,
-                               height=height,
-                               logarithmic=logarithmic,
-                               overlap_prices=overlap_prices,
-                               shifted=shifted,
-                               title=title)
-        else:
-            return _plotting().plot_trades(data=managed_data,
-                               max_size=max_size,
-                               height=height,
-                               logarithmic=logarithmic,
-                               overlap_prices=overlap_prices,
-                               shifted=shifted,
-                               title=title)
-
-    def plot_reversal(self, min_height: int = None, min_reversal: int = None, text_index: bool = True, from_atomic: bool = False, **kwargs):
+    def plot_reversal(self, min_height: int = None, min_reversal: int = None, text_index: bool = True, from_atomic: bool = False, **kwargs) -> str | None:
         """
         Plots reversal candles. It requires aggregated or atomic trades fetched previously.
 
@@ -482,7 +495,7 @@ class SymbolPlotting:
         self.plotting_volume_ma = window
         binpan_logger.info(f"Plotting volume moving average set to {window}")
 
-    def plot_trades_pie(self, categories: int = 25, logarithmic=True, title: str = None):
+    def plot_trades_pie(self, categories: int = 25, logarithmic=True, title: str = None) -> str | None:
         """
         Plots a pie chart. Useful profiling size of trades. Size can be distributed in a logarithmic scale.
 
@@ -503,7 +516,7 @@ class SymbolPlotting:
         return _plotting().plot_pie(serie=self.agg_trades['Quantity'], categories=categories, logarithmic=logarithmic, title=title)
 
     def plot_aggression_sizes(self, bins=50, hist_funct='sum', height=900, from_trades=False, title: str = None,
-                              total_volume_column: str = None, partial_vol_column: str = None, **kwargs_update_layout):
+                              total_volume_column: str = None, partial_vol_column: str = None, **kwargs_update_layout) -> str | None:
         """
         Binance fees can be cheaper for maker orders, many times when big traders, like whales, are operating . Showing what are doing
         makers.
@@ -562,7 +575,7 @@ class SymbolPlotting:
 
     def plot_market_profile(self, bins: int = 100, hours: int = None, minutes: int = None, startTime: int | str = None,
                             endTime: int | str = None, height=900, from_agg_trades=False, from_atomic_trades=False, title: str = None,
-                            time_zone: str = None, **kwargs_update_layout):
+                            time_zone: str = None, **kwargs_update_layout) -> str | None:
         """
         Plots volume histogram by prices segregated aggressive buyers from sellers.
 
@@ -643,7 +656,7 @@ class SymbolPlotting:
                 _df = _df[_df['Timestamp'] <= endTime]
             binpan_logger.info(f"Using klines data. For deeper info add trades data, example: my_symbol.get_agg_trades()")
             profile = market_profile_from_klines_melt(df=_df)
-            profile.reset_index(inplace=True)
+            profile = profile.reset_index()
             return _plotting().bar_plot(df=profile, x_col_to_bars='Market_Profile', y_col='Volume', bar_segments='Is_Maker', split_colors=True,
                             bins=bins, title=title + " from klines", height=height, y_axis_title='Buy takers VS Buy makers',
                             horizontal_bars=True,
@@ -652,7 +665,7 @@ class SymbolPlotting:
     def plot_trades_scatter(self, x: str = None, y: str = None, dot_symbol='Buyer was maker', color: str = None, marginal=True,
                             from_trades=True, height=1000, color_referenced_to_y=True,
                             # useful to compare volume with taker volume for coloring
-                            **kwargs):
+                            **kwargs) -> str | None:
         """
         A scatter plot showing each price level volume or trades.
 
@@ -704,7 +717,7 @@ class SymbolPlotting:
             return _plotting().plot_scatter(df=data, x_col=x, y_col=y, symbol=dot_symbol, color=color, marginal=marginal, title=title, height=height,
                                 **kwargs)
 
-    def plot_orderbook(self, accumulated=True, title='Depth orderbook plot', height=800, plot_y="Quantity", **kwargs):
+    def plot_orderbook(self, accumulated=True, title='Depth orderbook plot', height=800, plot_y="Quantity", **kwargs) -> str | None:
         """
         Plots orderbook depth.
 
@@ -719,7 +732,7 @@ class SymbolPlotting:
         return _plotting().orderbook_depth(df=self.orderbook, accumulated=accumulated, title=title, height=height, plot_y=plot_y, **kwargs)
 
     def plot_orderbook_density(self, x_col="Price", color='Side', bins=300, histnorm: str = 'density', height: int = 800, title: str = None,
-                               **update_layout_kwargs):
+                               **update_layout_kwargs) -> str | None:
         """
         Plot a distribution plot for a dataframe column. Plots line for kernel distribution.
 
@@ -749,7 +762,7 @@ class SymbolPlotting:
 
     def plot_taker_maker_ratio_profile(self, bins: int = 100, hours: int = None, minutes: int = None, startTime: int | str = None,
                                        endTime: int | str = None, from_agg_trades=False, from_atomic_trades=False, time_zone: str = None,
-                                       title: str = "Taker Buy Ratio Profile", height=1200, width=800, **kwargs_update_layout):
+                                       title: str = "Taker Buy Ratio Profile", height=1200, width=800, **kwargs_update_layout) -> str:
         """
         Plots taker vs maker ratio profile.
 

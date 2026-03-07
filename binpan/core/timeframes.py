@@ -55,7 +55,8 @@ class Timeframe:
         :param limit: Number of candles for the range. Mutually exclusive with hours.
         :param closed: If True, the end is capped to the last closed candle. Default is True.
         """
-        assert not (bool(limit) & bool(hours)), "Either 'hours' or 'limit' can be specified, but not both."
+        if limit and hours:
+            raise ValueError("Either 'hours' or 'limit' can be specified, but not both.")
 
         self.tick_interval = tick_interval
         self.tick_interval_ms = tick_seconds[tick_interval] * 1000 if tick_interval else None
@@ -66,7 +67,8 @@ class Timeframe:
             start, end = self._get_start_end_from_hours_or_limit(
                 start_time=start, end_time=end, limit=limit, hours=hours)
 
-        assert start is not None and end is not None, "Not enough information to create the Timeframe."
+        if start is None or end is None:
+            raise ValueError("Not enough information to create the Timeframe.")
 
         start_ms = _to_ms(start, self.timezone_IANA)
         end_ms = _to_ms(end, self.timezone_IANA)

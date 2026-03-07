@@ -57,7 +57,7 @@ class LogManager:
         self.logger.addHandler(self.file_handler)
 
         # Set level
-        self.level = eval(f"logging.{info_level}")
+        self.level = getattr(logging, info_level)
         self.logger.setLevel(self.level)
 
     def debug(self, msg):

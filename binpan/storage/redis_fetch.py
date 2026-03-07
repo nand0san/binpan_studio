@@ -30,7 +30,7 @@ klines_columns = {"t": "Open timestamp",
                   "B": "Ignore"}
 
 
-def redis_client(ip: str = '127.0.0.1', port: int = 6379, db: int = 0, decode_responses: bool = True, **kwargs):
+def redis_client(ip: str = '127.0.0.1', port: int = 6379, db: int = 0, decode_responses: bool = True, **kwargs) -> StrictRedis:
     """
     A redis consumer client creator for the Redis module.
 
@@ -384,7 +384,7 @@ def push_to_ordered_set(redisClient: StrictRedis,
                         GT=False,
                         CH=True,
                         INCR=False,
-                        ):
+                        ) -> int:
     """
     Pushes elements to the ordered set with a score as index.
 
@@ -595,7 +595,7 @@ def zset_length(redisClient: StrictRedis,
 
 
 def push_line_to_redis(redisClient: StrictRedis,
-                       key: str, data: str):
+                       key: str, data: str) -> int:
     """
     Pushes another line to the end of a list key in redis database.
 
@@ -650,7 +650,7 @@ def fetch_data_in_list(redisClient: StrictRedis,
 def insert_line_before_index_in_list(redisClient: StrictRedis,
                                      key: str,
                                      idx: int,
-                                     value: str):
+                                     value: str) -> None:
     """
     Inserts data before an existing string in a redis list. You need to know the index of the reference value.
 
@@ -759,9 +759,7 @@ def fetch_list_filter_query(redisClient: StrictRedis,
 # pipelines #
 #############
 
-# TODO: actualizar con lo nuevo de binance cache
-
-def execute_pipeline(pipeline: StrictRedis.pipeline):
+def execute_pipeline(pipeline: StrictRedis.pipeline) -> list:
     """
     Executes a pipeline buffer.
 
@@ -790,7 +788,7 @@ def pipe_buffer_ordered_set(pipeline: StrictRedis,
                             GT=False,
                             CH=True,
                             INCR=False,
-                            ):
+                            ) -> StrictRedis.pipeline:
     """
     Fills a pipeline buffer to "pipeline.execute()" later with commands of pushes of elements to an ordered set with a score as index.
 

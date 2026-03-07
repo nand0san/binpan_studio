@@ -3,14 +3,9 @@ import pandas as pd
 
 from .storage.files import select_file, read_csv_to_dataframe, extract_filename_metadata
 from .core.logs import LogManager
+from .core.exceptions import BinPanException
 from .api.market import (convert_to_numeric)
 from .core.time_helper import (pandas_freq_tick_interval, open_from_milliseconds, time_interval)
-
-# from .core.crypto import is_running_in_jupyter
-# if is_running_in_jupyter():
-#     pass
-# else:
-#     pass
 
 binpan_logger = LogManager(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 
@@ -88,23 +83,16 @@ def check_continuity(df: pd.DataFrame, time_zone: str) -> pd.DataFrame:
         return pd.DataFrame()
     dif = df['Open timestamp'].diff().dropna()  # Drop the NaN value for the first row
 
-    try:
-        assert len(dif.value_counts()) == 1, "BinPan Exception: Dataframe has gaps in klines continuity."
+    if len(dif.value_counts()) == 1:
         return pd.DataFrame()
-    except AssertionError:
+    else:
         mask = pd.Series(dif != dif.iloc[0]).reindex(df.index).fillna(False)
         gaps = df.loc[mask, ['Open timestamp', 'Close timestamp']]
 
-        # Convertir los timestamps a un formato más legible
-        # gaps['Open timestamp'] = to_datetime(gaps['Open timestamp'], unit='ms')
-        # gaps['Close timestamp'] = to_datetime(gaps['Close timestamp'], unit='ms')
         gaps['Open timestamp'] = pd.to_datetime(gaps['Open timestamp'], unit='ms', utc=True)
         gaps['Close timestamp'] = pd.to_datetime(gaps['Close timestamp'], unit='ms', utc=True)
         gaps['Open timestamp'] = gaps['Open timestamp'].dt.tz_convert(time_zone)
         gaps['Close timestamp'] = gaps['Close timestamp'].dt.tz_convert(time_zone)
-
-        # También hacer lo mismo para 'dif'
-        # dif_readable = to_datetime(dif[mask].index, unit='ms')
 
         gaps["Gap length"] = gaps["Close timestamp"] - gaps["Open timestamp"]
 
@@ -125,7 +113,7 @@ def find_common_interval_and_generate_timestamps(data: pd.DataFrame, timestamp_c
     :return: A tuple with the most common interval and a list of timestamps that should be present in the dataframe.
     """
     df = data.copy(deep=True)
-    df.sort_values(by=timestamp_col, inplace=True, ascending=True)
+    df = df.sort_values(by=timestamp_col, ascending=True)
     df['Open timestamp diff'] = df[timestamp_col].diff()
     common_interval = int(df['Open timestamp diff'].value_counts().idxmax())
 
@@ -155,7 +143,7 @@ def create_empty_typed_dataframe(index_data: list,
     :return:
     """
     df_ = pd.DataFrame(index=index_data, columns=columns)
-    df_.fillna(0, inplace=True)
+    df_ = df_.fillna(0)
 
     if is_index_data_timestamps:
         df_.index = pd.to_datetime(df_.index, unit='ms')
@@ -179,7 +167,7 @@ def create_empty_typed_dataframe(index_data: list,
                 pass
     # print(type(df_.index))
     # replace zeros with nans
-    df_.replace(0, pd.NA, inplace=True)
+    df_ = df_.replace(0, pd.NA)
     return df_.sort_index(ascending=True)
 
 
@@ -193,7 +181,7 @@ def add_missing_klines(df, expected_timestamps: list[int], timestamp_col="Open t
     :return: DataFrame with missing rows added.
     """
     df_copy = df.copy(deep=True)
-    df_copy.sort_values(by=timestamp_col, inplace=True)
+    df_copy = df_copy.sort_values(by=timestamp_col)
     dtype_dict = df_copy.dtypes.to_dict()
 
     if df_copy.index.tz:
@@ -212,16 +200,15 @@ def add_missing_klines(df, expected_timestamps: list[int], timestamp_col="Open t
                                        is_index_data_timestamps=True)
     df_[timestamp_col] = sorted(missing_timestamps)
 
-    # index_name = df_copy.index.name
     df_copy = pd.concat([df_copy, df_], axis=0, ignore_index=False)
-    # df_copy.index = df_copy['Open time']
-    # df_copy.index.name = index_name
 
     if index_time_zone:
-        assert df_.index.tz.zone == df_copy.index.tz.zone, "BinPan Exception: Time zones are not the same."
+        if df_.index.tz.zone != df_copy.index.tz.zone:
+            raise BinPanException("Time zones are not the same.")
 
-    df_copy.sort_values(by=timestamp_col, inplace=True)
-    assert len(expected_timestamps) == len(df_copy), "BinPan Exception: There are still missing values in the DataFrame."
+    df_copy = df_copy.sort_values(by=timestamp_col)
+    if len(expected_timestamps) != len(df_copy):
+        raise BinPanException("There are still missing values in the DataFrame.")
     return df_copy
 
 

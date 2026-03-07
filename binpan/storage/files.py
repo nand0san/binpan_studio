@@ -195,11 +195,11 @@ def read_csv_to_dataframe(filename: str, col_sep: str = ',', index_col: str = No
             files_logger.warning(f"BinPan Warning: Duplicated index in {filename}")
             # apply sort criterion with second index
             if secondary_index_col:
-                df_.sort_values(by=[index_col, secondary_index_col], inplace=True)
+                df_ = df_.sort_values(by=[index_col, secondary_index_col])
             else:
                 raise BinPanException(f"BinPan Exception: Duplicated index in {filename} and no secondary index provided")
 
-        df_.set_index(index_col, inplace=True, drop=False)
+        df_ = df_.set_index(index_col, drop=False)
 
         if index_time_zone:
             df_.index = pd.to_datetime(df_.index, unit='ms')
@@ -281,17 +281,16 @@ def get_encoded_telegram_secrets() -> tuple:
         importlib.reload(secret_module)
         encoded_telegram_bot_id = secret_module.encoded_telegram_bot_id
         encoded_chat_id = secret_module.encoded_chat_id
-    except Exception:
-        print(f"Telegram bot_id and chat id not found.")
+    except (AttributeError, ImportError, FileNotFoundError):
+        files_logger.info("Telegram bot_id and chat id not found, requesting...")
         fill_telegram_secrets_file()
         try:
             secret_module = import_secret_module()
             importlib.reload(secret_module)
             encoded_telegram_bot_id = secret_module.encoded_telegram_bot_id
             encoded_chat_id = secret_module.encoded_chat_id
-        except Exception:
-            # raise MissingTelegramApiData(f"Telegram bot_id and chat id not found.")
-            files_logger.warning(f"BinPan Warning: Telegram bot_id and chat id not found.")
+        except (AttributeError, ImportError, FileNotFoundError):
+            files_logger.warning("BinPan Warning: Telegram bot_id and chat id not found.")
             encoded_telegram_bot_id, encoded_chat_id = "", ""
     return encoded_telegram_bot_id, encoded_chat_id
 
@@ -301,15 +300,15 @@ def get_encoded_database_secrets() -> str:
         secret_module = import_secret_module()
         importlib.reload(secret_module)
         postgresql_password = secret_module.postgresql_password
-    except Exception:
-        print(f"postgresql_password not found in secret.py.")
+    except (AttributeError, ImportError, FileNotFoundError):
+        files_logger.info("postgresql_password not found in secret.py, requesting...")
         fill_database_secrets_file()
         try:
             secret_module = import_secret_module()
             importlib.reload(secret_module)
             postgresql_password = secret_module.postgresql_password
-        except Exception:
-            files_logger.warning(f"BinPan Warning: PostgreSQL password not found.")
+        except (AttributeError, ImportError, FileNotFoundError):
+            files_logger.warning("BinPan Warning: PostgreSQL password not found.")
             postgresql_password = ""
     return postgresql_password
 

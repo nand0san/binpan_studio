@@ -378,7 +378,7 @@ def parse_candles_to_dataframe(raw_response: list,
             if response_keys != sort_columns:  # json keys from redis different
                 columns = list(klines_api_map_columns.keys())
                 df = pd.DataFrame(raw_response, columns=columns)
-                df.rename(columns=klines_api_map_columns, inplace=True)
+                df = df.rename(columns=klines_api_map_columns)
             else:
                 df = pd.DataFrame(raw_response, columns=columns)
     else:
@@ -405,7 +405,7 @@ def parse_candles_to_dataframe(raw_response: list,
     # if time_index and time_zone:
     if time_zone:
         date_index = df['Open timestamp'].apply(convert_milliseconds_to_time_zone_datetime, timezoned=time_zone)
-        df.set_index(date_index, inplace=True)
+        df = df.set_index(date_index)
         index_name = f"{symbol} {tick_interval} {time_zone}"
         df.index.name = index_name
     else:
@@ -413,7 +413,7 @@ def parse_candles_to_dataframe(raw_response: list,
         df.index.name = index_name
 
     # if came from a loop there are duplicated values in step connections to be removed.
-    df.drop_duplicates(inplace=True)
+    df = df.drop_duplicates()
     return df
 
 
@@ -662,8 +662,8 @@ def get_historical_agg_trades(symbol: str,
         elif end_trade_id and not start_trade_id:
             start_trade_id = end_trade_id - (limit_ids - 1)
 
-        assert start_trade_id <= end_trade_id, (
-            f"BinPan Exception: aggTrades start_trade_id ({start_trade_id}) > end_trade_id ({end_trade_id})")
+        if start_trade_id > end_trade_id:
+            raise BinPanException(f"aggTrades start_trade_id ({start_trade_id}) > end_trade_id ({end_trade_id})")
 
         market_logger.info(f"Obteniendo aggTrades de {symbol} por ID: {start_trade_id} -> {end_trade_id}")
 
@@ -698,8 +698,8 @@ def get_historical_agg_trades(symbol: str,
     elif startTime and not endTime:
         endTime = min(startTime + limit_hours_ms, now_ms)
 
-    assert startTime <= endTime, (
-        f"BinPan Exception: aggTrades startTime ({startTime}) > endTime ({endTime})")
+    if startTime > endTime:
+        raise BinPanException(f"aggTrades startTime ({startTime}) > endTime ({endTime})")
 
     market_logger.info(
         f"Obteniendo aggTrades de {symbol} por tiempo: "
@@ -786,7 +786,7 @@ def parse_agg_trades_to_dataframe(response: list, columns: dict, symbol: str, ti
         return pd.DataFrame(columns=list(columns.values()))
 
     df = pd.DataFrame(response)
-    df.rename(columns=columns, inplace=True)
+    df = df.rename(columns=columns)
     # df.loc[:, 'Buyer was maker'] = df['Buyer was maker'].replace({'Maker buyer': 1, 'Taker buyer': 0})
 
     df = convert_to_numeric(data=df)
@@ -803,14 +803,14 @@ def parse_agg_trades_to_dataframe(response: list, columns: dict, symbol: str, ti
 
     if time_index:
         date_index = timestamps_serie.apply(convert_milliseconds_to_time_zone_datetime, timezoned=time_zone)
-        df.set_index(date_index, inplace=True)
+        df = df.set_index(date_index)
 
     index_name = f"{symbol} {time_zone}"
     df.index.name = index_name
     # df.loc[:, 'Buyer was maker'] = df['Buyer was maker'].astype(bool)
 
     if drop_dupes:
-        df.drop_duplicates(subset=drop_dupes, keep='last', inplace=True)
+        df = df.drop_duplicates(subset=drop_dupes, keep='last')
 
     # return df[['Aggregate tradeId', 'Price', 'Quantity', 'First tradeId', 'Last tradeId', 'Date', 'Timestamp', 'Buyer was maker',
     #            'Best price match']]
@@ -956,8 +956,8 @@ def get_historical_atomic_trades(symbol: str,
         elif end_trade_id and not start_trade_id:
             start_trade_id = end_trade_id - (limit_ids - 1)
 
-        assert start_trade_id <= end_trade_id, (
-            f"BinPan Exception: atomic trades start_trade_id ({start_trade_id}) > end_trade_id ({end_trade_id})")
+        if start_trade_id > end_trade_id:
+            raise BinPanException(f"atomic trades start_trade_id ({start_trade_id}) > end_trade_id ({end_trade_id})")
 
         market_logger.info(f"Obteniendo atomic trades de {symbol} por ID: {start_trade_id} -> {end_trade_id}")
 
@@ -992,8 +992,8 @@ def get_historical_atomic_trades(symbol: str,
     elif startTime and not endTime:
         endTime = min(startTime + limit_hours_ms, now_ms)
 
-    assert startTime <= endTime, (
-        f"BinPan Exception: atomic trades startTime ({startTime}) > endTime ({endTime})")
+    if startTime > endTime:
+        raise BinPanException(f"atomic trades startTime ({startTime}) > endTime ({endTime})")
 
     market_logger.info(
         f"Obteniendo atomic trades de {symbol} por tiempo: "
@@ -1120,7 +1120,7 @@ def parse_atomic_trades_to_dataframe(response: list,
         return pd.DataFrame(columns=list(columns.values()))
 
     df = pd.DataFrame(response)
-    df.rename(columns=columns, inplace=True)
+    df = df.rename(columns=columns)
 
     df = convert_to_numeric(data=df)
 
@@ -1136,13 +1136,13 @@ def parse_atomic_trades_to_dataframe(response: list,
 
     if time_index:
         date_index = timestamps_serie.apply(convert_milliseconds_to_time_zone_datetime, timezoned=time_zone)
-        df.set_index(date_index, inplace=True)
+        df = df.set_index(date_index)
 
     index_name = f"{symbol} {time_zone}"
     df.index.name = index_name
 
     if drop_dupes:
-        df.drop_duplicates(subset=drop_dupes, keep='last', inplace=True)
+        df = df.drop_duplicates(subset=drop_dupes, keep='last')
 
     if 'quoteQty' in columns.keys():
         # return df[['Trade Id', 'Price', 'Quantity', 'Quote quantity', 'Date', 'Timestamp', 'Buyer was maker', 'Best price match']]

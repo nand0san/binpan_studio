@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 
 
-def autocorrelation_coefficient(data: pd.DataFrame):
+def autocorrelation_coefficient(data: pd.DataFrame) -> float:
     """
     Calculate the autocorrelation coefficient of the returns in a pandas DataFrame.
 
@@ -39,7 +39,7 @@ def autocorrelation_coefficient(data: pd.DataFrame):
     return corr
 
 
-def compute_variances(data: pd.DataFrame):
+def compute_variances(data: pd.DataFrame) -> tuple[pd.Series, float]:
     """
     Compute the hourly resampled bars variance and variance of variances for a given OHLC DataFrame.
 
@@ -77,7 +77,7 @@ def compute_variances(data: pd.DataFrame):
     return hourly_returns, hourly_variances
 
 
-def jarque_bera_test(data):
+def jarque_bera_test(data) -> tuple[float, float]:
     """
     Perform the Jarque-Bera test for normality on the returns of an OHLC DataFrame.
 

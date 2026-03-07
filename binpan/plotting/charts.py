@@ -344,6 +344,133 @@ def generate_vertical_shapes(timestamps: list, y0: float, y1: float, color='blue
 # market plotting #
 ###################
 
+
+def _normalize_indicators_params(indicators_series, indicators_colors, indicator_names, rows_pos,
+                                 indicators_color_filled, indicators_filled_mode,
+                                 plot_splitted_serie_couple, axis_groups):
+    """Normalize None defaults, convert DataFrame/Series to lists, and convert lists to dicts.
+
+    :returns: Tuple of (indicators_series, indicators_colors, indicator_names, rows_pos,
+              indicators_color_filled, indicators_filled_mode, plot_splitted_serie_couple, axis_groups).
+    """
+    if plot_splitted_serie_couple is None:
+        plot_splitted_serie_couple = {}
+    if axis_groups is None:
+        axis_groups = {}
+    if indicators_colors is None:
+        indicators_colors = []
+    if indicator_names is None:
+        indicator_names = []
+    if rows_pos is None:
+        rows_pos = []
+    if type(indicators_series) == pd.DataFrame:
+        plot_logger.info(f"Splitting indicators dataframe columns as series: {list(indicators_series.columns)}")
+        indicators_series = [indicators_series[c] for c in indicators_series.columns]
+    elif type(indicators_series) == pd.Series:
+        indicators_series = [indicators_series]
+
+    if not indicators_color_filled and indicators_series:
+        indicators_color_filled = {i.name: None for i in indicators_series}
+    elif type(indicators_color_filled) == list:
+        indicators_color_filled = {s.name: indicators_color_filled[i] for i, s in enumerate(indicators_series)}
+
+    plot_logger.debug(f"candles_ta indicators_color_filled: {indicators_color_filled}")
+
+    if not indicators_filled_mode and indicators_series:
+        indicators_filled_mode = {i.name: None for i in indicators_series}
+    elif type(indicators_filled_mode) == list:
+        indicators_filled_mode = {s.name: indicators_filled_mode[i] for i, s in enumerate(indicators_series)}
+
+    plot_logger.debug(f"candles_ta indicators_filled_mode: {indicators_filled_mode}")
+
+    return (indicators_series, indicators_colors, indicator_names, rows_pos,
+            indicators_color_filled, indicators_filled_mode, plot_splitted_serie_couple, axis_groups)
+
+
+def _prepare_plot_dataframe(data, plot_volume, text_index):
+    """Copy the data DataFrame, optionally rename the volume column, and build text x-labels.
+
+    :returns: Tuple of (df_plot, x_labels).
+    """
+    df_plot = data.copy(deep=True)
+    if type(plot_volume) == str:
+        df_plot = df_plot.rename(columns={plot_volume: 'Volume'})
+
+    if text_index:
+        df_plot.index.name = 'Plot Dates'
+        df_plot = df_plot.reset_index(drop=False)
+        x_labels = df_plot['Plot Dates'].tolist()
+        x_labels = [str(x).split(' ')[1].split('+')[0] for x in x_labels]
+    else:
+        x_labels = None
+
+    return df_plot, x_labels
+
+
+def _infer_indicator_defaults(indicators_series, indicators_colors, indicator_names, rows_pos):
+    """Fill in missing colors, names and row positions with sensible defaults.
+
+    :returns: Tuple of (indicators_series, indicators_colors, indicator_names, rows_pos).
+    """
+    if not indicators_series:
+        indicators_series = []
+
+    if not indicators_colors:
+        indicators_colors = [choice(plotly_colors) for _ in range(len(indicators_series))]
+        if indicators_colors:
+            plot_logger.info(f"Indicators random colors:  indicators_colors={indicators_colors}")
+
+    if not indicator_names:
+        try:
+            indicator_names = [i.name for i in indicators_series]
+        except Exception:
+            indicator_names = [f'Indicator {i}' for i in range(len(indicators_series))]
+    if not rows_pos:
+        rows_pos = [2 for _ in indicators_series]
+        if rows_pos:
+            plot_logger.info(f"Inferred positions, sent all to bottom subplot: rows_pos={rows_pos}")
+
+    return indicators_series, indicators_colors, indicator_names, rows_pos
+
+
+def _validate_indicator_lengths(indicators_series, indicators_colors, indicator_names, rows_pos):
+    """Assert that indicators_series, indicators_colors, indicator_names and rows_pos all have the same length."""
+    try:
+        assert len(indicators_series) == len(indicators_colors), f"Indicators:{len(indicators_series)} mismatch colors" \
+                                                                 f":{len(indicators_colors)}"
+        assert len(indicators_series) == len(indicator_names), f"Indicators:{len(indicators_series)} mismatch names" \
+                                                               f":{len(indicator_names)}"
+        assert len(indicators_series) == len(rows_pos), f"Indicators:{len(indicators_series)} mismatch positions" \
+                                                        f":{len(rows_pos)}"
+    except AssertionError as exc:
+        msg = f"BinPan Exception: {exc}"
+        plot_logger.error(msg)
+        raise AssertionError(msg)
+
+
+def _finalize_and_export_figure(fig, traces, rows, cols, axes, title, yaxis_title, width, height,
+                                range_slider, plot_bgcolor):
+    """Add traces, apply layout, show figure and export to PNG.
+
+    :returns: Path to the exported image or None on failure.
+    """
+    fig = add_traces(fig=fig, list_of_plots=traces, rows=rows, cols=cols)
+
+    fig = set_layout_format(fig=fig, axis_q=axes, title=title, yaxis_title=yaxis_title, width=width, height=height,
+                            range_slider=range_slider)
+
+    if plot_bgcolor:
+        fig.update_layout(plot_bgcolor=plot_bgcolor)
+
+    fig.show()
+    try:
+        fig.write_image("last_plot.png")
+        return os.path.join(os.getcwd(), "last_plot.png")
+    except Exception as exc:
+        plot_logger.error(f"Error writing image: {exc}")
+        return None
+
+
 def candles_ta(data: pd.DataFrame,
                indicators_series: list | pd.DataFrame = None,
                rows_pos=None,
@@ -474,80 +601,23 @@ def candles_ta(data: pd.DataFrame,
      like reversal candles.
 
     """
-    if plot_splitted_serie_couple is None:
-        plot_splitted_serie_couple = {}
-    if axis_groups is None:
-        axis_groups = {}
-    if indicators_colors is None:
-        indicators_colors = []
-    if indicator_names is None:
-        indicator_names = []
-    if rows_pos is None:
-        rows_pos = []
-    if type(indicators_series) == pd.DataFrame:
-        plot_logger.info(f"Splitting indicators dataframe columns as series: {list(indicators_series.columns)}")
-        indicators_series = [indicators_series[c] for c in indicators_series.columns]
-    elif type(indicators_series) == pd.Series:
-        indicators_series = [indicators_series]
+    # --- block 1: normalize indicator parameters ---
+    (indicators_series, indicators_colors, indicator_names, rows_pos,
+     indicators_color_filled, indicators_filled_mode,
+     plot_splitted_serie_couple, axis_groups) = _normalize_indicators_params(
+        indicators_series, indicators_colors, indicator_names, rows_pos,
+        indicators_color_filled, indicators_filled_mode,
+        plot_splitted_serie_couple, axis_groups)
 
-    if not indicators_color_filled and indicators_series:
-        indicators_color_filled = {i.name: None for i in indicators_series}
+    # --- block 2: prepare plot dataframe ---
+    df_plot, x_labels = _prepare_plot_dataframe(data, plot_volume, text_index)
 
-    elif type(indicators_color_filled) == list:
-        indicators_color_filled = {s.name: indicators_color_filled[i] for i, s in enumerate(indicators_series)}
+    # --- block 3: infer missing indicator defaults ---
+    indicators_series, indicators_colors, indicator_names, rows_pos = _infer_indicator_defaults(
+        indicators_series, indicators_colors, indicator_names, rows_pos)
 
-    plot_logger.debug(f"candles_ta indicators_color_filled: {indicators_color_filled}")
-
-    if not indicators_filled_mode and indicators_series:
-        indicators_filled_mode = {i.name: None for i in indicators_series}
-    elif type(indicators_filled_mode) == list:
-        indicators_filled_mode = {s.name: indicators_filled_mode[i] for i, s in enumerate(indicators_series)}
-
-    plot_logger.debug(f"candles_ta indicators_filled_mode: {indicators_filled_mode}")
-
-    # catch data
-    df_plot = data.copy(deep=True)
-    if type(plot_volume) == str:
-        df_plot.rename(columns={plot_volume: 'Volume'}, inplace=True)
-
-    if text_index:
-        df_plot.index.name = 'Plot Dates'
-        df_plot.reset_index(drop=False, inplace=True)
-        x_labels = df_plot['Plot Dates'].tolist()
-        x_labels = [str(x).split(' ')[1].split('+')[0] for x in x_labels]
-    else:
-        x_labels = None
-
-    if not indicators_series:
-        indicators_series = []
-
-    if not indicators_colors:
-        indicators_colors = [choice(plotly_colors) for _ in range(len(indicators_series))]
-        if indicators_colors:
-            plot_logger.info(f"Indicators random colors:  indicators_colors={indicators_colors}")
-
-    if not indicator_names:
-        try:
-            indicator_names = [i.name for i in indicators_series]
-        except Exception:
-            indicator_names = [f'Indicator {i}' for i in range(len(indicators_series))]
-    if not rows_pos:
-        rows_pos = [2 for _ in indicators_series]
-        if rows_pos:
-            plot_logger.info(f"Inferred positions, sent all to bottom subplot: rows_pos={rows_pos}")
-
-    # length control
-    try:
-        assert len(indicators_series) == len(indicators_colors), f"Indicators:{len(indicators_series)} mismatch colors" \
-                                                                 f":{len(indicators_colors)}"
-        assert len(indicators_series) == len(indicator_names), f"Indicators:{len(indicators_series)} mismatch names" \
-                                                               f":{len(indicator_names)}"
-        assert len(indicators_series) == len(rows_pos), f"Indicators:{len(indicators_series)} mismatch positions" \
-                                                        f":{len(rows_pos)}"
-    except AssertionError as exc:
-        msg = f"BinPan Exception: {exc}"
-        plot_logger.error(msg)
-        raise AssertionError(msg)
+    # --- block 4: validate lengths ---
+    _validate_indicator_lengths(indicators_series, indicators_colors, indicator_names, rows_pos)
 
     if plot_volume:
         extra_rows = len(set(rows_pos)) + 1
@@ -690,22 +760,74 @@ def candles_ta(data: pd.DataFrame,
         cols += [1 for _ in range(len(annotation_values))]
         traces += annotations_traces
 
-    # use different traces for cloud indicators
-    fig = add_traces(fig=fig, list_of_plots=traces, rows=rows, cols=cols)
+    # --- block 5: finalize figure and export ---
+    return _finalize_and_export_figure(fig, traces, rows, cols, axes, title, yaxis_title, width, height,
+                                       range_slider, plot_bgcolor)
 
-    fig = set_layout_format(fig=fig, axis_q=axes, title=title, yaxis_title=yaxis_title, width=width, height=height,
-                            range_slider=range_slider)
 
-    if plot_bgcolor:
-        fig.update_layout(plot_bgcolor=plot_bgcolor)
+def _setup_action_markers(data: pd.DataFrame,
+                          actions_col: str,
+                          priced_actions_col: str,
+                          markers_labels: dict | None,
+                          markers: dict | None,
+                          marker_colors: dict | None,
+                          marker_legend_names: dict | None) -> tuple:
+    """Build annotation values, markers, colors, labels and legend names from an actions column.
 
-    fig.show()
+    :param pd.DataFrame data: DataFrame containing the actions column.
+    :param str actions_col: Column name with action tags (e.g. buy/sell). If falsy, returns empty defaults.
+    :param str priced_actions_col: Column used to position markers on the price axis.
+    :param dict markers_labels: Optional user-supplied labels mapping action values to display text.
+    :param dict markers: Optional user-supplied marker symbols per action.
+    :param dict marker_colors: Optional user-supplied marker colors per action.
+    :param dict marker_legend_names: Optional user-supplied legend names per action.
+    :returns: Tuple of (annotations_values, markers, marker_colors, marker_legend_names, markers_labels, labels_locator).
+    :rtype: tuple
+    """
+    annotations_values = []
+
+    if not actions_col:
+        return annotations_values, dict(), dict(), dict(), dict(), []
+
+    actions_data = data[actions_col].dropna()
+    actions = sorted(list(set(actions_data.value_counts().index)))
+
+    if not markers_labels:
+        markers_labels = {i: i for i in actions}
+
     try:
-        fig.write_image("last_plot.png")
-        return os.path.join(os.getcwd(), "last_plot.png")
+        assert len(actions) == len(markers_labels)
+    except AssertionError:
+        raise Exception(f"BinPan Plotting Exception: Length missmatch between types of actions and markers_labels -> "
+                        f"actions={actions} != markers={markers_labels}")
+
+    if not markers:
+        my_markers = ["arrow-bar-down", "arrow-bar-up"]
+        markers = {mark: my_markers[idx % 2] for idx, mark in enumerate(actions)}
+
+    if not marker_colors:
+        my_marker_colors = ['red', 'green', choice(plotly_colors)]
+        marker_colors = {mark: my_marker_colors[idx % 3] for idx, mark in
+                         enumerate(actions)}  # marker_colors = {k: choice(plotly_colors) for k, v in markers_labels.items()}
+
+    if not marker_legend_names:
+        marker_legend_names = {k: str(v)[0].upper() + str(v)[1:].lower() for k, v in markers_labels.items()}
+
+    for action in actions:  # lista de dataframes por cada acción
+        annotations_values.append(data[data[actions_col] == action][priced_actions_col])
+
+    # verify annotations, colors, labels and names
+    try:
+        assert len(markers_labels) == len(markers)
+        assert len(markers_labels) == len(marker_colors)
+        assert len(markers_labels) == len(marker_legend_names)
+
     except Exception as exc:
-        plot_logger.error(f"Error writing image: {exc}")
-        return None
+        raise BinPanException(f"Function candles_tagged: Plotting labels, annotation colors or names not consistent with markers list"
+                              f" length -> {exc}")
+    labels_locator = list(markers_labels.keys())
+
+    return annotations_values, markers, marker_colors, marker_legend_names, markers_labels, labels_locator
 
 
 def candles_tagged(data: pd.DataFrame,
@@ -942,7 +1064,6 @@ def candles_tagged(data: pd.DataFrame,
         indicator_series = []
 
     data_ = data.copy(deep=True)
-    annotations_values = []
 
     if type(fill_control) == list:
         fill_control = {s.name: fill_control[i] for i, s in enumerate(indicator_series)}
@@ -950,50 +1071,14 @@ def candles_tagged(data: pd.DataFrame,
     if type(indicators_filled_mode) == list:
         indicators_filled_mode = {s.name: indicators_filled_mode[i] for i, s in enumerate(indicator_series)}
 
-    if actions_col:  # this trigger all annotation and markers thing
-        actions_data = data_[actions_col].dropna()
-        actions = sorted(list(set(actions_data.value_counts().index)))
-
-        if not markers_labels:
-            markers_labels = {i: i for i in actions}
-
-        try:
-            assert len(actions) == len(markers_labels)
-        except AssertionError:
-            raise Exception(f"BinPan Plotting Exception: Length missmatch between types of actions and markers_labels -> "
-                            f"actions={actions} != markers={markers_labels}")
-
-        if not markers:
-            my_markers = ["arrow-bar-down", "arrow-bar-up"]
-            markers = {mark: my_markers[idx % 2] for idx, mark in enumerate(actions)}
-
-        if not marker_colors:
-            my_marker_colors = ['red', 'green', choice(plotly_colors)]
-            marker_colors = {mark: my_marker_colors[idx % 3] for idx, mark in
-                             enumerate(actions)}  # marker_colors = {k: choice(plotly_colors) for k, v in markers_labels.items()}
-
-        if not marker_legend_names:
-            marker_legend_names = {k: str(v)[0].upper() + str(v)[1:].lower() for k, v in markers_labels.items()}
-
-        for action in actions:  # lista de dataframes por cada acción
-            annotations_values.append(data_[data_[actions_col] == action][priced_actions_col])
-
-        # verify annotations, colors, labels and names
-        try:
-            assert len(markers_labels) == len(markers)
-            assert len(markers_labels) == len(marker_colors)
-            assert len(markers_labels) == len(marker_legend_names)
-
-        except Exception as exc:
-            raise BinPanException(f"Function candles_tagged: Plotting labels, annotation colors or names not consistent with markers list"
-                                  f" length -> {exc}")
-        labels_locator = list(markers_labels.keys())
-    else:
-        markers_labels = dict()
-        markers = dict()
-        marker_colors = dict()
-        marker_legend_names = dict()
-        labels_locator = []
+    annotations_values, markers, marker_colors, marker_legend_names, markers_labels, labels_locator = _setup_action_markers(
+        data=data_,
+        actions_col=actions_col,
+        priced_actions_col=priced_actions_col,
+        markers_labels=markers_labels,
+        markers=markers,
+        marker_colors=marker_colors,
+        marker_legend_names=marker_legend_names)
 
     # indicator allocating rows
     rows_pos_final = []
@@ -1017,7 +1102,7 @@ def candles_tagged(data: pd.DataFrame,
             for i, ind in enumerate(indicator_series):
                 try:
                     indicator_names.append(ind.name)
-                except:
+                except (AttributeError, TypeError):
                     indicator_names.append(f'Indicator_{i}')
 
     return candles_ta(data_,
