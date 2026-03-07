@@ -13,7 +13,6 @@ from panzer import BinancePublicClient
 
 from ..core.exceptions import BinPanException
 from ..core.logs import LogManager
-from .auth import semi_signed_get
 from ..core.time_helper import (tick_seconds, convert_milliseconds_to_str, convert_ms_column_to_datetime_with_zone,
                           convert_milliseconds_to_utc_string, convert_datetime_to_string, open_from_milliseconds, next_open_by_milliseconds,
                           convert_milliseconds_to_time_zone_datetime)
@@ -135,57 +134,20 @@ def get_candles_by_time_stamps(symbol: str,
     """
     Calls API for a candles list using one or two timestamps, starting and ending.
 
-    In case the limit is passed and exceeded by requested time intervals, the start_time prevails over the end_time,
-    start_time must come in milliseconds from epoch.
-
-    In case of two timeStamps as arguments, limit is ignored and a loop is performed to get all candles in the range.
-
-    The API rounds the startTime up to the next open of the next candle. That is, it does not include the candle in which there is
-    that timeStamp, but the next candle of the corresponding tick_interval, except in case it exactly matches the value of an open
-    timestamp, in which case it will include it in the return.
-
-    The indicated endTime will include the candlestick that timestamp is on. It should be in milliseconds. It can be a not closed one if
-    is open right in between the endtime timestamp. API is inclusive in this case.
-
-    If no timestamps are passed, the last quantity candlesticks up to limit count are returned.
+    Delegates pagination to panzer's ``klines_range`` method.
 
     :param str symbol: A binance valid symbol.
     :param str tick_interval: A binance valid time interval for candlesticks.
     :param int start_time: A timestamp in milliseconds from epoch.
     :param int end_time: A timestamp in milliseconds from epoch.
     :param int limit: Count of candles to ask for.
-    :param str time_zone: Just used for exception errors.
+    :param str time_zone: Just used for logging.
     :return list: Returns a list from the Binance API.
-
-    .. note::    By default unique API response is inclusive for start_time and end_time, IF LESS than 1000 limit applied.
-
-    .. code-block::
-
-        [
-          [
-            1499040000000,      // Open time
-            "0.01634790",       // Open
-            "0.80000000",       // High
-            "0.01575800",       // Low
-            "0.01577100",       // Close
-            "148976.11427815",  // Volume
-            1499644799999,      // Close time
-            "2434.19055334",    // Quote asset volume
-            308,                // Number of trades
-            "1756.87402397",    // Taker buy base asset volume
-            "28.46694368",      // Taker buy quote asset volume
-            "17928899.62484339" // Ignore.
-          ]
-        ]
-
     """
-    endpoint = '/api/v3/klines?'
     tick_milliseconds = int(tick_seconds[tick_interval] * 1000)
-    # limit = min(limit, 1000)
-    limit = (end_time - start_time) // tick_milliseconds
 
     if not start_time and not end_time:
-        end_time = int(time()) * 1000  # la api traería la ultima vela cerrada
+        end_time = int(time()) * 1000
         start_time = end_time - ((limit - 1) * tick_milliseconds)
         start_time = open_from_milliseconds(ms=start_time, tick_interval=tick_interval)
 
@@ -194,7 +156,7 @@ def get_candles_by_time_stamps(symbol: str,
         start_time = open_from_milliseconds(ms=start_time, tick_interval=tick_interval)
 
     elif start_time and not end_time:
-        end_time = start_time + ((limit - 1) * tick_milliseconds)  # end time is included
+        end_time = start_time + ((limit - 1) * tick_milliseconds)
         end_time = open_from_milliseconds(ms=end_time, tick_interval=tick_interval)
 
     end_time = min(end_time,
@@ -205,54 +167,17 @@ def get_candles_by_time_stamps(symbol: str,
     end_string = convert_milliseconds_to_str(ms=end_time, timezoned=time_zone)
 
     market_logger.info(f"get_candles_by_time_stamps -> symbol={symbol} tick_interval={tick_interval} start={start_string} end="
-                       f"{end_string} limit={limit}")
+                       f"{end_string}")
 
     client = _get_panzer()
-
-    # preparar bloques de 1000 velas
-    now_ms = int(1000 * time())
-    loop_limit = min(limit, 1000)
-    ranges = [(i, min(i + (1000 * tick_milliseconds), now_ms, end_time))
-              for i in range(start_time, end_time, tick_milliseconds * 1000)]
-
-    if len(ranges) == 1:
-        # petición única, sin overhead de paralelización
-        start, end = ranges[0]
-        raw_candles = client.klines(symbol=symbol, interval=tick_interval, start_time=start, end_time=end, limit=loop_limit)
-    else:
-        # peticiones en paralelo con panzer 2.2.0
-        jobs = [
-            (f'/api/v3/klines', {'symbol': symbol.upper(), 'interval': tick_interval,
-                                 'startTime': start, 'endTime': end, 'limit': loop_limit})
-            for start, end in ranges
-        ]
-        market_logger.info(f"Lanzando {len(jobs)} peticiones de klines en paralelo para {symbol}")
-        results = client.parallel_get(jobs)
-        raw_candles = []
-        for i, response in enumerate(results):
-            if response:
-                raw_candles += response
+    raw_candles = client.klines_range(symbol=symbol, interval=tick_interval, start_time=start_time, end_time=end_time)
 
     if not raw_candles:
         msg = (f"BinPan: Missing in API requested klines for {symbol.lower()}@kline_{tick_interval} between {start_string} "
                f"and {end_string}")
         market_logger.warning(msg)
-        return []
 
-    # descarta sobrantes
-    overtime_candle_ts = next_open_by_milliseconds(ms=end_time, tick_interval=tick_interval)
-
-    if type(raw_candles[0]) is list:
-        raw_candles_ = [i for i in raw_candles if int(i[0]) < overtime_candle_ts]
-    else:
-        open_ts_key = list(raw_candles[0].keys())[0]
-        raw_candles_ = [i for i in raw_candles if int(i[open_ts_key]) < overtime_candle_ts]
-
-    if len(raw_candles) != len(raw_candles_):
-        market_logger.info(f"Pruned not closed or overtime candles {len(raw_candles) - len(raw_candles_)} candles from API response for {symbol} "
-                           f"{tick_interval}")
-
-    return raw_candles_
+    return raw_candles
 
 
 def get_historical_candles(symbol: str,
@@ -576,9 +501,8 @@ def get_aggregated_trades(symbol: str, fromId: int = None, limit: int = None, de
         ]
     """
 
-    endpoint = '/api/v3/aggTrades'
-    query = {'symbol': symbol, 'limit': limit, 'fromId': fromId}
-    return semi_signed_get(endpoint=endpoint, decimal_mode=decimal_mode, params=query)
+    client = _get_panzer()
+    return client.agg_trades(symbol=symbol, from_id=fromId, limit=limit or 500)
 
 
 def get_aggregated_trades_by_time(symbol: str, startTime: int, endTime: int, limit: int = 1000) -> list[dict]:
@@ -705,56 +629,8 @@ def get_historical_agg_trades(symbol: str,
         f"Obteniendo aggTrades de {symbol} por tiempo: "
         f"{convert_milliseconds_to_utc_string(startTime)} -> {convert_milliseconds_to_utc_string(endTime)}")
 
-    # construir chunks de 1 hora
-    chunks = []
-    chunk_start = startTime
-    while chunk_start < endTime:
-        chunk_end = min(chunk_start + ONE_HOUR_MS, endTime)
-        chunks.append((chunk_start, chunk_end))
-        chunk_start = chunk_end + 1
-
-    # lanzar primer batch de cada chunk en paralelo
     client = _get_panzer()
-    if len(chunks) == 1:
-        # petición única
-        first_batches = [get_aggregated_trades_by_time(symbol, chunks[0][0], chunks[0][1])]
-    else:
-        jobs = [
-            ('/api/v3/aggTrades', {'symbol': symbol.upper(), 'startTime': cs, 'endTime': ce, 'limit': 1000})
-            for cs, ce in chunks
-        ]
-        market_logger.info(f"Lanzando {len(jobs)} peticiones de aggTrades en paralelo para {symbol}")
-        first_batches = client.parallel_get(jobs)
-
-    all_trades = []
-    requests_cnt = len(chunks)
-
-    for i, batch in enumerate(first_batches):
-        if not batch:
-            continue
-        all_trades.extend(batch)
-
-        # sub-paginar dentro de la hora si hay >=1000 trades (secuencial, depende de IDs)
-        if len(batch) == 1000:
-            chunk_end = chunks[i][1]
-            while True:
-                sub_start = batch[-1]['T'] + 1
-                if sub_start > chunk_end:
-                    break
-                batch = get_aggregated_trades_by_time(symbol, sub_start, chunk_end)
-                requests_cnt += 1
-                if not batch:
-                    break
-                all_trades.extend(batch)
-                if len(batch) < 1000:
-                    break
-
-    market_logger.info(f"aggTrades {symbol}: {requests_cnt} peticiones, {len(all_trades)} trades obtenidos")
-
-    # deduplicar O(n) por campo 'a'
-    seen = set()
-    result = [t for t in all_trades if t[id_field] not in seen and not seen.add(t[id_field])]
-    return sorted(result, key=lambda x: x[id_field])
+    return client.agg_trades_range(symbol=symbol, start_time=startTime, end_time=endTime)
 
 
 def parse_agg_trades_to_dataframe(response: list, columns: dict, symbol: str, time_zone: str = None, time_index: bool = None,
@@ -889,9 +765,9 @@ def get_atomic_trades(symbol: str,
         ]
     """
 
-    endpoint = '/api/v3/historicalTrades'
-    query = {'symbol': symbol, 'limit': limit, 'fromId': fromId}
-    return semi_signed_get(endpoint=endpoint, decimal_mode=decimal_mode, params=query)
+    from .auth import _get_binance_client
+    client = _get_binance_client()
+    return client.historical_trades(symbol=symbol, from_id=fromId, limit=limit or 1000)
 
 
 def get_historical_atomic_trades(symbol: str,
@@ -999,74 +875,9 @@ def get_historical_atomic_trades(symbol: str,
         f"Obteniendo atomic trades de {symbol} por tiempo: "
         f"{convert_milliseconds_to_utc_string(startTime)} -> {convert_milliseconds_to_utc_string(endTime)}")
 
-    # descubrir rango de IDs atómicos usando aggTrades (peso 4, barato)
-    # primer aggTrade en startTime
-    search_end = min(startTime + ONE_HOUR_MS, endTime)
-    first_agg = get_aggregated_trades_by_time(symbol, startTime, search_end, limit=1)
-
-    # si no hay trades en la primera hora, ampliar progresivamente
-    if not first_agg:
-        probe_start = search_end
-        while probe_start < endTime:
-            probe_end = min(probe_start + ONE_HOUR_MS, endTime)
-            first_agg = get_aggregated_trades_by_time(symbol, probe_start, probe_end, limit=1)
-            if first_agg:
-                break
-            probe_start = probe_end
-        if not first_agg:
-            market_logger.warning(f"No se encontraron aggTrades para {symbol} en el rango solicitado")
-            return []
-
-    first_atomic_id = first_agg[0]['f']  # campo 'f' = primer ID atómico del aggTrade
-
-    # último aggTrade en endTime
-    search_start = max(startTime, endTime - ONE_HOUR_MS)
-    last_agg = get_aggregated_trades_by_time(symbol, search_start, endTime, limit=1000)
-
-    # si la última hora no tiene datos, buscar hacia atrás
-    if not last_agg:
-        probe_end = search_start
-        while probe_end > startTime:
-            probe_start = max(probe_end - ONE_HOUR_MS, startTime)
-            last_agg = get_aggregated_trades_by_time(symbol, probe_start, probe_end, limit=1000)
-            if last_agg:
-                break
-            probe_end = probe_start
-        if not last_agg:
-            market_logger.warning(f"No se encontraron aggTrades para {symbol} en el rango solicitado")
-            return []
-
-    last_atomic_id = last_agg[-1]['l']  # campo 'l' = último ID atómico del aggTrade
-
-    market_logger.info(
-        f"Rango de IDs atómicos descubierto para {symbol}: {first_atomic_id} -> {last_atomic_id} "
-        f"(estimado {last_atomic_id - first_atomic_id + 1} trades)")
-
-    # paginar forward con /api/v3/historicalTrades
-    all_trades = []
-    current_id = first_atomic_id
-    requests_cnt = 0
-
-    while current_id <= last_atomic_id:
-        batch = get_atomic_trades(symbol=symbol, fromId=current_id, limit=1000)
-        requests_cnt += 1
-        if not batch:
-            break
-        all_trades.extend(batch)
-        current_id = batch[-1][id_field] + 1
-        market_logger.info(f"Peticiones API atomic trades {symbol}: {requests_cnt} (ID actual: {current_id})")
-        if len(batch) < 1000:
-            break
-
-    market_logger.info(f"Atomic trades {symbol}: {requests_cnt} peticiones, {len(all_trades)} trades obtenidos")
-
-    # filtrar por timestamp [startTime, endTime] y deduplicar O(n) por 'id'
-    seen = set()
-    result = [t for t in all_trades
-              if startTime <= t[timestamp_field] <= endTime
-              and t[id_field] not in seen
-              and not seen.add(t[id_field])]
-    return sorted(result, key=lambda x: x[id_field])
+    from .auth import _get_binance_client
+    client = _get_binance_client()
+    return client.trades_range(symbol=symbol, start_time=startTime, end_time=endTime)
 
 
 def parse_atomic_trades_to_dataframe(response: list,
