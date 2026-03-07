@@ -104,13 +104,11 @@ def telegram_parse_dict(msg_data: dict, order: str = None, timezone="Europe/Madr
 
     def downcast_value(value):
         try:
-            assert int(value) == float(value)
-            return int(value)
-        except:
-            try:
-                return float(value)
-            except (ValueError, TypeError):
-                return value
+            if int(value) == float(value):
+                return int(value)
+            return float(value)
+        except (ValueError, TypeError, OverflowError):
+            return value
 
     formatted_dict = {}
     for k, v in msg_data.items():

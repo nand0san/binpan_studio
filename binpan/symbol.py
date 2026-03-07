@@ -3,10 +3,9 @@
 This is the main classes file.
 
 """
-__version__ = "0.9.1"
+__version__ = "0.9.2"
 
 import os
-from sys import path
 import pandas as pd
 
 from random import choice
@@ -21,7 +20,7 @@ from .api.exchange_info import (get_decimal_positions, get_info_dic, get_precisi
                                get_symbols_filters)
 from .storage.files import select_file, read_csv_to_dataframe, save_dataframe_to_csv, extract_filename_metadata
 
-from .analysis.indicators import (df_splitter, reversal_candles)
+from .analysis.indicators import reversal_candles
 
 from .core.logs import LogManager
 
@@ -52,11 +51,6 @@ from .core.timeframes import Timeframe
 
 binpan_logger = LogManager(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 version = __version__
-
-pd.set_option('display.max_columns', 30)
-pd.set_option('display.width', 250)
-pd.set_option('display.min_rows', 10)
-pd.set_option('display.max_rows', 12)
 
 empty_agg_trades_msg = "Empty trades, please request using: get_agg_trades() method: Example: my_symbol.get_agg_trades()"
 empty_atomic_trades_msg = "Empty atomic trades, please request using: get_atomic_trades() method: Example: my_symbol.get_atomic_trades()"
@@ -285,24 +279,12 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
 
         # set de rutas
         self.cwd = os.getcwd()
-        path.append(self.cwd)
 
         # parámetros principales
         self.symbol = symbol.upper() if symbol else ""
 
         if from_csv:
-            (self.df,
-             self.symbol,
-             self.tick_interval,
-             self.time_zone,
-             self.start_time,
-             self.end_time,
-             self.closed,
-             self.limit) = csv_klines_setup(from_csv=from_csv,
-                                            symbol=self.symbol,
-                                            tick_interval=self.tick_interval,
-                                            cwd=self.cwd,
-                                            time_zone=self.time_zone)
+            self._init_from_csv(from_csv=from_csv)
         else:
             ##############
             # timestamps #
@@ -329,81 +311,20 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
             self.hours = self.timeframe.get_hours()
             self.time_zone = str(self.timeframe.timezone_IANA)
 
-            # self.start_time, self.end_time = setup_startime_endtime(start_time=start_time,
-            #                                                         end_time=end_time,
-            #                                                         time_zone=self.time_zone,
-            #                                                         hours=self.hours,
-            #                                                         closed=self.closed,
-            #                                                         tick_interval=self.tick_interval,
-            #                                                         limit=self.limit)
-
             # database
-            if postgres_klines or postgres_agg_trades or postgres_atomic_trades:
-
-                import binpan.postgresql as postgresql
-                from secret import (postgresql_port, postgresql_user, postgresql_database)
-
-                if postgres_klines:
-                    if type(postgres_klines) == str:
-                        binpan_logger.info(f"Postgres connection requested: {postgres_klines}")
-                        postgresql_host_klines = postgres_klines
-                    else:
-                        from secret import postgresql_host_klines
-                    self.connection_klines, self.cursor_klines = postgresql.setup(symbol=self.symbol,
-                                                                                  tick_interval=self.tick_interval,
-                                                                                  postgresql_host=postgresql_host_klines,
-                                                                                  postgresql_user=postgresql_user,
-                                                                                  postgresql_database=postgresql_database,
-                                                                                  postgres_klines=True,
-                                                                                  postgres_agg_trades=False,
-                                                                                  postgres_atomic_trades=False,
-                                                                                  postgresql_port=postgresql_port)
-                if postgres_agg_trades:
-                    if type(postgres_agg_trades) == str:
-                        postgresql_host_aggTrades = postgres_agg_trades
-                    else:
-                        from secret import postgresql_host_aggTrades
-                    self.connection_agg_trades, self.cursor_agg_trades = postgresql.setup(symbol=self.symbol,
-                                                                                          tick_interval=self.tick_interval,
-                                                                                          postgresql_host=postgresql_host_aggTrades,
-                                                                                          postgresql_user=postgresql_user,
-                                                                                          postgresql_database=postgresql_database,
-                                                                                          postgres_klines=False,
-                                                                                          postgres_agg_trades=True,
-                                                                                          postgres_atomic_trades=False,
-                                                                                          postgresql_port=postgresql_port)
-                if postgres_atomic_trades:
-                    if type(postgres_atomic_trades) == str:
-                        postgresql_host_trades = postgres_atomic_trades
-                    else:
-                        from secret import postgresql_host_trades
-                    self.connection_atomic_trades, self.cursor_atomic_trades = postgresql.setup(symbol=self.symbol,
-                                                                                                tick_interval=self.tick_interval,
-                                                                                                postgresql_host=postgresql_host_trades,
-                                                                                                postgresql_user=postgresql_user,
-                                                                                                postgresql_database=postgresql_database,
-                                                                                                postgres_klines=False,
-                                                                                                postgres_agg_trades=False,
-                                                                                                postgres_atomic_trades=True,
-                                                                                                postgresql_port=postgresql_port)
-            else:
-                self.connection_klines, self.cursor_klines = None, None
+            self._init_postgres_connections(postgres_klines=postgres_klines,
+                                            postgres_agg_trades=postgres_agg_trades,
+                                            postgres_atomic_trades=postgres_atomic_trades)
 
         self.postgres_klines = postgres_klines
         self.postgres_agg_trades = postgres_agg_trades
         self.postgres_atomic_trades = postgres_atomic_trades
 
         # pandas visualization settings
-        self.display_max_columns = display_columns
-        # self.display_min_columns = 10
-        self.display_max_rows = display_max_rows
-        self.display_min_rows = display_min_rows
-        self.display_width = display_width
-        self.set_display_max_columns(self.display_max_columns)
-        # self.set_display_min_columns(self.display_min_columns)  # no existe este método en pandas
-        self.set_display_width(self.display_width)
-        self.set_display_min_rows(self.display_min_rows)
-        self.set_display_max_rows(self.display_max_rows)
+        self._init_display_settings(display_columns=display_columns,
+                                    display_max_rows=display_max_rows,
+                                    display_min_rows=display_min_rows,
+                                    display_width=display_width)
 
         # indicators and relevant data initialization #
 
@@ -449,32 +370,8 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
         # query candles #
         #################
 
-        if not from_csv and not self.postgres_klines:
-            self.raw = get_candles_by_time_stamps(symbol=self.symbol,
-                                                  tick_interval=self.tick_interval,
-                                                  start_time=self.start_time,
-                                                  end_time=self.end_time,
-                                                  limit=self.limit)
-
-            self.df = parse_candles_to_dataframe(raw_response=self.raw,
-                                                 columns=self.original_columns,
-                                                 time_cols=self.time_cols,
-                                                 symbol=self.symbol,
-                                                 tick_interval=self.tick_interval,
-                                                 time_zone=self.time_zone)
-        elif self.postgres_klines:
-            import binpan.postgresql as postgresql  # solo para pycharm
-            self.table = postgresql.sanitize_table_name(f"{self.symbol.lower()}@kline_{self.tick_interval}")
-            self.df = postgresql.get_data_and_parse(cursor=self.cursor_klines,
-                                                    table=self.table,
-                                                    symbol=self.symbol,
-                                                    tick_interval=self.tick_interval,
-                                                    time_zone=self.time_zone,
-                                                    start_time=self.start_time,
-                                                    end_time=self.end_time,
-                                                    data_type='kline')
-        else:
-            self.raw = None
+        if not from_csv:
+            self._init_from_api()
 
         # update timestamps from data
         self.timestamps = self.get_timestamps()
@@ -494,8 +391,8 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
                 binpan_logger.warning(f"Error trying get_info_dic() from API: {e}")
                 self.info_dic = dict()
         else:
-            assert type(info_dic) == dict, "info_dic must be a dictionary"
-            assert len(info_dic) > 0, "info_dic must be a dictionary with data"
+            if not isinstance(info_dic, dict) or len(info_dic) == 0:
+                raise BinPanException("info_dic must be a non-empty dictionary")
             self.info_dic = info_dic
 
         try:
@@ -534,6 +431,125 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
         # check api continuity data and notify to user
         self.discontinuities = check_continuity(df=self.df, time_zone=self.time_zone)
 
+    # ------------------------------------------------------------------ #
+    #  __init__ helpers                                                    #
+    # ------------------------------------------------------------------ #
+
+    def _init_from_csv(self, from_csv: bool | str) -> None:
+        """Load kline data from a CSV file and set instance attributes."""
+        (self.df,
+         self.symbol,
+         self.tick_interval,
+         self.time_zone,
+         self.start_time,
+         self.end_time,
+         self.closed,
+         self.limit) = csv_klines_setup(from_csv=from_csv,
+                                        symbol=self.symbol,
+                                        tick_interval=self.tick_interval,
+                                        cwd=self.cwd,
+                                        time_zone=self.time_zone)
+
+    def _init_from_api(self) -> None:
+        """Fetch candle data from API or PostgreSQL and build the DataFrame."""
+        if not self.postgres_klines:
+            self.raw = get_candles_by_time_stamps(symbol=self.symbol,
+                                                  tick_interval=self.tick_interval,
+                                                  start_time=self.start_time,
+                                                  end_time=self.end_time,
+                                                  limit=self.limit)
+
+            self.df = parse_candles_to_dataframe(raw_response=self.raw,
+                                                 columns=self.original_columns,
+                                                 time_cols=self.time_cols,
+                                                 symbol=self.symbol,
+                                                 tick_interval=self.tick_interval,
+                                                 time_zone=self.time_zone)
+        elif self.postgres_klines:
+            import binpan.postgresql as postgresql  # solo para pycharm
+            self.table = postgresql.sanitize_table_name(f"{self.symbol.lower()}@kline_{self.tick_interval}")
+            self.df = postgresql.get_data_and_parse(cursor=self.cursor_klines,
+                                                    table=self.table,
+                                                    symbol=self.symbol,
+                                                    tick_interval=self.tick_interval,
+                                                    time_zone=self.time_zone,
+                                                    start_time=self.start_time,
+                                                    end_time=self.end_time,
+                                                    data_type='kline')
+        else:
+            self.raw = None
+
+    def _init_postgres_connections(self,
+                                   postgres_klines: bool | str,
+                                   postgres_agg_trades: bool | str,
+                                   postgres_atomic_trades: bool | str) -> None:
+        """Set up PostgreSQL connections for klines, agg trades and atomic trades."""
+        if postgres_klines or postgres_agg_trades or postgres_atomic_trades:
+
+            import binpan.postgresql as postgresql
+            from secret import (postgresql_port, postgresql_user, postgresql_database)
+
+            if postgres_klines:
+                if type(postgres_klines) == str:
+                    binpan_logger.info(f"Postgres connection requested: {postgres_klines}")
+                    postgresql_host_klines = postgres_klines
+                else:
+                    from secret import postgresql_host_klines
+                self.connection_klines, self.cursor_klines = postgresql.setup(symbol=self.symbol,
+                                                                              tick_interval=self.tick_interval,
+                                                                              postgresql_host=postgresql_host_klines,
+                                                                              postgresql_user=postgresql_user,
+                                                                              postgresql_database=postgresql_database,
+                                                                              postgres_klines=True,
+                                                                              postgres_agg_trades=False,
+                                                                              postgres_atomic_trades=False,
+                                                                              postgresql_port=postgresql_port)
+            if postgres_agg_trades:
+                if type(postgres_agg_trades) == str:
+                    postgresql_host_aggTrades = postgres_agg_trades
+                else:
+                    from secret import postgresql_host_aggTrades
+                self.connection_agg_trades, self.cursor_agg_trades = postgresql.setup(symbol=self.symbol,
+                                                                                      tick_interval=self.tick_interval,
+                                                                                      postgresql_host=postgresql_host_aggTrades,
+                                                                                      postgresql_user=postgresql_user,
+                                                                                      postgresql_database=postgresql_database,
+                                                                                      postgres_klines=False,
+                                                                                      postgres_agg_trades=True,
+                                                                                      postgres_atomic_trades=False,
+                                                                                      postgresql_port=postgresql_port)
+            if postgres_atomic_trades:
+                if type(postgres_atomic_trades) == str:
+                    postgresql_host_trades = postgres_atomic_trades
+                else:
+                    from secret import postgresql_host_trades
+                self.connection_atomic_trades, self.cursor_atomic_trades = postgresql.setup(symbol=self.symbol,
+                                                                                            tick_interval=self.tick_interval,
+                                                                                            postgresql_host=postgresql_host_trades,
+                                                                                            postgresql_user=postgresql_user,
+                                                                                            postgresql_database=postgresql_database,
+                                                                                            postgres_klines=False,
+                                                                                            postgres_agg_trades=False,
+                                                                                            postgres_atomic_trades=True,
+                                                                                            postgresql_port=postgresql_port)
+        else:
+            self.connection_klines, self.cursor_klines = None, None
+
+    def _init_display_settings(self,
+                               display_columns: int,
+                               display_max_rows: int,
+                               display_min_rows: int,
+                               display_width: int) -> None:
+        """Configure pandas display options."""
+        self.display_max_columns = display_columns
+        self.display_max_rows = display_max_rows
+        self.display_min_rows = display_min_rows
+        self.display_width = display_width
+        self.set_display_max_columns(self.display_max_columns)
+        self.set_display_width(self.display_width)
+        self.set_display_min_rows(self.display_min_rows)
+        self.set_display_max_rows(self.display_max_rows)
+
     def __repr__(self):
         return str(self.df)
 
@@ -541,68 +557,52 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
     # Show variables #
     ##################
 
-    def save_csv(self, timestamped_filename: bool = True):
+    def _save_dataframe_csv(self, df: pd.DataFrame, data_type: str,
+                            empty_message: str | None, timestamped_filename: bool) -> None:
+        """Internal helper that builds the filename and delegates to :func:`save_dataframe_to_csv`."""
+        if empty_message and df.empty:
+            binpan_logger.info(empty_message)
+            return
+        if timestamped_filename:
+            start, end = self.get_timestamps()
+            filename = f"{df.index.name.replace('/', '-')} {data_type} {start} {end}.csv"
+        else:
+            filename = f"{df.index.name.replace('/', '-')} {data_type}.csv"
+        save_dataframe_to_csv(filename=filename, data=df, timestamp=not timestamped_filename)
+        binpan_logger.info(f"Saved file {filename}")
+
+    def save_csv(self, timestamped_filename: bool = True) -> None:
         """
-        Saves current csv to a csv file.
+        Saves current klines DataFrame to a csv file.
 
         :param bool timestamped_filename: Adds start and end timestamps to the name.
         :return: None
         """
-        df_ = self.df
-        if timestamped_filename:
-            start, end = self.get_timestamps()
-            filename = f"{df_.index.name.replace('/', '-')} klines {start} {end}.csv"
-        else:
-            filename = f"{df_.index.name.replace('/', '-')} klines.csv"
+        self._save_dataframe_csv(self.df, "klines", None, timestamped_filename)
 
-        save_dataframe_to_csv(filename=filename, data=df_, timestamp=not timestamped_filename)
-        binpan_logger.info(f"Saved file {filename}")
-
-    def save_atomic_trades_csv(self, timestamped_filename: bool = True):
+    def save_atomic_trades_csv(self, timestamped_filename: bool = True) -> None:
         """
         Saves current atomic trades to a csv file.
 
         :param bool timestamped_filename: Adds start and end timestamps to the name.
         :return: None
         """
-        if self.atomic_trades.empty:
-            binpan_logger.info(f"No atomic trades to save.")
-        else:
-            df_ = self.atomic_trades
-            if timestamped_filename:
-                start, end = self.get_timestamps()
-                filename = f"{df_.index.name.replace('/', '-')} atomicTrades {start} {end}.csv"
-            else:
-                filename = f"{df_.index.name.replace('/', '-')} atomicTrades.csv"
+        self._save_dataframe_csv(self.atomic_trades, "atomicTrades", "No atomic trades to save.", timestamped_filename)
 
-            save_dataframe_to_csv(filename=filename, data=df_, timestamp=not timestamped_filename)
-            binpan_logger.info(f"Saved file {filename}")
-
-    def save_agg_trades_csv(self, timestamped_filename: bool = True):
+    def save_agg_trades_csv(self, timestamped_filename: bool = True) -> None:
         """
         Saves current aggregated trades to a csv file.
 
         :param bool timestamped_filename: Adds start and end timestamps to the name.
         :return: None
         """
-        if self.agg_trades.empty:
-            binpan_logger.info(f"No aggregated trades to save.")
-        else:
-            df_ = self.agg_trades
-            if timestamped_filename:
-                start, end = self.get_timestamps()
-                filename = f"{df_.index.name.replace('/', '-')} aggTrades {start} {end}.csv"
-            else:
-                filename = f"{df_.index.name.replace('/', '-')} aggTrades.csv"
-
-            save_dataframe_to_csv(filename=filename, data=df_, timestamp=not timestamped_filename)
-            binpan_logger.info(f"Saved file {filename}")
+        self._save_dataframe_csv(self.agg_trades, "aggTrades", "No aggregated trades to save.", timestamped_filename)
 
     ##################
     # pandas display #
     ##################
 
-    def set_display_max_columns(self, display_columns=None):
+    def set_display_max_columns(self, display_columns=None) -> None:
         """
         Method to change the maximum number of columns shown in the display of the dataframe. Uses pandas options.
 
@@ -615,21 +615,7 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
         else:
             pd.set_option('display.max_columns', self.display_max_columns)
 
-    # def set_display_min_columns(self, display_min_columns=None):
-    # no existe este método en pandas
-    #     """
-    #     Method to change the minimum number of columns shown in the display of the dataframe. Uses pandas options.
-    #
-    #     :param int display_min_columns: Integer
-    #     :return: None
-    #     """
-    #     if display_min_columns:
-    #         self.display_min_columns = display_min_columns
-    #         pd.set_option('display.min_columns', display_min_columns)
-    #     else:
-    #         pd.set_option('display.min_columns', self.display_min_columns)
-
-    def set_display_min_rows(self, display_min_rows=None):
+    def set_display_min_rows(self, display_min_rows=None) -> None:
         """
         Method to change the number of minimum rows shown in the display of the dataframe. Uses pandas options.
 
@@ -643,7 +629,7 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
         else:
             pd.set_option('display.min_rows', self.display_min_rows)
 
-    def set_display_max_rows(self, display_max_rows=None):
+    def set_display_max_rows(self, display_max_rows=None) -> None:
         """
         Method to change the number of maximum rows shown in the display of the dataframe. Uses pandas options.
 
@@ -657,7 +643,7 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
         else:
             pd.set_option('display.max_rows', self.display_max_rows)
 
-    def set_display_width(self, display_width: int = None):
+    def set_display_width(self, display_width: int = None) -> None:
         """
         Method to change the width shown in the display of the dataframe. Uses pandas options.
 
@@ -671,7 +657,7 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
             pd.set_option('display.width', self.display_width)
 
     @staticmethod
-    def set_display_decimals(display_decimals: int):
+    def set_display_decimals(display_decimals: int) -> None:
         """
         Method to change the number of decimals shown in the display of the dataframe. Uses pandas options.
 
@@ -685,7 +671,7 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
     # methods #
     ###########
 
-    def basic(self, exceptions: list = None, actions_col='actions'):
+    def basic(self, exceptions: list = None, actions_col='actions') -> pd.DataFrame:
         """
         Shows just a basic selection of columns data in the dataframe.
 
@@ -736,10 +722,7 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
 
                 self.row_control = {c: self.row_control[c] for c in conserve_columns}
                 extra_rows = set(self.row_control.values())
-                try:
-                    extra_rows.remove(1)
-                except KeyError:
-                    pass
+                extra_rows.discard(1)
                 self.row_counter = 1 + len(extra_rows)
 
                 # reacondicionar rows de lo que ha quedado
@@ -768,7 +751,7 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
                                                c in self.indicators_filled_mode.keys()}
                 self.axis_groups = {c: self.axis_groups[c] for c in conserve_columns if c in self.axis_groups.keys()}
 
-                self.df.drop(columns_to_drop, axis=1, inplace=True)
+                self.df = self.df.drop(columns_to_drop, axis=1)
 
                 return self.df
             else:
@@ -794,7 +777,132 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
         level = self.row_control[columns[0]]
         columns = self.remove_plot_info_associated_columns(columns=columns, row_level=level)
         for c in columns:
-            self.df.drop(c, axis=1, inplace=True)
+            self.df = self.df.drop(c, axis=1)
+        return self.df
+
+    def _convert_indicator_data(
+            self,
+            source_data: pd.Series | pd.DataFrame | np.ndarray | list,
+            current_df: pd.DataFrame,
+            name: str | None,
+            names: list[str] | None,
+            suffix: str,
+            data_qty: int,
+            plotting_rows: list[int],
+            colors: list[str],
+            color_fills: list[str | bool],
+    ) -> tuple[pd.Series | pd.DataFrame, list[pd.Series]] | None:
+        """Convert heterogeneous input data into a (data, data_series) pair.
+
+        Handles pd.Series, pd.DataFrame, np.ndarray and list of them.
+        For list inputs the method recursively calls *insert_indicator* for each
+        element and returns ``None`` to signal an early exit.  An unsupported
+        type also returns ``None`` after logging a warning.
+        """
+        if type(source_data) == pd.Series:
+            data = source_data.copy(deep=True)
+            data.index = current_df.index
+            if name:
+                col_name = name
+            elif names:
+                col_name = names[0]
+            elif not data.name:
+                if suffix:
+                    col_name = suffix
+                else:
+                    col_name = f'Inserted_{len(self.df.columns)}' + suffix
+            else:
+                col_name = str(data.name) + suffix
+
+            data.name = col_name
+            return data, [data]
+
+        elif type(source_data) == pd.DataFrame:
+            data = source_data.copy(deep=True)
+            data = data.set_index(current_df.index)
+            data_series = [data[col] for col in data.columns]
+            for name_idx, ser in enumerate(data_series):
+                if names:
+                    ser.name = names[name_idx]
+                else:
+                    ser.name = str(ser.name) + suffix
+            return data, data_series
+
+        elif type(source_data) == np.ndarray:
+            raw = source_data.copy()
+            if names:
+                data_ser = pd.Series(data=raw, index=current_df.index, name=names[0])
+            elif suffix:
+                data_ser = pd.Series(data=raw, index=current_df.index, name=suffix)
+            else:
+                data_ser = pd.Series(data=raw, index=current_df.index, name=f'Inserted_{len(self.df.columns)}')
+            return data_ser, [data_ser]
+
+        elif type(source_data) == list:
+            assert len(source_data) == len(plotting_rows)
+
+            if name and not names:
+                names = [f"{name}_{i}" for i in range(data_qty)]
+
+            for element_idx, new_element in enumerate(source_data):
+                assert type(new_element) in [pd.Series, np.ndarray]
+                # noinspection PyUnresolvedReferences
+                data = new_element.copy(deep=True)
+
+                if not names:
+                    try:
+                        # noinspection PyUnresolvedReferences
+                        current_name = new_element.name
+                    except Exception:
+                        current_name = f"Indicator_{len(self.df) + element_idx}{suffix}"
+                else:
+                    current_name = names[element_idx]
+
+                self.insert_indicator(source_data=data, plotting_rows=[plotting_rows[element_idx]], colors=[
+                    colors[element_idx]], color_fills=[color_fills[element_idx]], names=[current_name], suffix=suffix)
+            return None  # signals early return with self.df
+
+        else:
+            msg = f"BinPan Warning: Unexpected data type {type(source_data)}, expected pd.Series, np.ndarray, pd.DataFrame or list of them."
+            binpan_logger.warning(msg)
+            return None  # signals early return with None
+
+    def _setup_indicator_plot_info(
+            self,
+            data: pd.Series | pd.DataFrame,
+            data_series: list[pd.Series],
+            current_df: pd.DataFrame,
+            plotting_rows: list[int],
+            colors: list[str],
+            color_fills: list[str | bool],
+            no_overlapped_plot_rows: bool,
+    ) -> pd.DataFrame:
+        """Assign plot rows, colors and color-fills for new indicator columns.
+
+        Updates *current_df* in place by adding the series columns, then sets
+        plot metadata via ``set_plot_color``, ``set_plot_color_fill`` and
+        ``set_plot_row``.  Returns the updated DataFrame.
+        """
+        if self.is_new(source_data=data, suffix=''):  # suffix is added before this to names
+            if no_overlapped_plot_rows:
+                # downcast rows to available except 1 (overlap)
+                rows_tags = {row: i + self.row_counter + 1 for i, row in enumerate(sorted(list(set(plotting_rows))))}
+            else:
+                rows_tags = {row: row for row in plotting_rows}
+
+            plotting_rows = [rows_tags[r] if r != 1 else 1 for r in plotting_rows]
+
+            for i, serie in enumerate(data_series):
+                column_name = str(serie.name)  # suffix is added before this to names
+                current_df.loc[:, column_name] = serie
+                self.set_plot_color(indicator_column=column_name, color=colors[i])
+                self.set_plot_color_fill(indicator_column=column_name, color_fill=color_fills[i])
+                self.set_plot_row(indicator_column=column_name, row_position=plotting_rows[i])
+
+            self.row_counter = max(plotting_rows)
+
+            self.df = current_df
+
         return self.df
 
     def insert_indicator(self,
@@ -852,101 +960,23 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
 
         current_df = self.df.copy(deep=True)
 
-        # get names
-        if type(source_data) == pd.Series:
-            data = source_data.copy(deep=True)
-            data.index = current_df.index
-            if name:
-                col_name = name
-            elif names:
-                col_name = names[0]
-            elif not data.name:
-                if suffix:
-                    col_name = suffix
-                else:
-                    col_name = f'Inserted_{len(self.df.columns)}' + suffix
-            else:
-                col_name = str(data.name) + suffix
+        result = self._convert_indicator_data(
+            source_data=source_data, current_df=current_df, name=name, names=names,
+            suffix=suffix, data_qty=data_qty, plotting_rows=plotting_rows,
+            colors=colors, color_fills=color_fills,
+        )
 
-            data.name = col_name
-            data_series = [data]
+        if result is None:
+            # list case already handled via recursive calls, or unsupported type
+            return self.df if type(source_data) == list else None
 
-        elif type(source_data) == pd.DataFrame:
-            data = source_data.copy(deep=True)
-            data.set_index(current_df.index, inplace=True)
-            data_series = [data[col] for col in data.columns]
-            for name_idx, ser in enumerate(data_series):
-                if names:
-                    ser.name = names[name_idx]
-                else:
-                    ser.name = str(ser.name) + suffix
+        data, data_series = result
 
-        elif type(source_data) == np.ndarray:
-            data = source_data.copy()
-            if names:
-                data_ser = pd.Series(data=data, index=current_df.index, name=names[0])
-            elif suffix:
-                data_ser = pd.Series(data=data, index=current_df.index, name=suffix)
-            else:
-                data_ser = pd.Series(data=data, index=current_df.index, name=f'Inserted_{len(self.df.columns)}')
-
-            del data
-            data = data_ser
-            data_series = [data_ser]
-
-        elif type(source_data) == list:
-            assert len(source_data) == len(plotting_rows)
-            # if not colors:
-            #     colors = [choice(_plotting().plotly_colors) for _ in range(len(rows))]
-            # if not color_fills:
-            #     color_fills = [False for _ in range(len(rows))]
-
-            if name and not names:
-                names = [f"{name}_{i}" for i in range(data_qty)]
-
-            for element_idx, new_element in enumerate(source_data):
-
-                assert type(new_element) in [pd.Series, np.ndarray]
-                # noinspection PyUnresolvedReferences
-                data = new_element.copy(deep=True)
-
-                if not names:
-                    try:
-                        # noinspection PyUnresolvedReferences
-                        current_name = new_element.name
-                    except Exception:
-                        current_name = f"Indicator_{len(self.df) + element_idx}{suffix}"
-                else:
-                    current_name = names[element_idx]
-
-                self.insert_indicator(source_data=data, plotting_rows=[plotting_rows[element_idx]], colors=[
-                    colors[element_idx]], color_fills=[color_fills[element_idx]], names=[current_name], suffix=suffix)
-            return self.df
-
-        else:
-            msg = f"BinPan Warning: Unexpected data type {type(source_data)}, expected pd.Series, np.ndarray, pd.DataFrame or list of them."
-            binpan_logger.warning(msg)
-            return
-
-        if self.is_new(source_data=data, suffix=''):  # suffix is added before this to names
-            if no_overlapped_plot_rows:
-                # downcast rows to available except 1 (overlap)
-                rows_tags = {row: i + self.row_counter + 1 for i, row in enumerate(sorted(list(set(plotting_rows))))}
-            else:
-                rows_tags = {row: row for row in plotting_rows}
-
-            plotting_rows = [rows_tags[r] if r != 1 else 1 for r in plotting_rows]
-
-            for i, serie in enumerate(data_series):
-                column_name = str(serie.name)  # suffix is added before this to names
-                current_df.loc[:, column_name] = serie
-                self.set_plot_color(indicator_column=column_name, color=colors[i])
-                self.set_plot_color_fill(indicator_column=column_name, color_fill=color_fills[i])
-                self.set_plot_row(indicator_column=column_name, row_position=plotting_rows[i])
-
-            self.row_counter = max(plotting_rows)
-
-            self.df = current_df
+        self._setup_indicator_plot_info(
+            data=data, data_series=data_series, current_df=current_df,
+            plotting_rows=plotting_rows, colors=colors, color_fills=color_fills,
+            no_overlapped_plot_rows=no_overlapped_plot_rows,
+        )
 
         # tag strategy group for columns
         if strategy_group:
@@ -955,7 +985,7 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
 
         return self.df
 
-    def hk(self, inplace=False):
+    def hk(self, inplace=False) -> pd.DataFrame:
         """
         It computes Heikin Ashi candles. Any existing indicator column will not be recomputed. It is recommended to drop any indicator
         before converting candles to Heikin Ashi.
@@ -1013,6 +1043,145 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
         binpan_logger.debug(f"From first Open date {ret_start} to last Open date {ret_end}")
         return ret_start, ret_end
 
+    def _get_trades(self,
+                    trade_type: str,
+                    hours: int = None,
+                    minutes: int = None,
+                    startTime: int | str = None,
+                    endTime: int | str = None,
+                    time_zone: str = None,
+                    from_csv: str = None) -> pd.DataFrame:
+        """
+        Generic trade fetching logic for both aggregated and atomic trades.
+
+        :param str trade_type: Either 'agg' or 'atomic'.
+        :param int hours: Last N hours of trades.
+        :param int minutes: Last N minutes of trades.
+        :param int or str startTime: Start timestamp or date string.
+        :param int or str endTime: End timestamp or date string.
+        :param str time_zone: IANA time zone string.
+        :param str from_csv: Path to CSV file, or truthy to auto-select.
+        :return: Pandas DataFrame with trades.
+        """
+        # config by trade type
+        if trade_type == 'agg':
+            label = 'aggregated'
+            csv_filter = 'aggTrades'
+            csv_data_type = 'aggTrades'
+            id_col = 'Aggregate tradeId'
+            valid_columns = agg_trades_columns_from_binance
+            file_error_msg = "File do not seems to be Aggregated Trades File!"
+            postgres_flag = self.postgres_agg_trades
+            cursor = self.cursor_agg_trades
+            pg_table_suffix = 'aggTrade'
+            pg_data_type = 'aggTrade'
+            api_fn = get_historical_agg_trades
+            parse_fn = parse_agg_trades_to_dataframe
+            columns_attr = self.agg_trades_columns
+            raw_attr_name = 'raw_agg_trades'
+            trades_attr_name = 'agg_trades'
+        else:
+            label = 'atomic'
+            csv_filter = 'atomicTrades'
+            csv_data_type = 'atomicTrades'
+            id_col = 'Trade Id'
+            valid_columns = atomic_trades_columns_from_binance
+            file_error_msg = "File do not seems to be Atomic Trades File!"
+            postgres_flag = self.postgres_atomic_trades
+            cursor = self.cursor_atomic_trades
+            pg_table_suffix = 'trade'
+            pg_data_type = 'trade'
+            api_fn = get_historical_atomic_trades
+            parse_fn = parse_atomic_trades_to_dataframe
+            columns_attr = self.atomic_trades_columns
+            raw_attr_name = 'raw_atomic_trades'
+            trades_attr_name = 'atomic_trades'
+
+        # time range
+        if time_zone:
+            self.time_zone = time_zone
+
+        if startTime:
+            startTime = convert_str_date_to_ms(date=startTime, time_zone=self.time_zone)
+        if endTime:
+            endTime = convert_str_date_to_ms(date=endTime, time_zone=self.time_zone)
+        if hours:
+            startTime = int(time() * 1000) - (1000 * 60 * 60 * hours)
+        elif minutes:
+            startTime = int(time() * 1000) - (1000 * 60 * minutes)
+
+        curr_startTime = startTime if startTime else self.start_time
+
+        now_ms = int(time() * 1000)
+        if endTime:
+            curr_endTime = endTime
+        elif self.end_time:
+            curr_endTime = min(self.end_time, now_ms)
+        else:
+            curr_endTime = now_ms
+
+        st = convert_milliseconds_to_str(curr_startTime, timezoned=self.time_zone)
+        en = convert_milliseconds_to_str(curr_endTime, timezoned=self.time_zone)
+        binpan_logger.info(f"Requesting {label} trades between {st} and {en}")
+
+        # data source: CSV
+        if from_csv:
+            if type(from_csv) == str:
+                filename = from_csv
+            else:
+                filename = select_file(path=self.cwd, extension='csv', name_filter=csv_filter)
+
+                _, _, _, _, _, _ = extract_filename_metadata(filename=filename,
+                                                             expected_data_type=csv_data_type,
+                                                             expected_symbol=self.symbol,
+                                                             expected_timezone=self.time_zone)
+
+            df_ = read_csv_to_dataframe(filename=filename,
+                                        index_col="Timestamp",
+                                        secondary_index_col=id_col,
+                                        symbol=self.symbol,
+                                        index_time_zone=self.time_zone)
+
+            for col in df_.columns:
+                if col not in valid_columns:
+                    raise BinPanException(file_error_msg)
+            setattr(self, trades_attr_name, df_)
+
+        # data source: PostgreSQL
+        elif postgres_flag:
+            from .storage.postgresql import get_data_and_parse, sanitize_table_name
+            table = sanitize_table_name(f"{self.symbol.lower()}_{pg_table_suffix}")
+            setattr(self, trades_attr_name,
+                    get_data_and_parse(cursor=cursor,
+                                      table=table,
+                                      symbol=self.symbol,
+                                      tick_interval=self.tick_interval,
+                                      time_zone=self.time_zone,
+                                      start_time=curr_startTime,
+                                      end_time=curr_endTime,
+                                      data_type=pg_data_type))
+
+        # data source: Binance API
+        else:
+            try:
+                raw_data = api_fn(symbol=self.symbol, startTime=curr_startTime, endTime=curr_endTime)
+            except Exception:
+                msg = f"Error fetching {raw_attr_name}, maybe missing API key in ~/.panzer_creds"
+                binpan_logger.error(msg)
+                raw_data = []
+            setattr(self, raw_attr_name, raw_data)
+
+            setattr(self, trades_attr_name,
+                    parse_fn(response=raw_data,
+                             columns=columns_attr,
+                             symbol=self.symbol,
+                             time_zone=self.time_zone,
+                             drop_dupes=id_col))
+
+        trades_df = convert_to_numeric(data=getattr(self, trades_attr_name))
+        setattr(self, trades_attr_name, trades_df)
+        return trades_df
+
     def get_agg_trades(self,
                        hours: int = None,
                        minutes: int = None,
@@ -1036,121 +1205,12 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
         :param int or str endTime: If passed, it use just until the timestamp or date in format
          (%Y-%m-%d %H:%M:%S: **2022-05-11 06:45:42**)) for the plot.
         :param str time_zone: A time zone for time index conversion. Example: "Europe/Madrid"
-
-        Example:
-
-            .. code-block::
-
-                                                  Aggregate tradeId     Price  Quantity  First tradeId  Last tradeId                 Date
-                                                       Timestamp  Buyer was maker  Best price match
-                BTCBUSD Europe/Madrid
-                2022-11-20 14:11:36.763000+01:00          536009627  16524.58   0.21421      632568399     632568399  2022-11-20 14:11:36
-                 1668949896763             True              True
-                2022-11-20 14:11:36.787000+01:00          536009628  16525.04   0.02224      632568400     632568400  2022-11-20 14:11:36
-                 1668949896787             True              True
-                2022-11-20 14:11:36.794000+01:00          536009629  16525.04   0.01097      632568401     632568401  2022-11-20 14:11:36
-                 1668949896794             True              True
-                2022-11-20 14:11:36.849000+01:00          536009630  16525.27   0.05260      632568402     632568403  2022-11-20 14:11:36
-                 1668949896849            False              True
-                2022-11-20 14:11:36.849000+01:00          536009631  16525.28   0.00073      632568404     632568404  2022-11-20 14:11:36
-                 1668949896849            False              True
-                ...                                             ...       ...       ...            ...           ...                  ...
-                           ...              ...               ...
-                2022-11-20 15:10:57.928000+01:00          536083210  16556.75   0.01730      632653817     632653817  2022-11-20 15:10:57
-                 1668953457928             True              True
-                2022-11-20 15:10:57.928000+01:00          536083211  16556.74   0.00851      632653818     632653819  2022-11-20 15:10:57
-                 1668953457928             True              True
-                2022-11-20 15:10:57.950000+01:00          536083212  16558.48   0.00639      632653820     632653820  2022-11-20 15:10:57
-                 1668953457950            False              True
-                2022-11-20 15:10:57.990000+01:00          536083213  16558.48   0.01242      632653821     632653821  2022-11-20 15:10:57
-                 1668953457990             True              True
-                2022-11-20 15:10:58.020000+01:00          536083214  16558.49   0.00639      632653822     632653822  2022-11-20 15:10:58
-                 1668953458020            False              True
-                [73588 rows x 9 columns]
-
         :param str from_csv: If set, loads from a file.
         :return: Pandas DataFrame
 
         """
-        if time_zone:
-            self.time_zone = time_zone
-
-        if startTime:
-            startTime = convert_str_date_to_ms(date=startTime, time_zone=self.time_zone)
-        if endTime:
-            endTime = convert_str_date_to_ms(date=endTime, time_zone=self.time_zone)
-        if hours:
-            startTime = int(time() * 1000) - (1000 * 60 * 60 * hours)
-        elif minutes:
-            startTime = int(time() * 1000) - (1000 * 60 * minutes)
-
-        if startTime:
-            curr_startTime = startTime
-        else:
-            curr_startTime = self.start_time
-
-        if endTime:
-            curr_endTime = endTime
-        elif self.end_time:
-            curr_endTime = self.end_time
-        else:
-            curr_endTime = int(time() * 1000)
-
-        st = convert_milliseconds_to_str(curr_startTime, timezoned=self.time_zone)
-        en = convert_milliseconds_to_str(curr_endTime, timezoned=self.time_zone)
-        print(f"Requesting aggregated trades between {st} and {en}")
-
-        if from_csv:
-            if type(from_csv) == str:
-                filename = from_csv
-            else:
-                filename = select_file(path=self.cwd, extension='csv', name_filter='aggTrades')
-
-                # basic metadata
-                _, _, _, _, _, _ = extract_filename_metadata(filename=filename,
-                                                             expected_data_type="aggTrades",
-                                                             expected_symbol=self.symbol,
-                                                             expected_timezone=self.time_zone)
-            # load and to numeric types
-            df_ = read_csv_to_dataframe(filename=filename,
-                                        index_col="Timestamp",
-                                        secondary_index_col="Aggregate tradeId",
-                                        symbol=self.symbol,
-                                        index_time_zone=self.time_zone)
-
-            # check columns
-            for col in df_.columns:
-                if not col in agg_trades_columns_from_binance:
-                    raise BinPanException(f"File do not seems to be Aggregated Trades File!")
-            self.agg_trades = df_
-        elif self.postgres_agg_trades:
-            from .storage.postgresql import get_data_and_parse, sanitize_table_name
-            agg_table = sanitize_table_name(f"{self.symbol.lower()}_aggTrade")
-            self.agg_trades = get_data_and_parse(cursor=self.cursor_agg_trades,
-                                                 table=agg_table,
-                                                 symbol=self.symbol,
-                                                 tick_interval=self.tick_interval,
-                                                 time_zone=self.time_zone,
-                                                 start_time=curr_startTime,
-                                                 end_time=curr_endTime,
-                                                 data_type="aggTrade")
-        else:
-            try:
-                self.raw_agg_trades = get_historical_agg_trades(symbol=self.symbol, startTime=curr_startTime, endTime=curr_endTime)
-            except Exception as _:
-                msg = f"Error fetching raw_agg_trades, maybe missing API key in ~/.panzer_creds"
-                binpan_logger.error(msg)
-                self.raw_agg_trades = []
-
-            self.agg_trades = parse_agg_trades_to_dataframe(response=self.raw_agg_trades,
-                                                            columns=self.agg_trades_columns,
-                                                            symbol=self.symbol,
-                                                            time_zone=self.time_zone,
-                                                            drop_dupes='Aggregate tradeId')
-
-        self.agg_trades = convert_to_numeric(data=self.agg_trades)
-
-        return self.agg_trades
+        return self._get_trades('agg', hours=hours, minutes=minutes, startTime=startTime,
+                                endTime=endTime, time_zone=time_zone, from_csv=from_csv)
 
     def get_atomic_trades(self,
                           hours: int = None,
@@ -1179,85 +1239,8 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
         :return: Pandas DataFrame
 
         """
-        if time_zone:
-            self.time_zone = time_zone
-
-        if startTime:
-            convert_str_date_to_ms(date=startTime, time_zone=self.time_zone)
-        if endTime:
-            convert_str_date_to_ms(date=endTime, time_zone=self.time_zone)
-        if hours:
-            startTime = int(time() * 1000) - (1000 * 60 * 60 * hours)
-        elif minutes:
-            startTime = int(time() * 1000) - (1000 * 60 * minutes)
-
-        if startTime:
-            curr_startTime = startTime
-        else:
-            curr_startTime = self.start_time
-
-        if endTime:
-            curr_endTime = endTime
-        elif self.end_time:
-            curr_endTime = min(self.end_time, int(time() * 1000))
-        else:
-            curr_endTime = int(time() * 1000)
-
-        st = convert_milliseconds_to_str(curr_startTime, timezoned=self.time_zone)
-        en = convert_milliseconds_to_str(curr_endTime, timezoned=self.time_zone)
-        print(f"Requesting atomic trades between {st} and {en}")
-
-        if from_csv:
-            if type(from_csv) == str:
-                filename = from_csv
-            else:
-                filename = select_file(path=self.cwd, extension='csv', name_filter='atomicTrades')
-
-            # basic metadata
-            _, _, _, _, _, _ = extract_filename_metadata(filename=filename, expected_data_type="atomicTrades",
-                                                         expected_symbol=self.symbol, expected_timezone=self.time_zone)
-
-            # load and to numeric types
-            df_ = read_csv_to_dataframe(filename=filename,
-                                        index_col="Timestamp",
-                                        secondary_index_col="Trade Id",
-                                        symbol=self.symbol,
-                                        index_time_zone=self.time_zone)
-
-            # check columns
-            for col in df_.columns:
-                if not col in atomic_trades_columns_from_binance:
-                    raise BinPanException(f"File do not seems to be Atomic Trades File!")
-            self.atomic_trades = df_
-        elif self.postgres_atomic_trades:
-            from .storage.postgresql import get_data_and_parse
-            trade_table = f"{self.symbol.lower()}_trade"
-
-            self.atomic_trades = get_data_and_parse(cursor=self.cursor_atomic_trades,
-                                                    table=trade_table,
-                                                    symbol=self.symbol,
-                                                    tick_interval=self.tick_interval,
-                                                    time_zone=self.time_zone,
-                                                    start_time=curr_startTime,
-                                                    end_time=curr_endTime,
-                                                    data_type="trade")
-        else:
-            try:
-                self.raw_atomic_trades = get_historical_atomic_trades(symbol=self.symbol,
-                                                                      startTime=curr_startTime,
-                                                                      endTime=curr_endTime)
-            except Exception:
-                msg = f"Error fetching raw_atomic_trades, maybe missing API key in ~/.panzer_creds"
-                binpan_logger.error(msg)
-                self.raw_atomic_trades = []
-
-            self.atomic_trades = parse_atomic_trades_to_dataframe(response=self.raw_atomic_trades,
-                                                                  columns=self.atomic_trades_columns,
-                                                                  symbol=self.symbol,
-                                                                  time_zone=self.time_zone,
-                                                                  drop_dupes='Trade Id')
-        self.atomic_trades = convert_to_numeric(data=self.atomic_trades)
-        return self.atomic_trades
+        return self._get_trades('atomic', hours=hours, minutes=minutes, startTime=startTime,
+                                endTime=endTime, time_zone=time_zone, from_csv=from_csv)
 
     def is_new(self, source_data: pd.Series | pd.DataFrame, suffix: str = '') -> bool:
         """
@@ -1345,7 +1328,7 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
                                                            min_reversal=self.min_reversal)
         return self.reversal_atomic_klines
 
-    def resample(self, tick_interval: str, inplace=False):
+    def resample(self, tick_interval: str, inplace=False) -> pd.DataFrame | None:
         """
         Resample trades to a different tick interval. Tick interval must be higher.
         :param str tick_interval: A binance tick interval. Must be higher than current tick interval.
@@ -1386,7 +1369,7 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
             from .analysis.aggregations import resample_klines
             return resample_klines(data=self.df, tick_interval=tick_interval)
 
-    def repair_continuity(self):
+    def repair_continuity(self) -> None:
         """
         Repair kline discontinuities by filling missing candles.
 
@@ -1402,7 +1385,7 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
     #################
     # Exchange data #
     #################
-    def update_info_dic(self):
+    def update_info_dic(self) -> dict:
         """
         Returns exchangeInfo data when instantiated. It includes, filters, fees, and many other data for all symbols in the
         exchange.
@@ -1462,7 +1445,7 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
 
     ######################
 
-    def get_fees(self, symbol: str = None):
+    def get_fees(self, symbol: str = None) -> dict:
         """
         Shows applied fees for the symbol of the object.
 

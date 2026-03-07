@@ -128,16 +128,16 @@ def drop_aggregated(data: pd.DataFrame, group_column: str, by='last') -> pd.Data
 
     # type test
     is_int_or_nan = df[group_column].apply(lambda x: isinstance(x, (int, np.integer)) or np.isnan(x))
-    assert is_int_or_nan.all(), "Group column must use integer numbers"
+    if not is_int_or_nan.all():
+        raise ValueError(f"Group column '{group_column}' must use integer numbers")
 
     # sequential integers fault warning
     integers = data.loc[df[group_column].apply(lambda x: isinstance(x, (int, np.integer))), group_column]
     differences = np.diff(integers)  # ojo, np.diff elimina el primer elemento en vez de venir con nan
     differences = np.isnan(differences) | (differences == 1)
-    try:
-        assert differences.all(), f"Warning: Numbers in column '{group_column}' are not consecutive."
-    except:
-        pass
+    if not differences.all():
+        import logging
+        logging.getLogger('binpan').warning(f"Numbers in column '{group_column}' are not consecutive.")
 
     aggregator = {c: by for c in df.columns}
     return df.groupby(group_column).agg(aggregator)
@@ -286,11 +286,11 @@ def time_index_from_timestamps(data: pd.DataFrame, index_name: str = None, timez
     df_ = data.copy(deep=True)
     time_cols = sorted([c for c in df_.columns if 'timestamp' in c.lower()])
     time_col = time_cols[0]
-    df_.sort_values(time_col, inplace=True)
+    df_ = df_.sort_values(time_col)
     df_.index = pd.DatetimeIndex(pd.to_datetime(df_[time_col], unit='ms')).tz_localize('UTC').tz_convert(timezone)
 
     if drop_col:
-        df_.drop(time_col, axis=1, inplace=True)
+        df_ = df_.drop(time_col, axis=1)
     if index_name:
         df_.index.name = index_name
     return df_

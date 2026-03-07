@@ -11,7 +11,7 @@ from .market import get_prices_dic, _get_panzer
 from .auth import signed_get
 from ..core.logs import LogManager
 
-stablecoins = ['PAX', 'TUSD', 'USDC', 'USDS', 'USDT', 'BUSD', 'DAI', 'UST', 'USDP', 'TRIBE', 'UST', 'USSD', 'FDUSD', 'FRAX', 'USDP', 'USDJ']
+stablecoins = ['PAX', 'TUSD', 'USDC', 'USDS', 'USDT', 'BUSD', 'DAI', 'UST', 'USDP', 'TRIBE', 'USSD', 'FDUSD', 'FRAX', 'USDJ']
 
 exchange_logger = LogManager(filename='./logs/exchange_logger.log', name='exchange_logger', info_level='INFO')
 

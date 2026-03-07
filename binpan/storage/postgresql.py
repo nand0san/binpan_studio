@@ -87,7 +87,7 @@ def get_data_and_parse(cursor,
                        start_time: int,
                        end_time: int,
                        data_type: str,
-                       ):
+                       ) -> pd.DataFrame:
     """
     Gets data from a table in the database and parses it to a dataframe.
 
@@ -130,10 +130,10 @@ def get_data_and_parse(cursor,
     if data:
         data_dicts = [{data_type_structure[i]: l[i] for i in range(len(l))} for l in data]
         df = pd.DataFrame(data_dicts)
-        df.rename(columns=postgresql2binpan_map_dict[data_type], inplace=True)
+        df = df.rename(columns=postgresql2binpan_map_dict[data_type])
     else:  # para cuando no hay internet pero si database
         df = pd.DataFrame(data=None, columns=data_type_structure)
-        df.rename(columns=postgresql2binpan_map_dict[data_type], inplace=True)
+        df = df.rename(columns=postgresql2binpan_map_dict[data_type])
         return df
 
     alt_order = None
@@ -180,13 +180,13 @@ def get_data_and_parse(cursor,
     else:
         raise Exception(f"get_data_and_parse: BinPan Exception: Table {table} not recognized as a valid table")
 
-    df.set_index(date_col, inplace=True, drop=False)
+    df = df.set_index(date_col, drop=False)
 
     if alt_order:
         df.index.name = None
-        df.sort_values([date_col, alt_order], inplace=True)
+        df = df.sort_values([date_col, alt_order])
     else:
-        df.sort_index(inplace=True)
+        df = df.sort_index()
 
     if data_type == "kline":
         df.index.name = f"{symbol.upper()} {tick_interval} {time_zone}"
@@ -257,7 +257,7 @@ def create_connection(user: str,
             raise BinPanException(msg)
 
 
-def is_cursor_alive(cursor):
+def is_cursor_alive(cursor) -> bool:
     """
     Verifica si un cursor de PostgreSQL está activo y en buen estado.
 
@@ -275,7 +275,7 @@ def is_cursor_alive(cursor):
         return False
 
 
-def close_connection(connection, cursor):
+def close_connection(connection, cursor) -> None:
     """
     It closes the connection to the PostgreSQL database.
 
@@ -293,14 +293,14 @@ def close_connection(connection, cursor):
 # funciones atómicas #
 ######################
 
-def create_database(cursor, db_name: str):
+def create_database(cursor, db_name: str) -> None:
     """
     Crea una nueva base de datos en PostgreSQL.
 
     :param cursor: Cursor de psycopg2 a la base de datos.
     :param db_name: Nombre de la base de datos a crear.
     """
-    cursor.execute(f"CREATE DATABASE {db_name};")
+    cursor.execute(sql.SQL("CREATE DATABASE {};").format(sql.Identifier(db_name)))
 
 
 def list_tables_with_suffix(cursor, suffix="") -> list:
@@ -314,12 +314,12 @@ def list_tables_with_suffix(cursor, suffix="") -> list:
     if suffix:
         suffix = suffix.lower()
     if suffix:
-        query = f"""
+        query = sql.SQL("""
         SELECT table_name
         FROM information_schema.tables
-        WHERE table_name LIKE '%{suffix}'
-          AND table_schema = 'public';  -- Opcional, si quieres filtrar por esquema
-        """
+        WHERE table_name LIKE {pattern}
+          AND table_schema = 'public';
+        """).format(pattern=sql.Literal(f'%{suffix}'))
     else:
         query = """
         SELECT table_name
@@ -334,15 +334,15 @@ def count_rows_in_tables(cursor, table_names: list[str], approximated: bool = Tr
     counts = {}
     for table in table_names:
         if approximated:
-            cursor.execute(f"SELECT approximate_row_count('{table}')")
+            cursor.execute("SELECT approximate_row_count(%s)", (table,))
         else:
-            cursor.execute(f"SELECT COUNT(*) FROM {table};")
+            cursor.execute(sql.SQL("SELECT COUNT(*) FROM {};").format(sql.Identifier(table)))
         count = cursor.fetchone()[0]
         counts[table] = count
     return counts
 
 
-def is_hypertable(cursor, table_name):
+def is_hypertable(cursor, table_name) -> bool:
     """
     Si la tabla es una hypertable, retorna True. Si no, retorna False.
     :param cursor:
@@ -477,7 +477,7 @@ def fetch_hypertable_selective(cursor,
     return ret
 
 
-def delete_record(cursor, table_name: str, field_name: str, value: any, is_timestamp: bool = False, own_transaction=True):
+def delete_record(cursor, table_name: str, field_name: str, value: any, is_timestamp: bool = False, own_transaction=True) -> None:
     """
     Delete records from a hypertable in TimescaleDB where a specific field matches a specific value.
 
@@ -505,7 +505,7 @@ def delete_record(cursor, table_name: str, field_name: str, value: any, is_times
         cursor.execute("COMMIT")
 
 
-def delete_table(cursor, table_name, schema='public'):
+def delete_table(cursor, table_name, schema='public') -> bool:
     """
     Delete a table from the database to which the cursor is connected. Also removes the hypertable if it exists.
 
@@ -523,7 +523,7 @@ def delete_table(cursor, table_name, schema='public'):
         return False
 
 
-def delete_bulk_tables(cursor, tables: list, batch=20):
+def delete_bulk_tables(cursor, tables: list, batch=20) -> None:
     """
     It deletes a list of tables from the database to which the cursor is connected.
 
@@ -666,7 +666,7 @@ def create_table_and_hypertable(cursor,
                                 table_name: str,
                                 column_definitions: dict,
                                 time_col: str,
-                                additional_index_column=None):
+                                additional_index_column=None) -> None:
     """
     Creates a regular table and converts it to a hypertable. If the table already exists, it does nothing.
 
@@ -683,24 +683,31 @@ def create_table_and_hypertable(cursor,
 
     try:
         # Crear la tabla regular primero
-        columns_sql = ', '.join([f'"{k}" {infer_sql_type(v, k)}' for k, v in column_definitions.items()])
-        create_table_sql = f"CREATE TABLE IF NOT EXISTS {table_name} ({columns_sql});"
+        col_defs = [sql.SQL("{} " + infer_sql_type(v, k)).format(sql.Identifier(k)) for k, v in column_definitions.items()]
+        create_table_sql = sql.SQL("CREATE TABLE IF NOT EXISTS {} ({});").format(
+            sql.Identifier(table_name),
+            sql.SQL(', ').join(col_defs))
         cursor.execute(create_table_sql)
 
         # Convertir la tabla en una hipertabla
-        cursor.execute(f"SELECT create_hypertable('{table_name}', 'time');")
+        cursor.execute("SELECT create_hypertable(%s, 'time');", (table_name,))
         if additional_index_column == time_col:
             additional_index_column = None
 
         if additional_index_column:
-            cursor.execute(f"CREATE UNIQUE INDEX IF NOT EXISTS idx_unique_{table_name} ON {table_name}(time, {additional_index_column});")
+            cursor.execute(sql.SQL("CREATE UNIQUE INDEX IF NOT EXISTS {} ON {}(time, {});").format(
+                sql.Identifier(f"idx_unique_{table_name}"),
+                sql.Identifier(table_name),
+                sql.Identifier(additional_index_column)))
         else:
-            cursor.execute(f"CREATE UNIQUE INDEX IF NOT EXISTS idx_unique_{table_name} ON {table_name}(time);")
+            cursor.execute(sql.SQL("CREATE UNIQUE INDEX IF NOT EXISTS {} ON {}(time);").format(
+                sql.Identifier(f"idx_unique_{table_name}"),
+                sql.Identifier(table_name)))
 
         # Si todo sale bien, liberar el SAVEPOINT
         cursor.execute("RELEASE SAVEPOINT before_create_table;")
-        assert check_unique_index_with_time(cursor, table_name=table_name, time_col=time_col), ("No se pudo crear el índice único con "
-                                                                                                "'time'.")
+        if not check_unique_index_with_time(cursor, table_name=table_name, time_col=time_col):
+            raise BinPanException(f"No se pudo crear el indice unico con 'time' en {table_name}")
 
     except Exception as e:
         # Si algo sale mal, revertir al SAVEPOINT
@@ -708,7 +715,7 @@ def create_table_and_hypertable(cursor,
         raise e
 
 
-def insert_data(cursor, table_name: str, records: list[dict], time_column: str, unique_column: str = None):
+def insert_data(cursor, table_name: str, records: list[dict], time_column: str, unique_column: str = None) -> None:
     """
     Inserts data into a table.
 
@@ -770,7 +777,9 @@ def update_table_columns(cursor, table_name: str, record: dict, checked_columns:
                 value = record[column]
                 column_type = infer_sql_type(value=value, key=column)
                 sql_logger.info(f"Insertando columna {column} de tipo {column_type} en la tabla {table_name}")
-                cursor.execute(f"ALTER TABLE {table_name} ADD COLUMN {column} {column_type}")
+                cursor.execute(sql.SQL("ALTER TABLE {} ADD COLUMN {} " + column_type).format(
+                    sql.Identifier(table_name),
+                    sql.Identifier(column)))
                 if not table_name in checked_columns:
                     checked_columns.append(table_name)
         return checked_columns
@@ -866,7 +875,7 @@ def delete_dupes(cursor,
                  dupes: list[int],
                  column: str,
                  is_timestamp: bool,
-                 ignore_errors: bool = False):
+                 ignore_errors: bool = False) -> None:
     """
     Delete a dupe by continuity column.
 
@@ -966,7 +975,7 @@ def get_indexed_columns(cursor, table_name) -> list:
     return indexed_columns
 
 
-def get_hypertable_indexes(cursor, hypertable_name, schema_name='public'):
+def get_hypertable_indexes(cursor, hypertable_name, schema_name='public') -> list[tuple]:
     """
     Return example:
 
@@ -993,7 +1002,7 @@ def get_hypertable_indexes(cursor, hypertable_name, schema_name='public'):
     return hypertable_indexes
 
 
-def add_index_to_hypertable(cursor, hypertable_name: str, column_name: str, index_name: str = None):
+def add_index_to_hypertable(cursor, hypertable_name: str, column_name: str, index_name: str = None) -> bool:
     """
     Añade un índice a una hypertable en TimescaleDB.
 
@@ -1025,7 +1034,7 @@ def add_index_to_hypertable(cursor, hypertable_name: str, column_name: str, inde
         return False
 
 
-def check_index_exists(cursor, table_name, index_name):
+def check_index_exists(cursor, table_name, index_name) -> bool:
     query = f"""
     SELECT 1
     FROM timescaledb_information.hypertable_indexes
@@ -1041,7 +1050,7 @@ def check_index_exists(cursor, table_name, index_name):
 #####################
 
 
-def create_simple_table(cursor, table_name: str, columns: list):
+def create_simple_table(cursor, table_name: str, columns: list) -> None:
     """
     Create a simple table in PostgreSQL.
 
@@ -1066,7 +1075,7 @@ def create_simple_table(cursor, table_name: str, columns: list):
 ############################
 
 
-def create_missed_table(cursor, continuity_field: str, miss_table: str):
+def create_missed_table(cursor, continuity_field: str, miss_table: str) -> None:
     """
     Create a table to store the missed ids.
 

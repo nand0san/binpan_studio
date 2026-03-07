@@ -105,12 +105,14 @@ def daily_account_snapshot(account_type: str,
             ret.index.name = f"{account_type} timestamp"
     return ret
 
-def assets_convertible_dust(decimal_mode: bool) -> dict:
+def assets_convertible_dust(decimal_mode: bool, confirm: bool = False) -> dict | None:
     """
     Assets dust that can be converted to BNB.
     Weight(IP): 1
 
-    :param bool decimal_mode: It flags to work in decimal mode.    :return dict: A dictionary.
+    :param bool decimal_mode: It flags to work in decimal mode.
+    :param bool confirm: Must be True to execute. Prevents accidental wallet modifications.
+    :return dict: A dictionary.
 
     .. code-block::
 
@@ -132,12 +134,11 @@ def assets_convertible_dust(decimal_mode: bool) -> dict:
         }
 
     """
-    yn = input(f"This command may change or convert assets from your wallet!!! are you sure? (y/n)")
-    if yn.upper().startswith('Y'):
-        return signed_post(endpoint='/sapi/v1/asset/dust-btc',
-                                   decimal_mode=decimal_mode)
-    else:
-        wallet_logger.warning("Canceled!")
+    if not confirm:
+        wallet_logger.warning("This command may change or convert assets from your wallet. Pass confirm=True to execute.")
+        return None
+    return signed_post(endpoint='/sapi/v1/asset/dust-btc',
+                       decimal_mode=decimal_mode)
 
 ##########
 # trades #
@@ -682,7 +683,7 @@ def get_spot_balances_df(decimal_mode: bool,
     df_ = pd.DataFrame(balances)
     df_['free'] = df_['free'].apply(pd.to_numeric)
     df_['locked'] = df_['locked'].apply(pd.to_numeric)
-    df_.set_index('asset', drop=True, inplace=True)
+    df_ = df_.set_index('asset', drop=True)
     if filter_empty:
         return df_[(df_['free'] != 0) | (df_['locked'] != 0)]
     else:

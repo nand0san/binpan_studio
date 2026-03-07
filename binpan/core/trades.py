@@ -60,10 +60,6 @@ class Trades(Timeframe):
 
     def __str__(self):
         return str(self.trades)
-    # TODO: IMPLEMENTAR FUNCIONES PARA PARSEO DE DISTINTOS ORIGENES DE DATOS
-    #       - binance api
-    #       - csv
-    #       - postgresql
 
     def to_csv(self, filepath: str):
         self.trades.to_csv(filepath)
