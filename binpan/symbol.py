@@ -3,7 +3,7 @@
 This is the main classes file.
 
 """
-__version__ = "0.9.2"
+__version__ = "0.9.4"
 
 import os
 import pandas as pd
@@ -156,6 +156,8 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
         Also a string with table name can be used. If str passed, it will be used as host.
     :param bool postgres_atomic_trades:    If True, gets data from a postgres database by selecting interactively from tables found.
         Also a string with table name can be used. If str passed, it will be used as host.
+    :param bool or str binbase:    If True, gets data from binbase TimescaleDB (shared schema with symbol column).
+        If str passed, it will be used as host. Password from ``secret.binbase_password`` or ``BINBASE_PASSWORD`` env var.
     :param float hours:    If hours is passed, it gets the candles from the last hours.
     :param bool from_csv:    If True, gets data from a csv file by selecting interactively from csv files found.
         Also a string with filename can be used.
@@ -207,6 +209,7 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
                  postgres_klines: bool | str = False,
                  postgres_agg_trades: bool | str = False,
                  postgres_atomic_trades: bool | str = False,
+                 binbase: bool | str = False,
                  display_columns: int = 25,
                  display_max_rows: int = 10,
                  display_min_rows: int = 25,
@@ -231,6 +234,7 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
         :param bool | str postgres_klines: Load klines from PostgreSQL instead of API. Pass connection string or True.
         :param bool | str postgres_agg_trades: Load aggregated trades from PostgreSQL.
         :param bool | str postgres_atomic_trades: Load atomic trades from PostgreSQL.
+        :param bool | str binbase: Load data from binbase TimescaleDB. Pass True or host string.
         :param int display_columns: Max columns to display in repr. Default 25.
         :param int display_max_rows: Max rows to display. Default 10.
         :param int display_min_rows: Min rows to display. Default 25.
@@ -315,10 +319,12 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
             self._init_postgres_connections(postgres_klines=postgres_klines,
                                             postgres_agg_trades=postgres_agg_trades,
                                             postgres_atomic_trades=postgres_atomic_trades)
+            self._init_binbase_connection(binbase=binbase)
 
         self.postgres_klines = postgres_klines
         self.postgres_agg_trades = postgres_agg_trades
         self.postgres_atomic_trades = postgres_atomic_trades
+        self.binbase = binbase
 
         # pandas visualization settings
         self._init_display_settings(display_columns=display_columns,
@@ -451,20 +457,15 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
                                         time_zone=self.time_zone)
 
     def _init_from_api(self) -> None:
-        """Fetch candle data from API or PostgreSQL and build the DataFrame."""
-        if not self.postgres_klines:
-            self.raw = get_candles_by_time_stamps(symbol=self.symbol,
-                                                  tick_interval=self.tick_interval,
-                                                  start_time=self.start_time,
-                                                  end_time=self.end_time,
-                                                  limit=self.limit)
-
-            self.df = parse_candles_to_dataframe(raw_response=self.raw,
-                                                 columns=self.original_columns,
-                                                 time_cols=self.time_cols,
-                                                 symbol=self.symbol,
-                                                 tick_interval=self.tick_interval,
-                                                 time_zone=self.time_zone)
+        """Fetch candle data from API, PostgreSQL or binbase and build the DataFrame."""
+        if self.binbase:
+            from .storage.binbase import get_klines as bb_get_klines
+            self.df = bb_get_klines(cursor=self.cursor_binbase,
+                                    symbol=self.symbol,
+                                    tick_interval=self.tick_interval,
+                                    start_time=self.start_time,
+                                    end_time=self.end_time,
+                                    time_zone=self.time_zone)
         elif self.postgres_klines:
             import binpan.postgresql as postgresql  # solo para pycharm
             self.table = postgresql.sanitize_table_name(f"{self.symbol.lower()}@kline_{self.tick_interval}")
@@ -477,7 +478,18 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
                                                     end_time=self.end_time,
                                                     data_type='kline')
         else:
-            self.raw = None
+            self.raw = get_candles_by_time_stamps(symbol=self.symbol,
+                                                  tick_interval=self.tick_interval,
+                                                  start_time=self.start_time,
+                                                  end_time=self.end_time,
+                                                  limit=self.limit)
+
+            self.df = parse_candles_to_dataframe(raw_response=self.raw,
+                                                 columns=self.original_columns,
+                                                 time_cols=self.time_cols,
+                                                 symbol=self.symbol,
+                                                 tick_interval=self.tick_interval,
+                                                 time_zone=self.time_zone)
 
     def _init_postgres_connections(self,
                                    postgres_klines: bool | str,
@@ -534,6 +546,19 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
                                                                                             postgresql_port=postgresql_port)
         else:
             self.connection_klines, self.cursor_klines = None, None
+            self.connection_agg_trades, self.cursor_agg_trades = None, None
+            self.connection_atomic_trades, self.cursor_atomic_trades = None, None
+
+    def _init_binbase_connection(self, binbase: bool | str) -> None:
+        """Set up connection to binbase TimescaleDB."""
+        if binbase:
+            from .storage.binbase import connect as bb_connect
+            host = binbase if isinstance(binbase, str) else None
+            kwargs = {"host": host} if host else {}
+            self.connection_binbase, self.cursor_binbase = bb_connect(**kwargs)
+            binpan_logger.info(f"Conectado a binbase: {kwargs.get('host', 'default')}")
+        else:
+            self.connection_binbase, self.cursor_binbase = None, None
 
     def _init_display_settings(self,
                                display_columns: int,
@@ -1147,7 +1172,25 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
                     raise BinPanException(file_error_msg)
             setattr(self, trades_attr_name, df_)
 
-        # data source: PostgreSQL
+        # data source: binbase
+        elif self.binbase:
+            from .storage import binbase as bb
+            if trade_type == 'agg':
+                setattr(self, trades_attr_name,
+                        bb.get_agg_trades(cursor=self.cursor_binbase,
+                                          symbol=self.symbol,
+                                          start_time=curr_startTime,
+                                          end_time=curr_endTime,
+                                          time_zone=self.time_zone))
+            else:
+                setattr(self, trades_attr_name,
+                        bb.get_trades(cursor=self.cursor_binbase,
+                                      symbol=self.symbol,
+                                      start_time=curr_startTime,
+                                      end_time=curr_endTime,
+                                      time_zone=self.time_zone))
+
+        # data source: PostgreSQL (legacy)
         elif postgres_flag:
             from .storage.postgresql import get_data_and_parse, sanitize_table_name
             table = sanitize_table_name(f"{self.symbol.lower()}_{pg_table_suffix}")

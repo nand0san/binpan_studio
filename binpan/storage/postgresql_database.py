@@ -280,33 +280,29 @@ def get_hypertable_info(cursor) -> pd.DataFrame:
     - `compression_enabled`:
        Whether compression is enabled for the hypertable.
 
-    - `is_distributed`:
-       Indicates if the hypertable is distributed.
-
-    - `replication_factor`:
-       The replication factor of the hypertable (relevant for distributed hypertables).
-
-    - `data_nodes`:
-       Nodes where the hypertable data resides.
-
     - `tablespaces`:
        Tablespaces associated with the hypertable.
+
+    - `primary_dimension`:
+       The primary partitioning dimension (typically a time column).
+
+    - `primary_dimension_type`:
+       Data type of the primary dimension.
 
     :param cursor: a psycopg2 cursor
     :return: DataFrame with hypertable details
     """
     query = """
-    SELECT 
+    SELECT
         hypertable_schema,
         hypertable_name,
         owner,
         num_dimensions,
         num_chunks,
         compression_enabled,
-        is_distributed,
-        replication_factor,
-        data_nodes,
-        tablespaces
+        tablespaces,
+        primary_dimension,
+        primary_dimension_type
     FROM timescaledb_information.hypertables;
     """
     cursor.execute(query)
