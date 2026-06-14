@@ -271,7 +271,9 @@ class SymbolPlotting:
              resistance_lines: list = None,
              resistance_lines_color: str = 'darkred',
              date: str = None,
-             date_radio: int = 20) -> str | None:
+             date_radio: int = 20,
+             show: bool = True,
+             image_path: str = None) -> str | None:
         """
         Plots a candles figure for the object.
 
@@ -344,7 +346,9 @@ class SymbolPlotting:
                               markers=markers,
                               marker_colors=marker_colors,
                               red_timestamps=self.red_timestamps,
-                              blue_timestamps=self.blue_timestamps)
+                              blue_timestamps=self.blue_timestamps,
+                              show=show,
+                              image_path=image_path)
 
     def _plot_trades_size(self, trades_df, empty_msg: str, trade_type_label: str, max_size: int = 60, height: int = 1000,
                           logarithmic: bool = False, overlap_prices: bool = True, shifted: int = 1,

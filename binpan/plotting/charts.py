@@ -449,10 +449,13 @@ def _validate_indicator_lengths(indicators_series, indicators_colors, indicator_
 
 
 def _finalize_and_export_figure(fig, traces, rows, cols, axes, title, yaxis_title, width, height,
-                                range_slider, plot_bgcolor):
-    """Add traces, apply layout, show figure and export to PNG.
+                                range_slider, plot_bgcolor, show: bool = True, image_path: str = None):
+    """Add traces, apply layout, optionally show the figure and export to PNG.
 
-    :returns: Path to the exported image or None on failure.
+    :param bool show: If True (default) opens the interactive figure (browser/notebook). Set False
+        for headless/programmatic use (servers, image-only export).
+    :param str image_path: Output path for the PNG. Defaults to ``"last_plot.png"`` in the cwd.
+    :returns: Absolute path to the exported image or None on failure.
     """
     fig = add_traces(fig=fig, list_of_plots=traces, rows=rows, cols=cols)
 
@@ -462,10 +465,12 @@ def _finalize_and_export_figure(fig, traces, rows, cols, axes, title, yaxis_titl
     if plot_bgcolor:
         fig.update_layout(plot_bgcolor=plot_bgcolor)
 
-    fig.show()
+    if show:
+        fig.show()
+    out_path = image_path or "last_plot.png"
     try:
-        fig.write_image("last_plot.png")
-        return os.path.join(os.getcwd(), "last_plot.png")
+        fig.write_image(out_path)
+        return os.path.abspath(out_path)
     except Exception as exc:
         plot_logger.error(f"Error writing image: {exc}")
         return None
@@ -499,7 +504,9 @@ def candles_ta(data: pd.DataFrame,
                plot_bgcolor: str = None,
                text_index: bool = False,
                vol_up_color: str = None,
-               vol_down_color: str = None):
+               vol_down_color: str = None,
+               show: bool = True,
+               image_path: str = None):
     """
     Data needs to be a DataFrame that at least contains the columns: Open Close High Low Volume
 
@@ -762,7 +769,7 @@ def candles_ta(data: pd.DataFrame,
 
     # --- block 5: finalize figure and export ---
     return _finalize_and_export_figure(fig, traces, rows, cols, axes, title, yaxis_title, width, height,
-                                       range_slider, plot_bgcolor)
+                                       range_slider, plot_bgcolor, show=show, image_path=image_path)
 
 
 def _setup_action_markers(data: pd.DataFrame,
@@ -853,7 +860,9 @@ def candles_tagged(data: pd.DataFrame,
                    markers_labels: dict = None,
                    markers: dict = None,
                    marker_colors: dict = None,
-                   marker_legend_names: dict = None):
+                   marker_legend_names: dict = None,
+                   show: bool = True,
+                   image_path: str = None):
     """
 
     This is a shortcut from candles_ta. It defaults many inputs to better Jupyter Notebook usage.
@@ -1125,7 +1134,9 @@ def candles_tagged(data: pd.DataFrame,
                       plot_splitted_serie_couple=plot_splitted_serie_couple,
                       plot_bgcolor=plot_bgcolor,
                       red_timestamps=red_timestamps,
-                      blue_timestamps=blue_timestamps)
+                      blue_timestamps=blue_timestamps,
+                      show=show,
+                      image_path=image_path)
 
 
 ################
