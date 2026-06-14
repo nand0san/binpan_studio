@@ -17,7 +17,7 @@ if os.path.exists(secret_path):
     my_secret = importlib.util.module_from_spec(spec)
     sys.modules["module.name"] = my_secret
     spec.loader.exec_module(my_secret)
-version = "0.9.7"
+version = "0.9.8"
 release = version
 
 extensions = [

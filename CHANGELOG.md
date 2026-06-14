@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## v0.9.8 (2026-06-14)
+
+Operation markers (▲ buy / ▼ sell) on the candle charts.
+
+### Features
+
+- `plotting.charts.set_price_markers(markers, klines_index)`: builds triangle marker traces
+  from an explicit list of priced points (`{'time', 'price', 'side', 'label'?}`). `time` is a
+  positional candle index (int) or a timestamp snapped to the nearest candle; `price` is the
+  exact y level; `side` 'buy' → green ▲ (label below), otherwise red ▼ (label above).
+- `Symbol.plot(..., priced_markers=...)` and `plotting.charts.candles_tagged`/`candles_ta`:
+  overlay operation markers on exact points over the candles. Compatible with
+  support/resistance lines and action columns (they overlay together).
+- `Symbol.plot_volume_profile(..., priced_markers=...)` and the underlying
+  `plotting.charts.plot_volume_profile(...)`: same markers on the candle panel of the VPVR.
+
 ## v0.9.7 (2026-06-14)
 
 Volume Profile (VPVR): analytics + composite chart.

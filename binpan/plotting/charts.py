@@ -206,6 +206,60 @@ def set_arrows(annotations: pd.Series, name: str = None, tag: str = None, textpo
                           marker_line_width=marker_line_width, marker_size=marker_size, name=name)
 
 
+def set_price_markers(markers: list, klines_index) -> list:
+    """Build triangle marker traces from an explicit list of priced points.
+
+    Each marker is a dict ``{'time', 'price', 'side', 'label'?}``. ``side`` 'buy' draws a
+    green ▲ (text below), any other value draws a red ▼ (text above). ``time`` is resolved
+    against ``klines_index`` (the candle index): an int is a positional candle index
+    (negatives count from the end), anything else is parsed as a timestamp and snapped to
+    the nearest candle. ``price`` is the exact y level; ``label`` is optional per-point text.
+
+    :param list markers: List of marker dicts.
+    :param klines_index: The candle DataFrame index used for x positioning.
+    :return: A list with up to two ``go.Scatter`` traces (buys and sells).
+    """
+    n = len(klines_index)
+    if n == 0:
+        return []
+    buy_x, buy_y, buy_t = [], [], []
+    sell_x, sell_y, sell_t = [], [], []
+    for m in markers or []:
+        t = m.get('time')
+        if isinstance(t, bool):
+            raise ValueError(f"marker 'time' inválido: {t!r}")
+        if isinstance(t, int):
+            i = t if t >= 0 else n + t
+            i = max(0, min(n - 1, i))
+            x = klines_index[i]
+        else:
+            ts = pd.to_datetime(t)
+            pos = int(klines_index.get_indexer([ts], method='nearest')[0])
+            if pos < 0:
+                pos = 0
+            x = klines_index[pos]
+        price = float(m['price'])
+        label = str(m.get('label') or '')
+        if str(m.get('side', '')).lower() == 'buy':
+            buy_x.append(x); buy_y.append(price); buy_t.append(label)
+        else:
+            sell_x.append(x); sell_y.append(price); sell_t.append(label)
+    traces = []
+    if buy_x:
+        traces.append(go.Scatter(x=buy_x, y=buy_y, text=buy_t, mode='markers+text',
+                                 marker_symbol='triangle-up', marker_color='#2ca02c', marker_size=14,
+                                 marker_line_color='black', marker_line_width=0.7,
+                                 textposition='bottom center', textfont=dict(color='#2ca02c'),
+                                 name='buy'))
+    if sell_x:
+        traces.append(go.Scatter(x=sell_x, y=sell_y, text=sell_t, mode='markers+text',
+                                  marker_symbol='triangle-down', marker_color='#d62728', marker_size=14,
+                                  marker_line_color='black', marker_line_width=0.7,
+                                  textposition='top center', textfont=dict(color='#d62728'),
+                                  name='sell'))
+    return traces
+
+
 def add_traces(fig, list_of_plots: list, rows: list, cols: list):
     """
     Put traces into the figure.
@@ -501,6 +555,7 @@ def candles_ta(data: pd.DataFrame,
                annotation_colors: list = None,
                annotation_legend_names: list = None,
                labels: list = None,
+               priced_markers: list = None,
                plot_bgcolor: str = None,
                text_index: bool = False,
                vol_up_color: str = None,
@@ -767,6 +822,13 @@ def candles_ta(data: pd.DataFrame,
         cols += [1 for _ in range(len(annotation_values))]
         traces += annotations_traces
 
+    # marcadores de operaciones (▲ compra / ▼ venta) en puntos exactos sobre las velas
+    if priced_markers:
+        marker_traces = set_price_markers(priced_markers, df_plot.index)
+        rows += [1 for _ in range(len(marker_traces))]
+        cols += [1 for _ in range(len(marker_traces))]
+        traces += marker_traces
+
     # --- block 5: finalize figure and export ---
     return _finalize_and_export_figure(fig, traces, rows, cols, axes, title, yaxis_title, width, height,
                                        range_slider, plot_bgcolor, show=show, image_path=image_path)
@@ -861,6 +923,7 @@ def candles_tagged(data: pd.DataFrame,
                    markers: dict = None,
                    marker_colors: dict = None,
                    marker_legend_names: dict = None,
+                   priced_markers: list = None,
                    show: bool = True,
                    image_path: str = None):
     """
@@ -1124,6 +1187,7 @@ def candles_tagged(data: pd.DataFrame,
                       labels=[markers_labels[k] for k in labels_locator],
                       annotation_colors=[marker_colors[k] for k in labels_locator],
                       annotation_legend_names=[marker_legend_names[k] for k in labels_locator],
+                      priced_markers=priced_markers,
                       rows_pos=rows_pos_final,
                       indicators_series=indicator_series,
                       indicator_names=indicator_names,
@@ -1228,7 +1292,8 @@ def plot_trades(data: pd.DataFrame, max_size: int = 60, height: int = 1000, loga
 
 def plot_volume_profile(klines_df: pd.DataFrame, profile_bins: list, poc: float, vah: float, val: float,
                         lvn: list = None, title: str = None, height: int = 900, width: int = None,
-                        horizontal_lines: list = None, show: bool = True, image_path: str = None):
+                        horizontal_lines: list = None, priced_markers: list = None,
+                        show: bool = True, image_path: str = None):
     """Plots a Volume Profile (VPVR): candles on the left, horizontal volume histogram on the right.
 
     Two panels share the price (y) axis: candlesticks and, to their right, a horizontal bar chart of
@@ -1246,6 +1311,8 @@ def plot_volume_profile(klines_df: pd.DataFrame, profile_bins: list, poc: float,
     :param int height: plot height in px. Default 900.
     :param int width: plot width in px. If None, autosize.
     :param list horizontal_lines: optional extra price levels (entry/stop/TP) as dashed lines.
+    :param list priced_markers: optional operation markers (▲ buy / ▼ sell) on exact points over the
+        candles: a list of ``{'time', 'price', 'side', 'label'?}`` (see ``set_price_markers``).
     :param bool show: if True (default) opens the interactive figure; set False for headless/servers.
     :param str image_path: output PNG path. Defaults to ``last_plot.png`` in the cwd.
     :return: absolute path to the exported image, or None on failure.
@@ -1263,6 +1330,8 @@ def plot_volume_profile(klines_df: pd.DataFrame, profile_bins: list, poc: float,
                                  low=klines_df['Low'], close=klines_df['Close'], name='Candles'), row=1, col=1)
     fig.add_trace(go.Bar(y=mids, x=vols, orientation='h', marker_color=bar_colors, name='Volume',
                          showlegend=False, hovertemplate='price=%{y}<br>vol=%{x}<extra></extra>'), row=1, col=2)
+    for mt in set_price_markers(priced_markers or [], klines_df.index):
+        fig.add_trace(mt, row=1, col=1)
 
     # POC, Value Area y LVN: cruzan ambos paneles porque comparten el eje de precio (y).
     fig.add_hrect(y0=val, y1=vah, line_width=0, fillcolor='rgba(67, 140, 255, 0.10)', row='all', col='all')

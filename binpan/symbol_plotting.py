@@ -263,6 +263,7 @@ class SymbolPlotting:
              marker_labels: dict = None,
              markers: list = None,
              marker_colors: list = None,
+             priced_markers: list = None,
              background_color=None,
              zoom_start_idx=None,
              zoom_end_idx=None,
@@ -298,6 +299,11 @@ class SymbolPlotting:
         :param list markers: Plotly marker type. Usually, if referenced by number will be a not filled mark and using string name will be
             a color filled one. Check plotly info: https://plotly.com/python/marker-style/
         :param list marker_colors: Colors of the annotations.
+        :param list priced_markers: Explicit operation markers to overlay on exact points: a list of
+            dicts ``{'time', 'price', 'side', 'label'?}``. ``side`` 'buy' draws a green ▲ (label below),
+            otherwise a red ▼ (label above). ``time`` is a positional candle index (int) or a timestamp
+            (snapped to the nearest candle); ``price`` is the exact y level. Compatible with
+            support/resistance lines and action columns (they overlay together).
         :param str background_color: Sets background color. Select a valid plotly color name.
         :param int zoom_start_idx: It can zoom to an index interval.
         :param int zoom_end_idx: It can zoom to an index interval.
@@ -345,6 +351,7 @@ class SymbolPlotting:
                               plot_bgcolor=background_color,
                               markers=markers,
                               marker_colors=marker_colors,
+                              priced_markers=priced_markers,
                               red_timestamps=self.red_timestamps,
                               blue_timestamps=self.blue_timestamps,
                               show=show,
@@ -682,7 +689,7 @@ class SymbolPlotting:
                             from_atomic_trades: bool = False, hours: int = None, minutes: int = None,
                             startTime: int | str = None, endTime: int | str = None, time_zone: str = None,
                             title: str = None, height: int = 900, width: int = None, horizontal_lines: list = None,
-                            show: bool = True, image_path: str = None) -> str | None:
+                            priced_markers: list = None, show: bool = True, image_path: str = None) -> str | None:
         """Volume Profile (VPVR): velas + histograma horizontal de volumen, con POC y Value Area.
 
         Dibuja las velas a la izquierda y, compartiendo el eje de precio, un histograma horizontal del
@@ -703,6 +710,8 @@ class SymbolPlotting:
         :param int height: alto px. Default 900.
         :param int width: ancho px. Si None, autosize.
         :param list horizontal_lines: precios extra (entrada/stop/TP) como lineas discontinuas.
+        :param list priced_markers: marcadores de operacion (▲ compra / ▼ venta) en puntos exactos sobre
+            las velas: lista de ``{'time', 'price', 'side', 'label'?}`` (ver ``set_price_markers``).
         :param bool show: si True (default) abre la figura interactiva; False para uso headless/servidor.
         :param str image_path: ruta del PNG de salida. Por defecto ``last_plot.png`` en el cwd.
         :return: ruta absoluta de la imagen exportada, o None si falla.
@@ -722,7 +731,7 @@ class SymbolPlotting:
         return _plotting().plot_volume_profile(klines_df=self.df, profile_bins=vp["bins"], poc=vp["poc"],
                                                vah=vp["vah"], val=vp["val"], lvn=vp["lvn"], title=title,
                                                height=height, width=width, horizontal_lines=horizontal_lines,
-                                               show=show, image_path=image_path)
+                                               priced_markers=priced_markers, show=show, image_path=image_path)
 
     def plot_trades_scatter(self, x: str = None, y: str = None, dot_symbol='Buyer was maker', color: str = None, marginal=True,
                             from_trades=True, height=1000, color_referenced_to_y=True,
