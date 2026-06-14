@@ -352,7 +352,8 @@ class SymbolPlotting:
 
     def _plot_trades_size(self, trades_df, empty_msg: str, trade_type_label: str, max_size: int = 60, height: int = 1000,
                           logarithmic: bool = False, overlap_prices: bool = True, shifted: int = 1,
-                          title: str = None) -> str | None:
+                          title: str = None, size_column: str = 'Quantity', width: int = None,
+                          horizontal_lines: list = None, show: bool = True, image_path: str = None) -> str | None:
         """Private helper for plotting trades sized by quantity.
 
         :param trades_df: DataFrame with trades data.
@@ -379,10 +380,17 @@ class SymbolPlotting:
                                        logarithmic=logarithmic,
                                        overlap_prices=overlap_prices,
                                        shifted=shifted,
-                                       title=title)
+                                       title=title,
+                                       size_column=size_column,
+                                       width=width,
+                                       horizontal_lines=horizontal_lines,
+                                       show=show,
+                                       image_path=image_path)
 
     def plot_agg_trades_size(self, max_size: int = 60, height: int = 1000, logarithmic: bool = False, overlap_prices: bool = True,
-                             group_big_data: int = None, shifted: int = 1, title: str = None) -> str | None:
+                             group_big_data: int = None, shifted: int = 1, title: str = None, size_column: str = 'Quantity',
+                             width: int = None, horizontal_lines: list = None, show: bool = True,
+                             image_path: str = None) -> str | None:
         """
         It plots a time series graph plotting aggregated trades sized by quantity and color if taker or maker buyer.
 
@@ -401,10 +409,13 @@ class SymbolPlotting:
         return self._plot_trades_size(trades_df=self.agg_trades, empty_msg=empty_agg_trades_msg,
                                       trade_type_label="aggregated", max_size=max_size, height=height,
                                       logarithmic=logarithmic, overlap_prices=overlap_prices, shifted=shifted,
-                                      title=title)
+                                      title=title, size_column=size_column, width=width,
+                                      horizontal_lines=horizontal_lines, show=show, image_path=image_path)
 
     def plot_atomic_trades_size(self, max_size: int = 60, height: int = 1000, logarithmic: bool = False, overlap_prices: bool = True,
-                                group_big_data: int = None, shifted: int = 1, title: str = None) -> str | None:
+                                group_big_data: int = None, shifted: int = 1, title: str = None, size_column: str = 'Quantity',
+                                width: int = None, horizontal_lines: list = None, show: bool = True,
+                                image_path: str = None) -> str | None:
         """
         It plots a time series graph plotting atomic trades sized by quantity and color if taker or maker buyer.
 
@@ -423,7 +434,8 @@ class SymbolPlotting:
         return self._plot_trades_size(trades_df=self.atomic_trades, empty_msg=empty_atomic_trades_msg,
                                       trade_type_label="atomic", max_size=max_size, height=height,
                                       logarithmic=logarithmic, overlap_prices=overlap_prices, shifted=shifted,
-                                      title=title)
+                                      title=title, size_column=size_column, width=width,
+                                      horizontal_lines=horizontal_lines, show=show, image_path=image_path)
 
     def plot_reversal(self, min_height: int = None, min_reversal: int = None, text_index: bool = True, from_atomic: bool = False, **kwargs) -> str | None:
         """

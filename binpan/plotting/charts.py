@@ -1144,7 +1144,8 @@ def candles_tagged(data: pd.DataFrame,
 ################
 
 def plot_trades(data: pd.DataFrame, max_size: int = 60, height: int = 1000, logarithmic: bool = False, overlap_prices: pd.DataFrame = None,
-                title: str = None, shifted: int = 1, **kwargs_update_layout):
+                title: str = None, shifted: int = 1, size_column: str = 'Quantity', width: int = None,
+                horizontal_lines: list = None, show: bool = True, image_path: str = None, **kwargs_update_layout):
     """
     Plots scatter plot from trades quantity and trades sizes. Marks are size scaled to the max size. Marks are semi transparent and colored
     using Taker buyer (green) or Taker seller (red) discrete colors.
@@ -1181,7 +1182,7 @@ def plot_trades(data: pd.DataFrame, max_size: int = 60, height: int = 1000, loga
     """
     maker_labels = data['Buyer was maker'].replace({False: TAKER_BUYER_LABEL, True: TAKER_SELLER_LABEL})
     fig = px.scatter(x=data.index, y=data['Price'], color=maker_labels, size=data[
-        'Quantity'], size_max=max_size, log_y=logarithmic, color_discrete_map=TAKER_MAKER_COLOR_MAP)
+        size_column], size_max=max_size, log_y=logarithmic, color_discrete_map=TAKER_MAKER_COLOR_MAP)
     if not title:
         title = f"Trades size {data.index.name}"
     if type(overlap_prices) == pd.DataFrame:
@@ -1209,9 +1210,20 @@ def plot_trades(data: pd.DataFrame, max_size: int = 60, height: int = 1000, loga
         fig = go.Figure(data=fig.data + fig2.data + fig3.data)
 
     fig.update_layout(title=title, xaxis_title_text=f'{data.index.name}', yaxis_title_text=f'Price', height=height, **kwargs_update_layout)
-    fig.show()
-    fig.write_image("last_plot.png")
-    return os.path.join(os.getcwd(), "last_plot.png")
+    if width:
+        fig.update_layout(width=width)
+    if horizontal_lines:
+        for lv in horizontal_lines:
+            fig.add_hline(y=lv, line=dict(color='rgba(0, 0, 0, 0.5)', width=1, dash='dash'))
+    if show:
+        fig.show()
+    out_path = image_path or "last_plot.png"
+    try:
+        fig.write_image(out_path)
+        return os.path.abspath(out_path)
+    except Exception as exc:
+        plot_logger.error(f"Error writing image: {exc}")
+        return None
 
 
 ##################
