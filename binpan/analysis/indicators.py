@@ -1173,6 +1173,81 @@ def market_profile_from_trades_grouped(df: pd.DataFrame, num_bins: int = 100) ->
     return volume_by_price_bin
 
 
+def value_area_from_profile(profile: pd.DataFrame, value_area_pct: float = 0.70) -> dict | None:
+    """Calcula POC, Value Area y nodos de alto/bajo volumen de un market profile.
+
+    A partir de un DataFrame de market profile (el que devuelven ``market_profile_from_klines_grouped``
+    o ``market_profile_from_trades_grouped``: ``IntervalIndex`` de precio + columnas de volumen) calcula
+    las metricas tipicas de un Volume Profile (VPVR):
+
+    - **POC** (Point of Control): el nivel de precio con mayor volumen, el gran iman.
+    - **Value Area** (VAH/VAL): el rango de precios que concentra ``value_area_pct`` del volumen total,
+      expandido desde el POC hacia el vecino con mas volumen en cada paso (algoritmo estandar).
+    - **HVN / LVN** (High/Low Volume Nodes): maximos/minimos locales del histograma. Los HVN actuan como
+      soportes/resistencias por aceptacion; los LVN son huecos por donde el precio viaja rapido.
+
+    :param pd.DataFrame profile: market profile con ``IntervalIndex`` de precio. El volumen de cada bin
+        es la suma de todas sus columnas numericas (taker + maker).
+    :param float value_area_pct: fraccion del volumen total dentro de la Value Area. Por defecto 0.70.
+    :return: dict con ``poc``, ``vah``, ``val``, ``value_area_pct``, ``total_volume``, ``bins`` (lista de
+        ``{price, low, high, volume}``), ``hvn`` y ``lvn`` (listas de precios). ``None`` si el perfil esta vacio.
+
+    Ejemplo::
+
+        prof = market_profile_from_klines_grouped(df=sym.df, num_bins=50)
+        va = value_area_from_profile(prof, value_area_pct=0.70)
+        print(va["poc"], va["vah"], va["val"])
+    """
+    if profile is None or len(profile) == 0:
+        return None
+    idx = profile.index
+    mids = np.asarray(idx.mid, dtype=float)
+    lefts = np.asarray(idx.left, dtype=float)
+    rights = np.asarray(idx.right, dtype=float)
+    vols = profile.sum(axis=1).to_numpy(dtype=float)  # taker + maker por bin
+    n = len(vols)
+    total = float(vols.sum())
+
+    poc_idx = int(vols.argmax())
+    poc = float(mids[poc_idx])
+
+    # Value Area: expandir desde el POC sumando en cada paso el vecino (arriba/abajo) con mas volumen.
+    lo = hi = poc_idx
+    acc = float(vols[poc_idx])
+    target = value_area_pct * total
+    while acc < target and (lo > 0 or hi < n - 1):
+        up = float(vols[hi + 1]) if hi + 1 < n else -1.0
+        down = float(vols[lo - 1]) if lo - 1 >= 0 else -1.0
+        if up >= down:
+            hi += 1
+            acc += float(vols[hi])
+        else:
+            lo -= 1
+            acc += float(vols[lo])
+    val = float(lefts[lo])
+    vah = float(rights[hi])
+
+    # HVN / LVN: extremos locales del histograma, exigiendo prominencia (>= 0.5 sigma respecto a la
+    # media) para quedarnos solo con los nodos significativos y no con el ruido del perfil.
+    mean_v = float(vols.mean())
+    std_v = float(vols.std())
+    hi_thr = mean_v + 0.5 * std_v
+    lo_thr = max(0.0, mean_v - 0.5 * std_v)
+    hvn, lvn = [], []
+    for i in range(1, n - 1):
+        if vols[i] >= vols[i - 1] and vols[i] >= vols[i + 1] and vols[i] >= hi_thr:
+            hvn.append(round(float(mids[i]), 8))
+        elif vols[i] <= vols[i - 1] and vols[i] <= vols[i + 1] and vols[i] <= lo_thr:
+            lvn.append(round(float(mids[i]), 8))
+
+    bins_out = [{"price": round(float(mids[i]), 8), "low": round(float(lefts[i]), 8),
+                 "high": round(float(rights[i]), 8), "volume": round(float(vols[i]), 8)}
+                for i in range(n)]
+    return {"poc": round(poc, 8), "vah": round(vah, 8), "val": round(val, 8),
+            "value_area_pct": value_area_pct, "total_volume": round(total, 8),
+            "bins": bins_out, "hvn": hvn, "lvn": lvn}
+
+
 ########################################
 # Indicadores nativos (sin pandas_ta) #
 ########################################

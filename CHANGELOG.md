@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## v0.9.7 (2026-06-14)
+
+Volume Profile (VPVR): analytics + composite chart.
+
+### Features
+
+- `analysis.indicators.value_area_from_profile(profile, value_area_pct=0.70)`: computes
+  POC, Value Area (VAH/VAL) and HVN/LVN nodes from a market-profile DataFrame.
+- `Symbol.volume_profile(bins=50, value_area_pct=0.70, from_agg_trades=..., ...)`: returns
+  the volume profile numbers (POC/VAH/VAL/HVN/LVN + per-bin volumes). Reuses
+  `get_market_profile` for klines/trades sourcing and windowing.
+- `Symbol.plot_volume_profile(...)`: composite VPVR chart — candlesticks + horizontal
+  volume histogram sharing the price axis, POC line, shaded Value Area, LVN marks.
+  Headless export (`show=False`, `image_path=`, `width=`) and optional `horizontal_lines`.
+- `plotting.charts.plot_volume_profile(...)`: the underlying figure builder.
+
 ## v0.9.6 (2026-06-14)
 
 Headless export for the trades scatter plot.

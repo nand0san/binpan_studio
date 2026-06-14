@@ -1226,6 +1226,74 @@ def plot_trades(data: pd.DataFrame, max_size: int = 60, height: int = 1000, loga
         return None
 
 
+def plot_volume_profile(klines_df: pd.DataFrame, profile_bins: list, poc: float, vah: float, val: float,
+                        lvn: list = None, title: str = None, height: int = 900, width: int = None,
+                        horizontal_lines: list = None, show: bool = True, image_path: str = None):
+    """Plots a Volume Profile (VPVR): candles on the left, horizontal volume histogram on the right.
+
+    Two panels share the price (y) axis: candlesticks and, to their right, a horizontal bar chart of
+    volume traded at each price level. The bars inside the Value Area are highlighted; the POC (Point of
+    Control) is drawn as a solid line and the Value Area (VAH..VAL) as a shaded band across both panels.
+    Optional LVN (Low Volume Node) levels are marked with dotted lines (fast-travel gaps).
+
+    :param pd.DataFrame klines_df: OHLC klines (needs ``Open``, ``High``, ``Low``, ``Close``).
+    :param list profile_bins: list of ``{price, low, high, volume}`` (from ``value_area_from_profile``).
+    :param float poc: Point of Control price.
+    :param float vah: Value Area High price.
+    :param float val: Value Area Low price.
+    :param list lvn: optional list of Low Volume Node prices to mark with dotted lines.
+    :param str title: graph title.
+    :param int height: plot height in px. Default 900.
+    :param int width: plot width in px. If None, autosize.
+    :param list horizontal_lines: optional extra price levels (entry/stop/TP) as dashed lines.
+    :param bool show: if True (default) opens the interactive figure; set False for headless/servers.
+    :param str image_path: output PNG path. Defaults to ``last_plot.png`` in the cwd.
+    :return: absolute path to the exported image, or None on failure.
+
+    .. image:: images/plotting/volume_profile.png
+       :width: 1000
+       :alt: Volume Profile with POC and Value Area
+    """
+    mids = [b["price"] for b in profile_bins]
+    vols = [b["volume"] for b in profile_bins]
+    bar_colors = ['rgba(67, 140, 255, 0.7)' if val <= m <= vah else 'rgba(150, 150, 150, 0.45)' for m in mids]
+
+    fig = make_subplots(rows=1, cols=2, shared_yaxes=True, column_widths=[0.82, 0.18], horizontal_spacing=0.005)
+    fig.add_trace(go.Candlestick(x=klines_df.index, open=klines_df['Open'], high=klines_df['High'],
+                                 low=klines_df['Low'], close=klines_df['Close'], name='Candles'), row=1, col=1)
+    fig.add_trace(go.Bar(y=mids, x=vols, orientation='h', marker_color=bar_colors, name='Volume',
+                         showlegend=False, hovertemplate='price=%{y}<br>vol=%{x}<extra></extra>'), row=1, col=2)
+
+    # POC, Value Area y LVN: cruzan ambos paneles porque comparten el eje de precio (y).
+    fig.add_hrect(y0=val, y1=vah, line_width=0, fillcolor='rgba(67, 140, 255, 0.10)', row='all', col='all')
+    fig.add_hline(y=poc, line=dict(color='orange', width=2), row='all', col='all',
+                  annotation_text='POC', annotation_position='top left')
+    fig.add_hline(y=vah, line=dict(color='rgba(67, 140, 255, 0.6)', width=1, dash='dot'), row='all', col='all')
+    fig.add_hline(y=val, line=dict(color='rgba(67, 140, 255, 0.6)', width=1, dash='dot'), row='all', col='all')
+    for lv in (lvn or []):
+        fig.add_hline(y=lv, line=dict(color='rgba(204, 0, 204, 0.45)', width=1, dash='dot'), row='all', col='all')
+    for lv in (horizontal_lines or []):
+        fig.add_hline(y=lv, line=dict(color='rgba(0, 0, 0, 0.55)', width=1, dash='dash'), row='all', col='all')
+
+    if not title:
+        title = f"Volume Profile {klines_df.index.name}"
+    fig.update_layout(title=title, height=height, showlegend=False, bargap=0.1)
+    fig.update_xaxes(rangeslider_visible=False, row=1, col=1)
+    fig.update_yaxes(title_text='Price', row=1, col=1)
+    fig.update_xaxes(title_text='Volume', row=1, col=2)
+    if width:
+        fig.update_layout(width=width)
+    if show:
+        fig.show()
+    out_path = image_path or "last_plot.png"
+    try:
+        fig.write_image(out_path)
+        return os.path.abspath(out_path)
+    except Exception as exc:
+        plot_logger.error(f"Error writing image: {exc}")
+        return None
+
+
 ##################
 # Analysis plots #
 ##################

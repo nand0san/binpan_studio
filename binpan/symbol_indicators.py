@@ -12,7 +12,8 @@ from .core.exceptions import BinPanException
 from .analysis.indicators import (df_splitter, ichimoku, fractal_w_indicator,
                                  support_resistance_levels, market_profile_from_klines_grouped,
                                  alternating_fractal_indicator, fractal_trend_indicator,
-                                 market_profile_from_trades_grouped, support_resistance_levels_merged, time_active_zones,
+                                 market_profile_from_trades_grouped, value_area_from_profile,
+                                 support_resistance_levels_merged, time_active_zones,
                                  atr as atr_indicator, supertrend as supertrend_indicator,
                                  macd as macd_indicator, stoch_rsi as stoch_rsi_indicator,
                                  obv as obv_indicator, ad as ad_indicator, vwap as vwap_indicator,
@@ -929,6 +930,42 @@ class SymbolIndicators:
             binpan_logger.info(f"Using klines data. For deeper info add trades data, example: my_symbol.get_agg_trades()")
             self.market_profile_df = market_profile_from_klines_grouped(df=_df, num_bins=bins)
         return self.market_profile_df
+
+    def volume_profile(self, bins: int = 50, value_area_pct: float = 0.70, from_agg_trades: bool = False,
+                       from_atomic_trades: bool = False, hours: int = None, minutes: int = None,
+                       startTime: int | str = None, endTime: int | str = None, time_zone: str = None) -> dict | None:
+        """Volume Profile (VPVR): volumen por nivel de precio + POC, Value Area y nodos HVN/LVN.
+
+        Calcula el market profile (reutiliza :meth:`get_market_profile`) y le aplica las metricas de un
+        Volume Profile: POC (nivel de mayor volumen, el iman), Value Area (rango que concentra
+        ``value_area_pct`` del volumen) y los HVN/LVN (nodos de alto/bajo volumen: aceptacion vs huecos
+        por donde el precio viaja rapido). Devuelve numeros para razonar sin mirar el grafico; para el
+        grafico usa :meth:`plot_volume_profile`.
+
+        :param int bins: numero de niveles del histograma. Default 50.
+        :param float value_area_pct: fraccion del volumen dentro de la Value Area. Default 0.70.
+        :param bool from_agg_trades: usa aggregated trades (requiere ``get_agg_trades()`` antes).
+        :param bool from_atomic_trades: usa atomic trades (requiere ``get_atomic_trades()`` antes).
+        :param int hours: si se pasa, solo las ultimas 'hours' horas.
+        :param int minutes: si se pasa, solo los ultimos 'minutes' minutos.
+        :param startTime: timestamp/fecha de inicio (%Y-%m-%d %H:%M:%S).
+        :param endTime: timestamp/fecha de fin.
+        :param str time_zone: zona horaria para el indice temporal.
+        :return: dict con ``poc``, ``vah``, ``val``, ``value_area_pct``, ``total_volume``, ``bins``
+            (lista de ``{price, low, high, volume}``), ``hvn`` y ``lvn``. ``None`` si no hay datos.
+
+        Ejemplo::
+
+            sym = binpan.Symbol('BTCUSDT', '15m', limit=500)
+            vp = sym.volume_profile(bins=50)
+            print(vp["poc"], vp["vah"], vp["val"])
+        """
+        profile = self.get_market_profile(bins=bins, hours=hours, minutes=minutes, startTime=startTime,
+                                          endTime=endTime, from_agg_trades=from_agg_trades,
+                                          from_atomic_trades=from_atomic_trades, time_zone=time_zone)
+        if profile is None or profile.empty:
+            return None
+        return value_area_from_profile(profile, value_area_pct=value_area_pct)
 
     def get_maker_taker_buy_ratios(self, window: int = 14, inplace=True, colors: list = None, suffix: str = "",
                                    nans_to_zeros=True) -> pd.DataFrame:

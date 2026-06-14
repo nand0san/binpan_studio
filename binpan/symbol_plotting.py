@@ -678,6 +678,52 @@ class SymbolPlotting:
                             horizontal_bars=True,
                             **kwargs_update_layout)
 
+    def plot_volume_profile(self, bins: int = 50, value_area_pct: float = 0.70, from_agg_trades: bool = False,
+                            from_atomic_trades: bool = False, hours: int = None, minutes: int = None,
+                            startTime: int | str = None, endTime: int | str = None, time_zone: str = None,
+                            title: str = None, height: int = 900, width: int = None, horizontal_lines: list = None,
+                            show: bool = True, image_path: str = None) -> str | None:
+        """Volume Profile (VPVR): velas + histograma horizontal de volumen, con POC y Value Area.
+
+        Dibuja las velas a la izquierda y, compartiendo el eje de precio, un histograma horizontal del
+        volumen por nivel a la derecha. Resalta la Value Area, traza el POC y marca los LVN (huecos por
+        donde el precio viaja rapido). Util para ver imanes y soportes/resistencias por aceptacion. Los
+        numeros (POC/VAH/VAL/HVN/LVN) se obtienen con :meth:`volume_profile`.
+
+        :param int bins: numero de niveles del histograma. Default 50.
+        :param float value_area_pct: fraccion del volumen dentro de la Value Area. Default 0.70.
+        :param bool from_agg_trades: perfil fino desde aggregated trades (requiere ``get_agg_trades()`` antes).
+        :param bool from_atomic_trades: perfil desde atomic trades (requiere ``get_atomic_trades()`` antes).
+        :param int hours: si se pasa, solo las ultimas 'hours' horas.
+        :param int minutes: si se pasa, solo los ultimos 'minutes' minutos.
+        :param startTime: timestamp/fecha de inicio (rango fijo).
+        :param endTime: timestamp/fecha de fin (rango fijo).
+        :param str time_zone: zona horaria para el indice temporal.
+        :param str title: titulo del grafico.
+        :param int height: alto px. Default 900.
+        :param int width: ancho px. Si None, autosize.
+        :param list horizontal_lines: precios extra (entrada/stop/TP) como lineas discontinuas.
+        :param bool show: si True (default) abre la figura interactiva; False para uso headless/servidor.
+        :param str image_path: ruta del PNG de salida. Por defecto ``last_plot.png`` en el cwd.
+        :return: ruta absoluta de la imagen exportada, o None si falla.
+
+        .. image:: images/plotting/volume_profile.png
+           :width: 1000
+           :alt: Volume Profile con POC y Value Area
+        """
+        vp = self.volume_profile(bins=bins, value_area_pct=value_area_pct, from_agg_trades=from_agg_trades,
+                                 from_atomic_trades=from_atomic_trades, hours=hours, minutes=minutes,
+                                 startTime=startTime, endTime=endTime, time_zone=time_zone)
+        if not vp:
+            binpan_logger.info("Volume profile vacio: no se pudo generar el grafico.")
+            return None
+        if not title:
+            title = f"Volume Profile {self.symbol}"
+        return _plotting().plot_volume_profile(klines_df=self.df, profile_bins=vp["bins"], poc=vp["poc"],
+                                               vah=vp["vah"], val=vp["val"], lvn=vp["lvn"], title=title,
+                                               height=height, width=width, horizontal_lines=horizontal_lines,
+                                               show=show, image_path=image_path)
+
     def plot_trades_scatter(self, x: str = None, y: str = None, dot_symbol='Buyer was maker', color: str = None, marginal=True,
                             from_trades=True, height=1000, color_referenced_to_y=True,
                             # useful to compare volume with taker volume for coloring
