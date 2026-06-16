@@ -1,5 +1,23 @@
 # CHANGELOG
 
+## v0.9.9 (2026-06-16)
+
+Plot legend/series alignment fixes on the candle charts.
+
+### Fixed
+
+- `Symbol.plot` legend/colors mismatch when support/resistance lines were drawn together with
+  indicators: overlapped series (supports, resistances and any `overlapped_indicators`) are
+  plotted before the row indicators, so their names and colors are now prepended to stay
+  aligned. Previously the RSI could be painted with a support color, a support line could take
+  the RSI color, and the legend did not match the lines. This also prevented the cloud-fill
+  (`plot_splitted_serie_couple`) of MACD/Ichimoku/Bollinger from being triggered on the wrong
+  indicator when support/resistance lines were present.
+- `plotting.charts.candles_ta` created an empty trailing subplot row whenever a row-1 overlay
+  indicator (EMA, Bollinger, Ichimoku, VWAP, Supertrend) or support/resistance lines were
+  present: row 1 is the candles overlay, not a subplot of its own, so only rows `> 1` are now
+  counted as extra subplots.
+
 ## v0.9.8 (2026-06-14)
 
 Operation markers (▲ buy / ▼ sell) on the candle charts.

@@ -681,10 +681,13 @@ def candles_ta(data: pd.DataFrame,
     # --- block 4: validate lengths ---
     _validate_indicator_lengths(indicators_series, indicators_colors, indicator_names, rows_pos)
 
+    # row 1 is the candles overlay (EMA, bbands, supports, etc.), not a subplot of its own;
+    # only rows > 1 are extra subplots. Counting row 1 here would add an empty trailing row.
+    subplot_rows = len({r for r in rows_pos if r != 1})
     if plot_volume:
-        extra_rows = len(set(rows_pos)) + 1
+        extra_rows = subplot_rows + 1
     else:
-        extra_rows = len(set(rows_pos))
+        extra_rows = subplot_rows
 
     fig = set_subplots(extra_rows=extra_rows, candles_ta_height_ratio=candles_ta_height_ratio, vertical_spacing=0.02)
 

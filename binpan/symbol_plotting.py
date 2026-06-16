@@ -228,17 +228,30 @@ class SymbolPlotting:
 
         rows_pos = [self.row_control[k] for k in self.row_control.keys()]
 
-        # --- append support / resistance horizontal lines ---
+        # --- support / resistance horizontal lines (overlapped on candles) ---
+        # candles_tagged plots the overlapped (on-candle) series BEFORE the row_control
+        # series (`indicator_series = on_candles_indicator + indicator_series`) and builds
+        # rows_pos accordingly. So the names/colors of the overlapped series must precede the
+        # row_control ones; otherwise each trace gets the name/color of another (e.g. the RSI
+        # ends up painted with a support color and the legend stops matching the lines).
+        overlap_names = []
+        overlap_colors = []
+        # names/colors for any user-supplied overlapped indicators already present
+        for i, serie in enumerate(overlapped_indicators):
+            overlap_names += [getattr(serie, "name", None) or f"Overlap {i}"]
+            overlap_colors += [choice(_plotting().plotly_colors)]
         if support_lines:
             for s_value in support_lines:
                 overlapped_indicators += [pd.Series(index=temp_df.index, data=s_value)]
-                indicator_names += [f"Support {s_value}"]
-                indicators_colors += [support_lines_color]
+                overlap_names += [f"Support {s_value}"]
+                overlap_colors += [support_lines_color]
         if resistance_lines:
             for r_value in resistance_lines:
                 overlapped_indicators += [pd.Series(index=temp_df.index, data=r_value)]
-                indicator_names += [f"Resistance {r_value}"]
-                indicators_colors += [resistance_lines_color]
+                overlap_names += [f"Resistance {r_value}"]
+                overlap_colors += [resistance_lines_color]
+        indicator_names = overlap_names + indicator_names
+        indicators_colors = overlap_colors + indicators_colors
 
         # --- zoom cloud indicators ---
         if zoom_start_idx is not None or zoom_end_idx is not None:
