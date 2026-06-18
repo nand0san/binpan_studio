@@ -3,7 +3,7 @@
 This is the main classes file.
 
 """
-__version__ = "0.9.5"
+__version__ = "0.10.0"
 
 import os
 import pandas as pd
@@ -16,6 +16,8 @@ from .exchange import Exchange
 from .auxiliar import csv_klines_setup, check_continuity, repair_kline_discontinuity
 
 from .core.exceptions import BinPanException
+from .core.secrets import get_secret
+from .core.trades import Trades
 from .api.exchange_info import (get_decimal_positions, get_info_dic, get_precision, get_orderTypes_and_permissions, get_fees,
                                get_symbols_filters)
 from .storage.files import select_file, read_csv_to_dataframe, save_dataframe_to_csv, extract_filename_metadata
@@ -157,7 +159,7 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
     :param bool postgres_atomic_trades:    If True, gets data from a postgres database by selecting interactively from tables found.
         Also a string with table name can be used. If str passed, it will be used as host.
     :param bool or str binbase:    If True, gets data from binbase TimescaleDB (shared schema with symbol column).
-        If str passed, it will be used as host. Password from ``secret.binbase_password`` or ``BINBASE_PASSWORD`` env var.
+        If str passed, it will be used as host. Password from ``BINBASE_PASSWORD`` env var or panzer's ``binbase_password`` (~/.panzer_creds).
     :param float hours:    If hours is passed, it gets the candles from the last hours.
     :param bool from_csv:    If True, gets data from a csv file by selecting interactively from csv files found.
         Also a string with filename can be used.
@@ -287,6 +289,15 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
         # parámetros principales
         self.symbol = symbol.upper() if symbol else ""
 
+        # estado de conexiones por defecto (se sobrescribe abajo para símbolos no-CSV);
+        # garantiza que _get_trades funcione también en símbolos creados desde CSV.
+        self.binbase = False
+        self.connection_binbase = self.cursor_binbase = None
+        self.postgres_agg_trades = self.postgres_atomic_trades = False
+        self.connection_klines = self.cursor_klines = None
+        self.connection_agg_trades = self.cursor_agg_trades = None
+        self.connection_atomic_trades = self.cursor_atomic_trades = None
+
         if from_csv:
             self._init_from_csv(from_csv=from_csv)
         else:
@@ -339,10 +350,12 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
         self.sr_data_source = None  # "atomic trades", "aggregated trades" or "klines"
 
         self.raw_agg_trades = []
-        self.agg_trades = pd.DataFrame(columns=list(self.agg_trades_columns.values()))
+        self.agg_trades = Trades(trade_type='agg', columns=self.agg_trades_columns, symbol=self.symbol,
+                                 time_zone=self.time_zone)
 
         self.raw_atomic_trades = []
-        self.atomic_trades = pd.DataFrame(columns=list(self.atomic_trades_columns.values()))
+        self.atomic_trades = Trades(trade_type='atomic', columns=self.atomic_trades_columns, symbol=self.symbol,
+                                    time_zone=self.time_zone)
 
         self.min_height = 7
         self.min_reversal = 4
@@ -499,14 +512,16 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
         if postgres_klines or postgres_agg_trades or postgres_atomic_trades:
 
             import binpan.postgresql as postgresql
-            from secret import (postgresql_port, postgresql_user, postgresql_database)
+            postgresql_port = get_secret("postgresql_port")
+            postgresql_user = get_secret("postgresql_user")
+            postgresql_database = get_secret("postgresql_database")
 
             if postgres_klines:
                 if type(postgres_klines) == str:
                     binpan_logger.info(f"Postgres connection requested: {postgres_klines}")
                     postgresql_host_klines = postgres_klines
                 else:
-                    from secret import postgresql_host_klines
+                    postgresql_host_klines = get_secret("postgresql_host_klines")
                 self.connection_klines, self.cursor_klines = postgresql.setup(symbol=self.symbol,
                                                                               tick_interval=self.tick_interval,
                                                                               postgresql_host=postgresql_host_klines,
@@ -520,7 +535,7 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
                 if type(postgres_agg_trades) == str:
                     postgresql_host_aggTrades = postgres_agg_trades
                 else:
-                    from secret import postgresql_host_aggTrades
+                    postgresql_host_aggTrades = get_secret("postgresql_host_aggTrades")
                 self.connection_agg_trades, self.cursor_agg_trades = postgresql.setup(symbol=self.symbol,
                                                                                       tick_interval=self.tick_interval,
                                                                                       postgresql_host=postgresql_host_aggTrades,
@@ -534,7 +549,7 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
                 if type(postgres_atomic_trades) == str:
                     postgresql_host_trades = postgres_atomic_trades
                 else:
-                    from secret import postgresql_host_trades
+                    postgresql_host_trades = get_secret("postgresql_host_trades")
                 self.connection_atomic_trades, self.cursor_atomic_trades = postgresql.setup(symbol=self.symbol,
                                                                                             tick_interval=self.tick_interval,
                                                                                             postgresql_host=postgresql_host_trades,
@@ -612,7 +627,7 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
         :param bool timestamped_filename: Adds start and end timestamps to the name.
         :return: None
         """
-        self._save_dataframe_csv(self.atomic_trades, "atomicTrades", "No atomic trades to save.", timestamped_filename)
+        self._save_dataframe_csv(self.atomic_trades.df, "atomicTrades", "No atomic trades to save.", timestamped_filename)
 
     def save_agg_trades_csv(self, timestamped_filename: bool = True) -> None:
         """
@@ -621,7 +636,7 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
         :param bool timestamped_filename: Adds start and end timestamps to the name.
         :return: None
         """
-        self._save_dataframe_csv(self.agg_trades, "aggTrades", "No aggregated trades to save.", timestamped_filename)
+        self._save_dataframe_csv(self.agg_trades.df, "aggTrades", "No aggregated trades to save.", timestamped_filename)
 
     ##################
     # pandas display #
@@ -1075,7 +1090,7 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
                     startTime: int | str = None,
                     endTime: int | str = None,
                     time_zone: str = None,
-                    from_csv: str = None) -> pd.DataFrame:
+                    from_csv: str = None) -> Trades:
         """
         Generic trade fetching logic for both aggregated and atomic trades.
 
@@ -1130,20 +1145,27 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
             startTime = convert_str_date_to_ms(date=startTime, time_zone=self.time_zone)
         if endTime:
             endTime = convert_str_date_to_ms(date=endTime, time_zone=self.time_zone)
-        if hours:
-            startTime = int(time() * 1000) - (1000 * 60 * 60 * hours)
-        elif minutes:
-            startTime = int(time() * 1000) - (1000 * 60 * minutes)
-
-        curr_startTime = startTime if startTime else self.start_time
-
         now_ms = int(time() * 1000)
+
+        # resolve the END of the window first (explicit endTime > symbol end > now)
         if endTime:
             curr_endTime = endTime
         elif self.end_time:
             curr_endTime = min(self.end_time, now_ms)
         else:
             curr_endTime = now_ms
+
+        # hours/minutes count back from the END of the window (the symbol's most recent data),
+        # so the request always has startTime < endTime and the trades align with the candles.
+        # (Counting back from "now" broke when the symbol's end_time was in the past.)
+        if hours:
+            curr_startTime = curr_endTime - (1000 * 60 * 60 * hours)
+        elif minutes:
+            curr_startTime = curr_endTime - (1000 * 60 * minutes)
+        elif startTime:
+            curr_startTime = startTime
+        else:
+            curr_startTime = self.start_time
 
         st = convert_milliseconds_to_str(curr_startTime, timezoned=self.time_zone)
         en = convert_milliseconds_to_str(curr_endTime, timezoned=self.time_zone)
@@ -1170,60 +1192,46 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
             for col in df_.columns:
                 if col not in valid_columns:
                     raise BinPanException(file_error_msg)
-            setattr(self, trades_attr_name, df_)
+            origin = 'csv'
 
         # data source: binbase
         elif self.binbase:
             from .storage import binbase as bb
+            origin = 'binbase'
             if trade_type == 'agg':
-                setattr(self, trades_attr_name,
-                        bb.get_agg_trades(cursor=self.cursor_binbase,
-                                          symbol=self.symbol,
-                                          start_time=curr_startTime,
-                                          end_time=curr_endTime,
-                                          time_zone=self.time_zone))
+                df_ = bb.get_agg_trades(cursor=self.cursor_binbase, symbol=self.symbol,
+                                        start_time=curr_startTime, end_time=curr_endTime, time_zone=self.time_zone)
             else:
-                setattr(self, trades_attr_name,
-                        bb.get_trades(cursor=self.cursor_binbase,
-                                      symbol=self.symbol,
-                                      start_time=curr_startTime,
-                                      end_time=curr_endTime,
-                                      time_zone=self.time_zone))
+                df_ = bb.get_trades(cursor=self.cursor_binbase, symbol=self.symbol,
+                                    start_time=curr_startTime, end_time=curr_endTime, time_zone=self.time_zone)
 
         # data source: PostgreSQL (legacy)
         elif postgres_flag:
             from .storage.postgresql import get_data_and_parse, sanitize_table_name
+            origin = 'postgresql'
             table = sanitize_table_name(f"{self.symbol.lower()}_{pg_table_suffix}")
-            setattr(self, trades_attr_name,
-                    get_data_and_parse(cursor=cursor,
-                                      table=table,
-                                      symbol=self.symbol,
-                                      tick_interval=self.tick_interval,
-                                      time_zone=self.time_zone,
-                                      start_time=curr_startTime,
-                                      end_time=curr_endTime,
-                                      data_type=pg_data_type))
+            df_ = get_data_and_parse(cursor=cursor, table=table, symbol=self.symbol,
+                                     tick_interval=self.tick_interval, time_zone=self.time_zone,
+                                     start_time=curr_startTime, end_time=curr_endTime, data_type=pg_data_type)
 
         # data source: Binance API
         else:
+            origin = 'binance_api'
             try:
                 raw_data = api_fn(symbol=self.symbol, startTime=curr_startTime, endTime=curr_endTime)
-            except Exception:
-                msg = f"Error fetching {raw_attr_name}, maybe missing API key in ~/.panzer_creds"
-                binpan_logger.error(msg)
+            except Exception as e:
+                binpan_logger.error(f"Error fetching {raw_attr_name}: {e} "
+                                    f"(if it is an auth error, check API key in ~/.panzer_creds)")
                 raw_data = []
             setattr(self, raw_attr_name, raw_data)
+            df_ = parse_fn(response=raw_data, columns=columns_attr, symbol=self.symbol,
+                           time_zone=self.time_zone, drop_dupes=id_col)
 
-            setattr(self, trades_attr_name,
-                    parse_fn(response=raw_data,
-                             columns=columns_attr,
-                             symbol=self.symbol,
-                             time_zone=self.time_zone,
-                             drop_dupes=id_col))
-
-        trades_df = convert_to_numeric(data=getattr(self, trades_attr_name))
-        setattr(self, trades_attr_name, trades_df)
-        return trades_df
+        df_ = convert_to_numeric(data=df_)
+        trades_obj = Trades(df_, trade_type=trade_type, origin=origin, columns=columns_attr,
+                            symbol=self.symbol, time_zone=self.time_zone, raw=getattr(self, raw_attr_name))
+        setattr(self, trades_attr_name, trades_obj)
+        return trades_obj
 
     def get_agg_trades(self,
                        hours: int = None,
@@ -1231,7 +1239,7 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
                        startTime: int | str = None,
                        endTime: int | str = None,
                        time_zone: str = None,
-                       from_csv: str = None) -> pd.DataFrame:
+                       from_csv: str = None) -> Trades:
         """
         Calls the API and creates another dataframe included in the object with the aggregated trades from API for the period of the
         created object.
@@ -1261,7 +1269,7 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
                           startTime: int | str = None,
                           endTime: int | str = None,
                           time_zone: str = None,
-                          from_csv: str = None) -> pd.DataFrame:
+                          from_csv: str = None) -> Trades:
         """
         Calls the API and creates another dataframe included in the object with the atomic trades from API for the period of the
         created object.
@@ -1342,7 +1350,7 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
             self.min_reversal = min_reversal
 
         if self.reversal_agg_klines.empty or min_height or min_reversal:
-            self.reversal_agg_klines = reversal_candles(trades=self.agg_trades, decimal_positions=self.decimals,
+            self.reversal_agg_klines = reversal_candles(trades=self.agg_trades.df, decimal_positions=self.decimals,
                                                         time_zone=self.time_zone, min_height=self.min_height,
                                                         min_reversal=self.min_reversal)
         return self.reversal_agg_klines
@@ -1366,7 +1374,7 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
             self.min_reversal = min_reversal
 
         if self.reversal_atomic_klines.empty or min_height or min_reversal:
-            self.reversal_atomic_klines = reversal_candles(trades=self.atomic_trades, decimal_positions=self.decimals,
+            self.reversal_atomic_klines = reversal_candles(trades=self.atomic_trades.df, decimal_positions=self.decimals,
                                                            time_zone=self.time_zone, min_height=self.min_height,
                                                            min_reversal=self.min_reversal)
         return self.reversal_atomic_klines
@@ -1381,10 +1389,9 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
         current_index = tick_interval_values.index(self.tick_interval)
         new_index = tick_interval_values.index(tick_interval)
 
-        try:
-            assert new_index > current_index
-        except Exception as e:
-            binpan_logger.error(f"BinPan error: resample must use higher interval: {new_index} not > {current_index} {e}")
+        if new_index <= current_index:
+            binpan_logger.error(f"BinPan error: resample target '{tick_interval}' must be a HIGHER interval than "
+                                f"the current '{self.tick_interval}' (klines can only be aggregated into coarser candles).")
             return
 
         binpan_logger.info(f"Resampling {self.symbol} from {self.tick_interval} to {tick_interval}")
@@ -1492,7 +1499,7 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
         """
         Shows applied fees for the symbol of the object.
 
-        Requires API key added. Look for the add_api_key function in the files_and_filters submodule.
+        Requires Binance API credentials, managed by panzer (~/.panzer_creds). panzer prompts for them on first use if missing.
 
         :param symbol: Not to use it, just here for initializing the class.
         :return: Dictionary

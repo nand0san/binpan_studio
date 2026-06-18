@@ -665,9 +665,9 @@ def get_spot_balances_df(decimal_mode: bool,
 
     .. code-block:: python
 
-       from ..core.messages import get_spot_balances_df
+       from binpan.api.wallet_api import get_spot_balances_df
 
-       df = get_spot_balances_df()
+       df = get_spot_balances_df(decimal_mode=False)
 
        print(df)
 

@@ -1,5 +1,54 @@
 # CHANGELOG
 
+## v0.10.0 (2026-06-18)
+
+Credential management fully delegated to `panzer`, Telegram support removed, new `Trades` value
+object, indicator/plotting fixes, and a notebook overhaul.
+
+### Removed
+
+- **Telegram support removed entirely** (`binpan/core/messages.py`): `telegram_bot_send_text`,
+  `telegram_parse_*`, `send_balances`, `sort_mixed_dict`, `tab_str`, the `MissingTelegramApiData`
+  exception and `get_telegram_secrets()`.
+- `binpan/core/crypto.py` removed — all secret management is delegated to `panzer`.
+- Dead code removed: `time_helper.ceil_division`, `detect_tick_interval`, `time_interval`, the unused
+  `Trades(Timeframe)` class, and 9 unused exception classes (`MissingBinanceApiData`,
+  `BinanceAPIException`, `BinanceRequestException`, `BinanceOrderException` + subclasses,
+  `NotImplementedException`).
+- `pycryptodome` and `py-cpuinfo` dropped from requirements (only used by the removed `crypto.py`;
+  `panzer` provides `pycryptodome` transitively).
+
+### Added
+
+- `binpan/core/secrets.py`: thin wrapper over `panzer`'s `CredentialManager`
+  (`get_secret`/`set_secret`/`get_json_secret`/`set_json_secret`).
+- `Trades` value object (`binpan/core/trades.py`): wraps a trades DataFrame plus metadata (trade type,
+  origin, columns) and proxies attribute/item access to the DataFrame. `Symbol.agg_trades` /
+  `atomic_trades` are now `Trades` instances (backward compatible via the proxy).
+- New notebook `17_credentials_and_panzer` documenting credential setup. `nbstripout` filter added so
+  notebook outputs are stripped from git.
+
+### Changed
+
+- All credentials (Binance API keys, PostgreSQL/binbase passwords, Redis configs) are now managed by
+  `panzer` (`~/.panzer_creds`); BinPan no longer implements its own encryption. `create_connection`
+  takes a plain-text password.
+- Trade-fetching consumers deduplicated through the `Trades` selection helpers.
+- Notebooks reordered and cleaned (01, 02, 04); trade-precision examples use a dedicated intraday symbol.
+
+### Fixed
+
+- `ker()` used the removed `pd.rolling_sum` → `AttributeError` on modern pandas.
+- `sma_numba` returned partial averages during the warm-up window instead of `NaN`.
+- `get_agg_trades`/`get_atomic_trades` with `hours=`/`minutes=` raised `startTime > endTime` when the
+  Symbol's `end_time` was in the past; the window is now anchored to the end of the data.
+- `Symbol(from_csv=...)` did not initialize the connection state, so `get_*_trades(from_csv=...)` raised
+  `AttributeError: cursor_agg_trades`.
+- Unnamed `pd.Series` passed to `candles_ta` no longer appear as `"trace N"` in the legend.
+- `resample()` to a smaller interval now raises a clear message instead of a cryptic index comparison.
+- Plot action markers: validation relaxed to require a label per present action (extra labels ignored)
+  instead of an exact length match.
+
 ## v0.9.9 (2026-06-16)
 
 Plot legend/series alignment fixes on the candle charts.

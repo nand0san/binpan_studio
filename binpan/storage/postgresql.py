@@ -17,14 +17,12 @@ from ..core.standards import (postgresql2binpan_map_dict, postgresql_presentatio
                         kline_open_time_col, kline_open_timestamp_col,
                         kline_close_time_col, kline_close_timestamp_col,
                         agg_time_col, agg_date_col, agg_trade_id_col)
-from .files import get_encoded_database_secrets
-from ..core.crypto import AesCipher
+from .files import get_database_password
 from ..core.logs import LogManager
 from ..api.market import convert_to_numeric
 from ..core.time_helper import convert_milliseconds_to_str
 
 sql_logger = LogManager(filename='./logs/sql.log', name='sql', info_level='INFO')
-cipher_object = AesCipher()
 
 
 def setup(symbol: str,
@@ -52,10 +50,9 @@ def setup(symbol: str,
 
     """
     try:
-        # from secret import postgresql_host, postgresql_port, postgresql_user, postgresql_database
-        enc_postgresql_password = get_encoded_database_secrets()
+        postgresql_password = get_database_password()
         connection, cursor = create_connection(user=postgresql_user,
-                                               enc_password=enc_postgresql_password,
+                                               password=postgresql_password,
                                                host=postgresql_host,
                                                port=postgresql_port,
                                                database=postgresql_database)
@@ -73,8 +70,9 @@ def setup(symbol: str,
             if not table in tables:
                 raise BinPanException(f"BinPan Exception: Table {table} not found in database {postgresql_database}")
     except Exception as e:
-        raise BinPanException(f"BinPan Exception: {e} \nVerify existence on TABLE or DATABASE CREDENTIALS in secret.py "
-                              f"(postgresql_host, postgresql_port, postgresql_user, postgresql_password, postgresql_database)")
+        raise BinPanException(f"BinPan Exception: {e} \nVerify existence on TABLE or DATABASE CREDENTIALS in panzer "
+                              f"(~/.panzer_creds: postgresql_host, postgresql_port, postgresql_user, postgresql_password, "
+                              f"postgresql_database)")
     return connection, cursor
 
 
@@ -207,7 +205,7 @@ def get_data_and_parse(cursor,
 
 # noinspection PyUnresolvedReferences
 def create_connection(user: str,
-                      enc_password: str,
+                      password: str,
                       host: str,
                       port: int,
                       database: str,
@@ -217,17 +215,16 @@ def create_connection(user: str,
     Crea una conexión a la base de datos PostgreSQL.
 
     :param user: Nombre de usuario
-    :param enc_password: Contraseña cifrada.
+    :param password: Contraseña en texto plano (gestionada por panzer).
     :param host: Nombre del host o dirección IP
     :param port: Número de puerto
     :param database: Nombre de la base de datos
     :param timeout: Tiempo de espera en segundos
     :return: Devuelve una conexión y un cursor a la base de datos
     """
-    decoded_password = cipher_object.decrypt(enc_password)
     try:
         connection = psycopg2.connect(user=user,
-                                      password=decoded_password,
+                                      password=password,
                                       host=host,
                                       port=port,
                                       database=database,
@@ -239,7 +236,7 @@ def create_connection(user: str,
         if "database" in str(error).lower() and "does not exist" in str(error).lower():
             # Conectarse a la base de datos predeterminada para crear la nueva base de datos
             temp_conn = psycopg2.connect(user=user,
-                                         password=decoded_password,
+                                         password=password,
                                          host=host,
                                          port=port,
                                          database="postgres",  # Base de datos predeterminada
@@ -250,7 +247,7 @@ def create_connection(user: str,
             temp_cursor.close()
             temp_conn.close()
             # Intentar la conexión de nuevo
-            return create_connection(user, enc_password, host, port, database, timeout)
+            return create_connection(user, password, host, port, database, timeout)
         else:
             msg = f"Error al conectar a PostgreSQL {host} database {database}: {error}"
             sql_logger.error(msg)

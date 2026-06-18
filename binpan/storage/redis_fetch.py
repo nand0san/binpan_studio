@@ -9,7 +9,7 @@ from ..api.market import convert_to_numeric, tick_seconds
 from ..core.time_helper import (convert_ms_column_to_datetime_with_zone, convert_datetime_to_string, convert_milliseconds_to_utc_string,
                           convert_milliseconds_to_time_zone_datetime, convert_milliseconds_to_str, open_from_milliseconds,
                           next_open_by_milliseconds)
-from ..core.crypto import import_secret_module
+from ..core.secrets import get_json_secret
 from ..core.exceptions import RedisConfigError
 
 redis_logger = LogManager(filename='./logs/redis_fetch.log', name='redis_fetch', info_level='INFO')
@@ -55,10 +55,10 @@ def manage_sentinel(sentinel_redis: dict | bool) -> StrictRedis:
     Manage the Redis Sentinel configuration and return a StrictRedis instance.
 
     This function takes a sentinel_redis parameter, which can be a dictionary or a boolean. If it is a dictionary, the function expects 
-    the keys 'hosts', 'sentinel_service_name', and 'password' (optional) to be present. If it is a boolean, the function imports the 
-    sentinel_data from the secret module.
+    the keys 'hosts', 'sentinel_service_name', and 'password' (optional) to be present. If it is a boolean, the function reads the
+    'sentinel_data' JSON config from panzer (~/.panzer_creds).
 
-    :param sentinel_redis: A dictionary containing the Redis Sentinel configuration or a boolean to use the secret module for configuration.
+    :param sentinel_redis: A dictionary containing the Redis Sentinel configuration or a boolean to read 'sentinel_data' from panzer.
     :type sentinel_redis: Union[dict, bool]
     :return: A StrictRedis instance configured with the provided Sentinel settings.
     :rtype: StrictRedis
@@ -72,8 +72,7 @@ def manage_sentinel(sentinel_redis: dict | bool) -> StrictRedis:
             raise RedisConfigError()
 
     elif type(sentinel_redis) == bool:
-        secret = import_secret_module()
-        sentinel_redis = secret.sentinel_data
+        sentinel_redis = get_json_secret("sentinel_data")
 
     # client config
     if not 'sentinel_service_name' in sentinel_redis.keys():
@@ -94,24 +93,23 @@ def manage_redis(redis_args: bool | dict | StrictRedis) -> StrictRedis | None:
     Manage the Redis configuration and return a StrictRedis instance or None.
 
     This function takes a redis_args parameter, which can be a dictionary, a boolean, or a StrictRedis object. If it is a dictionary, 
-    the function expects the Redis configuration keys to be present. If it is a boolean, the function imports the redis_conf from the 
-    secret module. If it is a StrictRedis object, the function returns the object as is.
+    the function expects the Redis configuration keys to be present. If it is a boolean, the function reads the 'redis_conf' JSON config
+    from panzer (~/.panzer_creds). If it is a StrictRedis object, the function returns the object as is.
 
-    :param Union[bool, Dict, StrictRedis] redis_args: A dictionary containing the Redis configuration, a boolean to use the passed configuration, or a StrictRedis object.
+    :param Union[bool, Dict, StrictRedis] redis_args: A dictionary containing the Redis configuration, a boolean to read 'redis_conf' from panzer, or a StrictRedis object.
     :return Union[StrictRedis, None]: A StrictRedis instance configured with the provided settings or None if no configuration is provided.
-    :raises RedisConfigError: If there is a misconfiguration in the Redis settings or the 'redis_conf' key is not found in the secret.py
-     module.
+    :raises RedisConfigError: If there is a misconfiguration in the Redis settings or the 'redis_conf' key is not found in panzer
+     (~/.panzer_creds).
 
     """
 
     if redis_args:
         if type(redis_args) == bool:
             try:
-                secret = import_secret_module()
-                redis_conf = secret.redis_conf
+                redis_conf = get_json_secret("redis_conf")
                 return redis_client(**redis_conf)
             except Exception:
-                raise RedisConfigError("Redis config not found in secret.py module.")
+                raise RedisConfigError("Redis config 'redis_conf' not found in panzer (~/.panzer_creds).")
         elif type(redis_args) == dict:
             try:
                 return redis_client(**redis_args)

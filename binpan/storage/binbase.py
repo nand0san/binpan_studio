@@ -20,6 +20,7 @@ import psycopg2
 
 from ..core.exceptions import BinPanException
 from ..core.logs import LogManager
+from ..core.secrets import get_secret
 from ..core.time_helper import tick_seconds
 from ..core.standards import (
     kline_open_time_col, kline_open_col, kline_high_col, kline_low_col,
@@ -96,23 +97,14 @@ AGG_TRADE_COLUMN_MAP = {
 
 
 def _resolve_password(password: str | None) -> str:
-    """Resuelve password: argumento > secret.py > variable de entorno."""
+    """Resuelve password: argumento > variable de entorno > panzer (~/.panzer_creds)."""
     if password:
         return password
-    try:
-        from secret import binbase_password
-        return binbase_password
-    except (ImportError, AttributeError):
-        pass
     env = os.environ.get("BINBASE_PASSWORD")
     if env:
         return env
-    raise BinPanException(
-        "binbase: password requerido. Opciones:\n"
-        "  1) Pasar password= al conectar\n"
-        "  2) Definir binbase_password en secret.py\n"
-        "  3) Exportar BINBASE_PASSWORD como variable de entorno"
-    )
+    # panzer lo lee de ~/.panzer_creds o lo solicita al usuario si falta (cifrado).
+    return get_secret("binbase_password")
 
 
 def connect(host: str = BINBASE_HOST,
@@ -127,7 +119,7 @@ def connect(host: str = BINBASE_HOST,
     :param str host: Host address. Default ``192.168.100.221``.
     :param int port: Port. Default ``5432``.
     :param str user: User. Default ``binbase``.
-    :param str password: Password. Falls back to ``secret.binbase_password`` or ``BINBASE_PASSWORD`` env var.
+    :param str password: Password. Falls back to ``BINBASE_PASSWORD`` env var or panzer's ``binbase_password`` (~/.panzer_creds).
     :param str database: Database name. Default ``binbase``.
     :param int timeout: Connection timeout in seconds.
     :return: ``(connection, cursor)`` tuple.

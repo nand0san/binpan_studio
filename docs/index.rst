@@ -173,7 +173,6 @@ If you encounter import errors in Jupyter, install packages directly to the kern
    starters.rst
    logs.rst
    exceptions.rst
-   messages.rst
 
 .. toctree::
    :maxdepth: 2

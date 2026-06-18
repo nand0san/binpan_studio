@@ -10,7 +10,6 @@ import numpy as np
 import os
 import multiprocessing
 
-# from ..core.crypto import is_running_in_jupyter
 from ..core.time_helper import convert_milliseconds_to_time_zone_datetime
 from ..core.time_helper import pandas_freq_tick_interval
 from .tags import is_alternating
@@ -214,8 +213,7 @@ def ker(close: pd.Series, window: int, ) -> pd.Series:
     :return pd.Series: Results.
     """
     direction = close.diff(window).abs()
-    # noinspection PyUnresolvedReferences
-    volatility = pd.rolling_sum(close.diff().abs(), window)
+    volatility = close.diff().abs().rolling(window).sum()
     return direction / volatility
 
 

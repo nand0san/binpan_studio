@@ -5,7 +5,7 @@ from .storage.files import select_file, read_csv_to_dataframe, extract_filename_
 from .core.logs import LogManager
 from .core.exceptions import BinPanException
 from .api.market import (convert_to_numeric)
-from .core.time_helper import (pandas_freq_tick_interval, open_from_milliseconds, time_interval)
+from .core.time_helper import (pandas_freq_tick_interval, open_from_milliseconds)
 
 binpan_logger = LogManager(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 

@@ -1,7 +1,5 @@
 import os
 import sys
-from pathlib import Path
-import importlib.util
 
 sys.path.insert(0, os.path.abspath('..'))
 
@@ -9,15 +7,8 @@ project = 'BinPan'
 copyright = '2022, Fernando Alfonso'
 author = 'Fernando Alfonso'
 
-root_path = Path("__file__").parent.absolute().parent.absolute()
-secret_path = os.path.join(root_path, "secret.py")
-# secret.py no se versiona (queda fuera del repo): en CI no existe y la doc no lo necesita.
-if os.path.exists(secret_path):
-    spec = importlib.util.spec_from_file_location("module.name", secret_path)
-    my_secret = importlib.util.module_from_spec(spec)
-    sys.modules["module.name"] = my_secret
-    spec.loader.exec_module(my_secret)
-version = "0.9.9"
+# Las credenciales las gestiona panzer (~/.panzer_creds); la doc no necesita cargar nada.
+version = "0.10.0"
 release = version
 
 extensions = [

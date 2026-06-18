@@ -2,24 +2,13 @@ from csv import QUOTE_ALL
 from time import time
 from sys import path
 from os import listdir, path, mkdir, replace, makedirs
-import importlib
 import pandas as pd
 
-from ..core.crypto import AesCipher, import_secret_module
+from ..core.secrets import get_secret, set_secret
 from ..core.logs import LogManager
-from ..core.exceptions import BinPanException, MissingBinanceApiData
+from ..core.exceptions import BinPanException
 
 files_logger = LogManager(filename='./logs/files_logger.log', name='files_logger', info_level='INFO')
-
-# cipher_object se inicializa lazy para evitar get_cpu_info() al importar
-_cipher_object = None
-
-
-def _get_cipher():
-    global _cipher_object
-    if _cipher_object is None:
-        _cipher_object = AesCipher()
-    return _cipher_object
 
 
 ################
@@ -271,98 +260,35 @@ def select_file(path='.', extension='csv', symbol: str = None, tick_interval: st
 ###################
 # API AND SECRETS #
 ###################
-# Binance API credentials are now managed by panzer's CredentialManager (~/.panzer_creds).
-# get_encoded_secrets() has been removed — panzer handles api_key/api_secret internally.
+# All credentials are managed by panzer's CredentialManager (~/.panzer_creds).
+# BinPan implements no encryption of its own; see binpan.core.secrets.
 
 
-def get_encoded_telegram_secrets() -> tuple:
-    try:
-        secret_module = import_secret_module()
-        importlib.reload(secret_module)
-        encoded_telegram_bot_id = secret_module.encoded_telegram_bot_id
-        encoded_chat_id = secret_module.encoded_chat_id
-    except (AttributeError, ImportError, FileNotFoundError):
-        files_logger.info("Telegram bot_id and chat id not found, requesting...")
-        fill_telegram_secrets_file()
-        try:
-            secret_module = import_secret_module()
-            importlib.reload(secret_module)
-            encoded_telegram_bot_id = secret_module.encoded_telegram_bot_id
-            encoded_chat_id = secret_module.encoded_chat_id
-        except (AttributeError, ImportError, FileNotFoundError):
-            files_logger.warning("BinPan Warning: Telegram bot_id and chat id not found.")
-            encoded_telegram_bot_id, encoded_chat_id = "", ""
-    return encoded_telegram_bot_id, encoded_chat_id
-
-
-def get_encoded_database_secrets() -> str:
-    try:
-        secret_module = import_secret_module()
-        importlib.reload(secret_module)
-        postgresql_password = secret_module.postgresql_password
-    except (AttributeError, ImportError, FileNotFoundError):
-        files_logger.info("postgresql_password not found in secret.py, requesting...")
-        fill_database_secrets_file()
-        try:
-            secret_module = import_secret_module()
-            importlib.reload(secret_module)
-            postgresql_password = secret_module.postgresql_password
-        except (AttributeError, ImportError, FileNotFoundError):
-            files_logger.warning("BinPan Warning: PostgreSQL password not found.")
-            postgresql_password = ""
-    return postgresql_password
-
-
-def fill_telegram_secrets_file() -> None:
+def get_database_password() -> str:
     """
-    Creates a file called secret.py or adds to it with the telegram bot_id and chat_id encrypted values.
+    Get the PostgreSQL password in plain text from panzer (encrypted on disk).
 
-    :return: None
+    :return str: The PostgreSQL password.
     """
-    bot = input(f"Please, enter your Telegram bot token for send messages or leave it empty: ")
-    add_any_key(key=bot, key_name="encoded_telegram_bot_id")
-    print("Telegram bot token encrypted and saved.")
-    chat = input(f"Please, enter your Telegram chat id for send messages to you or leave it empty: ")
-    add_any_key(key=chat, key_name="encoded_chat_id")
-    print("Chat encrypted and saved.")
-
-
-def fill_database_secrets_file() -> None:
-    """
-    Creates a file called secret.py or adds to it with the postgresql password encrypted values.
-
-    :return: None
-    """
-    password = input(f"Please, enter your postgresql password: ")
-    add_any_key(key=password, key_name="postgresql_password")
-    print("postgresql password encrypted and saved.")
+    return get_secret("postgresql_password")
 
 
 def add_any_key(key: str, key_name: str) -> None:
     """
-    Checks if exists in a file and if not, then adds a line with the api key value for working with the package.
+    Store any credential in panzer's CredentialManager (``~/.panzer_creds``).
 
-    :param str key: Any API key or secret to encrypt in secret.py file.
-    :param str key_name: Variable name to import it later.
+    Sensitive names (containing ``secret``, ``api_key``, ``password`` or
+    ``_id``) are encrypted automatically; the rest are stored as plain text.
 
-    Example to add telegram data for notifications:
+    Example to add a database password:
 
         .. code-block:: python
 
             from binpan.storage.files import add_any_key
 
-            add_any_key(key="xxxxxxxxxx", key_name="encoded_chat_id")
-            add_any_key(key="xxxxxxxxxx", key_name="encoded_telegram_bot_id")
+            add_any_key(key="xxxxxxxxxx", key_name="postgresql_password")
 
-
+    :param str key: Any API key, token or password value.
+    :param str key_name: Name to store and later retrieve it by.
     """
-    filename = "secret.py"
-    saved_data = read_file(filename=filename)
-    lines = []
-    for line in saved_data:
-        if line:
-            if not line.startswith(key_name):
-                lines.append(line + '\n')
-    encryptor = _get_cipher().encrypt(key)
-    lines.append(f'{key_name} = "{encryptor}"\n')
-    save_file(filename=filename, data=lines)
+    set_secret(key_name, key)

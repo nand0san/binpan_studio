@@ -26,9 +26,6 @@ from .api.wallet_api import convert_str_date_to_ms
 
 binpan_logger = LogManager(filename='./logs/binpan.log', name='binpan', info_level='INFO')
 
-empty_agg_trades_msg = "Empty trades, please request using: get_agg_trades() method: Example: my_symbol.get_agg_trades()"
-empty_atomic_trades_msg = "Empty atomic trades, please request using: get_atomic_trades() method: Example: my_symbol.get_atomic_trades()"
-
 
 def _plotting():
     from binpan.plotting import charts
@@ -898,28 +895,12 @@ class SymbolIndicators:
         elif minutes:
             startTime = int(time() * 1000) - (1000 * 60 * minutes)
 
-        if from_agg_trades:
-            if self.agg_trades.empty:
-                binpan_logger.info(empty_agg_trades_msg)
+        if from_agg_trades or from_atomic_trades:
+            source = self.agg_trades if from_agg_trades else self.atomic_trades
+            if source.empty:
+                binpan_logger.info(source.empty_msg)
                 return
-        if from_atomic_trades:
-            if self.atomic_trades.empty:
-                binpan_logger.info(empty_atomic_trades_msg)
-                return
-
-        if from_agg_trades:
-            _df = self.agg_trades.copy(deep=True)
-            if startTime:
-                _df = _df[_df['Timestamp'] >= startTime]
-            if endTime:
-                _df = _df[_df['Timestamp'] <= endTime]
-            self.market_profile_df = market_profile_from_trades_grouped(df=_df, num_bins=bins)
-        elif from_atomic_trades:
-            _df = self.atomic_trades.copy(deep=True)
-            if startTime:
-                _df = _df[_df['Timestamp'] >= startTime]
-            if endTime:
-                _df = _df[_df['Timestamp'] <= endTime]
+            _df = source.filtered(startTime, endTime)
             self.market_profile_df = market_profile_from_trades_grouped(df=_df, num_bins=bins)
         else:
             _df = self.df.copy(deep=True)
@@ -1103,12 +1084,10 @@ class SymbolIndicators:
 
     def _resolve_sr_data_source(self, from_atomic: bool, from_aggregated: bool) -> tuple[pd.DataFrame, bool]:
         """Resolve data source for support/resistance calculations. Returns (df_copy, by_klines)."""
-        if from_atomic:
-            return self.atomic_trades.copy(deep=True), False
-        elif from_aggregated:
-            return self.agg_trades.copy(deep=True), False
-        else:
-            return self.df.copy(deep=True), True
+        if from_atomic or from_aggregated:
+            source = self.atomic_trades if from_atomic else self.agg_trades
+            return source.df.copy(deep=True), False
+        return self.df.copy(deep=True), True
 
     @staticmethod
     def _compute_sr_time_ranges(df: pd.DataFrame, discrete_interval: str | None,
@@ -1157,18 +1136,13 @@ class SymbolIndicators:
         """
 
         # resolve data source
-        if from_atomic:
-            from_data = "atomic trades"
-            if self.atomic_trades.empty:
-                binpan_logger.warning("Please add atomic trades first: my_symbol.get_atomic_trades()")
+        if from_atomic or from_aggregated:
+            source = self.atomic_trades if from_atomic else self.agg_trades
+            from_data = f"{source.label} trades"
+            if source.empty:
+                binpan_logger.warning(source.empty_msg)
                 return self.support_lines, self.resistance_lines
-            source_df, qty_col, by_klines = self.atomic_trades, 'Quantity', False
-        elif from_aggregated:
-            from_data = "aggregated trades"
-            if self.agg_trades.empty:
-                binpan_logger.warning("Please add aggregated trades first: my_symbol.get_agg_trades()")
-                return self.support_lines, self.resistance_lines
-            source_df, qty_col, by_klines = self.agg_trades, 'Quantity', False
+            source_df, qty_col, by_klines = source.df, 'Quantity', False
         else:
             from_data = "klines"
             source_df, qty_col, by_klines = self.df, 'Trades', True
@@ -1374,52 +1348,21 @@ class SymbolIndicators:
 
         """
 
-        if from_atomic:
-            from_data = "atomic trades"
-            if self.atomic_trades.empty:
-                print(f"Please add atomic trades first: my_symbol.get_atomic_trades()")
-            else:
-                if not by_quantity:
-                    by_quantity = np.mean(self.atomic_trades['Quantity'].values)
-                if simple:
-                    self.blue_timestamps, self.red_timestamps = time_active_zones(self.atomic_trades, max_clusters=max_clusters,
-                                                                                  by_quantity=by_quantity,
-                                                                                  simple=simple)
-
-                else:
-                    self.blue_timestamps, self.red_timestamps = time_active_zones(self.atomic_trades, max_clusters=max_clusters,
-                                                                                  by_quantity=by_quantity, simple=simple)
-        elif from_aggregated:
-            from_data = "aggregated trades"
-            if self.agg_trades.empty:
-                print(f"Please add aggregated trades first: my_symbol.get_agg_trades()")
-            else:
-                if not by_quantity:
-                    by_quantity = np.mean(self.agg_trades['Quantity'].values)
-
-                if simple:
-                    self.blue_timestamps, self.red_timestamps = time_active_zones(self.agg_trades,
-                                                                                  max_clusters=max_clusters,
-                                                                                  by_quantity=by_quantity,
-                                                                                  simple=simple)
-
-                else:
-                    self.blue_timestamps, self.red_timestamps = time_active_zones(self.agg_trades,
-                                                                                  max_clusters=max_clusters,
-                                                                                  by_quantity=by_quantity, simple=simple)
+        if from_atomic or from_aggregated:
+            source = self.atomic_trades if from_atomic else self.agg_trades
+            from_data = f"{source.label} trades"
+            if source.empty:
+                print(source.empty_msg)
+                return self.blue_timestamps, self.red_timestamps
+            data_df, qty_col = source.df, 'Quantity'
         else:  # with klines
             from_data = "klines"
-            if not by_quantity:
-                by_quantity = np.mean(self.df['Trades'].values)
-            if simple:
-                self.blue_timestamps, self.red_timestamps = time_active_zones(self.df,
-                                                                              max_clusters=max_clusters,
-                                                                              by_quantity=by_quantity,
-                                                                              simple=simple)
+            data_df, qty_col = self.df, 'Trades'
 
-            else:
-                self.blue_timestamps, self.red_timestamps = time_active_zones(self.df,
-                                                                              max_clusters=max_clusters,
-                                                                              by_quantity=by_quantity, simple=simple)
+        if not by_quantity:
+            by_quantity = np.mean(data_df[qty_col].values)
+
+        self.blue_timestamps, self.red_timestamps = time_active_zones(data_df, max_clusters=max_clusters,
+                                                                      by_quantity=by_quantity, simple=simple)
         binpan_logger.info(f"Time centroids added from {from_data}")
         return self.blue_timestamps, self.red_timestamps

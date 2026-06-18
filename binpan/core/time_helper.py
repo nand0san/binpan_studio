@@ -7,9 +7,8 @@ Generic datetime/string/ms conversions kept here.
 
 """
 
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 import pytz
-from time import time
 import pandas as pd
 from kline_timestamp import KlineTimestamp
 
@@ -198,47 +197,6 @@ def convert_milliseconds_to_str(ms: int, timezoned: str) -> str:
     return convert_datetime_to_string(dt)
 
 
-def time_interval(tick_interval: str,
-                  timezone: str,
-                  limit: int = 1000,
-                  start_time: int | None = None,
-                  end_time: int | None = None) -> tuple[int, int]:
-    """
-    Obtain a timestamp based on ticks intervals from a start or an end timestamp, based on limit.
-
-    If no start or end timestamp passed, then use current utc timestamp in milliseconds and limit.
-
-    :param str tick_interval: A binance valid tick interval.
-    :param str timezone: A timezone like 'Europe/Madrid'.
-    :param int limit: Ticks limit. Not applied if start and end passed. Default is 1000.
-    :param int start_time: A timestamp in milliseconds.
-    :param int end_time: A timestamp in milliseconds.
-    :return: A tuple with the start and end timestamps in milliseconds.
-    """
-    total_interval_ms = int(tick_seconds[tick_interval] * 1000 * limit)
-    if not start_time and not end_time:
-        now = int(time() * 1000)
-        kt = KlineTimestamp(now, tick_interval, timezone)
-        end_time = kt.open
-        start_time = end_time - total_interval_ms
-    elif not end_time and start_time:
-        end_time = int(start_time) + total_interval_ms
-    elif not start_time and end_time:
-        start_time = int(end_time) - total_interval_ms
-    return start_time, end_time
-
-
-def ceil_division(a: float, b: float) -> int:
-    """
-    Ceiling division.
-
-    :param float a: A value.
-    :param float b: Other value.
-    :return int: Returns integer from ceil division.
-    """
-    return int(-(a // -b))
-
-
 def convert_string_to_datetime(ts: str, timezoned: str = None) -> datetime:
     """
     Converts a string to datetime. If timezoned, localizes the result.
@@ -277,19 +235,6 @@ def check_tick_interval(tick_interval: str) -> str:
         raise Exception(f"BinPan Error on tick_interval: {tick_interval} not in "
                         f"expected API intervals.\n{tick_interval_values}")
     return tick_interval
-
-
-def detect_tick_interval(data: pd.DataFrame) -> str:
-    """
-    Detects tick interval from a dataframe with a column named 'Open timestamp'.
-
-    :param data: A pandas dataframe with a column named 'Open timestamp'.
-    :return: A string with the tick interval detected.
-    """
-    ts_a = data.iloc[0]['Open timestamp']
-    ts_b = data.iloc[1]['Open timestamp']
-    seconds = (ts_b - ts_a) // 1000
-    return list(tick_seconds.keys())[list(tick_seconds.values()).index(seconds)]
 
 
 def open_from_milliseconds(ms: int, tick_interval: str) -> int:

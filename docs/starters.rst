@@ -1,12 +1,14 @@
-Crypto Module
-=============
+Secrets Module
+==============
 
-Encryption utilities (AES cipher) and secret module management.
+Credential management delegated to ``panzer``.
 
-Binance API credentials are now managed by ``panzer`` (``~/.panzer_creds``).
-This module is still used for Telegram and PostgreSQL credential encryption via ``secret.py``.
+BinPan implements no encryption of its own. All credentials (Binance API keys,
+PostgreSQL/binbase passwords, Telegram tokens, Redis configs, etc.) are handled
+by ``panzer``'s ``CredentialManager``, which stores them in ``~/.panzer_creds``
+(sensitive values encrypted) and prompts the user the first time they are missing.
 
-.. automodule:: binpan.core.crypto
+.. automodule:: binpan.core.secrets
    :members:
    :undoc-members:
    :show-inheritance:

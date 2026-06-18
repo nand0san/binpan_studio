@@ -475,10 +475,9 @@ def _infer_indicator_defaults(indicators_series, indicators_colors, indicator_na
             plot_logger.info(f"Indicators random colors:  indicators_colors={indicators_colors}")
 
     if not indicator_names:
-        try:
-            indicator_names = [i.name for i in indicators_series]
-        except Exception:
-            indicator_names = [f'Indicator {i}' for i in range(len(indicators_series))]
+        # Fall back to each series' name, but never leave it None: an unnamed
+        # pd.Series would otherwise reach plotly and show up as "trace N" in the legend.
+        indicator_names = [getattr(s, "name", None) or f"Indicator {i}" for i, s in enumerate(indicators_series)]
     if not rows_pos:
         rows_pos = [2 for _ in indicators_series]
         if rows_pos:
@@ -867,11 +866,11 @@ def _setup_action_markers(data: pd.DataFrame,
     if not markers_labels:
         markers_labels = {i: i for i in actions}
 
-    try:
-        assert len(actions) == len(markers_labels)
-    except AssertionError:
-        raise Exception(f"BinPan Plotting Exception: Length missmatch between types of actions and markers_labels -> "
-                        f"actions={actions} != markers={markers_labels}")
+    # every action present must have a label; extra labels are allowed (and ignored).
+    missing = [a for a in actions if a not in markers_labels]
+    if missing:
+        raise Exception(f"BinPan Plotting Exception: missing marker label(s) for action value(s) {missing}. "
+                        f"actions={actions}, markers_labels={markers_labels}")
 
     if not markers:
         my_markers = ["arrow-bar-down", "arrow-bar-up"]

@@ -227,10 +227,9 @@ def sma_numba(arr: np.ndarray, window: int) -> np.ndarray:
 
         [       nan        nan 2.4        3.46666667 4.3        5.16666667]
     """
-    sma = np.empty_like(arr, dtype=np.float64)
-    for i in range(arr.shape[0]):
-        start = max(0, i - window + 1)
-        sma[i] = np.sum(arr[start:i + 1]) / (i - start + 1)
+    sma = np.full(arr.shape[0], np.nan, dtype=np.float64)
+    for i in range(window - 1, arr.shape[0]):
+        sma[i] = np.sum(arr[i - window + 1:i + 1]) / window
     return sma
 
 

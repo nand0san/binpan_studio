@@ -426,7 +426,7 @@ class SymbolPlotting:
         :param bool overlap_prices: If True, plots overlap line with High and Low prices.
         :param title: Graph title.
         """
-        return self._plot_trades_size(trades_df=self.agg_trades, empty_msg=empty_agg_trades_msg,
+        return self._plot_trades_size(trades_df=self.agg_trades.df, empty_msg=empty_agg_trades_msg,
                                       trade_type_label="aggregated", max_size=max_size, height=height,
                                       logarithmic=logarithmic, overlap_prices=overlap_prices, shifted=shifted,
                                       title=title, size_column=size_column, width=width,
@@ -451,7 +451,7 @@ class SymbolPlotting:
            :width: 800
            :alt: Atomic trades size bubble chart
         """
-        return self._plot_trades_size(trades_df=self.atomic_trades, empty_msg=empty_atomic_trades_msg,
+        return self._plot_trades_size(trades_df=self.atomic_trades.df, empty_msg=empty_atomic_trades_msg,
                                       trade_type_label="atomic", max_size=max_size, height=height,
                                       logarithmic=logarithmic, overlap_prices=overlap_prices, shifted=shifted,
                                       title=title, size_column=size_column, width=width,
@@ -489,11 +489,9 @@ class SymbolPlotting:
                :width: 1000
 
         """
-        if not from_atomic and self.agg_trades.empty:
-            binpan_logger.info(empty_agg_trades_msg)
-            return
-        if from_atomic and self.atomic_trades.empty:
-            binpan_logger.info(empty_atomic_trades_msg)
+        source = self.atomic_trades if from_atomic else self.agg_trades
+        if source.empty:
+            binpan_logger.info(source.empty_msg)
             return
 
         if min_height:
@@ -654,32 +652,14 @@ class SymbolPlotting:
         elif minutes:
             startTime = int(time() * 1000) - (1000 * 60 * minutes)
 
-        if from_agg_trades:
-            if self.agg_trades.empty:
-                binpan_logger.info(empty_agg_trades_msg)
+        if from_agg_trades or from_atomic_trades:
+            source = self.agg_trades if from_agg_trades else self.atomic_trades
+            if source.empty:
+                binpan_logger.info(source.empty_msg)
                 return
-        if from_atomic_trades:
-            if self.atomic_trades.empty:
-                binpan_logger.info(empty_atomic_trades_msg)
-                return
-
-        if from_agg_trades:
-            title += ' — desde aggregated trades (precisión media)'
-            _df = self.agg_trades.copy(deep=True)
-            if startTime:
-                _df = _df[_df['Timestamp'] >= startTime]
-            if endTime:
-                _df = _df[_df['Timestamp'] <= endTime]
-            return _plotting().bar_plot(df=_df, x_col_to_bars='Price', y_col='Quantity', bar_segments='Buyer was maker', split_colors=True,
-                            bins=bins, title=title, height=height, y_axis_title='Buy takers VS Buy makers', horizontal_bars=True,
-                            **kwargs_update_layout)
-        elif from_atomic_trades:
-            title += ' — desde atomic trades (alta precisión)'
-            _df = self.atomic_trades.copy(deep=True)
-            if startTime:
-                _df = _df[_df['Timestamp'] >= startTime]
-            if endTime:
-                _df = _df[_df['Timestamp'] <= endTime]
+            precision = "precisión media" if source.is_agg else "alta precisión"
+            title += f' — desde {source.label} trades ({precision})'
+            _df = source.filtered(startTime, endTime)
             return _plotting().bar_plot(df=_df, x_col_to_bars='Price', y_col='Quantity', bar_segments='Buyer was maker', split_colors=True,
                             bins=bins, title=title, height=height, y_axis_title='Buy takers VS Buy makers', horizontal_bars=True,
                             **kwargs_update_layout)

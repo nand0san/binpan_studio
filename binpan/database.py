@@ -4,10 +4,7 @@ from .storage.postgresql import (create_connection, get_valid_table_list, is_cur
                                  is_hypertable, get_column_names, get_indexed_columns, get_hypertable_indexes,
                                  list_tables_with_suffix, data_type_from_table, count_rows_in_tables)
 from .storage import postgresql_database
-from .core.crypto import AesCipher
-
-
-cipher_object = AesCipher()
+from .core.secrets import get_secret
 
 
 class Database:
@@ -18,42 +15,19 @@ class Database:
                  password: str = None,
                  database: str = "crypto"):
 
-        if not host:
-            from secret import postgresql_host
-            self.host = postgresql_host
-        else:
-            self.host = host
-
-        if not port:
-            from secret import postgresql_port
-            self.port = int(postgresql_port)
-        else:
-            self.port = port
-
-        if not user:
-            from secret import postgresql_user
-            self.user = postgresql_user
-        else:
-            self.user = user
-
-        if not password:
-            from secret import postgresql_password
-            self.password = postgresql_password
-        else:
-            self.password = str(cipher_object.encrypt(password))
-
-        if not database:
-            from secret import postgresql_database
-            self.database = postgresql_database
-        else:
-            self.database = database
+        # Credenciales gestionadas por panzer (~/.panzer_creds) si no se pasan.
+        self.host = host if host else get_secret("postgresql_host")
+        self.port = int(port if port else get_secret("postgresql_port"))
+        self.user = user if user else get_secret("postgresql_user")
+        self.password = password if password else get_secret("postgresql_password")
+        self.database = database if database else get_secret("postgresql_database")
 
         print(f"Host: {self.host}\nPort: {self.port}\nUser: {self.user}\nDatabase: {self.database}")
 
         # chequear types de las variables
         self.connection, self.cursor = create_connection(user=self.user,
                                                          host=self.host,
-                                                         enc_password=self.password,
+                                                         password=self.password,
                                                          port=self.port,
                                                          database=self.database)
 
@@ -64,7 +38,7 @@ class Database:
 
     def update_cursor(self):
         self.connection, self.cursor = create_connection(user=self.user,
-                                                         enc_password=self.password,
+                                                         password=self.password,
                                                          host=self.host,
                                                          port=int(self.port),
                                                          database=self.database)
