@@ -15,7 +15,10 @@ read_required = open('requirements.txt', 'r')
 REQUIRED = read_required.read()
 read_required.close()
 
-my_version = "0.10.1"
+# Single source of truth for the version: binpan/version.py
+version_ns = {}
+exec((HERE / "binpan" / "version.py").read_text(), version_ns)
+my_version = version_ns["__version__"]
 
 setup(name='binpan',
       version=my_version,

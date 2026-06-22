@@ -28,9 +28,9 @@ Features
 
     BinPan contains no Binance order method, withdraw method or any dangerous command.
 
-    If you decide to add API keys for account methods, BinPan will encrypt them in a file
-    and in memory, but it is recommended not to enable trading capability in your Binance API
-    key configuration.
+    If you decide to add API keys for account methods, credentials are managed by ``panzer``
+    (encrypted in ``~/.panzer_creds``); it is recommended not to enable trading capability in
+    your Binance API key configuration.
 
     Be careful out there!
 
@@ -108,6 +108,15 @@ The ``notebooks/`` folder contains Jupyter Notebooks organized by topic:
    * - 13-15
      - database_*
      - PostgreSQL/TimescaleDB integration
+   * - 16
+     - parallel_requests
+     - Bulk/parallel data fetching
+   * - 17
+     - credentials_and_panzer
+     - API credentials and panzer secret management
+   * - 18
+     - wallet_tests
+     - Wallet class tests (run without API keys)
 
 
 GitHub repo
@@ -127,7 +136,7 @@ Jupyter Import Troubleshooting
 
 If you encounter import errors in Jupyter, install packages directly to the kernel:
 
-.. code-block:: python
+.. code-block:: text
 
     import sys
     !{sys.executable} -m pip install binpan
@@ -148,8 +157,9 @@ If you encounter import errors in Jupyter, install packages directly to the kern
 
    market.rst
    exchange.rst
-   quest.rst
+   auth.rst
    wallet.rst
+   wallet_api.rst
 
 .. toctree::
    :maxdepth: 2
@@ -170,7 +180,7 @@ If you encounter import errors in Jupyter, install packages directly to the kern
    timeframes.rst
    trades.rst
    standards.rst
-   starters.rst
+   secrets.rst
    logs.rst
    exceptions.rst
 

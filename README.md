@@ -32,8 +32,9 @@ An example of a candlestick chart with indicators:
 
 > BinPan contains no Binance **order method, withdraw method** or any dangerous command.
 >
-> If you decide to add API keys for account methods, BinPan will encrypt them in a file and in memory,
-> but it is recommended not to enable trading capability in your Binance API key configuration.
+> If you decide to add API keys for account methods, credentials are managed by `panzer`
+> (encrypted in `~/.panzer_creds`); it is recommended not to enable trading capability in your
+> Binance API key configuration.
 >
 > Be careful out there!
 
@@ -45,7 +46,9 @@ Installation
 pip install binpan
 ```
 
-Any API key or secret will be prompted when needed and encrypted in a file.
+Any API key or secret is prompted when first needed and stored encrypted by `panzer`
+(`~/.panzer_creds`). Public market data needs no credentials. See notebook
+`17_credentials_and_panzer`.
 
 Quick Start
 -----------

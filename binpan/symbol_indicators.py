@@ -1253,7 +1253,7 @@ class SymbolIndicators:
         :param bool simple: If True, it will calculate support and resistance levels merged. Just levels. Default is True.
         :param bool inplace: If True, it will replace the current dataframe with the new one. Default is True.
         :param int delayed: If passed, it will project the rolling support and resistance levels in the future. Default is 0  and means 0
-        windows projected in the future.
+            windows projected in the future.
         :param list colors: A list of colors for the indicator dataframe columns. Is the color to show when charts.
          It can be any color from plotly library or a number in the list of those. Default colors defined.
          https://community.plotly.com/t/plotly-colours-list/11730

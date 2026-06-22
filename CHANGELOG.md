@@ -1,5 +1,30 @@
 # CHANGELOG
 
+## v0.10.2 (2026-06-22)
+
+Documentation overhaul following the project conventions; single source of truth for the version.
+
+### Added
+
+- `binpan/version.py` as the single source of truth for the version. `binpan.symbol`, `setup.py` and
+  `docs/conf.py` now import it instead of hardcoding the string in three places.
+- The `Wallet` class is now documented (`docs/wallet.rst`); it had no documentation page before.
+- Generated the missing `docs/images/plotting/volume_profile.png` referenced by `plot_volume_profile`.
+
+### Changed
+
+- Sphinx config aligned to the project conventions: dropped `sphinx.ext.napoleon` (docstrings are native
+  reST), `add_module_names = False`, theme options (GitHub URL, accent), version imported from the package.
+- `.rst` pages renamed to match their module: `quest → auth`, `starters → secrets`, `wallet → wallet_api`
+  (functions). Notebook table extended with 16/17/18.
+
+### Fixed
+
+- reST formatting errors in docstrings (misindented `:param:` continuations) in `Symbol`,
+  `insert_indicator`, `rolling_support_resistance` and `get_margin_account_details`.
+- Removed stale Telegram references from `secrets.rst`, `files.rst` and the README credential note
+  (credentials are managed by `panzer`).
+
 ## v0.10.1 (2026-06-22)
 
 `Wallet` class audited after the panzer credential migration; two pre-existing bugs fixed and a

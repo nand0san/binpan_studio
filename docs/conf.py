@@ -1,27 +1,28 @@
-import os
 import sys
+from pathlib import Path
 
-sys.path.insert(0, os.path.abspath('..'))
+# Permite que autodoc encuentre el paquete (un nivel arriba de docs/).
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+# Importa la versión desde el paquete, no la hardcodes.
+from binpan.version import __version__  # noqa: E402
 
 project = 'BinPan'
 copyright = '2022, Fernando Alfonso'
 author = 'Fernando Alfonso'
 
-# Las credenciales las gestiona panzer (~/.panzer_creds); la doc no necesita cargar nada.
-version = "0.10.1"
-release = version
+version = __version__
+release = __version__
 
+# Extensiones mínimas. Sin sphinx.ext.napoleon: los docstrings son reST nativo
+# compacto (estilo :param:), no Google ni NumPy.
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",  # Create neat summary tables
     "sphinx.ext.viewcode",
-    "sphinx.ext.napoleon",
     "sphinx.ext.intersphinx",
     "autodocsumm",
 ]
-
-napoleon_google_docstring = False
-napoleon_numpy_docstring = False
 
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
@@ -45,9 +46,17 @@ templates_path = ['_templates']
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '.ipynb_checkpoints', 'secret.py', '.log']
 
-html_theme = 'shibuya'
+add_module_names = False  # Evita prefijos largos del tipo "binpan.indicators.ema()".
 
+html_theme = 'shibuya'
 html_static_path = ['_static']
+html_title = f'{project} {release}'
+html_show_sourcelink = False
+
+html_theme_options = {
+    'github_url': 'https://github.com/nand0san/binpan_studio',
+    'accent_color': 'iris',
+}
 
 
 def setup(app):

@@ -3,7 +3,7 @@
 This is the main classes file.
 
 """
-__version__ = "0.10.1"
+from .version import __version__
 
 import os
 import pandas as pd
@@ -147,7 +147,7 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
                         because daily time saving changes.
 
     :param bool closed:      The last candle is a closed one in the moment of the creation, discarding the current running one not closed
-    yet. Default True.
+        yet. Default True.
     :param int display_columns:     Number of columns in the dataframe display. Convenient to adjust in jupyter notebooks.
     :param int display_max_rows:        Number of rows in the dataframe display. Convenient to adjust in jupyter notebooks.
     :param int display_width:       Display width in the dataframe display. Convenient to adjust in jupyter notebooks.
@@ -963,9 +963,9 @@ class Symbol(SymbolIndicators, SymbolPlotting, SymbolStrategy):
          :param source_data: The source data for the indicator(s). Can be a Series, DataFrame, ndarray, or list thereof.
          :param strategy_group: (Optional) Name of the strategy group to tag the inserted data.
          :param plotting_row: (Optional) The specific row for plotting a single series. '1' overlaps with candles; other values create
-         new rows.
+             new rows.
          :param plotting_rows: (Optional) List of rows for plotting each series. '1' means overlap; other integers determine separate row
-         positions.
+             positions.
          :param color: (Optional) Color for plotting a single series.
          :param no_overlapped_plot_rows: If True, avoids overlapping plot rows for multiple series.
          :param colors: (Optional) List of colors for each series indicator. Defaults to random colors if not provided.

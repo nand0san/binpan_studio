@@ -750,6 +750,7 @@ def get_margin_account_details(decimal_mode: bool) -> dict:
     Weight(IP): 10
 
     :param bool decimal_mode: Fixes Decimal return type and operative.
+
     Response:
 
     .. code-block::
