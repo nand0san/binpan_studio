@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="iris" data-content_root="../../../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>binpan.core.trades - BinPan 0.10.2</title><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=e1a1ceaf" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/shibuya.css?v=9454f7d5" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/style.css?v=1e48dca6" />
+    <link media="print" rel="stylesheet" type="text/css" href="../../../_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/><meta property="og:title" content="binpan.core.trades"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="../../../index.html">
+      
+      
+      <strong>BinPan</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Main Classes:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../binpan.html">BinPan Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../symbol_indicators.html">Symbol Indicators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../symbol_plotting.html">Symbol Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../symbol_strategy.html">Symbol Strategy</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">API &amp; Market:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../market.html">Market Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exchange.html">Exchange Info Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../auth.html">Authentication Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../wallet.html">Wallet Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../wallet_api.html">Wallet API Functions</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Analysis:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../indicators.html">Indicators Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../aggregations.html">Aggregations Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../strategies.html">Strategies Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tags.html">Tags &amp; Backtesting Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stat_tests.html">Statistical Tests and Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../numba_tools.html">Numba Tools Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Core:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../time_helper.html">Time Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../timeframes.html">Timeframes Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../trades.html">Trades Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../standards.html">Standards Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../secrets.html">Secrets Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logs.html">Logs Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exceptions.html">Exceptions Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Plotting:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../plotting.html">Plotting Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Storage &amp; Database:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../files.html">Files Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../postgresql.html">PostgreSQL Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../postgresql_database.html">PostgreSQL Database Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../influx_manager.html">Influx Manager Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../redis_fetch.html">Redis Module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../../index.html"><span itemprop="name">BinPan</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../index.html"><span itemprop="name">Module code</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">binpan.core.trades</strong>
+        <meta itemprop="position" content="3" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue" role="main">
+          <h1>Source code for binpan.core.trades</h1><div class="highlight"><pre>
+<span></span><span data-line="1"><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="2"><span class="sd">Trades value object.</span>
+</span><span data-line="3">
+</span><span data-line="4"><span class="sd">Wraps a trades :class:`pandas.DataFrame` together with its metadata (trade type,</span>
+</span><span data-line="5"><span class="sd">data origin, the column map and raw API response it was built from). A single</span>
+</span><span data-line="6"><span class="sd">``Symbol`` can hold two independent instances at once, e.g. atomic trades from</span>
+</span><span data-line="7"><span class="sd">one origin and aggregated trades from another.</span>
+</span><span data-line="8">
+</span><span data-line="9"><span class="sd">It proxies attribute and item access to the underlying DataFrame, so it can be</span>
+</span><span data-line="10"><span class="sd">used like one in notebooks::</span>
+</span><span data-line="11">
+</span><span data-line="12"><span class="sd">    s.agg_trades[&#39;Quantity&#39;]     # -&gt; pandas Series  (delegated to .df)</span>
+</span><span data-line="13"><span class="sd">    s.agg_trades.empty           # -&gt; bool</span>
+</span><span data-line="14"><span class="sd">    s.agg_trades.head()          # -&gt; DataFrame      (delegated to .df)</span>
+</span><span data-line="15"><span class="sd">    s.agg_trades.df              # -&gt; the raw pandas DataFrame</span>
+</span><span data-line="16"><span class="sd">    s.agg_trades.trade_type      # -&gt; &#39;agg&#39;</span>
+</span><span data-line="17">
+</span><span data-line="18"><span class="sd">Heavy domain logic (indicators, plotting) is NOT placed here to keep this module</span>
+</span><span data-line="19"><span class="sd">dependency-free (pandas only) and avoid import cycles with ``analysis``/``plotting``.</span>
+</span><span data-line="20"><span class="sd">Only the small, repeated bits live here: the empty check, the time-range filter</span>
+</span><span data-line="21"><span class="sd">and the metadata.</span>
+</span><span data-line="22"><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="23">
+</span><span data-line="24"><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+</span><span data-line="25">
+</span><span data-line="26"><span class="n">_AGG_TYPES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;agg&quot;</span><span class="p">,</span> <span class="s2">&quot;aggtrade&quot;</span><span class="p">,</span> <span class="s2">&quot;aggTrade&quot;</span><span class="p">)</span>
+</span><span data-line="27">
+</span><span data-line="28">
+<div class="viewcode-block" id="Trades">
+<a class="viewcode-back" href="../../../trades.html#binpan.core.trades.Trades">[docs]</a>
+</span><span data-line="29"><span class="k">class</span><span class="w"> </span><span class="nc">Trades</span><span class="p">:</span>
+</span><span data-line="30"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="31"><span class="sd">    A trades DataFrame plus its metadata.</span>
+</span><span data-line="32">
+</span><span data-line="33"><span class="sd">    :param pd.DataFrame df: The parsed trades DataFrame. If None, an empty frame</span>
+</span><span data-line="34"><span class="sd">        is created (using ``columns`` for its column names when provided).</span>
+</span><span data-line="35"><span class="sd">    :param str trade_type: ``&#39;agg&#39;`` (aggregated) or ``&#39;atomic&#39;``/``&#39;trade&#39;``.</span>
+</span><span data-line="36"><span class="sd">    :param str origin: Where the data came from: ``&#39;binance_api&#39;``, ``&#39;csv&#39;``,</span>
+</span><span data-line="37"><span class="sd">        ``&#39;binbase&#39;`` or ``&#39;postgresql&#39;``.</span>
+</span><span data-line="38"><span class="sd">    :param dict columns: Column map (raw API field -&gt; BinPan column name).</span>
+</span><span data-line="39"><span class="sd">    :param str symbol: The symbol, e.g. ``&#39;BTCUSDT&#39;``.</span>
+</span><span data-line="40"><span class="sd">    :param str time_zone: IANA time zone of the index, e.g. ``&#39;Europe/Madrid&#39;``.</span>
+</span><span data-line="41"><span class="sd">    :param list raw: The raw API response (list of dicts) it was parsed from.</span>
+</span><span data-line="42"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="43">
+</span><span data-line="44">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">trade_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;agg&quot;</span><span class="p">,</span> <span class="n">origin</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="45">                 <span class="n">columns</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">symbol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">time_zone</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">raw</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+</span><span data-line="46">        <span class="k">if</span> <span class="n">df</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="47">            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="k">if</span> <span class="n">columns</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+</span><span data-line="48">        <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">df</span>
+</span><span data-line="49">        <span class="bp">self</span><span class="o">.</span><span class="n">trade_type</span> <span class="o">=</span> <span class="n">trade_type</span>
+</span><span data-line="50">        <span class="bp">self</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="n">origin</span>
+</span><span data-line="51">        <span class="bp">self</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">columns</span>
+</span><span data-line="52">        <span class="bp">self</span><span class="o">.</span><span class="n">symbol</span> <span class="o">=</span> <span class="n">symbol</span>
+</span><span data-line="53">        <span class="bp">self</span><span class="o">.</span><span class="n">time_zone</span> <span class="o">=</span> <span class="n">time_zone</span>
+</span><span data-line="54">        <span class="bp">self</span><span class="o">.</span><span class="n">raw</span> <span class="o">=</span> <span class="n">raw</span> <span class="k">if</span> <span class="n">raw</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[]</span>
+</span><span data-line="55">
+</span><span data-line="56">    <span class="c1"># ── metadata helpers ─────────────────────────────────────</span>
+</span><span data-line="57">
+</span><span data-line="58">    <span class="nd">@property</span>
+</span><span data-line="59">    <span class="k">def</span><span class="w"> </span><span class="nf">is_agg</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span data-line="60"><span class="w">        </span><span class="sd">&quot;&quot;&quot;True if these are aggregated trades.&quot;&quot;&quot;</span>
+</span><span data-line="61">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">trade_type</span> <span class="ow">in</span> <span class="n">_AGG_TYPES</span>
+</span><span data-line="62">
+</span><span data-line="63">    <span class="nd">@property</span>
+</span><span data-line="64">    <span class="k">def</span><span class="w"> </span><span class="nf">label</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="65"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Human label: ``&#39;aggregated&#39;`` or ``&#39;atomic&#39;``.&quot;&quot;&quot;</span>
+</span><span data-line="66">        <span class="k">return</span> <span class="s2">&quot;aggregated&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_agg</span> <span class="k">else</span> <span class="s2">&quot;atomic&quot;</span>
+</span><span data-line="67">
+</span><span data-line="68">    <span class="nd">@property</span>
+</span><span data-line="69">    <span class="k">def</span><span class="w"> </span><span class="nf">empty_msg</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="70"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Message suggesting how to fetch the data when empty.&quot;&quot;&quot;</span>
+</span><span data-line="71">        <span class="n">method</span> <span class="o">=</span> <span class="s2">&quot;get_agg_trades()&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_agg</span> <span class="k">else</span> <span class="s2">&quot;get_atomic_trades()&quot;</span>
+</span><span data-line="72">        <span class="k">return</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Empty </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s2"> trades, please request using: </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2"> method. &quot;</span>
+</span><span data-line="73">                <span class="sa">f</span><span class="s2">&quot;Example: my_symbol.</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="74">
+<div class="viewcode-block" id="Trades.filtered">
+<a class="viewcode-back" href="../../../trades.html#binpan.core.trades.Trades.filtered">[docs]</a>
+</span><span data-line="75">    <span class="k">def</span><span class="w"> </span><span class="nf">filtered</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_time</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end_time</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">time_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Timestamp&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span data-line="76"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="77"><span class="sd">        Return a copy of the DataFrame filtered by the timestamp column.</span>
+</span><span data-line="78">
+</span><span data-line="79"><span class="sd">        :param int start_time: Inclusive lower bound (ms). Ignored if falsy.</span>
+</span><span data-line="80"><span class="sd">        :param int end_time: Inclusive upper bound (ms). Ignored if falsy.</span>
+</span><span data-line="81"><span class="sd">        :param str time_col: Timestamp column name. Default ``&#39;Timestamp&#39;``.</span>
+</span><span data-line="82"><span class="sd">        :return pd.DataFrame: Filtered (deep) copy.</span>
+</span><span data-line="83"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="84">        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="85">        <span class="k">if</span> <span class="n">start_time</span><span class="p">:</span>
+</span><span data-line="86">            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">time_col</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">start_time</span><span class="p">]</span>
+</span><span data-line="87">        <span class="k">if</span> <span class="n">end_time</span><span class="p">:</span>
+</span><span data-line="88">            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">time_col</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">end_time</span><span class="p">]</span>
+</span><span data-line="89">        <span class="k">return</span> <span class="n">df</span></div>
+
+</span><span data-line="90">
+<div class="viewcode-block" id="Trades.with_df">
+<a class="viewcode-back" href="../../../trades.html#binpan.core.trades.Trades.with_df">[docs]</a>
+</span><span data-line="91">    <span class="k">def</span><span class="w"> </span><span class="nf">with_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Trades&quot;</span><span class="p">:</span>
+</span><span data-line="92"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a new Trades carrying the same metadata but a different DataFrame.&quot;&quot;&quot;</span>
+</span><span data-line="93">        <span class="k">return</span> <span class="n">Trades</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">trade_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">trade_type</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
+</span><span data-line="94">                      <span class="n">symbol</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">symbol</span><span class="p">,</span> <span class="n">time_zone</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">time_zone</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">raw</span><span class="p">)</span></div>
+
+</span><span data-line="95">
+</span><span data-line="96">    <span class="c1"># ── DataFrame proxy ──────────────────────────────────────</span>
+</span><span data-line="97">
+</span><span data-line="98">    <span class="nd">@property</span>
+</span><span data-line="99">    <span class="k">def</span><span class="w"> </span><span class="nf">empty</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span data-line="100"><span class="w">        </span><span class="sd">&quot;&quot;&quot;True if the underlying DataFrame is empty.&quot;&quot;&quot;</span>
+</span><span data-line="101">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">empty</span>
+</span><span data-line="102">
+</span><span data-line="103">    <span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+</span><span data-line="104">        <span class="c1"># Only invoked when normal attribute lookup fails -&gt; delegate to the DataFrame.</span>
+</span><span data-line="105">        <span class="c1"># Magic methods are intentionally not delegated.</span>
+</span><span data-line="106">        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;__&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;__&quot;</span><span class="p">):</span>
+</span><span data-line="107">            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+</span><span data-line="108">        <span class="k">try</span><span class="p">:</span>
+</span><span data-line="109">            <span class="n">df</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;df&quot;</span><span class="p">)</span>
+</span><span data-line="110">        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+</span><span data-line="111">            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+</span><span data-line="112">        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+</span><span data-line="113">
+</span><span data-line="114">    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+</span><span data-line="115">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+</span><span data-line="116">
+</span><span data-line="117">    <span class="k">def</span><span class="w"> </span><span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+</span><span data-line="118">        <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+</span><span data-line="119">
+</span><span data-line="120">    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span data-line="121">        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
+</span><span data-line="122">
+</span><span data-line="123">    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span data-line="124">        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
+</span><span data-line="125">
+</span><span data-line="126">    <span class="k">def</span><span class="w"> </span><span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span data-line="127">        <span class="k">return</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span>
+</span><span data-line="128">
+</span><span data-line="129">    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="130">        <span class="k">return</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Trades(symbol=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">symbol</span><span class="si">}</span><span class="s2">, type=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">trade_type</span><span class="si">}</span><span class="s2">, &quot;</span>
+</span><span data-line="131">                <span class="sa">f</span><span class="s2">&quot;origin=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="si">}</span><span class="s2">, rows=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+</span><span data-line="132">
+</span><span data-line="133">    <span class="k">def</span><span class="w"> </span><span class="nf">_repr_html_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span data-line="134">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">_repr_html_</span><span class="p">()</span></div>
+
+</span></pre></div>
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2022, Fernando Alfonso</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+<a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+  <iconify-icon icon="simple-icons:github"></iconify-icon>
+</a></div>
+    </div>
+  </div>
+</footer>
+      <script src="../../../_static/documentation_options.js?v=11e62b30"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/shibuya.js?v=50760d75"></script></body>
+</html>

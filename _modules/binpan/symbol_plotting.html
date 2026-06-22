@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="iris" data-content_root="../../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>binpan.symbol_plotting - BinPan 0.10.2</title><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=e1a1ceaf" />
+    <link rel="stylesheet" type="text/css" href="../../_static/shibuya.css?v=9454f7d5" />
+    <link rel="stylesheet" type="text/css" href="../../_static/style.css?v=1e48dca6" />
+    <link media="print" rel="stylesheet" type="text/css" href="../../_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/><meta property="og:title" content="binpan.symbol_plotting"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="../../index.html">
+      
+      
+      <strong>BinPan</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Main Classes:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../binpan.html">BinPan Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../symbol_indicators.html">Symbol Indicators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../symbol_plotting.html">Symbol Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../symbol_strategy.html">Symbol Strategy</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">API &amp; Market:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../market.html">Market Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exchange.html">Exchange Info Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../auth.html">Authentication Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../wallet.html">Wallet Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../wallet_api.html">Wallet API Functions</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Analysis:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../indicators.html">Indicators Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../aggregations.html">Aggregations Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../strategies.html">Strategies Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tags.html">Tags &amp; Backtesting Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stat_tests.html">Statistical Tests and Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../numba_tools.html">Numba Tools Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Core:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../time_helper.html">Time Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../timeframes.html">Timeframes Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../trades.html">Trades Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../standards.html">Standards Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../secrets.html">Secrets Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logs.html">Logs Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exceptions.html">Exceptions Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Plotting:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../plotting.html">Plotting Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Storage &amp; Database:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../files.html">Files Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../postgresql.html">PostgreSQL Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../postgresql_database.html">PostgreSQL Database Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../influx_manager.html">Influx Manager Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../redis_fetch.html">Redis Module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../index.html"><span itemprop="name">BinPan</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../index.html"><span itemprop="name">Module code</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">binpan.symbol_plotting</strong>
+        <meta itemprop="position" content="3" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue" role="main">
+          <h1>Source code for binpan.symbol_plotting</h1><div class="highlight"><pre>
+<span></span><span data-line="1"><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="2"><span class="sd">Plotting methods for Symbol class.</span>
+</span><span data-line="3"><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="4"><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+</span><span data-line="5">
+</span><span data-line="6"><span class="kn">from</span><span class="w"> </span><span class="nn">random</span><span class="w"> </span><span class="kn">import</span> <span class="n">choice</span>
+</span><span data-line="7"><span class="kn">from</span><span class="w"> </span><span class="nn">time</span><span class="w"> </span><span class="kn">import</span> <span class="n">time</span>
+</span><span data-line="8">
+</span><span data-line="9"><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+</span><span data-line="10">
+</span><span data-line="11"><span class="kn">from</span><span class="w"> </span><span class="nn">.core.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">BinPanException</span>
+</span><span data-line="12"><span class="kn">from</span><span class="w"> </span><span class="nn">.core.logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogManager</span>
+</span><span data-line="13"><span class="kn">from</span><span class="w"> </span><span class="nn">.core.time_helper</span><span class="w"> </span><span class="kn">import</span> <span class="n">tick_seconds</span>
+</span><span data-line="14"><span class="kn">from</span><span class="w"> </span><span class="nn">.api.wallet_api</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert_str_date_to_ms</span>
+</span><span data-line="15"><span class="kn">from</span><span class="w"> </span><span class="nn">.analysis.indicators</span><span class="w"> </span><span class="kn">import</span> <span class="n">zoom_cloud_indicators</span><span class="p">,</span> <span class="n">market_profile_from_klines_melt</span>
+</span><span data-line="16">
+</span><span data-line="17"><span class="n">binpan_logger</span> <span class="o">=</span> <span class="n">LogManager</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;./logs/binpan.log&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;binpan&#39;</span><span class="p">,</span> <span class="n">info_level</span><span class="o">=</span><span class="s1">&#39;INFO&#39;</span><span class="p">)</span>
+</span><span data-line="18">
+</span><span data-line="19"><span class="n">empty_agg_trades_msg</span> <span class="o">=</span> <span class="s2">&quot;Empty trades, please request using: get_agg_trades() method: Example: my_symbol.get_agg_trades()&quot;</span>
+</span><span data-line="20"><span class="n">empty_atomic_trades_msg</span> <span class="o">=</span> <span class="s2">&quot;Empty atomic trades, please request using: get_atomic_trades() method: Example: my_symbol.get_atomic_trades()&quot;</span>
+</span><span data-line="21">
+</span><span data-line="22">
+</span><span data-line="23"><span class="k">def</span><span class="w"> </span><span class="nf">_plotting</span><span class="p">():</span>
+</span><span data-line="24">    <span class="kn">from</span><span class="w"> </span><span class="nn">binpan.plotting</span><span class="w"> </span><span class="kn">import</span> <span class="n">charts</span>
+</span><span data-line="25">    <span class="k">return</span> <span class="n">charts</span>
+</span><span data-line="26">
+</span><span data-line="27">
+<div class="viewcode-block" id="SymbolPlotting">
+<a class="viewcode-back" href="../../symbol_plotting.html#binpan.symbol_plotting.SymbolPlotting">[docs]</a>
+</span><span data-line="28"><span class="k">class</span><span class="w"> </span><span class="nc">SymbolPlotting</span><span class="p">:</span>
+</span><span data-line="29"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Plotting methods for Symbol.&quot;&quot;&quot;</span>
+</span><span data-line="30">
+<div class="viewcode-block" id="SymbolPlotting.set_plot_row">
+<a class="viewcode-back" href="../../symbol_plotting.html#binpan.symbol_plotting.SymbolPlotting.set_plot_row">[docs]</a>
+</span><span data-line="31">    <span class="k">def</span><span class="w"> </span><span class="nf">set_plot_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indicator_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">row_position</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span data-line="32"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="33"><span class="sd">        Internal control formatting plots. Can be used to change plot subplot row of an indicator.</span>
+</span><span data-line="34">
+</span><span data-line="35"><span class="sd">        :param str indicator_column: column name</span>
+</span><span data-line="36"><span class="sd">        :param row_position: reassign row_position to column name</span>
+</span><span data-line="37"><span class="sd">        :return dict: columns with its assigned row_position in subplots when charts.</span>
+</span><span data-line="38">
+</span><span data-line="39"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="40">        <span class="k">if</span> <span class="n">indicator_column</span> <span class="ow">and</span> <span class="n">row_position</span><span class="p">:</span>
+</span><span data-line="41">            <span class="bp">self</span><span class="o">.</span><span class="n">row_control</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">indicator_column</span><span class="p">:</span> <span class="n">row_position</span><span class="p">})</span>
+</span><span data-line="42">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_control</span></div>
+
+</span><span data-line="43">
+<div class="viewcode-block" id="SymbolPlotting.set_plot_color">
+<a class="viewcode-back" href="../../symbol_plotting.html#binpan.symbol_plotting.SymbolPlotting.set_plot_color">[docs]</a>
+</span><span data-line="44">    <span class="k">def</span><span class="w"> </span><span class="nf">set_plot_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indicator_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span data-line="45"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="46"><span class="sd">        Internal control formatting plots. Can be used to change plot color of an indicator.</span>
+</span><span data-line="47">
+</span><span data-line="48"><span class="sd">        :param str indicator_column: column name</span>
+</span><span data-line="49"><span class="sd">        :param color: reassign color to column name</span>
+</span><span data-line="50"><span class="sd">        :return dict: columns with its assigned colors when charts.</span>
+</span><span data-line="51">
+</span><span data-line="52"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="53">        <span class="k">if</span> <span class="n">indicator_column</span> <span class="ow">and</span> <span class="n">color</span><span class="p">:</span>
+</span><span data-line="54">            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">color</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">:</span>
+</span><span data-line="55">                <span class="bp">self</span><span class="o">.</span><span class="n">color_control</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">indicator_column</span><span class="p">:</span> <span class="n">color</span><span class="p">})</span>
+</span><span data-line="56">            <span class="k">elif</span> <span class="n">color</span> <span class="ow">in</span> <span class="n">_plotting</span><span class="p">()</span><span class="o">.</span><span class="n">plotly_colors</span><span class="p">:</span>
+</span><span data-line="57">                <span class="bp">self</span><span class="o">.</span><span class="n">color_control</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">indicator_column</span><span class="p">:</span> <span class="n">color</span><span class="p">})</span>
+</span><span data-line="58">            <span class="k">else</span><span class="p">:</span>
+</span><span data-line="59">                <span class="bp">self</span><span class="o">.</span><span class="n">color_control</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">indicator_column</span><span class="p">:</span> <span class="n">choice</span><span class="p">(</span><span class="n">_plotting</span><span class="p">()</span><span class="o">.</span><span class="n">plotly_colors</span><span class="p">)})</span>
+</span><span data-line="60">        <span class="k">elif</span> <span class="n">indicator_column</span><span class="p">:</span>
+</span><span data-line="61">            <span class="bp">self</span><span class="o">.</span><span class="n">color_control</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">indicator_column</span><span class="p">:</span> <span class="n">choice</span><span class="p">(</span><span class="n">_plotting</span><span class="p">()</span><span class="o">.</span><span class="n">plotly_colors</span><span class="p">)})</span>
+</span><span data-line="62">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">color_control</span></div>
+
+</span><span data-line="63">
+<div class="viewcode-block" id="SymbolPlotting.set_plot_color_fill">
+<a class="viewcode-back" href="../../symbol_plotting.html#binpan.symbol_plotting.SymbolPlotting.set_plot_color_fill">[docs]</a>
+</span><span data-line="64">    <span class="k">def</span><span class="w"> </span><span class="nf">set_plot_color_fill</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indicator_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">color_fill</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span data-line="65"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="66"><span class="sd">        Internal control formatting plots. Can be used to change plot color of an indicator.</span>
+</span><span data-line="67">
+</span><span data-line="68"><span class="sd">        :param str indicator_column: column name</span>
+</span><span data-line="69"><span class="sd">        :param color_fill: Color can be forced to fill to zero line. For transparent colors use rgba string code to define color.</span>
+</span><span data-line="70"><span class="sd">         Example for transparent green &#39;rgba(26,150,65,0.5)&#39; or transparent red &#39;rgba(204,0,0,0.5)&#39;</span>
+</span><span data-line="71"><span class="sd">        :return dict: columns with its assigned colors when charts.</span>
+</span><span data-line="72">
+</span><span data-line="73"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="74">        <span class="k">if</span> <span class="n">indicator_column</span> <span class="ow">and</span> <span class="n">color_fill</span><span class="p">:</span>
+</span><span data-line="75">            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">color_fill</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">:</span>
+</span><span data-line="76">                <span class="bp">self</span><span class="o">.</span><span class="n">color_fill_control</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">indicator_column</span><span class="p">:</span> <span class="n">_plotting</span><span class="p">()</span><span class="o">.</span><span class="n">plotly_colors</span><span class="p">[</span><span class="n">color_fill</span><span class="p">]})</span>
+</span><span data-line="77">            <span class="k">elif</span> <span class="n">color_fill</span> <span class="ow">in</span> <span class="n">_plotting</span><span class="p">()</span><span class="o">.</span><span class="n">plotly_colors</span> <span class="ow">or</span> <span class="n">color_fill</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;rgba&#39;</span><span class="p">):</span>
+</span><span data-line="78">                <span class="bp">self</span><span class="o">.</span><span class="n">color_fill_control</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">indicator_column</span><span class="p">:</span> <span class="n">color_fill</span><span class="p">})</span>
+</span><span data-line="79">            <span class="k">else</span><span class="p">:</span>
+</span><span data-line="80">                <span class="bp">self</span><span class="o">.</span><span class="n">color_fill_control</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">indicator_column</span><span class="p">:</span> <span class="kc">None</span><span class="p">})</span>
+</span><span data-line="81">        <span class="k">elif</span> <span class="n">indicator_column</span><span class="p">:</span>
+</span><span data-line="82">            <span class="bp">self</span><span class="o">.</span><span class="n">color_fill_control</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">indicator_column</span><span class="p">:</span> <span class="kc">None</span><span class="p">})</span>
+</span><span data-line="83">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">color_fill_control</span></div>
+
+</span><span data-line="84">
+<div class="viewcode-block" id="SymbolPlotting.set_plot_filled_mode">
+<a class="viewcode-back" href="../../symbol_plotting.html#binpan.symbol_plotting.SymbolPlotting.set_plot_filled_mode">[docs]</a>
+</span><span data-line="85">    <span class="k">def</span><span class="w"> </span><span class="nf">set_plot_filled_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indicator_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">fill_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span data-line="86"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="87"><span class="sd">        Internal control formatting plots. Can be used to change plot filling mode for pairs of indicators when.</span>
+</span><span data-line="88">
+</span><span data-line="89"><span class="sd">        :param str indicator_column: column name</span>
+</span><span data-line="90"><span class="sd">        :param fill_mode: Fill mode for indicator. Color can be forced to fill to zero line with &quot;tozeroy&quot; or between two indicators in same</span>
+</span><span data-line="91"><span class="sd">           axis group with &quot;tonexty&quot;.</span>
+</span><span data-line="92"><span class="sd">        :return dict: columns with its assigned fill mode.</span>
+</span><span data-line="93">
+</span><span data-line="94"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="95">        <span class="k">if</span> <span class="n">fill_mode</span><span class="p">:</span>
+</span><span data-line="96">            <span class="k">if</span> <span class="n">fill_mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;tonexty&#39;</span><span class="p">,</span> <span class="s1">&#39;tozeroy&#39;</span><span class="p">):</span>
+</span><span data-line="97">                <span class="n">binpan_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Fill mode need to be &#39;tonexty&#39; or &#39;tozeroy&#39;&quot;</span><span class="p">)</span>
+</span><span data-line="98">                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">indicators_filled_mode</span>
+</span><span data-line="99">        <span class="k">if</span> <span class="n">indicator_column</span> <span class="ow">and</span> <span class="n">fill_mode</span><span class="p">:</span>
+</span><span data-line="100">            <span class="bp">self</span><span class="o">.</span><span class="n">indicators_filled_mode</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">indicator_column</span><span class="p">:</span> <span class="n">fill_mode</span><span class="p">})</span>
+</span><span data-line="101">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">indicators_filled_mode</span></div>
+
+</span><span data-line="102">
+<div class="viewcode-block" id="SymbolPlotting.set_plot_axis_group">
+<a class="viewcode-back" href="../../symbol_plotting.html#binpan.symbol_plotting.SymbolPlotting.set_plot_axis_group">[docs]</a>
+</span><span data-line="103">    <span class="k">def</span><span class="w"> </span><span class="nf">set_plot_axis_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indicator_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">my_axis_group</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span data-line="104"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="105"><span class="sd">        Internal control formatting plots. Can be used to change plot filling mode for pairs of indicators when.</span>
+</span><span data-line="106">
+</span><span data-line="107"><span class="sd">        :param str indicator_column: column name</span>
+</span><span data-line="108"><span class="sd">        :param my_axis_group: Fill mode for indicator. Color can be forced to fill to zero line with &quot;tozeroy&quot; or between two indicators</span>
+</span><span data-line="109"><span class="sd">         in same axis group with &quot;tonexty&quot;.</span>
+</span><span data-line="110"><span class="sd">        :return dict: columns with its assigned fill mode.</span>
+</span><span data-line="111">
+</span><span data-line="112"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="113">        <span class="k">if</span> <span class="n">my_axis_group</span><span class="p">:</span>
+</span><span data-line="114">            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">my_axis_group</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;y&#39;</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">my_axis_group</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">my_axis_group</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">isnumeric</span><span class="p">())):</span>
+</span><span data-line="115">                <span class="n">binpan_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Axis group name need to be y, y2, y3, etc&quot;</span><span class="p">)</span>
+</span><span data-line="116">                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">indicators_filled_mode</span>
+</span><span data-line="117">        <span class="k">if</span> <span class="n">indicator_column</span> <span class="ow">and</span> <span class="n">my_axis_group</span><span class="p">:</span>
+</span><span data-line="118">            <span class="bp">self</span><span class="o">.</span><span class="n">axis_groups</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">indicator_column</span><span class="p">:</span> <span class="n">my_axis_group</span><span class="p">})</span>
+</span><span data-line="119">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis_groups</span></div>
+
+</span><span data-line="120">
+<div class="viewcode-block" id="SymbolPlotting.set_plot_splitted_serie_couple">
+<a class="viewcode-back" href="../../symbol_plotting.html#binpan.symbol_plotting.SymbolPlotting.set_plot_splitted_serie_couple">[docs]</a>
+</span><span data-line="121">    <span class="k">def</span><span class="w"> </span><span class="nf">set_plot_splitted_serie_couple</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indicator_column_up</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">indicator_column_down</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">splitted_dfs</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="122">                                       <span class="n">color_up</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;rgba(35, 152, 33, 0.5)&#39;</span><span class="p">,</span> <span class="n">color_down</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;rgba(245, 63, 39, 0.5)&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span data-line="123"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="124"><span class="sd">        Modify the control for splitted series in plots with colored area in two colors by relative position.</span>
+</span><span data-line="125">
+</span><span data-line="126"><span class="sd">        If no params passed, then returns dict actual contents.</span>
+</span><span data-line="127">
+</span><span data-line="128"><span class="sd">        :param str indicator_column_up: An existing column from a BinPan Symbol&#39;s class dataframe to plot as up serie (green color).</span>
+</span><span data-line="129"><span class="sd">        :param str indicator_column_down: An existing column from a BinPan Symbol&#39;s class dataframe to plot as down serie (red clor).</span>
+</span><span data-line="130"><span class="sd">        :param tuple splitted_dfs: A list of pairs of a splitted dataframe by two columns.</span>
+</span><span data-line="131"><span class="sd">        :param color_up: An rgba formatted color: https://rgbacolorpicker.com/</span>
+</span><span data-line="132"><span class="sd">        :param color_down: An rgba formatted color: https://rgbacolorpicker.com/</span>
+</span><span data-line="133"><span class="sd">        :return dict: A dictionary with auxiliar data about plot areas with two colours by relative position.</span>
+</span><span data-line="134">
+</span><span data-line="135"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="136">        <span class="k">if</span> <span class="n">indicator_column_up</span> <span class="ow">and</span> <span class="n">indicator_column_down</span> <span class="ow">and</span> <span class="n">splitted_dfs</span><span class="p">:</span>
+</span><span data-line="137">            <span class="bp">self</span><span class="o">.</span><span class="n">plot_splitted_serie_couples</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+</span><span data-line="138">                <span class="n">indicator_column_down</span><span class="p">:</span> <span class="p">[</span><span class="n">indicator_column_up</span><span class="p">,</span> <span class="n">indicator_column_down</span><span class="p">,</span> <span class="n">splitted_dfs</span><span class="p">,</span> <span class="n">color_up</span><span class="p">,</span> <span class="n">color_down</span><span class="p">]})</span>
+</span><span data-line="139">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_splitted_serie_couples</span></div>
+
+</span><span data-line="140">
+<div class="viewcode-block" id="SymbolPlotting.remove_plot_info_associated_columns">
+<a class="viewcode-back" href="../../symbol_plotting.html#binpan.symbol_plotting.SymbolPlotting.remove_plot_info_associated_columns">[docs]</a>
+</span><span data-line="141">    <span class="k">def</span><span class="w"> </span><span class="nf">remove_plot_info_associated_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">columns</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">row_level</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+</span><span data-line="142"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="143"><span class="sd">        Completely remove plot info for a column in main dataframe of klines.</span>
+</span><span data-line="144">
+</span><span data-line="145"><span class="sd">        :param list columns: List of columns to be deleted.</span>
+</span><span data-line="146"><span class="sd">        :param str row_level: Position of columns to be deleted for a row.</span>
+</span><span data-line="147"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="148">        <span class="n">associated_columns</span> <span class="o">=</span> <span class="n">columns</span>
+</span><span data-line="149">        <span class="k">if</span> <span class="n">row_level</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+</span><span data-line="150">            <span class="n">associated_columns</span> <span class="o">+=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_control</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="o">==</span> <span class="n">row_level</span><span class="p">]))</span>
+</span><span data-line="151">        <span class="n">binpan_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Removing plot info for associated columns: </span><span class="si">{</span><span class="n">associated_columns</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="152">        <span class="k">if</span> <span class="n">row_level</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+</span><span data-line="153">            <span class="bp">self</span><span class="o">.</span><span class="n">row_counter</span> <span class="o">-=</span> <span class="mi">1</span>
+</span><span data-line="154">        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">associated_columns</span><span class="p">:</span>
+</span><span data-line="155">            <span class="bp">self</span><span class="o">.</span><span class="n">remove_plot_info_for_column</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+</span><span data-line="156">        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">associated_columns</span><span class="p">))</span></div>
+
+</span><span data-line="157">
+<div class="viewcode-block" id="SymbolPlotting.remove_plot_info_for_column">
+<a class="viewcode-back" href="../../symbol_plotting.html#binpan.symbol_plotting.SymbolPlotting.remove_plot_info_for_column">[docs]</a>
+</span><span data-line="158">    <span class="k">def</span><span class="w"> </span><span class="nf">remove_plot_info_for_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="159"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="160"><span class="sd">        Remove plot info for a column in main dataframe of klines.</span>
+</span><span data-line="161"><span class="sd">        :param column:</span>
+</span><span data-line="162"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="163">        <span class="n">binpan_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Removing plot info for column </span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="164">        <span class="k">if</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_control</span><span class="p">:</span>
+</span><span data-line="165">            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_control</span><span class="p">[</span><span class="n">column</span><span class="p">]</span>
+</span><span data-line="166">        <span class="k">if</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">color_control</span><span class="p">:</span>
+</span><span data-line="167">            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">color_control</span><span class="p">[</span><span class="n">column</span><span class="p">]</span>
+</span><span data-line="168">        <span class="k">if</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">color_fill_control</span><span class="p">:</span>
+</span><span data-line="169">            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">color_fill_control</span><span class="p">[</span><span class="n">column</span><span class="p">]</span>
+</span><span data-line="170">        <span class="k">if</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">indicators_filled_mode</span><span class="p">:</span>
+</span><span data-line="171">            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">indicators_filled_mode</span><span class="p">[</span><span class="n">column</span><span class="p">]</span>
+</span><span data-line="172">        <span class="k">if</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis_groups</span><span class="p">:</span>
+</span><span data-line="173">            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis_groups</span><span class="p">[</span><span class="n">column</span><span class="p">]</span>
+</span><span data-line="174">        <span class="k">if</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_splitted_serie_couples</span><span class="p">:</span>
+</span><span data-line="175">            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_splitted_serie_couples</span><span class="p">[</span><span class="n">column</span><span class="p">]</span></div>
+
+</span><span data-line="176">
+</span><span data-line="177">    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_plot_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">overlapped_indicators</span><span class="p">,</span> <span class="n">zoom_start_idx</span><span class="p">,</span> <span class="n">zoom_end_idx</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">date_radio</span><span class="p">,</span>
+</span><span data-line="178">                           <span class="n">support_lines</span><span class="p">,</span> <span class="n">support_lines_color</span><span class="p">,</span> <span class="n">resistance_lines</span><span class="p">,</span> <span class="n">resistance_lines_color</span><span class="p">):</span>
+</span><span data-line="179"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepare filtered data and indicator lists for :meth:`plot`.</span>
+</span><span data-line="180">
+</span><span data-line="181"><span class="sd">        :param str title: Plot title (None to auto-generate).</span>
+</span><span data-line="182"><span class="sd">        :param list overlapped_indicators: Indicators overlapped on candles.</span>
+</span><span data-line="183"><span class="sd">        :param zoom_start_idx: Start index for zoom.</span>
+</span><span data-line="184"><span class="sd">        :param zoom_end_idx: End index for zoom.</span>
+</span><span data-line="185"><span class="sd">        :param str date: Date string for date-based zoom.</span>
+</span><span data-line="186"><span class="sd">        :param int date_radio: Number of klines around *date*.</span>
+</span><span data-line="187"><span class="sd">        :param list support_lines: Support price levels.</span>
+</span><span data-line="188"><span class="sd">        :param str support_lines_color: Color for support lines.</span>
+</span><span data-line="189"><span class="sd">        :param list resistance_lines: Resistance price levels.</span>
+</span><span data-line="190"><span class="sd">        :param str resistance_lines_color: Color for resistance lines.</span>
+</span><span data-line="191"><span class="sd">        :return: Tuple of (temp_df, title, overlapped_indicators, indicators_series,</span>
+</span><span data-line="192"><span class="sd">                 indicator_names, indicators_colors, rows_pos, zoomed_plot_splitted_serie_couples).</span>
+</span><span data-line="193"><span class="sd">        :rtype: tuple</span>
+</span><span data-line="194"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="195">        <span class="k">if</span> <span class="ow">not</span> <span class="n">overlapped_indicators</span><span class="p">:</span>
+</span><span data-line="196">            <span class="n">overlapped_indicators</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="197">        <span class="k">if</span> <span class="p">(</span><span class="n">zoom_start_idx</span> <span class="ow">or</span> <span class="n">zoom_end_idx</span><span class="p">)</span> <span class="ow">and</span> <span class="n">date</span><span class="p">:</span>
+</span><span data-line="198">            <span class="k">raise</span> <span class="n">BinPanException</span><span class="p">(</span><span class="s2">&quot;zoom_start_idx or zoom_end_idx and date are incompatible&quot;</span><span class="p">)</span>
+</span><span data-line="199">
+</span><span data-line="200">        <span class="c1"># --- slice dataframe by zoom or date ---</span>
+</span><span data-line="201">        <span class="k">if</span> <span class="ow">not</span> <span class="n">date</span><span class="p">:</span>
+</span><span data-line="202">            <span class="n">temp_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">zoom_start_idx</span><span class="p">:</span><span class="n">zoom_end_idx</span><span class="p">]</span>
+</span><span data-line="203">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="204">            <span class="n">date_ms</span> <span class="o">=</span> <span class="n">convert_str_date_to_ms</span><span class="p">(</span><span class="n">date</span><span class="o">=</span><span class="n">date</span><span class="p">,</span> <span class="n">time_zone</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">time_zone</span><span class="p">)</span>
+</span><span data-line="205">            <span class="n">tick_ms</span> <span class="o">=</span> <span class="n">tick_seconds</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tick_interval</span><span class="p">]</span> <span class="o">*</span> <span class="mi">1000</span>
+</span><span data-line="206">            <span class="n">start_radio</span> <span class="o">=</span> <span class="n">date_ms</span> <span class="o">-</span> <span class="p">(</span><span class="n">tick_ms</span> <span class="o">*</span> <span class="n">date_radio</span><span class="p">)</span>
+</span><span data-line="207">            <span class="n">end_radio</span> <span class="o">=</span> <span class="n">date_ms</span> <span class="o">+</span> <span class="p">(</span><span class="n">tick_ms</span> <span class="o">*</span> <span class="n">date_radio</span><span class="p">)</span>
+</span><span data-line="208">            <span class="n">temp_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Open timestamp&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">start_radio</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Open timestamp&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">end_radio</span><span class="p">)]</span>
+</span><span data-line="209">
+</span><span data-line="210">        <span class="c1"># --- auto-generate title ---</span>
+</span><span data-line="211">        <span class="k">if</span> <span class="ow">not</span> <span class="n">title</span><span class="p">:</span>
+</span><span data-line="212">            <span class="n">title</span> <span class="o">=</span> <span class="n">temp_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span>
+</span><span data-line="213">            <span class="n">has_sr</span> <span class="o">=</span> <span class="n">support_lines</span> <span class="ow">or</span> <span class="n">resistance_lines</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">(</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">temp_df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s2">&quot;Support&quot;</span><span class="p">,</span> <span class="s2">&quot;Resistance&quot;</span><span class="p">)))</span>
+</span><span data-line="214">            <span class="k">if</span> <span class="n">has_sr</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">sr_data_source</span><span class="p">:</span>
+</span><span data-line="215">                <span class="n">quality_map</span> <span class="o">=</span> <span class="p">{</span>
+</span><span data-line="216">                    <span class="s2">&quot;atomic trades&quot;</span><span class="p">:</span> <span class="s2">&quot;alta precisión&quot;</span><span class="p">,</span>
+</span><span data-line="217">                    <span class="s2">&quot;aggregated trades&quot;</span><span class="p">:</span> <span class="s2">&quot;precisión media&quot;</span><span class="p">,</span>
+</span><span data-line="218">                    <span class="s2">&quot;klines&quot;</span><span class="p">:</span> <span class="s2">&quot;precisión aproximada&quot;</span><span class="p">,</span>
+</span><span data-line="219">                <span class="p">}</span>
+</span><span data-line="220">                <span class="n">quality</span> <span class="o">=</span> <span class="n">quality_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sr_data_source</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sr_data_source</span><span class="p">)</span>
+</span><span data-line="221">                <span class="n">title</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; — S/R desde </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sr_data_source</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">quality</span><span class="si">}</span><span class="s2">)&quot;</span>
+</span><span data-line="222">
+</span><span data-line="223">        <span class="c1"># --- build indicator lists from row_control ---</span>
+</span><span data-line="224">        <span class="n">indicators_series</span> <span class="o">=</span> <span class="p">[</span><span class="n">temp_df</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_control</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
+</span><span data-line="225">        <span class="n">indicator_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">temp_df</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_control</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
+</span><span data-line="226">        <span class="n">indicators_colors</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">color_control</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_control</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
+</span><span data-line="227">        <span class="n">indicators_colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span> <span class="k">else</span> <span class="n">_plotting</span><span class="p">()</span><span class="o">.</span><span class="n">plotly_colors</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">indicators_colors</span><span class="p">]</span>
+</span><span data-line="228">
+</span><span data-line="229">        <span class="n">rows_pos</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">row_control</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_control</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
+</span><span data-line="230">
+</span><span data-line="231">        <span class="c1"># --- support / resistance horizontal lines (overlapped on candles) ---</span>
+</span><span data-line="232">        <span class="c1"># candles_tagged plots the overlapped (on-candle) series BEFORE the row_control</span>
+</span><span data-line="233">        <span class="c1"># series (`indicator_series = on_candles_indicator + indicator_series`) and builds</span>
+</span><span data-line="234">        <span class="c1"># rows_pos accordingly. So the names/colors of the overlapped series must precede the</span>
+</span><span data-line="235">        <span class="c1"># row_control ones; otherwise each trace gets the name/color of another (e.g. the RSI</span>
+</span><span data-line="236">        <span class="c1"># ends up painted with a support color and the legend stops matching the lines).</span>
+</span><span data-line="237">        <span class="n">overlap_names</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="238">        <span class="n">overlap_colors</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="239">        <span class="c1"># names/colors for any user-supplied overlapped indicators already present</span>
+</span><span data-line="240">        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">serie</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">overlapped_indicators</span><span class="p">):</span>
+</span><span data-line="241">            <span class="n">overlap_names</span> <span class="o">+=</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">serie</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="sa">f</span><span class="s2">&quot;Overlap </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
+</span><span data-line="242">            <span class="n">overlap_colors</span> <span class="o">+=</span> <span class="p">[</span><span class="n">choice</span><span class="p">(</span><span class="n">_plotting</span><span class="p">()</span><span class="o">.</span><span class="n">plotly_colors</span><span class="p">)]</span>
+</span><span data-line="243">        <span class="k">if</span> <span class="n">support_lines</span><span class="p">:</span>
+</span><span data-line="244">            <span class="k">for</span> <span class="n">s_value</span> <span class="ow">in</span> <span class="n">support_lines</span><span class="p">:</span>
+</span><span data-line="245">                <span class="n">overlapped_indicators</span> <span class="o">+=</span> <span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">temp_df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">s_value</span><span class="p">)]</span>
+</span><span data-line="246">                <span class="n">overlap_names</span> <span class="o">+=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Support </span><span class="si">{</span><span class="n">s_value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
+</span><span data-line="247">                <span class="n">overlap_colors</span> <span class="o">+=</span> <span class="p">[</span><span class="n">support_lines_color</span><span class="p">]</span>
+</span><span data-line="248">        <span class="k">if</span> <span class="n">resistance_lines</span><span class="p">:</span>
+</span><span data-line="249">            <span class="k">for</span> <span class="n">r_value</span> <span class="ow">in</span> <span class="n">resistance_lines</span><span class="p">:</span>
+</span><span data-line="250">                <span class="n">overlapped_indicators</span> <span class="o">+=</span> <span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">temp_df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">r_value</span><span class="p">)]</span>
+</span><span data-line="251">                <span class="n">overlap_names</span> <span class="o">+=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Resistance </span><span class="si">{</span><span class="n">r_value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
+</span><span data-line="252">                <span class="n">overlap_colors</span> <span class="o">+=</span> <span class="p">[</span><span class="n">resistance_lines_color</span><span class="p">]</span>
+</span><span data-line="253">        <span class="n">indicator_names</span> <span class="o">=</span> <span class="n">overlap_names</span> <span class="o">+</span> <span class="n">indicator_names</span>
+</span><span data-line="254">        <span class="n">indicators_colors</span> <span class="o">=</span> <span class="n">overlap_colors</span> <span class="o">+</span> <span class="n">indicators_colors</span>
+</span><span data-line="255">
+</span><span data-line="256">        <span class="c1"># --- zoom cloud indicators ---</span>
+</span><span data-line="257">        <span class="k">if</span> <span class="n">zoom_start_idx</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">zoom_end_idx</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="258">            <span class="n">zoomed_plot_splitted_serie_couples</span> <span class="o">=</span> <span class="n">zoom_cloud_indicators</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_splitted_serie_couples</span><span class="p">,</span> <span class="n">main_index</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">),</span>
+</span><span data-line="259">                                                                       <span class="n">start_idx</span><span class="o">=</span><span class="n">zoom_start_idx</span><span class="p">,</span> <span class="n">end_idx</span><span class="o">=</span><span class="n">zoom_end_idx</span><span class="p">)</span>
+</span><span data-line="260">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="261">            <span class="n">zoomed_plot_splitted_serie_couples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_splitted_serie_couples</span>
+</span><span data-line="262">
+</span><span data-line="263">        <span class="k">return</span> <span class="p">(</span><span class="n">temp_df</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">overlapped_indicators</span><span class="p">,</span> <span class="n">indicators_series</span><span class="p">,</span>
+</span><span data-line="264">                <span class="n">indicator_names</span><span class="p">,</span> <span class="n">indicators_colors</span><span class="p">,</span> <span class="n">rows_pos</span><span class="p">,</span> <span class="n">zoomed_plot_splitted_serie_couples</span><span class="p">)</span>
+</span><span data-line="265">
+<div class="viewcode-block" id="SymbolPlotting.plot">
+<a class="viewcode-back" href="../../symbol_plotting.html#binpan.symbol_plotting.SymbolPlotting.plot">[docs]</a>
+</span><span data-line="266">    <span class="k">def</span><span class="w"> </span><span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+</span><span data-line="267">             <span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1800</span><span class="p">,</span>
+</span><span data-line="268">             <span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+</span><span data-line="269">             <span class="n">candles_ta_height_ratio</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.75</span><span class="p">,</span>
+</span><span data-line="270">             <span class="n">volume</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="271">             <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="272">             <span class="n">yaxis_title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Price&#39;</span><span class="p">,</span>
+</span><span data-line="273">             <span class="n">overlapped_indicators</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="274">             <span class="n">priced_actions_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Close&#39;</span><span class="p">,</span>
+</span><span data-line="275">             <span class="n">actions_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="276">             <span class="n">marker_labels</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="277">             <span class="n">markers</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="278">             <span class="n">marker_colors</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="279">             <span class="n">priced_markers</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="280">             <span class="n">background_color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span data-line="281">             <span class="n">zoom_start_idx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span data-line="282">             <span class="n">zoom_end_idx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span data-line="283">             <span class="n">support_lines</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="284">             <span class="n">support_lines_color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;darkblue&#39;</span><span class="p">,</span>
+</span><span data-line="285">             <span class="n">resistance_lines</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="286">             <span class="n">resistance_lines_color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;darkred&#39;</span><span class="p">,</span>
+</span><span data-line="287">             <span class="n">date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="288">             <span class="n">date_radio</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
+</span><span data-line="289">             <span class="n">show</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="290">             <span class="n">image_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="291"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="292"><span class="sd">        Plots a candles figure for the object.</span>
+</span><span data-line="293">
+</span><span data-line="294"><span class="sd">        Also plots any other technical indicator grabbed.</span>
+</span><span data-line="295">
+</span><span data-line="296"><span class="sd">        .. image:: images/candles.png</span>
+</span><span data-line="297"><span class="sd">           :width: 1000</span>
+</span><span data-line="298"><span class="sd">           :alt: Candles with some indicators</span>
+</span><span data-line="299">
+</span><span data-line="300"><span class="sd">        :param int width: Width of the plot.</span>
+</span><span data-line="301"><span class="sd">        :param int height: Height of the plot.</span>
+</span><span data-line="302"><span class="sd">        :param float candles_ta_height_ratio: Proportion between candles and the other indicators. Not considering overlap ones</span>
+</span><span data-line="303"><span class="sd">            in the candles plot.</span>
+</span><span data-line="304"><span class="sd">        :param bool volume: Plots volume.</span>
+</span><span data-line="305"><span class="sd">        :param str title: A tittle for the plot.</span>
+</span><span data-line="306"><span class="sd">        :param str yaxis_title: A title for the y axis.</span>
+</span><span data-line="307"><span class="sd">        :param list overlapped_indicators: Can declare as overlap in the candles plot some column.</span>
+</span><span data-line="308"><span class="sd">        :param str priced_actions_col: Priced actions to plot annotations over the candles, like buy, sell, etc. Under developing.</span>
+</span><span data-line="309"><span class="sd">        :param str actions_col: A column containing actions like buy or sell. Under developing.</span>
+</span><span data-line="310"><span class="sd">        :param dict marker_labels: Names for the annotations instead of the price. For &#39;buy&#39; tags and &#39;sell&#39; tags.</span>
+</span><span data-line="311"><span class="sd">         Default is {&#39;buy&#39;: 1, &#39;sell&#39;: -1}</span>
+</span><span data-line="312"><span class="sd">        :param list markers: Plotly marker type. Usually, if referenced by number will be a not filled mark and using string name will be</span>
+</span><span data-line="313"><span class="sd">            a color filled one. Check plotly info: https://plotly.com/python/marker-style/</span>
+</span><span data-line="314"><span class="sd">        :param list marker_colors: Colors of the annotations.</span>
+</span><span data-line="315"><span class="sd">        :param list priced_markers: Explicit operation markers to overlay on exact points: a list of</span>
+</span><span data-line="316"><span class="sd">            dicts ``{&#39;time&#39;, &#39;price&#39;, &#39;side&#39;, &#39;label&#39;?}``. ``side`` &#39;buy&#39; draws a green ▲ (label below),</span>
+</span><span data-line="317"><span class="sd">            otherwise a red ▼ (label above). ``time`` is a positional candle index (int) or a timestamp</span>
+</span><span data-line="318"><span class="sd">            (snapped to the nearest candle); ``price`` is the exact y level. Compatible with</span>
+</span><span data-line="319"><span class="sd">            support/resistance lines and action columns (they overlay together).</span>
+</span><span data-line="320"><span class="sd">        :param str background_color: Sets background color. Select a valid plotly color name.</span>
+</span><span data-line="321"><span class="sd">        :param int zoom_start_idx: It can zoom to an index interval.</span>
+</span><span data-line="322"><span class="sd">        :param int zoom_end_idx: It can zoom to an index interval.</span>
+</span><span data-line="323"><span class="sd">        :param list support_lines: A list of prices to plot horizontal lines in the candles plot for supports or any other level.</span>
+</span><span data-line="324"><span class="sd">        :param str support_lines_color: A color for horizontal lines, &#39;darkblue&#39; is by default.</span>
+</span><span data-line="325"><span class="sd">        :param list resistance_lines: A list of prices to plot horizontal lines in the candles plot for resistances or any other level.</span>
+</span><span data-line="326"><span class="sd">        :param str resistance_lines_color: A color for horizontal lines, &#39;darkred&#39; is by default.</span>
+</span><span data-line="327"><span class="sd">        :param str date: A date in string format to plot a zoom of a radio of klines up and down in time. Useful to inspect dates.</span>
+</span><span data-line="328"><span class="sd">             Incompatible with zoom_start_idx and zoom_end_idx. Strings formatted as &quot;2022-05-11 06:45:42&quot;</span>
+</span><span data-line="329"><span class="sd">        :param str date_radio: A radio in klines to plot a zoom around a date.</span>
+</span><span data-line="330"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="331">        <span class="p">(</span><span class="n">temp_df</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">overlapped_indicators</span><span class="p">,</span> <span class="n">indicators_series</span><span class="p">,</span>
+</span><span data-line="332">         <span class="n">indicator_names</span><span class="p">,</span> <span class="n">indicators_colors</span><span class="p">,</span> <span class="n">rows_pos</span><span class="p">,</span>
+</span><span data-line="333">         <span class="n">zoomed_plot_splitted_serie_couples</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_plot_data</span><span class="p">(</span>
+</span><span data-line="334">            <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+</span><span data-line="335">            <span class="n">overlapped_indicators</span><span class="o">=</span><span class="n">overlapped_indicators</span><span class="p">,</span>
+</span><span data-line="336">            <span class="n">zoom_start_idx</span><span class="o">=</span><span class="n">zoom_start_idx</span><span class="p">,</span>
+</span><span data-line="337">            <span class="n">zoom_end_idx</span><span class="o">=</span><span class="n">zoom_end_idx</span><span class="p">,</span>
+</span><span data-line="338">            <span class="n">date</span><span class="o">=</span><span class="n">date</span><span class="p">,</span>
+</span><span data-line="339">            <span class="n">date_radio</span><span class="o">=</span><span class="n">date_radio</span><span class="p">,</span>
+</span><span data-line="340">            <span class="n">support_lines</span><span class="o">=</span><span class="n">support_lines</span><span class="p">,</span>
+</span><span data-line="341">            <span class="n">support_lines_color</span><span class="o">=</span><span class="n">support_lines_color</span><span class="p">,</span>
+</span><span data-line="342">            <span class="n">resistance_lines</span><span class="o">=</span><span class="n">resistance_lines</span><span class="p">,</span>
+</span><span data-line="343">            <span class="n">resistance_lines_color</span><span class="o">=</span><span class="n">resistance_lines_color</span><span class="p">,</span>
+</span><span data-line="344">        <span class="p">)</span>
+</span><span data-line="345">        <span class="k">return</span> <span class="n">_plotting</span><span class="p">()</span><span class="o">.</span><span class="n">candles_tagged</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">temp_df</span><span class="p">,</span>
+</span><span data-line="346">                              <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span>
+</span><span data-line="347">                              <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span>
+</span><span data-line="348">                              <span class="n">candles_ta_height_ratio</span><span class="o">=</span><span class="n">candles_ta_height_ratio</span><span class="p">,</span>
+</span><span data-line="349">                              <span class="n">plot_volume</span><span class="o">=</span><span class="n">volume</span><span class="p">,</span>
+</span><span data-line="350">                              <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+</span><span data-line="351">                              <span class="n">yaxis_title</span><span class="o">=</span><span class="n">yaxis_title</span><span class="p">,</span>
+</span><span data-line="352">                              <span class="n">on_candles_indicator</span><span class="o">=</span><span class="n">overlapped_indicators</span><span class="p">,</span>
+</span><span data-line="353">                              <span class="n">priced_actions_col</span><span class="o">=</span><span class="n">priced_actions_col</span><span class="p">,</span>
+</span><span data-line="354">                              <span class="n">actions_col</span><span class="o">=</span><span class="n">actions_col</span><span class="p">,</span>
+</span><span data-line="355">                              <span class="n">indicator_series</span><span class="o">=</span><span class="n">indicators_series</span><span class="p">,</span>
+</span><span data-line="356">                              <span class="n">indicator_names</span><span class="o">=</span><span class="n">indicator_names</span><span class="p">,</span>
+</span><span data-line="357">                              <span class="n">indicator_colors</span><span class="o">=</span><span class="n">indicators_colors</span><span class="p">,</span>
+</span><span data-line="358">                              <span class="n">fill_control</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">color_fill_control</span><span class="p">,</span>
+</span><span data-line="359">                              <span class="n">indicators_filled_mode</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">indicators_filled_mode</span><span class="p">,</span>
+</span><span data-line="360">                              <span class="n">axis_groups</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axis_groups</span><span class="p">,</span>
+</span><span data-line="361">                              <span class="n">plot_splitted_serie_couple</span><span class="o">=</span><span class="n">zoomed_plot_splitted_serie_couples</span><span class="p">,</span>
+</span><span data-line="362">                              <span class="n">rows_pos</span><span class="o">=</span><span class="n">rows_pos</span><span class="p">,</span>
+</span><span data-line="363">                              <span class="n">markers_labels</span><span class="o">=</span><span class="n">marker_labels</span><span class="p">,</span>
+</span><span data-line="364">                              <span class="n">plot_bgcolor</span><span class="o">=</span><span class="n">background_color</span><span class="p">,</span>
+</span><span data-line="365">                              <span class="n">markers</span><span class="o">=</span><span class="n">markers</span><span class="p">,</span>
+</span><span data-line="366">                              <span class="n">marker_colors</span><span class="o">=</span><span class="n">marker_colors</span><span class="p">,</span>
+</span><span data-line="367">                              <span class="n">priced_markers</span><span class="o">=</span><span class="n">priced_markers</span><span class="p">,</span>
+</span><span data-line="368">                              <span class="n">red_timestamps</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">red_timestamps</span><span class="p">,</span>
+</span><span data-line="369">                              <span class="n">blue_timestamps</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">blue_timestamps</span><span class="p">,</span>
+</span><span data-line="370">                              <span class="n">show</span><span class="o">=</span><span class="n">show</span><span class="p">,</span>
+</span><span data-line="371">                              <span class="n">image_path</span><span class="o">=</span><span class="n">image_path</span><span class="p">)</span></div>
+
+</span><span data-line="372">
+</span><span data-line="373">    <span class="k">def</span><span class="w"> </span><span class="nf">_plot_trades_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trades_df</span><span class="p">,</span> <span class="n">empty_msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">trade_type_label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">max_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">60</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+</span><span data-line="374">                          <span class="n">logarithmic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">overlap_prices</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">shifted</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+</span><span data-line="375">                          <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">size_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Quantity&#39;</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="376">                          <span class="n">horizontal_lines</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">show</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">image_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="377"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Private helper for plotting trades sized by quantity.</span>
+</span><span data-line="378">
+</span><span data-line="379"><span class="sd">        :param trades_df: DataFrame with trades data.</span>
+</span><span data-line="380"><span class="sd">        :param str empty_msg: Message to log when trades are empty.</span>
+</span><span data-line="381"><span class="sd">        :param str trade_type_label: Label like &quot;aggregated&quot; or &quot;atomic&quot; for default title.</span>
+</span><span data-line="382"><span class="sd">        :param int max_size: Max size for the markers.</span>
+</span><span data-line="383"><span class="sd">        :param int height: Plot height.</span>
+</span><span data-line="384"><span class="sd">        :param bool logarithmic: Logarithmic y-axis scale.</span>
+</span><span data-line="385"><span class="sd">        :param bool overlap_prices: Overlap High/Low price lines.</span>
+</span><span data-line="386"><span class="sd">        :param int shifted: Shift klines for visual alignment.</span>
+</span><span data-line="387"><span class="sd">        :param str title: Graph title.</span>
+</span><span data-line="388"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="389">        <span class="k">if</span> <span class="n">trades_df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+</span><span data-line="390">            <span class="n">binpan_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">empty_msg</span><span class="p">)</span>
+</span><span data-line="391">            <span class="k">return</span>
+</span><span data-line="392">        <span class="k">if</span> <span class="ow">not</span> <span class="n">title</span><span class="p">:</span>
+</span><span data-line="393">            <span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Size </span><span class="si">{</span><span class="n">trade_type_label</span><span class="si">}</span><span class="s2"> trade categories </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">symbol</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="394">        <span class="n">managed_data</span> <span class="o">=</span> <span class="n">trades_df</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="395">        <span class="k">if</span> <span class="n">overlap_prices</span><span class="p">:</span>
+</span><span data-line="396">            <span class="n">overlap_prices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span>
+</span><span data-line="397">        <span class="k">return</span> <span class="n">_plotting</span><span class="p">()</span><span class="o">.</span><span class="n">plot_trades</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">managed_data</span><span class="p">,</span>
+</span><span data-line="398">                                       <span class="n">max_size</span><span class="o">=</span><span class="n">max_size</span><span class="p">,</span>
+</span><span data-line="399">                                       <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span>
+</span><span data-line="400">                                       <span class="n">logarithmic</span><span class="o">=</span><span class="n">logarithmic</span><span class="p">,</span>
+</span><span data-line="401">                                       <span class="n">overlap_prices</span><span class="o">=</span><span class="n">overlap_prices</span><span class="p">,</span>
+</span><span data-line="402">                                       <span class="n">shifted</span><span class="o">=</span><span class="n">shifted</span><span class="p">,</span>
+</span><span data-line="403">                                       <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+</span><span data-line="404">                                       <span class="n">size_column</span><span class="o">=</span><span class="n">size_column</span><span class="p">,</span>
+</span><span data-line="405">                                       <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span>
+</span><span data-line="406">                                       <span class="n">horizontal_lines</span><span class="o">=</span><span class="n">horizontal_lines</span><span class="p">,</span>
+</span><span data-line="407">                                       <span class="n">show</span><span class="o">=</span><span class="n">show</span><span class="p">,</span>
+</span><span data-line="408">                                       <span class="n">image_path</span><span class="o">=</span><span class="n">image_path</span><span class="p">)</span>
+</span><span data-line="409">
+<div class="viewcode-block" id="SymbolPlotting.plot_agg_trades_size">
+<a class="viewcode-back" href="../../symbol_plotting.html#binpan.symbol_plotting.SymbolPlotting.plot_agg_trades_size">[docs]</a>
+</span><span data-line="410">    <span class="k">def</span><span class="w"> </span><span class="nf">plot_agg_trades_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">60</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">logarithmic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">overlap_prices</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="411">                             <span class="n">group_big_data</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">shifted</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">size_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Quantity&#39;</span><span class="p">,</span>
+</span><span data-line="412">                             <span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">horizontal_lines</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">show</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="413">                             <span class="n">image_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="414"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="415"><span class="sd">        It plots a time series graph plotting aggregated trades sized by quantity and color if taker or maker buyer.</span>
+</span><span data-line="416">
+</span><span data-line="417"><span class="sd">        .. image:: images/plot_trades_size.png</span>
+</span><span data-line="418"><span class="sd">           :width: 1000</span>
+</span><span data-line="419"><span class="sd">           :alt: Candles with some indicators</span>
+</span><span data-line="420">
+</span><span data-line="421"><span class="sd">        :param int max_size: Max size for the markers. Default is 60. Useful to show whales operating.</span>
+</span><span data-line="422"><span class="sd">        :param int height: Default is 1000.</span>
+</span><span data-line="423"><span class="sd">        :param bool logarithmic: If logarithmic, then &quot;y&quot; axis scale is shown in logarithmic scale.</span>
+</span><span data-line="424"><span class="sd">        :param int group_big_data: Deprecated, ignored. Kept for backward compatibility.</span>
+</span><span data-line="425"><span class="sd">        :param bool shifted: If True, shifts prices to plot klines one step to the right, that&#39;s more natural to see trades action in price.</span>
+</span><span data-line="426"><span class="sd">        :param bool overlap_prices: If True, plots overlap line with High and Low prices.</span>
+</span><span data-line="427"><span class="sd">        :param title: Graph title.</span>
+</span><span data-line="428"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="429">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plot_trades_size</span><span class="p">(</span><span class="n">trades_df</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">agg_trades</span><span class="o">.</span><span class="n">df</span><span class="p">,</span> <span class="n">empty_msg</span><span class="o">=</span><span class="n">empty_agg_trades_msg</span><span class="p">,</span>
+</span><span data-line="430">                                      <span class="n">trade_type_label</span><span class="o">=</span><span class="s2">&quot;aggregated&quot;</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="n">max_size</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span>
+</span><span data-line="431">                                      <span class="n">logarithmic</span><span class="o">=</span><span class="n">logarithmic</span><span class="p">,</span> <span class="n">overlap_prices</span><span class="o">=</span><span class="n">overlap_prices</span><span class="p">,</span> <span class="n">shifted</span><span class="o">=</span><span class="n">shifted</span><span class="p">,</span>
+</span><span data-line="432">                                      <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">size_column</span><span class="o">=</span><span class="n">size_column</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span>
+</span><span data-line="433">                                      <span class="n">horizontal_lines</span><span class="o">=</span><span class="n">horizontal_lines</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">show</span><span class="p">,</span> <span class="n">image_path</span><span class="o">=</span><span class="n">image_path</span><span class="p">)</span></div>
+
+</span><span data-line="434">
+<div class="viewcode-block" id="SymbolPlotting.plot_atomic_trades_size">
+<a class="viewcode-back" href="../../symbol_plotting.html#binpan.symbol_plotting.SymbolPlotting.plot_atomic_trades_size">[docs]</a>
+</span><span data-line="435">    <span class="k">def</span><span class="w"> </span><span class="nf">plot_atomic_trades_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">60</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">logarithmic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">overlap_prices</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="436">                                <span class="n">group_big_data</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">shifted</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">size_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Quantity&#39;</span><span class="p">,</span>
+</span><span data-line="437">                                <span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">horizontal_lines</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">show</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="438">                                <span class="n">image_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="439"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="440"><span class="sd">        It plots a time series graph plotting atomic trades sized by quantity and color if taker or maker buyer.</span>
+</span><span data-line="441">
+</span><span data-line="442"><span class="sd">        :param int max_size: Max size for the markers. Default is 60. Useful to show whales operating.</span>
+</span><span data-line="443"><span class="sd">        :param int height: Default is 1000.</span>
+</span><span data-line="444"><span class="sd">        :param bool logarithmic: If logarithmic, then &quot;y&quot; axis scale is shown in logarithmic scale.</span>
+</span><span data-line="445"><span class="sd">        :param int group_big_data: Deprecated, ignored. Kept for backward compatibility.</span>
+</span><span data-line="446"><span class="sd">        :param bool shifted: If True, shifts prices to plot klines one step to the right, that&#39;s more natural to see trades action in price.</span>
+</span><span data-line="447"><span class="sd">        :param bool overlap_prices: If True, plots overlap line with High and Low prices.</span>
+</span><span data-line="448"><span class="sd">        :param title: Graph title.</span>
+</span><span data-line="449">
+</span><span data-line="450"><span class="sd">        .. image:: images/plot_trades_size_log.png</span>
+</span><span data-line="451"><span class="sd">           :width: 800</span>
+</span><span data-line="452"><span class="sd">           :alt: Atomic trades size bubble chart</span>
+</span><span data-line="453"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="454">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plot_trades_size</span><span class="p">(</span><span class="n">trades_df</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">atomic_trades</span><span class="o">.</span><span class="n">df</span><span class="p">,</span> <span class="n">empty_msg</span><span class="o">=</span><span class="n">empty_atomic_trades_msg</span><span class="p">,</span>
+</span><span data-line="455">                                      <span class="n">trade_type_label</span><span class="o">=</span><span class="s2">&quot;atomic&quot;</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="n">max_size</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span>
+</span><span data-line="456">                                      <span class="n">logarithmic</span><span class="o">=</span><span class="n">logarithmic</span><span class="p">,</span> <span class="n">overlap_prices</span><span class="o">=</span><span class="n">overlap_prices</span><span class="p">,</span> <span class="n">shifted</span><span class="o">=</span><span class="n">shifted</span><span class="p">,</span>
+</span><span data-line="457">                                      <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">size_column</span><span class="o">=</span><span class="n">size_column</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span>
+</span><span data-line="458">                                      <span class="n">horizontal_lines</span><span class="o">=</span><span class="n">horizontal_lines</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">show</span><span class="p">,</span> <span class="n">image_path</span><span class="o">=</span><span class="n">image_path</span><span class="p">)</span></div>
+
+</span><span data-line="459">
+<div class="viewcode-block" id="SymbolPlotting.plot_reversal">
+<a class="viewcode-back" href="../../symbol_plotting.html#binpan.symbol_plotting.SymbolPlotting.plot_reversal">[docs]</a>
+</span><span data-line="460">    <span class="k">def</span><span class="w"> </span><span class="nf">plot_reversal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">min_reversal</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">text_index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">from_atomic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="461"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="462"><span class="sd">        Plots reversal candles. It requires aggregated or atomic trades fetched previously.</span>
+</span><span data-line="463">
+</span><span data-line="464"><span class="sd">        BinPan manages aggregated trades from binance API.</span>
+</span><span data-line="465">
+</span><span data-line="466"><span class="sd">        :param int min_height: It defaults to previous set. Can be reset when charts.</span>
+</span><span data-line="467"><span class="sd">        :param min_reversal: It defaults to previous set. Can be reset when charts.</span>
+</span><span data-line="468"><span class="sd">        :param bool text_index: If True, plots klines equally spaced. This allows to plot volume.</span>
+</span><span data-line="469"><span class="sd">        :param bool from_atomic: If True, klines are obtained from atomic trades.</span>
+</span><span data-line="470"><span class="sd">        :return:</span>
+</span><span data-line="471">
+</span><span data-line="472"><span class="sd">        Example:</span>
+</span><span data-line="473">
+</span><span data-line="474"><span class="sd">            .. code-block:: python</span>
+</span><span data-line="475">
+</span><span data-line="476"><span class="sd">               import binpan</span>
+</span><span data-line="477">
+</span><span data-line="478"><span class="sd">                ltc = binpan.Symbol(symbol=&#39;ltcbtc&#39;,</span>
+</span><span data-line="479"><span class="sd">                                    tick_interval=&#39;5m&#39;,</span>
+</span><span data-line="480"><span class="sd">                                    time_zone = &#39;Europe/Madrid&#39;,</span>
+</span><span data-line="481"><span class="sd">                                    time_index = True,</span>
+</span><span data-line="482"><span class="sd">                                    closed = True,</span>
+</span><span data-line="483"><span class="sd">                                    hours=5)</span>
+</span><span data-line="484"><span class="sd">               ltc.get_trades()</span>
+</span><span data-line="485"><span class="sd">               ltc.get_reversal_candles()</span>
+</span><span data-line="486"><span class="sd">               ltc.plot_reversal()</span>
+</span><span data-line="487">
+</span><span data-line="488"><span class="sd">            .. image:: images/indicators/reversal.png</span>
+</span><span data-line="489"><span class="sd">               :width: 1000</span>
+</span><span data-line="490">
+</span><span data-line="491"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="492">        <span class="n">source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomic_trades</span> <span class="k">if</span> <span class="n">from_atomic</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">agg_trades</span>
+</span><span data-line="493">        <span class="k">if</span> <span class="n">source</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+</span><span data-line="494">            <span class="n">binpan_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">empty_msg</span><span class="p">)</span>
+</span><span data-line="495">            <span class="k">return</span>
+</span><span data-line="496">
+</span><span data-line="497">        <span class="k">if</span> <span class="n">min_height</span><span class="p">:</span>
+</span><span data-line="498">            <span class="bp">self</span><span class="o">.</span><span class="n">min_height</span> <span class="o">=</span> <span class="n">min_height</span>
+</span><span data-line="499">        <span class="k">if</span> <span class="n">min_reversal</span><span class="p">:</span>
+</span><span data-line="500">            <span class="bp">self</span><span class="o">.</span><span class="n">min_reversal</span> <span class="o">=</span> <span class="n">min_reversal</span>
+</span><span data-line="501">
+</span><span data-line="502">        <span class="k">if</span> <span class="n">min_height</span> <span class="ow">or</span> <span class="n">min_reversal</span><span class="p">:</span>
+</span><span data-line="503">            <span class="k">if</span> <span class="n">from_atomic</span><span class="p">:</span>
+</span><span data-line="504">                <span class="bp">self</span><span class="o">.</span><span class="n">reversal_atomic_klines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_reversal_atomic_candles</span><span class="p">(</span><span class="n">min_height</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">min_height</span><span class="p">,</span> <span class="n">min_reversal</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">min_reversal</span><span class="p">)</span>
+</span><span data-line="505">            <span class="k">else</span><span class="p">:</span>
+</span><span data-line="506">                <span class="bp">self</span><span class="o">.</span><span class="n">reversal_agg_klines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_reversal_agg_candles</span><span class="p">(</span><span class="n">min_height</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">min_height</span><span class="p">,</span> <span class="n">min_reversal</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">min_reversal</span><span class="p">)</span>
+</span><span data-line="507">
+</span><span data-line="508">        <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;title&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+</span><span data-line="509">            <span class="n">source</span> <span class="o">=</span> <span class="s2">&quot;atomic trades (alta precisión)&quot;</span> <span class="k">if</span> <span class="n">from_atomic</span> <span class="k">else</span> <span class="s2">&quot;aggregated trades (precisión media)&quot;</span>
+</span><span data-line="510">            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Reversal Candles </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">min_height</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">min_reversal</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">symbol</span><span class="si">}</span><span class="s2"> — desde </span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="511">        <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;yaxis_title&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+</span><span data-line="512">            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;yaxis_title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Price </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">symbol</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="513">        <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;candles_ta_height_ratio&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+</span><span data-line="514">            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;candles_ta_height_ratio&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.7</span>
+</span><span data-line="515">
+</span><span data-line="516">        <span class="k">if</span> <span class="n">from_atomic</span><span class="p">:</span>
+</span><span data-line="517">            <span class="k">return</span> <span class="n">_plotting</span><span class="p">()</span><span class="o">.</span><span class="n">candles_ta</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reversal_atomic_klines</span><span class="p">,</span> <span class="n">plot_volume</span><span class="o">=</span><span class="s1">&#39;Quantity&#39;</span><span class="p">,</span> <span class="n">text_index</span><span class="o">=</span><span class="n">text_index</span><span class="p">,</span>
+</span><span data-line="518">                              <span class="n">volume_window</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">plotting_volume_ma</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span data-line="519">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="520">            <span class="k">return</span> <span class="n">_plotting</span><span class="p">()</span><span class="o">.</span><span class="n">candles_ta</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reversal_agg_klines</span><span class="p">,</span> <span class="n">plot_volume</span><span class="o">=</span><span class="s1">&#39;Quantity&#39;</span><span class="p">,</span> <span class="n">text_index</span><span class="o">=</span><span class="n">text_index</span><span class="p">,</span>
+</span><span data-line="521">                              <span class="n">volume_window</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">plotting_volume_ma</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+</span><span data-line="522">
+<div class="viewcode-block" id="SymbolPlotting.set_plotting_volume_ma">
+<a class="viewcode-back" href="../../symbol_plotting.html#binpan.symbol_plotting.SymbolPlotting.set_plotting_volume_ma">[docs]</a>
+</span><span data-line="523">    <span class="k">def</span><span class="w"> </span><span class="nf">set_plotting_volume_ma</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">21</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="524"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="525"><span class="sd">        Set a window for plotting volume moving average on the candles plot when volumen bars are plotted.</span>
+</span><span data-line="526">
+</span><span data-line="527"><span class="sd">        :param int window: A window for the moving average.</span>
+</span><span data-line="528"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="529">        <span class="bp">self</span><span class="o">.</span><span class="n">plotting_volume_ma</span> <span class="o">=</span> <span class="n">window</span>
+</span><span data-line="530">        <span class="n">binpan_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Plotting volume moving average set to </span><span class="si">{</span><span class="n">window</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+</span><span data-line="531">
+<div class="viewcode-block" id="SymbolPlotting.plot_trades_pie">
+<a class="viewcode-back" href="../../symbol_plotting.html#binpan.symbol_plotting.SymbolPlotting.plot_trades_pie">[docs]</a>
+</span><span data-line="532">    <span class="k">def</span><span class="w"> </span><span class="nf">plot_trades_pie</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">categories</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">25</span><span class="p">,</span> <span class="n">logarithmic</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="533"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="534"><span class="sd">        Plots a pie chart. Useful profiling size of trades. Size can be distributed in a logarithmic scale.</span>
+</span><span data-line="535">
+</span><span data-line="536"><span class="sd">        .. image:: images/plot_trades_pie.png</span>
+</span><span data-line="537"><span class="sd">           :width: 1000</span>
+</span><span data-line="538"><span class="sd">           :alt: Candles with some indicators</span>
+</span><span data-line="539">
+</span><span data-line="540"><span class="sd">        :param categories: How many groups of sizes.</span>
+</span><span data-line="541"><span class="sd">        :param logarithmic: Logarithmic scale to show more small sizes.</span>
+</span><span data-line="542"><span class="sd">        :param title: A title for the plot.</span>
+</span><span data-line="543">
+</span><span data-line="544"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="545">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">agg_trades</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+</span><span data-line="546">            <span class="n">binpan_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">empty_agg_trades_msg</span><span class="p">)</span>
+</span><span data-line="547">            <span class="k">return</span>
+</span><span data-line="548">        <span class="k">if</span> <span class="ow">not</span> <span class="n">title</span><span class="p">:</span>
+</span><span data-line="549">            <span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Size trade categories </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">symbol</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="550">        <span class="k">return</span> <span class="n">_plotting</span><span class="p">()</span><span class="o">.</span><span class="n">plot_pie</span><span class="p">(</span><span class="n">serie</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">agg_trades</span><span class="p">[</span><span class="s1">&#39;Quantity&#39;</span><span class="p">],</span> <span class="n">categories</span><span class="o">=</span><span class="n">categories</span><span class="p">,</span> <span class="n">logarithmic</span><span class="o">=</span><span class="n">logarithmic</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span></div>
+
+</span><span data-line="551">
+<div class="viewcode-block" id="SymbolPlotting.plot_aggression_sizes">
+<a class="viewcode-back" href="../../symbol_plotting.html#binpan.symbol_plotting.SymbolPlotting.plot_aggression_sizes">[docs]</a>
+</span><span data-line="552">    <span class="k">def</span><span class="w"> </span><span class="nf">plot_aggression_sizes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">hist_funct</span><span class="o">=</span><span class="s1">&#39;sum&#39;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">900</span><span class="p">,</span> <span class="n">from_trades</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="553">                              <span class="n">total_volume_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">partial_vol_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_update_layout</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="554"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="555"><span class="sd">        Binance fees can be cheaper for maker orders, many times when big traders, like whales, are operating . Showing what are doing</span>
+</span><span data-line="556"><span class="sd">        makers.</span>
+</span><span data-line="557">
+</span><span data-line="558"><span class="sd">        It shows which kind of volume or trades came from, aggressive_sellers or aggressive_byers.</span>
+</span><span data-line="559">
+</span><span data-line="560"><span class="sd">        Can be useful finding support and resistance zones.</span>
+</span><span data-line="561">
+</span><span data-line="562"><span class="sd">        .. image:: images/makers_vs_takers_plot.png</span>
+</span><span data-line="563"><span class="sd">           :width: 1000</span>
+</span><span data-line="564"><span class="sd">           :alt: Candles with some indicators</span>
+</span><span data-line="565">
+</span><span data-line="566">
+</span><span data-line="567"><span class="sd">        :param bins: How many bars.</span>
+</span><span data-line="568"><span class="sd">        :param hist_funct: The way graph data is showed. It can be &#39;mean&#39;, &#39;sum&#39;, &#39;percent&#39;, &#39;probability&#39;, &#39;density&#39;, or &#39;probability</span>
+</span><span data-line="569"><span class="sd">         density&#39;</span>
+</span><span data-line="570"><span class="sd">        :param height: Height of the graph.</span>
+</span><span data-line="571"><span class="sd">        :param from_trades: Requieres grabbing trades before.</span>
+</span><span data-line="572"><span class="sd">        :param title: A title.</span>
+</span><span data-line="573"><span class="sd">        :param total_volume_column: The column with the total volume. It defaults automatically.</span>
+</span><span data-line="574"><span class="sd">        :param partial_vol_column: The column with the partial volume. It defaults automatically. API shows maker or taker separated</span>
+</span><span data-line="575"><span class="sd">         volumes.</span>
+</span><span data-line="576"><span class="sd">        :param kwargs_update_layout: Optional</span>
+</span><span data-line="577">
+</span><span data-line="578"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="579">        <span class="k">if</span> <span class="n">from_trades</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">agg_trades</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+</span><span data-line="580">            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">agg_trades</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+</span><span data-line="581">                <span class="n">binpan_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">empty_agg_trades_msg</span><span class="p">)</span>
+</span><span data-line="582">                <span class="k">return</span>
+</span><span data-line="583">            <span class="k">else</span><span class="p">:</span>
+</span><span data-line="584">                <span class="n">_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">agg_trades</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="585">
+</span><span data-line="586">                <span class="k">if</span> <span class="ow">not</span> <span class="n">total_volume_column</span><span class="p">:</span>
+</span><span data-line="587">                    <span class="n">total_volume_column</span> <span class="o">=</span> <span class="s1">&#39;Quantity&#39;</span>
+</span><span data-line="588">
+</span><span data-line="589">                <span class="k">if</span> <span class="ow">not</span> <span class="n">partial_vol_column</span><span class="p">:</span>
+</span><span data-line="590">                    <span class="n">partial_vol_column</span> <span class="o">=</span> <span class="s1">&#39;Buyer was maker&#39;</span>
+</span><span data-line="591">
+</span><span data-line="592">                <span class="n">aggressive_sellers</span> <span class="o">=</span> <span class="n">_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">_df</span><span class="p">[</span><span class="n">partial_vol_column</span><span class="p">]][</span><span class="n">total_volume_column</span><span class="p">]</span>
+</span><span data-line="593">                <span class="n">aggressive_byers</span> <span class="o">=</span> <span class="n">_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="n">_df</span><span class="p">[</span><span class="n">partial_vol_column</span><span class="p">]][</span><span class="n">total_volume_column</span><span class="p">]</span>
+</span><span data-line="594">
+</span><span data-line="595">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="596">            <span class="n">_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+</span><span data-line="597">            <span class="k">if</span> <span class="ow">not</span> <span class="n">total_volume_column</span><span class="p">:</span>
+</span><span data-line="598">                <span class="n">total_volume_column</span> <span class="o">=</span> <span class="s1">&#39;Volume&#39;</span>
+</span><span data-line="599">            <span class="k">if</span> <span class="ow">not</span> <span class="n">partial_vol_column</span><span class="p">:</span>
+</span><span data-line="600">                <span class="n">partial_vol_column</span> <span class="o">=</span> <span class="s1">&#39;Taker buy base volume&#39;</span>
+</span><span data-line="601">            <span class="n">aggressive_sellers</span> <span class="o">=</span> <span class="n">_df</span><span class="p">[</span><span class="n">partial_vol_column</span><span class="p">]</span>
+</span><span data-line="602">            <span class="n">aggressive_byers</span> <span class="o">=</span> <span class="n">_df</span><span class="p">[</span><span class="n">total_volume_column</span><span class="p">]</span> <span class="o">-</span> <span class="n">aggressive_sellers</span>
+</span><span data-line="603">
+</span><span data-line="604">        <span class="k">if</span> <span class="ow">not</span> <span class="n">title</span><span class="p">:</span>
+</span><span data-line="605">            <span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Histogram for sizes in aggressive sellers vs aggressive byers </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">symbol</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">hist_funct</span><span class="si">}</span><span class="s2">)&quot;</span>
+</span><span data-line="606">
+</span><span data-line="607">        <span class="k">return</span> <span class="n">_plotting</span><span class="p">()</span><span class="o">.</span><span class="n">plot_hists_vs</span><span class="p">(</span><span class="n">x0</span><span class="o">=</span><span class="n">aggressive_sellers</span><span class="p">,</span> <span class="n">x1</span><span class="o">=</span><span class="n">aggressive_byers</span><span class="p">,</span> <span class="n">x0_name</span><span class="o">=</span><span class="s2">&quot;Taker seller&quot;</span><span class="p">,</span> <span class="n">x1_name</span><span class="o">=</span><span class="s1">&#39;Taker buyer&#39;</span><span class="p">,</span>
+</span><span data-line="608">                             <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">hist_funct</span><span class="o">=</span><span class="n">hist_funct</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_update_layout</span><span class="p">)</span></div>
+
+</span><span data-line="609">
+<div class="viewcode-block" id="SymbolPlotting.plot_market_profile">
+<a class="viewcode-back" href="../../symbol_plotting.html#binpan.symbol_plotting.SymbolPlotting.plot_market_profile">[docs]</a>
+</span><span data-line="610">    <span class="k">def</span><span class="w"> </span><span class="nf">plot_market_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bins</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">hours</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">minutes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">startTime</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="611">                            <span class="n">endTime</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">900</span><span class="p">,</span> <span class="n">from_agg_trades</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">from_atomic_trades</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="612">                            <span class="n">time_zone</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_update_layout</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="613"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="614"><span class="sd">        Plots volume histogram by prices segregated aggressive buyers from sellers.</span>
+</span><span data-line="615">
+</span><span data-line="616">
+</span><span data-line="617"><span class="sd">        :param int bins: How many bars.</span>
+</span><span data-line="618"><span class="sd">        :param int hours: If passed, it use just last passed hours for the plot.</span>
+</span><span data-line="619"><span class="sd">        :param int minutes: If passed, it use just last passed minutes for the plot.</span>
+</span><span data-line="620"><span class="sd">        :param startTime: If passed, it use just from the timestamp or date in format</span>
+</span><span data-line="621"><span class="sd">         (%Y-%m-%d %H:%M:%S: **2022-05-11 06:45:42**)) for the plot.</span>
+</span><span data-line="622"><span class="sd">        :type startTime: int | str</span>
+</span><span data-line="623"><span class="sd">        :param endTime: If passed, it use just until the timestamp or date in format</span>
+</span><span data-line="624"><span class="sd">         (%Y-%m-%d %H:%M:%S: **2022-05-11 06:45:42**)) for the plot.</span>
+</span><span data-line="625"><span class="sd">        :type endTime: int | str</span>
+</span><span data-line="626"><span class="sd">        :param height: Height of the graph.</span>
+</span><span data-line="627"><span class="sd">        :param from_agg_trades: Requieres grabbing aggregated trades before.</span>
+</span><span data-line="628"><span class="sd">        :param from_atomic_trades: Requieres grabbing atomic trades before.</span>
+</span><span data-line="629"><span class="sd">        :param title: A title.</span>
+</span><span data-line="630"><span class="sd">        :param str time_zone: A time zone for time index conversion. Example: &quot;Europe/Madrid&quot;</span>
+</span><span data-line="631"><span class="sd">        :param kwargs_update_layout: Optional</span>
+</span><span data-line="632">
+</span><span data-line="633"><span class="sd">        .. image:: images/plotting/market_profile.png</span>
+</span><span data-line="634"><span class="sd">            :width: 1000</span>
+</span><span data-line="635">
+</span><span data-line="636"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="637">        <span class="k">try</span><span class="p">:</span>
+</span><span data-line="638">            <span class="k">assert</span> <span class="ow">not</span> <span class="p">(</span><span class="n">from_agg_trades</span> <span class="ow">and</span> <span class="n">from_atomic_trades</span><span class="p">)</span>
+</span><span data-line="639">        <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+</span><span data-line="640">            <span class="k">raise</span> <span class="n">BinPanException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Please specify just one source of data, atomic trades or aggregated, not both.&quot;</span><span class="p">)</span>
+</span><span data-line="641">
+</span><span data-line="642">        <span class="k">if</span> <span class="ow">not</span> <span class="n">title</span><span class="p">:</span>
+</span><span data-line="643">            <span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Market profile </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">symbol</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="644">        <span class="k">if</span> <span class="n">time_zone</span><span class="p">:</span>
+</span><span data-line="645">            <span class="bp">self</span><span class="o">.</span><span class="n">time_zone</span> <span class="o">=</span> <span class="n">time_zone</span>
+</span><span data-line="646">        <span class="k">if</span> <span class="n">startTime</span><span class="p">:</span>
+</span><span data-line="647">            <span class="n">convert_str_date_to_ms</span><span class="p">(</span><span class="n">date</span><span class="o">=</span><span class="n">startTime</span><span class="p">,</span> <span class="n">time_zone</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">time_zone</span><span class="p">)</span>
+</span><span data-line="648">        <span class="k">if</span> <span class="n">endTime</span><span class="p">:</span>
+</span><span data-line="649">            <span class="n">convert_str_date_to_ms</span><span class="p">(</span><span class="n">date</span><span class="o">=</span><span class="n">endTime</span><span class="p">,</span> <span class="n">time_zone</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">time_zone</span><span class="p">)</span>
+</span><span data-line="650">        <span class="k">if</span> <span class="n">hours</span><span class="p">:</span>
+</span><span data-line="651">            <span class="n">startTime</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1000</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="n">hours</span><span class="p">)</span>
+</span><span data-line="652">        <span class="k">elif</span> <span class="n">minutes</span><span class="p">:</span>
+</span><span data-line="653">            <span class="n">startTime</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1000</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="n">minutes</span><span class="p">)</span>
+</span><span data-line="654">
+</span><span data-line="655">        <span class="k">if</span> <span class="n">from_agg_trades</span> <span class="ow">or</span> <span class="n">from_atomic_trades</span><span class="p">:</span>
+</span><span data-line="656">            <span class="n">source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">agg_trades</span> <span class="k">if</span> <span class="n">from_agg_trades</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomic_trades</span>
+</span><span data-line="657">            <span class="k">if</span> <span class="n">source</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+</span><span data-line="658">                <span class="n">binpan_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">empty_msg</span><span class="p">)</span>
+</span><span data-line="659">                <span class="k">return</span>
+</span><span data-line="660">            <span class="n">precision</span> <span class="o">=</span> <span class="s2">&quot;precisión media&quot;</span> <span class="k">if</span> <span class="n">source</span><span class="o">.</span><span class="n">is_agg</span> <span class="k">else</span> <span class="s2">&quot;alta precisión&quot;</span>
+</span><span data-line="661">            <span class="n">title</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39; — desde </span><span class="si">{</span><span class="n">source</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s1"> trades (</span><span class="si">{</span><span class="n">precision</span><span class="si">}</span><span class="s1">)&#39;</span>
+</span><span data-line="662">            <span class="n">_df</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">filtered</span><span class="p">(</span><span class="n">startTime</span><span class="p">,</span> <span class="n">endTime</span><span class="p">)</span>
+</span><span data-line="663">            <span class="k">return</span> <span class="n">_plotting</span><span class="p">()</span><span class="o">.</span><span class="n">bar_plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">_df</span><span class="p">,</span> <span class="n">x_col_to_bars</span><span class="o">=</span><span class="s1">&#39;Price&#39;</span><span class="p">,</span> <span class="n">y_col</span><span class="o">=</span><span class="s1">&#39;Quantity&#39;</span><span class="p">,</span> <span class="n">bar_segments</span><span class="o">=</span><span class="s1">&#39;Buyer was maker&#39;</span><span class="p">,</span> <span class="n">split_colors</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="664">                            <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span> <span class="n">y_axis_title</span><span class="o">=</span><span class="s1">&#39;Buy takers VS Buy makers&#39;</span><span class="p">,</span> <span class="n">horizontal_bars</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="665">                            <span class="o">**</span><span class="n">kwargs_update_layout</span><span class="p">)</span>
+</span><span data-line="666">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="667">            <span class="n">title</span> <span class="o">+=</span> <span class="s1">&#39; — desde klines (precisión aproximada)&#39;</span>
+</span><span data-line="668">            <span class="n">_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="669">            <span class="k">if</span> <span class="n">startTime</span><span class="p">:</span>
+</span><span data-line="670">                <span class="n">_df</span> <span class="o">=</span> <span class="n">_df</span><span class="p">[</span><span class="n">_df</span><span class="p">[</span><span class="s1">&#39;Timestamp&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">startTime</span><span class="p">]</span>
+</span><span data-line="671">            <span class="k">if</span> <span class="n">endTime</span><span class="p">:</span>
+</span><span data-line="672">                <span class="n">_df</span> <span class="o">=</span> <span class="n">_df</span><span class="p">[</span><span class="n">_df</span><span class="p">[</span><span class="s1">&#39;Timestamp&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">endTime</span><span class="p">]</span>
+</span><span data-line="673">            <span class="n">binpan_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using klines data. For deeper info add trades data, example: my_symbol.get_agg_trades()&quot;</span><span class="p">)</span>
+</span><span data-line="674">            <span class="n">profile</span> <span class="o">=</span> <span class="n">market_profile_from_klines_melt</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">_df</span><span class="p">)</span>
+</span><span data-line="675">            <span class="n">profile</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+</span><span data-line="676">            <span class="k">return</span> <span class="n">_plotting</span><span class="p">()</span><span class="o">.</span><span class="n">bar_plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">profile</span><span class="p">,</span> <span class="n">x_col_to_bars</span><span class="o">=</span><span class="s1">&#39;Market_Profile&#39;</span><span class="p">,</span> <span class="n">y_col</span><span class="o">=</span><span class="s1">&#39;Volume&#39;</span><span class="p">,</span> <span class="n">bar_segments</span><span class="o">=</span><span class="s1">&#39;Is_Maker&#39;</span><span class="p">,</span> <span class="n">split_colors</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="677">                            <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span> <span class="o">+</span> <span class="s2">&quot; from klines&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span> <span class="n">y_axis_title</span><span class="o">=</span><span class="s1">&#39;Buy takers VS Buy makers&#39;</span><span class="p">,</span>
+</span><span data-line="678">                            <span class="n">horizontal_bars</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="679">                            <span class="o">**</span><span class="n">kwargs_update_layout</span><span class="p">)</span></div>
+
+</span><span data-line="680">
+<div class="viewcode-block" id="SymbolPlotting.plot_volume_profile">
+<a class="viewcode-back" href="../../symbol_plotting.html#binpan.symbol_plotting.SymbolPlotting.plot_volume_profile">[docs]</a>
+</span><span data-line="681">    <span class="k">def</span><span class="w"> </span><span class="nf">plot_volume_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bins</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span> <span class="n">value_area_pct</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.70</span><span class="p">,</span> <span class="n">from_agg_trades</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span data-line="682">                            <span class="n">from_atomic_trades</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">hours</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">minutes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="683">                            <span class="n">startTime</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">endTime</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">time_zone</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="684">                            <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">900</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">horizontal_lines</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="685">                            <span class="n">priced_markers</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">show</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">image_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="686"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Volume Profile (VPVR): velas + histograma horizontal de volumen, con POC y Value Area.</span>
+</span><span data-line="687">
+</span><span data-line="688"><span class="sd">        Dibuja las velas a la izquierda y, compartiendo el eje de precio, un histograma horizontal del</span>
+</span><span data-line="689"><span class="sd">        volumen por nivel a la derecha. Resalta la Value Area, traza el POC y marca los LVN (huecos por</span>
+</span><span data-line="690"><span class="sd">        donde el precio viaja rapido). Util para ver imanes y soportes/resistencias por aceptacion. Los</span>
+</span><span data-line="691"><span class="sd">        numeros (POC/VAH/VAL/HVN/LVN) se obtienen con :meth:`volume_profile`.</span>
+</span><span data-line="692">
+</span><span data-line="693"><span class="sd">        :param int bins: numero de niveles del histograma. Default 50.</span>
+</span><span data-line="694"><span class="sd">        :param float value_area_pct: fraccion del volumen dentro de la Value Area. Default 0.70.</span>
+</span><span data-line="695"><span class="sd">        :param bool from_agg_trades: perfil fino desde aggregated trades (requiere ``get_agg_trades()`` antes).</span>
+</span><span data-line="696"><span class="sd">        :param bool from_atomic_trades: perfil desde atomic trades (requiere ``get_atomic_trades()`` antes).</span>
+</span><span data-line="697"><span class="sd">        :param int hours: si se pasa, solo las ultimas &#39;hours&#39; horas.</span>
+</span><span data-line="698"><span class="sd">        :param int minutes: si se pasa, solo los ultimos &#39;minutes&#39; minutos.</span>
+</span><span data-line="699"><span class="sd">        :param startTime: timestamp/fecha de inicio (rango fijo).</span>
+</span><span data-line="700"><span class="sd">        :param endTime: timestamp/fecha de fin (rango fijo).</span>
+</span><span data-line="701"><span class="sd">        :param str time_zone: zona horaria para el indice temporal.</span>
+</span><span data-line="702"><span class="sd">        :param str title: titulo del grafico.</span>
+</span><span data-line="703"><span class="sd">        :param int height: alto px. Default 900.</span>
+</span><span data-line="704"><span class="sd">        :param int width: ancho px. Si None, autosize.</span>
+</span><span data-line="705"><span class="sd">        :param list horizontal_lines: precios extra (entrada/stop/TP) como lineas discontinuas.</span>
+</span><span data-line="706"><span class="sd">        :param list priced_markers: marcadores de operacion (▲ compra / ▼ venta) en puntos exactos sobre</span>
+</span><span data-line="707"><span class="sd">            las velas: lista de ``{&#39;time&#39;, &#39;price&#39;, &#39;side&#39;, &#39;label&#39;?}`` (ver ``set_price_markers``).</span>
+</span><span data-line="708"><span class="sd">        :param bool show: si True (default) abre la figura interactiva; False para uso headless/servidor.</span>
+</span><span data-line="709"><span class="sd">        :param str image_path: ruta del PNG de salida. Por defecto ``last_plot.png`` en el cwd.</span>
+</span><span data-line="710"><span class="sd">        :return: ruta absoluta de la imagen exportada, o None si falla.</span>
+</span><span data-line="711">
+</span><span data-line="712"><span class="sd">        .. image:: images/plotting/volume_profile.png</span>
+</span><span data-line="713"><span class="sd">           :width: 1000</span>
+</span><span data-line="714"><span class="sd">           :alt: Volume Profile con POC y Value Area</span>
+</span><span data-line="715"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="716">        <span class="n">vp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume_profile</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">value_area_pct</span><span class="o">=</span><span class="n">value_area_pct</span><span class="p">,</span> <span class="n">from_agg_trades</span><span class="o">=</span><span class="n">from_agg_trades</span><span class="p">,</span>
+</span><span data-line="717">                                 <span class="n">from_atomic_trades</span><span class="o">=</span><span class="n">from_atomic_trades</span><span class="p">,</span> <span class="n">hours</span><span class="o">=</span><span class="n">hours</span><span class="p">,</span> <span class="n">minutes</span><span class="o">=</span><span class="n">minutes</span><span class="p">,</span>
+</span><span data-line="718">                                 <span class="n">startTime</span><span class="o">=</span><span class="n">startTime</span><span class="p">,</span> <span class="n">endTime</span><span class="o">=</span><span class="n">endTime</span><span class="p">,</span> <span class="n">time_zone</span><span class="o">=</span><span class="n">time_zone</span><span class="p">)</span>
+</span><span data-line="719">        <span class="k">if</span> <span class="ow">not</span> <span class="n">vp</span><span class="p">:</span>
+</span><span data-line="720">            <span class="n">binpan_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Volume profile vacio: no se pudo generar el grafico.&quot;</span><span class="p">)</span>
+</span><span data-line="721">            <span class="k">return</span> <span class="kc">None</span>
+</span><span data-line="722">        <span class="k">if</span> <span class="ow">not</span> <span class="n">title</span><span class="p">:</span>
+</span><span data-line="723">            <span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Volume Profile </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">symbol</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="724">        <span class="k">return</span> <span class="n">_plotting</span><span class="p">()</span><span class="o">.</span><span class="n">plot_volume_profile</span><span class="p">(</span><span class="n">klines_df</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">,</span> <span class="n">profile_bins</span><span class="o">=</span><span class="n">vp</span><span class="p">[</span><span class="s2">&quot;bins&quot;</span><span class="p">],</span> <span class="n">poc</span><span class="o">=</span><span class="n">vp</span><span class="p">[</span><span class="s2">&quot;poc&quot;</span><span class="p">],</span>
+</span><span data-line="725">                                               <span class="n">vah</span><span class="o">=</span><span class="n">vp</span><span class="p">[</span><span class="s2">&quot;vah&quot;</span><span class="p">],</span> <span class="n">val</span><span class="o">=</span><span class="n">vp</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">],</span> <span class="n">lvn</span><span class="o">=</span><span class="n">vp</span><span class="p">[</span><span class="s2">&quot;lvn&quot;</span><span class="p">],</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+</span><span data-line="726">                                               <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">horizontal_lines</span><span class="o">=</span><span class="n">horizontal_lines</span><span class="p">,</span>
+</span><span data-line="727">                                               <span class="n">priced_markers</span><span class="o">=</span><span class="n">priced_markers</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">show</span><span class="p">,</span> <span class="n">image_path</span><span class="o">=</span><span class="n">image_path</span><span class="p">)</span></div>
+
+</span><span data-line="728">
+<div class="viewcode-block" id="SymbolPlotting.plot_trades_scatter">
+<a class="viewcode-back" href="../../symbol_plotting.html#binpan.symbol_plotting.SymbolPlotting.plot_trades_scatter">[docs]</a>
+</span><span data-line="729">    <span class="k">def</span><span class="w"> </span><span class="nf">plot_trades_scatter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dot_symbol</span><span class="o">=</span><span class="s1">&#39;Buyer was maker&#39;</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">marginal</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="730">                            <span class="n">from_trades</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">color_referenced_to_y</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="731">                            <span class="c1"># useful to compare volume with taker volume for coloring</span>
+</span><span data-line="732">                            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="733"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="734"><span class="sd">        A scatter plot showing each price level volume or trades.</span>
+</span><span data-line="735">
+</span><span data-line="736"><span class="sd">        It can be useful finding support and resistance zones.</span>
+</span><span data-line="737">
+</span><span data-line="738"><span class="sd">        .. image:: images/plot_trades_scatter.png</span>
+</span><span data-line="739"><span class="sd">           :width: 1000</span>
+</span><span data-line="740"><span class="sd">           :alt: Candles with some indicators</span>
+</span><span data-line="741">
+</span><span data-line="742">
+</span><span data-line="743"><span class="sd">        :param dot_symbol: Column with discrete values to assign different symbols for the plot marks.</span>
+</span><span data-line="744"><span class="sd">        :param x: Name of the column with prices. From trades or candles.</span>
+</span><span data-line="745"><span class="sd">        :param y: Name of the column with sizes. From trades or candles.</span>
+</span><span data-line="746"><span class="sd">        :param color: Column with values to use in color scale.</span>
+</span><span data-line="747"><span class="sd">        :param marginal: Show or not lateral plots.</span>
+</span><span data-line="748"><span class="sd">        :param from_trades: Uses trades instead of candles. Useful to avoid grabbing very long time intervals. Result should be similar.</span>
+</span><span data-line="749"><span class="sd">        :param height: Height of the plot.</span>
+</span><span data-line="750"><span class="sd">        :param color_referenced_to_y: Scales color in y axis.</span>
+</span><span data-line="751"><span class="sd">        :param kwargs: Optional plotly args.</span>
+</span><span data-line="752">
+</span><span data-line="753"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="754">        <span class="k">if</span> <span class="ow">not</span> <span class="n">x</span><span class="p">:</span>
+</span><span data-line="755">            <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Price&#39;</span><span class="p">,</span> <span class="s1">&#39;Close&#39;</span><span class="p">]</span>
+</span><span data-line="756">        <span class="k">if</span> <span class="ow">not</span> <span class="n">y</span><span class="p">:</span>
+</span><span data-line="757">            <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Quantity&#39;</span><span class="p">,</span> <span class="s1">&#39;Volume&#39;</span><span class="p">]</span>
+</span><span data-line="758">        <span class="k">if</span> <span class="ow">not</span> <span class="n">color</span><span class="p">:</span>
+</span><span data-line="759">            <span class="n">color</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Buyer was maker&#39;</span><span class="p">,</span> <span class="s1">&#39;Taker buy base volume&#39;</span><span class="p">]</span>
+</span><span data-line="760">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">agg_trades</span><span class="o">.</span><span class="n">empty</span> <span class="ow">and</span> <span class="n">from_trades</span><span class="p">:</span>
+</span><span data-line="761">            <span class="n">binpan_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">empty_agg_trades_msg</span><span class="p">)</span>
+</span><span data-line="762">            <span class="k">return</span>
+</span><span data-line="763">        <span class="k">if</span> <span class="ow">not</span> <span class="n">from_trades</span><span class="p">:</span>
+</span><span data-line="764">            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="765">            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">color</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">):</span>
+</span><span data-line="766">                <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</span><span data-line="767">                <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</span><span data-line="768">                <span class="k">if</span> <span class="n">color_referenced_to_y</span><span class="p">:</span>
+</span><span data-line="769">                    <span class="n">color</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">color</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">/</span> <span class="n">data</span><span class="p">[</span><span class="n">y</span><span class="p">]</span>
+</span><span data-line="770">                    <span class="c1"># kwargs.update({&#39;hover_data&#39;: color})</span>
+</span><span data-line="771">                    <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;labels&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;Maker buyer volume / Total volume&quot;</span><span class="p">}})</span>
+</span><span data-line="772">            <span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Priced volume for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">symbol</span><span class="si">}</span><span class="s2"> data obtained from volume and candlesticks.&quot;</span>
+</span><span data-line="773">            <span class="k">return</span> <span class="n">_plotting</span><span class="p">()</span><span class="o">.</span><span class="n">plot_scatter</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">x_col</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y_col</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">marginal</span><span class="o">=</span><span class="n">marginal</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span data-line="774">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="775">            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">agg_trades</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="776">            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">color</span><span class="p">):</span>
+</span><span data-line="777">                <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span data-line="778">                <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span data-line="779">                <span class="n">color</span> <span class="o">=</span> <span class="n">color</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span data-line="780">            <span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Priced volume for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">symbol</span><span class="si">}</span><span class="s2"> data obtained from historical trades.&quot;</span>
+</span><span data-line="781">            <span class="k">return</span> <span class="n">_plotting</span><span class="p">()</span><span class="o">.</span><span class="n">plot_scatter</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">x_col</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y_col</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">symbol</span><span class="o">=</span><span class="n">dot_symbol</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">marginal</span><span class="o">=</span><span class="n">marginal</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span>
+</span><span data-line="782">                                <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+</span><span data-line="783">
+<div class="viewcode-block" id="SymbolPlotting.plot_orderbook">
+<a class="viewcode-back" href="../../symbol_plotting.html#binpan.symbol_plotting.SymbolPlotting.plot_orderbook">[docs]</a>
+</span><span data-line="784">    <span class="k">def</span><span class="w"> </span><span class="nf">plot_orderbook</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">accumulated</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Depth orderbook plot&#39;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">plot_y</span><span class="o">=</span><span class="s2">&quot;Quantity&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="785"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="786"><span class="sd">        Plots orderbook depth.</span>
+</span><span data-line="787">
+</span><span data-line="788"><span class="sd">        .. image:: images/plot_orderbook.png</span>
+</span><span data-line="789"><span class="sd">           :width: 800</span>
+</span><span data-line="790"><span class="sd">           :alt: Order book depth chart</span>
+</span><span data-line="791">
+</span><span data-line="792"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="793">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">orderbook</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+</span><span data-line="794">            <span class="n">binpan_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Orderbook not downloaded. Please add orderbook data with: my_binpan.get_orderbook()&quot;</span><span class="p">)</span>
+</span><span data-line="795">            <span class="k">return</span>
+</span><span data-line="796">        <span class="k">return</span> <span class="n">_plotting</span><span class="p">()</span><span class="o">.</span><span class="n">orderbook_depth</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">orderbook</span><span class="p">,</span> <span class="n">accumulated</span><span class="o">=</span><span class="n">accumulated</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span> <span class="n">plot_y</span><span class="o">=</span><span class="n">plot_y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+</span><span data-line="797">
+<div class="viewcode-block" id="SymbolPlotting.plot_orderbook_density">
+<a class="viewcode-back" href="../../symbol_plotting.html#binpan.symbol_plotting.SymbolPlotting.plot_orderbook_density">[docs]</a>
+</span><span data-line="798">    <span class="k">def</span><span class="w"> </span><span class="nf">plot_orderbook_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_col</span><span class="o">=</span><span class="s2">&quot;Price&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;Side&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">histnorm</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;density&#39;</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">800</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="799">                               <span class="o">**</span><span class="n">update_layout_kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="800"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="801"><span class="sd">        Plot a distribution plot for a dataframe column. Plots line for kernel distribution.</span>
+</span><span data-line="802">
+</span><span data-line="803"><span class="sd">        :param str x_col: Column name for x-axis data.</span>
+</span><span data-line="804"><span class="sd">        :param str color: Column name with tags or any values for using as color scale.</span>
+</span><span data-line="805"><span class="sd">        :param int bins: Columns in histogram.</span>
+</span><span data-line="806"><span class="sd">        :param str histnorm: One of &#39;percent&#39;, &#39;probability&#39;, &#39;density&#39;, or &#39;probability density&#39; from plotly express documentation.</span>
+</span><span data-line="807"><span class="sd">            https://plotly.github.io/plotly.py-docs/generated/plotly.express.histogram.html</span>
+</span><span data-line="808"><span class="sd">        :param int height: Plot sizing.</span>
+</span><span data-line="809"><span class="sd">        :param str title: A title string</span>
+</span><span data-line="810">
+</span><span data-line="811"><span class="sd">        .. image:: images/orderbook_density.png</span>
+</span><span data-line="812"><span class="sd">           :width: 800</span>
+</span><span data-line="813"><span class="sd">           :alt: Order book density plot</span>
+</span><span data-line="814">
+</span><span data-line="815"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="816">
+</span><span data-line="817">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">orderbook</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+</span><span data-line="818">            <span class="n">binpan_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Orderbook not downloaded. Please add orderbook data with: my_binpan.get_orderbook()&quot;</span><span class="p">)</span>
+</span><span data-line="819">            <span class="k">return</span>
+</span><span data-line="820">
+</span><span data-line="821">        <span class="k">if</span> <span class="ow">not</span> <span class="n">title</span><span class="p">:</span>
+</span><span data-line="822">            <span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Distribution plot for order book </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">symbol</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="823">
+</span><span data-line="824">        <span class="k">return</span> <span class="n">_plotting</span><span class="p">()</span><span class="o">.</span><span class="n">dist_plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">orderbook</span><span class="p">,</span> <span class="n">x_col</span><span class="o">=</span><span class="n">x_col</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">histnorm</span><span class="o">=</span><span class="n">histnorm</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+</span><span data-line="825">                         <span class="o">**</span><span class="n">update_layout_kwargs</span><span class="p">)</span></div>
+
+</span><span data-line="826">
+<div class="viewcode-block" id="SymbolPlotting.plot_taker_maker_ratio_profile">
+<a class="viewcode-back" href="../../symbol_plotting.html#binpan.symbol_plotting.SymbolPlotting.plot_taker_maker_ratio_profile">[docs]</a>
+</span><span data-line="827">    <span class="k">def</span><span class="w"> </span><span class="nf">plot_taker_maker_ratio_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bins</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">hours</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">minutes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">startTime</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="828">                                       <span class="n">endTime</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">from_agg_trades</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">from_atomic_trades</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">time_zone</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="829">                                       <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Taker Buy Ratio Profile&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">1200</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_update_layout</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="830"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="831"><span class="sd">        Plots taker vs maker ratio profile.</span>
+</span><span data-line="832">
+</span><span data-line="833"><span class="sd">        :param int bins: How many bars.</span>
+</span><span data-line="834"><span class="sd">        :param int hours: If passed, it use just last passed hours for the plot.</span>
+</span><span data-line="835"><span class="sd">        :param int minutes: If passed, it use just last passed minutes for the plot.</span>
+</span><span data-line="836"><span class="sd">        :param startTime: If passed, it use just from the timestamp or date in format</span>
+</span><span data-line="837"><span class="sd">         (%Y-%m-%d %H:%M:%S: **2022-05-11 06:45:42**)) for the plot.</span>
+</span><span data-line="838"><span class="sd">        :type startTime: int | str</span>
+</span><span data-line="839"><span class="sd">        :param endTime: If passed, it use just until the timestamp or date in format</span>
+</span><span data-line="840"><span class="sd">         (%Y-%m-%d %H:%M:%S: **2022-05-11 06:45:42**)) for the plot.</span>
+</span><span data-line="841"><span class="sd">        :type endTime: int | str</span>
+</span><span data-line="842"><span class="sd">        :param height: Height of the graph.</span>
+</span><span data-line="843"><span class="sd">        :param width: Width of the graph.</span>
+</span><span data-line="844"><span class="sd">        :param from_agg_trades: Requieres grabbing aggregated trades before.</span>
+</span><span data-line="845"><span class="sd">        :param from_atomic_trades: Requieres grabbing atomic trades before.</span>
+</span><span data-line="846"><span class="sd">        :param title: A title.</span>
+</span><span data-line="847"><span class="sd">        :param str time_zone: A time zone for time index conversion. Example: &quot;Europe/Madrid&quot;</span>
+</span><span data-line="848"><span class="sd">        :param kwargs_update_layout: Optional</span>
+</span><span data-line="849">
+</span><span data-line="850"><span class="sd">        .. image:: images/plotting/taker_ratio_profile.png</span>
+</span><span data-line="851"><span class="sd">            :width: 1000</span>
+</span><span data-line="852">
+</span><span data-line="853"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="854">        <span class="k">if</span> <span class="n">title</span> <span class="o">==</span> <span class="s2">&quot;Taker Buy Ratio Profile&quot;</span><span class="p">:</span>
+</span><span data-line="855">            <span class="k">if</span> <span class="n">from_atomic_trades</span><span class="p">:</span>
+</span><span data-line="856">                <span class="n">title</span> <span class="o">+=</span> <span class="s2">&quot; — desde atomic trades (alta precisión)&quot;</span>
+</span><span data-line="857">            <span class="k">elif</span> <span class="n">from_agg_trades</span><span class="p">:</span>
+</span><span data-line="858">                <span class="n">title</span> <span class="o">+=</span> <span class="s2">&quot; — desde aggregated trades (precisión media)&quot;</span>
+</span><span data-line="859">            <span class="k">else</span><span class="p">:</span>
+</span><span data-line="860">                <span class="n">title</span> <span class="o">+=</span> <span class="s2">&quot; — desde klines (precisión aproximada)&quot;</span>
+</span><span data-line="861">        <span class="n">profile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_taker_maker_ratio_profile</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">hours</span><span class="o">=</span><span class="n">hours</span><span class="p">,</span> <span class="n">minutes</span><span class="o">=</span><span class="n">minutes</span><span class="p">,</span> <span class="n">startTime</span><span class="o">=</span><span class="n">startTime</span><span class="p">,</span> <span class="n">endTime</span><span class="o">=</span><span class="n">endTime</span><span class="p">,</span>
+</span><span data-line="862">                                                     <span class="n">from_agg_trades</span><span class="o">=</span><span class="n">from_agg_trades</span><span class="p">,</span> <span class="n">from_atomic_trades</span><span class="o">=</span><span class="n">from_atomic_trades</span><span class="p">,</span>
+</span><span data-line="863">                                                     <span class="n">time_zone</span><span class="o">=</span><span class="n">time_zone</span><span class="p">)</span>
+</span><span data-line="864">        <span class="k">return</span> <span class="n">_plotting</span><span class="p">()</span><span class="o">.</span><span class="n">profile_plot</span><span class="p">(</span><span class="n">serie</span><span class="o">=</span><span class="n">profile</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">x_axis_title</span><span class="o">=</span><span class="s2">&quot;Price Buckets&quot;</span><span class="p">,</span>
+</span><span data-line="865">                            <span class="n">y_axis_title</span><span class="o">=</span><span class="s2">&quot;Taker/Maker ratio&quot;</span><span class="p">,</span> <span class="n">vertical_bar</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_update_layout</span><span class="p">)</span></div>
+</div>
+
+</span></pre></div>
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2022, Fernando Alfonso</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+<a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+  <iconify-icon icon="simple-icons:github"></iconify-icon>
+</a></div>
+    </div>
+  </div>
+</footer>
+      <script src="../../_static/documentation_options.js?v=11e62b30"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/shibuya.js?v=50760d75"></script></body>
+</html>

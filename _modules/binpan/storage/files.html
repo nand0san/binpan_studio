@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="iris" data-content_root="../../../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>binpan.storage.files - BinPan 0.10.2</title><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=e1a1ceaf" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/shibuya.css?v=9454f7d5" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/style.css?v=1e48dca6" />
+    <link media="print" rel="stylesheet" type="text/css" href="../../../_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/><meta property="og:title" content="binpan.storage.files"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="../../../index.html">
+      
+      
+      <strong>BinPan</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Main Classes:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../binpan.html">BinPan Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../symbol_indicators.html">Symbol Indicators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../symbol_plotting.html">Symbol Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../symbol_strategy.html">Symbol Strategy</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">API &amp; Market:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../market.html">Market Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exchange.html">Exchange Info Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../auth.html">Authentication Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../wallet.html">Wallet Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../wallet_api.html">Wallet API Functions</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Analysis:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../indicators.html">Indicators Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../aggregations.html">Aggregations Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../strategies.html">Strategies Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tags.html">Tags &amp; Backtesting Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stat_tests.html">Statistical Tests and Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../numba_tools.html">Numba Tools Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Core:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../time_helper.html">Time Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../timeframes.html">Timeframes Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../trades.html">Trades Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../standards.html">Standards Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../secrets.html">Secrets Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logs.html">Logs Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exceptions.html">Exceptions Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Plotting:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../plotting.html">Plotting Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Storage &amp; Database:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../files.html">Files Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../postgresql.html">PostgreSQL Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../postgresql_database.html">PostgreSQL Database Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../influx_manager.html">Influx Manager Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../redis_fetch.html">Redis Module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../../index.html"><span itemprop="name">BinPan</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../index.html"><span itemprop="name">Module code</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">binpan.storage.files</strong>
+        <meta itemprop="position" content="3" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue" role="main">
+          <h1>Source code for binpan.storage.files</h1><div class="highlight"><pre>
+<span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">csv</span><span class="w"> </span><span class="kn">import</span> <span class="n">QUOTE_ALL</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">time</span><span class="w"> </span><span class="kn">import</span> <span class="n">time</span>
+</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">sys</span><span class="w"> </span><span class="kn">import</span> <span class="n">path</span>
+</span><span data-line="4"><span class="kn">from</span><span class="w"> </span><span class="nn">os</span><span class="w"> </span><span class="kn">import</span> <span class="n">listdir</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">mkdir</span><span class="p">,</span> <span class="n">replace</span><span class="p">,</span> <span class="n">makedirs</span>
+</span><span data-line="5"><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+</span><span data-line="6">
+</span><span data-line="7"><span class="kn">from</span><span class="w"> </span><span class="nn">..core.secrets</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_secret</span><span class="p">,</span> <span class="n">set_secret</span>
+</span><span data-line="8"><span class="kn">from</span><span class="w"> </span><span class="nn">..core.logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogManager</span>
+</span><span data-line="9"><span class="kn">from</span><span class="w"> </span><span class="nn">..core.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">BinPanException</span>
+</span><span data-line="10">
+</span><span data-line="11"><span class="n">files_logger</span> <span class="o">=</span> <span class="n">LogManager</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;./logs/files_logger.log&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;files_logger&#39;</span><span class="p">,</span> <span class="n">info_level</span><span class="o">=</span><span class="s1">&#39;INFO&#39;</span><span class="p">)</span>
+</span><span data-line="12">
+</span><span data-line="13">
+</span><span data-line="14"><span class="c1">################</span>
+</span><span data-line="15"><span class="c1"># Files manage #</span>
+</span><span data-line="16"><span class="c1">################</span>
+</span><span data-line="17">
+<div class="viewcode-block" id="create_dir">
+<a class="viewcode-back" href="../../../files.html#binpan.storage.files.create_dir">[docs]</a>
+</span><span data-line="18"><span class="k">def</span><span class="w"> </span><span class="nf">create_dir</span><span class="p">(</span><span class="n">my_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+</span><span data-line="19"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="20"><span class="sd">    Create a folder at the designated path if it doesn&#39;t exist. No error if it already exists</span>
+</span><span data-line="21">
+</span><span data-line="22"><span class="sd">    :param str my_path: Path for the new directory.</span>
+</span><span data-line="23">
+</span><span data-line="24"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="25">    <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">my_path</span><span class="p">):</span>
+</span><span data-line="26">        <span class="n">makedirs</span><span class="p">(</span><span class="n">my_path</span><span class="p">)</span></div>
+
+</span><span data-line="27">
+</span><span data-line="28">
+<div class="viewcode-block" id="save_dataframe_to_csv">
+<a class="viewcode-back" href="../../../files.html#binpan.storage.files.save_dataframe_to_csv">[docs]</a>
+</span><span data-line="29"><span class="k">def</span><span class="w"> </span><span class="nf">save_dataframe_to_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">col_sep</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="30"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="31"><span class="sd">    Save a dataframe in a csv with a separator between columns. Each field of each column will be enclosed in double quotes.</span>
+</span><span data-line="32">
+</span><span data-line="33"><span class="sd">    :param str filename: The file name.</span>
+</span><span data-line="34"><span class="sd">    :param pd.DataFrame data: The dataframe with date in columns.</span>
+</span><span data-line="35"><span class="sd">    :param str col_sep: Default is &#39;,&#39;</span>
+</span><span data-line="36"><span class="sd">    :param bool index: Keep index or not when saving. DEfault is False (drop index)</span>
+</span><span data-line="37"><span class="sd">    :param bool timestamp: Add a timestamp to the file name automatically. Default is true.</span>
+</span><span data-line="38">
+</span><span data-line="39"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="40">    <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.csv&quot;</span><span class="p">):</span>
+</span><span data-line="41">        <span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+</span><span data-line="42">    <span class="k">if</span> <span class="n">timestamp</span><span class="p">:</span>
+</span><span data-line="43">        <span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="p">())</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+</span><span data-line="44">    <span class="n">filename</span> <span class="o">+=</span> <span class="s1">&#39;.csv&#39;</span>
+</span><span data-line="45">    <span class="n">data</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="n">col_sep</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="n">quoting</span><span class="o">=</span><span class="n">QUOTE_ALL</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">)</span></div>
+
+</span><span data-line="46">
+</span><span data-line="47">
+<div class="viewcode-block" id="append_dataframe_to_csv">
+<a class="viewcode-back" href="../../../files.html#binpan.storage.files.append_dataframe_to_csv">[docs]</a>
+</span><span data-line="48"><span class="k">def</span><span class="w"> </span><span class="nf">append_dataframe_to_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">col_sep</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="49"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="50"><span class="sd">    Add lines to a csv with separator to choose, a dataframe. Each field of each column will be enclosed in quotes</span>
+</span><span data-line="51">
+</span><span data-line="52"><span class="sd">    :param str filename: The file to use.</span>
+</span><span data-line="53"><span class="sd">    :param pd.DataFrame data: Data to append to the file.</span>
+</span><span data-line="54"><span class="sd">    :param str col_sep: Expected column separators. Default is &quot;,&quot;</span>
+</span><span data-line="55"><span class="sd">    :param bool index: Keeps index in file as first column/s.</span>
+</span><span data-line="56"><span class="sd">    :param bool header: Keeps header. Default is True.</span>
+</span><span data-line="57"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="58">    <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+</span><span data-line="59">        <span class="n">header</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span data-line="60">    <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.csv&quot;</span><span class="p">):</span>
+</span><span data-line="61">        <span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+</span><span data-line="62">    <span class="n">filename</span> <span class="o">+=</span> <span class="s1">&#39;.csv&#39;</span>
+</span><span data-line="63">    <span class="n">data</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="n">col_sep</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="n">quoting</span><span class="o">=</span><span class="n">QUOTE_ALL</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">)</span></div>
+
+</span><span data-line="64">
+</span><span data-line="65">
+<div class="viewcode-block" id="find_csvs_in_path">
+<a class="viewcode-back" href="../../../files.html#binpan.storage.files.find_csvs_in_path">[docs]</a>
+</span><span data-line="66"><span class="k">def</span><span class="w"> </span><span class="nf">find_csvs_in_path</span><span class="p">(</span><span class="n">files_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">extension</span><span class="o">=</span><span class="s1">&#39;csv&#39;</span><span class="p">,</span> <span class="n">name_filter</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+</span><span data-line="67"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="68"><span class="sd">    Locate all files with desired extension.</span>
+</span><span data-line="69">
+</span><span data-line="70"><span class="sd">    :param str files_path: A path.</span>
+</span><span data-line="71"><span class="sd">    :param str extension: A extension like &quot;csv&quot;.</span>
+</span><span data-line="72"><span class="sd">    :param str name_filter: A filter to apply to files. Example: &quot;klines&quot; or &quot;aggTrades&quot; or &quot;atomicTrades&quot;.</span>
+</span><span data-line="73"><span class="sd">    :return:</span>
+</span><span data-line="74"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="75">    <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="76">    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">listdir</span><span class="p">(</span><span class="n">files_path</span><span class="p">):</span>
+</span><span data-line="77">        <span class="n">full_path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">files_path</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+</span><span data-line="78">        <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">full_path</span><span class="p">):</span>
+</span><span data-line="79">            <span class="k">if</span> <span class="n">name_filter</span><span class="p">:</span>
+</span><span data-line="80">                <span class="k">if</span> <span class="n">name_filter</span> <span class="ow">in</span> <span class="n">full_path</span><span class="p">:</span>
+</span><span data-line="81">                    <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span>
+</span><span data-line="82">            <span class="k">else</span><span class="p">:</span>
+</span><span data-line="83">                <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span>
+</span><span data-line="84">    <span class="k">return</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">ret</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">extension</span><span class="p">)]</span></div>
+
+</span><span data-line="85">
+</span><span data-line="86">
+<div class="viewcode-block" id="move_old_csvs">
+<a class="viewcode-back" href="../../../files.html#binpan.storage.files.move_old_csvs">[docs]</a>
+</span><span data-line="87"><span class="k">def</span><span class="w"> </span><span class="nf">move_old_csvs</span><span class="p">(</span><span class="n">files_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">extension</span><span class="o">=</span><span class="s1">&#39;csv&#39;</span><span class="p">):</span>
+</span><span data-line="88"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="89"><span class="sd">    Move all existing files in a path with desired extension to a folder called &quot;old&quot;.</span>
+</span><span data-line="90">
+</span><span data-line="91"><span class="sd">    :param str files_path: A path.</span>
+</span><span data-line="92"><span class="sd">    :param str extension: A extension. Default is &quot;csv&quot;.</span>
+</span><span data-line="93">
+</span><span data-line="94"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="95">    <span class="n">files_path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">files_path</span><span class="p">)</span>
+</span><span data-line="96">    <span class="n">old</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">files_path</span><span class="p">,</span> <span class="s1">&#39;old&#39;</span><span class="p">)</span>
+</span><span data-line="97">    <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">old</span><span class="p">):</span>
+</span><span data-line="98">        <span class="n">mkdir</span><span class="p">(</span><span class="n">old</span><span class="p">)</span>
+</span><span data-line="99">    <span class="n">csvs</span> <span class="o">=</span> <span class="n">find_csvs_in_path</span><span class="p">(</span><span class="n">files_path</span><span class="o">=</span><span class="n">files_path</span><span class="p">,</span> <span class="n">extension</span><span class="o">=</span><span class="n">extension</span><span class="p">)</span>
+</span><span data-line="100">    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">csvs</span><span class="p">:</span>
+</span><span data-line="101">        <span class="n">file_name</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+</span><span data-line="102">        <span class="n">dst</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">files_path</span><span class="p">,</span> <span class="s1">&#39;old&#39;</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span>
+</span><span data-line="103">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Moving old file </span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</span><span data-line="104">        <span class="n">replace</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">dst</span><span class="p">)</span></div>
+
+</span><span data-line="105">
+</span><span data-line="106">
+<div class="viewcode-block" id="extract_filename_metadata">
+<a class="viewcode-back" href="../../../files.html#binpan.storage.files.extract_filename_metadata">[docs]</a>
+</span><span data-line="107"><span class="k">def</span><span class="w"> </span><span class="nf">extract_filename_metadata</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">expected_data_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">expected_symbol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">expected_interval</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="108">                              <span class="n">expected_timezone</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+</span><span data-line="109"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="110"><span class="sd">    Extract metadata from a filename. Symbol, tick interval, timezone and start timestamp and end timestamp. Also data type like atomic</span>
+</span><span data-line="111"><span class="sd">    trades or klines.</span>
+</span><span data-line="112">
+</span><span data-line="113"><span class="sd">    :param filename: A filename with expected format. Example: LTCBTC 1m Europe-Madrid optional comment klines 1691332020000</span>
+</span><span data-line="114"><span class="sd">     1691391959999.csv</span>
+</span><span data-line="115"><span class="sd">    :param str expected_data_type: Expected data type. Example: &quot;klines&quot; or &quot;aggTrades&quot; or &quot;atomicTrades&quot;</span>
+</span><span data-line="116"><span class="sd">    :param str expected_interval: Expected tick interval. Example: &quot;1m&quot; or &quot;1h&quot;.</span>
+</span><span data-line="117"><span class="sd">    :param str expected_symbol: Expected symbol. Example: &quot;LTCBTC&quot;</span>
+</span><span data-line="118"><span class="sd">    :param str expected_timezone: Expected timezone. Example: &quot;Europe/Madrid&quot;</span>
+</span><span data-line="119"><span class="sd">    :return: A dict with metadata.</span>
+</span><span data-line="120"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="121">    <span class="n">filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+</span><span data-line="122">
+</span><span data-line="123">    <span class="k">try</span><span class="p">:</span>
+</span><span data-line="124">        <span class="k">assert</span> <span class="n">expected_data_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;klines&#39;</span><span class="p">,</span> <span class="s1">&#39;aggTrades&#39;</span><span class="p">,</span>
+</span><span data-line="125">                                      <span class="s1">&#39;atomicTrades&#39;</span><span class="p">],</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Expected data type is not valid. Expected &quot;klines&quot; or &quot;aggTrades&quot; or &#39;</span>
+</span><span data-line="126">                                                        <span class="sa">f</span><span class="s1">&#39;&quot;atomicTrades&quot;. Received </span><span class="si">{</span><span class="n">expected_data_type</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</span><span data-line="127">    <span class="k">except</span> <span class="ne">AssertionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span data-line="128">        <span class="n">files_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;BinPan Exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="129">        <span class="k">raise</span> <span class="n">e</span>
+</span><span data-line="130">
+</span><span data-line="131">    <span class="n">symbol</span> <span class="o">=</span> <span class="n">filename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+</span><span data-line="132">
+</span><span data-line="133">    <span class="k">if</span> <span class="n">expected_data_type</span> <span class="o">==</span> <span class="s1">&#39;klines&#39;</span><span class="p">:</span>
+</span><span data-line="134">        <span class="n">tick_interval</span> <span class="o">=</span> <span class="n">filename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+</span><span data-line="135">        <span class="n">time_zone</span> <span class="o">=</span> <span class="n">filename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">)</span>
+</span><span data-line="136">    <span class="k">else</span><span class="p">:</span>
+</span><span data-line="137">        <span class="n">tick_interval</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="138">        <span class="n">time_zone</span> <span class="o">=</span> <span class="n">filename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">)</span>
+</span><span data-line="139">
+</span><span data-line="140">    <span class="c1"># comments can go before timezone</span>
+</span><span data-line="141">    <span class="n">data_type</span> <span class="o">=</span> <span class="n">filename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
+</span><span data-line="142">    <span class="n">start_timestamp</span> <span class="o">=</span> <span class="n">filename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+</span><span data-line="143">    <span class="n">end_timestamp</span> <span class="o">=</span> <span class="n">filename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+</span><span data-line="144">
+</span><span data-line="145">    <span class="k">if</span> <span class="n">expected_symbol</span><span class="p">:</span>
+</span><span data-line="146">        <span class="k">try</span><span class="p">:</span>
+</span><span data-line="147">            <span class="k">assert</span> <span class="n">symbol</span> <span class="o">==</span> <span class="n">expected_symbol</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Expected symbol is not valid. Expected </span><span class="si">{</span><span class="n">expected_symbol</span><span class="si">}</span><span class="s1">. Received </span><span class="si">{</span><span class="n">symbol</span><span class="si">}</span><span class="s1">&#39;</span>
+</span><span data-line="148">        <span class="k">except</span> <span class="ne">AssertionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span data-line="149">            <span class="n">files_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;BinPan Exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="150">            <span class="k">raise</span> <span class="n">e</span>
+</span><span data-line="151">    <span class="k">if</span> <span class="n">expected_interval</span><span class="p">:</span>
+</span><span data-line="152">        <span class="k">try</span><span class="p">:</span>
+</span><span data-line="153">            <span class="k">assert</span> <span class="n">tick_interval</span> <span class="o">==</span> <span class="n">expected_interval</span><span class="p">,</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Expected tick interval is not valid. Expected &#39;</span>
+</span><span data-line="154">                                                        <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">expected_interval</span><span class="si">}</span><span class="s1">. Received </span><span class="si">{</span><span class="n">tick_interval</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</span><span data-line="155">        <span class="k">except</span> <span class="ne">AssertionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span data-line="156">            <span class="n">files_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;BinPan Exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="157">            <span class="k">raise</span> <span class="n">e</span>
+</span><span data-line="158">    <span class="k">if</span> <span class="n">expected_timezone</span><span class="p">:</span>
+</span><span data-line="159">        <span class="k">try</span><span class="p">:</span>
+</span><span data-line="160">            <span class="k">assert</span> <span class="n">time_zone</span> <span class="o">==</span> <span class="n">expected_timezone</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Expected timezone is not valid. Expected </span><span class="si">{</span><span class="n">expected_timezone</span><span class="si">}</span><span class="s1">. Received </span><span class="si">{</span><span class="n">time_zone</span><span class="si">}</span><span class="s1">&#39;</span>
+</span><span data-line="161">        <span class="k">except</span> <span class="ne">AssertionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span data-line="162">            <span class="n">files_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;BinPan Exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="163">            <span class="k">raise</span> <span class="n">e</span>
+</span><span data-line="164">    <span class="k">return</span> <span class="n">symbol</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">tick_interval</span><span class="p">,</span> <span class="n">time_zone</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">start_timestamp</span><span class="p">,</span> <span class="n">end_timestamp</span></div>
+
+</span><span data-line="165">
+</span><span data-line="166">
+<div class="viewcode-block" id="read_csv_to_dataframe">
+<a class="viewcode-back" href="../../../files.html#binpan.storage.files.read_csv_to_dataframe">[docs]</a>
+</span><span data-line="167"><span class="k">def</span><span class="w"> </span><span class="nf">read_csv_to_dataframe</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">col_sep</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">index_time_zone</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="168">                          <span class="n">symbol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">secondary_index_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span data-line="169"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="170"><span class="sd">    Creates a csv file from a dataframe.</span>
+</span><span data-line="171">
+</span><span data-line="172"><span class="sd">    :param str filename: The file name with or without path.</span>
+</span><span data-line="173"><span class="sd">    :param str col_sep: Column separator. Default is &quot;,&quot;</span>
+</span><span data-line="174"><span class="sd">    :param bool index_col: Name of the column to use as index. Default is None.</span>
+</span><span data-line="175"><span class="sd">    :param str secondary_index_col: In case of duplicated index, it will be used as secondary criterio for sorting data.</span>
+</span><span data-line="176"><span class="sd">    :param str index_time_zone: Time zone to use in index. Default is None.</span>
+</span><span data-line="177"><span class="sd">    :param str symbol: Symbol to use in index name. Default is None.</span>
+</span><span data-line="178"><span class="sd">    :return pd.DataFrame: A dataframe with data in columns using file rows header.</span>
+</span><span data-line="179"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="180">    <span class="n">df_</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">filepath_or_buffer</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="n">col_sep</span><span class="p">,</span> <span class="n">skip_blank_lines</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">quoting</span><span class="o">=</span><span class="n">QUOTE_ALL</span><span class="p">)</span>
+</span><span data-line="181">    <span class="k">if</span> <span class="n">index_col</span><span class="p">:</span>
+</span><span data-line="182">        <span class="c1"># verifica si hay duplicados en el index_col</span>
+</span><span data-line="183">        <span class="k">if</span> <span class="n">df_</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">duplicated</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+</span><span data-line="184">            <span class="n">files_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;BinPan Warning: Duplicated index in </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="185">            <span class="c1"># apply sort criterion with second index</span>
+</span><span data-line="186">            <span class="k">if</span> <span class="n">secondary_index_col</span><span class="p">:</span>
+</span><span data-line="187">                <span class="n">df_</span> <span class="o">=</span> <span class="n">df_</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="n">index_col</span><span class="p">,</span> <span class="n">secondary_index_col</span><span class="p">])</span>
+</span><span data-line="188">            <span class="k">else</span><span class="p">:</span>
+</span><span data-line="189">                <span class="k">raise</span> <span class="n">BinPanException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;BinPan Exception: Duplicated index in </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2"> and no secondary index provided&quot;</span><span class="p">)</span>
+</span><span data-line="190">
+</span><span data-line="191">        <span class="n">df_</span> <span class="o">=</span> <span class="n">df_</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">index_col</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span data-line="192">
+</span><span data-line="193">        <span class="k">if</span> <span class="n">index_time_zone</span><span class="p">:</span>
+</span><span data-line="194">            <span class="n">df_</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df_</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;ms&#39;</span><span class="p">)</span>
+</span><span data-line="195">            <span class="k">if</span> <span class="ow">not</span> <span class="n">df_</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tz</span><span class="p">:</span>
+</span><span data-line="196">                <span class="n">df_</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">df_</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tz_localize</span><span class="p">(</span><span class="n">tz</span><span class="o">=</span><span class="s1">&#39;UTC&#39;</span><span class="p">)</span>
+</span><span data-line="197">                <span class="n">df_</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">df_</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tz_convert</span><span class="p">(</span><span class="n">index_time_zone</span><span class="p">)</span>
+</span><span data-line="198">            <span class="k">else</span><span class="p">:</span>
+</span><span data-line="199">                <span class="n">df_</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">df_</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tz_convert</span><span class="p">(</span><span class="n">index_time_zone</span><span class="p">)</span>
+</span><span data-line="200">            <span class="k">if</span> <span class="n">symbol</span><span class="p">:</span>
+</span><span data-line="201">                <span class="n">df_</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">symbol</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">index_time_zone</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="202">    <span class="k">return</span> <span class="n">df_</span></div>
+
+</span><span data-line="203">
+</span><span data-line="204">
+<div class="viewcode-block" id="read_file">
+<a class="viewcode-back" href="../../../files.html#binpan.storage.files.read_file">[docs]</a>
+</span><span data-line="205"><span class="k">def</span><span class="w"> </span><span class="nf">read_file</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+</span><span data-line="206"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="207"><span class="sd">    Read a file to a list of strings each line.</span>
+</span><span data-line="208">
+</span><span data-line="209"><span class="sd">    :return list: list with a string each row in the file.</span>
+</span><span data-line="210">
+</span><span data-line="211"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="212">    <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+</span><span data-line="213">        <span class="k">return</span> <span class="p">[]</span>
+</span><span data-line="214">    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span data-line="215">        <span class="n">lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+</span><span data-line="216">        <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">]</span>
+</span><span data-line="217">    <span class="k">return</span> <span class="n">lines</span></div>
+
+</span><span data-line="218">
+</span><span data-line="219">
+<div class="viewcode-block" id="save_file">
+<a class="viewcode-back" href="../../../files.html#binpan.storage.files.save_file">[docs]</a>
+</span><span data-line="220"><span class="k">def</span><span class="w"> </span><span class="nf">save_file</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="221"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="222"><span class="sd">    Save a new file from a list of lists each line.</span>
+</span><span data-line="223">
+</span><span data-line="224"><span class="sd">    :param str filename: a file name to save.</span>
+</span><span data-line="225"><span class="sd">    :param list data: Data in a list of strings each line.</span>
+</span><span data-line="226"><span class="sd">    :param str mode: &#39;w&#39; to rewrite full file or &#39;a&#39; to append to existing file.</span>
+</span><span data-line="227">
+</span><span data-line="228"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="229">    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span data-line="230">        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+</span><span data-line="231">            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+</span><span data-line="232">
+</span><span data-line="233">
+<div class="viewcode-block" id="select_file">
+<a class="viewcode-back" href="../../../files.html#binpan.storage.files.select_file">[docs]</a>
+</span><span data-line="234"><span class="k">def</span><span class="w"> </span><span class="nf">select_file</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">extension</span><span class="o">=</span><span class="s1">&#39;csv&#39;</span><span class="p">,</span> <span class="n">symbol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">tick_interval</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">name_filter</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="235"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="236"><span class="sd">    Selects from files in the path with the extension passed.</span>
+</span><span data-line="237">
+</span><span data-line="238"><span class="sd">    :param str path: Path to search files.</span>
+</span><span data-line="239"><span class="sd">    :param str extension: Extension of interesting files to select.</span>
+</span><span data-line="240"><span class="sd">    :param str symbol: Symbol to filter files just to alert if file has other symbol.</span>
+</span><span data-line="241"><span class="sd">    :param str tick_interval: Tick interval to filter files just to alert if file has other tick interval.</span>
+</span><span data-line="242"><span class="sd">    :param str name_filter: Filter to apply to files. Example: &quot;klines&quot; or &quot;aggTrades&quot; or &quot;atomicTrades&quot;.</span>
+</span><span data-line="243"><span class="sd">    :return str: a filename.</span>
+</span><span data-line="244"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="245">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;File selection menu:&quot;</span><span class="p">)</span>
+</span><span data-line="246">    <span class="n">files</span> <span class="o">=</span> <span class="n">find_csvs_in_path</span><span class="p">(</span><span class="n">files_path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">extension</span><span class="o">=</span><span class="n">extension</span><span class="p">,</span> <span class="n">name_filter</span><span class="o">=</span><span class="n">name_filter</span><span class="p">)</span>
+</span><span data-line="247">    <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">files</span> <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">extension</span><span class="o">.</span><span class="n">lower</span><span class="p">())]</span>
+</span><span data-line="248">    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">file</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">files</span><span class="p">):</span>
+</span><span data-line="249">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="250">    <span class="n">selection</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Insert file menu number: &quot;</span><span class="p">)</span>
+</span><span data-line="251">    <span class="k">if</span> <span class="n">symbol</span><span class="p">:</span>
+</span><span data-line="252">        <span class="k">if</span> <span class="n">symbol</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">files</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">selection</span><span class="p">)]:</span>
+</span><span data-line="253">            <span class="n">files_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;BinPan Warning: Selected file has not the expected symbol </span><span class="si">{</span><span class="n">symbol</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="254">    <span class="k">if</span> <span class="n">tick_interval</span><span class="p">:</span>
+</span><span data-line="255">        <span class="k">if</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">tick_interval</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">files</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">selection</span><span class="p">)]:</span>
+</span><span data-line="256">            <span class="n">files_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;BinPan Warning: Selected file has not the expected tick interval </span><span class="si">{</span><span class="n">tick_interval</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="257">    <span class="k">return</span> <span class="n">files</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">selection</span><span class="p">)]</span></div>
+
+</span><span data-line="258">
+</span><span data-line="259">
+</span><span data-line="260"><span class="c1">###################</span>
+</span><span data-line="261"><span class="c1"># API AND SECRETS #</span>
+</span><span data-line="262"><span class="c1">###################</span>
+</span><span data-line="263"><span class="c1"># All credentials are managed by panzer&#39;s CredentialManager (~/.panzer_creds).</span>
+</span><span data-line="264"><span class="c1"># BinPan implements no encryption of its own; see binpan.core.secrets.</span>
+</span><span data-line="265">
+</span><span data-line="266">
+<div class="viewcode-block" id="get_database_password">
+<a class="viewcode-back" href="../../../files.html#binpan.storage.files.get_database_password">[docs]</a>
+</span><span data-line="267"><span class="k">def</span><span class="w"> </span><span class="nf">get_database_password</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="268"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="269"><span class="sd">    Get the PostgreSQL password in plain text from panzer (encrypted on disk).</span>
+</span><span data-line="270">
+</span><span data-line="271"><span class="sd">    :return str: The PostgreSQL password.</span>
+</span><span data-line="272"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="273">    <span class="k">return</span> <span class="n">get_secret</span><span class="p">(</span><span class="s2">&quot;postgresql_password&quot;</span><span class="p">)</span></div>
+
+</span><span data-line="274">
+</span><span data-line="275">
+<div class="viewcode-block" id="add_any_key">
+<a class="viewcode-back" href="../../../files.html#binpan.storage.files.add_any_key">[docs]</a>
+</span><span data-line="276"><span class="k">def</span><span class="w"> </span><span class="nf">add_any_key</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">key_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="277"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="278"><span class="sd">    Store any credential in panzer&#39;s CredentialManager (``~/.panzer_creds``).</span>
+</span><span data-line="279">
+</span><span data-line="280"><span class="sd">    Sensitive names (containing ``secret``, ``api_key``, ``password`` or</span>
+</span><span data-line="281"><span class="sd">    ``_id``) are encrypted automatically; the rest are stored as plain text.</span>
+</span><span data-line="282">
+</span><span data-line="283"><span class="sd">    Example to add a database password:</span>
+</span><span data-line="284">
+</span><span data-line="285"><span class="sd">        .. code-block:: python</span>
+</span><span data-line="286">
+</span><span data-line="287"><span class="sd">            from binpan.storage.files import add_any_key</span>
+</span><span data-line="288">
+</span><span data-line="289"><span class="sd">            add_any_key(key=&quot;xxxxxxxxxx&quot;, key_name=&quot;postgresql_password&quot;)</span>
+</span><span data-line="290">
+</span><span data-line="291"><span class="sd">    :param str key: Any API key, token or password value.</span>
+</span><span data-line="292"><span class="sd">    :param str key_name: Name to store and later retrieve it by.</span>
+</span><span data-line="293"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="294">    <span class="n">set_secret</span><span class="p">(</span><span class="n">key_name</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span></div>
+
+</span></pre></div>
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2022, Fernando Alfonso</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+<a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+  <iconify-icon icon="simple-icons:github"></iconify-icon>
+</a></div>
+    </div>
+  </div>
+</footer>
+      <script src="../../../_static/documentation_options.js?v=11e62b30"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/shibuya.js?v=50760d75"></script></body>
+</html>

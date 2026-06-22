@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="iris" data-content_root="./">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Symbol Plotting - BinPan 0.10.2</title><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Symbol Strategy" href="symbol_strategy.html" /><link rel="prev" title="Symbol Indicators" href="symbol_indicators.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="_static/pygments.css?v=e1a1ceaf" />
+    <link rel="stylesheet" type="text/css" href="_static/shibuya.css?v=9454f7d5" />
+    <link rel="stylesheet" type="text/css" href="_static/style.css?v=1e48dca6" />
+    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/><meta property="og:title" content="Symbol Plotting"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="index.html">
+      
+      
+      <strong>BinPan</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Main Classes:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="binpan.html">BinPan Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="symbol_indicators.html">Symbol Indicators</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Symbol Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="symbol_strategy.html">Symbol Strategy</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">API &amp; Market:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exchange.html">Exchange Info Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="auth.html">Authentication Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wallet_api.html">Wallet API Functions</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Analysis:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="indicators.html">Indicators Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aggregations.html">Aggregations Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tags.html">Tags &amp; Backtesting Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stat_tests.html">Statistical Tests and Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_tools.html">Numba Tools Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Core:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="time_helper.html">Time Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timeframes.html">Timeframes Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trades.html">Trades Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="standards.html">Standards Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="secrets.html">Secrets Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logs.html">Logs Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Plotting:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Storage &amp; Database:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="files.html">Files Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postgresql.html">PostgreSQL Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postgresql_database.html">PostgreSQL Database Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="influx_manager.html">Influx Manager Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting"><code class="docutils literal notranslate"><span class="pre">SymbolPlotting</span></code></a><ul>
+<li><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.set_plot_row"><code class="docutils literal notranslate">set_plot_row()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.set_plot_color"><code class="docutils literal notranslate">set_plot_color()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.set_plot_color_fill"><code class="docutils literal notranslate">set_plot_color_fill()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.set_plot_filled_mode"><code class="docutils literal notranslate">set_plot_filled_mode()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.set_plot_axis_group"><code class="docutils literal notranslate">set_plot_axis_group()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.set_plot_splitted_serie_couple"><code class="docutils literal notranslate">set_plot_splitted_serie_couple()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.remove_plot_info_associated_columns"><code class="docutils literal notranslate">remove_plot_info_associated_columns()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.remove_plot_info_for_column"><code class="docutils literal notranslate">remove_plot_info_for_column()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.plot"><code class="docutils literal notranslate">plot()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.plot_agg_trades_size"><code class="docutils literal notranslate">plot_agg_trades_size()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.plot_atomic_trades_size"><code class="docutils literal notranslate">plot_atomic_trades_size()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.plot_reversal"><code class="docutils literal notranslate">plot_reversal()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.set_plotting_volume_ma"><code class="docutils literal notranslate">set_plotting_volume_ma()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.plot_trades_pie"><code class="docutils literal notranslate">plot_trades_pie()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.plot_aggression_sizes"><code class="docutils literal notranslate">plot_aggression_sizes()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.plot_market_profile"><code class="docutils literal notranslate">plot_market_profile()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.plot_volume_profile"><code class="docutils literal notranslate">plot_volume_profile()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.plot_trades_scatter"><code class="docutils literal notranslate">plot_trades_scatter()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.plot_orderbook"><code class="docutils literal notranslate">plot_orderbook()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.plot_orderbook_density"><code class="docutils literal notranslate">plot_orderbook_density()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.plot_taker_maker_ratio_profile"><code class="docutils literal notranslate">plot_taker_maker_ratio_profile()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="index.html"><span itemprop="name">BinPan</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">Symbol Plotting</strong>
+        <meta itemprop="position" content="2" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue" role="main">
+          <section id="symbol-plotting">
+<h1>Symbol Plotting<a class="headerlink" href="#symbol-plotting" title="Link to this heading">¶</a></h1>
+<p>Plotting methods mixed into the <code class="docutils literal notranslate"><span class="pre">Symbol</span></code> class: candlestick charts, trade visualizations,
+order book plots, market profile, and more.</p>
+<p id="module-binpan.symbol_plotting">Plotting methods for Symbol class.</p>
+<p><strong>Classes:</strong></p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting" title="binpan.symbol_plotting.SymbolPlotting"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SymbolPlotting</span></code></a>()</p></td>
+<td><p>Plotting methods for Symbol.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="binpan.symbol_plotting.SymbolPlotting">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">SymbolPlotting</span></span><a class="reference internal" href="_modules/binpan/symbol_plotting.html#SymbolPlotting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.symbol_plotting.SymbolPlotting" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Plotting methods for Symbol.</p>
+<p><strong>Methods:</strong></p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.set_plot_row" title="binpan.symbol_plotting.SymbolPlotting.set_plot_row"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_row</span></code></a>([indicator_column, row_position])</p></td>
+<td><p>Internal control formatting plots.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.set_plot_color" title="binpan.symbol_plotting.SymbolPlotting.set_plot_color"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_color</span></code></a>([indicator_column, color])</p></td>
+<td><p>Internal control formatting plots.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.set_plot_color_fill" title="binpan.symbol_plotting.SymbolPlotting.set_plot_color_fill"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_color_fill</span></code></a>([indicator_column, ...])</p></td>
+<td><p>Internal control formatting plots.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.set_plot_filled_mode" title="binpan.symbol_plotting.SymbolPlotting.set_plot_filled_mode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_filled_mode</span></code></a>([indicator_column, ...])</p></td>
+<td><p>Internal control formatting plots.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.set_plot_axis_group" title="binpan.symbol_plotting.SymbolPlotting.set_plot_axis_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_axis_group</span></code></a>([indicator_column, ...])</p></td>
+<td><p>Internal control formatting plots.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.set_plot_splitted_serie_couple" title="binpan.symbol_plotting.SymbolPlotting.set_plot_splitted_serie_couple"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_splitted_serie_couple</span></code></a>([...])</p></td>
+<td><p>Modify the control for splitted series in plots with colored area in two colors by relative position.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.remove_plot_info_associated_columns" title="binpan.symbol_plotting.SymbolPlotting.remove_plot_info_associated_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_plot_info_associated_columns</span></code></a>(columns, ...)</p></td>
+<td><p>Completely remove plot info for a column in main dataframe of klines.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.remove_plot_info_for_column" title="binpan.symbol_plotting.SymbolPlotting.remove_plot_info_for_column"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_plot_info_for_column</span></code></a>(column)</p></td>
+<td><p>Remove plot info for a column in main dataframe of klines.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.plot" title="binpan.symbol_plotting.SymbolPlotting.plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code></a>([width, height, ...])</p></td>
+<td><p>Plots a candles figure for the object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.plot_agg_trades_size" title="binpan.symbol_plotting.SymbolPlotting.plot_agg_trades_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_agg_trades_size</span></code></a>([max_size, height, ...])</p></td>
+<td><p>It plots a time series graph plotting aggregated trades sized by quantity and color if taker or maker buyer.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.plot_atomic_trades_size" title="binpan.symbol_plotting.SymbolPlotting.plot_atomic_trades_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_atomic_trades_size</span></code></a>([max_size, height, ...])</p></td>
+<td><p>It plots a time series graph plotting atomic trades sized by quantity and color if taker or maker buyer.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.plot_reversal" title="binpan.symbol_plotting.SymbolPlotting.plot_reversal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_reversal</span></code></a>([min_height, min_reversal, ...])</p></td>
+<td><p>Plots reversal candles.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.set_plotting_volume_ma" title="binpan.symbol_plotting.SymbolPlotting.set_plotting_volume_ma"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plotting_volume_ma</span></code></a>([window])</p></td>
+<td><p>Set a window for plotting volume moving average on the candles plot when volumen bars are plotted.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.plot_trades_pie" title="binpan.symbol_plotting.SymbolPlotting.plot_trades_pie"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_trades_pie</span></code></a>([categories, logarithmic, title])</p></td>
+<td><p>Plots a pie chart.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.plot_aggression_sizes" title="binpan.symbol_plotting.SymbolPlotting.plot_aggression_sizes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_aggression_sizes</span></code></a>([bins, hist_funct, ...])</p></td>
+<td><p>Binance fees can be cheaper for maker orders, many times when big traders, like whales, are operating .</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.plot_market_profile" title="binpan.symbol_plotting.SymbolPlotting.plot_market_profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_market_profile</span></code></a>([bins, hours, minutes, ...])</p></td>
+<td><p>Plots volume histogram by prices segregated aggressive buyers from sellers.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.plot_volume_profile" title="binpan.symbol_plotting.SymbolPlotting.plot_volume_profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_volume_profile</span></code></a>([bins, value_area_pct, ...])</p></td>
+<td><p>Volume Profile (VPVR): velas + histograma horizontal de volumen, con POC y Value Area.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.plot_trades_scatter" title="binpan.symbol_plotting.SymbolPlotting.plot_trades_scatter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_trades_scatter</span></code></a>([x, y, dot_symbol, ...])</p></td>
+<td><p>A scatter plot showing each price level volume or trades.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.plot_orderbook" title="binpan.symbol_plotting.SymbolPlotting.plot_orderbook"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_orderbook</span></code></a>([accumulated, title, height, ...])</p></td>
+<td><p>Plots orderbook depth.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.plot_orderbook_density" title="binpan.symbol_plotting.SymbolPlotting.plot_orderbook_density"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_orderbook_density</span></code></a>([x_col, color, bins, ...])</p></td>
+<td><p>Plot a distribution plot for a dataframe column.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.symbol_plotting.SymbolPlotting.plot_taker_maker_ratio_profile" title="binpan.symbol_plotting.SymbolPlotting.plot_taker_maker_ratio_profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_taker_maker_ratio_profile</span></code></a>([bins, ...])</p></td>
+<td><p>Plots taker vs maker ratio profile.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.symbol_plotting.SymbolPlotting.set_plot_row">
+<span class="sig-name descname"><span class="pre">set_plot_row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indicator_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row_position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="_modules/binpan/symbol_plotting.html#SymbolPlotting.set_plot_row"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.symbol_plotting.SymbolPlotting.set_plot_row" title="Link to this definition">¶</a></dt>
+<dd><p>Internal control formatting plots. Can be used to change plot subplot row of an indicator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>indicator_column</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – column name</p></li>
+<li><p><strong>row_position</strong> – reassign row_position to column name</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
+<dd class="field-even"><p>columns with its assigned row_position in subplots when charts.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.symbol_plotting.SymbolPlotting.set_plot_color">
+<span class="sig-name descname"><span class="pre">set_plot_color</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indicator_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="_modules/binpan/symbol_plotting.html#SymbolPlotting.set_plot_color"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.symbol_plotting.SymbolPlotting.set_plot_color" title="Link to this definition">¶</a></dt>
+<dd><p>Internal control formatting plots. Can be used to change plot color of an indicator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>indicator_column</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – column name</p></li>
+<li><p><strong>color</strong> – reassign color to column name</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
+<dd class="field-even"><p>columns with its assigned colors when charts.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.symbol_plotting.SymbolPlotting.set_plot_color_fill">
+<span class="sig-name descname"><span class="pre">set_plot_color_fill</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indicator_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_fill</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="_modules/binpan/symbol_plotting.html#SymbolPlotting.set_plot_color_fill"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.symbol_plotting.SymbolPlotting.set_plot_color_fill" title="Link to this definition">¶</a></dt>
+<dd><p>Internal control formatting plots. Can be used to change plot color of an indicator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>indicator_column</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – column name</p></li>
+<li><p><strong>color_fill</strong> – Color can be forced to fill to zero line. For transparent colors use rgba string code to define color.
+Example for transparent green ‘rgba(26,150,65,0.5)’ or transparent red ‘rgba(204,0,0,0.5)’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
+<dd class="field-even"><p>columns with its assigned colors when charts.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.symbol_plotting.SymbolPlotting.set_plot_filled_mode">
+<span class="sig-name descname"><span class="pre">set_plot_filled_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indicator_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="_modules/binpan/symbol_plotting.html#SymbolPlotting.set_plot_filled_mode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.symbol_plotting.SymbolPlotting.set_plot_filled_mode" title="Link to this definition">¶</a></dt>
+<dd><p>Internal control formatting plots. Can be used to change plot filling mode for pairs of indicators when.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>indicator_column</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – column name</p></li>
+<li><p><strong>fill_mode</strong> – Fill mode for indicator. Color can be forced to fill to zero line with “tozeroy” or between two indicators in same
+axis group with “tonexty”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
+<dd class="field-even"><p>columns with its assigned fill mode.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.symbol_plotting.SymbolPlotting.set_plot_axis_group">
+<span class="sig-name descname"><span class="pre">set_plot_axis_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indicator_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">my_axis_group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="_modules/binpan/symbol_plotting.html#SymbolPlotting.set_plot_axis_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.symbol_plotting.SymbolPlotting.set_plot_axis_group" title="Link to this definition">¶</a></dt>
+<dd><p>Internal control formatting plots. Can be used to change plot filling mode for pairs of indicators when.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>indicator_column</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – column name</p></li>
+<li><p><strong>my_axis_group</strong> – Fill mode for indicator. Color can be forced to fill to zero line with “tozeroy” or between two indicators
+in same axis group with “tonexty”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
+<dd class="field-even"><p>columns with its assigned fill mode.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.symbol_plotting.SymbolPlotting.set_plot_splitted_serie_couple">
+<span class="sig-name descname"><span class="pre">set_plot_splitted_serie_couple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indicator_column_up</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indicator_column_down</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">splitted_dfs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_up</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'rgba(35,</span> <span class="pre">152,</span> <span class="pre">33,</span> <span class="pre">0.5)'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_down</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'rgba(245,</span> <span class="pre">63,</span> <span class="pre">39,</span> <span class="pre">0.5)'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="_modules/binpan/symbol_plotting.html#SymbolPlotting.set_plot_splitted_serie_couple"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.symbol_plotting.SymbolPlotting.set_plot_splitted_serie_couple" title="Link to this definition">¶</a></dt>
+<dd><p>Modify the control for splitted series in plots with colored area in two colors by relative position.</p>
+<p>If no params passed, then returns dict actual contents.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>indicator_column_up</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – An existing column from a BinPan Symbol’s class dataframe to plot as up serie (green color).</p></li>
+<li><p><strong>indicator_column_down</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – An existing column from a BinPan Symbol’s class dataframe to plot as down serie (red clor).</p></li>
+<li><p><strong>splitted_dfs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a>) – A list of pairs of a splitted dataframe by two columns.</p></li>
+<li><p><strong>color_up</strong> – An rgba formatted color: <a class="reference external" href="https://rgbacolorpicker.com/">https://rgbacolorpicker.com/</a></p></li>
+<li><p><strong>color_down</strong> – An rgba formatted color: <a class="reference external" href="https://rgbacolorpicker.com/">https://rgbacolorpicker.com/</a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary with auxiliar data about plot areas with two colours by relative position.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.symbol_plotting.SymbolPlotting.remove_plot_info_associated_columns">
+<span class="sig-name descname"><span class="pre">remove_plot_info_associated_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">row_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span></span><a class="reference internal" href="_modules/binpan/symbol_plotting.html#SymbolPlotting.remove_plot_info_associated_columns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.symbol_plotting.SymbolPlotting.remove_plot_info_associated_columns" title="Link to this definition">¶</a></dt>
+<dd><p>Completely remove plot info for a column in main dataframe of klines.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>columns</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – List of columns to be deleted.</p></li>
+<li><p><strong>row_level</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Position of columns to be deleted for a row.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.symbol_plotting.SymbolPlotting.remove_plot_info_for_column">
+<span class="sig-name descname"><span class="pre">remove_plot_info_for_column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/binpan/symbol_plotting.html#SymbolPlotting.remove_plot_info_for_column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.symbol_plotting.SymbolPlotting.remove_plot_info_for_column" title="Link to this definition">¶</a></dt>
+<dd><p>Remove plot info for a column in main dataframe of klines.
+:param column:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.symbol_plotting.SymbolPlotting.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1800</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">candles_ta_height_ratio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.75</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yaxis_title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Price'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlapped_indicators</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priced_actions_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Close'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actions_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker_labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker_colors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priced_markers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">background_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zoom_start_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zoom_end_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">support_lines</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">support_lines_color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'darkblue'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resistance_lines</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resistance_lines_color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'darkred'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_radio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/binpan/symbol_plotting.html#SymbolPlotting.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.symbol_plotting.SymbolPlotting.plot" title="Link to this definition">¶</a></dt>
+<dd><p>Plots a candles figure for the object.</p>
+<p>Also plots any other technical indicator grabbed.</p>
+<a class="reference internal image-reference" href="_images/candles.png"><img alt="Candles with some indicators" src="_images/candles.png" width="1000" />
+</a>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>width</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Width of the plot.</p></li>
+<li><p><strong>height</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Height of the plot.</p></li>
+<li><p><strong>candles_ta_height_ratio</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Proportion between candles and the other indicators. Not considering overlap ones
+in the candles plot.</p></li>
+<li><p><strong>volume</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Plots volume.</p></li>
+<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A tittle for the plot.</p></li>
+<li><p><strong>yaxis_title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A title for the y axis.</p></li>
+<li><p><strong>overlapped_indicators</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – Can declare as overlap in the candles plot some column.</p></li>
+<li><p><strong>priced_actions_col</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Priced actions to plot annotations over the candles, like buy, sell, etc. Under developing.</p></li>
+<li><p><strong>actions_col</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A column containing actions like buy or sell. Under developing.</p></li>
+<li><p><strong>marker_labels</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – Names for the annotations instead of the price. For ‘buy’ tags and ‘sell’ tags.
+Default is {‘buy’: 1, ‘sell’: -1}</p></li>
+<li><p><strong>markers</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – Plotly marker type. Usually, if referenced by number will be a not filled mark and using string name will be
+a color filled one. Check plotly info: <a class="reference external" href="https://plotly.com/python/marker-style/">https://plotly.com/python/marker-style/</a></p></li>
+<li><p><strong>marker_colors</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – Colors of the annotations.</p></li>
+<li><p><strong>priced_markers</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – Explicit operation markers to overlay on exact points: a list of
+dicts <code class="docutils literal notranslate"><span class="pre">{'time',</span> <span class="pre">'price',</span> <span class="pre">'side',</span> <span class="pre">'label'?}</span></code>. <code class="docutils literal notranslate"><span class="pre">side</span></code> ‘buy’ draws a green ▲ (label below),
+otherwise a red ▼ (label above). <code class="docutils literal notranslate"><span class="pre">time</span></code> is a positional candle index (int) or a timestamp
+(snapped to the nearest candle); <code class="docutils literal notranslate"><span class="pre">price</span></code> is the exact y level. Compatible with
+support/resistance lines and action columns (they overlay together).</p></li>
+<li><p><strong>background_color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Sets background color. Select a valid plotly color name.</p></li>
+<li><p><strong>zoom_start_idx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – It can zoom to an index interval.</p></li>
+<li><p><strong>zoom_end_idx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – It can zoom to an index interval.</p></li>
+<li><p><strong>support_lines</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – A list of prices to plot horizontal lines in the candles plot for supports or any other level.</p></li>
+<li><p><strong>support_lines_color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A color for horizontal lines, ‘darkblue’ is by default.</p></li>
+<li><p><strong>resistance_lines</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – A list of prices to plot horizontal lines in the candles plot for resistances or any other level.</p></li>
+<li><p><strong>resistance_lines_color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A color for horizontal lines, ‘darkred’ is by default.</p></li>
+<li><p><strong>date</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A date in string format to plot a zoom of a radio of klines up and down in time. Useful to inspect dates.
+Incompatible with zoom_start_idx and zoom_end_idx. Strings formatted as “2022-05-11 06:45:42”</p></li>
+<li><p><strong>date_radio</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A radio in klines to plot a zoom around a date.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.symbol_plotting.SymbolPlotting.plot_agg_trades_size">
+<span class="sig-name descname"><span class="pre">plot_agg_trades_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">60</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logarithmic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap_prices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_big_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shifted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Quantity'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">horizontal_lines</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/binpan/symbol_plotting.html#SymbolPlotting.plot_agg_trades_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.symbol_plotting.SymbolPlotting.plot_agg_trades_size" title="Link to this definition">¶</a></dt>
+<dd><p>It plots a time series graph plotting aggregated trades sized by quantity and color if taker or maker buyer.</p>
+<a class="reference internal image-reference" href="_images/plot_trades_size.png"><img alt="Candles with some indicators" src="_images/plot_trades_size.png" width="1000" />
+</a>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>max_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Max size for the markers. Default is 60. Useful to show whales operating.</p></li>
+<li><p><strong>height</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Default is 1000.</p></li>
+<li><p><strong>logarithmic</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – If logarithmic, then “y” axis scale is shown in logarithmic scale.</p></li>
+<li><p><strong>group_big_data</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Deprecated, ignored. Kept for backward compatibility.</p></li>
+<li><p><strong>shifted</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – If True, shifts prices to plot klines one step to the right, that’s more natural to see trades action in price.</p></li>
+<li><p><strong>overlap_prices</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – If True, plots overlap line with High and Low prices.</p></li>
+<li><p><strong>title</strong> – Graph title.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.symbol_plotting.SymbolPlotting.plot_atomic_trades_size">
+<span class="sig-name descname"><span class="pre">plot_atomic_trades_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">60</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logarithmic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap_prices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_big_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shifted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Quantity'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">horizontal_lines</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/binpan/symbol_plotting.html#SymbolPlotting.plot_atomic_trades_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.symbol_plotting.SymbolPlotting.plot_atomic_trades_size" title="Link to this definition">¶</a></dt>
+<dd><p>It plots a time series graph plotting atomic trades sized by quantity and color if taker or maker buyer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>max_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Max size for the markers. Default is 60. Useful to show whales operating.</p></li>
+<li><p><strong>height</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Default is 1000.</p></li>
+<li><p><strong>logarithmic</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – If logarithmic, then “y” axis scale is shown in logarithmic scale.</p></li>
+<li><p><strong>group_big_data</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Deprecated, ignored. Kept for backward compatibility.</p></li>
+<li><p><strong>shifted</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – If True, shifts prices to plot klines one step to the right, that’s more natural to see trades action in price.</p></li>
+<li><p><strong>overlap_prices</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – If True, plots overlap line with High and Low prices.</p></li>
+<li><p><strong>title</strong> – Graph title.</p></li>
+</ul>
+</dd>
+</dl>
+<a class="reference internal image-reference" href="_images/plot_trades_size_log.png"><img alt="Atomic trades size bubble chart" src="_images/plot_trades_size_log.png" width="800" />
+</a>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.symbol_plotting.SymbolPlotting.plot_reversal">
+<span class="sig-name descname"><span class="pre">plot_reversal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_reversal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_atomic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/binpan/symbol_plotting.html#SymbolPlotting.plot_reversal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.symbol_plotting.SymbolPlotting.plot_reversal" title="Link to this definition">¶</a></dt>
+<dd><p>Plots reversal candles. It requires aggregated or atomic trades fetched previously.</p>
+<p>BinPan manages aggregated trades from binance API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>min_height</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – It defaults to previous set. Can be reset when charts.</p></li>
+<li><p><strong>min_reversal</strong> – It defaults to previous set. Can be reset when charts.</p></li>
+<li><p><strong>text_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – If True, plots klines equally spaced. This allows to plot volume.</p></li>
+<li><p><strong>from_atomic</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – If True, klines are obtained from atomic trades.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+<p>Example:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">import</span><span class="w"> </span><span class="nn">binpan</span>
+</span><span data-line="2">
+</span><span data-line="3"> <span class="n">ltc</span> <span class="o">=</span> <span class="n">binpan</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;ltcbtc&#39;</span><span class="p">,</span>
+</span><span data-line="4">                     <span class="n">tick_interval</span><span class="o">=</span><span class="s1">&#39;5m&#39;</span><span class="p">,</span>
+</span><span data-line="5">                     <span class="n">time_zone</span> <span class="o">=</span> <span class="s1">&#39;Europe/Madrid&#39;</span><span class="p">,</span>
+</span><span data-line="6">                     <span class="n">time_index</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="7">                     <span class="n">closed</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="8">                     <span class="n">hours</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</span><span data-line="9"><span class="n">ltc</span><span class="o">.</span><span class="n">get_trades</span><span class="p">()</span>
+</span><span data-line="10"><span class="n">ltc</span><span class="o">.</span><span class="n">get_reversal_candles</span><span class="p">()</span>
+</span><span data-line="11"><span class="n">ltc</span><span class="o">.</span><span class="n">plot_reversal</span><span class="p">()</span>
+</span></pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/reversal.png"><img alt="_images/reversal.png" src="_images/reversal.png" width="1000" />
+</a>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.symbol_plotting.SymbolPlotting.set_plotting_volume_ma">
+<span class="sig-name descname"><span class="pre">set_plotting_volume_ma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">21</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/binpan/symbol_plotting.html#SymbolPlotting.set_plotting_volume_ma"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.symbol_plotting.SymbolPlotting.set_plotting_volume_ma" title="Link to this definition">¶</a></dt>
+<dd><p>Set a window for plotting volume moving average on the candles plot when volumen bars are plotted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>window</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – A window for the moving average.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.symbol_plotting.SymbolPlotting.plot_trades_pie">
+<span class="sig-name descname"><span class="pre">plot_trades_pie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">categories</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logarithmic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/binpan/symbol_plotting.html#SymbolPlotting.plot_trades_pie"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.symbol_plotting.SymbolPlotting.plot_trades_pie" title="Link to this definition">¶</a></dt>
+<dd><p>Plots a pie chart. Useful profiling size of trades. Size can be distributed in a logarithmic scale.</p>
+<a class="reference internal image-reference" href="_images/plot_trades_pie.png"><img alt="Candles with some indicators" src="_images/plot_trades_pie.png" width="1000" />
+</a>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>categories</strong> – How many groups of sizes.</p></li>
+<li><p><strong>logarithmic</strong> – Logarithmic scale to show more small sizes.</p></li>
+<li><p><strong>title</strong> – A title for the plot.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.symbol_plotting.SymbolPlotting.plot_aggression_sizes">
+<span class="sig-name descname"><span class="pre">plot_aggression_sizes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hist_funct</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sum'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">900</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_trades</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_volume_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partial_vol_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs_update_layout</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/binpan/symbol_plotting.html#SymbolPlotting.plot_aggression_sizes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.symbol_plotting.SymbolPlotting.plot_aggression_sizes" title="Link to this definition">¶</a></dt>
+<dd><p>Binance fees can be cheaper for maker orders, many times when big traders, like whales, are operating . Showing what are doing
+makers.</p>
+<p>It shows which kind of volume or trades came from, aggressive_sellers or aggressive_byers.</p>
+<p>Can be useful finding support and resistance zones.</p>
+<a class="reference internal image-reference" href="_images/makers_vs_takers_plot.png"><img alt="Candles with some indicators" src="_images/makers_vs_takers_plot.png" width="1000" />
+</a>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bins</strong> – How many bars.</p></li>
+<li><p><strong>hist_funct</strong> – The way graph data is showed. It can be ‘mean’, ‘sum’, ‘percent’, ‘probability’, ‘density’, or ‘probability
+density’</p></li>
+<li><p><strong>height</strong> – Height of the graph.</p></li>
+<li><p><strong>from_trades</strong> – Requieres grabbing trades before.</p></li>
+<li><p><strong>title</strong> – A title.</p></li>
+<li><p><strong>total_volume_column</strong> – The column with the total volume. It defaults automatically.</p></li>
+<li><p><strong>partial_vol_column</strong> – The column with the partial volume. It defaults automatically. API shows maker or taker separated
+volumes.</p></li>
+<li><p><strong>kwargs_update_layout</strong> – Optional</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.symbol_plotting.SymbolPlotting.plot_market_profile">
+<span class="sig-name descname"><span class="pre">plot_market_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hours</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minutes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">900</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_agg_trades</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_atomic_trades</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs_update_layout</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/binpan/symbol_plotting.html#SymbolPlotting.plot_market_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.symbol_plotting.SymbolPlotting.plot_market_profile" title="Link to this definition">¶</a></dt>
+<dd><p>Plots volume histogram by prices segregated aggressive buyers from sellers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – How many bars.</p></li>
+<li><p><strong>hours</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – If passed, it use just last passed hours for the plot.</p></li>
+<li><p><strong>minutes</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – If passed, it use just last passed minutes for the plot.</p></li>
+<li><p><strong>startTime</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – If passed, it use just from the timestamp or date in format
+(%Y-%m-%d %H:%M:%S: <strong>2022-05-11 06:45:42</strong>)) for the plot.</p></li>
+<li><p><strong>endTime</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – If passed, it use just until the timestamp or date in format
+(%Y-%m-%d %H:%M:%S: <strong>2022-05-11 06:45:42</strong>)) for the plot.</p></li>
+<li><p><strong>height</strong> – Height of the graph.</p></li>
+<li><p><strong>from_agg_trades</strong> – Requieres grabbing aggregated trades before.</p></li>
+<li><p><strong>from_atomic_trades</strong> – Requieres grabbing atomic trades before.</p></li>
+<li><p><strong>title</strong> – A title.</p></li>
+<li><p><strong>time_zone</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A time zone for time index conversion. Example: “Europe/Madrid”</p></li>
+<li><p><strong>kwargs_update_layout</strong> – Optional</p></li>
+</ul>
+</dd>
+</dl>
+<a class="reference internal image-reference" href="_images/market_profile.png"><img alt="_images/market_profile.png" src="_images/market_profile.png" width="1000" />
+</a>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.symbol_plotting.SymbolPlotting.plot_volume_profile">
+<span class="sig-name descname"><span class="pre">plot_volume_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value_area_pct</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_agg_trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_atomic_trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hours</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minutes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">900</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">horizontal_lines</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priced_markers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/binpan/symbol_plotting.html#SymbolPlotting.plot_volume_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.symbol_plotting.SymbolPlotting.plot_volume_profile" title="Link to this definition">¶</a></dt>
+<dd><p>Volume Profile (VPVR): velas + histograma horizontal de volumen, con POC y Value Area.</p>
+<p>Dibuja las velas a la izquierda y, compartiendo el eje de precio, un histograma horizontal del
+volumen por nivel a la derecha. Resalta la Value Area, traza el POC y marca los LVN (huecos por
+donde el precio viaja rapido). Util para ver imanes y soportes/resistencias por aceptacion. Los
+numeros (POC/VAH/VAL/HVN/LVN) se obtienen con <code class="xref py py-meth docutils literal notranslate"><span class="pre">volume_profile()</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – numero de niveles del histograma. Default 50.</p></li>
+<li><p><strong>value_area_pct</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – fraccion del volumen dentro de la Value Area. Default 0.70.</p></li>
+<li><p><strong>from_agg_trades</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – perfil fino desde aggregated trades (requiere <code class="docutils literal notranslate"><span class="pre">get_agg_trades()</span></code> antes).</p></li>
+<li><p><strong>from_atomic_trades</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – perfil desde atomic trades (requiere <code class="docutils literal notranslate"><span class="pre">get_atomic_trades()</span></code> antes).</p></li>
+<li><p><strong>hours</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – si se pasa, solo las ultimas ‘hours’ horas.</p></li>
+<li><p><strong>minutes</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – si se pasa, solo los ultimos ‘minutes’ minutos.</p></li>
+<li><p><strong>startTime</strong> – timestamp/fecha de inicio (rango fijo).</p></li>
+<li><p><strong>endTime</strong> – timestamp/fecha de fin (rango fijo).</p></li>
+<li><p><strong>time_zone</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – zona horaria para el indice temporal.</p></li>
+<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – titulo del grafico.</p></li>
+<li><p><strong>height</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – alto px. Default 900.</p></li>
+<li><p><strong>width</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – ancho px. Si None, autosize.</p></li>
+<li><p><strong>horizontal_lines</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – precios extra (entrada/stop/TP) como lineas discontinuas.</p></li>
+<li><p><strong>priced_markers</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – marcadores de operacion (▲ compra / ▼ venta) en puntos exactos sobre
+las velas: lista de <code class="docutils literal notranslate"><span class="pre">{'time',</span> <span class="pre">'price',</span> <span class="pre">'side',</span> <span class="pre">'label'?}</span></code> (ver <code class="docutils literal notranslate"><span class="pre">set_price_markers</span></code>).</p></li>
+<li><p><strong>show</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – si True (default) abre la figura interactiva; False para uso headless/servidor.</p></li>
+<li><p><strong>image_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – ruta del PNG de salida. Por defecto <code class="docutils literal notranslate"><span class="pre">last_plot.png</span></code> en el cwd.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>ruta absoluta de la imagen exportada, o None si falla.</p>
+</dd>
+</dl>
+<a class="reference internal image-reference" href="_images/volume_profile.png"><img alt="Volume Profile con POC y Value Area" src="_images/volume_profile.png" width="1000" />
+</a>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.symbol_plotting.SymbolPlotting.plot_trades_scatter">
+<span class="sig-name descname"><span class="pre">plot_trades_scatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dot_symbol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Buyer</span> <span class="pre">was</span> <span class="pre">maker'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marginal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_trades</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_referenced_to_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/binpan/symbol_plotting.html#SymbolPlotting.plot_trades_scatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.symbol_plotting.SymbolPlotting.plot_trades_scatter" title="Link to this definition">¶</a></dt>
+<dd><p>A scatter plot showing each price level volume or trades.</p>
+<p>It can be useful finding support and resistance zones.</p>
+<a class="reference internal image-reference" href="_images/plot_trades_scatter.png"><img alt="Candles with some indicators" src="_images/plot_trades_scatter.png" width="1000" />
+</a>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dot_symbol</strong> – Column with discrete values to assign different symbols for the plot marks.</p></li>
+<li><p><strong>x</strong> – Name of the column with prices. From trades or candles.</p></li>
+<li><p><strong>y</strong> – Name of the column with sizes. From trades or candles.</p></li>
+<li><p><strong>color</strong> – Column with values to use in color scale.</p></li>
+<li><p><strong>marginal</strong> – Show or not lateral plots.</p></li>
+<li><p><strong>from_trades</strong> – Uses trades instead of candles. Useful to avoid grabbing very long time intervals. Result should be similar.</p></li>
+<li><p><strong>height</strong> – Height of the plot.</p></li>
+<li><p><strong>color_referenced_to_y</strong> – Scales color in y axis.</p></li>
+<li><p><strong>kwargs</strong> – Optional plotly args.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.symbol_plotting.SymbolPlotting.plot_orderbook">
+<span class="sig-name descname"><span class="pre">plot_orderbook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">accumulated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Depth</span> <span class="pre">orderbook</span> <span class="pre">plot'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">800</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Quantity'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/binpan/symbol_plotting.html#SymbolPlotting.plot_orderbook"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.symbol_plotting.SymbolPlotting.plot_orderbook" title="Link to this definition">¶</a></dt>
+<dd><p>Plots orderbook depth.</p>
+<a class="reference internal image-reference" href="_images/plot_orderbook.png"><img alt="Order book depth chart" src="_images/plot_orderbook.png" width="800" />
+</a>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.symbol_plotting.SymbolPlotting.plot_orderbook_density">
+<span class="sig-name descname"><span class="pre">plot_orderbook_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Price'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Side'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">histnorm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'density'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">800</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">update_layout_kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/binpan/symbol_plotting.html#SymbolPlotting.plot_orderbook_density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.symbol_plotting.SymbolPlotting.plot_orderbook_density" title="Link to this definition">¶</a></dt>
+<dd><p>Plot a distribution plot for a dataframe column. Plots line for kernel distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x_col</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Column name for x-axis data.</p></li>
+<li><p><strong>color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Column name with tags or any values for using as color scale.</p></li>
+<li><p><strong>bins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Columns in histogram.</p></li>
+<li><p><strong>histnorm</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – One of ‘percent’, ‘probability’, ‘density’, or ‘probability density’ from plotly express documentation.
+<a class="reference external" href="https://plotly.github.io/plotly.py-docs/generated/plotly.express.histogram.html">https://plotly.github.io/plotly.py-docs/generated/plotly.express.histogram.html</a></p></li>
+<li><p><strong>height</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Plot sizing.</p></li>
+<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A title string</p></li>
+</ul>
+</dd>
+</dl>
+<a class="reference internal image-reference" href="_images/orderbook_density.png"><img alt="Order book density plot" src="_images/orderbook_density.png" width="800" />
+</a>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.symbol_plotting.SymbolPlotting.plot_taker_maker_ratio_profile">
+<span class="sig-name descname"><span class="pre">plot_taker_maker_ratio_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hours</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minutes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_agg_trades</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_atomic_trades</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Taker</span> <span class="pre">Buy</span> <span class="pre">Ratio</span> <span class="pre">Profile'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">800</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs_update_layout</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="reference internal" href="_modules/binpan/symbol_plotting.html#SymbolPlotting.plot_taker_maker_ratio_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.symbol_plotting.SymbolPlotting.plot_taker_maker_ratio_profile" title="Link to this definition">¶</a></dt>
+<dd><p>Plots taker vs maker ratio profile.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – How many bars.</p></li>
+<li><p><strong>hours</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – If passed, it use just last passed hours for the plot.</p></li>
+<li><p><strong>minutes</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – If passed, it use just last passed minutes for the plot.</p></li>
+<li><p><strong>startTime</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – If passed, it use just from the timestamp or date in format
+(%Y-%m-%d %H:%M:%S: <strong>2022-05-11 06:45:42</strong>)) for the plot.</p></li>
+<li><p><strong>endTime</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – If passed, it use just until the timestamp or date in format
+(%Y-%m-%d %H:%M:%S: <strong>2022-05-11 06:45:42</strong>)) for the plot.</p></li>
+<li><p><strong>height</strong> – Height of the graph.</p></li>
+<li><p><strong>width</strong> – Width of the graph.</p></li>
+<li><p><strong>from_agg_trades</strong> – Requieres grabbing aggregated trades before.</p></li>
+<li><p><strong>from_atomic_trades</strong> – Requieres grabbing atomic trades before.</p></li>
+<li><p><strong>title</strong> – A title.</p></li>
+<li><p><strong>time_zone</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A time zone for time index conversion. Example: “Europe/Madrid”</p></li>
+<li><p><strong>kwargs_update_layout</strong> – Optional</p></li>
+</ul>
+</dd>
+</dl>
+<a class="reference internal image-reference" href="_images/taker_ratio_profile.png"><img alt="_images/taker_ratio_profile.png" src="_images/taker_ratio_profile.png" width="1000" />
+</a>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"><div class="navigation-prev">
+    <a href="symbol_indicators.html">
+      <i class="i-lucide chevron-left"></i>
+      <div class="page-info">
+        <span>Previous</span><div class="title">Symbol Indicators</div></div>
+    </a>
+  </div><div class="navigation-next">
+    <a href="symbol_strategy.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title">Symbol Strategy</div>
+      </div>
+      <i class="i-lucide chevron-right"></i>
+    </a>
+  </div></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2022, Fernando Alfonso</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+<a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+  <iconify-icon icon="simple-icons:github"></iconify-icon>
+</a></div>
+    </div>
+  </div>
+</footer>
+      <script src="_static/documentation_options.js?v=11e62b30"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/shibuya.js?v=50760d75"></script></body>
+</html>

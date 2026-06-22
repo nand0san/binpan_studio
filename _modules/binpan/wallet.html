@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="iris" data-content_root="../../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>binpan.wallet - BinPan 0.10.2</title><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=e1a1ceaf" />
+    <link rel="stylesheet" type="text/css" href="../../_static/shibuya.css?v=9454f7d5" />
+    <link rel="stylesheet" type="text/css" href="../../_static/style.css?v=1e48dca6" />
+    <link media="print" rel="stylesheet" type="text/css" href="../../_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/><meta property="og:title" content="binpan.wallet"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="../../index.html">
+      
+      
+      <strong>BinPan</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Main Classes:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../binpan.html">BinPan Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../symbol_indicators.html">Symbol Indicators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../symbol_plotting.html">Symbol Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../symbol_strategy.html">Symbol Strategy</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">API &amp; Market:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../market.html">Market Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exchange.html">Exchange Info Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../auth.html">Authentication Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../wallet.html">Wallet Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../wallet_api.html">Wallet API Functions</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Analysis:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../indicators.html">Indicators Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../aggregations.html">Aggregations Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../strategies.html">Strategies Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tags.html">Tags &amp; Backtesting Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stat_tests.html">Statistical Tests and Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../numba_tools.html">Numba Tools Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Core:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../time_helper.html">Time Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../timeframes.html">Timeframes Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../trades.html">Trades Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../standards.html">Standards Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../secrets.html">Secrets Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logs.html">Logs Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exceptions.html">Exceptions Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Plotting:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../plotting.html">Plotting Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Storage &amp; Database:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../files.html">Files Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../postgresql.html">PostgreSQL Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../postgresql_database.html">PostgreSQL Database Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../influx_manager.html">Influx Manager Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../redis_fetch.html">Redis Module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../index.html"><span itemprop="name">BinPan</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../index.html"><span itemprop="name">Module code</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">binpan.wallet</strong>
+        <meta itemprop="position" content="3" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue" role="main">
+          <h1>Source code for binpan.wallet</h1><div class="highlight"><pre>
+<span></span><span data-line="1"><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">.api.market</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert_coin</span>
+</span><span data-line="4"><span class="kn">from</span><span class="w"> </span><span class="nn">.api.wallet_api</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_spot_balances_df</span><span class="p">,</span> <span class="n">daily_account_snapshot</span><span class="p">,</span> <span class="n">get_margin_balances</span><span class="p">,</span> <span class="n">convert_str_date_to_ms</span>
+</span><span data-line="5">
+</span><span data-line="6">
+<div class="viewcode-block" id="Wallet">
+<a class="viewcode-back" href="../../wallet.html#binpan.Wallet">[docs]</a>
+</span><span data-line="7"><span class="k">class</span><span class="w"> </span><span class="nc">Wallet</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+</span><span data-line="8"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="9"><span class="sd">    Wallet is a BinPan Class that can give information about balances, in Spot or Margin trading.</span>
+</span><span data-line="10">
+</span><span data-line="11"><span class="sd">    Also can show snapshots of the account status days ago, or using timestamps.</span>
+</span><span data-line="12">
+</span><span data-line="13"><span class="sd">    Credentials are managed by panzer&#39;s CredentialManager (~/.panzer_creds).</span>
+</span><span data-line="14"><span class="sd">    On first use, panzer will prompt for API key and secret if not already stored.</span>
+</span><span data-line="15"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="16">
+</span><span data-line="17">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_zone</span><span class="o">=</span><span class="s1">&#39;UTC&#39;</span><span class="p">,</span> <span class="n">snapshot_days</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span><span class="p">):</span>
+</span><span data-line="18">        <span class="bp">self</span><span class="o">.</span><span class="n">time_zone</span> <span class="o">=</span> <span class="n">time_zone</span>
+</span><span data-line="19">        <span class="bp">self</span><span class="o">.</span><span class="n">spot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_spot</span><span class="p">()</span>
+</span><span data-line="20">        <span class="bp">self</span><span class="o">.</span><span class="n">spot_snapshot</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="21">        <span class="bp">self</span><span class="o">.</span><span class="n">spot_startTime</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="22">        <span class="bp">self</span><span class="o">.</span><span class="n">spot_endTime</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="23">        <span class="bp">self</span><span class="o">.</span><span class="n">spot_requested_days</span> <span class="o">=</span> <span class="n">snapshot_days</span>
+</span><span data-line="24">
+</span><span data-line="25">        <span class="bp">self</span><span class="o">.</span><span class="n">margin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_margin</span><span class="p">()</span>
+</span><span data-line="26">        <span class="bp">self</span><span class="o">.</span><span class="n">margin_snapshot</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="27">        <span class="bp">self</span><span class="o">.</span><span class="n">margin_startTime</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="28">        <span class="bp">self</span><span class="o">.</span><span class="n">margin_endTime</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="29">        <span class="bp">self</span><span class="o">.</span><span class="n">margin_requested_days</span> <span class="o">=</span> <span class="n">snapshot_days</span>
+</span><span data-line="30">
+<div class="viewcode-block" id="Wallet.update_spot">
+<a class="viewcode-back" href="../../wallet.html#binpan.Wallet.update_spot">[docs]</a>
+</span><span data-line="31">    <span class="k">def</span><span class="w"> </span><span class="nf">update_spot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">decimal_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+</span><span data-line="32"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="33"><span class="sd">        Updates balances in the class object.</span>
+</span><span data-line="34"><span class="sd">        :param bool decimal_mode: Use of decimal objects instead of float.</span>
+</span><span data-line="35"><span class="sd">        :return dict: Wallet dictionary</span>
+</span><span data-line="36"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="37">        <span class="bp">self</span><span class="o">.</span><span class="n">spot</span> <span class="o">=</span> <span class="n">get_spot_balances_df</span><span class="p">(</span><span class="n">decimal_mode</span><span class="o">=</span><span class="n">decimal_mode</span><span class="p">)</span>
+</span><span data-line="38">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">spot</span></div>
+
+</span><span data-line="39">
+<div class="viewcode-block" id="Wallet.update_spot_snapshot">
+<a class="viewcode-back" href="../../wallet.html#binpan.Wallet.update_spot_snapshot">[docs]</a>
+</span><span data-line="40">    <span class="k">def</span><span class="w"> </span><span class="nf">update_spot_snapshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">startTime</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">endTime</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">snapshot_days</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">time_zone</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span><span data-line="41"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="42"><span class="sd">        Updates spot wallet snapshot and stores it in ``self.spot_snapshot``.</span>
+</span><span data-line="43">
+</span><span data-line="44"><span class="sd">        :param int or str startTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42</span>
+</span><span data-line="45"><span class="sd">        :param int or str endTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42</span>
+</span><span data-line="46"><span class="sd">        :param int snapshot_days: Days to look if not start time or endtime passed.</span>
+</span><span data-line="47"><span class="sd">        :param str time_zone: A time zone for time index conversion. Example: &quot;Europe/Madrid&quot;</span>
+</span><span data-line="48"><span class="sd">        :return pd.DataFrame: Spot wallet snapshot for the time period requested.</span>
+</span><span data-line="49"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="50">        <span class="k">if</span> <span class="n">time_zone</span><span class="p">:</span>
+</span><span data-line="51">            <span class="bp">self</span><span class="o">.</span><span class="n">time_zone</span> <span class="o">=</span> <span class="n">time_zone</span>
+</span><span data-line="52">
+</span><span data-line="53">        <span class="bp">self</span><span class="o">.</span><span class="n">spot_startTime</span> <span class="o">=</span> <span class="n">startTime</span>
+</span><span data-line="54">        <span class="bp">self</span><span class="o">.</span><span class="n">spot_snapshot</span> <span class="o">=</span> <span class="n">daily_account_snapshot</span><span class="p">(</span><span class="n">account_type</span><span class="o">=</span><span class="s1">&#39;SPOT&#39;</span><span class="p">,</span>
+</span><span data-line="55">                                                    <span class="n">startTime</span><span class="o">=</span><span class="n">convert_str_date_to_ms</span><span class="p">(</span><span class="n">date</span><span class="o">=</span><span class="n">startTime</span><span class="p">,</span>
+</span><span data-line="56">                                                                                     <span class="n">time_zone</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">time_zone</span><span class="p">),</span>
+</span><span data-line="57">                                                    <span class="n">endTime</span><span class="o">=</span><span class="n">convert_str_date_to_ms</span><span class="p">(</span><span class="n">date</span><span class="o">=</span><span class="n">endTime</span><span class="p">,</span>
+</span><span data-line="58">                                                                                   <span class="n">time_zone</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">time_zone</span><span class="p">),</span>
+</span><span data-line="59">                                                    <span class="n">limit</span><span class="o">=</span><span class="n">snapshot_days</span><span class="p">,</span>
+</span><span data-line="60">                                                    <span class="n">time_zone</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">time_zone</span><span class="p">,</span> <span class="n">decimal_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span data-line="61">        <span class="bp">self</span><span class="o">.</span><span class="n">spot_endTime</span> <span class="o">=</span> <span class="n">endTime</span>
+</span><span data-line="62">        <span class="bp">self</span><span class="o">.</span><span class="n">spot_requested_days</span> <span class="o">=</span> <span class="n">snapshot_days</span>
+</span><span data-line="63">
+</span><span data-line="64">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">spot_snapshot</span></div>
+
+</span><span data-line="65">
+<div class="viewcode-block" id="Wallet.update_margin">
+<a class="viewcode-back" href="../../wallet.html#binpan.Wallet.update_margin">[docs]</a>
+</span><span data-line="66">    <span class="k">def</span><span class="w"> </span><span class="nf">update_margin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">decimal_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+</span><span data-line="67"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="68"><span class="sd">        Updates balances in the wallet class object.</span>
+</span><span data-line="69">
+</span><span data-line="70"><span class="sd">        :param bool decimal_mode: Use of decimal objects instead of float.</span>
+</span><span data-line="71"><span class="sd">        :return dict: Wallet dictionary</span>
+</span><span data-line="72"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="73">        <span class="n">my_margin</span> <span class="o">=</span> <span class="n">get_margin_balances</span><span class="p">(</span><span class="n">decimal_mode</span><span class="o">=</span><span class="n">decimal_mode</span><span class="p">)</span>
+</span><span data-line="74">        <span class="bp">self</span><span class="o">.</span><span class="n">margin</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">my_margin</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+</span><span data-line="75">        <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;asset&#39;</span>
+</span><span data-line="76">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span></div>
+
+</span><span data-line="77">
+<div class="viewcode-block" id="Wallet.update_margin_snapshot">
+<a class="viewcode-back" href="../../wallet.html#binpan.Wallet.update_margin_snapshot">[docs]</a>
+</span><span data-line="78">    <span class="k">def</span><span class="w"> </span><span class="nf">update_margin_snapshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">startTime</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">endTime</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">snapshot_days</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">time_zone</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span><span data-line="79"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="80"><span class="sd">        Updates margin wallet snapshot and stores it in ``self.margin_snapshot``.</span>
+</span><span data-line="81">
+</span><span data-line="82"><span class="sd">        :param int or str startTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42</span>
+</span><span data-line="83"><span class="sd">        :param int or str endTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42</span>
+</span><span data-line="84"><span class="sd">        :param int snapshot_days: Days to look if not start time or endtime passed.</span>
+</span><span data-line="85"><span class="sd">        :param str time_zone: A time zone for time index conversion. Example: &quot;Europe/Madrid&quot;</span>
+</span><span data-line="86"><span class="sd">        :return pd.DataFrame: Margin wallet snapshot for the time period requested.</span>
+</span><span data-line="87"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="88">        <span class="k">if</span> <span class="n">time_zone</span><span class="p">:</span>
+</span><span data-line="89">            <span class="bp">self</span><span class="o">.</span><span class="n">time_zone</span> <span class="o">=</span> <span class="n">time_zone</span>
+</span><span data-line="90">
+</span><span data-line="91">        <span class="bp">self</span><span class="o">.</span><span class="n">margin_snapshot</span> <span class="o">=</span> <span class="n">daily_account_snapshot</span><span class="p">(</span><span class="n">account_type</span><span class="o">=</span><span class="s1">&#39;MARGIN&#39;</span><span class="p">,</span>
+</span><span data-line="92">                                                      <span class="n">startTime</span><span class="o">=</span><span class="n">convert_str_date_to_ms</span><span class="p">(</span><span class="n">date</span><span class="o">=</span><span class="n">startTime</span><span class="p">,</span>
+</span><span data-line="93">                                                                                       <span class="n">time_zone</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">time_zone</span><span class="p">),</span>
+</span><span data-line="94">                                                      <span class="n">endTime</span><span class="o">=</span><span class="n">convert_str_date_to_ms</span><span class="p">(</span><span class="n">date</span><span class="o">=</span><span class="n">endTime</span><span class="p">,</span>
+</span><span data-line="95">                                                                                     <span class="n">time_zone</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">time_zone</span><span class="p">),</span>
+</span><span data-line="96">                                                      <span class="n">limit</span><span class="o">=</span><span class="n">snapshot_days</span><span class="p">,</span>
+</span><span data-line="97">                                                      <span class="n">time_zone</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">time_zone</span><span class="p">,</span> <span class="n">decimal_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span data-line="98">        <span class="bp">self</span><span class="o">.</span><span class="n">margin_startTime</span> <span class="o">=</span> <span class="n">startTime</span>
+</span><span data-line="99">        <span class="bp">self</span><span class="o">.</span><span class="n">margin_endTime</span> <span class="o">=</span> <span class="n">endTime</span>
+</span><span data-line="100">        <span class="bp">self</span><span class="o">.</span><span class="n">margin_requested_days</span> <span class="o">=</span> <span class="n">snapshot_days</span>
+</span><span data-line="101">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin_snapshot</span></div>
+
+</span><span data-line="102">
+<div class="viewcode-block" id="Wallet.spot_wallet_performance">
+<a class="viewcode-back" href="../../wallet.html#binpan.Wallet.spot_wallet_performance">[docs]</a>
+</span><span data-line="103">    <span class="k">def</span><span class="w"> </span><span class="nf">spot_wallet_performance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">decimal_mode</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">startTime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">endTime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">days</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span><span class="p">,</span> <span class="n">convert_to</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;BUSD&#39;</span><span class="p">):</span>
+</span><span data-line="104"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="105"><span class="sd">        Calculate difference between current wallet not locked values and days before.</span>
+</span><span data-line="106"><span class="sd">        :param bool decimal_mode: Fixes Decimal return type and operative.</span>
+</span><span data-line="107"><span class="sd">        :param int or str startTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42</span>
+</span><span data-line="108"><span class="sd">        :param int or str endTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42</span>
+</span><span data-line="109"><span class="sd">        :param int days: Days to compare balances.</span>
+</span><span data-line="110"><span class="sd">        :param str convert_to: Converts balances to a coin.</span>
+</span><span data-line="111"><span class="sd">        :return float: Value increase or decrease with current value of convert_to coin.</span>
+</span><span data-line="112"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="113">        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spot_snapshot</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">days</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spot_requested_days</span>
+</span><span data-line="114">                <span class="ow">or</span> <span class="n">startTime</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spot_startTime</span> <span class="ow">or</span> <span class="n">endTime</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spot_endTime</span><span class="p">):</span>
+</span><span data-line="115">            <span class="bp">self</span><span class="o">.</span><span class="n">update_spot_snapshot</span><span class="p">(</span><span class="n">startTime</span><span class="o">=</span><span class="n">startTime</span><span class="p">,</span> <span class="n">endTime</span><span class="o">=</span><span class="n">endTime</span><span class="p">,</span> <span class="n">snapshot_days</span><span class="o">=</span><span class="n">days</span><span class="p">)</span>
+</span><span data-line="116">
+</span><span data-line="117">        <span class="n">snapshot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spot_snapshot</span>
+</span><span data-line="118">        <span class="k">if</span> <span class="n">snapshot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+</span><span data-line="119">            <span class="n">totalAssetOfBtc</span> <span class="o">=</span> <span class="n">snapshot</span><span class="p">[</span><span class="s1">&#39;totalAssetOfBtc&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+</span><span data-line="120">            <span class="n">performance</span> <span class="o">=</span> <span class="n">totalAssetOfBtc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">totalAssetOfBtc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span data-line="121">            <span class="k">if</span> <span class="n">convert_to</span> <span class="o">==</span> <span class="s1">&#39;BTC&#39;</span><span class="p">:</span>
+</span><span data-line="122">                <span class="k">return</span> <span class="n">performance</span>
+</span><span data-line="123">            <span class="k">else</span><span class="p">:</span>
+</span><span data-line="124">                <span class="k">return</span> <span class="n">convert_coin</span><span class="p">(</span><span class="n">coin</span><span class="o">=</span><span class="s1">&#39;BTC&#39;</span><span class="p">,</span> <span class="n">convert_to</span><span class="o">=</span><span class="n">convert_to</span><span class="p">,</span> <span class="n">coin_qty</span><span class="o">=</span><span class="n">performance</span><span class="p">,</span> <span class="n">decimal_mode</span><span class="o">=</span><span class="n">decimal_mode</span><span class="p">)</span>
+</span><span data-line="125">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="126">            <span class="k">return</span> <span class="mi">0</span></div>
+
+</span><span data-line="127">
+<div class="viewcode-block" id="Wallet.margin_wallet_performance">
+<a class="viewcode-back" href="../../wallet.html#binpan.Wallet.margin_wallet_performance">[docs]</a>
+</span><span data-line="128">    <span class="k">def</span><span class="w"> </span><span class="nf">margin_wallet_performance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">decimal_mode</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">startTime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">endTime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">days</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span><span class="p">,</span> <span class="n">convert_to</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;BUSD&#39;</span><span class="p">):</span>
+</span><span data-line="129"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="130"><span class="sd">        Calculate difference between current wallet not locked values and days before.</span>
+</span><span data-line="131"><span class="sd">        :param bool decimal_mode: Fixes Decimal return type and operative.</span>
+</span><span data-line="132"><span class="sd">        :param int or str startTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42</span>
+</span><span data-line="133"><span class="sd">        :param int or str endTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42</span>
+</span><span data-line="134"><span class="sd">        :param int days: Days to compare balances.</span>
+</span><span data-line="135"><span class="sd">        :param str convert_to: Converts balances to a coin.</span>
+</span><span data-line="136"><span class="sd">        :return float: Value increase or decrease with current value of convert_to coin.</span>
+</span><span data-line="137"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="138">        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">margin_snapshot</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">days</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin_requested_days</span>
+</span><span data-line="139">                <span class="ow">or</span> <span class="n">startTime</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin_startTime</span> <span class="ow">or</span> <span class="n">endTime</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin_endTime</span><span class="p">):</span>
+</span><span data-line="140">            <span class="bp">self</span><span class="o">.</span><span class="n">update_margin_snapshot</span><span class="p">(</span><span class="n">startTime</span><span class="o">=</span><span class="n">startTime</span><span class="p">,</span> <span class="n">endTime</span><span class="o">=</span><span class="n">endTime</span><span class="p">,</span> <span class="n">snapshot_days</span><span class="o">=</span><span class="n">days</span><span class="p">)</span>
+</span><span data-line="141">
+</span><span data-line="142">        <span class="n">snapshot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin_snapshot</span>
+</span><span data-line="143">        <span class="k">if</span> <span class="n">snapshot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+</span><span data-line="144">            <span class="n">totalAssetOfBtc</span> <span class="o">=</span> <span class="n">snapshot</span><span class="p">[</span><span class="s1">&#39;totalAssetOfBtc&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+</span><span data-line="145">            <span class="n">performance</span> <span class="o">=</span> <span class="n">totalAssetOfBtc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">totalAssetOfBtc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span data-line="146">            <span class="k">if</span> <span class="n">convert_to</span> <span class="o">==</span> <span class="s1">&#39;BTC&#39;</span><span class="p">:</span>
+</span><span data-line="147">                <span class="k">return</span> <span class="n">performance</span>
+</span><span data-line="148">            <span class="k">else</span><span class="p">:</span>
+</span><span data-line="149">                <span class="k">return</span> <span class="n">convert_coin</span><span class="p">(</span><span class="n">coin</span><span class="o">=</span><span class="s1">&#39;BTC&#39;</span><span class="p">,</span> <span class="n">convert_to</span><span class="o">=</span><span class="n">convert_to</span><span class="p">,</span> <span class="n">coin_qty</span><span class="o">=</span><span class="n">performance</span><span class="p">,</span> <span class="n">decimal_mode</span><span class="o">=</span><span class="n">decimal_mode</span><span class="p">)</span>
+</span><span data-line="150">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="151">            <span class="k">return</span> <span class="mi">0</span></div>
+</div>
+
+</span></pre></div>
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2022, Fernando Alfonso</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+<a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+  <iconify-icon icon="simple-icons:github"></iconify-icon>
+</a></div>
+    </div>
+  </div>
+</footer>
+      <script src="../../_static/documentation_options.js?v=11e62b30"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/shibuya.js?v=50760d75"></script></body>
+</html>

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="iris" data-content_root="../../../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>binpan.api.auth - BinPan 0.10.2</title><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=e1a1ceaf" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/shibuya.css?v=9454f7d5" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/style.css?v=1e48dca6" />
+    <link media="print" rel="stylesheet" type="text/css" href="../../../_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/><meta property="og:title" content="binpan.api.auth"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="../../../index.html">
+      
+      
+      <strong>BinPan</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Main Classes:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../binpan.html">BinPan Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../symbol_indicators.html">Symbol Indicators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../symbol_plotting.html">Symbol Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../symbol_strategy.html">Symbol Strategy</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">API &amp; Market:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../market.html">Market Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exchange.html">Exchange Info Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../auth.html">Authentication Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../wallet.html">Wallet Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../wallet_api.html">Wallet API Functions</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Analysis:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../indicators.html">Indicators Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../aggregations.html">Aggregations Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../strategies.html">Strategies Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tags.html">Tags &amp; Backtesting Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stat_tests.html">Statistical Tests and Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../numba_tools.html">Numba Tools Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Core:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../time_helper.html">Time Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../timeframes.html">Timeframes Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../trades.html">Trades Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../standards.html">Standards Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../secrets.html">Secrets Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logs.html">Logs Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exceptions.html">Exceptions Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Plotting:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../plotting.html">Plotting Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Storage &amp; Database:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../files.html">Files Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../postgresql.html">PostgreSQL Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../postgresql_database.html">PostgreSQL Database Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../influx_manager.html">Influx Manager Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../redis_fetch.html">Redis Module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../../index.html"><span itemprop="name">BinPan</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../index.html"><span itemprop="name">Module code</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">binpan.api.auth</strong>
+        <meta itemprop="position" content="3" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue" role="main">
+          <h1>Source code for binpan.api.auth</h1><div class="highlight"><pre>
+<span></span><span data-line="1"><span class="c1"># coding=utf-8</span>
+</span><span data-line="2"><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="3"><span class="sd">Authenticated API requests module.</span>
+</span><span data-line="4">
+</span><span data-line="5"><span class="sd">Public API requests are handled by panzer (BinancePublicClient).</span>
+</span><span data-line="6"><span class="sd">Signed requests are handled by panzer (BinanceClient) since panzer 2.1.0.</span>
+</span><span data-line="7">
+</span><span data-line="8"><span class="sd">This module provides thin wrappers that add BinPan-specific type conversion</span>
+</span><span data-line="9"><span class="sd">(convert_response_type) on top of panzer&#39;s signed_request().</span>
+</span><span data-line="10">
+</span><span data-line="11"><span class="sd">Credentials are managed by panzer&#39;s CredentialManager (~/.panzer_creds).</span>
+</span><span data-line="12"><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="13">
+</span><span data-line="14"><span class="kn">from</span><span class="w"> </span><span class="nn">panzer</span><span class="w"> </span><span class="kn">import</span> <span class="n">BinanceClient</span>
+</span><span data-line="15">
+</span><span data-line="16"><span class="kn">from</span><span class="w"> </span><span class="nn">..core.logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogManager</span>
+</span><span data-line="17">
+</span><span data-line="18"><span class="n">quest_logger</span> <span class="o">=</span> <span class="n">LogManager</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;./logs/quest.log&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;quest&#39;</span><span class="p">,</span> <span class="n">info_level</span><span class="o">=</span><span class="s1">&#39;INFO&#39;</span><span class="p">)</span>
+</span><span data-line="19">
+</span><span data-line="20"><span class="n">float_api_items</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;price&#39;</span><span class="p">,</span> <span class="s1">&#39;origQty&#39;</span><span class="p">,</span> <span class="s1">&#39;executedQty&#39;</span><span class="p">,</span> <span class="s1">&#39;cummulativeQuoteQty&#39;</span><span class="p">,</span> <span class="s1">&#39;stopLimitPrice&#39;</span><span class="p">,</span> <span class="s1">&#39;stopPrice&#39;</span><span class="p">,</span> <span class="s1">&#39;commission&#39;</span><span class="p">,</span> <span class="s1">&#39;qty&#39;</span><span class="p">,</span>
+</span><span data-line="21">                   <span class="s1">&#39;origQuoteOrderQty&#39;</span><span class="p">,</span> <span class="s1">&#39;makerCommission&#39;</span><span class="p">,</span> <span class="s1">&#39;takerCommission&#39;</span><span class="p">]</span>
+</span><span data-line="22"><span class="n">int_api_items</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;orderId&#39;</span><span class="p">,</span> <span class="s1">&#39;orderListId&#39;</span><span class="p">,</span> <span class="s1">&#39;transactTime&#39;</span><span class="p">,</span> <span class="s1">&#39;tradeId&#39;</span><span class="p">,</span> <span class="s1">&#39;transactionTime&#39;</span><span class="p">,</span> <span class="s1">&#39;updateTime&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">]</span>
+</span><span data-line="23">
+</span><span data-line="24">
+</span><span data-line="25"><span class="c1">#############################</span>
+</span><span data-line="26"><span class="c1"># Cliente autenticado panzer</span>
+</span><span data-line="27"><span class="c1">#############################</span>
+</span><span data-line="28">
+</span><span data-line="29"><span class="n">_binance_client</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="30">
+</span><span data-line="31">
+</span><span data-line="32"><span class="k">def</span><span class="w"> </span><span class="nf">_get_binance_client</span><span class="p">(</span><span class="n">market</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;spot&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BinanceClient</span><span class="p">:</span>
+</span><span data-line="33"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the shared authenticated panzer client, creating it on first use.&quot;&quot;&quot;</span>
+</span><span data-line="34">    <span class="k">global</span> <span class="n">_binance_client</span>
+</span><span data-line="35">    <span class="k">if</span> <span class="n">_binance_client</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="36">        <span class="n">_binance_client</span> <span class="o">=</span> <span class="n">BinanceClient</span><span class="p">(</span><span class="n">market</span><span class="o">=</span><span class="n">market</span><span class="p">)</span>
+</span><span data-line="37">    <span class="k">return</span> <span class="n">_binance_client</span>
+</span><span data-line="38">
+</span><span data-line="39">
+</span><span data-line="40"><span class="c1">######################</span>
+</span><span data-line="41"><span class="c1"># Conversión de tipos</span>
+</span><span data-line="42"><span class="c1">######################</span>
+</span><span data-line="43">
+</span><span data-line="44">
+<div class="viewcode-block" id="convert_response_type">
+<a class="viewcode-back" href="../../../auth.html#binpan.api.auth.convert_response_type">[docs]</a>
+</span><span data-line="45"><span class="k">def</span><span class="w"> </span><span class="nf">convert_response_type</span><span class="p">(</span><span class="n">response_data</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="nb">list</span><span class="p">,</span>
+</span><span data-line="46">                          <span class="n">decimal_mode</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span> <span class="o">|</span> <span class="nb">list</span><span class="p">:</span>
+</span><span data-line="47"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="48"><span class="sd">    Infers types into api response and changes those.</span>
+</span><span data-line="49">
+</span><span data-line="50"><span class="sd">    :param dict or list response_data: API response json loaded.</span>
+</span><span data-line="51"><span class="sd">    :param bool decimal_mode: Sets numeric data type to decimal.</span>
+</span><span data-line="52"><span class="sd">    :return dict or list: Typed API data in response.</span>
+</span><span data-line="53"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="54">    <span class="k">if</span> <span class="n">decimal_mode</span><span class="p">:</span>
+</span><span data-line="55">        <span class="k">return</span> <span class="n">response_data</span>
+</span><span data-line="56">
+</span><span data-line="57">    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">response_data</span><span class="p">)</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span data-line="58">        <span class="n">response</span> <span class="o">=</span> <span class="n">response_data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+</span><span data-line="59">        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span data-line="60">            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">float_api_items</span><span class="p">:</span>
+</span><span data-line="61">                <span class="n">response</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+</span><span data-line="62">            <span class="k">elif</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">int_api_items</span><span class="p">:</span>
+</span><span data-line="63">                <span class="n">response</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+</span><span data-line="64">            <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span data-line="65">                <span class="n">response</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">convert_response_type</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">decimal_mode</span><span class="o">=</span><span class="n">decimal_mode</span><span class="p">)</span>
+</span><span data-line="66">            <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">:</span>
+</span><span data-line="67">                <span class="n">response</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">convert_response_type</span><span class="p">(</span><span class="n">ii</span><span class="p">,</span> <span class="n">decimal_mode</span><span class="o">=</span><span class="n">decimal_mode</span><span class="p">)</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">v</span><span class="p">]</span>
+</span><span data-line="68">    <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">response_data</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">:</span>
+</span><span data-line="69">        <span class="n">response</span> <span class="o">=</span> <span class="p">[</span><span class="n">convert_response_type</span><span class="p">(</span><span class="n">iii</span><span class="p">,</span> <span class="n">decimal_mode</span><span class="o">=</span><span class="n">decimal_mode</span><span class="p">)</span> <span class="k">for</span> <span class="n">iii</span> <span class="ow">in</span> <span class="n">response_data</span><span class="p">]</span>
+</span><span data-line="70">    <span class="k">else</span><span class="p">:</span>
+</span><span data-line="71">        <span class="n">response</span> <span class="o">=</span> <span class="n">response_data</span>
+</span><span data-line="72">    <span class="k">return</span> <span class="n">response</span></div>
+
+</span><span data-line="73">
+</span><span data-line="74">
+</span><span data-line="75"><span class="c1">#####################</span>
+</span><span data-line="76"><span class="c1"># Helpers internos</span>
+</span><span data-line="77"><span class="c1">#####################</span>
+</span><span data-line="78">
+</span><span data-line="79">
+</span><span data-line="80"><span class="k">def</span><span class="w"> </span><span class="nf">_dict_to_tuples</span><span class="p">(</span><span class="n">params</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="81"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="82"><span class="sd">    Converts a dict of params to list of tuples for panzer&#39;s signed_request.</span>
+</span><span data-line="83"><span class="sd">    Filters out None values and expands list values into multiple tuples.</span>
+</span><span data-line="84"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="85">    <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="86">        <span class="k">return</span> <span class="kc">None</span>
+</span><span data-line="87">    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="88">    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span data-line="89">        <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="90">            <span class="k">continue</span>
+</span><span data-line="91">        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">:</span>
+</span><span data-line="92">            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
+</span><span data-line="93">                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="n">item</span><span class="p">))</span>
+</span><span data-line="94">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="95">            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+</span><span data-line="96">    <span class="k">return</span> <span class="n">result</span> <span class="ow">or</span> <span class="kc">None</span>
+</span><span data-line="97">
+</span><span data-line="98">
+</span><span data-line="99"><span class="c1">##############################</span>
+</span><span data-line="100"><span class="c1"># Wrappers de peticiones firmadas</span>
+</span><span data-line="101"><span class="c1">##############################</span>
+</span><span data-line="102">
+</span><span data-line="103">
+<div class="viewcode-block" id="signed_get">
+<a class="viewcode-back" href="../../../auth.html#binpan.api.auth.signed_get">[docs]</a>
+</span><span data-line="104"><span class="k">def</span><span class="w"> </span><span class="nf">signed_get</span><span class="p">(</span><span class="n">endpoint</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="105">               <span class="n">decimal_mode</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+</span><span data-line="106">               <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="107">               <span class="n">recv_window</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10000</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span> <span class="o">|</span> <span class="nb">list</span><span class="p">:</span>
+</span><span data-line="108"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="109"><span class="sd">    Signed GET request via panzer BinanceClient.</span>
+</span><span data-line="110">
+</span><span data-line="111"><span class="sd">    :param str endpoint: API endpoint path.</span>
+</span><span data-line="112"><span class="sd">    :param bool decimal_mode: Sets numeric data format to decimal.</span>
+</span><span data-line="113"><span class="sd">    :param dict params: Params for the request.</span>
+</span><span data-line="114"><span class="sd">    :param int recv_window: Milliseconds of life for the request.</span>
+</span><span data-line="115"><span class="sd">    :return dict or list: API response with type conversion applied.</span>
+</span><span data-line="116"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="117">    <span class="n">client</span> <span class="o">=</span> <span class="n">_get_binance_client</span><span class="p">()</span>
+</span><span data-line="118">    <span class="n">tuples</span> <span class="o">=</span> <span class="n">_dict_to_tuples</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+</span><span data-line="119">    <span class="n">data</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">signed_request</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">,</span> <span class="n">tuples</span><span class="p">,</span> <span class="n">recv_window</span><span class="o">=</span><span class="n">recv_window</span><span class="p">)</span>
+</span><span data-line="120">    <span class="k">return</span> <span class="n">convert_response_type</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">decimal_mode</span><span class="o">=</span><span class="n">decimal_mode</span><span class="p">)</span></div>
+
+</span><span data-line="121">
+</span><span data-line="122">
+<div class="viewcode-block" id="signed_post">
+<a class="viewcode-back" href="../../../auth.html#binpan.api.auth.signed_post">[docs]</a>
+</span><span data-line="123"><span class="k">def</span><span class="w"> </span><span class="nf">signed_post</span><span class="p">(</span><span class="n">endpoint</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="124">                <span class="n">decimal_mode</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+</span><span data-line="125">                <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="126">                <span class="n">recv_window</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10000</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span> <span class="o">|</span> <span class="nb">list</span><span class="p">:</span>
+</span><span data-line="127"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="128"><span class="sd">    Signed POST request via panzer BinanceClient.</span>
+</span><span data-line="129">
+</span><span data-line="130"><span class="sd">    :param str endpoint: API endpoint path.</span>
+</span><span data-line="131"><span class="sd">    :param bool decimal_mode: Sets numeric data format to decimal.</span>
+</span><span data-line="132"><span class="sd">    :param dict params: Params for the request.</span>
+</span><span data-line="133"><span class="sd">    :param int recv_window: Milliseconds of life for the request.</span>
+</span><span data-line="134"><span class="sd">    :return dict or list: API response with type conversion applied.</span>
+</span><span data-line="135"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="136">    <span class="n">client</span> <span class="o">=</span> <span class="n">_get_binance_client</span><span class="p">()</span>
+</span><span data-line="137">    <span class="n">tuples</span> <span class="o">=</span> <span class="n">_dict_to_tuples</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+</span><span data-line="138">    <span class="n">data</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">signed_request</span><span class="p">(</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">,</span> <span class="n">tuples</span><span class="p">,</span> <span class="n">recv_window</span><span class="o">=</span><span class="n">recv_window</span><span class="p">)</span>
+</span><span data-line="139">    <span class="k">return</span> <span class="n">convert_response_type</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">decimal_mode</span><span class="o">=</span><span class="n">decimal_mode</span><span class="p">)</span></div>
+
+</span><span data-line="140">
+</span><span data-line="141">
+<div class="viewcode-block" id="signed_delete">
+<a class="viewcode-back" href="../../../auth.html#binpan.api.auth.signed_delete">[docs]</a>
+</span><span data-line="142"><span class="k">def</span><span class="w"> </span><span class="nf">signed_delete</span><span class="p">(</span><span class="n">endpoint</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="143">                  <span class="n">decimal_mode</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+</span><span data-line="144">                  <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="145">                  <span class="n">recv_window</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10000</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span> <span class="o">|</span> <span class="nb">list</span><span class="p">:</span>
+</span><span data-line="146"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="147"><span class="sd">    Signed DELETE request via panzer BinanceClient.</span>
+</span><span data-line="148">
+</span><span data-line="149"><span class="sd">    :param str endpoint: API endpoint path.</span>
+</span><span data-line="150"><span class="sd">    :param bool decimal_mode: Sets numeric data format to decimal.</span>
+</span><span data-line="151"><span class="sd">    :param dict params: Params for the request.</span>
+</span><span data-line="152"><span class="sd">    :param int recv_window: Milliseconds of life for the request.</span>
+</span><span data-line="153"><span class="sd">    :return dict or list: API response with type conversion applied.</span>
+</span><span data-line="154"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="155">    <span class="n">client</span> <span class="o">=</span> <span class="n">_get_binance_client</span><span class="p">()</span>
+</span><span data-line="156">    <span class="n">tuples</span> <span class="o">=</span> <span class="n">_dict_to_tuples</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+</span><span data-line="157">    <span class="n">data</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">signed_request</span><span class="p">(</span><span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">,</span> <span class="n">tuples</span><span class="p">,</span> <span class="n">recv_window</span><span class="o">=</span><span class="n">recv_window</span><span class="p">)</span>
+</span><span data-line="158">    <span class="n">quest_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;signed_delete: endpoint=</span><span class="si">%s</span><span class="s2"> params=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+</span><span data-line="159">    <span class="k">return</span> <span class="n">convert_response_type</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">decimal_mode</span><span class="o">=</span><span class="n">decimal_mode</span><span class="p">)</span></div>
+
+</span><span data-line="160">
+</span><span data-line="161">
+<div class="viewcode-block" id="semi_signed_get">
+<a class="viewcode-back" href="../../../auth.html#binpan.api.auth.semi_signed_get">[docs]</a>
+</span><span data-line="162"><span class="k">def</span><span class="w"> </span><span class="nf">semi_signed_get</span><span class="p">(</span><span class="n">endpoint</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="163">                    <span class="n">decimal_mode</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+</span><span data-line="164">                    <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span> <span class="o">|</span> <span class="nb">list</span><span class="p">:</span>
+</span><span data-line="165"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="166"><span class="sd">    GET with API key header but no full signature (USER_STREAM / MARKET_DATA).</span>
+</span><span data-line="167">
+</span><span data-line="168"><span class="sd">    :param str endpoint: API endpoint path.</span>
+</span><span data-line="169"><span class="sd">    :param bool decimal_mode: Sets numeric data format to decimal.</span>
+</span><span data-line="170"><span class="sd">    :param dict params: Params for the request.</span>
+</span><span data-line="171"><span class="sd">    :return dict or list: API response with type conversion applied.</span>
+</span><span data-line="172"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="173">    <span class="n">client</span> <span class="o">=</span> <span class="n">_get_binance_client</span><span class="p">()</span>
+</span><span data-line="174">    <span class="n">tuples</span> <span class="o">=</span> <span class="n">_dict_to_tuples</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+</span><span data-line="175">    <span class="n">data</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">signed_request</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">,</span> <span class="n">tuples</span><span class="p">,</span> <span class="n">sign</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span data-line="176">    <span class="k">return</span> <span class="n">convert_response_type</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">decimal_mode</span><span class="o">=</span><span class="n">decimal_mode</span><span class="p">)</span></div>
+
+</span><span data-line="177">
+</span><span data-line="178">
+<div class="viewcode-block" id="get_server_time">
+<a class="viewcode-back" href="../../../auth.html#binpan.api.auth.get_server_time">[docs]</a>
+</span><span data-line="179"><span class="k">def</span><span class="w"> </span><span class="nf">get_server_time</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span data-line="180"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="181"><span class="sd">    Get time from server using panzer.</span>
+</span><span data-line="182">
+</span><span data-line="183"><span class="sd">    :return int: A linux timestamp in milliseconds.</span>
+</span><span data-line="184"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="185">    <span class="kn">from</span><span class="w"> </span><span class="nn">.market</span><span class="w"> </span><span class="kn">import</span> <span class="n">_get_panzer</span>
+</span><span data-line="186">    <span class="n">client</span> <span class="o">=</span> <span class="n">_get_panzer</span><span class="p">()</span>
+</span><span data-line="187">    <span class="n">resp</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">server_time</span><span class="p">()</span>
+</span><span data-line="188">    <span class="k">return</span> <span class="n">resp</span><span class="p">[</span><span class="s1">&#39;serverTime&#39;</span><span class="p">]</span></div>
+
+</span></pre></div>
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2022, Fernando Alfonso</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+<a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+  <iconify-icon icon="simple-icons:github"></iconify-icon>
+</a></div>
+    </div>
+  </div>
+</footer>
+      <script src="../../../_static/documentation_options.js?v=11e62b30"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/shibuya.js?v=50760d75"></script></body>
+</html>

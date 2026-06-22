@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="iris" data-content_root="./">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Indicators Module - BinPan 0.10.2</title><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Aggregations Module" href="aggregations.html" /><link rel="prev" title="Wallet API Functions" href="wallet_api.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="_static/pygments.css?v=e1a1ceaf" />
+    <link rel="stylesheet" type="text/css" href="_static/shibuya.css?v=9454f7d5" />
+    <link rel="stylesheet" type="text/css" href="_static/style.css?v=1e48dca6" />
+    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/><meta property="og:title" content="Indicators Module"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="index.html">
+      
+      
+      <strong>BinPan</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Main Classes:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="binpan.html">BinPan Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="symbol_indicators.html">Symbol Indicators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="symbol_plotting.html">Symbol Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="symbol_strategy.html">Symbol Strategy</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">API &amp; Market:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exchange.html">Exchange Info Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="auth.html">Authentication Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wallet_api.html">Wallet API Functions</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Analysis:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Indicators Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aggregations.html">Aggregations Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tags.html">Tags &amp; Backtesting Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stat_tests.html">Statistical Tests and Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_tools.html">Numba Tools Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Core:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="time_helper.html">Time Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timeframes.html">Timeframes Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trades.html">Trades Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="standards.html">Standards Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="secrets.html">Secrets Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logs.html">Logs Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Plotting:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Storage &amp; Database:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="files.html">Files Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postgresql.html">PostgreSQL Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postgresql_database.html">PostgreSQL Database Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="influx_manager.html">Influx Manager Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#binpan.analysis.indicators.alternating_fractal_indicator"><code class="docutils literal notranslate"><span class="pre">alternating_fractal_indicator()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.fractal_trend_indicator"><code class="docutils literal notranslate"><span class="pre">fractal_trend_indicator()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.calculate_fractal_trend_on_flags"><code class="docutils literal notranslate"><span class="pre">calculate_fractal_trend_on_flags()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.ichimoku"><code class="docutils literal notranslate"><span class="pre">ichimoku()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.ker"><code class="docutils literal notranslate"><span class="pre">ker()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.fractal_w_indicator"><code class="docutils literal notranslate"><span class="pre">fractal_w_indicator()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.support_resistance_volume"><code class="docutils literal notranslate"><span class="pre">support_resistance_volume()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.count_smaller_values_backward"><code class="docutils literal notranslate"><span class="pre">count_smaller_values_backward()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.count_larger_values_backward"><code class="docutils literal notranslate"><span class="pre">count_larger_values_backward()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.rolling_max_with_steps_back"><code class="docutils literal notranslate"><span class="pre">rolling_max_with_steps_back()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.rolling_min_with_steps_back"><code class="docutils literal notranslate"><span class="pre">rolling_min_with_steps_back()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.split_serie_by_position"><code class="docutils literal notranslate"><span class="pre">split_serie_by_position()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.df_splitter"><code class="docutils literal notranslate"><span class="pre">df_splitter()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.zoom_cloud_indicators"><code class="docutils literal notranslate"><span class="pre">zoom_cloud_indicators()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.shift_indicator"><code class="docutils literal notranslate"><span class="pre">shift_indicator()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.ffill_indicator"><code class="docutils literal notranslate"><span class="pre">ffill_indicator()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.reversal_candles"><code class="docutils literal notranslate"><span class="pre">reversal_candles()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.repeat_prices_by_quantity"><code class="docutils literal notranslate"><span class="pre">repeat_prices_by_quantity()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.kmeans_custom_init"><code class="docutils literal notranslate"><span class="pre">kmeans_custom_init()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.find_optimal_clusters"><code class="docutils literal notranslate"><span class="pre">find_optimal_clusters()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.support_resistance_levels"><code class="docutils literal notranslate"><span class="pre">support_resistance_levels()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.support_resistance_levels_merged"><code class="docutils literal notranslate"><span class="pre">support_resistance_levels_merged()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.repeat_timestamps_by_quantity"><code class="docutils literal notranslate"><span class="pre">repeat_timestamps_by_quantity()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.time_active_zones"><code class="docutils literal notranslate"><span class="pre">time_active_zones()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.market_profile_from_klines_melt"><code class="docutils literal notranslate"><span class="pre">market_profile_from_klines_melt()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.taker_maker_profile_from_klines_melt"><code class="docutils literal notranslate"><span class="pre">taker_maker_profile_from_klines_melt()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.market_profile_from_klines_grouped"><code class="docutils literal notranslate"><span class="pre">market_profile_from_klines_grouped()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.market_profile_from_trades_grouped"><code class="docutils literal notranslate"><span class="pre">market_profile_from_trades_grouped()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.value_area_from_profile"><code class="docutils literal notranslate"><span class="pre">value_area_from_profile()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.atr"><code class="docutils literal notranslate"><span class="pre">atr()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.supertrend"><code class="docutils literal notranslate"><span class="pre">supertrend()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.macd"><code class="docutils literal notranslate"><span class="pre">macd()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.stoch_rsi"><code class="docutils literal notranslate"><span class="pre">stoch_rsi()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.obv"><code class="docutils literal notranslate"><span class="pre">obv()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.ad"><code class="docutils literal notranslate"><span class="pre">ad()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.vwap"><code class="docutils literal notranslate"><span class="pre">vwap()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.cci"><code class="docutils literal notranslate"><span class="pre">cci()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.eom"><code class="docutils literal notranslate"><span class="pre">eom()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.roc"><code class="docutils literal notranslate"><span class="pre">roc()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.bbands"><code class="docutils literal notranslate"><span class="pre">bbands()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.indicators.stoch"><code class="docutils literal notranslate"><span class="pre">stoch()</span></code></a></li>
+</ul>
+</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="index.html"><span itemprop="name">BinPan</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">Indicators Module</strong>
+        <meta itemprop="position" content="2" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue" role="main">
+          <section id="module-binpan.analysis.indicators">
+<span id="indicators-module"></span><h1>Indicators Module<a class="headerlink" href="#module-binpan.analysis.indicators" title="Link to this heading">¶</a></h1>
+<p>BinPan own indicators and utils.</p>
+<p><strong>Functions:</strong></p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.indicators.alternating_fractal_indicator" title="binpan.analysis.indicators.alternating_fractal_indicator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">alternating_fractal_indicator</span></code></a>(df[, ...])</p></td>
+<td><p>Obtains the minim value for fractal_w periods as fractal is pure alternating max to mins. In other words, max and mins alternates</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.indicators.fractal_trend_indicator" title="binpan.analysis.indicators.fractal_trend_indicator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fractal_trend_indicator</span></code></a>(df[, period, ...])</p></td>
+<td><p>Obtains the trend of the fractal_w indicator.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.indicators.calculate_fractal_trend_on_flags" title="binpan.analysis.indicators.calculate_fractal_trend_on_flags"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_fractal_trend_on_flags</span></code></a>(df, flags)</p></td>
+<td><p>Applies the fractal_trend_indicator function to the dataframe df for each index flagged with 1 in the flags series.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.indicators.ichimoku" title="binpan.analysis.indicators.ichimoku"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ichimoku</span></code></a>(data[, tenkan, kijun, chikou_span, ...])</p></td>
+<td><p>The Ichimoku Cloud is a collection of technical indicators that show support and resistance levels, as well as momentum and trend direction.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.indicators.ker" title="binpan.analysis.indicators.ker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ker</span></code></a>(close, window)</p></td>
+<td><p>Kaufman's Efficiency Ratio based in: <a class="reference external" href="https://stackoverflow.com/questions/36980238/calculating-kaufmans-efficiency-ratio-in-python">https://stackoverflow.com/questions/36980238/calculating-kaufmans-efficiency-ratio-in-python</a> -with-pandas</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.indicators.fractal_w_indicator" title="binpan.analysis.indicators.fractal_w_indicator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fractal_w_indicator</span></code></a>(df[, period, merged, ...])</p></td>
+<td><p>The fractal indicator is based on a simple price pattern that is frequently seen in financial markets.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.indicators.support_resistance_volume" title="binpan.analysis.indicators.support_resistance_volume"><code class="xref py py-obj docutils literal notranslate"><span class="pre">support_resistance_volume</span></code></a>(df[, num_bins, ...])</p></td>
+<td><p>Calculates support and resistance levels based on volume and prices in the given dataframe.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.indicators.count_smaller_values_backward" title="binpan.analysis.indicators.count_smaller_values_backward"><code class="xref py py-obj docutils literal notranslate"><span class="pre">count_smaller_values_backward</span></code></a>(s)</p></td>
+<td><p>Calcula el número de valores que cada entrada en la serie supera hacia atrás hasta encontrar un valor superior o llegar al inicio de la serie.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.indicators.count_larger_values_backward" title="binpan.analysis.indicators.count_larger_values_backward"><code class="xref py py-obj docutils literal notranslate"><span class="pre">count_larger_values_backward</span></code></a>(s)</p></td>
+<td><p>Calcula el número de valores que son superiores a cada entrada en la serie hacia atrás hasta encontrar un valor igual o menor o llegar al inicio de la serie.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.indicators.rolling_max_with_steps_back" title="binpan.analysis.indicators.rolling_max_with_steps_back"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rolling_max_with_steps_back</span></code></a>(ser, window, ...)</p></td>
+<td><p>Calculate the rolling maximum and the steps back to the maximum for each point in the series.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.indicators.rolling_min_with_steps_back" title="binpan.analysis.indicators.rolling_min_with_steps_back"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rolling_min_with_steps_back</span></code></a>(ser, window, ...)</p></td>
+<td><p>Calculate the rolling minimum and the steps back to the minimum for each point in the series.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.indicators.split_serie_by_position" title="binpan.analysis.indicators.split_serie_by_position"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_serie_by_position</span></code></a>(serie, splitter_serie)</p></td>
+<td><p>Splits a serie by values of other serie in four series by relative positions for plotting colored clouds with plotly.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.indicators.df_splitter" title="binpan.analysis.indicators.df_splitter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">df_splitter</span></code></a>(data, up_column, down_column)</p></td>
+<td><p>Splits a dataframe y sub dataframes to plot by colored areas.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.indicators.zoom_cloud_indicators" title="binpan.analysis.indicators.zoom_cloud_indicators"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zoom_cloud_indicators</span></code></a>(...)</p></td>
+<td><p>It zooms the cloud indicators in an index interval for a plot zoom.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.indicators.shift_indicator" title="binpan.analysis.indicators.shift_indicator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shift_indicator</span></code></a>(serie[, window])</p></td>
+<td><p>It shifts a candle ahead by the window argument value (or backwards if negative).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.indicators.ffill_indicator" title="binpan.analysis.indicators.ffill_indicator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ffill_indicator</span></code></a>(serie[, window])</p></td>
+<td><p>It forward fills a value through nans while a window of candles ahead.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.indicators.reversal_candles" title="binpan.analysis.indicators.reversal_candles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reversal_candles</span></code></a>(trades, decimal_positions, ...)</p></td>
+<td><p>Generate reversal candles for reversal charts:</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.indicators.repeat_prices_by_quantity" title="binpan.analysis.indicators.repeat_prices_by_quantity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat_prices_by_quantity</span></code></a>(data[, price_col, ...])</p></td>
+<td><p>Optimized version of repeating prices by quantity for K-means clustering, with a comparison between 'Quantity' and 'Quote quantity' to choose the column with larger values for repeating prices.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.indicators.kmeans_custom_init" title="binpan.analysis.indicators.kmeans_custom_init"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kmeans_custom_init</span></code></a>(data, max_clusters)</p></td>
+<td><p>Generate initial centroids for K-means clustering with equally spaced values between min and max values in data.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.indicators.find_optimal_clusters" title="binpan.analysis.indicators.find_optimal_clusters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_optimal_clusters</span></code></a>(KMeans_lib, data, ...)</p></td>
+<td><p>Find the optimal quantity of centroids for support and resistance methods using the elbow method.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.indicators.support_resistance_levels" title="binpan.analysis.indicators.support_resistance_levels"><code class="xref py py-obj docutils literal notranslate"><span class="pre">support_resistance_levels</span></code></a>(df[, ...])</p></td>
+<td><p>Calculate support and resistance levels for a given set of trades using K-means clustering.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.indicators.support_resistance_levels_merged" title="binpan.analysis.indicators.support_resistance_levels_merged"><code class="xref py py-obj docutils literal notranslate"><span class="pre">support_resistance_levels_merged</span></code></a>(df, by_klines)</p></td>
+<td><p>Calculate support and resistance levels merged for a given set of trades using K-means clustering.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.indicators.repeat_timestamps_by_quantity" title="binpan.analysis.indicators.repeat_timestamps_by_quantity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat_timestamps_by_quantity</span></code></a>(df, ...[, ...])</p></td>
+<td><p>Repeat timestamps by quantity to give more importance to prices with more quantity.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.indicators.time_active_zones" title="binpan.analysis.indicators.time_active_zones"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time_active_zones</span></code></a>(df[, max_clusters, ...])</p></td>
+<td><p>Calculate support and resistance levels timestamp centroids for a given set of trades using K-means clustering.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.indicators.market_profile_from_klines_melt" title="binpan.analysis.indicators.market_profile_from_klines_melt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">market_profile_from_klines_melt</span></code></a>(df)</p></td>
+<td><p>Calculate the market profile for a given OHLC data.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.indicators.taker_maker_profile_from_klines_melt" title="binpan.analysis.indicators.taker_maker_profile_from_klines_melt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">taker_maker_profile_from_klines_melt</span></code></a>(df)</p></td>
+<td><p>Calculate the ratio of taker and maker volume for a given OHLC data.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.indicators.market_profile_from_klines_grouped" title="binpan.analysis.indicators.market_profile_from_klines_grouped"><code class="xref py py-obj docutils literal notranslate"><span class="pre">market_profile_from_klines_grouped</span></code></a>(df[, ...])</p></td>
+<td><p>Calculate the market profile for a given OHLC data.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.indicators.market_profile_from_trades_grouped" title="binpan.analysis.indicators.market_profile_from_trades_grouped"><code class="xref py py-obj docutils literal notranslate"><span class="pre">market_profile_from_trades_grouped</span></code></a>(df[, ...])</p></td>
+<td><p>Calculate the market profile for a given trades data.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.indicators.value_area_from_profile" title="binpan.analysis.indicators.value_area_from_profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">value_area_from_profile</span></code></a>(profile[, ...])</p></td>
+<td><p>Calcula POC, Value Area y nodos de alto/bajo volumen de un market profile.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.indicators.atr" title="binpan.analysis.indicators.atr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atr</span></code></a>(high, low, close[, length])</p></td>
+<td><p>Average True Range using Wilder's smoothing (RMA).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.indicators.supertrend" title="binpan.analysis.indicators.supertrend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">supertrend</span></code></a>(high, low, close[, length, ...])</p></td>
+<td><p>Supertrend indicator (Binance-compatible).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.indicators.macd" title="binpan.analysis.indicators.macd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">macd</span></code></a>(close[, fast, slow, signal])</p></td>
+<td><p>Moving Average Convergence/Divergence.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.indicators.stoch_rsi" title="binpan.analysis.indicators.stoch_rsi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stoch_rsi</span></code></a>(close[, rsi_length, stoch_length, ...])</p></td>
+<td><p>Stochastic RSI.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.indicators.obv" title="binpan.analysis.indicators.obv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">obv</span></code></a>(close, volume)</p></td>
+<td><p>On Balance Volume.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.indicators.ad" title="binpan.analysis.indicators.ad"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ad</span></code></a>(high, low, close, volume)</p></td>
+<td><p>Accumulation/Distribution line.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.indicators.vwap" title="binpan.analysis.indicators.vwap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vwap</span></code></a>(high, low, close, volume)</p></td>
+<td><p>Volume Weighted Average Price (cumulative over the full series).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.indicators.cci" title="binpan.analysis.indicators.cci"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cci</span></code></a>(high, low, close[, length, c])</p></td>
+<td><p>Commodity Channel Index.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.indicators.eom" title="binpan.analysis.indicators.eom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eom</span></code></a>(high, low, volume[, length, divisor])</p></td>
+<td><p>Ease of Movement.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.indicators.roc" title="binpan.analysis.indicators.roc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">roc</span></code></a>(close[, length, scalar])</p></td>
+<td><p>Rate of Change.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.indicators.bbands" title="binpan.analysis.indicators.bbands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bbands</span></code></a>(close[, length, std, ddof])</p></td>
+<td><p>Bollinger Bands.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.indicators.stoch" title="binpan.analysis.indicators.stoch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stoch</span></code></a>(high, low, close[, k, d, smooth_k])</p></td>
+<td><p>Stochastic Oscillator.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.alternating_fractal_indicator">
+<span class="sig-name descname"><span class="pre">alternating_fractal_indicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_period</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#alternating_fractal_indicator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.alternating_fractal_indicator" title="Link to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Obtains the minim value for fractal_w periods as fractal is pure alternating max to mins. In other words, max and mins alternates</dt><dd><p>in regular rhythm without any tow max or two mins consecutively.</p>
+</dd>
+<dt>This custom indicator shows the minimum period in finding a pure alternating fractal. It is some kind of volatility in price</dt><dd><p>indicator, the most period needed, the most volatile price.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – BinPan Symbol dataframe.</p></li>
+<li><p><strong>max_period</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Default is len of df. This method will check from 2 to the max period value to find a puer alternating max to
+mins.</p></li>
+<li><p><strong>suffix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A decorative suffix for the name of the column created.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dataframe with two columns, one with 1 or -1 for local max or local min to tag, and other with price values for
+that points. If not found, it will return None.</p>
+</dd>
+</dl>
+<a class="reference internal image-reference" href="_images/fractal_w.png"><img alt="_images/fractal_w.png" src="_images/fractal_w.png" width="1000" />
+</a>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.fractal_trend_indicator">
+<span class="sig-name descname"><span class="pre">fractal_trend_indicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">period</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fractal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#fractal_trend_indicator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.fractal_trend_indicator" title="Link to this definition">¶</a></dt>
+<dd><p>Obtains the trend of the fractal_w indicator. It will return maximums diff mean and minimums diff mean also in a tuple.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – BinPan Symbol dataframe.</p></li>
+<li><p><strong>period</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Period to obtain fractal_w. Default is len df.</p></li>
+<li><p><strong>fractal</strong> (<em>pd.DataFrame</em>) – Optional. If not provided, it will be calculated.</p></li>
+<li><p><strong>suffix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A decorative suffix for the name of the column created.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return tuple<span class="colon">:</span></dt>
+<dd class="field-even"><p>Max min diffs mean and Min diffs mean.</p>
+</dd>
+</dl>
+<a class="reference internal image-reference" href="_images/fractal_w.png"><img alt="_images/fractal_w.png" src="_images/fractal_w.png" width="1000" />
+</a>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.calculate_fractal_trend_on_flags">
+<span class="sig-name descname"><span class="pre">calculate_fractal_trend_on_flags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">period</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#calculate_fractal_trend_on_flags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.calculate_fractal_trend_on_flags" title="Link to this definition">¶</a></dt>
+<dd><p>Applies the fractal_trend_indicator function to the dataframe df for each index flagged with 1 in the flags series.</p>
+<p>This function is designed to work with a DatetimeIndex.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – BinPan Symbol dataframe.</p></li>
+<li><p><strong>flags</strong> (<em>pd.Series</em>) – Series containing flags (1 for indices to include).</p></li>
+<li><p><strong>period</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Number of periods (rows) to look back for calculating fractal trend. Defaults to length of df.</p></li>
+<li><p><strong>suffix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A decorative suffix for the name of the column created.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of tuples with the results of fractal_trend_indicator for each flagged index.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.ichimoku">
+<span class="sig-name descname"><span class="pre">ichimoku</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tenkan</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kijun</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">26</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chikou_span</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">26</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">senkou_cloud_base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">52</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#ichimoku"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.ichimoku" title="Link to this definition">¶</a></dt>
+<dd><p>The Ichimoku Cloud is a collection of technical indicators that show support and resistance levels, as well as momentum and trend
+direction. It does this by taking multiple averages and plotting them on a chart. It also uses these figures to compute a “cloud”
+that attempts to forecast where the price may find support or resistance in the future.</p>
+<p><a class="reference external" href="https://school.stockcharts.com/doku.php?id=technical_indicators:ichimoku_cloud">https://school.stockcharts.com/doku.php?id=technical_indicators:ichimoku_cloud</a></p>
+<p><a class="reference external" href="https://www.youtube.com/watch?v=mCri-FFvZjo&amp;list=PLv-cA-4O3y97HAd9OCvVKSfvQ8kkAGKlf&amp;index=7">https://www.youtube.com/watch?v=mCri-FFvZjo&amp;list=PLv-cA-4O3y97HAd9OCvVKSfvQ8kkAGKlf&amp;index=7</a></p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>pd.DataFrame</em>) – A BinPan Symbol dataframe.</p></li>
+<li><p><strong>tenkan</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – The short period. It’s the half sum of max and min price in the window. Default: 9</p></li>
+<li><p><strong>kijun</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – The long period. It’s the half sum of max and min price in the window. Default: 26</p></li>
+<li><p><strong>chikou_span</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Close of the next 26 bars. Util when spotting what happened with other ichimoku lines and what happened
+before Default: 26.</p></li>
+<li><p><strong>senkou_cloud_base</strong> – Period to obtain kumo cloud base line. Default is 52.</p></li>
+<li><p><strong>suffix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A decorative suffix for the name of the column created.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pandas dataframe with columns as indicator lines.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">import</span><span class="w"> </span><span class="nn">binpan</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="n">sym</span> <span class="o">=</span> <span class="n">binpan</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;LUNCBUSD&#39;</span><span class="p">,</span> <span class="n">tick_interval</span><span class="o">=</span><span class="s1">&#39;1m&#39;</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+</span><span data-line="4"><span class="n">sym</span><span class="o">.</span><span class="n">ichimoku</span><span class="p">()</span>
+</span><span data-line="5"><span class="n">sym</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</span></pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/ichimoku.png"><img alt="Candles with some indicators" src="_images/ichimoku.png" width="1000" />
+</a>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.ker">
+<span class="sig-name descname"><span class="pre">ker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">close</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#ker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.ker" title="Link to this definition">¶</a></dt>
+<dd><p>Kaufman’s Efficiency Ratio based in: <a class="reference external" href="https://stackoverflow.com/questions/36980238/calculating-kaufmans-efficiency-ratio-in-python">https://stackoverflow.com/questions/36980238/calculating-kaufmans-efficiency-ratio-in-python</a>
+-with-pandas</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>close</strong> (<em>pd.Series</em>) – Close prices serie.</p></li>
+<li><p><strong>window</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Window to check indicator.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.Series<span class="colon">:</span></dt>
+<dd class="field-even"><p>Results.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.fractal_w_indicator">
+<span class="sig-name descname"><span class="pre">fractal_w_indicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">merged</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_with_zero</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#fractal_w_indicator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.fractal_w_indicator" title="Link to this definition">¶</a></dt>
+<dd><p>The fractal indicator is based on a simple price pattern that is frequently seen in financial markets. Outside of trading, a fractal
+is a recurring geometric pattern that is repeated on all time frames. From this concept, the fractal indicator was devised.
+The indicator isolates potential turning points on a price chart. It then draws arrows to indicate the existence of a pattern.</p>
+<blockquote>
+<div><p><a class="reference external" href="https://www.investopedia.com/terms/f/fractal.asp">https://www.investopedia.com/terms/f/fractal.asp</a></p>
+<p>From: <a class="reference external" href="https://codereview.stackexchange.com/questions/259703/william-fractal-technical-indicator-implementation">https://codereview.stackexchange.com/questions/259703/william-fractal-technical-indicator-implementation</a></p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – BinPan dataframe with High prices.</p></li>
+<li><p><strong>period</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Default is 2. Count of neighbour candles to match max or min tags.</p></li>
+<li><p><strong>merged</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – If True, values are merged into one pd.Serie. minimums overwrite maximums in case of coincidence.</p></li>
+<li><p><strong>suffix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A decorative suffix for the name of the column created.</p></li>
+<li><p><strong>fill_with_zero</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – If true fills nans with zeros. Its better to plot with binpan.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dataframe with two columns, one with 1 or -1 for local max or local min to tag, and other with price values for
+that points.</p>
+</dd>
+</dl>
+<a class="reference internal image-reference" href="_images/fractal_w.png"><img alt="_images/fractal_w.png" src="_images/fractal_w.png" width="1000" />
+</a>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.support_resistance_volume">
+<span class="sig-name descname"><span class="pre">support_resistance_volume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">price_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Close'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">volume_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Volume'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">90</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#support_resistance_volume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.support_resistance_volume" title="Link to this definition">¶</a></dt>
+<dd><p>Calculates support and resistance levels based on volume and prices in the given dataframe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – The dataframe containing price and volume data.</p></li>
+<li><p><strong>num_bins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Optional. The number of bins to use for accumulating volume. Default is 100.</p></li>
+<li><p><strong>price_col</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Optional. The name of the column containing price data. Default is ‘Close’.</p></li>
+<li><p><strong>volume_col</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Optional. The name of the column containing volume data. Default is ‘Volume’.</p></li>
+<li><p><strong>threshold</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Percentil to show most traded levels. Default is 90. The threshold variable filters the volume levels
+considered when calculating support and resistance levels. A higher threshold results in fewer levels, based on higher transaction
+volumes, while a lower threshold yields more levels, based on a broader range of transaction volumes.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return list<span class="colon">:</span></dt>
+<dd class="field-even"><p>A sorted list of support and resistance levels.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.count_smaller_values_backward">
+<span class="sig-name descname"><span class="pre">count_smaller_values_backward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#count_smaller_values_backward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.count_smaller_values_backward" title="Link to this definition">¶</a></dt>
+<dd><p>Calcula el número de valores que cada entrada en la serie supera hacia atrás
+hasta encontrar un valor superior o llegar al inicio de la serie.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>s</strong> – Serie de pandas o lista de números.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Serie de pandas con el número de valores que cada entrada supera hacia atrás.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.count_larger_values_backward">
+<span class="sig-name descname"><span class="pre">count_larger_values_backward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#count_larger_values_backward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.count_larger_values_backward" title="Link to this definition">¶</a></dt>
+<dd><p>Calcula el número de valores que son superiores a cada entrada en la serie hacia atrás
+hasta encontrar un valor igual o menor o llegar al inicio de la serie.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>s</strong> – Serie de pandas o lista de números.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Serie de pandas con el número de valores que son superiores a cada entrada hacia atrás.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.rolling_max_with_steps_back">
+<span class="sig-name descname"><span class="pre">rolling_max_with_steps_back</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ser</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">pct_diff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True)</span> <span class="pre">-&gt;</span> <span class="pre">(&lt;class</span> <span class="pre">'pandas.core.series.Series'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'pandas.core.series.Series'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#rolling_max_with_steps_back"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.rolling_max_with_steps_back" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate the rolling maximum and the steps back to the maximum for each point in the series.</p>
+<p>Parameters:
+series (pd.Series): The time series of prices.
+window (int): The rolling window size.
+pct_result (bool): If True, the maximum values are returned as percentages instead of absolute values (default True).</p>
+<p>Returns:
+pd.Series: A series of the rolling maximum values.
+pd.Series: A series indicating the number of steps back to the maximum value within the window.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.rolling_min_with_steps_back">
+<span class="sig-name descname"><span class="pre">rolling_min_with_steps_back</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ser</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">pct_diff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True)</span> <span class="pre">-&gt;</span> <span class="pre">(&lt;class</span> <span class="pre">'pandas.core.series.Series'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'pandas.core.series.Series'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#rolling_min_with_steps_back"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.rolling_min_with_steps_back" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate the rolling minimum and the steps back to the minimum for each point in the series.</p>
+<p>Parameters:
+series (pd.Series): The time series of prices.
+window (int): The rolling window size.
+pct_result (bool): If True, the minimum values are returned as percentages instead of absolute values (default True).</p>
+<p>Returns:
+pd.Series: A series of the rolling minimum values.
+pd.Series: A series indicating the number of steps back to the minimum value within the window.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.split_serie_by_position">
+<span class="sig-name descname"><span class="pre">split_serie_by_position</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">serie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">splitter_serie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_with_zeros</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#split_serie_by_position"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.split_serie_by_position" title="Link to this definition">¶</a></dt>
+<dd><p>Splits a serie by values of other serie in four series by relative positions for plotting colored clouds with plotly.</p>
+<p>This means you will get 4 series with different situations:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>serie is over the splitter serie.</p></li>
+<li><p>serie is below the splitter serie.</p></li>
+<li><p>splitter serie is over the serie.</p></li>
+<li><p>splitter serie is below the serie.</p></li>
+</ul>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>serie</strong> (<em>pd.Series</em>) – A serie to classify in reference to other serie.</p></li>
+<li><p><strong>splitter_serie</strong> (<em>pd.Series</em>) – A serie to split in two couple of series classified by position reference.</p></li>
+<li><p><strong>fill_with_zeros</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Fill nans with zeros for splitted lines like MACD to avoid artifacts in plots.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return tuple<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple with four series classified by upper position or lower position.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.df_splitter">
+<span class="sig-name descname"><span class="pre">df_splitter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">up_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">down_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#df_splitter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.df_splitter" title="Link to this definition">¶</a></dt>
+<dd><p>Splits a dataframe y sub dataframes to plot by colored areas.</p>
+<p>Based on: <a class="reference external" href="https://stackoverflow.com/questions/64741015/plotly-how-to-color-the-fill-between-two-lines-based-on-a-condition">https://stackoverflow.com/questions/64741015/plotly-how-to-color-the-fill-between-two-lines-based-on-a-condition</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>pd.DataFrame</em>) – Indicator Dataframe</p></li>
+<li><p><strong>up_column</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Name of the column to plot green when up side.</p></li>
+<li><p><strong>down_column</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Name of the column to plot green when down side.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return list<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list with splitted dataframes to plot for.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.zoom_cloud_indicators">
+<span class="sig-name descname"><span class="pre">zoom_cloud_indicators</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plot_splitted_serie_couples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">main_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#zoom_cloud_indicators"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.zoom_cloud_indicators" title="Link to this definition">¶</a></dt>
+<dd><p>It zooms the cloud indicators in an index interval for a plot zoom.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>plot_splitted_serie_couples</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – Splitted indicators for cloud colored area plotting.</p></li>
+<li><p><strong>main_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – The BinPan general index for cutting.</p></li>
+<li><p><strong>start_idx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – A index to cut.</p></li>
+<li><p><strong>end_idx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – A index to cut.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
+<dd class="field-even"><p>All indicators cut.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.shift_indicator">
+<span class="sig-name descname"><span class="pre">shift_indicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">serie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#shift_indicator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.shift_indicator" title="Link to this definition">¶</a></dt>
+<dd><p>It shifts a candle ahead by the window argument value (or backwards if negative).</p>
+<p>Just works with time indexes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>serie</strong> (<em>pd.Series</em>) – A pandas Series.</p></li>
+<li><p><strong>window</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Times values are shifted ahead. Default is 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.Series<span class="colon">:</span></dt>
+<dd class="field-even"><p>A series with index adjusted to the new shifted positions of values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.ffill_indicator">
+<span class="sig-name descname"><span class="pre">ffill_indicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">serie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#ffill_indicator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.ffill_indicator" title="Link to this definition">¶</a></dt>
+<dd><p>It forward fills a value through nans while a window of candles ahead.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>serie</strong> (<em>pd.Series</em>) – A pandas Series.</p></li>
+<li><p><strong>window</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Times values are shifted ahead. Default is 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.Series<span class="colon">:</span></dt>
+<dd class="field-even"><p>A series with index adjusted to the new shifted positions of values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.reversal_candles">
+<span class="sig-name descname"><span class="pre">reversal_candles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_positions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_reversal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#reversal_candles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.reversal_candles" title="Link to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Generate reversal candles for reversal charts:</dt><dd><p><a class="reference external" href="https://atas.net/atas-possibilities/charts/how-to-set-reversal-charts-for-finding-the-market-reversal/">https://atas.net/atas-possibilities/charts/how-to-set-reversal-charts-for-finding-the-market-reversal/</a></p>
+</dd>
+</dl>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>trades</strong> (<em>pd.Series</em>) – A dataframe with trades sizes, side and prices.</p></li>
+<li><p><strong>decimal_positions</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Because this function uses integer numbers for prices, is needed to convert prices. Just steps are
+relevant.</p></li>
+<li><p><strong>time_zone</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A time zone like “Europe/Madrid”.</p></li>
+<li><p><strong>min_height</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Minimum candles height in pips.</p></li>
+<li><p><strong>min_reversal</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Maximum reversal to close the candles</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
+<dd class="field-even"><p>A serie with the resulting candles number sequence.</p>
+<dl>
+<dt>Example:</dt><dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">import</span><span class="w"> </span><span class="nn">binpan</span>
+</span><span data-line="2">
+</span><span data-line="3"> <span class="n">ltc</span> <span class="o">=</span> <span class="n">binpan</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;ltcbtc&#39;</span><span class="p">,</span>
+</span><span data-line="4">                     <span class="n">tick_interval</span><span class="o">=</span><span class="s1">&#39;5m&#39;</span><span class="p">,</span>
+</span><span data-line="5">                     <span class="n">time_zone</span> <span class="o">=</span> <span class="s1">&#39;Europe/Madrid&#39;</span><span class="p">,</span>
+</span><span data-line="6">                     <span class="n">time_index</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="7">                     <span class="n">closed</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="8">                     <span class="n">hours</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</span><span data-line="9"><span class="n">ltc</span><span class="o">.</span><span class="n">get_trades</span><span class="p">()</span>
+</span><span data-line="10"><span class="n">ltc</span><span class="o">.</span><span class="n">get_reversal_candles</span><span class="p">()</span>
+</span><span data-line="11"><span class="n">ltc</span><span class="o">.</span><span class="n">plot_reversal</span><span class="p">()</span>
+</span></pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/reversal.png"><img alt="_images/reversal.png" src="_images/reversal.png" width="1000" />
+</a>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.repeat_prices_by_quantity">
+<span class="sig-name descname"><span class="pre">repeat_prices_by_quantity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">price_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Price'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qty_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Quantity'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alt_qty_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Quote</span> <span class="pre">quantity'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#repeat_prices_by_quantity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.repeat_prices_by_quantity" title="Link to this definition">¶</a></dt>
+<dd><p>Optimized version of repeating prices by quantity for K-means clustering, with a comparison between ‘Quantity’ and ‘Quote quantity’
+to choose the column with larger values for repeating prices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>pd.DataFrame</em>) – A pandas DataFrame with trades or klines, containing ‘Price’, ‘Quantity’, and optionally ‘Quote quantity’ columns.</p></li>
+<li><p><strong>price_col</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The name of the column containing price data. Default is ‘Price’.</p></li>
+<li><p><strong>qty_col</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The primary name of the column containing quantity data. Default is ‘Quantity’.</p></li>
+<li><p><strong>alt_qty_col</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The alternative name of the column containing quantity data to compare with qty_col. Default is ‘Quote quantity’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return np.ndarray<span class="colon">:</span></dt>
+<dd class="field-even"><p>A numpy array with the prices repeated by the chosen quantity.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.kmeans_custom_init">
+<span class="sig-name descname"><span class="pre">kmeans_custom_init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_clusters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#kmeans_custom_init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.kmeans_custom_init" title="Link to this definition">¶</a></dt>
+<dd><p>Generate initial centroids for K-means clustering with equally spaced values between min and max values in data.
+:param data: A data array.
+:param max_clusters: Max clusters expected.
+:return: A numpy array with initial centroids.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.find_optimal_clusters">
+<span class="sig-name descname"><span class="pre">find_optimal_clusters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">KMeans_lib</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_clusters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_centroids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#find_optimal_clusters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.find_optimal_clusters" title="Link to this definition">¶</a></dt>
+<dd><p>Find the optimal quantity of centroids for support and resistance methods using the elbow method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>KMeans_lib</strong> – A KMeans library to use.</p></li>
+<li><p><strong>data</strong> – A numpy array with the data to analyze.</p></li>
+<li><p><strong>max_clusters</strong> – Maximum number of clusters to consider.</p></li>
+<li><p><strong>quiet</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – If true, do not print progress bar.</p></li>
+<li><p><strong>initial_centroids</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – Initial centroids to use optionally for faster results.</p></li>
+<li><p><strong>sample_weight</strong> (<em>np.ndarray</em>) – Optional sample weights for weighted KMeans.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The optimal number of clusters (centroids) as an integer.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.support_resistance_levels">
+<span class="sig-name descname"><span class="pre">support_resistance_levels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_clusters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by_quantity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by_klines</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimize_clusters_qty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#support_resistance_levels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.support_resistance_levels" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate support and resistance levels for a given set of trades using K-means clustering.</p>
+<a class="reference internal image-reference" href="_images/support_resistance.png"><img alt="_images/support_resistance.png" src="_images/support_resistance.png" width="1000" />
+</a>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> – A pandas DataFrame with trades or klines, containing a ‘Price’, ‘Quantity’ columns and a ‘Buyer was maker’ column,
+if trades passed, else “Close”, “Volume” and “Taker buy base volume”</p></li>
+<li><p><strong>max_clusters</strong> – Maximum number of clusters to consider for finding the optimal number of centroids. Default: 5.</p></li>
+<li><p><strong>by_quantity</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Count each price as many times the quantity contains a float of a the passed amount.
+Example: If a price 0.001 has a quantity of 100 and by_quantity is 0.1, quantity/by_quantity = 100/0.1 = 1000, then this prices
+is taken into account 1000 times instead of 1.</p></li>
+<li><p><strong>by_klines</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – If true, data is assumed to be klines.</p></li>
+<li><p><strong>optimize_clusters_qty</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – If true, find the optimal number of clusters to use for calculating support and resistance levels.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing two lists: the first list contains the support levels, and the second list contains
+the resistance levels. Both lists contain float values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.support_resistance_levels_merged">
+<span class="sig-name descname"><span class="pre">support_resistance_levels_merged</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by_klines</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_clusters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by_quantity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimize_clusters_qty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#support_resistance_levels_merged"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.support_resistance_levels_merged" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate support and resistance levels merged for a given set of trades using K-means clustering.</p>
+<p>Uses <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> in KMeans instead of repeating prices, avoiding MemoryError with large volumes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> – A pandas DataFrame with trades or klines, containing a ‘Price’, ‘Quantity’ columns or “Close”, “Volume”.</p></li>
+<li><p><strong>by_klines</strong> – If true, assume data is from klines.</p></li>
+<li><p><strong>max_clusters</strong> – Quantity of clusters to consider initially. Default: 5.</p></li>
+<li><p><strong>by_quantity</strong> – If true, use quantity to weight prices. It gives more importance to prices with more quantity.</p></li>
+<li><p><strong>optimize_clusters_qty</strong> – If true, find the optimal number of clusters to use for calculating support and resistance levels.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list containing the support and resistance levels merged. It would be just levels.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.repeat_timestamps_by_quantity">
+<span class="sig-name descname"><span class="pre">repeat_timestamps_by_quantity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon_quantity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">buy_maker</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buy_taker</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trades_col_from_kline</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Trades'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#repeat_timestamps_by_quantity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.repeat_timestamps_by_quantity" title="Link to this definition">¶</a></dt>
+<dd><p>Repeat timestamps by quantity to give more importance to prices with more quantity. It detects if data is from trades or klines by
+column names.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> – A pandas DataFrame with trades or klines, containing a ‘Price’, ‘Quantity’ columns or “Close”, “Volume” respectively.</p></li>
+<li><p><strong>epsilon_quantity</strong> – Quantity to repeat timestamps by.</p></li>
+<li><p><strong>buy_maker</strong> – If true, use maker side volume.</p></li>
+<li><p><strong>buy_taker</strong> – If true, use taker side volume.</p></li>
+<li><p><strong>trades_col_from_kline</strong> – If true, use taker side volume.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.time_active_zones">
+<span class="sig-name descname"><span class="pre">time_active_zones</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_clusters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simple</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by_quantity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimize_clusters_qty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#time_active_zones"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.time_active_zones" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate support and resistance levels timestamp centroids for a given set of trades using K-means clustering.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> – A pandas DataFrame with trades or klines, containing a ‘Price’, ‘Quantity’ columns and a ‘Buyer was maker’ column,
+if trades passed, else “Close”, “Volume” and “Taker buy base volume”</p></li>
+<li><p><strong>max_clusters</strong> – Maximum number of clusters to consider for finding the optimal number of centroids. Default: 5.</p></li>
+<li><p><strong>simple</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – If true, use all trades to calculate time activity clusters.</p></li>
+<li><p><strong>by_quantity</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Count each price as many times the quantity contains a float of a the passed amount.
+Example: If a price 0.001 has a quantity of 100 and by_quantity is 0.1, quantity/by_quantity = 100/0.1 = 1000, then this prices
+is taken into account 1000 times instead of 1.</p></li>
+<li><p><strong>quiet</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – If true, do not print progress bar.</p></li>
+<li><p><strong>optimize_clusters_qty</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – If true, find the optimal number of clusters to use for calculating support and resistance levels.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing two lists: the first list contains the support levels, and the second list contains
+the resistance levels. Both lists contain float values.</p>
+</dd>
+</dl>
+<a class="reference internal image-reference" href="_images/time_action.png"><img alt="_images/time_action.png" src="_images/time_action.png" width="1000" />
+</a>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.market_profile_from_klines_melt">
+<span class="sig-name descname"><span class="pre">market_profile_from_klines_melt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#market_profile_from_klines_melt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.market_profile_from_klines_melt" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate the market profile for a given OHLC data. The function calculates the average price for each candle
+(high + low + close) / 3, and then calculates the ‘maker’ and ‘taker’ volumes for each average price.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>df</strong> – A pandas DataFrame with the OHLC data. It should contain ‘High’, ‘Low’, ‘Close’, ‘Volume’, and
+‘Taker buy base volume’ columns.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pandas DataFrame grouped by the average price (‘Market_Profile’) with the sum of ‘Taker buy base volume’
+and ‘Maker_Volume’ for each average price.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.taker_maker_profile_from_klines_melt">
+<span class="sig-name descname"><span class="pre">taker_maker_profile_from_klines_melt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#taker_maker_profile_from_klines_melt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.taker_maker_profile_from_klines_melt" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate the ratio of taker and maker volume for a given OHLC data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>df</strong> – A pandas DataFrame with the OHLC data. It should contain ‘High’, ‘Low’, ‘Close’, ‘Volume’, and
+‘Taker buy base volume’ columns.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pandas DataFrame grouped by the average price (‘Market_Profile’) with the sum of ‘Taker buy base volume’
+and ‘Maker_Volume’ for each average price.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.market_profile_from_klines_grouped">
+<span class="sig-name descname"><span class="pre">market_profile_from_klines_grouped</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_bins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#market_profile_from_klines_grouped"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.market_profile_from_klines_grouped" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate the market profile for a given OHLC data. The function calculates the average price for each candle
+(high + low + close) / 3, and then calculates the ‘maker’ and ‘taker’ volumes for each average price.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> – A pandas DataFrame with the OHLC data. It should contain ‘High’, ‘Low’, ‘Close’, ‘Volume’, and
+‘Taker buy base volume’ columns.</p></li>
+<li><p><strong>num_bins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Number of bins to use for the market profile.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pandas DataFrame grouped by the average price (‘Market_Profile’) with the sum of ‘Taker buy base volume’
+and ‘Maker_Volume’ for each average price.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.market_profile_from_trades_grouped">
+<span class="sig-name descname"><span class="pre">market_profile_from_trades_grouped</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_bins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#market_profile_from_trades_grouped"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.market_profile_from_trades_grouped" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate the market profile for a given trades data. The function calculates the average price for each trade
+and then calculates the ‘maker’ and ‘taker’ volumes for each average price.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> – A pandas DataFrame with the trades data. It should contain ‘Price’, ‘Quantity’, ‘Buyer was maker’ columns.</p></li>
+<li><p><strong>num_bins</strong> – The number of bins to use for the market profile.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pandas DataFrame grouped by the average price (‘Price_Bin’) with the sum of ‘Taker buy base volume’
+and ‘Maker buy base volume’ for each average price.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.value_area_from_profile">
+<span class="sig-name descname"><span class="pre">value_area_from_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">profile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value_area_pct</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.7</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#value_area_from_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.value_area_from_profile" title="Link to this definition">¶</a></dt>
+<dd><p>Calcula POC, Value Area y nodos de alto/bajo volumen de un market profile.</p>
+<p>A partir de un DataFrame de market profile (el que devuelven <code class="docutils literal notranslate"><span class="pre">market_profile_from_klines_grouped</span></code>
+o <code class="docutils literal notranslate"><span class="pre">market_profile_from_trades_grouped</span></code>: <code class="docutils literal notranslate"><span class="pre">IntervalIndex</span></code> de precio + columnas de volumen) calcula
+las metricas tipicas de un Volume Profile (VPVR):</p>
+<ul class="simple">
+<li><p><strong>POC</strong> (Point of Control): el nivel de precio con mayor volumen, el gran iman.</p></li>
+<li><p><strong>Value Area</strong> (VAH/VAL): el rango de precios que concentra <code class="docutils literal notranslate"><span class="pre">value_area_pct</span></code> del volumen total,
+expandido desde el POC hacia el vecino con mas volumen en cada paso (algoritmo estandar).</p></li>
+<li><p><strong>HVN / LVN</strong> (High/Low Volume Nodes): maximos/minimos locales del histograma. Los HVN actuan como
+soportes/resistencias por aceptacion; los LVN son huecos por donde el precio viaja rapido.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>profile</strong> (<em>pd.DataFrame</em>) – market profile con <code class="docutils literal notranslate"><span class="pre">IntervalIndex</span></code> de precio. El volumen de cada bin
+es la suma de todas sus columnas numericas (taker + maker).</p></li>
+<li><p><strong>value_area_pct</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – fraccion del volumen total dentro de la Value Area. Por defecto 0.70.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict con <code class="docutils literal notranslate"><span class="pre">poc</span></code>, <code class="docutils literal notranslate"><span class="pre">vah</span></code>, <code class="docutils literal notranslate"><span class="pre">val</span></code>, <code class="docutils literal notranslate"><span class="pre">value_area_pct</span></code>, <code class="docutils literal notranslate"><span class="pre">total_volume</span></code>, <code class="docutils literal notranslate"><span class="pre">bins</span></code> (lista de
+<code class="docutils literal notranslate"><span class="pre">{price,</span> <span class="pre">low,</span> <span class="pre">high,</span> <span class="pre">volume}</span></code>), <code class="docutils literal notranslate"><span class="pre">hvn</span></code> y <code class="docutils literal notranslate"><span class="pre">lvn</span></code> (listas de precios). <code class="docutils literal notranslate"><span class="pre">None</span></code> si el perfil esta vacio.</p>
+</dd>
+</dl>
+<p>Ejemplo:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="n">prof</span> <span class="o">=</span> <span class="n">market_profile_from_klines_grouped</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">sym</span><span class="o">.</span><span class="n">df</span><span class="p">,</span> <span class="n">num_bins</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+</span><span data-line="2"><span class="n">va</span> <span class="o">=</span> <span class="n">value_area_from_profile</span><span class="p">(</span><span class="n">prof</span><span class="p">,</span> <span class="n">value_area_pct</span><span class="o">=</span><span class="mf">0.70</span><span class="p">)</span>
+</span><span data-line="3"><span class="nb">print</span><span class="p">(</span><span class="n">va</span><span class="p">[</span><span class="s2">&quot;poc&quot;</span><span class="p">],</span> <span class="n">va</span><span class="p">[</span><span class="s2">&quot;vah&quot;</span><span class="p">],</span> <span class="n">va</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">])</span>
+</span></pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.atr">
+<span class="sig-name descname"><span class="pre">atr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">high</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">low</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">close</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">14</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#atr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.atr" title="Link to this definition">¶</a></dt>
+<dd><p>Average True Range using Wilder’s smoothing (RMA).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>high</strong> (<em>pd.Series</em>) – High prices.</p></li>
+<li><p><strong>low</strong> (<em>pd.Series</em>) – Low prices.</p></li>
+<li><p><strong>close</strong> (<em>pd.Series</em>) – Close prices.</p></li>
+<li><p><strong>length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Period. Default 14.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.Series<span class="colon">:</span></dt>
+<dd class="field-even"><p>ATR values with column name <code class="docutils literal notranslate"><span class="pre">ATRr_{length}</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.supertrend">
+<span class="sig-name descname"><span class="pre">supertrend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">high</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">low</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">close</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiplier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#supertrend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.supertrend" title="Link to this definition">¶</a></dt>
+<dd><p>Supertrend indicator (Binance-compatible).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>high</strong> (<em>pd.Series</em>) – High prices.</p></li>
+<li><p><strong>low</strong> (<em>pd.Series</em>) – Low prices.</p></li>
+<li><p><strong>close</strong> (<em>pd.Series</em>) – Close prices.</p></li>
+<li><p><strong>length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – ATR period. Default 10.</p></li>
+<li><p><strong>multiplier</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – ATR multiplier. Default 3.0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
+<dd class="field-even"><p>Columns <code class="docutils literal notranslate"><span class="pre">SUPERT_{length}_{multiplier}</span></code>, <code class="docutils literal notranslate"><span class="pre">SUPERTd_...</span></code>, <code class="docutils literal notranslate"><span class="pre">SUPERTl_...</span></code>, <code class="docutils literal notranslate"><span class="pre">SUPERTs_...</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.macd">
+<span class="sig-name descname"><span class="pre">macd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">close</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">26</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">9</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#macd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.macd" title="Link to this definition">¶</a></dt>
+<dd><p>Moving Average Convergence/Divergence.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>close</strong> (<em>pd.Series</em>) – Close prices.</p></li>
+<li><p><strong>fast</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Fast EMA period. Default 12.</p></li>
+<li><p><strong>slow</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Slow EMA period. Default 26.</p></li>
+<li><p><strong>signal</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Signal EMA period. Default 9.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
+<dd class="field-even"><p>Columns <code class="docutils literal notranslate"><span class="pre">MACD_{fast}_{slow}_{signal}</span></code>, <code class="docutils literal notranslate"><span class="pre">MACDh_...</span></code>, <code class="docutils literal notranslate"><span class="pre">MACDs_...</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.stoch_rsi">
+<span class="sig-name descname"><span class="pre">stoch_rsi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">close</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rsi_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">14</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stoch_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">14</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k_smooth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_smooth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#stoch_rsi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.stoch_rsi" title="Link to this definition">¶</a></dt>
+<dd><p>Stochastic RSI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>close</strong> (<em>pd.Series</em>) – Close prices.</p></li>
+<li><p><strong>rsi_length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – RSI period. Default 14.</p></li>
+<li><p><strong>stoch_length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Stochastic lookback. Default 14.</p></li>
+<li><p><strong>k_smooth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – %K smoothing. Default 3.</p></li>
+<li><p><strong>d_smooth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – %D smoothing. Default 3.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
+<dd class="field-even"><p>Columns <code class="docutils literal notranslate"><span class="pre">STOCHRSIk_...</span></code>, <code class="docutils literal notranslate"><span class="pre">STOCHRSId_...</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.obv">
+<span class="sig-name descname"><span class="pre">obv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">close</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#obv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.obv" title="Link to this definition">¶</a></dt>
+<dd><p>On Balance Volume.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>close</strong> (<em>pd.Series</em>) – Close prices.</p></li>
+<li><p><strong>volume</strong> (<em>pd.Series</em>) – Volume.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.Series<span class="colon">:</span></dt>
+<dd class="field-even"><p>OBV values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.ad">
+<span class="sig-name descname"><span class="pre">ad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">high</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">low</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">close</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#ad"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.ad" title="Link to this definition">¶</a></dt>
+<dd><p>Accumulation/Distribution line.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>high</strong> (<em>pd.Series</em>) – High prices.</p></li>
+<li><p><strong>low</strong> (<em>pd.Series</em>) – Low prices.</p></li>
+<li><p><strong>close</strong> (<em>pd.Series</em>) – Close prices.</p></li>
+<li><p><strong>volume</strong> (<em>pd.Series</em>) – Volume.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.Series<span class="colon">:</span></dt>
+<dd class="field-even"><p>AD values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.vwap">
+<span class="sig-name descname"><span class="pre">vwap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">high</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">low</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">close</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#vwap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.vwap" title="Link to this definition">¶</a></dt>
+<dd><p>Volume Weighted Average Price (cumulative over the full series).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>high</strong> (<em>pd.Series</em>) – High prices.</p></li>
+<li><p><strong>low</strong> (<em>pd.Series</em>) – Low prices.</p></li>
+<li><p><strong>close</strong> (<em>pd.Series</em>) – Close prices.</p></li>
+<li><p><strong>volume</strong> (<em>pd.Series</em>) – Volume.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.Series<span class="colon">:</span></dt>
+<dd class="field-even"><p>VWAP values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.cci">
+<span class="sig-name descname"><span class="pre">cci</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">high</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">low</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">close</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">14</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.015</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#cci"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.cci" title="Link to this definition">¶</a></dt>
+<dd><p>Commodity Channel Index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>high</strong> (<em>pd.Series</em>) – High prices.</p></li>
+<li><p><strong>low</strong> (<em>pd.Series</em>) – Low prices.</p></li>
+<li><p><strong>close</strong> (<em>pd.Series</em>) – Close prices.</p></li>
+<li><p><strong>length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Period. Default 14.</p></li>
+<li><p><strong>c</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Scaling constant. Default 0.015.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.Series<span class="colon">:</span></dt>
+<dd class="field-even"><p>CCI values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.eom">
+<span class="sig-name descname"><span class="pre">eom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">high</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">low</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">14</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">divisor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100000000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#eom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.eom" title="Link to this definition">¶</a></dt>
+<dd><p>Ease of Movement.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>high</strong> (<em>pd.Series</em>) – High prices.</p></li>
+<li><p><strong>low</strong> (<em>pd.Series</em>) – Low prices.</p></li>
+<li><p><strong>volume</strong> (<em>pd.Series</em>) – Volume.</p></li>
+<li><p><strong>length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Smoothing period. Default 14.</p></li>
+<li><p><strong>divisor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Volume divisor. Default 100_000_000.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.Series<span class="colon">:</span></dt>
+<dd class="field-even"><p>EOM values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.roc">
+<span class="sig-name descname"><span class="pre">roc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">close</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scalar</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#roc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.roc" title="Link to this definition">¶</a></dt>
+<dd><p>Rate of Change.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>close</strong> (<em>pd.Series</em>) – Close prices.</p></li>
+<li><p><strong>length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Lookback period. Default 1.</p></li>
+<li><p><strong>scalar</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Scaling factor. Default 100.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.Series<span class="colon">:</span></dt>
+<dd class="field-even"><p>ROC values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.bbands">
+<span class="sig-name descname"><span class="pre">bbands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">close</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ddof</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#bbands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.bbands" title="Link to this definition">¶</a></dt>
+<dd><p>Bollinger Bands.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>close</strong> (<em>pd.Series</em>) – Close prices.</p></li>
+<li><p><strong>length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – SMA period. Default 5.</p></li>
+<li><p><strong>std</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Standard deviation multiplier. Default 2.0.</p></li>
+<li><p><strong>ddof</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Degrees of freedom for std. Default 0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
+<dd class="field-even"><p>Columns <code class="docutils literal notranslate"><span class="pre">BBL_...</span></code>, <code class="docutils literal notranslate"><span class="pre">BBM_...</span></code>, <code class="docutils literal notranslate"><span class="pre">BBU_...</span></code>, <code class="docutils literal notranslate"><span class="pre">BBB_...</span></code>, <code class="docutils literal notranslate"><span class="pre">BBP_...</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.indicators.stoch">
+<span class="sig-name descname"><span class="pre">stoch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">high</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">low</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">close</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">14</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/binpan/analysis/indicators.html#stoch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.indicators.stoch" title="Link to this definition">¶</a></dt>
+<dd><p>Stochastic Oscillator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>high</strong> (<em>pd.Series</em>) – High prices.</p></li>
+<li><p><strong>low</strong> (<em>pd.Series</em>) – Low prices.</p></li>
+<li><p><strong>close</strong> (<em>pd.Series</em>) – Close prices.</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – %K lookback period. Default 14.</p></li>
+<li><p><strong>d</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – %D smoothing period. Default 3.</p></li>
+<li><p><strong>smooth_k</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – %K smoothing. Default 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
+<dd class="field-even"><p>Columns <code class="docutils literal notranslate"><span class="pre">STOCHk_{k}_{d}_{smooth_k}</span></code>, <code class="docutils literal notranslate"><span class="pre">STOCHd_{k}_{d}_{smooth_k}</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"><div class="navigation-prev">
+    <a href="wallet_api.html">
+      <i class="i-lucide chevron-left"></i>
+      <div class="page-info">
+        <span>Previous</span><div class="title">Wallet API Functions</div></div>
+    </a>
+  </div><div class="navigation-next">
+    <a href="aggregations.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title">Aggregations Module</div>
+      </div>
+      <i class="i-lucide chevron-right"></i>
+    </a>
+  </div></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2022, Fernando Alfonso</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+<a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+  <iconify-icon icon="simple-icons:github"></iconify-icon>
+</a></div>
+    </div>
+  </div>
+</footer>
+      <script src="_static/documentation_options.js?v=11e62b30"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/shibuya.js?v=50760d75"></script></body>
+</html>

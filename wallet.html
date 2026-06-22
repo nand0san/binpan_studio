@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="iris" data-content_root="./">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Wallet Class - BinPan 0.10.2</title><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Wallet API Functions" href="wallet_api.html" /><link rel="prev" title="Authentication Module" href="auth.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="_static/pygments.css?v=e1a1ceaf" />
+    <link rel="stylesheet" type="text/css" href="_static/shibuya.css?v=9454f7d5" />
+    <link rel="stylesheet" type="text/css" href="_static/style.css?v=1e48dca6" />
+    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/><meta property="og:title" content="Wallet Class"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="index.html">
+      
+      
+      <strong>BinPan</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Main Classes:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="binpan.html">BinPan Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="symbol_indicators.html">Symbol Indicators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="symbol_plotting.html">Symbol Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="symbol_strategy.html">Symbol Strategy</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">API &amp; Market:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exchange.html">Exchange Info Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="auth.html">Authentication Module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Wallet Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wallet_api.html">Wallet API Functions</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Analysis:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="indicators.html">Indicators Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aggregations.html">Aggregations Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tags.html">Tags &amp; Backtesting Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stat_tests.html">Statistical Tests and Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_tools.html">Numba Tools Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Core:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="time_helper.html">Time Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timeframes.html">Timeframes Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trades.html">Trades Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="standards.html">Standards Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="secrets.html">Secrets Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logs.html">Logs Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Plotting:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Storage &amp; Database:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="files.html">Files Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postgresql.html">PostgreSQL Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postgresql_database.html">PostgreSQL Database Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="influx_manager.html">Influx Manager Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#binpan.wallet.Wallet"><code class="docutils literal notranslate"><span class="pre">Wallet</span></code></a><ul>
+<li><a class="reference internal" href="#binpan.wallet.Wallet.update_spot"><code class="docutils literal notranslate">update_spot()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.wallet.Wallet.update_spot_snapshot"><code class="docutils literal notranslate">update_spot_snapshot()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.wallet.Wallet.update_margin"><code class="docutils literal notranslate">update_margin()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.wallet.Wallet.update_margin_snapshot"><code class="docutils literal notranslate">update_margin_snapshot()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.wallet.Wallet.spot_wallet_performance"><code class="docutils literal notranslate">spot_wallet_performance()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.wallet.Wallet.margin_wallet_performance"><code class="docutils literal notranslate">margin_wallet_performance()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="index.html"><span itemprop="name">BinPan</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">Wallet Class</strong>
+        <meta itemprop="position" content="2" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue" role="main">
+          <section id="wallet-class">
+<h1>Wallet Class<a class="headerlink" href="#wallet-class" title="Link to this heading">¶</a></h1>
+<p>High-level wrapper over the account balances (Spot and cross Margin), with daily snapshots
+and performance helpers. Requires API credentials, which are managed by <code class="docutils literal notranslate"><span class="pre">panzer</span></code>
+(<code class="docutils literal notranslate"><span class="pre">~/.panzer_creds</span></code>); see <a class="reference internal" href="secrets.html"><span class="doc">Secrets Module</span></a>. The underlying request functions are documented in
+<a class="reference internal" href="wallet_api.html"><span class="doc">Wallet API Functions</span></a>.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="binpan.wallet.Wallet">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Wallet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'UTC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snapshot_days</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">30</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/binpan/wallet.html#Wallet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.wallet.Wallet" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Wallet is a BinPan Class that can give information about balances, in Spot or Margin trading.</p>
+<p>Also can show snapshots of the account status days ago, or using timestamps.</p>
+<p>Credentials are managed by panzer’s CredentialManager (~/.panzer_creds).
+On first use, panzer will prompt for API key and secret if not already stored.</p>
+<p><strong>Methods:</strong></p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.wallet.Wallet.update_spot" title="binpan.wallet.Wallet.update_spot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_spot</span></code></a>([decimal_mode])</p></td>
+<td><p>Updates balances in the class object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.wallet.Wallet.update_spot_snapshot" title="binpan.wallet.Wallet.update_spot_snapshot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_spot_snapshot</span></code></a>([startTime, endTime, ...])</p></td>
+<td><p>Updates spot wallet snapshot and stores it in <code class="docutils literal notranslate"><span class="pre">self.spot_snapshot</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.wallet.Wallet.update_margin" title="binpan.wallet.Wallet.update_margin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_margin</span></code></a>([decimal_mode])</p></td>
+<td><p>Updates balances in the wallet class object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.wallet.Wallet.update_margin_snapshot" title="binpan.wallet.Wallet.update_margin_snapshot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_margin_snapshot</span></code></a>([startTime, endTime, ...])</p></td>
+<td><p>Updates margin wallet snapshot and stores it in <code class="docutils literal notranslate"><span class="pre">self.margin_snapshot</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.wallet.Wallet.spot_wallet_performance" title="binpan.wallet.Wallet.spot_wallet_performance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spot_wallet_performance</span></code></a>(decimal_mode[, ...])</p></td>
+<td><p>Calculate difference between current wallet not locked values and days before.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.wallet.Wallet.margin_wallet_performance" title="binpan.wallet.Wallet.margin_wallet_performance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">margin_wallet_performance</span></code></a>(decimal_mode[, ...])</p></td>
+<td><p>Calculate difference between current wallet not locked values and days before.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.wallet.Wallet.update_spot">
+<span class="sig-name descname"><span class="pre">update_spot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/binpan/wallet.html#Wallet.update_spot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.wallet.Wallet.update_spot" title="Link to this definition">¶</a></dt>
+<dd><p>Updates balances in the class object.
+:param bool decimal_mode: Use of decimal objects instead of float.
+:return dict: Wallet dictionary</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.wallet.Wallet.update_spot_snapshot">
+<span class="sig-name descname"><span class="pre">update_spot_snapshot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snapshot_days</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/binpan/wallet.html#Wallet.update_spot_snapshot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.wallet.Wallet.update_spot_snapshot" title="Link to this definition">¶</a></dt>
+<dd><p>Updates spot wallet snapshot and stores it in <code class="docutils literal notranslate"><span class="pre">self.spot_snapshot</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>startTime</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42</p></li>
+<li><p><strong>endTime</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42</p></li>
+<li><p><strong>snapshot_days</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Days to look if not start time or endtime passed.</p></li>
+<li><p><strong>time_zone</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A time zone for time index conversion. Example: “Europe/Madrid”</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
+<dd class="field-even"><p>Spot wallet snapshot for the time period requested.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.wallet.Wallet.update_margin">
+<span class="sig-name descname"><span class="pre">update_margin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/binpan/wallet.html#Wallet.update_margin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.wallet.Wallet.update_margin" title="Link to this definition">¶</a></dt>
+<dd><p>Updates balances in the wallet class object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>decimal_mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Use of decimal objects instead of float.</p>
+</dd>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
+<dd class="field-even"><p>Wallet dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.wallet.Wallet.update_margin_snapshot">
+<span class="sig-name descname"><span class="pre">update_margin_snapshot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snapshot_days</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/binpan/wallet.html#Wallet.update_margin_snapshot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.wallet.Wallet.update_margin_snapshot" title="Link to this definition">¶</a></dt>
+<dd><p>Updates margin wallet snapshot and stores it in <code class="docutils literal notranslate"><span class="pre">self.margin_snapshot</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>startTime</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42</p></li>
+<li><p><strong>endTime</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42</p></li>
+<li><p><strong>snapshot_days</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Days to look if not start time or endtime passed.</p></li>
+<li><p><strong>time_zone</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A time zone for time index conversion. Example: “Europe/Madrid”</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
+<dd class="field-even"><p>Margin wallet snapshot for the time period requested.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.wallet.Wallet.spot_wallet_performance">
+<span class="sig-name descname"><span class="pre">spot_wallet_performance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">days</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BUSD'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/binpan/wallet.html#Wallet.spot_wallet_performance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.wallet.Wallet.spot_wallet_performance" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate difference between current wallet not locked values and days before.
+:param bool decimal_mode: Fixes Decimal return type and operative.
+:param int or str startTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
+:param int or str endTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
+:param int days: Days to compare balances.
+:param str convert_to: Converts balances to a coin.
+:return float: Value increase or decrease with current value of convert_to coin.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.wallet.Wallet.margin_wallet_performance">
+<span class="sig-name descname"><span class="pre">margin_wallet_performance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">startTime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endTime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">days</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BUSD'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/binpan/wallet.html#Wallet.margin_wallet_performance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.wallet.Wallet.margin_wallet_performance" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate difference between current wallet not locked values and days before.
+:param bool decimal_mode: Fixes Decimal return type and operative.
+:param int or str startTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
+:param int or str endTime: Can be integer timestamp in milliseconds or formatted string: 2022-05-11 06:45:42
+:param int days: Days to compare balances.
+:param str convert_to: Converts balances to a coin.
+:return float: Value increase or decrease with current value of convert_to coin.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"><div class="navigation-prev">
+    <a href="auth.html">
+      <i class="i-lucide chevron-left"></i>
+      <div class="page-info">
+        <span>Previous</span><div class="title">Authentication Module</div></div>
+    </a>
+  </div><div class="navigation-next">
+    <a href="wallet_api.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title">Wallet API Functions</div>
+      </div>
+      <i class="i-lucide chevron-right"></i>
+    </a>
+  </div></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2022, Fernando Alfonso</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+<a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+  <iconify-icon icon="simple-icons:github"></iconify-icon>
+</a></div>
+    </div>
+  </div>
+</footer>
+      <script src="_static/documentation_options.js?v=11e62b30"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/shibuya.js?v=50760d75"></script></body>
+</html>

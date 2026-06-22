@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="iris" data-content_root="./">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Exchange Info Module - BinPan 0.10.2</title><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Authentication Module" href="auth.html" /><link rel="prev" title="Market Module" href="market.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="_static/pygments.css?v=e1a1ceaf" />
+    <link rel="stylesheet" type="text/css" href="_static/shibuya.css?v=9454f7d5" />
+    <link rel="stylesheet" type="text/css" href="_static/style.css?v=1e48dca6" />
+    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/><meta property="og:title" content="Exchange Info Module"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="index.html">
+      
+      
+      <strong>BinPan</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Main Classes:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="binpan.html">BinPan Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="symbol_indicators.html">Symbol Indicators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="symbol_plotting.html">Symbol Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="symbol_strategy.html">Symbol Strategy</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">API &amp; Market:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Exchange Info Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="auth.html">Authentication Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wallet_api.html">Wallet API Functions</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Analysis:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="indicators.html">Indicators Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aggregations.html">Aggregations Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tags.html">Tags &amp; Backtesting Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stat_tests.html">Statistical Tests and Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_tools.html">Numba Tools Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Core:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="time_helper.html">Time Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timeframes.html">Timeframes Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trades.html">Trades Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="standards.html">Standards Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="secrets.html">Secrets Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logs.html">Logs Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Plotting:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Storage &amp; Database:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="files.html">Files Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postgresql.html">PostgreSQL Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postgresql_database.html">PostgreSQL Database Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="influx_manager.html">Influx Manager Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#binpan.api.exchange_info.get_exchange_info"><code class="docutils literal notranslate"><span class="pre">get_exchange_info()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.api.exchange_info.get_info_dic"><code class="docutils literal notranslate"><span class="pre">get_info_dic()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.api.exchange_info.get_account_status"><code class="docutils literal notranslate"><span class="pre">get_account_status()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.api.exchange_info.get_margin_bnb_interest_status"><code class="docutils literal notranslate"><span class="pre">get_margin_bnb_interest_status()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.api.exchange_info.get_exchange_limits"><code class="docutils literal notranslate"><span class="pre">get_exchange_limits()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.api.exchange_info.flatten_filter"><code class="docutils literal notranslate"><span class="pre">flatten_filter()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.api.exchange_info.get_symbols_filters"><code class="docutils literal notranslate"><span class="pre">get_symbols_filters()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.api.exchange_info.get_filters"><code class="docutils literal notranslate"><span class="pre">get_filters()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.api.exchange_info.filter_tradeable"><code class="docutils literal notranslate"><span class="pre">filter_tradeable()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.api.exchange_info.filter_spot"><code class="docutils literal notranslate"><span class="pre">filter_spot()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.api.exchange_info.filter_margin"><code class="docutils literal notranslate"><span class="pre">filter_margin()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.api.exchange_info.filter_not_margin"><code class="docutils literal notranslate"><span class="pre">filter_not_margin()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.api.exchange_info.filter_leveraged_tokens"><code class="docutils literal notranslate"><span class="pre">filter_leveraged_tokens()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.api.exchange_info.filter_legal"><code class="docutils literal notranslate"><span class="pre">filter_legal()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.api.exchange_info.get_precision"><code class="docutils literal notranslate"><span class="pre">get_precision()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.api.exchange_info.get_orderTypes_and_permissions"><code class="docutils literal notranslate"><span class="pre">get_orderTypes_and_permissions()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.api.exchange_info.get_fees_dict"><code class="docutils literal notranslate"><span class="pre">get_fees_dict()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.api.exchange_info.get_fees"><code class="docutils literal notranslate"><span class="pre">get_fees()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.api.exchange_info.get_system_status"><code class="docutils literal notranslate"><span class="pre">get_system_status()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.api.exchange_info.get_coins_and_networks_info"><code class="docutils literal notranslate"><span class="pre">get_coins_and_networks_info()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.api.exchange_info.get_coins_info_list"><code class="docutils literal notranslate"><span class="pre">get_coins_info_list()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.api.exchange_info.get_coins_info_dic"><code class="docutils literal notranslate"><span class="pre">get_coins_info_dic()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.api.exchange_info.get_legal_coins"><code class="docutils literal notranslate"><span class="pre">get_legal_coins()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.api.exchange_info.get_leveraged_coins"><code class="docutils literal notranslate"><span class="pre">get_leveraged_coins()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.api.exchange_info.get_leveraged_symbols"><code class="docutils literal notranslate"><span class="pre">get_leveraged_symbols()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.api.exchange_info.get_quotes_dic"><code class="docutils literal notranslate"><span class="pre">get_quotes_dic()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.api.exchange_info.get_bases_dic"><code class="docutils literal notranslate"><span class="pre">get_bases_dic()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.api.exchange_info.exchange_status"><code class="docutils literal notranslate"><span class="pre">exchange_status()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.api.exchange_info.get_24h_statistics"><code class="docutils literal notranslate"><span class="pre">get_24h_statistics()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.api.exchange_info.try_coin_conversion_to_stablecoin_by_intermediate_symbol"><code class="docutils literal notranslate"><span class="pre">try_coin_conversion_to_stablecoin_by_intermediate_symbol()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.api.exchange_info.convert_to_other_coin"><code class="docutils literal notranslate"><span class="pre">convert_to_other_coin()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.api.exchange_info.convert_symbol_base_to_other_coin"><code class="docutils literal notranslate"><span class="pre">convert_symbol_base_to_other_coin()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.api.exchange_info.convert_symbol_base_price_series_to_stablecoin"><code class="docutils literal notranslate"><span class="pre">convert_symbol_base_price_series_to_stablecoin()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.api.exchange_info.convert_utc_milliseconds"><code class="docutils literal notranslate"><span class="pre">convert_utc_milliseconds()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.api.exchange_info.statistics_24h"><code class="docutils literal notranslate"><span class="pre">statistics_24h()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.api.exchange_info.get_top_gainers"><code class="docutils literal notranslate"><span class="pre">get_top_gainers()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.api.exchange_info.get_decimal_positions"><code class="docutils literal notranslate"><span class="pre">get_decimal_positions()</span></code></a></li>
+</ul>
+</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="index.html"><span itemprop="name">BinPan</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">Exchange Info Module</strong>
+        <meta itemprop="position" content="2" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue" role="main">
+          <section id="exchange-info-module">
+<h1>Exchange Info Module<a class="headerlink" href="#exchange-info-module" title="Link to this heading">¶</a></h1>
+<p>This module manages exchange data from the Binance API.</p>
+<p id="module-binpan.api.exchange_info">BinPan Classes Main Module</p>
+<p><strong>Functions:</strong></p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.api.exchange_info.get_exchange_info" title="binpan.api.exchange_info.get_exchange_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_exchange_info</span></code></a>()</p></td>
+<td><p>Returns general exchange info from /api/v3/exchangeInfo endpoint.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.api.exchange_info.get_info_dic" title="binpan.api.exchange_info.get_info_dic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_info_dic</span></code></a>()</p></td>
+<td><p>Get the dictionary of each symbol with its information from the exchange.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.api.exchange_info.get_account_status" title="binpan.api.exchange_info.get_account_status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_account_status</span></code></a>(decimal_mode)</p></td>
+<td><p>Fetch account status detail.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.api.exchange_info.get_margin_bnb_interest_status" title="binpan.api.exchange_info.get_margin_bnb_interest_status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_margin_bnb_interest_status</span></code></a>(decimal_mode)</p></td>
+<td><p>Get BNB Burn Status (USER_DATA)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.api.exchange_info.get_exchange_limits" title="binpan.api.exchange_info.get_exchange_limits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_exchange_limits</span></code></a>([info_dict])</p></td>
+<td><p>Binance manage several limits: RAW_REQUESTS, REQUEST_WEIGHT, and ORDERS rate limits.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.api.exchange_info.flatten_filter" title="binpan.api.exchange_info.flatten_filter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flatten_filter</span></code></a>(filters)</p></td>
+<td><p>It flattens a dict to one level dictionary.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.api.exchange_info.get_symbols_filters" title="binpan.api.exchange_info.get_symbols_filters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_symbols_filters</span></code></a>([info_dic])</p></td>
+<td><p>Example:</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.api.exchange_info.get_filters" title="binpan.api.exchange_info.get_filters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_filters</span></code></a>(symbol[, info_dic])</p></td>
+<td><p>For a symbol, get exchange filter conditions.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.api.exchange_info.filter_tradeable" title="binpan.api.exchange_info.filter_tradeable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter_tradeable</span></code></a>(info_dic)</p></td>
+<td><p>Returns, from BinPan exchange info dictionary currently trading symbols.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.api.exchange_info.filter_spot" title="binpan.api.exchange_info.filter_spot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter_spot</span></code></a>(info_dic)</p></td>
+<td><p>Returns, from BinPan exchange info dictionary currently SPOT symbols.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.api.exchange_info.filter_margin" title="binpan.api.exchange_info.filter_margin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter_margin</span></code></a>(info_dic)</p></td>
+<td><p>Returns, from BinPan exchange info dictionary currently MARGIN symbols.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.api.exchange_info.filter_not_margin" title="binpan.api.exchange_info.filter_not_margin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter_not_margin</span></code></a>([symbols, info_dic])</p></td>
+<td><p>Returns, from BinPan exchange info dictionary currently NOT MARGIN symbols.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.api.exchange_info.filter_leveraged_tokens" title="binpan.api.exchange_info.filter_leveraged_tokens"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter_leveraged_tokens</span></code></a>(info_dic)</p></td>
+<td><p>Returns, from BinPan exchange info dictionary currently NOT LEVERAGED symbols.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.api.exchange_info.filter_legal" title="binpan.api.exchange_info.filter_legal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter_legal</span></code></a>(legal_coins, info_dic)</p></td>
+<td><p>Returns, from BinPan exchange info dictionary currently trading symbols not using legal Fiat money.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.api.exchange_info.get_precision" title="binpan.api.exchange_info.get_precision"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_precision</span></code></a>([info_dic])</p></td>
+<td><p>Gets a dictionary with decimal positions each symbol.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.api.exchange_info.get_orderTypes_and_permissions" title="binpan.api.exchange_info.get_orderTypes_and_permissions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_orderTypes_and_permissions</span></code></a>([info_dic])</p></td>
+<td><p>Gets a dictionary with a list of order types suppoerted each symbol.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.api.exchange_info.get_fees_dict" title="binpan.api.exchange_info.get_fees_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_fees_dict</span></code></a>(decimal_mode[, symbol])</p></td>
+<td><p>Returns fees for a symbol or for every symbol if not passed a symbol.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.api.exchange_info.get_fees" title="binpan.api.exchange_info.get_fees"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_fees</span></code></a>(decimal_mode[, symbol])</p></td>
+<td><p>Returns fees for a symbol or for every symbol if not passed.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.api.exchange_info.get_system_status" title="binpan.api.exchange_info.get_system_status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_system_status</span></code></a>()</p></td>
+<td><p>Fetch system status.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.api.exchange_info.get_coins_and_networks_info" title="binpan.api.exchange_info.get_coins_and_networks_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_coins_and_networks_info</span></code></a>(decimal_mode)</p></td>
+<td><p>Get information of coins (available for deposit and withdraw) for user.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.api.exchange_info.get_coins_info_list" title="binpan.api.exchange_info.get_coins_info_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_coins_info_list</span></code></a>(decimal_mode[, coin])</p></td>
+<td><p>Bring all coins exchange info in a list if no one is specified.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.api.exchange_info.get_coins_info_dic" title="binpan.api.exchange_info.get_coins_info_dic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_coins_info_dic</span></code></a>(decimal_mode[, coin])</p></td>
+<td><p>Useful managing coins info in a big dictionary with coins as keys.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.api.exchange_info.get_legal_coins" title="binpan.api.exchange_info.get_legal_coins"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_legal_coins</span></code></a>(decimal_mode[, coins_dic])</p></td>
+<td><p>Fetch coins containing isLegalMoney=true</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.api.exchange_info.get_leveraged_coins" title="binpan.api.exchange_info.get_leveraged_coins"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_leveraged_coins</span></code></a>(decimal_mode[, coins_dic])</p></td>
+<td><p>Search for Binance leveraged coins by searching UP or DOWN before an existing coin, examples:</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.api.exchange_info.get_leveraged_symbols" title="binpan.api.exchange_info.get_leveraged_symbols"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_leveraged_symbols</span></code></a>(decimal_mode[, ...])</p></td>
+<td><p>Search for Binance symbols based on leveraged coins by searching UP or DOWN before an existing coin in symbol, leveraged coins examples are:</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.api.exchange_info.get_quotes_dic" title="binpan.api.exchange_info.get_quotes_dic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_quotes_dic</span></code></a>([info_dic])</p></td>
+<td><p>Get quote coin each symbol.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.api.exchange_info.get_bases_dic" title="binpan.api.exchange_info.get_bases_dic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_bases_dic</span></code></a>([info_dic])</p></td>
+<td><p>Get base coin each symbol.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.api.exchange_info.exchange_status" title="binpan.api.exchange_info.exchange_status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">exchange_status</span></code></a>(decimal_mode[, tradeable, ...])</p></td>
+<td><p>It returns a lot of results: bases_dic, quotes_dic, legal_coins, not_legal_pairs, symbol_filters, filtered_pairs</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.api.exchange_info.get_24h_statistics" title="binpan.api.exchange_info.get_24h_statistics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_24h_statistics</span></code></a>([symbol])</p></td>
+<td><p>GET /api/v3/ticker/24hr</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.api.exchange_info.try_coin_conversion_to_stablecoin_by_intermediate_symbol" title="binpan.api.exchange_info.try_coin_conversion_to_stablecoin_by_intermediate_symbol"><code class="xref py py-obj docutils literal notranslate"><span class="pre">try_coin_conversion_to_stablecoin_by_intermediate_symbol</span></code></a>(coin)</p></td>
+<td><p>Converts any coin quantity value to a reference coin.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.api.exchange_info.convert_to_other_coin" title="binpan.api.exchange_info.convert_to_other_coin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_to_other_coin</span></code></a>(coin[, decimal_mode, ...])</p></td>
+<td><p>Convert value of a quantity of coins to value in other coin.It tries to convert to a reference coin but if that symbol is not found, it tries to convert to BTC, BUSD, BNB, ETH, TUSD, USDC.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.api.exchange_info.convert_symbol_base_to_other_coin" title="binpan.api.exchange_info.convert_symbol_base_to_other_coin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_symbol_base_to_other_coin</span></code></a>(...[, ...])</p></td>
+<td><p>Convert value of a quantity of coins to value in other coin.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.api.exchange_info.convert_symbol_base_price_series_to_stablecoin" title="binpan.api.exchange_info.convert_symbol_base_price_series_to_stablecoin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_symbol_base_price_series_to_stablecoin</span></code></a>(...)</p></td>
+<td><p>Converts a series of symbols to a series of stable coin converted prices.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.api.exchange_info.convert_utc_milliseconds" title="binpan.api.exchange_info.convert_utc_milliseconds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_utc_milliseconds</span></code></a>(ms)</p></td>
+<td><p>Converts milliseconds timestamp to formatted string.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.api.exchange_info.statistics_24h" title="binpan.api.exchange_info.statistics_24h"><code class="xref py py-obj docutils literal notranslate"><span class="pre">statistics_24h</span></code></a>(decimal_mode[, tradeable, ...])</p></td>
+<td><p>Generates a dataframe with the filters to apply with the statistics of the last 24 hours.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.api.exchange_info.get_top_gainers" title="binpan.api.exchange_info.get_top_gainers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_top_gainers</span></code></a>(decimal_mode[, info_dic, ...])</p></td>
+<td><p>Generates a dataframe for symbols against a quote with the filters to apply with the statistics of the last 24 hours.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.api.exchange_info.get_decimal_positions" title="binpan.api.exchange_info.get_decimal_positions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_decimal_positions</span></code></a>(num)</p></td>
+<td><p>Count decimal positions for a value, correctly handling floats and Decimal numbers, including those in scientific notation.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.api.exchange_info.get_exchange_info">
+<span class="sig-name descname"><span class="pre">get_exchange_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="_modules/binpan/api/exchange_info.html#get_exchange_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.api.exchange_info.get_exchange_info" title="Link to this definition">¶</a></dt>
+<dd><p>Returns general exchange info from /api/v3/exchangeInfo endpoint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return dict<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict_keys([‘timezone’, ‘serverTime’, ‘rateLimits’, ‘exchangeFilters’, ‘symbols’])</p>
+</dd>
+</dl>
+<p>Example:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1">{
+</span><span data-line="2">  &quot;timezone&quot;: &quot;UTC&quot;,
+</span><span data-line="3">  &quot;serverTime&quot;: 1565246363776,
+</span><span data-line="4">  &quot;rateLimits&quot;: [
+</span><span data-line="5">    {
+</span><span data-line="6">      //These are defined in the `ENUM definitions` section under `Rate Limiters (rateLimitType)`.
+</span><span data-line="7">      //All limits are optional
+</span><span data-line="8">    }
+</span><span data-line="9">  ],
+</span><span data-line="10">  &quot;exchangeFilters&quot;: [
+</span><span data-line="11">    //These are the defined filters in the `Filters` section.
+</span><span data-line="12">    //All filters are optional.
+</span><span data-line="13">  ],
+</span><span data-line="14">  &quot;symbols&quot;: [
+</span><span data-line="15">    {
+</span><span data-line="16">      &quot;symbol&quot;: &quot;ETHBTC&quot;,
+</span><span data-line="17">      &quot;status&quot;: &quot;TRADING&quot;,
+</span><span data-line="18">      &quot;baseAsset&quot;: &quot;ETH&quot;,
+</span><span data-line="19">      &quot;baseAssetPrecision&quot;: 8,
+</span><span data-line="20">      &quot;quoteAsset&quot;: &quot;BTC&quot;,
+</span><span data-line="21">      &quot;quotePrecision&quot;: 8,
+</span><span data-line="22">      &quot;quoteAssetPrecision&quot;: 8,
+</span><span data-line="23">      &quot;orderTypes&quot;: [
+</span><span data-line="24">        &quot;LIMIT&quot;,
+</span><span data-line="25">        &quot;LIMIT_MAKER&quot;,
+</span><span data-line="26">        &quot;MARKET&quot;,
+</span><span data-line="27">        &quot;STOP_LOSS&quot;,
+</span><span data-line="28">        &quot;STOP_LOSS_LIMIT&quot;,
+</span><span data-line="29">        &quot;TAKE_PROFIT&quot;,
+</span><span data-line="30">        &quot;TAKE_PROFIT_LIMIT&quot;
+</span><span data-line="31">      ],
+</span><span data-line="32">      &quot;icebergAllowed&quot;: true,
+</span><span data-line="33">      &quot;ocoAllowed&quot;: true,
+</span><span data-line="34">      &quot;quoteOrderQtyMarketAllowed&quot;: true,
+</span><span data-line="35">      &quot;allowTrailingStop&quot;: false,
+</span><span data-line="36">      &quot;cancelReplaceAllowed&quot;: false,
+</span><span data-line="37">      &quot;isSpotTradingAllowed&quot;: true,
+</span><span data-line="38">      &quot;isMarginTradingAllowed&quot;: true,
+</span><span data-line="39">      &quot;filters&quot;: [
+</span><span data-line="40">        //These are defined in the Filters section.
+</span><span data-line="41">        //All filters are optional
+</span><span data-line="42">      ],
+</span><span data-line="43">      &quot;permissions&quot;: [
+</span><span data-line="44">         &quot;SPOT&quot;,
+</span><span data-line="45">         &quot;MARGIN&quot;
+</span><span data-line="46">      ]
+</span><span data-line="47">    }
+</span><span data-line="48">  ]
+</span><span data-line="49">}
+</span></pre></div>
+</div>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.api.exchange_info.get_info_dic">
+<span class="sig-name descname"><span class="pre">get_info_dic</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="_modules/binpan/api/exchange_info.html#get_info_dic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.api.exchange_info.get_info_dic" title="Link to this definition">¶</a></dt>
+<dd><p>Get the dictionary of each symbol with its information from the exchange.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return dict<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns info for each symbol as keys in the dict.</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">binpan.api</span><span class="w"> </span><span class="kn">import</span> <span class="n">exchange_info</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="n">info_dic</span> <span class="o">=</span> <span class="n">exchange_info</span><span class="o">.</span><span class="n">get_info_dic</span><span class="p">()</span>
+</span><span data-line="4">
+</span><span data-line="5"><span class="n">info_dic</span><span class="p">[</span><span class="s1">&#39;ETHUSDT&#39;</span><span class="p">]</span>
+</span><span data-line="6">
+</span><span data-line="7"> <span class="p">{</span><span class="s1">&#39;symbol&#39;</span><span class="p">:</span> <span class="s1">&#39;ETHUSDT&#39;</span><span class="p">,</span>
+</span><span data-line="8">  <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;TRADING&#39;</span><span class="p">,</span>
+</span><span data-line="9">  <span class="s1">&#39;baseAsset&#39;</span><span class="p">:</span> <span class="s1">&#39;ETH&#39;</span><span class="p">,</span>
+</span><span data-line="10">  <span class="s1">&#39;baseAssetPrecision&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+</span><span data-line="11">  <span class="s1">&#39;quoteAsset&#39;</span><span class="p">:</span> <span class="s1">&#39;USDT&#39;</span><span class="p">,</span>
+</span><span data-line="12">  <span class="s1">&#39;quotePrecision&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+</span><span data-line="13">  <span class="s1">&#39;quoteAssetPrecision&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+</span><span data-line="14">  <span class="s1">&#39;baseCommissionPrecision&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+</span><span data-line="15">  <span class="s1">&#39;quoteCommissionPrecision&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+</span><span data-line="16">  <span class="s1">&#39;orderTypes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;LIMIT&#39;</span><span class="p">,</span>
+</span><span data-line="17">   <span class="s1">&#39;LIMIT_MAKER&#39;</span><span class="p">,</span>
+</span><span data-line="18">   <span class="s1">&#39;MARKET&#39;</span><span class="p">,</span>
+</span><span data-line="19">   <span class="s1">&#39;STOP_LOSS_LIMIT&#39;</span><span class="p">,</span>
+</span><span data-line="20">   <span class="s1">&#39;TAKE_PROFIT_LIMIT&#39;</span><span class="p">],</span>
+</span><span data-line="21">  <span class="s1">&#39;icebergAllowed&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="22">  <span class="s1">&#39;ocoAllowed&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="23">  <span class="s1">&#39;quoteOrderQtyMarketAllowed&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="24">  <span class="s1">&#39;allowTrailingStop&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="25">  <span class="s1">&#39;cancelReplaceAllowed&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="26">  <span class="s1">&#39;isSpotTradingAllowed&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="27">  <span class="s1">&#39;isMarginTradingAllowed&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="28">  <span class="s1">&#39;filters&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s1">&#39;filterType&#39;</span><span class="p">:</span> <span class="s1">&#39;PRICE_FILTER&#39;</span><span class="p">,</span>
+</span><span data-line="29">    <span class="s1">&#39;minPrice&#39;</span><span class="p">:</span> <span class="s1">&#39;0.01000000&#39;</span><span class="p">,</span>
+</span><span data-line="30">    <span class="s1">&#39;maxPrice&#39;</span><span class="p">:</span> <span class="s1">&#39;1000000.00000000&#39;</span><span class="p">,</span>
+</span><span data-line="31">    <span class="s1">&#39;tickSize&#39;</span><span class="p">:</span> <span class="s1">&#39;0.01000000&#39;</span><span class="p">},</span>
+</span><span data-line="32">   <span class="p">{</span><span class="s1">&#39;filterType&#39;</span><span class="p">:</span> <span class="s1">&#39;PERCENT_PRICE&#39;</span><span class="p">,</span>
+</span><span data-line="33">    <span class="s1">&#39;multiplierUp&#39;</span><span class="p">:</span> <span class="s1">&#39;5&#39;</span><span class="p">,</span>
+</span><span data-line="34">    <span class="s1">&#39;multiplierDown&#39;</span><span class="p">:</span> <span class="s1">&#39;0.2&#39;</span><span class="p">,</span>
+</span><span data-line="35">    <span class="s1">&#39;avgPriceMins&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">},</span>
+</span><span data-line="36">   <span class="p">{</span><span class="s1">&#39;filterType&#39;</span><span class="p">:</span> <span class="s1">&#39;LOT_SIZE&#39;</span><span class="p">,</span>
+</span><span data-line="37">    <span class="s1">&#39;minQty&#39;</span><span class="p">:</span> <span class="s1">&#39;0.00010000&#39;</span><span class="p">,</span>
+</span><span data-line="38">    <span class="s1">&#39;maxQty&#39;</span><span class="p">:</span> <span class="s1">&#39;9000.00000000&#39;</span><span class="p">,</span>
+</span><span data-line="39">    <span class="s1">&#39;stepSize&#39;</span><span class="p">:</span> <span class="s1">&#39;0.00010000&#39;</span><span class="p">},</span>
+</span><span data-line="40">   <span class="p">{</span><span class="s1">&#39;filterType&#39;</span><span class="p">:</span> <span class="s1">&#39;MIN_NOTIONAL&#39;</span><span class="p">,</span>
+</span><span data-line="41">    <span class="s1">&#39;minNotional&#39;</span><span class="p">:</span> <span class="s1">&#39;10.00000000&#39;</span><span class="p">,</span>
+</span><span data-line="42">    <span class="s1">&#39;applyToMarket&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="43">    <span class="s1">&#39;avgPriceMins&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">},</span>
+</span><span data-line="44">   <span class="p">{</span><span class="s1">&#39;filterType&#39;</span><span class="p">:</span> <span class="s1">&#39;ICEBERG_PARTS&#39;</span><span class="p">,</span> <span class="s1">&#39;limit&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">},</span>
+</span><span data-line="45">   <span class="p">{</span><span class="s1">&#39;filterType&#39;</span><span class="p">:</span> <span class="s1">&#39;MARKET_LOT_SIZE&#39;</span><span class="p">,</span>
+</span><span data-line="46">    <span class="s1">&#39;minQty&#39;</span><span class="p">:</span> <span class="s1">&#39;0.00000000&#39;</span><span class="p">,</span>
+</span><span data-line="47">    <span class="s1">&#39;maxQty&#39;</span><span class="p">:</span> <span class="s1">&#39;6175.01628506&#39;</span><span class="p">,</span>
+</span><span data-line="48">    <span class="s1">&#39;stepSize&#39;</span><span class="p">:</span> <span class="s1">&#39;0.00000000&#39;</span><span class="p">},</span>
+</span><span data-line="49">   <span class="p">{</span><span class="s1">&#39;filterType&#39;</span><span class="p">:</span> <span class="s1">&#39;TRAILING_DELTA&#39;</span><span class="p">,</span>
+</span><span data-line="50">    <span class="s1">&#39;minTrailingAboveDelta&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+</span><span data-line="51">    <span class="s1">&#39;maxTrailingAboveDelta&#39;</span><span class="p">:</span> <span class="mi">2000</span><span class="p">,</span>
+</span><span data-line="52">    <span class="s1">&#39;minTrailingBelowDelta&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+</span><span data-line="53">    <span class="s1">&#39;maxTrailingBelowDelta&#39;</span><span class="p">:</span> <span class="mi">2000</span><span class="p">},</span>
+</span><span data-line="54">   <span class="p">{</span><span class="s1">&#39;filterType&#39;</span><span class="p">:</span> <span class="s1">&#39;MAX_NUM_ORDERS&#39;</span><span class="p">,</span> <span class="s1">&#39;maxNumOrders&#39;</span><span class="p">:</span> <span class="mi">200</span><span class="p">},</span>
+</span><span data-line="55">   <span class="p">{</span><span class="s1">&#39;filterType&#39;</span><span class="p">:</span> <span class="s1">&#39;MAX_NUM_ALGO_ORDERS&#39;</span><span class="p">,</span> <span class="s1">&#39;maxNumAlgoOrders&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">}],</span>
+</span><span data-line="56">  <span class="s1">&#39;permissions&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;SPOT&#39;</span><span class="p">,</span> <span class="s1">&#39;MARGIN&#39;</span><span class="p">,</span> <span class="s1">&#39;TRD_GRP_004&#39;</span><span class="p">]}</span>
+</span></pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.api.exchange_info.get_account_status">
+<span class="sig-name descname"><span class="pre">get_account_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="_modules/binpan/api/exchange_info.html#get_account_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.api.exchange_info.get_account_status" title="Link to this definition">¶</a></dt>
+<dd><p>Fetch account status detail.</p>
+<p>For Machine Learning limits, restrictions will be applied to account. If a user has been restricted by the ML system, they may
+check the reason and the duration by using the [/sapi/v1/account/status] endpoint</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return dict<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Example:</p>
+</dd>
+</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="p">{</span> <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="s2">&quot;Normal&quot;</span> <span class="p">}</span>
+</span></pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.api.exchange_info.get_margin_bnb_interest_status">
+<span class="sig-name descname"><span class="pre">get_margin_bnb_interest_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="_modules/binpan/api/exchange_info.html#get_margin_bnb_interest_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.api.exchange_info.get_margin_bnb_interest_status" title="Link to this definition">¶</a></dt>
+<dd><p>Get BNB Burn Status (USER_DATA)</p>
+<p>GET /sapi/v1/bnbBurn (HMAC SHA256)</p>
+<p>Weight(IP): 1</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return dict<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Example</p>
+</dd>
+</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="p">{</span>
+</span><span data-line="2">    <span class="s2">&quot;spotBNBBurn&quot;</span><span class="p">:</span><span class="n">true</span><span class="p">,</span>
+</span><span data-line="3">    <span class="s2">&quot;interestBNBBurn&quot;</span><span class="p">:</span> <span class="n">false</span>
+</span><span data-line="4"> <span class="p">}</span>
+</span></pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.api.exchange_info.get_exchange_limits">
+<span class="sig-name descname"><span class="pre">get_exchange_limits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="_modules/binpan/api/exchange_info.html#get_exchange_limits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.api.exchange_info.get_exchange_limits" title="Link to this definition">¶</a></dt>
+<dd><p>Binance manage several limits: RAW_REQUESTS, REQUEST_WEIGHT, and ORDERS rate limits.</p>
+<p>The headers for those limits, I assume that are:
+- RAW_REQUESTS: x-mbx-used-weight. Is cross all the api calls.
+- REQUEST_WEIGHT: Example: x-mbx-order-count-10s. Time interval limited requests.
+- ORDERS: Example: x-mbx-order-count-10s. Rate limit for orders.
+- X-SAPI-USED-IP-WEIGHT-1M: For sapi endpoint requests.</p>
+<p>Example response:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="p">{</span><span class="s1">&#39;x-mbx-used-weight-1m&#39;</span><span class="p">:</span> <span class="mi">1200</span><span class="p">,</span>
+</span><span data-line="2"> <span class="s1">&#39;X-SAPI-USED-IP-WEIGHT-1M&#39;</span><span class="p">:</span> <span class="mi">1200</span><span class="p">,</span>
+</span><span data-line="3"> <span class="s1">&#39;X-SAPI-USED-UID-WEIGHT-1M&#39;</span><span class="p">:</span> <span class="mi">1200</span><span class="p">,</span>
+</span><span data-line="4"> <span class="s1">&#39;x-mbx-order-count-10s&#39;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+</span><span data-line="5"> <span class="s1">&#39;x-mbx-order-count-1d&#39;</span><span class="p">:</span> <span class="mi">160000</span><span class="p">,</span>
+</span><span data-line="6"> <span class="s1">&#39;x-mbx-used-weight&#39;</span><span class="p">:</span> <span class="mi">6100</span><span class="p">}</span>
+</span></pre></div>
+</div>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Return dict<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.api.exchange_info.flatten_filter">
+<span class="sig-name descname"><span class="pre">flatten_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="_modules/binpan/api/exchange_info.html#flatten_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.api.exchange_info.flatten_filter" title="Link to this definition">¶</a></dt>
+<dd><p>It flattens a dict to one level dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filters</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – A dict with API filter data.</p>
+</dd>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
+<dd class="field-even"><p>A one level flattened dict with keys expanded with original sub-dicts.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.api.exchange_info.get_symbols_filters">
+<span class="sig-name descname"><span class="pre">get_symbols_filters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="_modules/binpan/api/exchange_info.html#get_symbols_filters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.api.exchange_info.get_symbols_filters" title="Link to this definition">¶</a></dt>
+<dd><p>Example:</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="n">exchange</span><span class="o">.</span><span class="n">get_filters</span><span class="p">(</span><span class="s1">&#39;TLMBUSD&#39;</span><span class="p">,</span> <span class="n">info_dic</span><span class="o">=</span><span class="n">info_dic</span><span class="p">)</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="p">{</span><span class="s1">&#39;TLMBUSD&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;PRICE_FILTER_minPrice&#39;</span><span class="p">:</span> <span class="s1">&#39;0.00001000&#39;</span><span class="p">,</span>
+</span><span data-line="4">   <span class="s1">&#39;PRICE_FILTER_maxPrice&#39;</span><span class="p">:</span> <span class="s1">&#39;1000.00000000&#39;</span><span class="p">,</span>
+</span><span data-line="5">   <span class="s1">&#39;PRICE_FILTER_tickSize&#39;</span><span class="p">:</span> <span class="s1">&#39;0.00001000&#39;</span><span class="p">,</span>
+</span><span data-line="6">   <span class="s1">&#39;PERCENT_PRICE_multiplierUp&#39;</span><span class="p">:</span> <span class="s1">&#39;5&#39;</span><span class="p">,</span>
+</span><span data-line="7">   <span class="s1">&#39;PERCENT_PRICE_multiplierDown&#39;</span><span class="p">:</span> <span class="s1">&#39;0.2&#39;</span><span class="p">,</span>
+</span><span data-line="8">   <span class="s1">&#39;PERCENT_PRICE_avgPriceMins&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+</span><span data-line="9">   <span class="s1">&#39;LOT_SIZE_minQty&#39;</span><span class="p">:</span> <span class="s1">&#39;1.00000000&#39;</span><span class="p">,</span>
+</span><span data-line="10">   <span class="s1">&#39;LOT_SIZE_maxQty&#39;</span><span class="p">:</span> <span class="s1">&#39;900000.00000000&#39;</span><span class="p">,</span>
+</span><span data-line="11">   <span class="s1">&#39;LOT_SIZE_stepSize&#39;</span><span class="p">:</span> <span class="s1">&#39;1.00000000&#39;</span><span class="p">,</span>
+</span><span data-line="12">   <span class="s1">&#39;MIN_NOTIONAL_minNotional&#39;</span><span class="p">:</span> <span class="s1">&#39;10.00000000&#39;</span><span class="p">,</span>
+</span><span data-line="13">   <span class="s1">&#39;MIN_NOTIONAL_applyToMarket&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="14">   <span class="s1">&#39;MIN_NOTIONAL_avgPriceMins&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+</span><span data-line="15">   <span class="s1">&#39;ICEBERG_PARTS_limit&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+</span><span data-line="16">   <span class="s1">&#39;MARKET_LOT_SIZE_minQty&#39;</span><span class="p">:</span> <span class="s1">&#39;0.00000000&#39;</span><span class="p">,</span>
+</span><span data-line="17">   <span class="s1">&#39;MARKET_LOT_SIZE_maxQty&#39;</span><span class="p">:</span> <span class="s1">&#39;1181959.38584316&#39;</span><span class="p">,</span>
+</span><span data-line="18">   <span class="s1">&#39;MARKET_LOT_SIZE_stepSize&#39;</span><span class="p">:</span> <span class="s1">&#39;0.00000000&#39;</span><span class="p">,</span>
+</span><span data-line="19">   <span class="s1">&#39;TRAILING_DELTA_minTrailingAboveDelta&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+</span><span data-line="20">   <span class="s1">&#39;TRAILING_DELTA_maxTrailingAboveDelta&#39;</span><span class="p">:</span> <span class="mi">2000</span><span class="p">,</span>
+</span><span data-line="21">   <span class="s1">&#39;TRAILING_DELTA_minTrailingBelowDelta&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+</span><span data-line="22">   <span class="s1">&#39;TRAILING_DELTA_maxTrailingBelowDelta&#39;</span><span class="p">:</span> <span class="mi">2000</span><span class="p">,</span>
+</span><span data-line="23">   <span class="s1">&#39;MAX_NUM_ORDERS_maxNumOrders&#39;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+</span><span data-line="24">   <span class="s1">&#39;MAX_NUM_ALGO_ORDERS_maxNumAlgoOrders&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">}}</span>
+</span></pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>info_dic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – A BinPan exchange info dictionary</p>
+</dd>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dict with all flatten values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.api.exchange_info.get_filters">
+<span class="sig-name descname"><span class="pre">get_filters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="_modules/binpan/api/exchange_info.html#get_filters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.api.exchange_info.get_filters" title="Link to this definition">¶</a></dt>
+<dd><p>For a symbol, get exchange filter conditions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>symbol</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A Binance symbol.</p></li>
+<li><p><strong>info_dic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – BinPan exchange info dictionary. It’s optional to avoid an API call. It’s optional to avoid an API call.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return a dict<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary with exclusively data for a symbol.</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">binpan.api</span><span class="w"> </span><span class="kn">import</span> <span class="n">exchange_info</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="n">filters</span> <span class="o">=</span> <span class="n">exchange_info</span><span class="o">.</span><span class="n">get_filters</span><span class="p">(</span><span class="s1">&#39;ETHBTC&#39;</span><span class="p">)</span>
+</span><span data-line="4">
+</span><span data-line="5"><span class="n">filters</span>
+</span><span data-line="6">
+</span><span data-line="7"> <span class="p">{</span><span class="s1">&#39;ETHBTC&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;PRICE_FILTER_minPrice&#39;</span><span class="p">:</span> <span class="s1">&#39;0.00000100&#39;</span><span class="p">,</span>
+</span><span data-line="8">  <span class="s1">&#39;PRICE_FILTER_maxPrice&#39;</span><span class="p">:</span> <span class="s1">&#39;922327.00000000&#39;</span><span class="p">,</span>
+</span><span data-line="9">  <span class="s1">&#39;PRICE_FILTER_tickSize&#39;</span><span class="p">:</span> <span class="s1">&#39;0.00000100&#39;</span><span class="p">,</span>
+</span><span data-line="10">  <span class="s1">&#39;PERCENT_PRICE_multiplierUp&#39;</span><span class="p">:</span> <span class="s1">&#39;5&#39;</span><span class="p">,</span>
+</span><span data-line="11">  <span class="s1">&#39;PERCENT_PRICE_multiplierDown&#39;</span><span class="p">:</span> <span class="s1">&#39;0.2&#39;</span><span class="p">,</span>
+</span><span data-line="12">  <span class="s1">&#39;PERCENT_PRICE_avgPriceMins&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+</span><span data-line="13">  <span class="s1">&#39;LOT_SIZE_minQty&#39;</span><span class="p">:</span> <span class="s1">&#39;0.00010000&#39;</span><span class="p">,</span>
+</span><span data-line="14">  <span class="s1">&#39;LOT_SIZE_maxQty&#39;</span><span class="p">:</span> <span class="s1">&#39;100000.00000000&#39;</span><span class="p">,</span>
+</span><span data-line="15">  <span class="s1">&#39;LOT_SIZE_stepSize&#39;</span><span class="p">:</span> <span class="s1">&#39;0.00010000&#39;</span><span class="p">,</span>
+</span><span data-line="16">  <span class="s1">&#39;MIN_NOTIONAL_minNotional&#39;</span><span class="p">:</span> <span class="s1">&#39;0.00010000&#39;</span><span class="p">,</span>
+</span><span data-line="17">  <span class="s1">&#39;MIN_NOTIONAL_applyToMarket&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="18">  <span class="s1">&#39;MIN_NOTIONAL_avgPriceMins&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+</span><span data-line="19">  <span class="s1">&#39;ICEBERG_PARTS_limit&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+</span><span data-line="20">  <span class="s1">&#39;MARKET_LOT_SIZE_minQty&#39;</span><span class="p">:</span> <span class="s1">&#39;0.00000000&#39;</span><span class="p">,</span>
+</span><span data-line="21">  <span class="s1">&#39;MARKET_LOT_SIZE_maxQty&#39;</span><span class="p">:</span> <span class="s1">&#39;1135.26522780&#39;</span><span class="p">,</span>
+</span><span data-line="22">  <span class="s1">&#39;MARKET_LOT_SIZE_stepSize&#39;</span><span class="p">:</span> <span class="s1">&#39;0.00000000&#39;</span><span class="p">,</span>
+</span><span data-line="23">  <span class="s1">&#39;TRAILING_DELTA_minTrailingAboveDelta&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+</span><span data-line="24">  <span class="s1">&#39;TRAILING_DELTA_maxTrailingAboveDelta&#39;</span><span class="p">:</span> <span class="mi">2000</span><span class="p">,</span>
+</span><span data-line="25">  <span class="s1">&#39;TRAILING_DELTA_minTrailingBelowDelta&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+</span><span data-line="26">  <span class="s1">&#39;TRAILING_DELTA_maxTrailingBelowDelta&#39;</span><span class="p">:</span> <span class="mi">2000</span><span class="p">,</span>
+</span><span data-line="27">  <span class="s1">&#39;MAX_NUM_ORDERS_maxNumOrders&#39;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+</span><span data-line="28">  <span class="s1">&#39;MAX_NUM_ALGO_ORDERS_maxNumAlgoOrders&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">}}</span>
+</span></pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.api.exchange_info.filter_tradeable">
+<span class="sig-name descname"><span class="pre">filter_tradeable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="_modules/binpan/api/exchange_info.html#filter_tradeable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.api.exchange_info.filter_tradeable" title="Link to this definition">¶</a></dt>
+<dd><p>Returns, from BinPan exchange info dictionary currently trading symbols.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>info_dic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – BinPan exchange info dictionary. It’s optional to avoid an API call.</p>
+</dd>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
+<dd class="field-even"><p>BinPan exchange info dictionary, but, just with currently trading symbols.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.api.exchange_info.filter_spot">
+<span class="sig-name descname"><span class="pre">filter_spot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="_modules/binpan/api/exchange_info.html#filter_spot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.api.exchange_info.filter_spot" title="Link to this definition">¶</a></dt>
+<dd><p>Returns, from BinPan exchange info dictionary currently SPOT symbols.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>info_dic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – BinPan exchange info dictionary. It’s optional to avoid an API call.</p>
+</dd>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
+<dd class="field-even"><p>BinPan exchange info dictionary, but, just with currently SPOT symbols.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.api.exchange_info.filter_margin">
+<span class="sig-name descname"><span class="pre">filter_margin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="_modules/binpan/api/exchange_info.html#filter_margin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.api.exchange_info.filter_margin" title="Link to this definition">¶</a></dt>
+<dd><p>Returns, from BinPan exchange info dictionary currently MARGIN symbols.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>info_dic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – BinPan exchange info dictionary. It’s optional to avoid an API call.</p>
+</dd>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
+<dd class="field-even"><p>BinPan exchange info dictionary, but, just with currently MARGIN symbols.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.api.exchange_info.filter_not_margin">
+<span class="sig-name descname"><span class="pre">filter_not_margin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbols</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span></span><a class="reference internal" href="_modules/binpan/api/exchange_info.html#filter_not_margin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.api.exchange_info.filter_not_margin" title="Link to this definition">¶</a></dt>
+<dd><p>Returns, from BinPan exchange info dictionary currently NOT MARGIN symbols.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>symbols</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – A list of symbols to apply filter. Optional.</p></li>
+<li><p><strong>info_dic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – BinPan exchange info dictionary. It’s optional to avoid an API call.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return list<span class="colon">:</span></dt>
+<dd class="field-even"><p>BinPan exchange info dictionary, but, just with currently NOT MARGIN symbols.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.api.exchange_info.filter_leveraged_tokens">
+<span class="sig-name descname"><span class="pre">filter_leveraged_tokens</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="_modules/binpan/api/exchange_info.html#filter_leveraged_tokens"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.api.exchange_info.filter_leveraged_tokens" title="Link to this definition">¶</a></dt>
+<dd><p>Returns, from BinPan exchange info dictionary currently NOT LEVERAGED symbols.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>info_dic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – BinPan exchange info dictionary. It’s optional to avoid an API call.</p>
+</dd>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
+<dd class="field-even"><p>BinPan exchange info dictionary, but, just with currently NOT LEVERAGED symbols.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.api.exchange_info.filter_legal">
+<span class="sig-name descname"><span class="pre">filter_legal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">legal_coins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="_modules/binpan/api/exchange_info.html#filter_legal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.api.exchange_info.filter_legal" title="Link to this definition">¶</a></dt>
+<dd><p>Returns, from BinPan exchange info dictionary currently trading symbols not using legal Fiat money.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>legal_coins</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – List of legal coins, Fiat coins.</p></li>
+<li><p><strong>info_dic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – BinPan exchange info dictionary. It’s optional to avoid an API call.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
+<dd class="field-even"><p>BinPan exchange info dictionary, but, without fiat legal symbols.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.api.exchange_info.get_precision">
+<span class="sig-name descname"><span class="pre">get_precision</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="_modules/binpan/api/exchange_info.html#get_precision"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.api.exchange_info.get_precision" title="Link to this definition">¶</a></dt>
+<dd><p>Gets a dictionary with decimal positions each symbol.
+:param dict info_dic: BinPan exchange info dictionary. It’s optional to avoid an API call.
+:return dict: dictionary with decimal positions each symbol.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.api.exchange_info.get_orderTypes_and_permissions">
+<span class="sig-name descname"><span class="pre">get_orderTypes_and_permissions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="_modules/binpan/api/exchange_info.html#get_orderTypes_and_permissions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.api.exchange_info.get_orderTypes_and_permissions" title="Link to this definition">¶</a></dt>
+<dd><p>Gets a dictionary with a list of order types suppoerted each symbol.
+:param dict info_dic: BinPan exchange info dictionary. It’s optional to avoid an API call.
+:return dict: dictionary with a list of order types suppoerted each symbol.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.api.exchange_info.get_fees_dict">
+<span class="sig-name descname"><span class="pre">get_fees_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="_modules/binpan/api/exchange_info.html#get_fees_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.api.exchange_info.get_fees_dict" title="Link to this definition">¶</a></dt>
+<dd><p>Returns fees for a symbol or for every symbol if not passed a symbol.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>symbol</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Optional to request just one symbol instead of all.    :param bool decimal_mode: Fixes Decimal return type.</p>
+</dd>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dict with maker and taker fees.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.api.exchange_info.get_fees">
+<span class="sig-name descname"><span class="pre">get_fees</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/binpan/api/exchange_info.html#get_fees"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.api.exchange_info.get_fees" title="Link to this definition">¶</a></dt>
+<dd><p>Returns fees for a symbol or for every symbol if not passed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>decimal_mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Fixes Decimal return type and operative.    :param str symbol: Optional to request just one symbol instead of all.</p>
+</dd>
+<dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pandas dataframe with all the fees applied each symbol.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.api.exchange_info.get_system_status">
+<span class="sig-name descname"><span class="pre">get_system_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/binpan/api/exchange_info.html#get_system_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.api.exchange_info.get_system_status" title="Link to this definition">¶</a></dt>
+<dd><p>Fetch system status.</p>
+<p>Weight(IP): 1</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return dict<span class="colon">:</span></dt>
+<dd class="field-odd"><p>As shown in example.</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1">{
+</span><span data-line="2">   &quot;status&quot;: 0,              // 0: normal，1：system maintenance
+</span><span data-line="3">    &quot;msg&quot;: &quot;normal&quot;           // &quot;normal&quot;, &quot;system_maintenance&quot;
+</span><span data-line="4">}
+</span></pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.api.exchange_info.get_coins_and_networks_info">
+<span class="sig-name descname"><span class="pre">get_coins_and_networks_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a></span></span><a class="reference internal" href="_modules/binpan/api/exchange_info.html#get_coins_and_networks_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.api.exchange_info.get_coins_and_networks_info" title="Link to this definition">¶</a></dt>
+<dd><p>Get information of coins (available for deposit and withdraw) for user.</p>
+<p>GET /sapi/v1/capital/config/getall (HMAC SHA256)</p>
+<p>Weight(IP): 10</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return pd.DataFrame, pd.DataFrame<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.api.exchange_info.get_coins_info_list">
+<span class="sig-name descname"><span class="pre">get_coins_info_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">coin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span></span><a class="reference internal" href="_modules/binpan/api/exchange_info.html#get_coins_info_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.api.exchange_info.get_coins_info_list" title="Link to this definition">¶</a></dt>
+<dd><p>Bring all coins exchange info in a list if no one is specified.</p>
+<p>Returns a list of dictionaries, one for each currency.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>decimal_mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Fixes Decimal return type and operative.    :param str coin: Limit response to a coin.</p>
+</dd>
+<dt class="field-even">Return list<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of dictionaries each coin.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.api.exchange_info.get_coins_info_dic">
+<span class="sig-name descname"><span class="pre">get_coins_info_dic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">coin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="_modules/binpan/api/exchange_info.html#get_coins_info_dic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.api.exchange_info.get_coins_info_dic" title="Link to this definition">¶</a></dt>
+<dd><p>Useful managing coins info in a big dictionary with coins as keys.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>decimal_mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Fixes Decimal return type and operative.    :param str coin: Limit response to a coin.</p>
+</dd>
+<dt class="field-even">Return list<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary with each coin data as value.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.api.exchange_info.get_legal_coins">
+<span class="sig-name descname"><span class="pre">get_legal_coins</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">coins_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span></span><a class="reference internal" href="_modules/binpan/api/exchange_info.html#get_legal_coins"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.api.exchange_info.get_legal_coins" title="Link to this definition">¶</a></dt>
+<dd><p>Fetch coins containing isLegalMoney=true</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>decimal_mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Fixes Decimal return type and operative.    :param dict coins_dic: Avoid fetching the API by passing a dict with coins data.</p>
+</dd>
+<dt class="field-even">Return list<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list with coins names.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.api.exchange_info.get_leveraged_coins">
+<span class="sig-name descname"><span class="pre">get_leveraged_coins</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">coins_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span></span><a class="reference internal" href="_modules/binpan/api/exchange_info.html#get_leveraged_coins"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.api.exchange_info.get_leveraged_coins" title="Link to this definition">¶</a></dt>
+<dd><p>Search for Binance leveraged coins by searching UP or DOWN before an existing coin, examples:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="p">[</span><span class="s1">&#39;1INCHDOWN&#39;</span><span class="p">,</span> <span class="s1">&#39;1INCHUP&#39;</span><span class="p">,</span> <span class="s1">&#39;AAVEDOWN&#39;</span><span class="p">,</span> <span class="s1">&#39;AAVEUP&#39;</span><span class="p">,</span> <span class="s1">&#39;ADADOWN&#39;</span><span class="p">,</span> <span class="o">...</span> <span class="p">]</span>
+</span></pre></div>
+</div>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>decimal_mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Fixes Decimal return type and operative.    :param dict coins_dic: Avoid fetching the API by passing a dict with coins data.</p>
+</dd>
+<dt class="field-even">Return list<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list with leveraged coins names.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.api.exchange_info.get_leveraged_symbols">
+<span class="sig-name descname"><span class="pre">get_leveraged_symbols</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leveraged_coins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span></span><a class="reference internal" href="_modules/binpan/api/exchange_info.html#get_leveraged_symbols"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.api.exchange_info.get_leveraged_symbols" title="Link to this definition">¶</a></dt>
+<dd><p>Search for Binance symbols based on leveraged coins by searching UP or DOWN before an existing coin in symbol,
+leveraged coins examples are:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="c1"># leveraged coins</span>
+</span><span data-line="2"><span class="p">[</span><span class="s1">&#39;1INCHDOWN&#39;</span><span class="p">,</span> <span class="s1">&#39;1INCHUP&#39;</span><span class="p">,</span> <span class="s1">&#39;AAVEDOWN&#39;</span><span class="p">,</span> <span class="s1">&#39;AAVEUP&#39;</span><span class="p">,</span> <span class="s1">&#39;ADADOWN&#39;</span><span class="p">,</span> <span class="o">...</span> <span class="p">]</span>
+</span><span data-line="3">
+</span><span data-line="4"><span class="c1"># leveraged symbols</span>
+</span></pre></div>
+</div>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>decimal_mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Fixes Decimal return type and operative.    :param dict info_dic: Avoid fetching the API by passing a dict with symbols data.</p></li>
+<li><p><strong>leveraged_coins</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – Avoid fetching the API for getting coins by passing a list with coins data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return list<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list with leveraged coins names.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.api.exchange_info.get_quotes_dic">
+<span class="sig-name descname"><span class="pre">get_quotes_dic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="_modules/binpan/api/exchange_info.html#get_quotes_dic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.api.exchange_info.get_quotes_dic" title="Link to this definition">¶</a></dt>
+<dd><p>Get quote coin each symbol.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>info_dic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – BinPan exchange info dictionary. It’s optional to avoid an API call.</p>
+</dd>
+<dt class="field-even">Return dictionary<span class="colon">:</span></dt>
+<dd class="field-even"><p>It gets symbols as keys and quote coin as values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.api.exchange_info.get_bases_dic">
+<span class="sig-name descname"><span class="pre">get_bases_dic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="_modules/binpan/api/exchange_info.html#get_bases_dic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.api.exchange_info.get_bases_dic" title="Link to this definition">¶</a></dt>
+<dd><p>Get base coin each symbol.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>info_dic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – BinPan exchange info dictionary. It’s optional to avoid an API call.</p></li>
+<li><p><strong>info_dic</strong></p></li>
+</ul>
+</dd>
+<dt class="field-even">Return dictionary<span class="colon">:</span></dt>
+<dd class="field-even"><p>It gets symbols as keys and base coin as values.</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.api.exchange_info.exchange_status">
+<span class="sig-name descname"><span class="pre">exchange_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tradeable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin_required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_legal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_leveraged</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol_filters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a></span></span><a class="reference internal" href="_modules/binpan/api/exchange_info.html#exchange_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.api.exchange_info.exchange_status" title="Link to this definition">¶</a></dt>
+<dd><p>It returns a lot of results: bases_dic, quotes_dic, legal_coins, not_legal_pairs, symbol_filters, filtered_pairs</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>decimal_mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Fixes Decimal return type and operative.    :param bool tradeable: Require or not just currently trading symbols.</p></li>
+<li><p><strong>spot_required</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Requires just SPOT currently trading symbols.</p></li>
+<li><p><strong>margin_required</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Requires just MARGIN currently trading symbols.</p></li>
+<li><p><strong>drop_legal</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Drops symbols with legal coins.</p></li>
+<li><p><strong>filter_leveraged</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Drops symbols with leveraged coins.</p></li>
+<li><p><strong>info_dic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – BinPan exchange info dictionary. It’s optional to avoid an API call.</p></li>
+<li><p><strong>symbol_filters</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – A BinPan symbols filters dict.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return tuple<span class="colon">:</span></dt>
+<dd class="field-even"><p>bases_dic, quotes_dic, legal_coins, not_legal_pairs, symbol_filters, filtered_pairs</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.api.exchange_info.get_24h_statistics">
+<span class="sig-name descname"><span class="pre">get_24h_statistics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="_modules/binpan/api/exchange_info.html#get_24h_statistics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.api.exchange_info.get_24h_statistics" title="Link to this definition">¶</a></dt>
+<dd><p>GET /api/v3/ticker/24hr</p>
+<p>24 hour rolling window price change statistics. Careful when accessing this with no symbol.</p>
+<p>Weight(IP):</p>
+<p>Symbols requested weight:</p>
+<p>1-20:               1</p>
+<p>21-100:         20</p>
+<p>101 or more:        40</p>
+<p>If symbols parameter is omitted     40</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>symbol</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Optional symbol.</p>
+</dd>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
+<dd class="field-even"><p>As example shown.</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="p">{</span>
+</span><span data-line="2">   <span class="s2">&quot;symbol&quot;</span><span class="p">:</span> <span class="s2">&quot;BNBBTC&quot;</span><span class="p">,</span>
+</span><span data-line="3">   <span class="s2">&quot;priceChange&quot;</span><span class="p">:</span> <span class="s2">&quot;-94.99999800&quot;</span><span class="p">,</span>
+</span><span data-line="4">   <span class="s2">&quot;priceChangePercent&quot;</span><span class="p">:</span> <span class="s2">&quot;-95.960&quot;</span><span class="p">,</span>
+</span><span data-line="5">   <span class="s2">&quot;weightedAvgPrice&quot;</span><span class="p">:</span> <span class="s2">&quot;0.29628482&quot;</span><span class="p">,</span>
+</span><span data-line="6">   <span class="s2">&quot;prevClosePrice&quot;</span><span class="p">:</span> <span class="s2">&quot;0.10002000&quot;</span><span class="p">,</span>
+</span><span data-line="7">   <span class="s2">&quot;lastPrice&quot;</span><span class="p">:</span> <span class="s2">&quot;4.00000200&quot;</span><span class="p">,</span>
+</span><span data-line="8">   <span class="s2">&quot;lastQty&quot;</span><span class="p">:</span> <span class="s2">&quot;200.00000000&quot;</span><span class="p">,</span>
+</span><span data-line="9">   <span class="s2">&quot;bidPrice&quot;</span><span class="p">:</span> <span class="s2">&quot;4.00000000&quot;</span><span class="p">,</span>
+</span><span data-line="10">   <span class="s2">&quot;bidQty&quot;</span><span class="p">:</span> <span class="s2">&quot;100.00000000&quot;</span><span class="p">,</span>
+</span><span data-line="11">   <span class="s2">&quot;askPrice&quot;</span><span class="p">:</span> <span class="s2">&quot;4.00000200&quot;</span><span class="p">,</span>
+</span><span data-line="12">   <span class="s2">&quot;askQty&quot;</span><span class="p">:</span> <span class="s2">&quot;100.00000000&quot;</span><span class="p">,</span>
+</span><span data-line="13">   <span class="s2">&quot;openPrice&quot;</span><span class="p">:</span> <span class="s2">&quot;99.00000000&quot;</span><span class="p">,</span>
+</span><span data-line="14">   <span class="s2">&quot;highPrice&quot;</span><span class="p">:</span> <span class="s2">&quot;100.00000000&quot;</span><span class="p">,</span>
+</span><span data-line="15">   <span class="s2">&quot;lowPrice&quot;</span><span class="p">:</span> <span class="s2">&quot;0.10000000&quot;</span><span class="p">,</span>
+</span><span data-line="16">   <span class="s2">&quot;volume&quot;</span><span class="p">:</span> <span class="s2">&quot;8913.30000000&quot;</span><span class="p">,</span>
+</span><span data-line="17">   <span class="s2">&quot;quoteVolume&quot;</span><span class="p">:</span> <span class="s2">&quot;15.30000000&quot;</span><span class="p">,</span>
+</span><span data-line="18">   <span class="s2">&quot;openTime&quot;</span><span class="p">:</span> <span class="mi">1499783499040</span><span class="p">,</span>
+</span><span data-line="19">   <span class="s2">&quot;closeTime&quot;</span><span class="p">:</span> <span class="mi">1499869899040</span><span class="p">,</span>
+</span><span data-line="20">   <span class="s2">&quot;firstId&quot;</span><span class="p">:</span> <span class="mi">28385</span><span class="p">,</span>   <span class="o">//</span> <span class="n">First</span> <span class="n">tradeId</span>
+</span><span data-line="21">   <span class="s2">&quot;lastId&quot;</span><span class="p">:</span> <span class="mi">28460</span><span class="p">,</span>    <span class="o">//</span> <span class="n">Last</span> <span class="n">tradeId</span>
+</span><span data-line="22">   <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="mi">76</span>         <span class="o">//</span> <span class="n">Trade</span> <span class="n">count</span>
+</span><span data-line="23"> <span class="p">}</span>
+</span></pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.api.exchange_info.try_coin_conversion_to_stablecoin_by_intermediate_symbol">
+<span class="sig-name descname"><span class="pre">try_coin_conversion_to_stablecoin_by_intermediate_symbol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">coin_qty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coin_to_check_with_stablecoin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BTC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stablecoin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'USDT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/binpan/api/exchange_info.html#try_coin_conversion_to_stablecoin_by_intermediate_symbol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.api.exchange_info.try_coin_conversion_to_stablecoin_by_intermediate_symbol" title="Link to this definition">¶</a></dt>
+<dd><p>Converts any coin quantity value to a reference coin. I tries to build a symbol name from coin and coin_to_check_with_usdt and then
+checks if it’s in prices dict. If not, it tries to build a symbol name from coin_to_check_with_usdt and coin (reversed) and then checks
+if it’s in prices dict. Else it returns None.</p>
+<p>When it finds a symbol intermediate, it uses it to convert to stablecoin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>coin</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A coin to convert to other coin value.</p></li>
+<li><p><strong>coin_qty</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – A quantity of the coin selected to use in calculation. Default is 1.</p></li>
+<li><p><strong>prices</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – Current prices of all symbols. Default is None. If None, it will be fetched.</p></li>
+<li><p><strong>coin_to_check_with_stablecoin</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Intermediate coin to check with a stable coin. Default is USDT.</p></li>
+<li><p><strong>stablecoin</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A Binance existing coin to convert to. Default is USDT.</p></li>
+<li><p><strong>decimal_mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Fixes Decimal return type and operative. Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return float<span class="colon">:</span></dt>
+<dd class="field-even"><p>Converted value result by multiplying coin_qty by the intermediate coin price and then by the USDT price. If not found,
+returns None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.api.exchange_info.convert_to_other_coin">
+<span class="sig-name descname"><span class="pre">convert_to_other_coin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'USDT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coin_qty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></span><a class="reference internal" href="_modules/binpan/api/exchange_info.html#convert_to_other_coin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.api.exchange_info.convert_to_other_coin" title="Link to this definition">¶</a></dt>
+<dd><p>Convert value of a quantity of coins to value in other coin.It tries to convert to a reference coin but if that symbol is not found,
+it tries to convert to BTC, BUSD, BNB, ETH, TUSD, USDC.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>decimal_mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Fixes Decimal return type and operative.</p></li>
+<li><p><strong>coin</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Your coin.</p></li>
+<li><p><strong>convert_to</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A Binance existing coin to convert to. Default is USDT.</p></li>
+<li><p><strong>coin_qty</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – A quantity. Default is 1.</p></li>
+<li><p><strong>prices</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – A dict with all current prices. Default is None. Where None, it will be fetched.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return float<span class="colon">:</span></dt>
+<dd class="field-even"><p>Value of the quantity expressed in the converted coin.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.api.exchange_info.convert_symbol_base_to_other_coin">
+<span class="sig-name descname"><span class="pre">convert_symbol_base_to_other_coin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol_to_convert_base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_qty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'USDT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/decimal.html#decimal.Decimal" title="(in Python v3.14)"><span class="pre">Decimal</span></a></span></span><a class="reference internal" href="_modules/binpan/api/exchange_info.html#convert_symbol_base_to_other_coin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.api.exchange_info.convert_symbol_base_to_other_coin" title="Link to this definition">¶</a></dt>
+<dd><p>Convert value of a quantity of coins to value in other coin. It tries to convert to a reference coin but if that symbol is not found,
+it tries to convert to BTC, BUSD, BNB, ETH, TUSD, USDC.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>decimal_mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Fixes Decimal return type and operative.</p></li>
+<li><p><strong>symbol_to_convert_base</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A symbol to get it’s base to convert to other coin value.</p></li>
+<li><p><strong>base_qty</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – A quantity. Default is 1.</p></li>
+<li><p><strong>convert_to</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A Binance existing coin. Default is USDT.</p></li>
+<li><p><strong>prices</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – A dict with all current prices. Default is None. Where None, it will be fetched.</p></li>
+<li><p><strong>info_dic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – BinPan exchange info dictionary. It’s optional to avoid an API call. Default is None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return float<span class="colon">:</span></dt>
+<dd class="field-even"><p>Value expressed in the converted coin.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.api.exchange_info.convert_symbol_base_price_series_to_stablecoin">
+<span class="sig-name descname"><span class="pre">convert_symbol_base_price_series_to_stablecoin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol_close_series</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stable_coin_symbol_series</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol_to_convert_base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stable_symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quotes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bases</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="reference internal" href="_modules/binpan/api/exchange_info.html#convert_symbol_base_price_series_to_stablecoin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.api.exchange_info.convert_symbol_base_price_series_to_stablecoin" title="Link to this definition">¶</a></dt>
+<dd><p>Converts a series of symbols to a series of stable coin converted prices. It asumes that the index of the symbol_close_series is
+included in the index of the stable_coin_series.</p>
+<p>The stable_coin_series is supposed to use stablecoin as quote.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>symbol_close_series</strong> (<em>pd.Series</em>) – A series with the close prices of a symbol.</p></li>
+<li><p><strong>stable_coin_symbol_series</strong> (<em>pd.Series</em>) – A series with the close prices of an intermediate coin and stable coin as quote.</p></li>
+<li><p><strong>symbol_to_convert_base</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A symbol to convert to stable coin value. Default is None. Example: ‘ETHBTC’.</p></li>
+<li><p><strong>stable_symbol</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A symbol to convert to stable coin value. Default is None. Example: ‘ETHUSDT’.</p></li>
+<li><p><strong>quotes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – A dictionary with quotes. Default is None. Optional to avoid an API call. Or</p></li>
+<li><p><strong>bases</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – A dictionary with bases. Default is None. Optional to avoid an API call.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.Series<span class="colon">:</span></dt>
+<dd class="field-even"><p>A series with the converted prices from symbol as base and stable coin as quote.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.api.exchange_info.convert_utc_milliseconds">
+<span class="sig-name descname"><span class="pre">convert_utc_milliseconds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="reference internal" href="_modules/binpan/api/exchange_info.html#convert_utc_milliseconds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.api.exchange_info.convert_utc_milliseconds" title="Link to this definition">¶</a></dt>
+<dd><p>Converts milliseconds timestamp to formatted string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Milliseconds linux timestamp from epoch.</p>
+</dd>
+<dt class="field-even">Return str<span class="colon">:</span></dt>
+<dd class="field-even"><p>Formatted date.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.api.exchange_info.statistics_24h">
+<span class="sig-name descname"><span class="pre">statistics_24h</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tradeable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin_required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_legal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_leveraged</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stablecoin_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'BUSD'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_by</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'priceChangePercent'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/binpan/api/exchange_info.html#statistics_24h"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.api.exchange_info.statistics_24h" title="Link to this definition">¶</a></dt>
+<dd><p>Generates a dataframe with the filters to apply with the statistics of the last 24 hours. Optionally, you can generate the column to
+convert the volume to USDT.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>decimal_mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Fixes Decimal return type and operative.    :param bool tradeable: Require or not just currently trading symbols.</p></li>
+<li><p><strong>spot_required</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Requires just SPOT currently trading symbols.</p></li>
+<li><p><strong>margin_required</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Requires just MARGIN currently trading symbols.</p></li>
+<li><p><strong>drop_legal</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Drops symbols with legal coins.</p></li>
+<li><p><strong>filter_leveraged</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Drops symbols with leveraged coins.</p></li>
+<li><p><strong>info_dic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – BinPan exchange info dictionary. It’s optional to avoid an API call.</p></li>
+<li><p><strong>stablecoin_value</strong> – StableCoin reference for value.</p></li>
+<li><p><strong>sort_by</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A column to sort by. Default is ‘priceChangePercent’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
+<dd class="field-even"><p>Picture result.</p>
+</dd>
+</dl>
+<a class="reference internal image-reference" href="_images/exchange_statistics_24h.png"><img alt="exchange_statistics_24h.png" src="_images/exchange_statistics_24h.png" width="1000" />
+</a>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.api.exchange_info.get_top_gainers">
+<span class="sig-name descname"><span class="pre">get_top_gainers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tradeable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin_required</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_legal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_leveraged</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_gainers_qty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">my_quote</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BUSD'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_stable_pairs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_by_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'priceChangePercent'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_return</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/binpan/api/exchange_info.html#get_top_gainers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.api.exchange_info.get_top_gainers" title="Link to this definition">¶</a></dt>
+<dd><p>Generates a dataframe for symbols against a quote with the filters to apply with the statistics of the last 24 hours.
+Optionally, you can generate the column to convert the volume to USDT.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>decimal_mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Fixes Decimal return type and operative.    :param bool tradeable: Require or not just currently trading symbols.</p></li>
+<li><p><strong>spot_required</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Requires just SPOT currently trading symbols.</p></li>
+<li><p><strong>margin_required</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Requires just MARGIN currently trading symbols.</p></li>
+<li><p><strong>drop_legal</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Drops symbols with legal coins.</p></li>
+<li><p><strong>filter_leveraged</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Drops symbols with leveraged coins.</p></li>
+<li><p><strong>info_dic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – BinPan exchange info dictionary. It’s optional to avoid an API call.</p></li>
+<li><p><strong>top_gainers_qty</strong> – Limit result top lines.</p></li>
+<li><p><strong>my_quote</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A quote coin to reference values.</p></li>
+<li><p><strong>drop_stable_pairs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – It drop stablecoin to stablecoin symbols.</p></li>
+<li><p><strong>sort_by_column</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A column to sort by. Default is ‘priceChangePercent’.</p></li>
+<li><p><strong>full_return</strong> – Activate return full columns data from exchange, else, returns just a few basic columns.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dataframe as in the example .</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1">from binpan.api.exchange_info import get_top_gainers
+</span><span data-line="2">
+</span><span data-line="3">get_top_gainers(decimal_mode=False)
+</span><span data-line="4">
+</span><span data-line="5">      priceChangePercent        volume  BUSD_value      BUSD_volume
+</span><span data-line="6">symbol
+</span><span data-line="7">PHABTC  198.477     9.291796e+07        0.33650 3.126689e+07
+</span><span data-line="8">PHAUSDT 195.961     6.729636e+08        0.33650 2.264522e+08
+</span><span data-line="9">PHABUSD 195.530     1.082033e+09        0.33650 3.641039e+08
+</span><span data-line="10">LTOBTC   61.732     5.854178e+07        0.11070 6.480575e+06
+</span><span data-line="11">LTOUSDT  60.637     2.813419e+08        0.11070 3.114455e+07
+</span><span data-line="12">...     ...     ...     ...         ...
+</span><span data-line="13">MDXBTC   -21.195        4.096356e+07    0.15640 6.406700e+06
+</span><span data-line="14">MDXBUSD  -22.112        3.444397e+08    0.15640 5.387037e+07
+</span><span data-line="15">MDXUSDT  -22.123        2.896132e+08    0.15640 4.529550e+07
+</span><span data-line="16">AGIXBTC  -23.007        1.086561e+08    0.06489 7.050693e+06
+</span><span data-line="17">AGIXBUSD -23.407        2.188445e+08    0.06489 1.420082e+07
+</span><span data-line="18">1194 rows × 4 columns
+</span></pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.api.exchange_info.get_decimal_positions">
+<span class="sig-name descname"><span class="pre">get_decimal_positions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/decimal.html#decimal.Decimal" title="(in Python v3.14)"><span class="pre">Decimal</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="reference internal" href="_modules/binpan/api/exchange_info.html#get_decimal_positions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.api.exchange_info.get_decimal_positions" title="Link to this definition">¶</a></dt>
+<dd><p>Count decimal positions for a value, correctly handling floats and Decimal numbers,
+including those in scientific notation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>num</strong> – Input number, can be a float or a Decimal.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Count of decimal positions.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"><div class="navigation-prev">
+    <a href="market.html">
+      <i class="i-lucide chevron-left"></i>
+      <div class="page-info">
+        <span>Previous</span><div class="title">Market Module</div></div>
+    </a>
+  </div><div class="navigation-next">
+    <a href="auth.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title">Authentication Module</div>
+      </div>
+      <i class="i-lucide chevron-right"></i>
+    </a>
+  </div></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2022, Fernando Alfonso</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+<a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+  <iconify-icon icon="simple-icons:github"></iconify-icon>
+</a></div>
+    </div>
+  </div>
+</footer>
+      <script src="_static/documentation_options.js?v=11e62b30"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/shibuya.js?v=50760d75"></script></body>
+</html>

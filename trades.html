@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="iris" data-content_root="./">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Trades Module - BinPan 0.10.2</title><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Standards Module" href="standards.html" /><link rel="prev" title="Timeframes Module" href="timeframes.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="_static/pygments.css?v=e1a1ceaf" />
+    <link rel="stylesheet" type="text/css" href="_static/shibuya.css?v=9454f7d5" />
+    <link rel="stylesheet" type="text/css" href="_static/style.css?v=1e48dca6" />
+    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/><meta property="og:title" content="Trades Module"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="index.html">
+      
+      
+      <strong>BinPan</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Main Classes:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="binpan.html">BinPan Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="symbol_indicators.html">Symbol Indicators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="symbol_plotting.html">Symbol Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="symbol_strategy.html">Symbol Strategy</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">API &amp; Market:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exchange.html">Exchange Info Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="auth.html">Authentication Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wallet_api.html">Wallet API Functions</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Analysis:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="indicators.html">Indicators Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aggregations.html">Aggregations Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tags.html">Tags &amp; Backtesting Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stat_tests.html">Statistical Tests and Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_tools.html">Numba Tools Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Core:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="time_helper.html">Time Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timeframes.html">Timeframes Module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Trades Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="standards.html">Standards Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="secrets.html">Secrets Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logs.html">Logs Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Plotting:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Storage &amp; Database:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="files.html">Files Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postgresql.html">PostgreSQL Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postgresql_database.html">PostgreSQL Database Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="influx_manager.html">Influx Manager Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#binpan.core.trades.Trades"><code class="docutils literal notranslate"><span class="pre">Trades</span></code></a><ul>
+<li><a class="reference internal" href="#binpan.core.trades.Trades.is_agg"><code class="docutils literal notranslate">is_agg</span></code></a></li>
+<li><a class="reference internal" href="#binpan.core.trades.Trades.label"><code class="docutils literal notranslate">label</span></code></a></li>
+<li><a class="reference internal" href="#binpan.core.trades.Trades.empty_msg"><code class="docutils literal notranslate">empty_msg</span></code></a></li>
+<li><a class="reference internal" href="#binpan.core.trades.Trades.filtered"><code class="docutils literal notranslate">filtered()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.core.trades.Trades.with_df"><code class="docutils literal notranslate">with_df()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.core.trades.Trades.empty"><code class="docutils literal notranslate">empty</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="index.html"><span itemprop="name">BinPan</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">Trades Module</strong>
+        <meta itemprop="position" content="2" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue" role="main">
+          <section id="trades-module">
+<h1>Trades Module<a class="headerlink" href="#trades-module" title="Link to this heading">¶</a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">Trades</span></code> value object wraps a trades DataFrame together with its metadata
+(trade type, data origin and column map). It proxies attribute and item access to
+the underlying DataFrame, so <code class="docutils literal notranslate"><span class="pre">Symbol.agg_trades</span></code> / <code class="docutils literal notranslate"><span class="pre">Symbol.atomic_trades</span></code> keep
+behaving like DataFrames in notebooks (<code class="docutils literal notranslate"><span class="pre">s.agg_trades['Quantity']</span></code>, <code class="docutils literal notranslate"><span class="pre">.empty</span></code>,
+<code class="docutils literal notranslate"><span class="pre">.head()</span></code> …) while also exposing <code class="docutils literal notranslate"><span class="pre">.df</span></code>, <code class="docutils literal notranslate"><span class="pre">.trade_type</span></code>, <code class="docutils literal notranslate"><span class="pre">.origin</span></code> and helpers.</p>
+<p id="module-binpan.core.trades">Trades value object.</p>
+<p>Wraps a trades <a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> together with its metadata (trade type,
+data origin, the column map and raw API response it was built from). A single
+<code class="docutils literal notranslate"><span class="pre">Symbol</span></code> can hold two independent instances at once, e.g. atomic trades from
+one origin and aggregated trades from another.</p>
+<p>It proxies attribute and item access to the underlying DataFrame, so it can be
+used like one in notebooks:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="n">s</span><span class="o">.</span><span class="n">agg_trades</span><span class="p">[</span><span class="s1">&#39;Quantity&#39;</span><span class="p">]</span>     <span class="c1"># -&gt; pandas Series  (delegated to .df)</span>
+</span><span data-line="2"><span class="n">s</span><span class="o">.</span><span class="n">agg_trades</span><span class="o">.</span><span class="n">empty</span>           <span class="c1"># -&gt; bool</span>
+</span><span data-line="3"><span class="n">s</span><span class="o">.</span><span class="n">agg_trades</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>          <span class="c1"># -&gt; DataFrame      (delegated to .df)</span>
+</span><span data-line="4"><span class="n">s</span><span class="o">.</span><span class="n">agg_trades</span><span class="o">.</span><span class="n">df</span>              <span class="c1"># -&gt; the raw pandas DataFrame</span>
+</span><span data-line="5"><span class="n">s</span><span class="o">.</span><span class="n">agg_trades</span><span class="o">.</span><span class="n">trade_type</span>      <span class="c1"># -&gt; &#39;agg&#39;</span>
+</span></pre></div>
+</div>
+<p>Heavy domain logic (indicators, plotting) is NOT placed here to keep this module
+dependency-free (pandas only) and avoid import cycles with <code class="docutils literal notranslate"><span class="pre">analysis</span></code>/<code class="docutils literal notranslate"><span class="pre">plotting</span></code>.
+Only the small, repeated bits live here: the empty check, the time-range filter
+and the metadata.</p>
+<p><strong>Classes:</strong></p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.core.trades.Trades" title="binpan.core.trades.Trades"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Trades</span></code></a>([df, trade_type, origin, columns, ...])</p></td>
+<td><p>A trades DataFrame plus its metadata.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="binpan.core.trades.Trades">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Trades</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">trade_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'agg'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_zone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/binpan/core/trades.html#Trades"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.core.trades.Trades" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>A trades DataFrame plus its metadata.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – The parsed trades DataFrame. If None, an empty frame
+is created (using <code class="docutils literal notranslate"><span class="pre">columns</span></code> for its column names when provided).</p></li>
+<li><p><strong>trade_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – <code class="docutils literal notranslate"><span class="pre">'agg'</span></code> (aggregated) or <code class="docutils literal notranslate"><span class="pre">'atomic'</span></code>/<code class="docutils literal notranslate"><span class="pre">'trade'</span></code>.</p></li>
+<li><p><strong>origin</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Where the data came from: <code class="docutils literal notranslate"><span class="pre">'binance_api'</span></code>, <code class="docutils literal notranslate"><span class="pre">'csv'</span></code>,
+<code class="docutils literal notranslate"><span class="pre">'binbase'</span></code> or <code class="docutils literal notranslate"><span class="pre">'postgresql'</span></code>.</p></li>
+<li><p><strong>columns</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – Column map (raw API field -&gt; BinPan column name).</p></li>
+<li><p><strong>symbol</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The symbol, e.g. <code class="docutils literal notranslate"><span class="pre">'BTCUSDT'</span></code>.</p></li>
+<li><p><strong>time_zone</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – IANA time zone of the index, e.g. <code class="docutils literal notranslate"><span class="pre">'Europe/Madrid'</span></code>.</p></li>
+<li><p><strong>raw</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – The raw API response (list of dicts) it was parsed from.</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Attributes:</strong></p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.core.trades.Trades.is_agg" title="binpan.core.trades.Trades.is_agg"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_agg</span></code></a></p></td>
+<td><p>True if these are aggregated trades.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.core.trades.Trades.label" title="binpan.core.trades.Trades.label"><code class="xref py py-obj docutils literal notranslate"><span class="pre">label</span></code></a></p></td>
+<td><p>Human label: <code class="docutils literal notranslate"><span class="pre">'aggregated'</span></code> or <code class="docutils literal notranslate"><span class="pre">'atomic'</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.core.trades.Trades.empty_msg" title="binpan.core.trades.Trades.empty_msg"><code class="xref py py-obj docutils literal notranslate"><span class="pre">empty_msg</span></code></a></p></td>
+<td><p>Message suggesting how to fetch the data when empty.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.core.trades.Trades.empty" title="binpan.core.trades.Trades.empty"><code class="xref py py-obj docutils literal notranslate"><span class="pre">empty</span></code></a></p></td>
+<td><p>True if the underlying DataFrame is empty.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Methods:</strong></p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.core.trades.Trades.filtered" title="binpan.core.trades.Trades.filtered"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filtered</span></code></a>([start_time, end_time, time_col])</p></td>
+<td><p>Return a copy of the DataFrame filtered by the timestamp column.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.core.trades.Trades.with_df" title="binpan.core.trades.Trades.with_df"><code class="xref py py-obj docutils literal notranslate"><span class="pre">with_df</span></code></a>(df)</p></td>
+<td><p>Return a new Trades carrying the same metadata but a different DataFrame.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py property">
+<dt class="sig sig-object py" id="binpan.core.trades.Trades.is_agg">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">is_agg</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><a class="headerlink" href="#binpan.core.trades.Trades.is_agg" title="Link to this definition">¶</a></dt>
+<dd><p>True if these are aggregated trades.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="binpan.core.trades.Trades.label">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">label</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#binpan.core.trades.Trades.label" title="Link to this definition">¶</a></dt>
+<dd><p>Human label: <code class="docutils literal notranslate"><span class="pre">'aggregated'</span></code> or <code class="docutils literal notranslate"><span class="pre">'atomic'</span></code>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="binpan.core.trades.Trades.empty_msg">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">empty_msg</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#binpan.core.trades.Trades.empty_msg" title="Link to this definition">¶</a></dt>
+<dd><p>Message suggesting how to fetch the data when empty.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.core.trades.Trades.filtered">
+<span class="sig-name descname"><span class="pre">filtered</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Timestamp'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/binpan/core/trades.html#Trades.filtered"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.core.trades.Trades.filtered" title="Link to this definition">¶</a></dt>
+<dd><p>Return a copy of the DataFrame filtered by the timestamp column.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Inclusive lower bound (ms). Ignored if falsy.</p></li>
+<li><p><strong>end_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Inclusive upper bound (ms). Ignored if falsy.</p></li>
+<li><p><strong>time_col</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Timestamp column name. Default <code class="docutils literal notranslate"><span class="pre">'Timestamp'</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
+<dd class="field-even"><p>Filtered (deep) copy.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.core.trades.Trades.with_df">
+<span class="sig-name descname"><span class="pre">with_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#binpan.core.trades.Trades" title="binpan.core.trades.Trades"><span class="pre">Trades</span></a></span></span><a class="reference internal" href="_modules/binpan/core/trades.html#Trades.with_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.core.trades.Trades.with_df" title="Link to this definition">¶</a></dt>
+<dd><p>Return a new Trades carrying the same metadata but a different DataFrame.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="binpan.core.trades.Trades.empty">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">empty</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><a class="headerlink" href="#binpan.core.trades.Trades.empty" title="Link to this definition">¶</a></dt>
+<dd><p>True if the underlying DataFrame is empty.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"><div class="navigation-prev">
+    <a href="timeframes.html">
+      <i class="i-lucide chevron-left"></i>
+      <div class="page-info">
+        <span>Previous</span><div class="title">Timeframes Module</div></div>
+    </a>
+  </div><div class="navigation-next">
+    <a href="standards.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title">Standards Module</div>
+      </div>
+      <i class="i-lucide chevron-right"></i>
+    </a>
+  </div></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2022, Fernando Alfonso</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+<a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+  <iconify-icon icon="simple-icons:github"></iconify-icon>
+</a></div>
+    </div>
+  </div>
+</footer>
+      <script src="_static/documentation_options.js?v=11e62b30"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/shibuya.js?v=50760d75"></script></body>
+</html>

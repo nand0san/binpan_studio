@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="iris" data-content_root="../../../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>binpan.analysis.aggregations - BinPan 0.10.2</title><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=e1a1ceaf" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/shibuya.css?v=9454f7d5" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/style.css?v=1e48dca6" />
+    <link media="print" rel="stylesheet" type="text/css" href="../../../_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/><meta property="og:title" content="binpan.analysis.aggregations"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="../../../index.html">
+      
+      
+      <strong>BinPan</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Main Classes:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../binpan.html">BinPan Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../symbol_indicators.html">Symbol Indicators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../symbol_plotting.html">Symbol Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../symbol_strategy.html">Symbol Strategy</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">API &amp; Market:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../market.html">Market Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exchange.html">Exchange Info Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../auth.html">Authentication Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../wallet.html">Wallet Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../wallet_api.html">Wallet API Functions</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Analysis:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../indicators.html">Indicators Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../aggregations.html">Aggregations Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../strategies.html">Strategies Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tags.html">Tags &amp; Backtesting Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stat_tests.html">Statistical Tests and Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../numba_tools.html">Numba Tools Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Core:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../time_helper.html">Time Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../timeframes.html">Timeframes Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../trades.html">Trades Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../standards.html">Standards Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../secrets.html">Secrets Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logs.html">Logs Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exceptions.html">Exceptions Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Plotting:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../plotting.html">Plotting Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Storage &amp; Database:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../files.html">Files Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../postgresql.html">PostgreSQL Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../postgresql_database.html">PostgreSQL Database Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../influx_manager.html">Influx Manager Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../redis_fetch.html">Redis Module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../../index.html"><span itemprop="name">BinPan</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../index.html"><span itemprop="name">Module code</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">binpan.analysis.aggregations</strong>
+        <meta itemprop="position" content="3" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue" role="main">
+          <h1>Source code for binpan.analysis.aggregations</h1><div class="highlight"><pre>
+<span></span><span data-line="1"><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="2"><span class="sd">Data Aggregation.</span>
+</span><span data-line="3"><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="4"><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+</span><span data-line="5"><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span data-line="6">
+</span><span data-line="7">
+</span><span data-line="8"><span class="kn">from</span><span class="w"> </span><span class="nn">..core.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">BinPanException</span>
+</span><span data-line="9"><span class="kn">from</span><span class="w"> </span><span class="nn">..core.time_helper</span><span class="w"> </span><span class="kn">import</span> <span class="n">pandas_freq_tick_interval</span>
+</span><span data-line="10"><span class="kn">from</span><span class="w"> </span><span class="nn">.numba_tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">ema_numba</span><span class="p">,</span> <span class="n">sma_numba</span>
+</span><span data-line="11">
+</span><span data-line="12">
+</span><span data-line="13"><span class="c1">################</span>
+</span><span data-line="14"><span class="c1"># Aggregations #</span>
+</span><span data-line="15"><span class="c1">################</span>
+</span><span data-line="16">
+<div class="viewcode-block" id="generate_count_grouper_column">
+<a class="viewcode-back" href="../../../aggregations.html#binpan.analysis.aggregations.generate_count_grouper_column">[docs]</a>
+</span><span data-line="17"><span class="k">def</span><span class="w"> </span><span class="nf">generate_count_grouper_column</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">grouper_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span data-line="18"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="19"><span class="sd">    It adds a column with a value for each rows count.</span>
+</span><span data-line="20">
+</span><span data-line="21"><span class="sd">    :param pd.Dataframe data: A dataframe with at least two columns.</span>
+</span><span data-line="22"><span class="sd">    :param str grouper_name: Name for the column to be used as grouper.</span>
+</span><span data-line="23"><span class="sd">    :param int size: Count of rows to declare grouper integer sequence.</span>
+</span><span data-line="24"><span class="sd">    :return: A copy of the dataframe with a new column.</span>
+</span><span data-line="25"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="26">    <span class="n">df</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="27">    <span class="n">cols</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+</span><span data-line="28">    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span data-line="29">    <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span data-line="30">    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;acc_count&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span>
+</span><span data-line="31">    <span class="n">df</span><span class="p">[</span><span class="n">grouper_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;acc_count&#39;</span><span class="p">]</span> <span class="o">//</span> <span class="n">size</span>
+</span><span data-line="32">    <span class="n">cols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">grouper_name</span><span class="p">)</span>
+</span><span data-line="33">    <span class="k">return</span> <span class="n">df</span><span class="p">[</span><span class="n">cols</span><span class="p">]</span></div>
+
+</span><span data-line="34">
+</span><span data-line="35">
+<div class="viewcode-block" id="ohlc_group">
+<a class="viewcode-back" href="../../../aggregations.html#binpan.analysis.aggregations.ohlc_group">[docs]</a>
+</span><span data-line="36"><span class="k">def</span><span class="w"> </span><span class="nf">ohlc_group</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_to_ohlc</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">group_column</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span data-line="37"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="38"><span class="sd">    Creates  OHLC columns for a column based on group by other column with discrete values.</span>
+</span><span data-line="39">
+</span><span data-line="40"><span class="sd">    :param pd.Dataframe data: A dataframe with at least two columns.</span>
+</span><span data-line="41"><span class="sd">    :param str column_to_ohlc: Column to sparse values to OHLC columns in each group.</span>
+</span><span data-line="42"><span class="sd">    :param str group_column: This column will be the grouping key.</span>
+</span><span data-line="43"><span class="sd">    :return: A copy of the dataframe with OHLC data.</span>
+</span><span data-line="44"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="45">    <span class="n">df</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="46">    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Open&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="n">group_column</span><span class="p">])[</span><span class="n">column_to_ohlc</span><span class="p">]</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s1">&#39;first&#39;</span><span class="p">)</span>
+</span><span data-line="47">    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;High&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="n">group_column</span><span class="p">])[</span><span class="n">column_to_ohlc</span><span class="p">]</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s1">&#39;max&#39;</span><span class="p">)</span>
+</span><span data-line="48">    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Low&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="n">group_column</span><span class="p">])[</span><span class="n">column_to_ohlc</span><span class="p">]</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s1">&#39;min&#39;</span><span class="p">)</span>
+</span><span data-line="49">    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Close&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="n">group_column</span><span class="p">])[</span><span class="n">column_to_ohlc</span><span class="p">]</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s1">&#39;last&#39;</span><span class="p">)</span>
+</span><span data-line="50">    <span class="k">return</span> <span class="n">df</span></div>
+
+</span><span data-line="51">
+</span><span data-line="52">
+<div class="viewcode-block" id="sum_split_by_boolean_column_and_group">
+<a class="viewcode-back" href="../../../aggregations.html#binpan.analysis.aggregations.sum_split_by_boolean_column_and_group">[docs]</a>
+</span><span data-line="53"><span class="k">def</span><span class="w"> </span><span class="nf">sum_split_by_boolean_column_and_group</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_to_split_sum</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Quantity&quot;</span><span class="p">,</span> <span class="n">bool_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Buyer was maker&quot;</span><span class="p">,</span>
+</span><span data-line="54">                                          <span class="n">group_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;group&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span data-line="55"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="56"><span class="sd">    Splits the sum of a numeric column into two new columns based on a boolean column and groups the data using another column.</span>
+</span><span data-line="57">
+</span><span data-line="58"><span class="sd">    This function is useful for generating two new columns, one for the true values and another for the false values, with the sum</span>
+</span><span data-line="59"><span class="sd">    of the specified numeric column for each group and filling the remaining cells with NaNs.</span>
+</span><span data-line="60">
+</span><span data-line="61"><span class="sd">    :param data: A dataframe with at least 3 columns.</span>
+</span><span data-line="62"><span class="sd">    :type data: pd.DataFrame</span>
+</span><span data-line="63"><span class="sd">    :param column_to_split_sum: Numeric column with data to sum by group and split by boolean column, defaults to &quot;Quantity&quot;.</span>
+</span><span data-line="64"><span class="sd">    :type column_to_split_sum: str, optional</span>
+</span><span data-line="65"><span class="sd">    :param bool_col: Column to define splitting, defaults to &quot;Buyer was maker&quot;.</span>
+</span><span data-line="66"><span class="sd">    :type bool_col: str, optional</span>
+</span><span data-line="67"><span class="sd">    :param group_column: This column will be the grouping key, defaults to &quot;group&quot;.</span>
+</span><span data-line="68"><span class="sd">    :type group_column: str, optional</span>
+</span><span data-line="69"><span class="sd">    :return: A copy of the dataframe with splitted sum by group from the column to split sum.</span>
+</span><span data-line="70"><span class="sd">    :rtype: pd.DataFrame</span>
+</span><span data-line="71"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="72">    <span class="n">grouper</span> <span class="o">=</span> <span class="p">[</span><span class="n">group_column</span><span class="p">,</span> <span class="n">bool_col</span><span class="p">]</span>
+</span><span data-line="73">    <span class="n">df</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="74">    <span class="n">cols</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+</span><span data-line="75">    <span class="n">sum_serie</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">grouper</span><span class="p">)[</span><span class="n">column_to_split_sum</span><span class="p">]</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s1">&#39;sum&#39;</span><span class="p">)</span>
+</span><span data-line="76">    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;sum&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sum_serie</span>
+</span><span data-line="77">    <span class="n">split1</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">column_to_split_sum</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">bool_col</span><span class="si">}</span><span class="s1"> True&#39;</span>
+</span><span data-line="78">    <span class="n">split2</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">column_to_split_sum</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">bool_col</span><span class="si">}</span><span class="s1"> False&#39;</span>
+</span><span data-line="79">    <span class="n">cols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">split1</span><span class="p">)</span>
+</span><span data-line="80">    <span class="n">cols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">split2</span><span class="p">)</span>
+</span><span data-line="81">    <span class="n">idx1</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">bool_col</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">]</span><span class="o">.</span><span class="n">index</span>
+</span><span data-line="82">    <span class="n">idx2</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">bool_col</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span><span class="p">]</span><span class="o">.</span><span class="n">index</span>
+</span><span data-line="83">    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx1</span><span class="p">,</span> <span class="n">split1</span><span class="p">]</span> <span class="o">=</span> <span class="n">sum_serie</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx1</span><span class="p">]</span>
+</span><span data-line="84">    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx2</span><span class="p">,</span> <span class="n">split2</span><span class="p">]</span> <span class="o">=</span> <span class="n">sum_serie</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx2</span><span class="p">]</span>
+</span><span data-line="85">    <span class="c1"># df.fillna(inplace=True, method=&#39;ffill&#39;)</span>
+</span><span data-line="86">    <span class="c1"># df.fillna(inplace=True, method=&#39;bfill&#39;)</span>
+</span><span data-line="87">    <span class="k">return</span> <span class="n">df</span><span class="p">[</span><span class="n">cols</span><span class="p">]</span></div>
+
+</span><span data-line="88">
+</span><span data-line="89">
+<div class="viewcode-block" id="count_trues_cumulative">
+<a class="viewcode-back" href="../../../aggregations.html#binpan.analysis.aggregations.count_trues_cumulative">[docs]</a>
+</span><span data-line="90"><span class="k">def</span><span class="w"> </span><span class="nf">count_trues_cumulative</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">bool_column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_column</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span data-line="91"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="92"><span class="sd">    Add a new column to the DataFrame with cumulative numbers for each True value in a boolean column.</span>
+</span><span data-line="93">
+</span><span data-line="94"><span class="sd">    :param data: The input DataFrame.</span>
+</span><span data-line="95"><span class="sd">    :type data: pd.DataFrame</span>
+</span><span data-line="96"><span class="sd">    :param bool_column: The name of the boolean column to evaluate.</span>
+</span><span data-line="97"><span class="sd">    :type bool_column: str</span>
+</span><span data-line="98"><span class="sd">    :param new_column: The name of the new column to store the cumulative numbers for True values.</span>
+</span><span data-line="99"><span class="sd">    :type new_column: str</span>
+</span><span data-line="100"><span class="sd">    :return: A new DataFrame with an additional column containing the cumulative numbers for True values.</span>
+</span><span data-line="101"><span class="sd">    :rtype: pd.DataFrame</span>
+</span><span data-line="102"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="103">    <span class="n">df</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="104">    <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span data-line="105">
+</span><span data-line="106">    <span class="k">def</span><span class="w"> </span><span class="nf">increment_if_true</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+</span><span data-line="107">        <span class="k">nonlocal</span> <span class="n">counter</span>
+</span><span data-line="108">        <span class="k">if</span> <span class="n">x</span><span class="p">:</span>
+</span><span data-line="109">            <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span data-line="110">        <span class="k">return</span> <span class="n">counter</span>
+</span><span data-line="111">
+</span><span data-line="112">    <span class="n">df</span><span class="p">[</span><span class="n">new_column</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">bool_column</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">increment_if_true</span><span class="p">)</span>
+</span><span data-line="113">    <span class="k">return</span> <span class="n">df</span></div>
+
+</span><span data-line="114">
+</span><span data-line="115">
+<div class="viewcode-block" id="drop_aggregated">
+<a class="viewcode-back" href="../../../aggregations.html#binpan.analysis.aggregations.drop_aggregated">[docs]</a>
+</span><span data-line="116"><span class="k">def</span><span class="w"> </span><span class="nf">drop_aggregated</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">group_column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="s1">&#39;last&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span data-line="117"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="118"><span class="sd">    Drop lines except the first/last/min/max etc row of each group_column streak.</span>
+</span><span data-line="119">
+</span><span data-line="120"><span class="sd">    It assumes that the grouping column is a serie of integers to group it by blocks.</span>
+</span><span data-line="121">
+</span><span data-line="122"><span class="sd">    :param pd.Dataframe data: A dataframe.</span>
+</span><span data-line="123"><span class="sd">    :param str group_column: This column will be the grouping key.</span>
+</span><span data-line="124"><span class="sd">    :param str by: Pandas valid aggregation method.</span>
+</span><span data-line="125"><span class="sd">    :return: A copy of the dataframe with just the first row each grouper streak.</span>
+</span><span data-line="126"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="127">    <span class="n">df</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="128">
+</span><span data-line="129">    <span class="c1"># type test</span>
+</span><span data-line="130">    <span class="n">is_int_or_nan</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">group_column</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">))</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+</span><span data-line="131">    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_int_or_nan</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+</span><span data-line="132">        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Group column &#39;</span><span class="si">{</span><span class="n">group_column</span><span class="si">}</span><span class="s2">&#39; must use integer numbers&quot;</span><span class="p">)</span>
+</span><span data-line="133">
+</span><span data-line="134">    <span class="c1"># sequential integers fault warning</span>
+</span><span data-line="135">    <span class="n">integers</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">group_column</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">))),</span> <span class="n">group_column</span><span class="p">]</span>
+</span><span data-line="136">    <span class="n">differences</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">integers</span><span class="p">)</span>  <span class="c1"># ojo, np.diff elimina el primer elemento en vez de venir con nan</span>
+</span><span data-line="137">    <span class="n">differences</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">differences</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">differences</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+</span><span data-line="138">    <span class="k">if</span> <span class="ow">not</span> <span class="n">differences</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+</span><span data-line="139">        <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+</span><span data-line="140">        <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;binpan&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Numbers in column &#39;</span><span class="si">{</span><span class="n">group_column</span><span class="si">}</span><span class="s2">&#39; are not consecutive.&quot;</span><span class="p">)</span>
+</span><span data-line="141">
+</span><span data-line="142">    <span class="n">aggregator</span> <span class="o">=</span> <span class="p">{</span><span class="n">c</span><span class="p">:</span> <span class="n">by</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">}</span>
+</span><span data-line="143">    <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">group_column</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">aggregator</span><span class="p">)</span></div>
+
+</span><span data-line="144">
+</span><span data-line="145">
+<div class="viewcode-block" id="tag_by_accumulation">
+<a class="viewcode-back" href="../../../aggregations.html#binpan.analysis.aggregations.tag_by_accumulation">[docs]</a>
+</span><span data-line="146"><span class="k">def</span><span class="w"> </span><span class="nf">tag_by_accumulation</span><span class="p">(</span><span class="n">trades</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">agg_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Quantity&#39;</span><span class="p">,</span> <span class="n">grouper_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;group&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span data-line="147"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="148"><span class="sd">    Creates integer sequence by column value threshold accumulation.</span>
+</span><span data-line="149">
+</span><span data-line="150"><span class="sd">    :param pd.DataFrame trades: Expected binpan aggregated trades or atomic trades dataframe.</span>
+</span><span data-line="151"><span class="sd">    :param str agg_column: Name of the column to group by volume accumulation.</span>
+</span><span data-line="152"><span class="sd">    :param str grouper_name: Name for the column to be used as grouper.</span>
+</span><span data-line="153"><span class="sd">    :param float threshold: Size of volume aggregated in bars to be compiled.</span>
+</span><span data-line="154"><span class="sd">    :return:</span>
+</span><span data-line="155"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="156">
+</span><span data-line="157">    <span class="n">current_vol</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span data-line="158">    <span class="n">bar_counter</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span data-line="159">    <span class="n">rows_with_bar_counter</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="160">
+</span><span data-line="161">    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">trades</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+</span><span data-line="162">        <span class="n">new_data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+</span><span data-line="163">        <span class="n">new_data</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">grouper_name</span><span class="p">:</span> <span class="n">bar_counter</span><span class="p">})</span>
+</span><span data-line="164">        <span class="n">rows_with_bar_counter</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_data</span><span class="p">)</span>
+</span><span data-line="165">        <span class="n">current_vol</span> <span class="o">+=</span> <span class="n">row</span><span class="p">[</span><span class="n">agg_column</span><span class="p">]</span>
+</span><span data-line="166">
+</span><span data-line="167">        <span class="c1"># render new row</span>
+</span><span data-line="168">        <span class="k">if</span> <span class="n">current_vol</span> <span class="o">&gt;=</span> <span class="n">threshold</span><span class="p">:</span>
+</span><span data-line="169">            <span class="n">bar_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span data-line="170">            <span class="n">current_vol</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span data-line="171">
+</span><span data-line="172">    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">rows_with_bar_counter</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">trades</span><span class="o">.</span><span class="n">index</span><span class="p">)</span></div>
+
+</span><span data-line="173">
+</span><span data-line="174">
+</span><span data-line="175"><span class="c1">############</span>
+</span><span data-line="176"><span class="c1"># df utils #</span>
+</span><span data-line="177"><span class="c1">############</span>
+</span><span data-line="178">
+<div class="viewcode-block" id="resample_klines">
+<a class="viewcode-back" href="../../../aggregations.html#binpan.analysis.aggregations.resample_klines">[docs]</a>
+</span><span data-line="179"><span class="k">def</span><span class="w"> </span><span class="nf">resample_klines</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">tick_interval</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span data-line="180"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="181"><span class="sd">    Resamples a DataFrame of klines to a different frequency.</span>
+</span><span data-line="182">
+</span><span data-line="183"><span class="sd">    :param pd.DataFrame data: The original DataFrame of klines. The index must be a DatetimeIndex.</span>
+</span><span data-line="184"><span class="sd">    :param str tick_interval: The new frequency for the klines. This can be any Binance frequency.</span>
+</span><span data-line="185"><span class="sd">    :return: A new DataFrame with the resampled klines.</span>
+</span><span data-line="186"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="187">    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DatetimeIndex</span><span class="p">),</span> <span class="s2">&quot;The index must be a DatetimeIndex.&quot;</span>
+</span><span data-line="188">    <span class="n">df</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="189">    <span class="n">interval</span> <span class="o">=</span> <span class="n">pandas_freq_tick_interval</span><span class="p">[</span><span class="n">tick_interval</span><span class="p">]</span>
+</span><span data-line="190">
+</span><span data-line="191">    <span class="k">if</span> <span class="s2">&quot;Ignore&quot;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+</span><span data-line="192">        <span class="n">df_resampled</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">({</span>
+</span><span data-line="193">            <span class="s1">&#39;Open time&#39;</span><span class="p">:</span> <span class="s1">&#39;first&#39;</span><span class="p">,</span>
+</span><span data-line="194">            <span class="s1">&#39;Open&#39;</span><span class="p">:</span> <span class="s1">&#39;first&#39;</span><span class="p">,</span>
+</span><span data-line="195">            <span class="s1">&#39;High&#39;</span><span class="p">:</span> <span class="s1">&#39;max&#39;</span><span class="p">,</span>
+</span><span data-line="196">            <span class="s1">&#39;Low&#39;</span><span class="p">:</span> <span class="s1">&#39;min&#39;</span><span class="p">,</span>
+</span><span data-line="197">            <span class="s1">&#39;Close&#39;</span><span class="p">:</span> <span class="s1">&#39;last&#39;</span><span class="p">,</span>
+</span><span data-line="198">            <span class="s1">&#39;Volume&#39;</span><span class="p">:</span> <span class="s1">&#39;sum&#39;</span><span class="p">,</span>
+</span><span data-line="199">            <span class="s1">&#39;Close time&#39;</span><span class="p">:</span> <span class="s1">&#39;last&#39;</span><span class="p">,</span>
+</span><span data-line="200">            <span class="s1">&#39;Quote volume&#39;</span><span class="p">:</span> <span class="s1">&#39;sum&#39;</span><span class="p">,</span>
+</span><span data-line="201">            <span class="s1">&#39;Trades&#39;</span><span class="p">:</span> <span class="s1">&#39;sum&#39;</span><span class="p">,</span>
+</span><span data-line="202">            <span class="s1">&#39;Taker buy base volume&#39;</span><span class="p">:</span> <span class="s1">&#39;sum&#39;</span><span class="p">,</span>
+</span><span data-line="203">            <span class="s1">&#39;Taker buy quote volume&#39;</span><span class="p">:</span> <span class="s1">&#39;sum&#39;</span><span class="p">,</span>
+</span><span data-line="204">            <span class="s1">&#39;Ignore&#39;</span><span class="p">:</span> <span class="s1">&#39;last&#39;</span><span class="p">,</span>
+</span><span data-line="205">            <span class="s1">&#39;Open timestamp&#39;</span><span class="p">:</span> <span class="s1">&#39;first&#39;</span><span class="p">,</span>
+</span><span data-line="206">            <span class="s1">&#39;Close timestamp&#39;</span><span class="p">:</span> <span class="s1">&#39;last&#39;</span>
+</span><span data-line="207">        <span class="p">})</span>
+</span><span data-line="208">    <span class="k">else</span><span class="p">:</span>
+</span><span data-line="209">        <span class="n">df_resampled</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">({</span>
+</span><span data-line="210">            <span class="s1">&#39;Open time&#39;</span><span class="p">:</span> <span class="s1">&#39;first&#39;</span><span class="p">,</span>
+</span><span data-line="211">            <span class="s1">&#39;Open&#39;</span><span class="p">:</span> <span class="s1">&#39;first&#39;</span><span class="p">,</span>
+</span><span data-line="212">            <span class="s1">&#39;High&#39;</span><span class="p">:</span> <span class="s1">&#39;max&#39;</span><span class="p">,</span>
+</span><span data-line="213">            <span class="s1">&#39;Low&#39;</span><span class="p">:</span> <span class="s1">&#39;min&#39;</span><span class="p">,</span>
+</span><span data-line="214">            <span class="s1">&#39;Close&#39;</span><span class="p">:</span> <span class="s1">&#39;last&#39;</span><span class="p">,</span>
+</span><span data-line="215">            <span class="s1">&#39;Volume&#39;</span><span class="p">:</span> <span class="s1">&#39;sum&#39;</span><span class="p">,</span>
+</span><span data-line="216">            <span class="s1">&#39;Close time&#39;</span><span class="p">:</span> <span class="s1">&#39;last&#39;</span><span class="p">,</span>
+</span><span data-line="217">            <span class="s1">&#39;Quote volume&#39;</span><span class="p">:</span> <span class="s1">&#39;sum&#39;</span><span class="p">,</span>
+</span><span data-line="218">            <span class="s1">&#39;Trades&#39;</span><span class="p">:</span> <span class="s1">&#39;sum&#39;</span><span class="p">,</span>
+</span><span data-line="219">            <span class="s1">&#39;Taker buy base volume&#39;</span><span class="p">:</span> <span class="s1">&#39;sum&#39;</span><span class="p">,</span>
+</span><span data-line="220">            <span class="s1">&#39;Taker buy quote volume&#39;</span><span class="p">:</span> <span class="s1">&#39;sum&#39;</span><span class="p">,</span>
+</span><span data-line="221">            <span class="c1"># &#39;Ignore&#39;: &#39;last&#39;,</span>
+</span><span data-line="222">            <span class="s1">&#39;Open timestamp&#39;</span><span class="p">:</span> <span class="s1">&#39;first&#39;</span><span class="p">,</span>
+</span><span data-line="223">            <span class="s1">&#39;Close timestamp&#39;</span><span class="p">:</span> <span class="s1">&#39;last&#39;</span>
+</span><span data-line="224">        <span class="p">})</span>
+</span><span data-line="225">    <span class="n">new_name_split</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+</span><span data-line="226">    <span class="n">new_name_split</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">tick_interval</span>
+</span><span data-line="227">    <span class="n">df_resampled</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">new_name_split</span><span class="p">)</span>
+</span><span data-line="228">    <span class="k">return</span> <span class="n">df_resampled</span></div>
+
+</span><span data-line="229">
+</span><span data-line="230">
+<div class="viewcode-block" id="oversample">
+<a class="viewcode-back" href="../../../aggregations.html#binpan.analysis.aggregations.oversample">[docs]</a>
+</span><span data-line="231"><span class="k">def</span><span class="w"> </span><span class="nf">oversample</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">new_interval</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span data-line="232"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="233"><span class="sd">    Expands a DataFrame of klines by calculating aggregated values for new columns</span>
+</span><span data-line="234"><span class="sd">    from the start of the oversampled interval to each row.</span>
+</span><span data-line="235">
+</span><span data-line="236"><span class="sd">    :param pd.DataFrame data: The original DataFrame of klines. The index must be a DatetimeIndex.</span>
+</span><span data-line="237"><span class="sd">    :param str new_interval: The new frequency for oversampling. This can be any Binance frequency.</span>
+</span><span data-line="238"><span class="sd">    :return: An expanded DataFrame with oversampled data.</span>
+</span><span data-line="239"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="240">    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DatetimeIndex</span><span class="p">),</span> <span class="s2">&quot;The index must be a DatetimeIndex.&quot;</span>
+</span><span data-line="241">    <span class="n">df</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="242">
+</span><span data-line="243">    <span class="n">interval</span> <span class="o">=</span> <span class="n">pandas_freq_tick_interval</span><span class="p">[</span><span class="n">new_interval</span><span class="p">]</span>
+</span><span data-line="244">    <span class="n">interval_ms</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span>
+</span><span data-line="245">
+</span><span data-line="246">    <span class="k">def</span><span class="w"> </span><span class="nf">get_interval_start</span><span class="p">(</span><span class="n">row_time</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">,</span> <span class="n">freq</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">:</span>
+</span><span data-line="247">        <span class="k">return</span> <span class="n">row_time</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span>
+</span><span data-line="248">
+</span><span data-line="249">    <span class="n">oversampled</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+</span><span data-line="250">
+</span><span data-line="251">    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+</span><span data-line="252">        <span class="n">interval_start</span> <span class="o">=</span> <span class="n">get_interval_start</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">interval</span><span class="p">)</span>
+</span><span data-line="253">        <span class="n">interval_data</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">interval_start</span><span class="p">:</span><span class="n">index</span><span class="p">]</span>
+</span><span data-line="254">
+</span><span data-line="255">        <span class="n">oversampled</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="s1">&#39;Open time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">interval_data</span><span class="p">[</span><span class="s1">&#39;Open time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">tz_localize</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+</span><span data-line="256">        <span class="n">oversampled</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="s1">&#39;Open&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">interval_data</span><span class="p">[</span><span class="s1">&#39;Open&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span data-line="257">        <span class="n">oversampled</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="s1">&#39;High&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">interval_data</span><span class="p">[</span><span class="s1">&#39;High&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+</span><span data-line="258">        <span class="n">oversampled</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="s1">&#39;Low&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">interval_data</span><span class="p">[</span><span class="s1">&#39;Low&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+</span><span data-line="259">        <span class="n">oversampled</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="s1">&#39;Close&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">interval_data</span><span class="p">[</span><span class="s1">&#39;Close&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span data-line="260">        <span class="n">oversampled</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="s1">&#39;Volume&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">interval_data</span><span class="p">[</span><span class="s1">&#39;Volume&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</span><span data-line="261">        <span class="n">oversampled</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="s1">&#39;Close time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">interval_data</span><span class="p">[</span><span class="s1">&#39;Open time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">(</span><span class="n">interval_ms</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;ms&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">tz_localize</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+</span><span data-line="262">        <span class="n">oversampled</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="s1">&#39;Quote volume&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">interval_data</span><span class="p">[</span><span class="s1">&#39;Quote volume&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</span><span data-line="263">        <span class="n">oversampled</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="s1">&#39;Trades&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">interval_data</span><span class="p">[</span><span class="s1">&#39;Trades&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</span><span data-line="264">        <span class="n">oversampled</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="s1">&#39;Taker buy base volume&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">interval_data</span><span class="p">[</span><span class="s1">&#39;Taker buy base volume&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</span><span data-line="265">        <span class="n">oversampled</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="s1">&#39;Taker buy quote volume&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">interval_data</span><span class="p">[</span><span class="s1">&#39;Taker buy quote volume&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</span><span data-line="266">        <span class="n">oversampled</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="s1">&#39;Open timestamp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">interval_data</span><span class="p">[</span><span class="s1">&#39;Open timestamp&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span data-line="267">        <span class="n">oversampled</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="s1">&#39;Close timestamp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">interval_data</span><span class="p">[</span><span class="s1">&#39;Open timestamp&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">interval_ms</span> <span class="o">-</span> <span class="mi">1</span>
+</span><span data-line="268">
+</span><span data-line="269">    <span class="n">combined_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df</span><span class="p">,</span> <span class="n">oversampled</span><span class="o">.</span><span class="n">add_suffix</span><span class="p">(</span><span class="s1">&#39;_oversampled&#39;</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span><span data-line="270">
+</span><span data-line="271">    <span class="k">return</span> <span class="n">combined_data</span></div>
+
+</span><span data-line="272">
+</span><span data-line="273">
+<div class="viewcode-block" id="time_index_from_timestamps">
+<a class="viewcode-back" href="../../../aggregations.html#binpan.analysis.aggregations.time_index_from_timestamps">[docs]</a>
+</span><span data-line="274"><span class="k">def</span><span class="w"> </span><span class="nf">time_index_from_timestamps</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">index_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">timezone</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Europe/Madrid&#39;</span><span class="p">,</span> <span class="n">drop_col</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="p">):</span>
+</span><span data-line="275"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="276"><span class="sd">    Assumes existing timestamp column or at least Open timestamp column.</span>
+</span><span data-line="277">
+</span><span data-line="278"><span class="sd">    :param pd.Dataframe data: A dataframe.</span>
+</span><span data-line="279"><span class="sd">    :param bool drop_col: Drop column applied as index.</span>
+</span><span data-line="280"><span class="sd">    :param str index_name: Name for the resulting index.</span>
+</span><span data-line="281"><span class="sd">    :param str timezone: The index of the pandas dataframe in the object can be converted to any timezone, i.e. &quot;Europe/Madrid&quot;</span>
+</span><span data-line="282"><span class="sd">                           - TZ database: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones</span>
+</span><span data-line="283">
+</span><span data-line="284"><span class="sd">    :return pd.DataFrame: A dataframe copy with the new index. Timestamp columns will be not dropped.</span>
+</span><span data-line="285"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="286">    <span class="n">df_</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="287">    <span class="n">time_cols</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df_</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="s1">&#39;timestamp&#39;</span> <span class="ow">in</span> <span class="n">c</span><span class="o">.</span><span class="n">lower</span><span class="p">()])</span>
+</span><span data-line="288">    <span class="n">time_col</span> <span class="o">=</span> <span class="n">time_cols</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span data-line="289">    <span class="n">df_</span> <span class="o">=</span> <span class="n">df_</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">time_col</span><span class="p">)</span>
+</span><span data-line="290">    <span class="n">df_</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DatetimeIndex</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df_</span><span class="p">[</span><span class="n">time_col</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;ms&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">tz_localize</span><span class="p">(</span><span class="s1">&#39;UTC&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">tz_convert</span><span class="p">(</span><span class="n">timezone</span><span class="p">)</span>
+</span><span data-line="291">
+</span><span data-line="292">    <span class="k">if</span> <span class="n">drop_col</span><span class="p">:</span>
+</span><span data-line="293">        <span class="n">df_</span> <span class="o">=</span> <span class="n">df_</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">time_col</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span><span data-line="294">    <span class="k">if</span> <span class="n">index_name</span><span class="p">:</span>
+</span><span data-line="295">        <span class="n">df_</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">index_name</span>
+</span><span data-line="296">    <span class="k">return</span> <span class="n">df_</span></div>
+
+</span><span data-line="297">
+</span><span data-line="298">
+<div class="viewcode-block" id="columns_restriction">
+<a class="viewcode-back" href="../../../aggregations.html#binpan.analysis.aggregations.columns_restriction">[docs]</a>
+</span><span data-line="299"><span class="k">def</span><span class="w"> </span><span class="nf">columns_restriction</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">extra</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span data-line="300"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="301"><span class="sd">    Filter columns by preset.</span>
+</span><span data-line="302">
+</span><span data-line="303"><span class="sd">    :param pd.DataFrame data: A dataframe.</span>
+</span><span data-line="304"><span class="sd">    :param str mode: Presets are: TB, VB, DB, VIB, DIB, TRB, VRB, DRB. All from chapter 2 of AFML book (Marcos López de Prado).</span>
+</span><span data-line="305"><span class="sd">        https://www.amazon.com/-/es/Marcos-Lopez-Prado/dp/1119482089</span>
+</span><span data-line="306"><span class="sd">    :param list extra: Optional extra columns.</span>
+</span><span data-line="307"><span class="sd">    :return pd.DataFrame: Just preset columns.</span>
+</span><span data-line="308"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="309">    <span class="n">valid_modes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TB&#39;</span><span class="p">,</span> <span class="s1">&#39;VB&#39;</span><span class="p">,</span> <span class="s1">&#39;DB&#39;</span><span class="p">,</span> <span class="s1">&#39;IB&#39;</span><span class="p">,</span> <span class="s1">&#39;VIB&#39;</span><span class="p">,</span> <span class="s1">&#39;DIB&#39;</span><span class="p">,</span> <span class="s1">&#39;TRB&#39;</span><span class="p">,</span> <span class="s1">&#39;VRB&#39;</span><span class="p">,</span> <span class="s1">&#39;DRB&#39;</span><span class="p">]</span>
+</span><span data-line="310">    <span class="k">try</span><span class="p">:</span>
+</span><span data-line="311">        <span class="k">assert</span> <span class="n">mode</span> <span class="ow">in</span> <span class="n">valid_modes</span>
+</span><span data-line="312">    <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+</span><span data-line="313">        <span class="k">raise</span> <span class="n">BinPanException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;BiPan Exception: </span><span class="si">{</span><span class="n">mode</span><span class="si">}</span><span class="s2"> not a valid type ---&gt; Valid types = </span><span class="si">{</span><span class="n">valid_modes</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="314">    <span class="n">df</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="315">    <span class="k">if</span> <span class="n">extra</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="316">        <span class="n">extra</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="317">    <span class="n">bool_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;True&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">c</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;False&#39;</span><span class="p">)]</span>  <span class="c1"># add created from bool columns</span>
+</span><span data-line="318">    <span class="n">cols</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="319">    <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;TB&#39;</span> <span class="ow">or</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;VB&#39;</span> <span class="ow">or</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;DB&#39;</span> <span class="ow">or</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;IB&#39;</span><span class="p">:</span>
+</span><span data-line="320">        <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Open&#39;</span><span class="p">,</span> <span class="s1">&#39;High&#39;</span><span class="p">,</span> <span class="s1">&#39;Low&#39;</span><span class="p">,</span> <span class="s1">&#39;Close&#39;</span><span class="p">,</span> <span class="s1">&#39;Timestamp&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">bool_cols</span> <span class="o">+</span> <span class="n">extra</span>
+</span><span data-line="321">    <span class="k">return</span> <span class="n">df</span><span class="p">[</span><span class="n">cols</span><span class="p">]</span></div>
+
+</span><span data-line="322">
+</span><span data-line="323">
+<div class="viewcode-block" id="generate_volume_column">
+<a class="viewcode-back" href="../../../aggregations.html#binpan.analysis.aggregations.generate_volume_column">[docs]</a>
+</span><span data-line="324"><span class="k">def</span><span class="w"> </span><span class="nf">generate_volume_column</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">add_cols</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">quote_column</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span data-line="325"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="326"><span class="sd">    Add two columns to generate volume of base.</span>
+</span><span data-line="327">
+</span><span data-line="328"><span class="sd">    :param pd.DataFrame data: A dataframe.</span>
+</span><span data-line="329"><span class="sd">    :param tuple add_cols: Ordered tuple with two columns to add for calculating the total volume.</span>
+</span><span data-line="330"><span class="sd">    :param bool quote_column: If True, Volume for quote will be added obtained from Volume and Close price.</span>
+</span><span data-line="331"><span class="sd">    :return pd.DataFrame: A copy with volume added.</span>
+</span><span data-line="332"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="333">    <span class="n">df</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="334">    <span class="n">df</span><span class="p">[</span><span class="n">add_cols</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">add_cols</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</span><span data-line="335">    <span class="n">df</span><span class="p">[</span><span class="n">add_cols</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">add_cols</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</span><span data-line="336">    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s1">&#39;Volume&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">add_cols</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">+</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">add_cols</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+</span><span data-line="337">    <span class="k">if</span> <span class="n">quote_column</span><span class="p">:</span>
+</span><span data-line="338">        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s1">&#39;Volume quote&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Close&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Volume&#39;</span><span class="p">]</span>
+</span><span data-line="339">    <span class="k">return</span> <span class="n">df</span></div>
+
+</span><span data-line="340">
+</span><span data-line="341">
+</span><span data-line="342"><span class="c1">############</span>
+</span><span data-line="343"><span class="c1"># concepts #</span>
+</span><span data-line="344"><span class="c1">############</span>
+</span><span data-line="345">
+<div class="viewcode-block" id="sign_of_price">
+<a class="viewcode-back" href="../../../aggregations.html#binpan.analysis.aggregations.sign_of_price">[docs]</a>
+</span><span data-line="346"><span class="k">def</span><span class="w"> </span><span class="nf">sign_of_price</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">col_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;sign&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span data-line="347"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="348"><span class="sd">    Creates a new dataframe with a column with the sign of the price by each trade.</span>
+</span><span data-line="349"><span class="sd">    1 if the trade increased the price and -1 for decreased price. Also called &quot;tick rule&quot;.</span>
+</span><span data-line="350">
+</span><span data-line="351"><span class="sd">    Nans will be filled as zero.</span>
+</span><span data-line="352">
+</span><span data-line="353"><span class="sd">    .. math::</span>
+</span><span data-line="354">
+</span><span data-line="355"><span class="sd">       b_t= \\begin{cases}b_{t-1} &amp; \\text { if } \\Delta p_t=0 \\\\ \\frac{\\left|\\Delta p_t\\right|}{\\Delta p_t} &amp; \\text { if } \\Delta p_t \\neq 0\\end{cases}</span>
+</span><span data-line="356">
+</span><span data-line="357">
+</span><span data-line="358"><span class="sd">    :param pd.DataFrame data: Trades dataframe.</span>
+</span><span data-line="359"><span class="sd">    :param str col_name: New column name.</span>
+</span><span data-line="360"><span class="sd">    :return pd.DataFrame: A copy of the data with the new column.</span>
+</span><span data-line="361">
+</span><span data-line="362"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="363">    <span class="n">df</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="364">    <span class="c1"># df[col_name] = df[&#39;Price&#39;].diff()</span>
+</span><span data-line="365">
+</span><span data-line="366">    <span class="n">df</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Price&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+</span><span data-line="367">
+</span><span data-line="368">    <span class="n">df</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col_name</span><span class="p">]))</span>
+</span><span data-line="369">    <span class="n">df</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span><span class="o">.</span><span class="n">ffill</span><span class="p">()</span>
+</span><span data-line="370">    <span class="n">df</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+</span><span data-line="371">    <span class="k">return</span> <span class="n">df</span></div>
+
+</span><span data-line="372">
+</span><span data-line="373">
+</span><span data-line="374"><span class="c1">##################</span>
+</span><span data-line="375"><span class="c1"># AFML shortcuts #</span>
+</span><span data-line="376"><span class="c1">##################</span>
+</span><span data-line="377">
+</span><span data-line="378">
+<div class="viewcode-block" id="tick_bars">
+<a class="viewcode-back" href="../../../aggregations.html#binpan.analysis.aggregations.tick_bars">[docs]</a>
+</span><span data-line="379"><span class="k">def</span><span class="w"> </span><span class="nf">tick_bars</span><span class="p">(</span><span class="n">trades</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span data-line="380"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="381"><span class="sd">    Creates Tick Bars OHLC bars from trades-</span>
+</span><span data-line="382">
+</span><span data-line="383"><span class="sd">    :param pd.DataFrame trades: Expected binpan aggregated trades or atomic trades dataframe.</span>
+</span><span data-line="384"><span class="sd">    :param int size: Size of ticks in bars to be compiled.</span>
+</span><span data-line="385"><span class="sd">    :return: A dataframe sampled with the new bars sampling.</span>
+</span><span data-line="386"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="387">    <span class="k">if</span> <span class="n">trades</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+</span><span data-line="388">        <span class="k">raise</span> <span class="n">BinPanException</span><span class="p">(</span><span class="s2">&quot;BinPan Exception: Tick Bars cannot be calculated with empty data.&quot;</span><span class="p">)</span>
+</span><span data-line="389">    <span class="n">index_name</span> <span class="o">=</span> <span class="n">trades</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span>
+</span><span data-line="390">
+</span><span data-line="391">    <span class="n">df</span> <span class="o">=</span> <span class="n">generate_count_grouper_column</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">trades</span><span class="p">,</span> <span class="n">grouper_name</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+</span><span data-line="392">    <span class="n">df</span> <span class="o">=</span> <span class="n">ohlc_group</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">column_to_ohlc</span><span class="o">=</span><span class="s1">&#39;Price&#39;</span><span class="p">,</span> <span class="n">group_column</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">)</span>
+</span><span data-line="393">    <span class="n">df</span> <span class="o">=</span> <span class="n">sum_split_by_boolean_column_and_group</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;Quantity&#39;</span><span class="p">,</span> <span class="s1">&#39;Buyer was maker&#39;</span><span class="p">,</span> <span class="s1">&#39;group&#39;</span><span class="p">)</span>
+</span><span data-line="394">    <span class="n">df</span> <span class="o">=</span> <span class="n">drop_aggregated</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">group_column</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="s1">&#39;first&#39;</span><span class="p">)</span>
+</span><span data-line="395">    <span class="n">df</span> <span class="o">=</span> <span class="n">columns_restriction</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;TB&#39;</span><span class="p">)</span>
+</span><span data-line="396">    <span class="n">df</span> <span class="o">=</span> <span class="n">time_index_from_timestamps</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">index_name</span><span class="o">=</span><span class="n">index_name</span><span class="p">)</span>
+</span><span data-line="397">    <span class="c1"># add Volume for plotting</span>
+</span><span data-line="398">    <span class="n">bool_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="s1">&#39;True&#39;</span> <span class="ow">in</span> <span class="n">c</span> <span class="ow">or</span> <span class="s1">&#39;False&#39;</span> <span class="ow">in</span> <span class="n">c</span><span class="p">]</span>
+</span><span data-line="399">    <span class="n">df</span> <span class="o">=</span> <span class="n">generate_volume_column</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">add_cols</span><span class="o">=</span><span class="p">(</span><span class="n">bool_cols</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">bool_cols</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+</span><span data-line="400">    <span class="k">return</span> <span class="n">df</span></div>
+
+</span><span data-line="401">
+</span><span data-line="402">
+<div class="viewcode-block" id="volume_bars">
+<a class="viewcode-back" href="../../../aggregations.html#binpan.analysis.aggregations.volume_bars">[docs]</a>
+</span><span data-line="403"><span class="k">def</span><span class="w"> </span><span class="nf">volume_bars</span><span class="p">(</span><span class="n">trades</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span data-line="404"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="405"><span class="sd">    Creates Volume Bars OHLC bars from trades.</span>
+</span><span data-line="406">
+</span><span data-line="407"><span class="sd">    :param pd.DataFrame trades: Expected binpan aggregated trades or atomic trades dataframe.</span>
+</span><span data-line="408"><span class="sd">    :param int threshold: Size of volume threshold in bars to be compiled.</span>
+</span><span data-line="409"><span class="sd">    :return: A dataframe sampled with the new bars sampling.</span>
+</span><span data-line="410"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="411">    <span class="k">if</span> <span class="n">trades</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+</span><span data-line="412">        <span class="k">raise</span> <span class="n">BinPanException</span><span class="p">(</span><span class="s2">&quot;BinPan Exception: Volume Bars cannot be calculated with empty data.&quot;</span><span class="p">)</span>
+</span><span data-line="413">    <span class="n">index_name</span> <span class="o">=</span> <span class="n">trades</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span>
+</span><span data-line="414">
+</span><span data-line="415">    <span class="n">df</span> <span class="o">=</span> <span class="n">tag_by_accumulation</span><span class="p">(</span><span class="n">trades</span><span class="o">=</span><span class="n">trades</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">,</span> <span class="n">agg_column</span><span class="o">=</span><span class="s1">&#39;Quantity&#39;</span><span class="p">,</span> <span class="n">grouper_name</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">)</span>
+</span><span data-line="416">    <span class="c1"># df = generate_count_grouper_column(data=trades, grouper_name=&#39;group&#39;, size=size)</span>
+</span><span data-line="417">    <span class="n">df</span> <span class="o">=</span> <span class="n">ohlc_group</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">column_to_ohlc</span><span class="o">=</span><span class="s1">&#39;Price&#39;</span><span class="p">,</span> <span class="n">group_column</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">)</span>
+</span><span data-line="418">    <span class="n">df</span> <span class="o">=</span> <span class="n">sum_split_by_boolean_column_and_group</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">column_to_split_sum</span><span class="o">=</span><span class="s1">&#39;Quantity&#39;</span><span class="p">,</span> <span class="n">bool_col</span><span class="o">=</span><span class="s1">&#39;Buyer was maker&#39;</span><span class="p">,</span> <span class="n">group_column</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">)</span>
+</span><span data-line="419">    <span class="n">df</span> <span class="o">=</span> <span class="n">drop_aggregated</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">group_column</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="s1">&#39;first&#39;</span><span class="p">)</span>
+</span><span data-line="420">    <span class="n">df</span> <span class="o">=</span> <span class="n">columns_restriction</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;VB&#39;</span><span class="p">)</span>
+</span><span data-line="421">    <span class="n">df</span> <span class="o">=</span> <span class="n">time_index_from_timestamps</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">index_name</span><span class="o">=</span><span class="n">index_name</span><span class="p">)</span>
+</span><span data-line="422">    <span class="c1"># add Volume for plotting</span>
+</span><span data-line="423">    <span class="n">bool_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="s1">&#39;True&#39;</span> <span class="ow">in</span> <span class="n">c</span> <span class="ow">or</span> <span class="s1">&#39;False&#39;</span> <span class="ow">in</span> <span class="n">c</span><span class="p">]</span>
+</span><span data-line="424">    <span class="n">df</span> <span class="o">=</span> <span class="n">generate_volume_column</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">add_cols</span><span class="o">=</span><span class="p">(</span><span class="n">bool_cols</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">bool_cols</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+</span><span data-line="425">    <span class="k">return</span> <span class="n">df</span></div>
+
+</span><span data-line="426">
+</span><span data-line="427">
+<div class="viewcode-block" id="dollar_bars">
+<a class="viewcode-back" href="../../../aggregations.html#binpan.analysis.aggregations.dollar_bars">[docs]</a>
+</span><span data-line="428"><span class="k">def</span><span class="w"> </span><span class="nf">dollar_bars</span><span class="p">(</span><span class="n">trades</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span data-line="429"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="430"><span class="sd">    Creates Dollar (or quote) Bars OHLC bars from trades.</span>
+</span><span data-line="431">
+</span><span data-line="432"><span class="sd">    :param pd.DataFrame trades: Expected binpan aggregated trades or atomic trades dataframe.</span>
+</span><span data-line="433"><span class="sd">    :param float threshold: Size of Dollar (or quote) threshold in bars to be compiled.</span>
+</span><span data-line="434"><span class="sd">    :return: A dataframe sampled with the new bars sampling.</span>
+</span><span data-line="435"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="436">    <span class="k">if</span> <span class="n">trades</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+</span><span data-line="437">        <span class="k">raise</span> <span class="n">BinPanException</span><span class="p">(</span><span class="s2">&quot;BinPan Exception: Dollar Bars cannot be calculated with empty data.&quot;</span><span class="p">)</span>
+</span><span data-line="438">    <span class="n">index_name</span> <span class="o">=</span> <span class="n">trades</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span>
+</span><span data-line="439">
+</span><span data-line="440">    <span class="n">df</span> <span class="o">=</span> <span class="n">trades</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="441">
+</span><span data-line="442">    <span class="k">try</span><span class="p">:</span>
+</span><span data-line="443">        <span class="k">assert</span> <span class="s1">&#39;Quote quantity&#39;</span> <span class="ow">in</span> <span class="n">trades</span><span class="o">.</span><span class="n">columns</span>
+</span><span data-line="444">    <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+</span><span data-line="445">        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Added quote by product.&quot;</span><span class="p">)</span>
+</span><span data-line="446">        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s1">&#39;Quote quantity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Price&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Quantity&#39;</span><span class="p">]</span>
+</span><span data-line="447">    <span class="n">df</span> <span class="o">=</span> <span class="n">tag_by_accumulation</span><span class="p">(</span><span class="n">trades</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">,</span> <span class="n">agg_column</span><span class="o">=</span><span class="s1">&#39;Quote quantity&#39;</span><span class="p">,</span> <span class="n">grouper_name</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">)</span>
+</span><span data-line="448">    <span class="n">df</span> <span class="o">=</span> <span class="n">ohlc_group</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">column_to_ohlc</span><span class="o">=</span><span class="s1">&#39;Price&#39;</span><span class="p">,</span> <span class="n">group_column</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">)</span>
+</span><span data-line="449">    <span class="n">df</span> <span class="o">=</span> <span class="n">sum_split_by_boolean_column_and_group</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">column_to_split_sum</span><span class="o">=</span><span class="s1">&#39;Quantity&#39;</span><span class="p">,</span> <span class="n">bool_col</span><span class="o">=</span><span class="s1">&#39;Buyer was maker&#39;</span><span class="p">,</span> <span class="n">group_column</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">)</span>
+</span><span data-line="450">    <span class="n">df</span> <span class="o">=</span> <span class="n">drop_aggregated</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">group_column</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="s1">&#39;first&#39;</span><span class="p">)</span>
+</span><span data-line="451">    <span class="n">df</span> <span class="o">=</span> <span class="n">columns_restriction</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;DB&#39;</span><span class="p">)</span>
+</span><span data-line="452">    <span class="n">df</span> <span class="o">=</span> <span class="n">time_index_from_timestamps</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">index_name</span><span class="o">=</span><span class="n">index_name</span><span class="p">)</span>
+</span><span data-line="453">    <span class="c1"># add Volume for plotting</span>
+</span><span data-line="454">    <span class="n">bool_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="s1">&#39;True&#39;</span> <span class="ow">in</span> <span class="n">c</span> <span class="ow">or</span> <span class="s1">&#39;False&#39;</span> <span class="ow">in</span> <span class="n">c</span><span class="p">]</span>
+</span><span data-line="455">    <span class="n">df</span> <span class="o">=</span> <span class="n">generate_volume_column</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">add_cols</span><span class="o">=</span><span class="p">(</span><span class="n">bool_cols</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">bool_cols</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">quote_column</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="456">    <span class="k">return</span> <span class="n">df</span></div>
+
+</span><span data-line="457">
+</span><span data-line="458">
+<div class="viewcode-block" id="ohlc_bars">
+<a class="viewcode-back" href="../../../aggregations.html#binpan.analysis.aggregations.ohlc_bars">[docs]</a>
+</span><span data-line="459"><span class="k">def</span><span class="w"> </span><span class="nf">ohlc_bars</span><span class="p">(</span><span class="n">rows_with_bar_counter</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;IB&#39;</span><span class="p">):</span>
+</span><span data-line="460"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="461"><span class="sd">    Generate an OHLC dataframe from a trades dataframe with a column containing sampled numeric tags for each bar&#39;s aggregation.</span>
+</span><span data-line="462">
+</span><span data-line="463"><span class="sd">    :param list rows_with_bar_counter: A list of trades with a column containing bar numbers to group into OHLC bars.</span>
+</span><span data-line="464"><span class="sd">    :param pd.Index index: Index for the resulting dataframe.</span>
+</span><span data-line="465"><span class="sd">    :param str mode: Presets are: TB, VB, DB, VIB, DIB, TRB, VRB, DRB. All from chapter 2 of AFML book (Marcos López de Prado).</span>
+</span><span data-line="466"><span class="sd">        https://www.amazon.com/-/es/Marcos-Lopez-Prado/dp/1119482089</span>
+</span><span data-line="467"><span class="sd">    :return: A dataframe with OHLC bars.</span>
+</span><span data-line="468"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="469">
+</span><span data-line="470">    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">rows_with_bar_counter</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">)</span>
+</span><span data-line="471">    <span class="n">index_name</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span>
+</span><span data-line="472">
+</span><span data-line="473">    <span class="n">df</span> <span class="o">=</span> <span class="n">ohlc_group</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">column_to_ohlc</span><span class="o">=</span><span class="s1">&#39;Price&#39;</span><span class="p">,</span> <span class="n">group_column</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">)</span>
+</span><span data-line="474">    <span class="n">df</span> <span class="o">=</span> <span class="n">sum_split_by_boolean_column_and_group</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">column_to_split_sum</span><span class="o">=</span><span class="s1">&#39;Quantity&#39;</span><span class="p">,</span> <span class="n">bool_col</span><span class="o">=</span><span class="s1">&#39;Buyer was maker&#39;</span><span class="p">,</span> <span class="n">group_column</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">)</span>
+</span><span data-line="475">    <span class="n">df</span> <span class="o">=</span> <span class="n">drop_aggregated</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">group_column</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="s1">&#39;first&#39;</span><span class="p">)</span>
+</span><span data-line="476">    <span class="n">df</span> <span class="o">=</span> <span class="n">columns_restriction</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
+</span><span data-line="477">    <span class="n">df</span> <span class="o">=</span> <span class="n">time_index_from_timestamps</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">index_name</span><span class="o">=</span><span class="n">index_name</span><span class="p">)</span>
+</span><span data-line="478">    <span class="c1"># add Volume for plotting</span>
+</span><span data-line="479">    <span class="n">bool_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="s1">&#39;True&#39;</span> <span class="ow">in</span> <span class="n">c</span> <span class="ow">or</span> <span class="s1">&#39;False&#39;</span> <span class="ow">in</span> <span class="n">c</span><span class="p">]</span>
+</span><span data-line="480">    <span class="n">df</span> <span class="o">=</span> <span class="n">generate_volume_column</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">add_cols</span><span class="o">=</span><span class="p">(</span><span class="n">bool_cols</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">bool_cols</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">quote_column</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="481">    <span class="k">return</span> <span class="n">df</span></div>
+
+</span><span data-line="482">
+</span><span data-line="483">
+<div class="viewcode-block" id="ImbalanceBars">
+<a class="viewcode-back" href="../../../aggregations.html#binpan.analysis.aggregations.ImbalanceBars">[docs]</a>
+</span><span data-line="484"><span class="k">class</span><span class="w"> </span><span class="nc">ImbalanceBars</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+</span><span data-line="485"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="486"><span class="sd">    Sample imbalance bars.</span>
+</span><span data-line="487">
+</span><span data-line="488"><span class="sd">    :param pd.DataFrame trades: A dataframe with trades, atomic or aggregated.</span>
+</span><span data-line="489"><span class="sd">    :param str bar_type: Can be &#39;imbalance&#39;, &#39;volume&#39;, &#39;dollar&#39;.</span>
+</span><span data-line="490"><span class="sd">    :param str method: Expected imbalance calculation method can be &#39;fix&#39;, &#39;sma&#39;, &#39;ema&#39;</span>
+</span><span data-line="491"><span class="sd">    :param int fixed_imbalance_threshold: A threshold for fixed imbalance</span>
+</span><span data-line="492"><span class="sd">    :param int window: A rolling window size for moving averages.</span>
+</span><span data-line="493"><span class="sd">    :param int boot_trades: Number of trades to use for initial imbalance calculation.</span>
+</span><span data-line="494"><span class="sd">    :param bool verbose: Prints data while computing bars.</span>
+</span><span data-line="495"><span class="sd">    :param bool adjust_threshold: If true, threshold will be multiplied by first price. Ca be useful with volume bars.</span>
+</span><span data-line="496"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="497">
+</span><span data-line="498">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trades</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">bar_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;ema&#39;</span><span class="p">,</span> <span class="n">fixed_imbalance_threshold</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">window</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">21</span><span class="p">,</span>
+</span><span data-line="499">                 <span class="n">boot_trades</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">adjust_threshold</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+</span><span data-line="500"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="501"><span class="sd">        Initialize the ImbalanceBars object with the given parameters.</span>
+</span><span data-line="502"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="503">        <span class="k">assert</span> <span class="n">method</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;fix&#39;</span><span class="p">,</span> <span class="s1">&#39;sma&#39;</span><span class="p">,</span> <span class="s1">&#39;ema&#39;</span><span class="p">]</span>
+</span><span data-line="504">        <span class="k">assert</span> <span class="n">bar_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;imbalance&#39;</span><span class="p">,</span> <span class="s1">&#39;volume&#39;</span><span class="p">,</span> <span class="s1">&#39;dollar&#39;</span><span class="p">]</span>
+</span><span data-line="505">
+</span><span data-line="506">        <span class="bp">self</span><span class="o">.</span><span class="n">trades</span> <span class="o">=</span> <span class="n">sign_of_price</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">trades</span><span class="p">,</span> <span class="n">col_name</span><span class="o">=</span><span class="s1">&#39;sign&#39;</span><span class="p">)</span>
+</span><span data-line="507">        <span class="bp">self</span><span class="o">.</span><span class="n">bar_type</span> <span class="o">=</span> <span class="n">bar_type</span>
+</span><span data-line="508">        <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">method</span>
+</span><span data-line="509">        <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="n">fixed_imbalance_threshold</span>
+</span><span data-line="510">        <span class="bp">self</span><span class="o">.</span><span class="n">window</span> <span class="o">=</span> <span class="n">window</span>
+</span><span data-line="511">        <span class="bp">self</span><span class="o">.</span><span class="n">boot_trades</span> <span class="o">=</span> <span class="n">boot_trades</span>
+</span><span data-line="512">        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+</span><span data-line="513">        <span class="bp">self</span><span class="o">.</span><span class="n">adjust_threshold</span> <span class="o">=</span> <span class="n">adjust_threshold</span>
+</span><span data-line="514">
+</span><span data-line="515">        <span class="bp">self</span><span class="o">.</span><span class="n">rows_with_bar_counter</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="516">        <span class="bp">self</span><span class="o">.</span><span class="n">sampled_sizes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+</span><span data-line="517">        <span class="bp">self</span><span class="o">.</span><span class="n">sampled_probabilities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+</span><span data-line="518">
+</span><span data-line="519">        <span class="bp">self</span><span class="o">.</span><span class="n">current_size</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="520">        <span class="bp">self</span><span class="o">.</span><span class="n">current_imbalance</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="521">        <span class="bp">self</span><span class="o">.</span><span class="n">expected_imbalance</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="522">        <span class="bp">self</span><span class="o">.</span><span class="n">bar_counter</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span data-line="523">        <span class="bp">self</span><span class="o">.</span><span class="n">bars</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="524">
+</span><span data-line="525">        <span class="bp">self</span><span class="o">.</span><span class="n">initialize_startup_variables</span><span class="p">()</span>
+</span><span data-line="526">        <span class="bp">self</span><span class="o">.</span><span class="n">sampling_loop</span><span class="p">()</span>
+</span><span data-line="527">        <span class="bp">self</span><span class="o">.</span><span class="n">construct_bars</span><span class="p">()</span>
+</span><span data-line="528">
+<div class="viewcode-block" id="ImbalanceBars.initialize_startup_variables">
+<a class="viewcode-back" href="../../../aggregations.html#binpan.analysis.aggregations.ImbalanceBars.initialize_startup_variables">[docs]</a>
+</span><span data-line="529">    <span class="k">def</span><span class="w"> </span><span class="nf">initialize_startup_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span data-line="530"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="531"><span class="sd">        Initialize startup variables based on the chosen method.</span>
+</span><span data-line="532"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="533">
+</span><span data-line="534">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;fix&#39;</span><span class="p">:</span>
+</span><span data-line="535">            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjust_threshold</span><span class="p">:</span>
+</span><span data-line="536">                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Threshold adjusted by price: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="si">}</span><span class="s2"> ---&gt; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">trades</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;Price&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="537">                <span class="bp">self</span><span class="o">.</span><span class="n">expected_imbalance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">trades</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;Price&#39;</span><span class="p">]</span>
+</span><span data-line="538">            <span class="k">else</span><span class="p">:</span>
+</span><span data-line="539">                <span class="bp">self</span><span class="o">.</span><span class="n">expected_imbalance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span>
+</span><span data-line="540">            <span class="n">current_probability</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span data-line="541">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="542">            <span class="bp">self</span><span class="o">.</span><span class="n">current_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">boot_trades</span>
+</span><span data-line="543">
+</span><span data-line="544">            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bar_type</span> <span class="o">==</span> <span class="s1">&#39;imbalance&#39;</span><span class="p">:</span>
+</span><span data-line="545">                <span class="n">current_probability</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trades</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">boot_trades</span><span class="p">][</span><span class="s1">&#39;sign&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</span><span data-line="546">
+</span><span data-line="547">            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">bar_type</span> <span class="o">==</span> <span class="s2">&quot;volume&quot;</span><span class="p">:</span>
+</span><span data-line="548">                <span class="n">current_probability</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trades</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">boot_trades</span><span class="p">][</span><span class="s1">&#39;sign&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">trades</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">boot_trades</span><span class="p">][</span><span class="s1">&#39;Quantity&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</span><span data-line="549">
+</span><span data-line="550">            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">bar_type</span> <span class="o">==</span> <span class="s2">&quot;dollar&quot;</span><span class="p">:</span>
+</span><span data-line="551">                <span class="n">current_probability</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trades</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">boot_trades</span><span class="p">][</span><span class="s1">&#39;sign&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">trades</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">boot_trades</span><span class="p">][</span><span class="s1">&#39;Quantity&#39;</span><span class="p">]</span> <span class="o">*</span>
+</span><span data-line="552">                                       <span class="bp">self</span><span class="o">.</span><span class="n">trades</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">boot_trades</span><span class="p">][</span><span class="s1">&#39;Price&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</span><span data-line="553">            <span class="k">else</span><span class="p">:</span>
+</span><span data-line="554">                <span class="k">raise</span> <span class="n">BinPanException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Bar type implementation error: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">bar_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="555">
+</span><span data-line="556">            <span class="bp">self</span><span class="o">.</span><span class="n">expected_imbalance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_size</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">current_probability</span><span class="p">)</span>
+</span><span data-line="557">
+</span><span data-line="558">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+</span><span data-line="559">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Boot current_probability: </span><span class="si">{</span><span class="n">current_probability</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="560">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Boot current_size: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">boot_trades</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="561">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Boot expected_imbalance: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">expected_imbalance</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+</span><span data-line="562">
+<div class="viewcode-block" id="ImbalanceBars.get_expected_size">
+<a class="viewcode-back" href="../../../aggregations.html#binpan.analysis.aggregations.ImbalanceBars.get_expected_size">[docs]</a>
+</span><span data-line="563">    <span class="k">def</span><span class="w"> </span><span class="nf">get_expected_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+</span><span data-line="564"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="565"><span class="sd">        Calculate the expected size of the imbalance bars using the chosen method.</span>
+</span><span data-line="566"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="567">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;ema&quot;</span><span class="p">:</span>
+</span><span data-line="568">            <span class="k">return</span> <span class="n">ema_numba</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sampled_sizes</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span data-line="569">        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;sma&quot;</span><span class="p">:</span>
+</span><span data-line="570">            <span class="k">return</span> <span class="n">sma_numba</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sampled_sizes</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span data-line="571">        <span class="k">return</span> <span class="kc">None</span></div>
+
+</span><span data-line="572">
+<div class="viewcode-block" id="ImbalanceBars.get_expected_probability">
+<a class="viewcode-back" href="../../../aggregations.html#binpan.analysis.aggregations.ImbalanceBars.get_expected_probability">[docs]</a>
+</span><span data-line="573">    <span class="k">def</span><span class="w"> </span><span class="nf">get_expected_probability</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+</span><span data-line="574"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="575"><span class="sd">        Calculate the expected probability of the imbalance bars using the chosen method.</span>
+</span><span data-line="576"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="577">        <span class="n">ret</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="578">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;ema&quot;</span><span class="p">:</span>
+</span><span data-line="579">            <span class="n">ret</span> <span class="o">=</span> <span class="n">ema_numba</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sampled_probabilities</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span data-line="580">        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;sma&quot;</span><span class="p">:</span>
+</span><span data-line="581">            <span class="n">ret</span> <span class="o">=</span> <span class="n">sma_numba</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sampled_probabilities</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span data-line="582">        <span class="k">return</span> <span class="n">ret</span></div>
+
+</span><span data-line="583">
+<div class="viewcode-block" id="ImbalanceBars.get_expected_imbalance">
+<a class="viewcode-back" href="../../../aggregations.html#binpan.analysis.aggregations.ImbalanceBars.get_expected_imbalance">[docs]</a>
+</span><span data-line="584">    <span class="k">def</span><span class="w"> </span><span class="nf">get_expected_imbalance</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">:</span>
+</span><span data-line="585"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="586"><span class="sd">        Calculate the expected imbalance value based on the bar type and chosen method.</span>
+</span><span data-line="587"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="588">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;fix&quot;</span><span class="p">:</span>
+</span><span data-line="589">            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span>
+</span><span data-line="590">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="591">            <span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_expected_size</span><span class="p">()</span>
+</span><span data-line="592">            <span class="n">exp_prob</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_expected_probability</span><span class="p">()</span>
+</span><span data-line="593">            <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">size</span> <span class="o">*</span> <span class="n">exp_prob</span><span class="p">)</span></div>
+
+</span><span data-line="594">
+<div class="viewcode-block" id="ImbalanceBars.sampling_loop">
+<a class="viewcode-back" href="../../../aggregations.html#binpan.analysis.aggregations.ImbalanceBars.sampling_loop">[docs]</a>
+</span><span data-line="595">    <span class="k">def</span><span class="w"> </span><span class="nf">sampling_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="596"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="597"><span class="sd">        Main sampling loop to iterate through trades and create imbalance bars.</span>
+</span><span data-line="598"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="599">        <span class="n">my_molecule_sign</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="600">        <span class="n">my_molecule_cum_size</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span data-line="601">
+</span><span data-line="602">        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">trades</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+</span><span data-line="603">            <span class="n">new_data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+</span><span data-line="604">
+</span><span data-line="605">            <span class="n">my_molecule_cum_size</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span data-line="606">
+</span><span data-line="607">            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bar_type</span> <span class="o">==</span> <span class="s1">&#39;imbalance&#39;</span><span class="p">:</span>
+</span><span data-line="608">                <span class="n">my_molecule_sign</span> <span class="o">+=</span> <span class="p">[</span><span class="n">new_data</span><span class="p">[</span><span class="s1">&#39;sign&#39;</span><span class="p">]]</span>
+</span><span data-line="609">            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">bar_type</span> <span class="o">==</span> <span class="s1">&#39;volume&#39;</span><span class="p">:</span>
+</span><span data-line="610">                <span class="n">my_molecule_sign</span> <span class="o">+=</span> <span class="p">[</span><span class="n">new_data</span><span class="p">[</span><span class="s1">&#39;sign&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">new_data</span><span class="p">[</span><span class="s1">&#39;Quantity&#39;</span><span class="p">]]</span>
+</span><span data-line="611">            <span class="k">else</span><span class="p">:</span>  <span class="c1"># dollar imbalance bars</span>
+</span><span data-line="612">                <span class="n">my_molecule_sign</span> <span class="o">+=</span> <span class="p">[</span><span class="n">new_data</span><span class="p">[</span><span class="s1">&#39;sign&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">new_data</span><span class="p">[</span><span class="s1">&#39;Quantity&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">new_data</span><span class="p">[</span><span class="s1">&#39;Price&#39;</span><span class="p">]]</span>
+</span><span data-line="613">
+</span><span data-line="614">            <span class="n">my_molecule_sign</span><span class="p">,</span> <span class="n">my_molecule_cum_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decide_sampling</span><span class="p">(</span><span class="n">my_molecule_sign</span><span class="p">,</span> <span class="n">my_molecule_cum_size</span><span class="p">)</span>
+</span><span data-line="615">
+</span><span data-line="616">            <span class="n">new_data</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;group&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">bar_counter</span><span class="p">})</span>
+</span><span data-line="617">            <span class="bp">self</span><span class="o">.</span><span class="n">rows_with_bar_counter</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_data</span><span class="p">)</span></div>
+
+</span><span data-line="618">
+<div class="viewcode-block" id="ImbalanceBars.decide_sampling">
+<a class="viewcode-back" href="../../../aggregations.html#binpan.analysis.aggregations.ImbalanceBars.decide_sampling">[docs]</a>
+</span><span data-line="619">    <span class="k">def</span><span class="w"> </span><span class="nf">decide_sampling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">my_molecule_sign</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">my_molecule_cum_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+</span><span data-line="620"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="621"><span class="sd">        Decide whether to sample the current bar and update variables accordingly.</span>
+</span><span data-line="622">
+</span><span data-line="623"><span class="sd">        Sample surpassing data to the next bar.</span>
+</span><span data-line="624"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="625">        <span class="n">prob</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">my_molecule_sign</span><span class="p">)))</span>
+</span><span data-line="626">        <span class="bp">self</span><span class="o">.</span><span class="n">current_imbalance</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">my_molecule_cum_size</span> <span class="o">*</span> <span class="n">prob</span><span class="p">)</span>
+</span><span data-line="627">
+</span><span data-line="628">        <span class="c1"># check</span>
+</span><span data-line="629">        <span class="c1"># print(self.current_imbalance, self.expected_imbalance)</span>
+</span><span data-line="630">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_imbalance</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_imbalance</span><span class="p">:</span>
+</span><span data-line="631">
+</span><span data-line="632">            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+</span><span data-line="633">                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;exp_imb:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">expected_imbalance</span><span class="si">:</span><span class="s2">.8f</span><span class="si">}</span><span class="se">\t</span><span class="s2">size:</span><span class="si">{</span><span class="n">my_molecule_cum_size</span><span class="si">}</span><span class="se">\t</span><span class="s2">prob:</span><span class="si">{</span><span class="n">prob</span><span class="si">:</span><span class="s2">.8f</span><span class="si">}</span><span class="se">\t</span><span class="s2">imbalance&quot;</span>
+</span><span data-line="634">                      <span class="sa">f</span><span class="s2">&quot;:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">current_imbalance</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="635">
+</span><span data-line="636">            <span class="bp">self</span><span class="o">.</span><span class="n">bar_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span data-line="637">            <span class="bp">self</span><span class="o">.</span><span class="n">sampled_sizes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sampled_sizes</span><span class="p">,</span> <span class="n">my_molecule_cum_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># -1 just prev size, ojo q da negativo si viene</span>
+</span><span data-line="638">
+</span><span data-line="639">            <span class="c1"># modo practico sin ultimo valor opcional</span>
+</span><span data-line="640">            <span class="n">prob</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">my_molecule_sign</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])))</span>  <span class="c1"># just prev values [:-1]</span>
+</span><span data-line="641">
+</span><span data-line="642">            <span class="bp">self</span><span class="o">.</span><span class="n">sampled_probabilities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sampled_probabilities</span><span class="p">,</span> <span class="n">prob</span><span class="p">)</span>  <span class="c1"># just prev values</span>
+</span><span data-line="643">
+</span><span data-line="644">            <span class="n">my_molecule_cum_size</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span data-line="645">            <span class="n">my_molecule_sign</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="646">
+</span><span data-line="647">            <span class="bp">self</span><span class="o">.</span><span class="n">expected_imbalance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_expected_imbalance</span><span class="p">()</span>
+</span><span data-line="648">
+</span><span data-line="649">        <span class="k">return</span> <span class="n">my_molecule_sign</span><span class="p">,</span> <span class="n">my_molecule_cum_size</span></div>
+
+</span><span data-line="650">
+<div class="viewcode-block" id="ImbalanceBars.construct_bars">
+<a class="viewcode-back" href="../../../aggregations.html#binpan.analysis.aggregations.ImbalanceBars.construct_bars">[docs]</a>
+</span><span data-line="651">    <span class="k">def</span><span class="w"> </span><span class="nf">construct_bars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="652"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="653"><span class="sd">        Construct the resulting imbalance bars DataFrame.</span>
+</span><span data-line="654"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="655">        <span class="n">my_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trades</span><span class="o">.</span><span class="n">index</span>
+</span><span data-line="656">        <span class="bp">self</span><span class="o">.</span><span class="n">bars</span> <span class="o">=</span> <span class="n">ohlc_bars</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rows_with_bar_counter</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">my_index</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;IB&#39;</span><span class="p">)</span></div>
+</div>
+
+</span><span data-line="657">
+</span><span data-line="658">
+<div class="viewcode-block" id="imbalance_bars_divergent">
+<a class="viewcode-back" href="../../../aggregations.html#binpan.analysis.aggregations.imbalance_bars_divergent">[docs]</a>
+</span><span data-line="659"><span class="k">def</span><span class="w"> </span><span class="nf">imbalance_bars_divergent</span><span class="p">(</span><span class="n">trades</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">starting_imbalance</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span data-line="660"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="661"><span class="sd">    Generates candles by grouping each accumulated imbalance defined by:</span>
+</span><span data-line="662">
+</span><span data-line="663"><span class="sd">    .. math::</span>
+</span><span data-line="664">
+</span><span data-line="665"><span class="sd">       \\theta_T=\\sum_{t=1}^T b_t</span>
+</span><span data-line="666">
+</span><span data-line="667"><span class="sd">    To close a bar, the imbalance must meet expected imbalance while iterating trades, in other words, when expected ticks times the</span>
+</span><span data-line="668"><span class="sd">    difference between probability of positive signs versus negative signes meets the imbalance.</span>
+</span><span data-line="669">
+</span><span data-line="670"><span class="sd">    .. math::</span>
+</span><span data-line="671">
+</span><span data-line="672"><span class="sd">       T^*=\\underset{T}{\\arg \\min }\\left\\{\\left|\\theta_T\\right| \\geq \\mathrm{E}_0[T]\\left|2 \\mathrm{P}\\left[b_t=1\\right]-1\\right|\\right\\}</span>
+</span><span data-line="673">
+</span><span data-line="674"><span class="sd">    .. note::</span>
+</span><span data-line="675">
+</span><span data-line="676"><span class="sd">       No matter how you obtain expected ticks size and probability for the next imbalance threshold. It explodes. I will focus on fixed</span>
+</span><span data-line="677"><span class="sd">       threshold in other function.</span>
+</span><span data-line="678">
+</span><span data-line="679"><span class="sd">    :param pd.DataFrame trades: Expected binpan aggregated trades or atomic trades dataframe.</span>
+</span><span data-line="680"><span class="sd">    :param float starting_imbalance: Starting value for following bars. Its recommended to wait some bars quantity to consider established sizes.</span>
+</span><span data-line="681"><span class="sd">    :return: A dataframe sampled with the new bars sampling.</span>
+</span><span data-line="682"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="683">    <span class="n">index_name</span> <span class="o">=</span> <span class="n">trades</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span>
+</span><span data-line="684">    <span class="n">df</span> <span class="o">=</span> <span class="n">sign_of_price</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">trades</span><span class="p">,</span> <span class="n">col_name</span><span class="o">=</span><span class="s1">&#39;sign&#39;</span><span class="p">)</span>
+</span><span data-line="685">
+</span><span data-line="686">    <span class="n">current_imbalance</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span data-line="687">    <span class="n">bar_counter</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span data-line="688">    <span class="n">rows_with_bar_counter</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="689">
+</span><span data-line="690">    <span class="n">current_trades_qty</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span data-line="691">    <span class="n">positive_qty</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span data-line="692">    <span class="n">expected_imbalance</span> <span class="o">=</span> <span class="n">starting_imbalance</span>
+</span><span data-line="693">
+</span><span data-line="694">    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+</span><span data-line="695">
+</span><span data-line="696">        <span class="c1"># save data with bar counter</span>
+</span><span data-line="697">        <span class="n">new_data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+</span><span data-line="698">        <span class="n">new_data</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;group&#39;</span><span class="p">:</span> <span class="n">bar_counter</span><span class="p">})</span>
+</span><span data-line="699">        <span class="n">rows_with_bar_counter</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_data</span><span class="p">)</span>
+</span><span data-line="700">
+</span><span data-line="701">        <span class="c1"># metrics for closing the current bar</span>
+</span><span data-line="702">        <span class="n">sign</span> <span class="o">=</span> <span class="n">new_data</span><span class="p">[</span><span class="s1">&#39;sign&#39;</span><span class="p">]</span>
+</span><span data-line="703">        <span class="n">current_imbalance</span> <span class="o">+=</span> <span class="n">sign</span>
+</span><span data-line="704">
+</span><span data-line="705">        <span class="c1"># expected values for next trade</span>
+</span><span data-line="706">        <span class="n">current_trades_qty</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span data-line="707">        <span class="k">if</span> <span class="n">sign</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span data-line="708">            <span class="n">positive_qty</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span data-line="709">        <span class="n">prob</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">positive_qty</span> <span class="o">/</span> <span class="n">current_trades_qty</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+</span><span data-line="710">
+</span><span data-line="711">        <span class="c1"># update values if closed bar</span>
+</span><span data-line="712">        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">current_imbalance</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">expected_imbalance</span><span class="p">:</span>
+</span><span data-line="713">            <span class="n">bar_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span data-line="714">            <span class="c1"># just previous values for now, weighted expected values will diverge too.</span>
+</span><span data-line="715">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Current imbalance:</span><span class="si">{</span><span class="n">current_imbalance</span><span class="si">}</span><span class="s2"> trades:</span><span class="si">{</span><span class="n">current_trades_qty</span><span class="si">}</span><span class="s2"> pos_trades:</span><span class="si">{</span><span class="n">positive_qty</span><span class="si">}</span><span class="s2"> prob:</span><span class="si">{</span><span class="n">prob</span><span class="si">}</span><span class="s2"> expected_imbalance&quot;</span>
+</span><span data-line="716">                  <span class="sa">f</span><span class="s2">&quot;:</span><span class="si">{</span><span class="nb">abs</span><span class="p">(</span><span class="n">current_trades_qty</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">prob</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="717">            <span class="n">expected_imbalance</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">current_trades_qty</span> <span class="o">*</span> <span class="n">prob</span><span class="p">)</span>
+</span><span data-line="718">            <span class="n">current_trades_qty</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span data-line="719">            <span class="n">current_imbalance</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span data-line="720">            <span class="n">positive_qty</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span data-line="721">
+</span><span data-line="722">    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">rows_with_bar_counter</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">trades</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+</span><span data-line="723">    <span class="n">df</span> <span class="o">=</span> <span class="n">ohlc_group</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">column_to_ohlc</span><span class="o">=</span><span class="s1">&#39;Price&#39;</span><span class="p">,</span> <span class="n">group_column</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">)</span>
+</span><span data-line="724">    <span class="n">df</span> <span class="o">=</span> <span class="n">sum_split_by_boolean_column_and_group</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">column_to_split_sum</span><span class="o">=</span><span class="s1">&#39;Quantity&#39;</span><span class="p">,</span> <span class="n">bool_col</span><span class="o">=</span><span class="s1">&#39;Buyer was maker&#39;</span><span class="p">,</span> <span class="n">group_column</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">)</span>
+</span><span data-line="725">    <span class="n">df</span> <span class="o">=</span> <span class="n">drop_aggregated</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">group_column</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="s1">&#39;first&#39;</span><span class="p">)</span>
+</span><span data-line="726">    <span class="n">df</span> <span class="o">=</span> <span class="n">columns_restriction</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;IB&#39;</span><span class="p">)</span>
+</span><span data-line="727">    <span class="n">df</span> <span class="o">=</span> <span class="n">time_index_from_timestamps</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">index_name</span><span class="o">=</span><span class="n">index_name</span><span class="p">)</span>
+</span><span data-line="728">    <span class="c1"># add Volume for plotting</span>
+</span><span data-line="729">    <span class="n">bool_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="s1">&#39;True&#39;</span> <span class="ow">in</span> <span class="n">c</span> <span class="ow">or</span> <span class="s1">&#39;False&#39;</span> <span class="ow">in</span> <span class="n">c</span><span class="p">]</span>
+</span><span data-line="730">    <span class="n">df</span> <span class="o">=</span> <span class="n">generate_volume_column</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">add_cols</span><span class="o">=</span><span class="p">(</span><span class="n">bool_cols</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">bool_cols</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">quote_column</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="731">    <span class="k">return</span> <span class="n">df</span></div>
+
+</span><span data-line="732">
+</span><span data-line="733">
+<div class="viewcode-block" id="imbalance_bars_fixed">
+<a class="viewcode-back" href="../../../aggregations.html#binpan.analysis.aggregations.imbalance_bars_fixed">[docs]</a>
+</span><span data-line="734"><span class="k">def</span><span class="w"> </span><span class="nf">imbalance_bars_fixed</span><span class="p">(</span><span class="n">trades</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">imbalance</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span data-line="735"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="736"><span class="sd">    Generates candles by grouping each accumulated fixed imbalance threshold defined by:</span>
+</span><span data-line="737">
+</span><span data-line="738"><span class="sd">    .. math::</span>
+</span><span data-line="739">
+</span><span data-line="740"><span class="sd">       \\theta_T=\\sum_{t=1}^T b_t</span>
+</span><span data-line="741">
+</span><span data-line="742"><span class="sd">    To close a bar, the imbalance must meet expected fixed imbalance while iterating trades.</span>
+</span><span data-line="743">
+</span><span data-line="744"><span class="sd">    .. math::</span>
+</span><span data-line="745">
+</span><span data-line="746"><span class="sd">       T^*=\\underset{T}{\\arg \\min }\\left\\{\\left|\\theta_T\\right| \\geq \\mathrm{E}_0[T]\\left|2 \\mathrm{P}\\left[b_t=1\\right]-1\\right|\\right\\}</span>
+</span><span data-line="747">
+</span><span data-line="748"><span class="sd">    .. note::</span>
+</span><span data-line="749">
+</span><span data-line="750"><span class="sd">       Fixed threshold for rendering imbalance bars.</span>
+</span><span data-line="751">
+</span><span data-line="752"><span class="sd">    :param pd.DataFrame trades: Expected binpan aggregated trades or atomic trades dataframe.</span>
+</span><span data-line="753"><span class="sd">    :param float imbalance: Fixed value for imbalance threshold.</span>
+</span><span data-line="754"><span class="sd">    :return: A dataframe sampled with the new bars sampling.</span>
+</span><span data-line="755"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="756">    <span class="n">index_name</span> <span class="o">=</span> <span class="n">trades</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span>
+</span><span data-line="757">    <span class="n">df_</span> <span class="o">=</span> <span class="n">sign_of_price</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">trades</span><span class="p">,</span> <span class="n">col_name</span><span class="o">=</span><span class="s1">&#39;sign&#39;</span><span class="p">)</span>
+</span><span data-line="758">    <span class="n">current_imbalance</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span data-line="759">    <span class="n">bar_counter</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span data-line="760">    <span class="n">rows_with_bar_counter</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="761">
+</span><span data-line="762">    <span class="n">current_trades_qty</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span data-line="763">    <span class="n">positive_qty</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span data-line="764">
+</span><span data-line="765">    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df_</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+</span><span data-line="766">
+</span><span data-line="767">        <span class="c1"># save data with bar counter</span>
+</span><span data-line="768">        <span class="n">new_data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+</span><span data-line="769">        <span class="n">new_data</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;group&#39;</span><span class="p">:</span> <span class="n">bar_counter</span><span class="p">})</span>
+</span><span data-line="770">        <span class="n">rows_with_bar_counter</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_data</span><span class="p">)</span>
+</span><span data-line="771">
+</span><span data-line="772">        <span class="c1"># metrics for closing the current bar</span>
+</span><span data-line="773">        <span class="n">sign</span> <span class="o">=</span> <span class="n">new_data</span><span class="p">[</span><span class="s1">&#39;sign&#39;</span><span class="p">]</span>
+</span><span data-line="774">        <span class="n">current_imbalance</span> <span class="o">+=</span> <span class="n">sign</span>
+</span><span data-line="775">
+</span><span data-line="776">        <span class="c1"># expected values for next trade</span>
+</span><span data-line="777">        <span class="n">current_trades_qty</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span data-line="778">        <span class="k">if</span> <span class="n">sign</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span data-line="779">            <span class="n">positive_qty</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span data-line="780">        <span class="n">prob</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">positive_qty</span> <span class="o">/</span> <span class="n">current_trades_qty</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+</span><span data-line="781">
+</span><span data-line="782">        <span class="c1"># update values if closed bar</span>
+</span><span data-line="783">        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">current_imbalance</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">imbalance</span><span class="p">:</span>
+</span><span data-line="784">            <span class="n">bar_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span data-line="785">            <span class="c1"># just previous values for now</span>
+</span><span data-line="786">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Current imbalance:</span><span class="si">{</span><span class="n">current_imbalance</span><span class="si">}</span><span class="s2"> trades:</span><span class="si">{</span><span class="n">current_trades_qty</span><span class="si">}</span><span class="s2"> pos_trades:</span><span class="si">{</span><span class="n">positive_qty</span><span class="si">}</span><span class="s2"> prob:</span><span class="si">{</span><span class="n">prob</span><span class="si">}</span><span class="s2"> expected_imbalance&quot;</span>
+</span><span data-line="787">                  <span class="sa">f</span><span class="s2">&quot;:</span><span class="si">{</span><span class="nb">abs</span><span class="p">(</span><span class="n">current_trades_qty</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">prob</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="788">            <span class="n">current_trades_qty</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span data-line="789">            <span class="n">current_imbalance</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span data-line="790">            <span class="n">positive_qty</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span data-line="791">
+</span><span data-line="792">    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">rows_with_bar_counter</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">trades</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+</span><span data-line="793">    <span class="n">df</span> <span class="o">=</span> <span class="n">ohlc_group</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">column_to_ohlc</span><span class="o">=</span><span class="s1">&#39;Price&#39;</span><span class="p">,</span> <span class="n">group_column</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">)</span>
+</span><span data-line="794">    <span class="n">df</span> <span class="o">=</span> <span class="n">sum_split_by_boolean_column_and_group</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">column_to_split_sum</span><span class="o">=</span><span class="s1">&#39;Quantity&#39;</span><span class="p">,</span> <span class="n">bool_col</span><span class="o">=</span><span class="s1">&#39;Buyer was maker&#39;</span><span class="p">,</span> <span class="n">group_column</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">)</span>
+</span><span data-line="795">    <span class="n">df</span> <span class="o">=</span> <span class="n">drop_aggregated</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">group_column</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="s1">&#39;first&#39;</span><span class="p">)</span>
+</span><span data-line="796">    <span class="n">df</span> <span class="o">=</span> <span class="n">columns_restriction</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;IB&#39;</span><span class="p">)</span>
+</span><span data-line="797">    <span class="n">df</span> <span class="o">=</span> <span class="n">time_index_from_timestamps</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">index_name</span><span class="o">=</span><span class="n">index_name</span><span class="p">)</span>
+</span><span data-line="798">    <span class="c1"># add Volume for plotting</span>
+</span><span data-line="799">    <span class="n">bool_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="s1">&#39;True&#39;</span> <span class="ow">in</span> <span class="n">c</span> <span class="ow">or</span> <span class="s1">&#39;False&#39;</span> <span class="ow">in</span> <span class="n">c</span><span class="p">]</span>
+</span><span data-line="800">    <span class="n">df</span> <span class="o">=</span> <span class="n">generate_volume_column</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">add_cols</span><span class="o">=</span><span class="p">(</span><span class="n">bool_cols</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">bool_cols</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">quote_column</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="801">    <span class="k">return</span> <span class="n">df</span></div>
+
+</span><span data-line="802">
+</span><span data-line="803">
+<div class="viewcode-block" id="tick_imbalance_bars">
+<a class="viewcode-back" href="../../../aggregations.html#binpan.analysis.aggregations.tick_imbalance_bars">[docs]</a>
+</span><span data-line="804"><span class="k">def</span><span class="w"> </span><span class="nf">tick_imbalance_bars</span><span class="p">(</span><span class="n">trades</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">window</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">):</span>
+</span><span data-line="805">    <span class="n">df</span> <span class="o">=</span> <span class="n">trades</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="806">    <span class="n">index_name</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span>
+</span><span data-line="807">
+</span><span data-line="808">    <span class="c1"># tick rule</span>
+</span><span data-line="809">    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;delta_p&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Price&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span>
+</span><span data-line="810">    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;b_t&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;delta_p&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;delta_p&#39;</span><span class="p">]))</span>
+</span><span data-line="811">    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;b_t&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;b_t&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">ffill</span><span class="p">()</span>
+</span><span data-line="812">
+</span><span data-line="813">    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;theta_T&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;b_t&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span>
+</span><span data-line="814">
+</span><span data-line="815">    <span class="c1"># milliseconds T</span>
+</span><span data-line="816">    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">to_series</span><span class="p">()</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+</span><span data-line="817">
+</span><span data-line="818">    <span class="c1"># expectation</span>
+</span><span data-line="819">    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;E0_T&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">ewm</span><span class="p">(</span><span class="n">span</span><span class="o">=</span><span class="n">window</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</span><span data-line="820">    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;E0_P&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;b_t&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">ewm</span><span class="p">(</span><span class="n">span</span><span class="o">=</span><span class="n">window</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</span><span data-line="821">    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;expected_imbalance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;E0_T&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;E0_P&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+</span><span data-line="822">
+</span><span data-line="823">    <span class="c1"># sampling</span>
+</span><span data-line="824">    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;T_star&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;theta_T&#39;</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;E0_T&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;E0_P&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+</span><span data-line="825">
+</span><span data-line="826">    <span class="n">df</span> <span class="o">=</span> <span class="n">ohlc_group</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">column_to_ohlc</span><span class="o">=</span><span class="s1">&#39;Price&#39;</span><span class="p">,</span> <span class="n">group_column</span><span class="o">=</span><span class="s1">&#39;T_star&#39;</span><span class="p">)</span>
+</span><span data-line="827">    <span class="n">df</span> <span class="o">=</span> <span class="n">sum_split_by_boolean_column_and_group</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">column_to_split_sum</span><span class="o">=</span><span class="s1">&#39;Quantity&#39;</span><span class="p">,</span> <span class="n">bool_col</span><span class="o">=</span><span class="s1">&#39;Buyer was maker&#39;</span><span class="p">,</span> <span class="n">group_column</span><span class="o">=</span><span class="s1">&#39;T_star&#39;</span><span class="p">)</span>
+</span><span data-line="828">    <span class="n">df</span> <span class="o">=</span> <span class="n">count_trues_cumulative</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">bool_column</span><span class="o">=</span><span class="s1">&#39;T_star&#39;</span><span class="p">,</span> <span class="n">new_column</span><span class="o">=</span><span class="s2">&quot;T_start_count&quot;</span><span class="p">)</span>
+</span><span data-line="829">
+</span><span data-line="830">    <span class="n">df</span> <span class="o">=</span> <span class="n">drop_aggregated</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">group_column</span><span class="o">=</span><span class="s1">&#39;T_start_count&#39;</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="s1">&#39;first&#39;</span><span class="p">)</span>
+</span><span data-line="831">
+</span><span data-line="832">    <span class="n">df</span> <span class="o">=</span> <span class="n">columns_restriction</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;IB&#39;</span><span class="p">,</span> <span class="n">extra</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;expected_imbalance&#39;</span><span class="p">,</span> <span class="s1">&#39;E0_T&#39;</span><span class="p">,</span> <span class="s1">&#39;E0_P&#39;</span><span class="p">])</span>
+</span><span data-line="833">    <span class="n">df</span> <span class="o">=</span> <span class="n">time_index_from_timestamps</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">index_name</span><span class="o">=</span><span class="n">index_name</span><span class="p">)</span>
+</span><span data-line="834">
+</span><span data-line="835">    <span class="c1"># add Volume for plotting</span>
+</span><span data-line="836">    <span class="n">bool_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="s1">&#39;True&#39;</span> <span class="ow">in</span> <span class="n">c</span> <span class="ow">or</span> <span class="s1">&#39;False&#39;</span> <span class="ow">in</span> <span class="n">c</span><span class="p">]</span>
+</span><span data-line="837">    <span class="n">df</span> <span class="o">=</span> <span class="n">generate_volume_column</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">add_cols</span><span class="o">=</span><span class="p">(</span><span class="n">bool_cols</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">bool_cols</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">quote_column</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="838">    <span class="k">return</span> <span class="n">df</span></div>
+
+</span></pre></div>
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2022, Fernando Alfonso</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+<a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+  <iconify-icon icon="simple-icons:github"></iconify-icon>
+</a></div>
+    </div>
+  </div>
+</footer>
+      <script src="../../../_static/documentation_options.js?v=11e62b30"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/shibuya.js?v=50760d75"></script></body>
+</html>

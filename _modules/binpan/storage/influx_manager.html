@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="iris" data-content_root="../../../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>binpan.storage.influx_manager - BinPan 0.10.2</title><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=e1a1ceaf" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/shibuya.css?v=9454f7d5" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/style.css?v=1e48dca6" />
+    <link media="print" rel="stylesheet" type="text/css" href="../../../_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/><meta property="og:title" content="binpan.storage.influx_manager"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="../../../index.html">
+      
+      
+      <strong>BinPan</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Main Classes:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../binpan.html">BinPan Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../symbol_indicators.html">Symbol Indicators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../symbol_plotting.html">Symbol Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../symbol_strategy.html">Symbol Strategy</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">API &amp; Market:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../market.html">Market Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exchange.html">Exchange Info Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../auth.html">Authentication Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../wallet.html">Wallet Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../wallet_api.html">Wallet API Functions</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Analysis:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../indicators.html">Indicators Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../aggregations.html">Aggregations Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../strategies.html">Strategies Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tags.html">Tags &amp; Backtesting Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stat_tests.html">Statistical Tests and Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../numba_tools.html">Numba Tools Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Core:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../time_helper.html">Time Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../timeframes.html">Timeframes Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../trades.html">Trades Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../standards.html">Standards Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../secrets.html">Secrets Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logs.html">Logs Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exceptions.html">Exceptions Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Plotting:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../plotting.html">Plotting Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Storage &amp; Database:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../files.html">Files Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../postgresql.html">PostgreSQL Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../postgresql_database.html">PostgreSQL Database Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../influx_manager.html">Influx Manager Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../redis_fetch.html">Redis Module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../../index.html"><span itemprop="name">BinPan</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../index.html"><span itemprop="name">Module code</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">binpan.storage.influx_manager</strong>
+        <meta itemprop="position" content="3" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue" role="main">
+          <h1>Source code for binpan.storage.influx_manager</h1><div class="highlight"><pre>
+<span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">,</span> <span class="n">timezone</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">..core.logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogManager</span>
+</span><span data-line="3">
+</span><span data-line="4">
+</span><span data-line="5"><span class="n">influx_logger</span> <span class="o">=</span> <span class="n">LogManager</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;./logs/influx_manager.log&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;influx_manager&#39;</span><span class="p">,</span> <span class="n">info_level</span><span class="o">=</span><span class="s1">&#39;DEBUG&#39;</span><span class="p">)</span>
+</span><span data-line="6">
+</span><span data-line="7"><span class="kn">import</span><span class="w"> </span><span class="nn">influxdb_client</span>
+</span><span data-line="8"><span class="kn">from</span><span class="w"> </span><span class="nn">influxdb_client.client.write_api</span><span class="w"> </span><span class="kn">import</span> <span class="n">SYNCHRONOUS</span>
+</span><span data-line="9"><span class="kn">from</span><span class="w"> </span><span class="nn">influxdb_client</span><span class="w"> </span><span class="kn">import</span> <span class="n">Point</span>
+</span><span data-line="10">
+</span><span data-line="11">
+<div class="viewcode-block" id="time_clause">
+<a class="viewcode-back" href="../../../influx_manager.html#binpan.storage.influx_manager.time_clause">[docs]</a>
+</span><span data-line="12"><span class="k">def</span><span class="w"> </span><span class="nf">time_clause</span><span class="p">(</span><span class="n">timestamp_ms</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="13"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="14"><span class="sd">    If a timestamp is provided as a string (delta) or int, it converts it to a delta string or ISO format.</span>
+</span><span data-line="15">
+</span><span data-line="16"><span class="sd">    :param timestamp_ms: A timestamp in milliseconds. If a string is passed, the expected format is ISO or Influx Delta: 1h, -1d, etc...</span>
+</span><span data-line="17"><span class="sd">    :return: A string in ISO format or delta.</span>
+</span><span data-line="18"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="19">    <span class="k">if</span> <span class="n">timestamp_ms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="20">        <span class="k">return</span> <span class="kc">None</span>
+</span><span data-line="21">    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">timestamp_ms</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+</span><span data-line="22">        <span class="n">influx_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Timestamp is already a string: </span><span class="si">{</span><span class="n">timestamp_ms</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="23">        <span class="k">return</span> <span class="n">timestamp_ms</span>
+</span><span data-line="24">    <span class="k">try</span><span class="p">:</span>
+</span><span data-line="25">        <span class="c1"># test of unix milliseconds timestamp</span>
+</span><span data-line="26">        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">timestamp_ms</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;Timestamp must be an integer, not </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">timestamp_ms</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="27">        <span class="k">assert</span> <span class="n">timestamp_ms</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Timestamp must be positive, not </span><span class="si">{</span><span class="n">timestamp_ms</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="28">        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">timestamp_ms</span><span class="p">))</span> <span class="o">==</span> <span class="mi">13</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Timestamp must be in milliseconds, not </span><span class="si">{</span><span class="n">timestamp_ms</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="29">        <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">timestamp_ms</span> <span class="o">/</span> <span class="mf">1000.0</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;+00:00&#39;</span><span class="p">,</span> <span class="s1">&#39;Z&#39;</span><span class="p">)</span>
+</span><span data-line="30">    <span class="k">except</span> <span class="ne">AssertionError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+</span><span data-line="31">        <span class="n">influx_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error converting milliseconds to ISO: </span><span class="si">{</span><span class="n">timestamp_ms</span><span class="si">}</span><span class="s2"> ---&gt; </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="32">        <span class="k">return</span> <span class="kc">None</span></div>
+
+</span><span data-line="33">
+</span><span data-line="34">
+</span><span data-line="35"><span class="c1">##########</span>
+</span><span data-line="36"><span class="c1"># CLIENT #</span>
+</span><span data-line="37"><span class="c1">##########</span>
+</span><span data-line="38">
+</span><span data-line="39">
+<div class="viewcode-block" id="influx_client">
+<a class="viewcode-back" href="../../../influx_manager.html#binpan.storage.influx_manager.influx_client">[docs]</a>
+</span><span data-line="40"><span class="k">def</span><span class="w"> </span><span class="nf">influx_client</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="41">                  <span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="42">                  <span class="n">org</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="43">                  <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10000</span><span class="p">,</span>
+</span><span data-line="44">                  <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">influxdb_client</span><span class="o">.</span><span class="n">InfluxDBClient</span><span class="p">:</span>
+</span><span data-line="45"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="46"><span class="sd">    Function to obtain an InfluxDB client in read mode.</span>
+</span><span data-line="47">
+</span><span data-line="48"><span class="sd">    :param str url: InfluxDB URL. For example, &quot;http://localhost:8086&quot;</span>
+</span><span data-line="49"><span class="sd">    :param str token: Access token to InfluxDB.</span>
+</span><span data-line="50"><span class="sd">    :param str org: InfluxDB organization. For example, &quot;your_org&quot;</span>
+</span><span data-line="51"><span class="sd">    :param int timeout: Connection timeout in milliseconds.</span>
+</span><span data-line="52"><span class="sd">    :return: An InfluxDB client.</span>
+</span><span data-line="53"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="54">    <span class="k">return</span> <span class="n">influxdb_client</span><span class="o">.</span><span class="n">InfluxDBClient</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span>
+</span><span data-line="55">                                          <span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span>
+</span><span data-line="56">                                          <span class="n">org</span><span class="o">=</span><span class="n">org</span><span class="p">,</span>
+</span><span data-line="57">                                          <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span data-line="58">                                          <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span></div>
+
+</span><span data-line="59">
+</span><span data-line="60">
+</span><span data-line="61"><span class="c1">#########</span>
+</span><span data-line="62"><span class="c1"># FETCH #</span>
+</span><span data-line="63"><span class="c1">#########</span>
+</span><span data-line="64">
+</span><span data-line="65">
+<div class="viewcode-block" id="fetch_measurements">
+<a class="viewcode-back" href="../../../influx_manager.html#binpan.storage.influx_manager.fetch_measurements">[docs]</a>
+</span><span data-line="66"><span class="k">def</span><span class="w"> </span><span class="nf">fetch_measurements</span><span class="p">(</span><span class="n">client</span><span class="p">:</span> <span class="n">influxdb_client</span><span class="o">.</span><span class="n">InfluxDBClient</span><span class="p">,</span>
+</span><span data-line="67">                       <span class="n">bucket</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="68">                       <span class="n">org</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">:</span>
+</span><span data-line="69"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="70"><span class="sd">    Function to fetch all the measurements from a specific bucket.</span>
+</span><span data-line="71">
+</span><span data-line="72"><span class="sd">    :param client: Client connected to InfluxDB.</span>
+</span><span data-line="73"><span class="sd">    :param bucket: InfluxDB bucket.</span>
+</span><span data-line="74"><span class="sd">    :param org: InfluxDB organization.</span>
+</span><span data-line="75"><span class="sd">    :return: List of measurements.</span>
+</span><span data-line="76"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="77">    <span class="n">query_api</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query_api</span><span class="p">()</span>
+</span><span data-line="78">    <span class="n">query</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;import &quot;influxdata/influxdb/schema&quot;</span><span class="se">\n</span><span class="s1">&#39;</span> \
+</span><span data-line="79">            <span class="sa">f</span><span class="s1">&#39;schema.measurements(bucket: &quot;</span><span class="si">{</span><span class="n">bucket</span><span class="si">}</span><span class="s1">&quot;)&#39;</span>
+</span><span data-line="80">    <span class="n">result</span> <span class="o">=</span> <span class="n">query_api</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">org</span><span class="o">=</span><span class="n">org</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">)</span>
+</span><span data-line="81">    <span class="k">return</span> <span class="p">{</span><span class="n">i</span><span class="o">.</span><span class="n">get_value</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">records</span><span class="p">}</span></div>
+
+</span><span data-line="82">
+</span><span data-line="83">
+<div class="viewcode-block" id="fetch_measurement_tag_keys">
+<a class="viewcode-back" href="../../../influx_manager.html#binpan.storage.influx_manager.fetch_measurement_tag_keys">[docs]</a>
+</span><span data-line="84"><span class="k">def</span><span class="w"> </span><span class="nf">fetch_measurement_tag_keys</span><span class="p">(</span><span class="n">client</span><span class="p">:</span> <span class="n">influxdb_client</span><span class="o">.</span><span class="n">InfluxDBClient</span><span class="p">,</span>
+</span><span data-line="85">                               <span class="n">bucket</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="86">                               <span class="n">measurement</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="87">                               <span class="n">org</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">:</span>
+</span><span data-line="88"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="89"><span class="sd">    Function to fetch all the tags of a specific measurement in a specific bucket.</span>
+</span><span data-line="90">
+</span><span data-line="91"><span class="sd">    :param client: Client connected to InfluxDB.</span>
+</span><span data-line="92"><span class="sd">    :param bucket: Bucket name.</span>
+</span><span data-line="93"><span class="sd">    :param measurement: Measurement name. For example, &quot;trades&quot;.</span>
+</span><span data-line="94"><span class="sd">    :param org: Organization name. For example, &quot;your_org&quot;.</span>
+</span><span data-line="95"><span class="sd">    :return: Set of unique tags. Return example:</span>
+</span><span data-line="96">
+</span><span data-line="97"><span class="sd">    .. code-block:: python</span>
+</span><span data-line="98">
+</span><span data-line="99"><span class="sd">        {&#39;buyer_is_maker&#39;, &#39;stream&#39;, &#39;symbol&#39;}</span>
+</span><span data-line="100"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="101">    <span class="n">query_api</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query_api</span><span class="p">()</span>
+</span><span data-line="102">    <span class="n">query</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;import &quot;influxdata/influxdb/schema&quot;</span><span class="se">\n</span><span class="s1">&#39;</span> \
+</span><span data-line="103">            <span class="sa">f</span><span class="s1">&#39;schema.tagKeys(bucket: &quot;</span><span class="si">{</span><span class="n">bucket</span><span class="si">}</span><span class="s1">&quot;, predicate: (r) =&gt; r._measurement == &quot;</span><span class="si">{</span><span class="n">measurement</span><span class="si">}</span><span class="s1">&quot;)&#39;</span>
+</span><span data-line="104">    <span class="n">result</span> <span class="o">=</span> <span class="n">query_api</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">org</span><span class="o">=</span><span class="n">org</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">)</span>
+</span><span data-line="105">    <span class="n">tags</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+</span><span data-line="106">    <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+</span><span data-line="107">        <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">records</span><span class="p">:</span>
+</span><span data-line="108">            <span class="n">tags</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">get_value</span><span class="p">())</span>
+</span><span data-line="109">    <span class="k">return</span> <span class="p">{</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tags</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">i</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)}</span></div>
+
+</span><span data-line="110">
+</span><span data-line="111">
+<div class="viewcode-block" id="fetch_measurement_field_keys">
+<a class="viewcode-back" href="../../../influx_manager.html#binpan.storage.influx_manager.fetch_measurement_field_keys">[docs]</a>
+</span><span data-line="112"><span class="k">def</span><span class="w"> </span><span class="nf">fetch_measurement_field_keys</span><span class="p">(</span><span class="n">client</span><span class="p">:</span> <span class="n">influxdb_client</span><span class="o">.</span><span class="n">InfluxDBClient</span><span class="p">,</span>
+</span><span data-line="113">                                 <span class="n">bucket</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="114">                                 <span class="n">measurement</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="115">                                 <span class="n">org</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">:</span>
+</span><span data-line="116"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="117"><span class="sd">    Function to fetch all the fields of a specific measurement in a specific bucket.</span>
+</span><span data-line="118">
+</span><span data-line="119"><span class="sd">    :param client: Client connected to InfluxDB.</span>
+</span><span data-line="120"><span class="sd">    :param bucket: Bucket name.</span>
+</span><span data-line="121"><span class="sd">    :param measurement: Measurement name. For example, &quot;trades&quot;.</span>
+</span><span data-line="122"><span class="sd">    :param org: Organization name. For example, &quot;your_org&quot;.</span>
+</span><span data-line="123"><span class="sd">    :return: Set of unique fields. Return example:</span>
+</span><span data-line="124">
+</span><span data-line="125"><span class="sd">    .. code-block:: python</span>
+</span><span data-line="126">
+</span><span data-line="127"><span class="sd">        {&#39;buyer_order_id&#39;,</span>
+</span><span data-line="128"><span class="sd">         &#39;event_time&#39;,</span>
+</span><span data-line="129"><span class="sd">         &#39;price&#39;,</span>
+</span><span data-line="130"><span class="sd">         &#39;quantity&#39;,</span>
+</span><span data-line="131"><span class="sd">         &#39;quote_quantity&#39;,</span>
+</span><span data-line="132"><span class="sd">         &#39;seller_order_id&#39;,</span>
+</span><span data-line="133"><span class="sd">         &#39;trade_id&#39;,</span>
+</span><span data-line="134"><span class="sd">         &#39;trade_time&#39;}</span>
+</span><span data-line="135"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="136">    <span class="n">query_api</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query_api</span><span class="p">()</span>
+</span><span data-line="137">
+</span><span data-line="138">    <span class="n">query</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;import &quot;influxdata/influxdb/schema&quot;</span><span class="se">\n</span><span class="s1">&#39;</span> \
+</span><span data-line="139">            <span class="sa">f</span><span class="s1">&#39;schema.fieldKeys(bucket: &quot;</span><span class="si">{</span><span class="n">bucket</span><span class="si">}</span><span class="s1">&quot;, predicate: (r) =&gt; r._measurement == &quot;</span><span class="si">{</span><span class="n">measurement</span><span class="si">}</span><span class="s1">&quot;)&#39;</span>
+</span><span data-line="140">
+</span><span data-line="141">    <span class="n">result</span> <span class="o">=</span> <span class="n">query_api</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">org</span><span class="o">=</span><span class="n">org</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">)</span>
+</span><span data-line="142">
+</span><span data-line="143">    <span class="n">fields</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+</span><span data-line="144">    <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+</span><span data-line="145">        <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">records</span><span class="p">:</span>
+</span><span data-line="146">            <span class="n">fields</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">get_value</span><span class="p">())</span>
+</span><span data-line="147">
+</span><span data-line="148">    <span class="k">return</span> <span class="n">fields</span></div>
+
+</span><span data-line="149">
+</span><span data-line="150">
+<div class="viewcode-block" id="fetch_measurement_tag_values">
+<a class="viewcode-back" href="../../../influx_manager.html#binpan.storage.influx_manager.fetch_measurement_tag_values">[docs]</a>
+</span><span data-line="151"><span class="k">def</span><span class="w"> </span><span class="nf">fetch_measurement_tag_values</span><span class="p">(</span><span class="n">client</span><span class="p">:</span> <span class="n">influxdb_client</span><span class="o">.</span><span class="n">InfluxDBClient</span><span class="p">,</span>
+</span><span data-line="152">                                 <span class="n">measurement</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="153">                                 <span class="n">tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="154">                                 <span class="n">bucket</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="155">                                 <span class="n">org</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="156">                                 <span class="n">start_time</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="157">                                 <span class="n">end_time</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="158">                                 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">:</span>
+</span><span data-line="159"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="160"><span class="sd">    Function to fetch all the values a tag has in a specific measurement in a specific bucket during the specified time period.</span>
+</span><span data-line="161">
+</span><span data-line="162"><span class="sd">    :param client: Client connected to InfluxDB.</span>
+</span><span data-line="163"><span class="sd">    :param measurement: Measurement name. For example, &quot;trades&quot;.</span>
+</span><span data-line="164"><span class="sd">    :param tag: Tag name. For example, &quot;stream&quot;.</span>
+</span><span data-line="165"><span class="sd">    :param bucket: Bucket name.</span>
+</span><span data-line="166"><span class="sd">    :param org: Organization name. For example, &quot;your_org&quot;.</span>
+</span><span data-line="167"><span class="sd">    :param start_time: Timestamp in milliseconds for the start of the data range. Examples: 1631000000000, &quot;2021-09-07T00:00:00Z&quot;, &quot;-1d&quot;.</span>
+</span><span data-line="168"><span class="sd">    :param end_time: Timestamp in milliseconds for the end of the data range. Examples: 1631000000000, &quot;2021-09-07T00:00:00Z&quot;, &quot;-1d&quot;.</span>
+</span><span data-line="169"><span class="sd">    :return: Set of unique symbols. Return example:</span>
+</span><span data-line="170">
+</span><span data-line="171"><span class="sd">    .. code-block:: python</span>
+</span><span data-line="172">
+</span><span data-line="173"><span class="sd">        streams = fetch_tag_values(client=client, bucket=influx_bucket, measurement=&quot;trades&quot;, org=influx_org, tag=&quot;stream&quot;)</span>
+</span><span data-line="174"><span class="sd">        print(streams)</span>
+</span><span data-line="175">
+</span><span data-line="176"><span class="sd">        {&#39;duskusdt@trade&#39;, &#39;dotusdt@trade&#39;, &#39;multiusdt@trade&#39;, &#39;fluxusdt@trade&#39;, &#39;scrtusdt@trade&#39;, &#39;frontusdt@trade&#39;, &#39;tfuelusdt@trade&#39;,</span>
+</span><span data-line="177"><span class="sd">         &#39;hftusdt@trade&#39;, &#39;alcxusdt@trade&#39;, &#39;rsrusdt@trade&#39;, &#39;joeusdt@trade&#39;, &#39;tkousdt@trade&#39;, &#39;vthousdt@trade&#39;, &#39;galusdt@trade&#39;,</span>
+</span><span data-line="178"><span class="sd">          &#39;osmousdt@trade&#39;,&#39;...}</span>
+</span><span data-line="179"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="180">
+</span><span data-line="181">    <span class="k">if</span> <span class="n">start_time</span><span class="p">:</span>
+</span><span data-line="182">        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time_clause</span><span class="p">(</span><span class="n">start_time</span><span class="p">)</span>
+</span><span data-line="183">    <span class="k">if</span> <span class="n">end_time</span><span class="p">:</span>
+</span><span data-line="184">        <span class="n">end_time</span> <span class="o">=</span> <span class="n">time_clause</span><span class="p">(</span><span class="n">end_time</span><span class="p">)</span>
+</span><span data-line="185">
+</span><span data-line="186">    <span class="n">range_clause</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;  |&gt; range(start: </span><span class="si">{</span><span class="n">start_time</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s2">&quot;-30d&quot;</span><span class="si">}</span><span class="s1">, stop: </span><span class="si">{</span><span class="n">end_time</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s2">&quot;now()&quot;</span><span class="si">}</span><span class="s1">)&#39;</span>
+</span><span data-line="187">
+</span><span data-line="188">    <span class="n">query_api</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query_api</span><span class="p">()</span>
+</span><span data-line="189">    <span class="n">query</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;from(bucket: &quot;</span><span class="si">{</span><span class="n">bucket</span><span class="si">}</span><span class="s1">&quot;) </span><span class="si">{</span><span class="n">range_clause</span><span class="si">}</span><span class="s1">&#39;</span> \
+</span><span data-line="190">            <span class="sa">f</span><span class="s1">&#39;  |&gt; filter(fn: (r) =&gt; r[&quot;_measurement&quot;] == &quot;</span><span class="si">{</span><span class="n">measurement</span><span class="si">}</span><span class="s1">&quot;)&#39;</span> \
+</span><span data-line="191">            <span class="sa">f</span><span class="s1">&#39;  |&gt; distinct(column: &quot;</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s1">&quot;)&#39;</span>
+</span><span data-line="192">
+</span><span data-line="193">    <span class="n">influx_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Fetch Measurement Tag Values Query: </span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="194">    <span class="n">result</span> <span class="o">=</span> <span class="n">query_api</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">org</span><span class="o">=</span><span class="n">org</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">)</span>
+</span><span data-line="195">
+</span><span data-line="196">    <span class="c1"># unique</span>
+</span><span data-line="197">    <span class="n">unique_streams</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+</span><span data-line="198">    <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+</span><span data-line="199">        <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">records</span><span class="p">:</span>
+</span><span data-line="200">            <span class="n">unique_streams</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">get_value</span><span class="p">())</span>
+</span><span data-line="201">    <span class="k">return</span> <span class="n">unique_streams</span></div>
+
+</span><span data-line="202">
+</span><span data-line="203">
+<div class="viewcode-block" id="fetch_data">
+<a class="viewcode-back" href="../../../influx_manager.html#binpan.storage.influx_manager.fetch_data">[docs]</a>
+</span><span data-line="204"><span class="k">def</span><span class="w"> </span><span class="nf">fetch_data</span><span class="p">(</span><span class="n">client</span><span class="p">:</span> <span class="n">influxdb_client</span><span class="o">.</span><span class="n">InfluxDBClient</span><span class="p">,</span>
+</span><span data-line="205">               <span class="n">bucket</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="206">               <span class="n">measurement</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="207">               <span class="n">org</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="208">               <span class="n">tags_filter</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{},</span>
+</span><span data-line="209">               <span class="n">fields_in_ret</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[],</span>
+</span><span data-line="210">               <span class="n">tags_in_ret</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[],</span>
+</span><span data-line="211">               <span class="n">start_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span data-line="212">               <span class="n">end_time</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+</span><span data-line="213"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="214"><span class="sd">    Function to retrieve data from a specific measurement in a specific bucket, filtered by specific tags and fields.</span>
+</span><span data-line="215">
+</span><span data-line="216"><span class="sd">    :param client: Client connected to InfluxDB</span>
+</span><span data-line="217"><span class="sd">    :param bucket: Bucket name</span>
+</span><span data-line="218"><span class="sd">    :param measurement: Measurement name. For example, &quot;trades&quot;</span>
+</span><span data-line="219"><span class="sd">    :param org: Organization name. For example, &quot;your_org&quot;</span>
+</span><span data-line="220"><span class="sd">    :param tags_filter: Dictionary of tags to filter by. For example, {&quot;symbol&quot;: &quot;BTC&quot;, &quot;stream&quot;: &quot;trades&quot;}</span>
+</span><span data-line="221"><span class="sd">    :param fields_in_ret: List of fields to select. For example, [&quot;field1&quot;, &quot;field2&quot;]</span>
+</span><span data-line="222"><span class="sd">    :param tags_in_ret: List of tags to include in the results. For example, [&quot;stream&quot;]</span>
+</span><span data-line="223"><span class="sd">    :param start_time: Timestamp in milliseconds for the start of the data range. Examples: 1631000000000, &quot;2021-09-07T00:00:00Z&quot;, &quot;-1d&quot;</span>
+</span><span data-line="224"><span class="sd">    :param end_time: Timestamp in milliseconds for the end of the data range. Examples: 1631000000000, &quot;2021-09-07T00:00:00Z&quot;, &quot;-1d&quot;</span>
+</span><span data-line="225"><span class="sd">    :return: List of results. Return example:</span>
+</span><span data-line="226">
+</span><span data-line="227"><span class="sd">    .. code-block:: python</span>
+</span><span data-line="228">
+</span><span data-line="229"><span class="sd">        data = fetch_data(client=client,</span>
+</span><span data-line="230"><span class="sd">                          bucket=influx_bucket,</span>
+</span><span data-line="231"><span class="sd">                          measurement=&quot;trades&quot;,</span>
+</span><span data-line="232"><span class="sd">                          org=influx_org,</span>
+</span><span data-line="233"><span class="sd">                          tags={&quot;stream&quot;: &quot;btcusdt@trade&quot;, &quot;buyer_is_maker&quot;: True},</span>
+</span><span data-line="234"><span class="sd">                          fields=fields,</span>
+</span><span data-line="235"><span class="sd">                          tag_keys=tags)</span>
+</span><span data-line="236"><span class="sd">        [{&#39;result&#39;: &#39;_result&#39;,</span>
+</span><span data-line="237"><span class="sd">          &#39;table&#39;: 0,</span>
+</span><span data-line="238"><span class="sd">          &#39;_time&#39;: datetime.datetime(2023, 9, 14, 16, 0, 2, 454000, tzinfo=tzutc()),</span>
+</span><span data-line="239"><span class="sd">          &#39;_measurement&#39;: &#39;trades&#39;,</span>
+</span><span data-line="240"><span class="sd">          &#39;buyer_is_maker&#39;: &#39;True&#39;,</span>
+</span><span data-line="241"><span class="sd">          &#39;stream&#39;: &#39;btcusdt@trade&#39;,</span>
+</span><span data-line="242"><span class="sd">          &#39;buyer_order_id&#39;: 22340720310,</span>
+</span><span data-line="243"><span class="sd">          &#39;price&#39;: 26693.97,</span>
+</span><span data-line="244"><span class="sd">          &#39;quantity&#39;: 0.00085,</span>
+</span><span data-line="245"><span class="sd">          &#39;quote_quantity&#39;: 22.6898745,</span>
+</span><span data-line="246"><span class="sd">          &#39;seller_order_id&#39;: 22340720976,</span>
+</span><span data-line="247"><span class="sd">          &#39;trade_id&#39;: 3212341083},</span>
+</span><span data-line="248"><span class="sd">          ...]</span>
+</span><span data-line="249">
+</span><span data-line="250"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="251">    <span class="k">if</span> <span class="ow">not</span> <span class="n">fields_in_ret</span><span class="p">:</span>
+</span><span data-line="252">        <span class="n">fields_in_ret</span> <span class="o">=</span> <span class="n">fetch_measurement_field_keys</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span> <span class="n">bucket</span><span class="o">=</span><span class="n">bucket</span><span class="p">,</span> <span class="n">measurement</span><span class="o">=</span><span class="n">measurement</span><span class="p">,</span> <span class="n">org</span><span class="o">=</span><span class="n">org</span><span class="p">)</span>
+</span><span data-line="253">    <span class="k">if</span> <span class="ow">not</span> <span class="n">tags_in_ret</span><span class="p">:</span>
+</span><span data-line="254">        <span class="n">tags_in_ret</span> <span class="o">=</span> <span class="n">fetch_measurement_tag_keys</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span> <span class="n">bucket</span><span class="o">=</span><span class="n">bucket</span><span class="p">,</span> <span class="n">measurement</span><span class="o">=</span><span class="n">measurement</span><span class="p">,</span> <span class="n">org</span><span class="o">=</span><span class="n">org</span><span class="p">)</span>
+</span><span data-line="255">
+</span><span data-line="256">    <span class="k">if</span> <span class="n">start_time</span><span class="p">:</span>
+</span><span data-line="257">        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time_clause</span><span class="p">(</span><span class="n">start_time</span><span class="p">)</span>
+</span><span data-line="258">    <span class="k">if</span> <span class="n">end_time</span><span class="p">:</span>
+</span><span data-line="259">        <span class="n">end_time</span> <span class="o">=</span> <span class="n">time_clause</span><span class="p">(</span><span class="n">end_time</span><span class="p">)</span>
+</span><span data-line="260">
+</span><span data-line="261">    <span class="n">range_clause</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;  |&gt; range(start: </span><span class="si">{</span><span class="n">start_time</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s2">&quot;-1h&quot;</span><span class="si">}</span><span class="s1">, stop: </span><span class="si">{</span><span class="n">end_time</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s2">&quot;now()&quot;</span><span class="si">}</span><span class="s1">)&#39;</span>
+</span><span data-line="262">
+</span><span data-line="263">    <span class="n">query_api</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query_api</span><span class="p">()</span>
+</span><span data-line="264">
+</span><span data-line="265">    <span class="n">tag_filters</span> <span class="o">=</span> <span class="s2">&quot; and &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">&#39;r[&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&quot;] == &quot;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&quot;&#39;</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">tags_filter</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
+</span><span data-line="266">    <span class="n">field_selection</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s1">&quot;&#39;</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields_in_ret</span><span class="p">])</span> <span class="k">if</span> <span class="n">fields_in_ret</span> <span class="k">else</span> <span class="kc">None</span>
+</span><span data-line="267">    <span class="n">tag_selection</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s1">&quot;&#39;</span> <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tags_in_ret</span><span class="p">])</span> <span class="k">if</span> <span class="n">tags_in_ret</span> <span class="k">else</span> <span class="kc">None</span>
+</span><span data-line="268">
+</span><span data-line="269">    <span class="n">additional_fields</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+</span><span data-line="270">
+</span><span data-line="271">    <span class="k">if</span> <span class="n">field_selection</span><span class="p">:</span>
+</span><span data-line="272">        <span class="n">additional_fields</span> <span class="o">+=</span> <span class="s1">&#39;, &#39;</span> <span class="o">+</span> <span class="n">field_selection</span>
+</span><span data-line="273">
+</span><span data-line="274">    <span class="k">if</span> <span class="n">tag_selection</span><span class="p">:</span>
+</span><span data-line="275">        <span class="n">additional_fields</span> <span class="o">+=</span> <span class="s1">&#39;, &#39;</span> <span class="o">+</span> <span class="n">tag_selection</span>
+</span><span data-line="276">
+</span><span data-line="277">    <span class="k">if</span> <span class="n">tag_filters</span><span class="p">:</span>
+</span><span data-line="278">        <span class="n">query</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;from(bucket: &quot;</span><span class="si">{</span><span class="n">bucket</span><span class="si">}</span><span class="s1">&quot;) </span><span class="si">{</span><span class="n">range_clause</span><span class="si">}</span><span class="s1">&#39;</span> \
+</span><span data-line="279">                <span class="sa">f</span><span class="s1">&#39;  |&gt; filter(fn: (r) =&gt; r[&quot;_measurement&quot;] == &quot;</span><span class="si">{</span><span class="n">measurement</span><span class="si">}</span><span class="s1">&quot; and </span><span class="si">{</span><span class="n">tag_filters</span><span class="si">}</span><span class="s1">)&#39;</span> \
+</span><span data-line="280">                <span class="sa">f</span><span class="s1">&#39;  |&gt; pivot(rowKey:[&quot;_time&quot;], columnKey: [&quot;_field&quot;], valueColumn: &quot;_value&quot;)&#39;</span> \
+</span><span data-line="281">                <span class="sa">f</span><span class="s1">&#39;  |&gt; keep(columns: [&quot;_time&quot;, &quot;_measurement&quot;</span><span class="si">{</span><span class="n">additional_fields</span><span class="si">}</span><span class="s1">])&#39;</span>
+</span><span data-line="282">    <span class="k">else</span><span class="p">:</span>
+</span><span data-line="283">        <span class="n">query</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;from(bucket: &quot;</span><span class="si">{</span><span class="n">bucket</span><span class="si">}</span><span class="s1">&quot;) </span><span class="si">{</span><span class="n">range_clause</span><span class="si">}</span><span class="s1">&#39;</span> \
+</span><span data-line="284">                <span class="sa">f</span><span class="s1">&#39;  |&gt; filter(fn: (r) =&gt; r[&quot;_measurement&quot;] == &quot;</span><span class="si">{</span><span class="n">measurement</span><span class="si">}</span><span class="s1">&quot;)&#39;</span> \
+</span><span data-line="285">                <span class="sa">f</span><span class="s1">&#39;  |&gt; pivot(rowKey:[&quot;_time&quot;], columnKey: [&quot;_field&quot;], valueColumn: &quot;_value&quot;)&#39;</span> \
+</span><span data-line="286">                <span class="sa">f</span><span class="s1">&#39;  |&gt; keep(columns: [&quot;_time&quot;, &quot;_measurement&quot;</span><span class="si">{</span><span class="n">additional_fields</span><span class="si">}</span><span class="s1">])&#39;</span>
+</span><span data-line="287">
+</span><span data-line="288">    <span class="n">influx_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Fetch Data Query: </span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="289">
+</span><span data-line="290">    <span class="n">result</span> <span class="o">=</span> <span class="n">query_api</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">org</span><span class="o">=</span><span class="n">org</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">)</span>
+</span><span data-line="291">    <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="292">    <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+</span><span data-line="293">        <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">records</span><span class="p">:</span>
+</span><span data-line="294">            <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+</span><span data-line="295">    <span class="k">return</span> <span class="n">data</span></div>
+
+</span><span data-line="296">
+</span><span data-line="297">
+</span><span data-line="298"><span class="c1">##########</span>
+</span><span data-line="299"><span class="c1"># DELETE #</span>
+</span><span data-line="300"><span class="c1">##########</span>
+</span><span data-line="301">
+<div class="viewcode-block" id="delete_measurement">
+<a class="viewcode-back" href="../../../influx_manager.html#binpan.storage.influx_manager.delete_measurement">[docs]</a>
+</span><span data-line="302"><span class="k">def</span><span class="w"> </span><span class="nf">delete_measurement</span><span class="p">(</span><span class="n">client</span><span class="p">:</span> <span class="n">influxdb_client</span><span class="o">.</span><span class="n">InfluxDBClient</span><span class="p">,</span>
+</span><span data-line="303">                       <span class="n">org</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="304">                       <span class="n">bucket</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="305">                       <span class="n">measurement</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="306">                       <span class="n">days</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span><span class="p">):</span>
+</span><span data-line="307"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="308"><span class="sd">    Function to delete a measurement in InfluxDB 2.x. The data is not deleted directly, but rather the data within it is deleted. The process is asynchronous,</span>
+</span><span data-line="309"><span class="sd">    so it may take some time to complete.</span>
+</span><span data-line="310">
+</span><span data-line="311"><span class="sd">    :param client: Client connected to InfluxDB.</span>
+</span><span data-line="312"><span class="sd">    :param org: InfluxDB organization.</span>
+</span><span data-line="313"><span class="sd">    :param bucket: InfluxDB bucket.</span>
+</span><span data-line="314"><span class="sd">    :param measurement: Name of the measurement to delete.</span>
+</span><span data-line="315"><span class="sd">    :param days: Number of days to delete.</span>
+</span><span data-line="316"><span class="sd">    :return: None</span>
+</span><span data-line="317"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="318">
+</span><span data-line="319">    <span class="n">start_time</span> <span class="o">=</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">days</span><span class="p">))</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;Z&quot;</span>
+</span><span data-line="320">    <span class="n">stop_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;Z&quot;</span>
+</span><span data-line="321">    <span class="n">delete_api</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">delete_api</span><span class="p">()</span>
+</span><span data-line="322">    <span class="n">query</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;_measurement=&quot;</span><span class="si">{</span><span class="n">measurement</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
+</span><span data-line="323">
+</span><span data-line="324">    <span class="n">influx_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Deleting measurement: </span><span class="si">{</span><span class="n">measurement</span><span class="si">}</span><span class="s2"> with query: </span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="325">    <span class="n">influx_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Start time: </span><span class="si">{</span><span class="n">start_time</span><span class="si">}</span><span class="s2"> to stop time: </span><span class="si">{</span><span class="n">stop_time</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="326">
+</span><span data-line="327">    <span class="n">delete_api</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">start_time</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop_time</span><span class="p">,</span> <span class="n">predicate</span><span class="o">=</span><span class="n">query</span><span class="p">,</span> <span class="n">bucket</span><span class="o">=</span><span class="n">bucket</span><span class="p">,</span> <span class="n">org</span><span class="o">=</span><span class="n">org</span><span class="p">)</span></div>
+
+</span><span data-line="328">
+</span><span data-line="329">
+<div class="viewcode-block" id="delete_entries_by_tag_value">
+<a class="viewcode-back" href="../../../influx_manager.html#binpan.storage.influx_manager.delete_entries_by_tag_value">[docs]</a>
+</span><span data-line="330"><span class="k">def</span><span class="w"> </span><span class="nf">delete_entries_by_tag_value</span><span class="p">(</span><span class="n">client</span><span class="p">:</span> <span class="n">influxdb_client</span><span class="o">.</span><span class="n">InfluxDBClient</span><span class="p">,</span>
+</span><span data-line="331">                                <span class="n">org</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="332">                                <span class="n">bucket</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="333">                                <span class="n">measurement</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="334">                                <span class="n">tag_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="335">                                <span class="n">tag_value</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="336">                                <span class="n">days</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span><span class="p">):</span>
+</span><span data-line="337"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="338"><span class="sd">    Function to delete entries in a specific measurement where a tag has a specific value.</span>
+</span><span data-line="339">
+</span><span data-line="340"><span class="sd">    :param client: Client connected to InfluxDB.</span>
+</span><span data-line="341"><span class="sd">    :param org: InfluxDB organization.</span>
+</span><span data-line="342"><span class="sd">    :param bucket: InfluxDB bucket.</span>
+</span><span data-line="343"><span class="sd">    :param measurement: Name of the measurement to delete.</span>
+</span><span data-line="344"><span class="sd">    :param tag_key: Name of the tag.</span>
+</span><span data-line="345"><span class="sd">    :param tag_value: Value of the tag.</span>
+</span><span data-line="346"><span class="sd">    :param days: Number of days to delete.</span>
+</span><span data-line="347"><span class="sd">    :return: None</span>
+</span><span data-line="348"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="349">    <span class="n">start_time</span> <span class="o">=</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">days</span><span class="p">))</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;Z&quot;</span>
+</span><span data-line="350">    <span class="n">stop_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;Z&quot;</span>
+</span><span data-line="351">
+</span><span data-line="352">    <span class="n">delete_api</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">delete_api</span><span class="p">()</span>
+</span><span data-line="353">    <span class="n">query</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;_measurement=&quot;</span><span class="si">{</span><span class="n">measurement</span><span class="si">}</span><span class="s1">&quot; and </span><span class="si">{</span><span class="n">tag_key</span><span class="si">}</span><span class="s1">=&quot;</span><span class="si">{</span><span class="n">tag_value</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
+</span><span data-line="354">
+</span><span data-line="355">    <span class="n">influx_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Deleting entries with query: </span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="356">    <span class="n">influx_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Start time: </span><span class="si">{</span><span class="n">start_time</span><span class="si">}</span><span class="s2"> to stop time: </span><span class="si">{</span><span class="n">stop_time</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="357">
+</span><span data-line="358">    <span class="n">delete_api</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">start_time</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop_time</span><span class="p">,</span> <span class="n">predicate</span><span class="o">=</span><span class="n">query</span><span class="p">,</span> <span class="n">bucket</span><span class="o">=</span><span class="n">bucket</span><span class="p">,</span> <span class="n">org</span><span class="o">=</span><span class="n">org</span><span class="p">)</span></div>
+
+</span><span data-line="359">
+</span><span data-line="360">
+</span><span data-line="361"><span class="c1">##########</span>
+</span><span data-line="362"><span class="c1"># INSERT #</span>
+</span><span data-line="363"><span class="c1">##########</span>
+</span><span data-line="364">
+</span><span data-line="365">
+<div class="viewcode-block" id="create_bulk_points">
+<a class="viewcode-back" href="../../../influx_manager.html#binpan.storage.influx_manager.create_bulk_points">[docs]</a>
+</span><span data-line="366"><span class="k">def</span><span class="w"> </span><span class="nf">create_bulk_points</span><span class="p">(</span><span class="n">client</span><span class="p">:</span> <span class="n">influxdb_client</span><span class="o">.</span><span class="n">InfluxDBClient</span><span class="p">,</span>
+</span><span data-line="367">                       <span class="n">bucket</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="368">                       <span class="n">org</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="369">                       <span class="n">measurement</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="370">                       <span class="n">data_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]):</span>
+</span><span data-line="371"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="372"><span class="sd">    Function to create a new measurement in InfluxDB 2.x.</span>
+</span><span data-line="373">
+</span><span data-line="374"><span class="sd">    :param client: Client connected to InfluxDB.</span>
+</span><span data-line="375"><span class="sd">    :param bucket: InfluxDB bucket.</span>
+</span><span data-line="376"><span class="sd">    :param org: InfluxDB organization.</span>
+</span><span data-line="377"><span class="sd">    :param measurement: Measurement to create.</span>
+</span><span data-line="378"><span class="sd">    :param data_list: Data to insert. In the format of a list of dictionaries with expected keys &quot;fields&quot;, &quot;tags&quot; and &quot;time&quot;. For example:</span>
+</span><span data-line="379">
+</span><span data-line="380"><span class="sd">        .. code-block:: python</span>
+</span><span data-line="381">
+</span><span data-line="382"><span class="sd">            data_list = [</span>
+</span><span data-line="383"><span class="sd">                {&quot;fields&quot;: {&quot;field1&quot;: 1, &quot;field2&quot;: 2},</span>
+</span><span data-line="384"><span class="sd">                 &quot;tags&quot;: {&quot;tag1&quot;: &quot;tag1&quot;, &quot;tag2&quot;: &quot;tag2&quot;},</span>
+</span><span data-line="385"><span class="sd">                 &quot;time&quot;: 1234567890000000000}</span>
+</span><span data-line="386"><span class="sd">            ]</span>
+</span><span data-line="387">
+</span><span data-line="388"><span class="sd">    :return: None</span>
+</span><span data-line="389"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="390">
+</span><span data-line="391">    <span class="n">points</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="392">    <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">data_list</span><span class="p">:</span>
+</span><span data-line="393">        <span class="n">point</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="n">measurement</span><span class="p">)</span>
+</span><span data-line="394">        <span class="k">if</span> <span class="s2">&quot;fields&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+</span><span data-line="395">            <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;fields&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span data-line="396">                <span class="n">point</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</span><span data-line="397">        <span class="k">if</span> <span class="s2">&quot;tags&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+</span><span data-line="398">            <span class="k">for</span> <span class="n">tag_key</span><span class="p">,</span> <span class="n">tag_value</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;tags&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span data-line="399">                <span class="n">point</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">tag_key</span><span class="p">,</span> <span class="n">tag_value</span><span class="p">)</span>
+</span><span data-line="400">        <span class="k">if</span> <span class="s2">&quot;time&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>  <span class="c1"># time in nanoseconds</span>
+</span><span data-line="401">            <span class="n">point</span><span class="o">.</span><span class="n">time</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">])</span>
+</span><span data-line="402">        <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+</span><span data-line="403">
+</span><span data-line="404">    <span class="n">write_api</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">write_api</span><span class="p">(</span><span class="n">write_options</span><span class="o">=</span><span class="n">SYNCHRONOUS</span><span class="p">)</span>
+</span><span data-line="405">    <span class="n">write_api</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">bucket</span><span class="o">=</span><span class="n">bucket</span><span class="p">,</span> <span class="n">org</span><span class="o">=</span><span class="n">org</span><span class="p">,</span> <span class="n">record</span><span class="o">=</span><span class="n">points</span><span class="p">,</span> <span class="p">)</span>
+</span><span data-line="406">    <span class="n">write_api</span><span class="o">.</span><span class="fm">__del__</span><span class="p">()</span></div>
+
+</span></pre></div>
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2022, Fernando Alfonso</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+<a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+  <iconify-icon icon="simple-icons:github"></iconify-icon>
+</a></div>
+    </div>
+  </div>
+</footer>
+      <script src="../../../_static/documentation_options.js?v=11e62b30"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/shibuya.js?v=50760d75"></script></body>
+</html>

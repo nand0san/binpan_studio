@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="iris" data-content_root="../../../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>binpan.storage.postgresql_database - BinPan 0.10.2</title><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=e1a1ceaf" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/shibuya.css?v=9454f7d5" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/style.css?v=1e48dca6" />
+    <link media="print" rel="stylesheet" type="text/css" href="../../../_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/><meta property="og:title" content="binpan.storage.postgresql_database"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="../../../index.html">
+      
+      
+      <strong>BinPan</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Main Classes:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../binpan.html">BinPan Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../symbol_indicators.html">Symbol Indicators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../symbol_plotting.html">Symbol Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../symbol_strategy.html">Symbol Strategy</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">API &amp; Market:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../market.html">Market Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exchange.html">Exchange Info Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../auth.html">Authentication Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../wallet.html">Wallet Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../wallet_api.html">Wallet API Functions</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Analysis:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../indicators.html">Indicators Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../aggregations.html">Aggregations Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../strategies.html">Strategies Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tags.html">Tags &amp; Backtesting Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stat_tests.html">Statistical Tests and Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../numba_tools.html">Numba Tools Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Core:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../time_helper.html">Time Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../timeframes.html">Timeframes Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../trades.html">Trades Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../standards.html">Standards Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../secrets.html">Secrets Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logs.html">Logs Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exceptions.html">Exceptions Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Plotting:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../plotting.html">Plotting Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Storage &amp; Database:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../files.html">Files Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../postgresql.html">PostgreSQL Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../postgresql_database.html">PostgreSQL Database Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../influx_manager.html">Influx Manager Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../redis_fetch.html">Redis Module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../../index.html"><span itemprop="name">BinPan</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../index.html"><span itemprop="name">Module code</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">binpan.storage.postgresql_database</strong>
+        <meta itemprop="position" content="3" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue" role="main">
+          <h1>Source code for binpan.storage.postgresql_database</h1><div class="highlight"><pre>
+<span></span><span data-line="1"><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+</span><span data-line="2">
+</span><span data-line="3">
+<div class="viewcode-block" id="get_db_size">
+<a class="viewcode-back" href="../../../postgresql_database.html#binpan.storage.postgresql_database.get_db_size">[docs]</a>
+</span><span data-line="4"><span class="k">def</span><span class="w"> </span><span class="nf">get_db_size</span><span class="p">(</span><span class="n">cursor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="5"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="6"><span class="sd">    Get the size of the database in a human readable format</span>
+</span><span data-line="7">
+</span><span data-line="8"><span class="sd">    :param cursor: A psycopg2 cursor</span>
+</span><span data-line="9"><span class="sd">    :return: A string with the size of the database</span>
+</span><span data-line="10"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="11">    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT pg_size_pretty(pg_database_size(current_database())) AS db_size;&quot;</span><span class="p">)</span>
+</span><span data-line="12">    <span class="k">return</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span></div>
+
+</span><span data-line="13">
+</span><span data-line="14">
+<div class="viewcode-block" id="get_table_sizes">
+<a class="viewcode-back" href="../../../postgresql_database.html#binpan.storage.postgresql_database.get_table_sizes">[docs]</a>
+</span><span data-line="15"><span class="k">def</span><span class="w"> </span><span class="nf">get_table_sizes</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">only_public_schema</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span data-line="16"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="17"><span class="sd">    Get the size of each table in the database and return it as a pandas DataFrame with sizes in KB.</span>
+</span><span data-line="18">
+</span><span data-line="19"><span class="sd">    :param cursor: A psycopg2 cursor</span>
+</span><span data-line="20"><span class="sd">    :param only_public_schema: Optional, set to True to only get sizes of tables in the &#39;public&#39; schema.</span>
+</span><span data-line="21"><span class="sd">    :return: A pandas DataFrame with the size of each table in the database</span>
+</span><span data-line="22"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="23">    <span class="n">base_query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+</span><span data-line="24"><span class="s2">    SELECT </span>
+</span><span data-line="25"><span class="s2">        schemaname,</span>
+</span><span data-line="26"><span class="s2">        tablename,</span>
+</span><span data-line="27"><span class="s2">        (pg_table_size(schemaname || &#39;.&#39; || tablename)/1024) AS table_size_kb,</span>
+</span><span data-line="28"><span class="s2">        (pg_indexes_size(schemaname || &#39;.&#39; || tablename)/1024) AS indexes_size_kb,</span>
+</span><span data-line="29"><span class="s2">        (pg_total_relation_size(schemaname || &#39;.&#39; || tablename)/1024) AS total_size_kb</span>
+</span><span data-line="30"><span class="s2">    FROM pg_tables</span>
+</span><span data-line="31"><span class="s2">    &quot;&quot;&quot;</span>
+</span><span data-line="32">
+</span><span data-line="33">    <span class="c1"># Add condition for filtering by &#39;public&#39; schema if needed</span>
+</span><span data-line="34">    <span class="k">if</span> <span class="n">only_public_schema</span><span class="p">:</span>
+</span><span data-line="35">        <span class="n">base_query</span> <span class="o">+=</span> <span class="s2">&quot; WHERE schemaname = &#39;public&#39; &quot;</span>
+</span><span data-line="36">
+</span><span data-line="37">    <span class="n">base_query</span> <span class="o">+=</span> <span class="s2">&quot; ORDER BY total_size_kb DESC; &quot;</span>
+</span><span data-line="38">
+</span><span data-line="39">    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">base_query</span><span class="p">)</span>
+</span><span data-line="40">    <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">desc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">desc</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">description</span><span class="p">]</span>
+</span><span data-line="41">    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="n">row</span><span class="p">))</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()])</span>
+</span><span data-line="42">
+</span><span data-line="43">    <span class="c1"># Convertir las columnas de tamaño a numéricas</span>
+</span><span data-line="44">    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;table_size_kb&quot;</span><span class="p">,</span> <span class="s2">&quot;indexes_size_kb&quot;</span><span class="p">,</span> <span class="s2">&quot;total_size_kb&quot;</span><span class="p">]:</span>
+</span><span data-line="45">        <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+</span><span data-line="46">
+</span><span data-line="47">    <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;total_size_kb&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+</span><span data-line="48">
+</span><span data-line="49">
+<div class="viewcode-block" id="get_wal_gb_size">
+<a class="viewcode-back" href="../../../postgresql_database.html#binpan.storage.postgresql_database.get_wal_gb_size">[docs]</a>
+</span><span data-line="50"><span class="k">def</span><span class="w"> </span><span class="nf">get_wal_gb_size</span><span class="p">(</span><span class="n">cursor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span data-line="51"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="52"><span class="sd">    Get the size of the Write Ahead Log (WAL) in the database and return it in GB.</span>
+</span><span data-line="53">
+</span><span data-line="54"><span class="sd">    :param cursor: a psycopg2 cursor</span>
+</span><span data-line="55"><span class="sd">    :return: Size in GB of the WAL</span>
+</span><span data-line="56"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="57">    <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+</span><span data-line="58"><span class="s2">    SELECT </span>
+</span><span data-line="59"><span class="s2">        (pg_current_wal_lsn() - &#39;0/00000000&#39;::pg_lsn) / 1024 / 1024 / 1024 AS wal_size_gb;</span>
+</span><span data-line="60"><span class="s2">    &quot;&quot;&quot;</span>
+</span><span data-line="61">    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+</span><span data-line="62">    <span class="n">wal_gb</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</span><span data-line="63">    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">wal_gb</span><span class="p">)</span></div>
+
+</span><span data-line="64">
+</span><span data-line="65">
+<div class="viewcode-block" id="get_active_connections">
+<a class="viewcode-back" href="../../../postgresql_database.html#binpan.storage.postgresql_database.get_active_connections">[docs]</a>
+</span><span data-line="66"><span class="k">def</span><span class="w"> </span><span class="nf">get_active_connections</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">database_name</span><span class="o">=</span><span class="s2">&quot;crypto&quot;</span><span class="p">,</span> <span class="n">include_superuser</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span data-line="67"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="68"><span class="sd">    Get the number of active connections in the database.</span>
+</span><span data-line="69">
+</span><span data-line="70"><span class="sd">    :param cursor: a psycopg2 cursor</span>
+</span><span data-line="71"><span class="sd">    :param database_name: Optional, name of the specific database to filter.</span>
+</span><span data-line="72"><span class="sd">    :param include_superuser: Optional, whether to include superuser connections or not.</span>
+</span><span data-line="73"><span class="sd">    :return: Number of active connections</span>
+</span><span data-line="74"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="75">    <span class="n">base_query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+</span><span data-line="76"><span class="s2">    SELECT COUNT(*) </span>
+</span><span data-line="77"><span class="s2">    FROM pg_stat_activity </span>
+</span><span data-line="78"><span class="s2">    WHERE state = &#39;active&#39; </span>
+</span><span data-line="79"><span class="s2">    &quot;&quot;&quot;</span>
+</span><span data-line="80">
+</span><span data-line="81">    <span class="n">filters</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="82">    <span class="k">if</span> <span class="n">database_name</span><span class="p">:</span>
+</span><span data-line="83">        <span class="n">filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;datname = &#39;</span><span class="si">{</span><span class="n">database_name</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+</span><span data-line="84">    <span class="k">if</span> <span class="ow">not</span> <span class="n">include_superuser</span><span class="p">:</span>
+</span><span data-line="85">        <span class="n">filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;usesysid != 10&quot;</span><span class="p">)</span>
+</span><span data-line="86">
+</span><span data-line="87">    <span class="k">if</span> <span class="n">filters</span><span class="p">:</span>
+</span><span data-line="88">        <span class="n">base_query</span> <span class="o">+=</span> <span class="s2">&quot;AND &quot;</span> <span class="o">+</span> <span class="s2">&quot; AND &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">filters</span><span class="p">)</span>
+</span><span data-line="89">
+</span><span data-line="90">    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">base_query</span><span class="p">)</span>
+</span><span data-line="91">    <span class="n">active_connections</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</span><span data-line="92">    <span class="k">return</span> <span class="n">active_connections</span></div>
+
+</span><span data-line="93">
+</span><span data-line="94">
+<div class="viewcode-block" id="get_autovacuum_level">
+<a class="viewcode-back" href="../../../postgresql_database.html#binpan.storage.postgresql_database.get_autovacuum_level">[docs]</a>
+</span><span data-line="95"><span class="k">def</span><span class="w"> </span><span class="nf">get_autovacuum_level</span><span class="p">(</span><span class="n">cursor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span data-line="96"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="97"><span class="sd">    Get the Autovacuum status for tables in the database.</span>
+</span><span data-line="98">
+</span><span data-line="99"><span class="sd">    This function returns a DataFrame with the following columns:</span>
+</span><span data-line="100">
+</span><span data-line="101"><span class="sd">    - `schemaname`:</span>
+</span><span data-line="102"><span class="sd">       The schema where the table resides.</span>
+</span><span data-line="103">
+</span><span data-line="104"><span class="sd">    - `relname`:</span>
+</span><span data-line="105"><span class="sd">       The name of the table.</span>
+</span><span data-line="106">
+</span><span data-line="107"><span class="sd">    - `last_autovacuum`:</span>
+</span><span data-line="108"><span class="sd">       Timestamp of the last autovacuum operation performed on the table.</span>
+</span><span data-line="109">
+</span><span data-line="110"><span class="sd">    - `last_autoanalyze`:</span>
+</span><span data-line="111"><span class="sd">       Timestamp of the last autoanalyze operation performed on the table.</span>
+</span><span data-line="112">
+</span><span data-line="113"><span class="sd">    - `n_dead_tup`:</span>
+</span><span data-line="114"><span class="sd">       Number of dead tuples in the table. Dead tuples are rows that have been updated or deleted and are awaiting removal by autovacuum.</span>
+</span><span data-line="115">
+</span><span data-line="116"><span class="sd">    - `n_live_tup`:</span>
+</span><span data-line="117"><span class="sd">       Number of live tuples in the table. Live tuples are rows that are currently valid and not marked for deletion.</span>
+</span><span data-line="118">
+</span><span data-line="119"><span class="sd">    - `n_mod_since_analyze`:</span>
+</span><span data-line="120"><span class="sd">       Number of tuples modified since the last analyze operation. Analyze operations collect statistics about the data in the table</span>
+</span><span data-line="121"><span class="sd">       to help the query planner optimize queries.</span>
+</span><span data-line="122">
+</span><span data-line="123"><span class="sd">    - `seq_scan`:</span>
+</span><span data-line="124"><span class="sd">       Number of sequential scans performed on the table. A high number can indicate that indexes are not being effectively utilized.</span>
+</span><span data-line="125">
+</span><span data-line="126"><span class="sd">    - `idx_scan`:</span>
+</span><span data-line="127"><span class="sd">       Number of index scans performed on the table. Indicates how often indexes are used for querying this table.</span>
+</span><span data-line="128">
+</span><span data-line="129"><span class="sd">    :param cursor: a psycopg2 cursor</span>
+</span><span data-line="130"><span class="sd">    :return: DataFrame with Autovacuum status</span>
+</span><span data-line="131"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="132">    <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+</span><span data-line="133"><span class="s2">    SELECT </span>
+</span><span data-line="134"><span class="s2">        schemaname,</span>
+</span><span data-line="135"><span class="s2">        relname,</span>
+</span><span data-line="136"><span class="s2">        last_autovacuum,</span>
+</span><span data-line="137"><span class="s2">        last_autoanalyze,</span>
+</span><span data-line="138"><span class="s2">        n_dead_tup,</span>
+</span><span data-line="139"><span class="s2">        n_live_tup,</span>
+</span><span data-line="140"><span class="s2">        n_mod_since_analyze,</span>
+</span><span data-line="141"><span class="s2">        seq_scan,</span>
+</span><span data-line="142"><span class="s2">        idx_scan</span>
+</span><span data-line="143"><span class="s2">    FROM pg_stat_user_tables;</span>
+</span><span data-line="144"><span class="s2">    &quot;&quot;&quot;</span>
+</span><span data-line="145">    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+</span><span data-line="146">    <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">desc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">desc</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">description</span><span class="p">]</span>
+</span><span data-line="147">    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="n">row</span><span class="p">))</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()])</span>
+</span><span data-line="148">
+</span><span data-line="149">    <span class="c1"># Convertir columnas relevantes a numéricas</span>
+</span><span data-line="150">    <span class="n">numeric_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;n_dead_tup&quot;</span><span class="p">,</span> <span class="s2">&quot;n_live_tup&quot;</span><span class="p">,</span> <span class="s2">&quot;n_mod_since_analyze&quot;</span><span class="p">,</span> <span class="s2">&quot;seq_scan&quot;</span><span class="p">,</span> <span class="s2">&quot;idx_scan&quot;</span><span class="p">]</span>
+</span><span data-line="151">    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">numeric_cols</span><span class="p">:</span>
+</span><span data-line="152">        <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+</span><span data-line="153">
+</span><span data-line="154">    <span class="k">return</span> <span class="n">df</span></div>
+
+</span><span data-line="155">
+</span><span data-line="156">
+<div class="viewcode-block" id="get_ungranted_locks">
+<a class="viewcode-back" href="../../../postgresql_database.html#binpan.storage.postgresql_database.get_ungranted_locks">[docs]</a>
+</span><span data-line="157"><span class="k">def</span><span class="w"> </span><span class="nf">get_ungranted_locks</span><span class="p">(</span><span class="n">cursor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span data-line="158"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="159"><span class="sd">    Get the ungranted locks in the database.</span>
+</span><span data-line="160">
+</span><span data-line="161"><span class="sd">    :param cursor: a psycopg2 cursor</span>
+</span><span data-line="162"><span class="sd">    :return: DataFrame with ungranted lock details</span>
+</span><span data-line="163"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="164">    <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+</span><span data-line="165"><span class="s2">    SELECT </span>
+</span><span data-line="166"><span class="s2">        pid,</span>
+</span><span data-line="167"><span class="s2">        relation::regclass as relation_name,</span>
+</span><span data-line="168"><span class="s2">        mode,</span>
+</span><span data-line="169"><span class="s2">        granted</span>
+</span><span data-line="170"><span class="s2">    FROM pg_locks</span>
+</span><span data-line="171"><span class="s2">    WHERE NOT granted;</span>
+</span><span data-line="172"><span class="s2">    &quot;&quot;&quot;</span>
+</span><span data-line="173">    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+</span><span data-line="174">    <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">desc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">desc</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">description</span><span class="p">]</span>
+</span><span data-line="175">    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="n">row</span><span class="p">))</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()])</span>
+</span><span data-line="176">
+</span><span data-line="177">    <span class="k">return</span> <span class="n">df</span></div>
+
+</span><span data-line="178">
+</span><span data-line="179">
+<div class="viewcode-block" id="get_cache_statistics">
+<a class="viewcode-back" href="../../../postgresql_database.html#binpan.storage.postgresql_database.get_cache_statistics">[docs]</a>
+</span><span data-line="180"><span class="k">def</span><span class="w"> </span><span class="nf">get_cache_statistics</span><span class="p">(</span><span class="n">cursor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span data-line="181"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="182"><span class="sd">    Get cache statistics for tables in the database.</span>
+</span><span data-line="183">
+</span><span data-line="184"><span class="sd">    This function returns a DataFrame with the following columns:</span>
+</span><span data-line="185">
+</span><span data-line="186"><span class="sd">    - `table_name`:</span>
+</span><span data-line="187"><span class="sd">       The name of the table.</span>
+</span><span data-line="188">
+</span><span data-line="189"><span class="sd">    - `heap_blks_read`:</span>
+</span><span data-line="190"><span class="sd">       Number of disk blocks read for the main table (heap).</span>
+</span><span data-line="191">
+</span><span data-line="192"><span class="sd">    - `heap_blks_hit`:</span>
+</span><span data-line="193"><span class="sd">       Number of buffer hits in the cache for the main table (heap).</span>
+</span><span data-line="194">
+</span><span data-line="195"><span class="sd">    - `idx_blks_read`:</span>
+</span><span data-line="196"><span class="sd">       Number of disk blocks read for all indexes on the table.</span>
+</span><span data-line="197">
+</span><span data-line="198"><span class="sd">    - `idx_blks_hit`:</span>
+</span><span data-line="199"><span class="sd">       Number of buffer hits in the cache for all indexes on the table.</span>
+</span><span data-line="200">
+</span><span data-line="201"><span class="sd">    - `toast_blks_read`:</span>
+</span><span data-line="202"><span class="sd">       Number of disk blocks read for the TOAST table (used for storing large values out of main table rows).</span>
+</span><span data-line="203">
+</span><span data-line="204"><span class="sd">    - `toast_blks_hit`:</span>
+</span><span data-line="205"><span class="sd">       Number of buffer hits in the cache for the TOAST table.</span>
+</span><span data-line="206">
+</span><span data-line="207"><span class="sd">    - `tidx_blks_read`:</span>
+</span><span data-line="208"><span class="sd">       Number of disk blocks read for indexes on the TOAST table.</span>
+</span><span data-line="209">
+</span><span data-line="210"><span class="sd">    - `tidx_blks_hit`:</span>
+</span><span data-line="211"><span class="sd">       Number of buffer hits in the cache for indexes on the TOAST table.</span>
+</span><span data-line="212">
+</span><span data-line="213"><span class="sd">    - `heap_cache_hit_rate`:</span>
+</span><span data-line="214"><span class="sd">       Cache hit rate for the main table (heap).</span>
+</span><span data-line="215">
+</span><span data-line="216"><span class="sd">    - `idx_cache_hit_rate`:</span>
+</span><span data-line="217"><span class="sd">       Cache hit rate for all indexes on the table.</span>
+</span><span data-line="218">
+</span><span data-line="219"><span class="sd">    Cache hit rates are useful metrics for determining the efficiency of the cache. A high hit rate</span>
+</span><span data-line="220"><span class="sd">    indicates that the cache is effectively reducing the need for disk reads.</span>
+</span><span data-line="221">
+</span><span data-line="222"><span class="sd">    :param cursor: a psycopg2 cursor</span>
+</span><span data-line="223"><span class="sd">    :return: DataFrame with cache statistics</span>
+</span><span data-line="224"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="225">    <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+</span><span data-line="226"><span class="s2">    SELECT </span>
+</span><span data-line="227"><span class="s2">        relname AS table_name,</span>
+</span><span data-line="228"><span class="s2">        heap_blks_read,</span>
+</span><span data-line="229"><span class="s2">        heap_blks_hit,</span>
+</span><span data-line="230"><span class="s2">        idx_blks_read,</span>
+</span><span data-line="231"><span class="s2">        idx_blks_hit,</span>
+</span><span data-line="232"><span class="s2">        toast_blks_read,</span>
+</span><span data-line="233"><span class="s2">        toast_blks_hit,</span>
+</span><span data-line="234"><span class="s2">        tidx_blks_read,</span>
+</span><span data-line="235"><span class="s2">        tidx_blks_hit</span>
+</span><span data-line="236"><span class="s2">    FROM pg_statio_user_tables;</span>
+</span><span data-line="237"><span class="s2">    &quot;&quot;&quot;</span>
+</span><span data-line="238">    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+</span><span data-line="239">    <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">desc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">desc</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">description</span><span class="p">]</span>
+</span><span data-line="240">    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="n">row</span><span class="p">))</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()])</span>
+</span><span data-line="241">
+</span><span data-line="242">    <span class="c1"># Convertir las columnas a numéricas</span>
+</span><span data-line="243">    <span class="n">numeric_cols</span> <span class="o">=</span> <span class="p">[</span>
+</span><span data-line="244">        <span class="s2">&quot;heap_blks_read&quot;</span><span class="p">,</span> <span class="s2">&quot;heap_blks_hit&quot;</span><span class="p">,</span>
+</span><span data-line="245">        <span class="s2">&quot;idx_blks_read&quot;</span><span class="p">,</span> <span class="s2">&quot;idx_blks_hit&quot;</span><span class="p">,</span>
+</span><span data-line="246">        <span class="s2">&quot;toast_blks_read&quot;</span><span class="p">,</span> <span class="s2">&quot;toast_blks_hit&quot;</span><span class="p">,</span>
+</span><span data-line="247">        <span class="s2">&quot;tidx_blks_read&quot;</span><span class="p">,</span> <span class="s2">&quot;tidx_blks_hit&quot;</span>
+</span><span data-line="248">    <span class="p">]</span>
+</span><span data-line="249">    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">numeric_cols</span><span class="p">:</span>
+</span><span data-line="250">        <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+</span><span data-line="251">
+</span><span data-line="252">    <span class="c1"># Si deseas agregar una columna con el porcentaje de éxito del caché:</span>
+</span><span data-line="253">    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;heap_cache_hit_rate&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;heap_blks_hit&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;heap_blks_hit&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;heap_blks_read&quot;</span><span class="p">])</span>
+</span><span data-line="254">    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;idx_cache_hit_rate&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;idx_blks_hit&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;idx_blks_hit&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;idx_blks_read&quot;</span><span class="p">])</span>
+</span><span data-line="255">
+</span><span data-line="256">    <span class="k">return</span> <span class="n">df</span></div>
+
+</span><span data-line="257">
+</span><span data-line="258">
+<div class="viewcode-block" id="get_hypertable_info">
+<a class="viewcode-back" href="../../../postgresql_database.html#binpan.storage.postgresql_database.get_hypertable_info">[docs]</a>
+</span><span data-line="259"><span class="k">def</span><span class="w"> </span><span class="nf">get_hypertable_info</span><span class="p">(</span><span class="n">cursor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span data-line="260"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="261"><span class="sd">    Get information about hypertables in the TimescaleDB.</span>
+</span><span data-line="262">
+</span><span data-line="263"><span class="sd">    This function returns a DataFrame with the following columns:</span>
+</span><span data-line="264">
+</span><span data-line="265"><span class="sd">    - `hypertable_schema`:</span>
+</span><span data-line="266"><span class="sd">       The schema in which the hypertable resides.</span>
+</span><span data-line="267">
+</span><span data-line="268"><span class="sd">    - `hypertable_name`:</span>
+</span><span data-line="269"><span class="sd">       The name of the hypertable.</span>
+</span><span data-line="270">
+</span><span data-line="271"><span class="sd">    - `owner`:</span>
+</span><span data-line="272"><span class="sd">       The owner of the hypertable.</span>
+</span><span data-line="273">
+</span><span data-line="274"><span class="sd">    - `num_dimensions`:</span>
+</span><span data-line="275"><span class="sd">       The number of dimensions of the hypertable.</span>
+</span><span data-line="276">
+</span><span data-line="277"><span class="sd">    - `num_chunks`:</span>
+</span><span data-line="278"><span class="sd">       The total number of chunks associated with the hypertable.</span>
+</span><span data-line="279">
+</span><span data-line="280"><span class="sd">    - `compression_enabled`:</span>
+</span><span data-line="281"><span class="sd">       Whether compression is enabled for the hypertable.</span>
+</span><span data-line="282">
+</span><span data-line="283"><span class="sd">    - `tablespaces`:</span>
+</span><span data-line="284"><span class="sd">       Tablespaces associated with the hypertable.</span>
+</span><span data-line="285">
+</span><span data-line="286"><span class="sd">    - `primary_dimension`:</span>
+</span><span data-line="287"><span class="sd">       The primary partitioning dimension (typically a time column).</span>
+</span><span data-line="288">
+</span><span data-line="289"><span class="sd">    - `primary_dimension_type`:</span>
+</span><span data-line="290"><span class="sd">       Data type of the primary dimension.</span>
+</span><span data-line="291">
+</span><span data-line="292"><span class="sd">    :param cursor: a psycopg2 cursor</span>
+</span><span data-line="293"><span class="sd">    :return: DataFrame with hypertable details</span>
+</span><span data-line="294"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="295">    <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+</span><span data-line="296"><span class="s2">    SELECT</span>
+</span><span data-line="297"><span class="s2">        hypertable_schema,</span>
+</span><span data-line="298"><span class="s2">        hypertable_name,</span>
+</span><span data-line="299"><span class="s2">        owner,</span>
+</span><span data-line="300"><span class="s2">        num_dimensions,</span>
+</span><span data-line="301"><span class="s2">        num_chunks,</span>
+</span><span data-line="302"><span class="s2">        compression_enabled,</span>
+</span><span data-line="303"><span class="s2">        tablespaces,</span>
+</span><span data-line="304"><span class="s2">        primary_dimension,</span>
+</span><span data-line="305"><span class="s2">        primary_dimension_type</span>
+</span><span data-line="306"><span class="s2">    FROM timescaledb_information.hypertables;</span>
+</span><span data-line="307"><span class="s2">    &quot;&quot;&quot;</span>
+</span><span data-line="308">    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+</span><span data-line="309">    <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">desc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">desc</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">description</span><span class="p">]</span>
+</span><span data-line="310">    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="n">row</span><span class="p">))</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()])</span>
+</span><span data-line="311">
+</span><span data-line="312">    <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;num_chunks&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+</span></pre></div>
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2022, Fernando Alfonso</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+<a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+  <iconify-icon icon="simple-icons:github"></iconify-icon>
+</a></div>
+    </div>
+  </div>
+</footer>
+      <script src="../../../_static/documentation_options.js?v=11e62b30"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/shibuya.js?v=50760d75"></script></body>
+</html>

@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="iris" data-content_root="../../../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>binpan.core.time_helper - BinPan 0.10.2</title><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=e1a1ceaf" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/shibuya.css?v=9454f7d5" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/style.css?v=1e48dca6" />
+    <link media="print" rel="stylesheet" type="text/css" href="../../../_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/><meta property="og:title" content="binpan.core.time_helper"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="../../../index.html">
+      
+      
+      <strong>BinPan</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Main Classes:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../binpan.html">BinPan Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../symbol_indicators.html">Symbol Indicators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../symbol_plotting.html">Symbol Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../symbol_strategy.html">Symbol Strategy</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">API &amp; Market:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../market.html">Market Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exchange.html">Exchange Info Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../auth.html">Authentication Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../wallet.html">Wallet Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../wallet_api.html">Wallet API Functions</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Analysis:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../indicators.html">Indicators Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../aggregations.html">Aggregations Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../strategies.html">Strategies Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tags.html">Tags &amp; Backtesting Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stat_tests.html">Statistical Tests and Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../numba_tools.html">Numba Tools Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Core:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../time_helper.html">Time Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../timeframes.html">Timeframes Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../trades.html">Trades Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../standards.html">Standards Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../secrets.html">Secrets Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logs.html">Logs Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exceptions.html">Exceptions Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Plotting:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../plotting.html">Plotting Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Storage &amp; Database:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../files.html">Files Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../postgresql.html">PostgreSQL Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../postgresql_database.html">PostgreSQL Database Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../influx_manager.html">Influx Manager Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../redis_fetch.html">Redis Module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../../index.html"><span itemprop="name">BinPan</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../index.html"><span itemprop="name">Module code</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">binpan.core.time_helper</strong>
+        <meta itemprop="position" content="3" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue" role="main">
+          <h1>Source code for binpan.core.time_helper</h1><div class="highlight"><pre>
+<span></span><span data-line="1"><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="sd">Time helper functions.</span>
+</span><span data-line="4">
+</span><span data-line="5"><span class="sd">Kline boundary functions delegated to kline-timestamp library.</span>
+</span><span data-line="6"><span class="sd">Generic datetime/string/ms conversions kept here.</span>
+</span><span data-line="7">
+</span><span data-line="8"><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="9">
+</span><span data-line="10"><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timezone</span>
+</span><span data-line="11"><span class="kn">import</span><span class="w"> </span><span class="nn">pytz</span>
+</span><span data-line="12"><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+</span><span data-line="13"><span class="kn">from</span><span class="w"> </span><span class="nn">kline_timestamp</span><span class="w"> </span><span class="kn">import</span> <span class="n">KlineTimestamp</span>
+</span><span data-line="14">
+</span><span data-line="15"><span class="kn">from</span><span class="w"> </span><span class="nn">.logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogManager</span>
+</span><span data-line="16">
+</span><span data-line="17"><span class="n">time_logger</span> <span class="o">=</span> <span class="n">LogManager</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;./logs/time_helpers.log&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;time_helpers&#39;</span><span class="p">,</span> <span class="n">info_level</span><span class="o">=</span><span class="s1">&#39;INFO&#39;</span><span class="p">)</span>
+</span><span data-line="18">
+</span><span data-line="19"><span class="c1"># Nota: &#39;1M&#39; usa 30 días como aproximación. Para duración exacta por mes usar KlineTimestamp.tick_ms</span>
+</span><span data-line="20"><span class="n">tick_seconds</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;1m&#39;</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span> <span class="s1">&#39;3m&#39;</span><span class="p">:</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;5m&#39;</span><span class="p">:</span> <span class="mi">5</span> <span class="o">*</span> <span class="mi">60</span><span class="p">,</span> <span class="s1">&#39;15m&#39;</span><span class="p">:</span> <span class="mi">15</span> <span class="o">*</span> <span class="mi">60</span><span class="p">,</span> <span class="s1">&#39;30m&#39;</span><span class="p">:</span> <span class="mi">30</span> <span class="o">*</span> <span class="mi">60</span><span class="p">,</span> <span class="s1">&#39;1h&#39;</span><span class="p">:</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span><span class="p">,</span> <span class="s1">&#39;2h&#39;</span><span class="p">:</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span>
+</span><span data-line="21">                <span class="s1">&#39;4h&#39;</span><span class="p">:</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;6h&#39;</span><span class="p">:</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;8h&#39;</span><span class="p">:</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">8</span><span class="p">,</span> <span class="s1">&#39;12h&#39;</span><span class="p">:</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">12</span><span class="p">,</span> <span class="s1">&#39;1d&#39;</span><span class="p">:</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">24</span><span class="p">,</span>
+</span><span data-line="22">                <span class="s1">&#39;3d&#39;</span><span class="p">:</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;1w&#39;</span><span class="p">:</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">7</span><span class="p">,</span> <span class="s1">&#39;1M&#39;</span><span class="p">:</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">30</span><span class="p">}</span>
+</span><span data-line="23">
+</span><span data-line="24"><span class="n">pandas_freq_tick_interval</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;1m&#39;</span><span class="p">:</span> <span class="s1">&#39;1min&#39;</span><span class="p">,</span>
+</span><span data-line="25">                             <span class="s1">&#39;3m&#39;</span><span class="p">:</span> <span class="s1">&#39;3min&#39;</span><span class="p">,</span>
+</span><span data-line="26">                             <span class="s1">&#39;5m&#39;</span><span class="p">:</span> <span class="s1">&#39;5min&#39;</span><span class="p">,</span>
+</span><span data-line="27">                             <span class="s1">&#39;15m&#39;</span><span class="p">:</span> <span class="s1">&#39;15min&#39;</span><span class="p">,</span>
+</span><span data-line="28">                             <span class="s1">&#39;30m&#39;</span><span class="p">:</span> <span class="s1">&#39;30min&#39;</span><span class="p">,</span>
+</span><span data-line="29">                             <span class="s1">&#39;1h&#39;</span><span class="p">:</span> <span class="s1">&#39;1h&#39;</span><span class="p">,</span>
+</span><span data-line="30">                             <span class="s1">&#39;2h&#39;</span><span class="p">:</span> <span class="s1">&#39;2h&#39;</span><span class="p">,</span>
+</span><span data-line="31">                             <span class="s1">&#39;4h&#39;</span><span class="p">:</span> <span class="s1">&#39;4h&#39;</span><span class="p">,</span>
+</span><span data-line="32">                             <span class="s1">&#39;6h&#39;</span><span class="p">:</span> <span class="s1">&#39;6h&#39;</span><span class="p">,</span>
+</span><span data-line="33">                             <span class="s1">&#39;8h&#39;</span><span class="p">:</span> <span class="s1">&#39;8h&#39;</span><span class="p">,</span>
+</span><span data-line="34">                             <span class="s1">&#39;12h&#39;</span><span class="p">:</span> <span class="s1">&#39;12h&#39;</span><span class="p">,</span>
+</span><span data-line="35">                             <span class="s1">&#39;1d&#39;</span><span class="p">:</span> <span class="s1">&#39;1D&#39;</span><span class="p">,</span>
+</span><span data-line="36">                             <span class="s1">&#39;3d&#39;</span><span class="p">:</span> <span class="s1">&#39;3D&#39;</span><span class="p">,</span>
+</span><span data-line="37">                             <span class="s1">&#39;1w&#39;</span><span class="p">:</span> <span class="s1">&#39;1W&#39;</span><span class="p">,</span>
+</span><span data-line="38">                             <span class="s1">&#39;1M&#39;</span><span class="p">:</span> <span class="s1">&#39;1ME&#39;</span><span class="p">}</span>
+</span><span data-line="39">
+</span><span data-line="40"><span class="n">tick_interval_values</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;1m&#39;</span><span class="p">,</span> <span class="s1">&#39;3m&#39;</span><span class="p">,</span> <span class="s1">&#39;5m&#39;</span><span class="p">,</span> <span class="s1">&#39;15m&#39;</span><span class="p">,</span> <span class="s1">&#39;30m&#39;</span><span class="p">,</span> <span class="s1">&#39;1h&#39;</span><span class="p">,</span> <span class="s1">&#39;2h&#39;</span><span class="p">,</span> <span class="s1">&#39;4h&#39;</span><span class="p">,</span> <span class="s1">&#39;6h&#39;</span><span class="p">,</span> <span class="s1">&#39;8h&#39;</span><span class="p">,</span> <span class="s1">&#39;12h&#39;</span><span class="p">,</span> <span class="s1">&#39;1d&#39;</span><span class="p">,</span> <span class="s1">&#39;3d&#39;</span><span class="p">,</span> <span class="s1">&#39;1w&#39;</span><span class="p">,</span> <span class="s1">&#39;1M&#39;</span><span class="p">]</span>
+</span><span data-line="41">
+</span><span data-line="42">
+</span><span data-line="43"><span class="c1">############################</span>
+</span><span data-line="44"><span class="c1"># parse_timestamp (migrado #</span>
+</span><span data-line="45"><span class="c1"># de kline-timestamp)      #</span>
+</span><span data-line="46"><span class="c1">############################</span>
+</span><span data-line="47">
+</span><span data-line="48">
+<div class="viewcode-block" id="parse_timestamp">
+<a class="viewcode-back" href="../../../time_helper.html#binpan.core.time_helper.parse_timestamp">[docs]</a>
+</span><span data-line="49"><span class="k">def</span><span class="w"> </span><span class="nf">parse_timestamp</span><span class="p">(</span><span class="n">timestamp_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">timezone</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pytz</span><span class="o">.</span><span class="n">BaseTzInfo</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="s2">&quot;Europe/Madrid&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="p">:</span>
+</span><span data-line="50"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="51"><span class="sd">    Parses a timestamp string in multiple formats and returns a timezone-aware datetime.</span>
+</span><span data-line="52">
+</span><span data-line="53"><span class="sd">    If the timestamp string doesn&#39;t include time zone information, it is assumed to be in UTC.</span>
+</span><span data-line="54"><span class="sd">    If timezone parameter is specified, the datetime is converted to that timezone.</span>
+</span><span data-line="55">
+</span><span data-line="56"><span class="sd">    :param str timestamp_str: Timestamp string. Accepts ISO 8601 and common date/time formats.</span>
+</span><span data-line="57"><span class="sd">    :param timezone: Time zone in IANA format (e.g., &quot;Europe/Madrid&quot;) or pytz timezone object.</span>
+</span><span data-line="58"><span class="sd">    :return datetime: Timezone-aware datetime object.</span>
+</span><span data-line="59"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="60">    <span class="n">formats</span> <span class="o">=</span> <span class="p">[</span>
+</span><span data-line="61">        <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S%z&quot;</span><span class="p">,</span>
+</span><span data-line="62">        <span class="s2">&quot;%Y/%m/</span><span class="si">%d</span><span class="s2"> %H:%M:%S%z&quot;</span><span class="p">,</span>
+</span><span data-line="63">        <span class="s2">&quot;</span><span class="si">%d</span><span class="s2">-%m-%Y %H:%M:%S%z&quot;</span><span class="p">,</span>
+</span><span data-line="64">        <span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%Y %H:%M:%S%z&quot;</span><span class="p">,</span>
+</span><span data-line="65">        <span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">%H%M%S%z&quot;</span><span class="p">,</span>
+</span><span data-line="66">        <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">,</span>
+</span><span data-line="67">        <span class="s2">&quot;%Y/%m/</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">,</span>
+</span><span data-line="68">        <span class="s2">&quot;</span><span class="si">%d</span><span class="s2">-%m-%Y %H:%M:%S&quot;</span><span class="p">,</span>
+</span><span data-line="69">        <span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%Y %H:%M:%S&quot;</span><span class="p">,</span>
+</span><span data-line="70">        <span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">%H%M%S&quot;</span><span class="p">,</span>
+</span><span data-line="71">        <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span>
+</span><span data-line="72">        <span class="s2">&quot;%Y/%m/</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span>
+</span><span data-line="73">        <span class="s2">&quot;</span><span class="si">%d</span><span class="s2">-%m-%Y&quot;</span><span class="p">,</span>
+</span><span data-line="74">        <span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%Y&quot;</span><span class="p">,</span>
+</span><span data-line="75">        <span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span>
+</span><span data-line="76">    <span class="p">]</span>
+</span><span data-line="77">
+</span><span data-line="78">    <span class="k">for</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="n">formats</span><span class="p">:</span>
+</span><span data-line="79">        <span class="k">try</span><span class="p">:</span>
+</span><span data-line="80">            <span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">timestamp_str</span><span class="p">,</span> <span class="n">fmt</span><span class="p">)</span>
+</span><span data-line="81">            <span class="k">if</span> <span class="n">dt</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="82">                <span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">pytz</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+</span><span data-line="83">            <span class="k">else</span><span class="p">:</span>
+</span><span data-line="84">                <span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">pytz</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+</span><span data-line="85">            <span class="k">break</span>
+</span><span data-line="86">        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+</span><span data-line="87">            <span class="k">continue</span>
+</span><span data-line="88">    <span class="k">else</span><span class="p">:</span>
+</span><span data-line="89">        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Timestamp &#39;</span><span class="si">{</span><span class="n">timestamp_str</span><span class="si">}</span><span class="s2">&#39; is not in a recognized format.&quot;</span><span class="p">)</span>
+</span><span data-line="90">
+</span><span data-line="91">    <span class="k">if</span> <span class="n">timezone</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="92">        <span class="k">pass</span>
+</span><span data-line="93">    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">timezone</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+</span><span data-line="94">        <span class="n">timezone</span> <span class="o">=</span> <span class="n">pytz</span><span class="o">.</span><span class="n">timezone</span><span class="p">(</span><span class="n">timezone</span><span class="p">)</span>
+</span><span data-line="95">    <span class="k">elif</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">timezone</span><span class="p">,</span> <span class="s1">&#39;localize&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">timezone</span><span class="p">,</span> <span class="s1">&#39;utcoffset&#39;</span><span class="p">)):</span>
+</span><span data-line="96">        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Timezone must be a string or a pytz timezone object, not </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">timezone</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="97">
+</span><span data-line="98">    <span class="k">if</span> <span class="n">timezone</span><span class="p">:</span>
+</span><span data-line="99">        <span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">timezone</span><span class="p">)</span>
+</span><span data-line="100">    <span class="k">return</span> <span class="n">dt</span></div>
+
+</span><span data-line="101">
+</span><span data-line="102">
+</span><span data-line="103"><span class="c1">##########################</span>
+</span><span data-line="104"><span class="c1"># time control functions #</span>
+</span><span data-line="105"><span class="c1">##########################</span>
+</span><span data-line="106">
+</span><span data-line="107">
+<div class="viewcode-block" id="convert_ms_column_to_datetime_with_zone">
+<a class="viewcode-back" href="../../../time_helper.html#binpan.core.time_helper.convert_ms_column_to_datetime_with_zone">[docs]</a>
+</span><span data-line="108"><span class="k">def</span><span class="w"> </span><span class="nf">convert_ms_column_to_datetime_with_zone</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">col</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">time_zone</span><span class="o">=</span><span class="s1">&#39;Europe/Madrid&#39;</span><span class="p">,</span> <span class="n">ambiguous</span><span class="o">=</span><span class="s1">&#39;infer&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+</span><span data-line="109"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="110"><span class="sd">    Replace a column from milliseconds to datetime with time zone.</span>
+</span><span data-line="111">
+</span><span data-line="112"><span class="sd">    :param df: A pandas dataframe.</span>
+</span><span data-line="113"><span class="sd">    :param col: Name of the column to replace.</span>
+</span><span data-line="114"><span class="sd">    :param time_zone: A time zone like &#39;Europe/Madrid&#39;</span>
+</span><span data-line="115"><span class="sd">    :param ambiguous: A string or list to resolve ambiguous times during DST transitions. Default is &#39;infer&#39;.</span>
+</span><span data-line="116"><span class="sd">    :return: Modified dataframe.</span>
+</span><span data-line="117"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="118">    <span class="n">dt_series</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;ms&#39;</span><span class="p">)</span>
+</span><span data-line="119">
+</span><span data-line="120">    <span class="k">if</span> <span class="n">dt_series</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">tz</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="121">        <span class="k">return</span> <span class="n">dt_series</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">tz_localize</span><span class="p">(</span><span class="s1">&#39;utc&#39;</span><span class="p">,</span> <span class="n">ambiguous</span><span class="o">=</span><span class="n">ambiguous</span><span class="p">)</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">tz_convert</span><span class="p">(</span><span class="n">time_zone</span><span class="p">)</span>
+</span><span data-line="122">    <span class="k">else</span><span class="p">:</span>
+</span><span data-line="123">        <span class="k">return</span> <span class="n">dt_series</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">tz_convert</span><span class="p">(</span><span class="n">time_zone</span><span class="p">)</span></div>
+
+</span><span data-line="124">
+</span><span data-line="125">
+<div class="viewcode-block" id="convert_datetime_to_string">
+<a class="viewcode-back" href="../../../time_helper.html#binpan.core.time_helper.convert_datetime_to_string">[docs]</a>
+</span><span data-line="126"><span class="k">def</span><span class="w"> </span><span class="nf">convert_datetime_to_string</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="127"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="128"><span class="sd">    Converts a datetime to a string.</span>
+</span><span data-line="129">
+</span><span data-line="130"><span class="sd">    :param dt: A datetime object.</span>
+</span><span data-line="131"><span class="sd">    :return: A string with a date and time. Example: &#39;2021-01-01 00:00:00&#39;</span>
+</span><span data-line="132"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="133">    <span class="k">return</span> <span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span></div>
+
+</span><span data-line="134">
+</span><span data-line="135">
+<div class="viewcode-block" id="convert_datetime_to_milliseconds">
+<a class="viewcode-back" href="../../../time_helper.html#binpan.core.time_helper.convert_datetime_to_milliseconds">[docs]</a>
+</span><span data-line="136"><span class="k">def</span><span class="w"> </span><span class="nf">convert_datetime_to_milliseconds</span><span class="p">(</span><span class="n">dt</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timezoned</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span data-line="137"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="138"><span class="sd">    Converts a datetime to milliseconds. If timezoned, assumes the datetime is in that timezone.</span>
+</span><span data-line="139">
+</span><span data-line="140"><span class="sd">    :param dt: A datetime object.</span>
+</span><span data-line="141"><span class="sd">    :param timezoned: A timezone like &#39;Europe/Madrid&#39;</span>
+</span><span data-line="142"><span class="sd">    :return: A Unix timestamp in milliseconds.</span>
+</span><span data-line="143"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="144">    <span class="k">if</span> <span class="ow">not</span> <span class="n">timezoned</span><span class="p">:</span>
+</span><span data-line="145">        <span class="n">epoch</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</span><span data-line="146">    <span class="k">else</span><span class="p">:</span>
+</span><span data-line="147">        <span class="n">epoch</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+</span><span data-line="148">    <span class="k">return</span> <span class="p">(</span><span class="n">dt</span> <span class="o">-</span> <span class="n">epoch</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="o">*</span> <span class="mf">1000.0</span></div>
+
+</span><span data-line="149">
+</span><span data-line="150">
+<div class="viewcode-block" id="convert_string_to_milliseconds">
+<a class="viewcode-back" href="../../../time_helper.html#binpan.core.time_helper.convert_string_to_milliseconds">[docs]</a>
+</span><span data-line="151"><span class="k">def</span><span class="w"> </span><span class="nf">convert_string_to_milliseconds</span><span class="p">(</span><span class="n">ts</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">timezoned</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span data-line="152"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="153"><span class="sd">    Converts a string to milliseconds.</span>
+</span><span data-line="154">
+</span><span data-line="155"><span class="sd">    :param ts: A string with a date and time. Example: &#39;2021-01-01 00:00:00&#39;</span>
+</span><span data-line="156"><span class="sd">    :param timezoned: A timezone like &#39;Europe/Madrid&#39;</span>
+</span><span data-line="157"><span class="sd">    :return: Returns a timestamp in milliseconds.</span>
+</span><span data-line="158"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="159">    <span class="n">dt</span> <span class="o">=</span> <span class="n">convert_string_to_datetime</span><span class="p">(</span><span class="n">ts</span><span class="o">=</span><span class="n">ts</span><span class="p">,</span> <span class="n">timezoned</span><span class="o">=</span><span class="n">timezoned</span><span class="p">)</span>
+</span><span data-line="160">    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">convert_datetime_to_milliseconds</span><span class="p">(</span><span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span> <span class="n">timezoned</span><span class="o">=</span><span class="n">timezoned</span><span class="p">))</span></div>
+
+</span><span data-line="161">
+</span><span data-line="162">
+<div class="viewcode-block" id="convert_milliseconds_to_utc_string">
+<a class="viewcode-back" href="../../../time_helper.html#binpan.core.time_helper.convert_milliseconds_to_utc_string">[docs]</a>
+</span><span data-line="163"><span class="k">def</span><span class="w"> </span><span class="nf">convert_milliseconds_to_utc_string</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="164"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="165"><span class="sd">    Converts a timestamp in milliseconds to a UTC string.</span>
+</span><span data-line="166">
+</span><span data-line="167"><span class="sd">    :param ms: A timestamp in milliseconds.</span>
+</span><span data-line="168"><span class="sd">    :return: A string with a date and time.</span>
+</span><span data-line="169"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="170">    <span class="n">seconds</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1000</span>
+</span><span data-line="171">    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">seconds</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S.</span><span class="si">%f</span><span class="s1">&#39;</span><span class="p">))</span></div>
+
+</span><span data-line="172">
+</span><span data-line="173">
+<div class="viewcode-block" id="convert_milliseconds_to_time_zone_datetime">
+<a class="viewcode-back" href="../../../time_helper.html#binpan.core.time_helper.convert_milliseconds_to_time_zone_datetime">[docs]</a>
+</span><span data-line="174"><span class="k">def</span><span class="w"> </span><span class="nf">convert_milliseconds_to_time_zone_datetime</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">timezoned</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="p">:</span>
+</span><span data-line="175"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="176"><span class="sd">    Converts a timestamp in milliseconds to a timezone-aware datetime.</span>
+</span><span data-line="177">
+</span><span data-line="178"><span class="sd">    :param ms: A timestamp in milliseconds.</span>
+</span><span data-line="179"><span class="sd">    :param timezoned: A timezone like &#39;Europe/Madrid&#39;</span>
+</span><span data-line="180"><span class="sd">    :return: A datetime object.</span>
+</span><span data-line="181"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="182">    <span class="n">seconds</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1000</span>
+</span><span data-line="183">    <span class="n">utc_datetime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">seconds</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+</span><span data-line="184">    <span class="n">time_zone</span> <span class="o">=</span> <span class="n">pytz</span><span class="o">.</span><span class="n">timezone</span><span class="p">(</span><span class="n">timezoned</span><span class="p">)</span>
+</span><span data-line="185">    <span class="k">return</span> <span class="n">utc_datetime</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">time_zone</span><span class="p">)</span></div>
+
+</span><span data-line="186">
+</span><span data-line="187">
+<div class="viewcode-block" id="convert_milliseconds_to_str">
+<a class="viewcode-back" href="../../../time_helper.html#binpan.core.time_helper.convert_milliseconds_to_str">[docs]</a>
+</span><span data-line="188"><span class="k">def</span><span class="w"> </span><span class="nf">convert_milliseconds_to_str</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">timezoned</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="189"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="190"><span class="sd">    Converts a timestamp in milliseconds to a timezone-aware string.</span>
+</span><span data-line="191">
+</span><span data-line="192"><span class="sd">    :param ms: A timestamp in milliseconds.</span>
+</span><span data-line="193"><span class="sd">    :param timezoned: A timezone like &#39;Europe/Madrid&#39;</span>
+</span><span data-line="194"><span class="sd">    :return: A string with a date and time.</span>
+</span><span data-line="195"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="196">    <span class="n">dt</span> <span class="o">=</span> <span class="n">convert_milliseconds_to_time_zone_datetime</span><span class="p">(</span><span class="n">ms</span><span class="o">=</span><span class="n">ms</span><span class="p">,</span> <span class="n">timezoned</span><span class="o">=</span><span class="n">timezoned</span><span class="p">)</span>
+</span><span data-line="197">    <span class="k">return</span> <span class="n">convert_datetime_to_string</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span></div>
+
+</span><span data-line="198">
+</span><span data-line="199">
+<div class="viewcode-block" id="convert_string_to_datetime">
+<a class="viewcode-back" href="../../../time_helper.html#binpan.core.time_helper.convert_string_to_datetime">[docs]</a>
+</span><span data-line="200"><span class="k">def</span><span class="w"> </span><span class="nf">convert_string_to_datetime</span><span class="p">(</span><span class="n">ts</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">timezoned</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="p">:</span>
+</span><span data-line="201"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="202"><span class="sd">    Converts a string to datetime. If timezoned, localizes the result.</span>
+</span><span data-line="203">
+</span><span data-line="204"><span class="sd">    :param ts: A string with a date and time. Example: &#39;2021-01-01 00:00:00&#39;</span>
+</span><span data-line="205"><span class="sd">    :param timezoned: A timezone like &#39;Europe/Madrid&#39;</span>
+</span><span data-line="206"><span class="sd">    :return: Returns a datetime object.</span>
+</span><span data-line="207"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="208">    <span class="k">try</span><span class="p">:</span>
+</span><span data-line="209">        <span class="n">ret</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S.</span><span class="si">%f</span><span class="s1">&#39;</span><span class="p">)</span>
+</span><span data-line="210">    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+</span><span data-line="211">        <span class="k">try</span><span class="p">:</span>
+</span><span data-line="212">            <span class="n">ret</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span>
+</span><span data-line="213">        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+</span><span data-line="214">            <span class="n">ret</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+</span><span data-line="215">    <span class="k">if</span> <span class="n">timezoned</span><span class="p">:</span>
+</span><span data-line="216">        <span class="n">mytz</span> <span class="o">=</span> <span class="n">pytz</span><span class="o">.</span><span class="n">timezone</span><span class="p">(</span><span class="n">timezoned</span><span class="p">)</span>
+</span><span data-line="217">        <span class="k">return</span> <span class="n">mytz</span><span class="o">.</span><span class="n">localize</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+</span><span data-line="218">    <span class="k">else</span><span class="p">:</span>
+</span><span data-line="219">        <span class="k">return</span> <span class="n">ret</span></div>
+
+</span><span data-line="220">
+</span><span data-line="221">
+</span><span data-line="222"><span class="c1">#######################</span>
+</span><span data-line="223"><span class="c1"># Checkers and utils  #</span>
+</span><span data-line="224"><span class="c1">#######################</span>
+</span><span data-line="225">
+</span><span data-line="226">
+<div class="viewcode-block" id="check_tick_interval">
+<a class="viewcode-back" href="../../../time_helper.html#binpan.core.time_helper.check_tick_interval">[docs]</a>
+</span><span data-line="227"><span class="k">def</span><span class="w"> </span><span class="nf">check_tick_interval</span><span class="p">(</span><span class="n">tick_interval</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="228"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="229"><span class="sd">    Checks if argument is a Binance valid tick interval for candles.</span>
+</span><span data-line="230">
+</span><span data-line="231"><span class="sd">    :param str tick_interval: A string, maybe, binance tick interval well formatted.</span>
+</span><span data-line="232"><span class="sd">    :return: A string with the tick interval.</span>
+</span><span data-line="233"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="234">    <span class="k">if</span> <span class="n">tick_interval</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tick_interval_values</span><span class="p">:</span>
+</span><span data-line="235">        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;BinPan Error on tick_interval: </span><span class="si">{</span><span class="n">tick_interval</span><span class="si">}</span><span class="s2"> not in &quot;</span>
+</span><span data-line="236">                        <span class="sa">f</span><span class="s2">&quot;expected API intervals.</span><span class="se">\n</span><span class="si">{</span><span class="n">tick_interval_values</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="237">    <span class="k">return</span> <span class="n">tick_interval</span></div>
+
+</span><span data-line="238">
+</span><span data-line="239">
+<div class="viewcode-block" id="open_from_milliseconds">
+<a class="viewcode-back" href="../../../time_helper.html#binpan.core.time_helper.open_from_milliseconds">[docs]</a>
+</span><span data-line="240"><span class="k">def</span><span class="w"> </span><span class="nf">open_from_milliseconds</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">tick_interval</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span data-line="241"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="242"><span class="sd">    Returns the open timestamp in milliseconds for a tick interval.</span>
+</span><span data-line="243">
+</span><span data-line="244"><span class="sd">    :param ms: A timestamp in milliseconds.</span>
+</span><span data-line="245"><span class="sd">    :param tick_interval: A tick interval like &#39;1m&#39;, &#39;1h&#39;, etc.</span>
+</span><span data-line="246"><span class="sd">    :return: Open timestamp in milliseconds.</span>
+</span><span data-line="247"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="248">    <span class="k">return</span> <span class="n">KlineTimestamp</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">ms</span><span class="p">),</span> <span class="n">tick_interval</span><span class="p">,</span> <span class="s2">&quot;UTC&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">open</span></div>
+
+</span><span data-line="249">
+</span><span data-line="250">
+<div class="viewcode-block" id="next_open_by_milliseconds">
+<a class="viewcode-back" href="../../../time_helper.html#binpan.core.time_helper.next_open_by_milliseconds">[docs]</a>
+</span><span data-line="251"><span class="k">def</span><span class="w"> </span><span class="nf">next_open_by_milliseconds</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">tick_interval</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span data-line="252"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="253"><span class="sd">    Calculates the next open timestamp in milliseconds for a tick interval.</span>
+</span><span data-line="254">
+</span><span data-line="255"><span class="sd">    :param ms: A timestamp in milliseconds.</span>
+</span><span data-line="256"><span class="sd">    :param tick_interval: A tick interval like &#39;1m&#39;, &#39;1h&#39;, etc.</span>
+</span><span data-line="257"><span class="sd">    :return: Next open timestamp in milliseconds.</span>
+</span><span data-line="258"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="259">    <span class="k">return</span> <span class="n">KlineTimestamp</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">ms</span><span class="p">),</span> <span class="n">tick_interval</span><span class="p">,</span> <span class="s2">&quot;UTC&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">next</span><span class="p">()</span><span class="o">.</span><span class="n">open</span></div>
+
+</span><span data-line="260">
+</span><span data-line="261">
+</span><span data-line="262">
+<div class="viewcode-block" id="infer_frequency_and_set_index">
+<a class="viewcode-back" href="../../../time_helper.html#binpan.core.time_helper.infer_frequency_and_set_index">[docs]</a>
+</span><span data-line="263"><span class="k">def</span><span class="w"> </span><span class="nf">infer_frequency_and_set_index</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">timestamp_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Open timestamp&#39;</span><span class="p">,</span>
+</span><span data-line="264">                                  <span class="n">timezone</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span data-line="265"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="266"><span class="sd">    Infers the frequency of the DataFrame based on the &#39;Open timestamp&#39; column and sets it as the DataFrame index.</span>
+</span><span data-line="267">
+</span><span data-line="268"><span class="sd">    :param pd.DataFrame data: Input DataFrame with a column containing timestamps in milliseconds.</span>
+</span><span data-line="269"><span class="sd">    :param str timestamp_column: Name of the column containing timestamps. Default is &#39;Open timestamp&#39;.</span>
+</span><span data-line="270"><span class="sd">    :param str timezone: The timezone to use. Default is None to infer from the dataframe.</span>
+</span><span data-line="271"><span class="sd">    :return pd.DataFrame: DataFrame with the timestamp column set as the index and the frequency inferred.</span>
+</span><span data-line="272"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="273">    <span class="n">timezone_from_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span data-line="274">    <span class="k">if</span> <span class="ow">not</span> <span class="n">timezone</span><span class="p">:</span>
+</span><span data-line="275">        <span class="n">timezone</span> <span class="o">=</span> <span class="n">timezone_from_data</span>
+</span><span data-line="276">
+</span><span data-line="277">    <span class="n">df</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="278">    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">timestamp_column</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;ms&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">tz_localize</span><span class="p">(</span><span class="s1">&#39;UTC&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">tz_convert</span><span class="p">(</span><span class="n">timezone</span><span class="p">))</span>
+</span><span data-line="279">
+</span><span data-line="280">    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DatetimeIndex</span><span class="p">):</span>
+</span><span data-line="281">        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;El índice del DataFrame debe ser de tipo datetime.&quot;</span><span class="p">)</span>
+</span><span data-line="282">    <span class="n">inferred_freq</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">infer_freq</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+</span><span data-line="283">
+</span><span data-line="284">    <span class="k">if</span> <span class="n">inferred_freq</span><span class="p">:</span>
+</span><span data-line="285">        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">asfreq</span><span class="p">(</span><span class="n">inferred_freq</span><span class="p">)</span>
+</span><span data-line="286">    <span class="k">else</span><span class="p">:</span>
+</span><span data-line="287">        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No se pudo inferir una frecuencia para el índice.&quot;</span><span class="p">)</span>
+</span><span data-line="288">    <span class="k">return</span> <span class="n">df</span></div>
+
+</span><span data-line="289">
+</span><span data-line="290">
+<div class="viewcode-block" id="get_dataframe_time_index_ranges">
+<a class="viewcode-back" href="../../../time_helper.html#binpan.core.time_helper.get_dataframe_time_index_ranges">[docs]</a>
+</span><span data-line="291"><span class="k">def</span><span class="w"> </span><span class="nf">get_dataframe_time_index_ranges</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="s1">&#39;30T&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">]:</span>
+</span><span data-line="292"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="293"><span class="sd">    Divides a DataFrame into time ranges of a specified interval.</span>
+</span><span data-line="294">
+</span><span data-line="295"><span class="sd">    :param pd.DataFrame data: A dataframe with a datetime index.</span>
+</span><span data-line="296"><span class="sd">    :param interval: Interval expressed as a Pandas frequency string. Default is &#39;30T&#39;.</span>
+</span><span data-line="297"><span class="sd">    :return list: A list of tuples containing the start and end time of each interval.</span>
+</span><span data-line="298"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="299">    <span class="n">df_</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span data-line="300">    <span class="n">start_time</span> <span class="o">=</span> <span class="n">df_</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+</span><span data-line="301">    <span class="n">end_time</span> <span class="o">=</span> <span class="n">df_</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+</span><span data-line="302">    <span class="n">time_ranges</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="303">
+</span><span data-line="304">    <span class="n">current_time</span> <span class="o">=</span> <span class="n">end_time</span>
+</span><span data-line="305">
+</span><span data-line="306">    <span class="k">while</span> <span class="n">current_time</span> <span class="o">&gt;</span> <span class="n">start_time</span><span class="p">:</span>
+</span><span data-line="307">        <span class="n">range_start</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">current_time</span> <span class="o">-</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">(</span><span class="n">interval</span><span class="p">),</span> <span class="n">start_time</span><span class="p">)</span>
+</span><span data-line="308">        <span class="n">time_ranges</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">range_start</span><span class="p">,</span> <span class="n">current_time</span><span class="p">))</span>
+</span><span data-line="309">        <span class="n">current_time</span> <span class="o">-=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span>
+</span><span data-line="310">
+</span><span data-line="311">    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">time_ranges</span><span class="p">)</span></div>
+
+</span><span data-line="312">
+</span><span data-line="313">
+<div class="viewcode-block" id="remove_initial_included_ranges">
+<a class="viewcode-back" href="../../../time_helper.html#binpan.core.time_helper.remove_initial_included_ranges">[docs]</a>
+</span><span data-line="314"><span class="k">def</span><span class="w"> </span><span class="nf">remove_initial_included_ranges</span><span class="p">(</span><span class="n">time_ranges</span><span class="p">,</span> <span class="n">initial_minutes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">]:</span>
+</span><span data-line="315"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="316"><span class="sd">    Remove the time ranges that are completely included in the initial period.</span>
+</span><span data-line="317">
+</span><span data-line="318"><span class="sd">    :param time_ranges: A list of tuples containing the start and end time of each interval.</span>
+</span><span data-line="319"><span class="sd">    :param initial_minutes: A quantity of minutes that defines the initial period.</span>
+</span><span data-line="320"><span class="sd">    :return: Filtered list of tuples.</span>
+</span><span data-line="321"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="322">    <span class="k">if</span> <span class="ow">not</span> <span class="n">time_ranges</span><span class="p">:</span>
+</span><span data-line="323">        <span class="k">return</span> <span class="p">[]</span>
+</span><span data-line="324">
+</span><span data-line="325">    <span class="n">initial_end_time</span> <span class="o">=</span> <span class="n">time_ranges</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="n">initial_minutes</span><span class="p">)</span>
+</span><span data-line="326">
+</span><span data-line="327">    <span class="n">modified_time_ranges</span> <span class="o">=</span> <span class="p">[(</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span> <span class="k">for</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span> <span class="ow">in</span> <span class="n">time_ranges</span> <span class="k">if</span> <span class="n">end_time</span> <span class="o">&gt;</span> <span class="n">initial_end_time</span><span class="p">]</span>
+</span><span data-line="328">
+</span><span data-line="329">    <span class="k">if</span> <span class="ow">not</span> <span class="n">modified_time_ranges</span><span class="p">:</span>
+</span><span data-line="330">        <span class="k">return</span> <span class="p">[]</span>
+</span><span data-line="331">
+</span><span data-line="332">    <span class="n">final_ranges</span> <span class="o">=</span> <span class="p">[</span><span class="n">modified_time_ranges</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+</span><span data-line="333">    <span class="k">for</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span> <span class="ow">in</span> <span class="n">modified_time_ranges</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+</span><span data-line="334">        <span class="k">if</span> <span class="n">start_time</span> <span class="o">&lt;</span> <span class="n">final_ranges</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]:</span>
+</span><span data-line="335">            <span class="k">continue</span>
+</span><span data-line="336">        <span class="n">final_ranges</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">))</span>
+</span><span data-line="337">
+</span><span data-line="338">    <span class="k">return</span> <span class="n">final_ranges</span></div>
+
+</span></pre></div>
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2022, Fernando Alfonso</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+<a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+  <iconify-icon icon="simple-icons:github"></iconify-icon>
+</a></div>
+    </div>
+  </div>
+</footer>
+      <script src="../../../_static/documentation_options.js?v=11e62b30"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/shibuya.js?v=50760d75"></script></body>
+</html>

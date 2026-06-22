@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="iris" data-content_root="../../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>binpan.symbol_strategy - BinPan 0.10.2</title><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=e1a1ceaf" />
+    <link rel="stylesheet" type="text/css" href="../../_static/shibuya.css?v=9454f7d5" />
+    <link rel="stylesheet" type="text/css" href="../../_static/style.css?v=1e48dca6" />
+    <link media="print" rel="stylesheet" type="text/css" href="../../_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/><meta property="og:title" content="binpan.symbol_strategy"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="../../index.html">
+      
+      
+      <strong>BinPan</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Main Classes:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../binpan.html">BinPan Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../symbol_indicators.html">Symbol Indicators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../symbol_plotting.html">Symbol Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../symbol_strategy.html">Symbol Strategy</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">API &amp; Market:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../market.html">Market Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exchange.html">Exchange Info Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../auth.html">Authentication Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../wallet.html">Wallet Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../wallet_api.html">Wallet API Functions</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Analysis:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../indicators.html">Indicators Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../aggregations.html">Aggregations Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../strategies.html">Strategies Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tags.html">Tags &amp; Backtesting Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stat_tests.html">Statistical Tests and Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../numba_tools.html">Numba Tools Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Core:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../time_helper.html">Time Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../timeframes.html">Timeframes Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../trades.html">Trades Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../standards.html">Standards Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../secrets.html">Secrets Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logs.html">Logs Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exceptions.html">Exceptions Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Plotting:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../plotting.html">Plotting Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Storage &amp; Database:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../files.html">Files Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../postgresql.html">PostgreSQL Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../postgresql_database.html">PostgreSQL Database Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../influx_manager.html">Influx Manager Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../redis_fetch.html">Redis Module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../index.html"><span itemprop="name">BinPan</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../index.html"><span itemprop="name">Module code</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">binpan.symbol_strategy</strong>
+        <meta itemprop="position" content="3" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue" role="main">
+          <h1>Source code for binpan.symbol_strategy</h1><div class="highlight"><pre>
+<span></span><span data-line="1"><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="2"><span class="sd">Strategy and backtesting methods for Symbol class.</span>
+</span><span data-line="3"><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="4"><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+</span><span data-line="5">
+</span><span data-line="6"><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span data-line="7"><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+</span><span data-line="8">
+</span><span data-line="9"><span class="kn">from</span><span class="w"> </span><span class="nn">.analysis.tags</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">tag_column_to_strategy_group</span><span class="p">,</span> <span class="n">backtesting</span> <span class="k">as</span> <span class="n">run_backtesting</span><span class="p">,</span>
+</span><span data-line="10">                           <span class="n">tag_comparison</span><span class="p">,</span> <span class="n">tag_cross</span><span class="p">,</span> <span class="n">merge_series</span><span class="p">,</span>
+</span><span data-line="11">                           <span class="n">clean_in_out</span> <span class="k">as</span> <span class="n">clean_in_out_func</span><span class="p">)</span>
+</span><span data-line="12"><span class="kn">from</span><span class="w"> </span><span class="nn">.analysis.indicators</span><span class="w"> </span><span class="kn">import</span> <span class="n">ffill_indicator</span><span class="p">,</span> <span class="n">shift_indicator</span>
+</span><span data-line="13"><span class="kn">from</span><span class="w"> </span><span class="nn">.core.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">BinPanException</span>
+</span><span data-line="14">
+</span><span data-line="15">
+<div class="viewcode-block" id="SymbolStrategy">
+<a class="viewcode-back" href="../../symbol_strategy.html#binpan.symbol_strategy.SymbolStrategy">[docs]</a>
+</span><span data-line="16"><span class="k">class</span><span class="w"> </span><span class="nc">SymbolStrategy</span><span class="p">:</span>
+</span><span data-line="17"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Strategy, tagging and backtesting methods for Symbol.&quot;&quot;&quot;</span>
+</span><span data-line="18">
+</span><span data-line="19">    <span class="c1">###############</span>
+</span><span data-line="20">    <span class="c1"># Backtesting #</span>
+</span><span data-line="21">    <span class="c1">###############</span>
+</span><span data-line="22">
+<div class="viewcode-block" id="SymbolStrategy.backtesting">
+<a class="viewcode-back" href="../../symbol_strategy.html#binpan.symbol_strategy.SymbolStrategy.backtesting">[docs]</a>
+</span><span data-line="23">    <span class="k">def</span><span class="w"> </span><span class="nf">backtesting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+</span><span data-line="24">                    <span class="n">actions_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span><span class="p">,</span>
+</span><span data-line="25">                    <span class="n">target_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="26">                    <span class="n">stop_loss_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="27">                    <span class="n">entry_filter_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="28">                    <span class="n">fixed_target</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="29">                    <span class="n">fixed_stop_loss</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="30">                    <span class="n">base</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+</span><span data-line="31">                    <span class="n">quote</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+</span><span data-line="32">                    <span class="n">priced_actions_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Open&#39;</span><span class="p">,</span>
+</span><span data-line="33">                    <span class="n">label_in</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">label_out</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+</span><span data-line="34">                    <span class="n">fee</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">,</span>
+</span><span data-line="35">                    <span class="n">evaluating_quote</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="36">                    <span class="n">short</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span data-line="37">                    <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="38">                    <span class="n">suffix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="39">                    <span class="n">colors</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+</span><span data-line="40"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="41"><span class="sd">        Simulates buys and sells using labels in a tagged column with actions. Actions are considered before the tag, in the next</span>
+</span><span data-line="42"><span class="sd">        candle using priced_actions_col price of that candle before.</span>
+</span><span data-line="43">
+</span><span data-line="44"><span class="sd">        :param str | int actions_col: A column name or index.</span>
+</span><span data-line="45"><span class="sd">        :param target_column: Column with data for operation target values.</span>
+</span><span data-line="46"><span class="sd">        :param stop_loss_column: Column with data for operation stop loss values.</span>
+</span><span data-line="47"><span class="sd">        :param pd.Series | str entry_filter_column: A serie or colum with ones or zeros to allow or avoid entries.</span>
+</span><span data-line="48"><span class="sd">        :param bool fixed_target: Target for any operation will be calculated and fixed at the beginning of the operation.</span>
+</span><span data-line="49"><span class="sd">        :param bool fixed_stop_loss: Stop loss for any operation will be calculated and fixed at the beginning of the operation.</span>
+</span><span data-line="50"><span class="sd">        :param float base: Base inverted quantity.</span>
+</span><span data-line="51"><span class="sd">        :param float quote: Quote inverted quantity.</span>
+</span><span data-line="52"><span class="sd">        :param str | int priced_actions_col: Columna name or index with prices to use when action label in a row.</span>
+</span><span data-line="53"><span class="sd">        :param str | int label_in: A label consider as trade in trigger.</span>
+</span><span data-line="54"><span class="sd">        :param str | int label_out: A label consider as trade out trigger.</span>
+</span><span data-line="55"><span class="sd">        :param float fee: Fees applied to the simulation.</span>
+</span><span data-line="56"><span class="sd">        :param str evaluating_quote: A quote used to convert value of the backtesting line for better reference.</span>
+</span><span data-line="57"><span class="sd">        :param bool short: Backtest in short mode, with in as shorts and outs as repays.</span>
+</span><span data-line="58"><span class="sd">        :param bool inplace: Make it permanent in the instance or not.</span>
+</span><span data-line="59"><span class="sd">        :param str suffix: A decorative suffix for the name of the column created.</span>
+</span><span data-line="60"><span class="sd">        :param list colors: Defaults to red and green.</span>
+</span><span data-line="61"><span class="sd">        :return pd.DataFrame | pd.Series:</span>
+</span><span data-line="62">
+</span><span data-line="63"><span class="sd">        .. image:: images/plot_tagged.png</span>
+</span><span data-line="64"><span class="sd">           :width: 800</span>
+</span><span data-line="65"><span class="sd">           :alt: Backtesting results with buy/sell markers</span>
+</span><span data-line="66">
+</span><span data-line="67"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="68">
+</span><span data-line="69">        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">actions_col</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">:</span>
+</span><span data-line="70">            <span class="n">actions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="n">actions_col</span><span class="p">]</span>
+</span><span data-line="71">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="72">            <span class="n">actions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">actions_col</span><span class="p">]</span>
+</span><span data-line="73">
+</span><span data-line="74">        <span class="k">if</span> <span class="n">suffix</span><span class="p">:</span>
+</span><span data-line="75">            <span class="n">suffix</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">suffix</span>
+</span><span data-line="76">
+</span><span data-line="77">        <span class="k">if</span> <span class="ow">not</span> <span class="n">short</span><span class="p">:</span>
+</span><span data-line="78">            <span class="n">wallet_df</span> <span class="o">=</span> <span class="n">run_backtesting</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">,</span> <span class="n">actions_column</span><span class="o">=</span><span class="n">actions</span><span class="p">,</span> <span class="n">target_column</span><span class="o">=</span><span class="n">target_column</span><span class="p">,</span> <span class="n">stop_loss_column</span><span class="o">=</span><span class="n">stop_loss_column</span><span class="p">,</span>
+</span><span data-line="79">                                    <span class="n">entry_filter_column</span><span class="o">=</span><span class="n">entry_filter_column</span><span class="p">,</span> <span class="n">priced_actions_col</span><span class="o">=</span><span class="n">priced_actions_col</span><span class="p">,</span>
+</span><span data-line="80">                                    <span class="n">fixed_target</span><span class="o">=</span><span class="n">fixed_target</span><span class="p">,</span>
+</span><span data-line="81">                                    <span class="n">fixed_stop_loss</span><span class="o">=</span><span class="n">fixed_stop_loss</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">,</span> <span class="n">quote</span><span class="o">=</span><span class="n">quote</span><span class="p">,</span> <span class="n">fee</span><span class="o">=</span><span class="n">fee</span><span class="p">,</span> <span class="n">label_in</span><span class="o">=</span><span class="n">label_in</span><span class="p">,</span>
+</span><span data-line="82">                                    <span class="n">label_out</span><span class="o">=</span><span class="n">label_out</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="n">suffix</span><span class="p">,</span>
+</span><span data-line="83">                                    <span class="n">evaluating_quote</span><span class="o">=</span><span class="n">evaluating_quote</span><span class="p">,</span> <span class="n">info_dic</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">info_dic</span><span class="p">)</span>
+</span><span data-line="84">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="85">            <span class="n">wallet_df</span> <span class="o">=</span> <span class="n">run_backtesting</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">,</span> <span class="n">actions_column</span><span class="o">=</span><span class="n">actions</span><span class="p">,</span> <span class="n">target_column</span><span class="o">=</span><span class="n">target_column</span><span class="p">,</span>
+</span><span data-line="86">                                        <span class="n">stop_loss_column</span><span class="o">=</span><span class="n">stop_loss_column</span><span class="p">,</span> <span class="n">entry_filter_column</span><span class="o">=</span><span class="n">entry_filter_column</span><span class="p">,</span>
+</span><span data-line="87">                                        <span class="n">priced_actions_col</span><span class="o">=</span><span class="n">priced_actions_col</span><span class="p">,</span>
+</span><span data-line="88">                                        <span class="n">fixed_target</span><span class="o">=</span><span class="n">fixed_target</span><span class="p">,</span> <span class="n">fixed_stop_loss</span><span class="o">=</span><span class="n">fixed_stop_loss</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">,</span> <span class="n">quote</span><span class="o">=</span><span class="n">quote</span><span class="p">,</span> <span class="n">fee</span><span class="o">=</span><span class="n">fee</span><span class="p">,</span>
+</span><span data-line="89">                                        <span class="n">label_in</span><span class="o">=</span><span class="n">label_in</span><span class="p">,</span>
+</span><span data-line="90">                                        <span class="n">label_out</span><span class="o">=</span><span class="n">label_out</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="n">suffix</span><span class="p">,</span> <span class="n">evaluating_quote</span><span class="o">=</span><span class="n">evaluating_quote</span><span class="p">,</span> <span class="n">info_dic</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">info_dic</span><span class="p">,</span>
+</span><span data-line="91">                                        <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;short&#39;</span><span class="p">)</span>
+</span><span data-line="92">
+</span><span data-line="93">        <span class="k">if</span> <span class="n">inplace</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_new</span><span class="p">(</span><span class="n">wallet_df</span><span class="p">):</span>
+</span><span data-line="94">            <span class="n">column_names</span> <span class="o">=</span> <span class="n">wallet_df</span><span class="o">.</span><span class="n">columns</span>
+</span><span data-line="95">            <span class="bp">self</span><span class="o">.</span><span class="n">row_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span data-line="96">            <span class="k">if</span> <span class="ow">not</span> <span class="n">colors</span><span class="p">:</span>
+</span><span data-line="97">                <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;cornflowerblue&#39;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="s1">&#39;grey&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">]</span>
+</span><span data-line="98">            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">column_names</span><span class="p">):</span>
+</span><span data-line="99">                <span class="bp">self</span><span class="o">.</span><span class="n">set_plot_color</span><span class="p">(</span><span class="n">indicator_column</span><span class="o">=</span><span class="n">col</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+</span><span data-line="100">                <span class="bp">self</span><span class="o">.</span><span class="n">set_plot_color_fill</span><span class="p">(</span><span class="n">indicator_column</span><span class="o">=</span><span class="n">col</span><span class="p">,</span> <span class="n">color_fill</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span data-line="101">                <span class="bp">self</span><span class="o">.</span><span class="n">set_plot_row</span><span class="p">(</span><span class="n">indicator_column</span><span class="o">=</span><span class="n">col</span><span class="p">,</span> <span class="n">row_position</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">row_counter</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span>
+</span><span data-line="102">
+</span><span data-line="103">            <span class="c1"># second row added in loop, need to sync row counter with las added row</span>
+</span><span data-line="104">            <span class="bp">self</span><span class="o">.</span><span class="n">row_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span data-line="105">            <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">,</span> <span class="n">wallet_df</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span><span data-line="106">
+</span><span data-line="107">        <span class="k">return</span> <span class="n">wallet_df</span></div>
+
+</span><span data-line="108">
+<div class="viewcode-block" id="SymbolStrategy.roi">
+<a class="viewcode-back" href="../../symbol_strategy.html#binpan.symbol_strategy.SymbolStrategy.roi">[docs]</a>
+</span><span data-line="109">    <span class="k">def</span><span class="w"> </span><span class="nf">roi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span data-line="110"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="111"><span class="sd">        It returns win or loos percent for a evaluation column. Just compares first and last value increment by the first price in percent.</span>
+</span><span data-line="112"><span class="sd">        If not column passed, it will search for an Evaluation column.</span>
+</span><span data-line="113">
+</span><span data-line="114"><span class="sd">        :param str column: A column in the BinPan&#39;s DataFrame with values to check ROI (return of inversion).</span>
+</span><span data-line="115"><span class="sd">        :return float: Resulting return of inversion.</span>
+</span><span data-line="116"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="117">        <span class="k">if</span> <span class="ow">not</span> <span class="n">column</span><span class="p">:</span>
+</span><span data-line="118">            <span class="n">column</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;Eval&#39;</span><span class="p">)][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span data-line="119">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Auto selected column </span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="120">
+</span><span data-line="121">        <span class="n">my_column</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+</span><span data-line="122">
+</span><span data-line="123">        <span class="n">first</span> <span class="o">=</span> <span class="n">my_column</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span data-line="124">        <span class="n">last</span> <span class="o">=</span> <span class="n">my_column</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span data-line="125">
+</span><span data-line="126">        <span class="k">return</span> <span class="mi">100</span> <span class="o">*</span> <span class="p">(</span><span class="n">last</span> <span class="o">-</span> <span class="n">first</span><span class="p">)</span> <span class="o">/</span> <span class="n">first</span></div>
+
+</span><span data-line="127">
+<div class="viewcode-block" id="SymbolStrategy.profit_hour">
+<a class="viewcode-back" href="../../symbol_strategy.html#binpan.symbol_strategy.SymbolStrategy.profit_hour">[docs]</a>
+</span><span data-line="128">    <span class="k">def</span><span class="w"> </span><span class="nf">profit_hour</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span data-line="129"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="130"><span class="sd">        It returns win or loos quantity per hour. Just compares first and last value. Expected datetime index. If not column passed, it</span>
+</span><span data-line="131"><span class="sd">        will search for an Evaluation column.</span>
+</span><span data-line="132">
+</span><span data-line="133"><span class="sd">        :param str column: A column in the BinPan&#39;s DataFrame with values to check profit with expected datetime index.</span>
+</span><span data-line="134"><span class="sd">        :return float: Resulting return of inversion.</span>
+</span><span data-line="135"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="136">        <span class="k">if</span> <span class="ow">not</span> <span class="n">column</span><span class="p">:</span>
+</span><span data-line="137">            <span class="n">column</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;Eval&#39;</span><span class="p">)]</span>
+</span><span data-line="138">            <span class="k">if</span> <span class="ow">not</span> <span class="n">column</span><span class="p">:</span>
+</span><span data-line="139">                <span class="n">column</span> <span class="o">=</span> <span class="s2">&quot;Close&quot;</span>
+</span><span data-line="140">            <span class="k">else</span><span class="p">:</span>
+</span><span data-line="141">                <span class="n">column</span> <span class="o">=</span> <span class="n">column</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span data-line="142">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Auto selected column </span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="143">
+</span><span data-line="144">        <span class="n">my_column</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+</span><span data-line="145">
+</span><span data-line="146">        <span class="n">first</span> <span class="o">=</span> <span class="n">my_column</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span data-line="147">        <span class="n">last</span> <span class="o">=</span> <span class="n">my_column</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span data-line="148">
+</span><span data-line="149">        <span class="n">profit</span> <span class="o">=</span> <span class="n">last</span> <span class="o">-</span> <span class="n">first</span>
+</span><span data-line="150">        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Close timestamp&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Open timestamp&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span data-line="151">        <span class="n">hours</span> <span class="o">=</span> <span class="n">ms</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1000</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+</span><span data-line="152">
+</span><span data-line="153">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total profit for </span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">profit</span><span class="si">}</span><span class="s2"> with ratio </span><span class="si">{</span><span class="n">profit</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">hours</span><span class="si">}</span><span class="s2"> per hour.&quot;</span><span class="p">)</span>
+</span><span data-line="154">
+</span><span data-line="155">        <span class="k">return</span> <span class="n">profit</span> <span class="o">/</span> <span class="n">hours</span></div>
+
+</span><span data-line="156">
+</span><span data-line="157">    <span class="c1">#############</span>
+</span><span data-line="158">    <span class="c1"># Relations #</span>
+</span><span data-line="159">    <span class="c1">#############</span>
+</span><span data-line="160">
+<div class="viewcode-block" id="SymbolStrategy.tag">
+<a class="viewcode-back" href="../../symbol_strategy.html#binpan.symbol_strategy.SymbolStrategy.tag">[docs]</a>
+</span><span data-line="161">    <span class="k">def</span><span class="w"> </span><span class="nf">tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+</span><span data-line="162">            <span class="n">column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span>
+</span><span data-line="163">            <span class="n">reference</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span>
+</span><span data-line="164">            <span class="n">relation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;gt&#39;</span><span class="p">,</span>
+</span><span data-line="165">            <span class="n">match_tag</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+</span><span data-line="166">            <span class="n">mismatch_tag</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+</span><span data-line="167">            <span class="n">strategy_group</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+</span><span data-line="168">            <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">suffix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+</span><span data-line="169">            <span class="n">color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="s1">&#39;green&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+</span><span data-line="170"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="171"><span class="sd">        It tags values of a column/serie compared to other serie or value by methods gt,ge,eq,le,lt as condition.</span>
+</span><span data-line="172">
+</span><span data-line="173"><span class="sd">        :param pd.Series | str column: A numeric serie or column name or column index. Default is Close price.</span>
+</span><span data-line="174"><span class="sd">        :param pd.Series | str | int | float reference: A number or numeric serie or column name.</span>
+</span><span data-line="175"><span class="sd">        :param str relation: The condition to apply comparing column to reference (default is greater than):</span>
+</span><span data-line="176"><span class="sd">            eq (equivalent to ==) - equals to</span>
+</span><span data-line="177"><span class="sd">            ne (equivalent to !=) - not equals to</span>
+</span><span data-line="178"><span class="sd">            le (equivalent to &lt;=) - less than or equals to</span>
+</span><span data-line="179"><span class="sd">            lt (equivalent to &lt;) - less than</span>
+</span><span data-line="180"><span class="sd">            ge (equivalent to &gt;=) - greater than or equals to</span>
+</span><span data-line="181"><span class="sd">            gt (equivalent to &gt;) - greater than</span>
+</span><span data-line="182"><span class="sd">        :param int | str match_tag: Value or string to tag matched relation.</span>
+</span><span data-line="183"><span class="sd">        :param int | str mismatch_tag: Value or string to tag mismatched relation.</span>
+</span><span data-line="184"><span class="sd">        :param str strategy_group: A name for a group of columns to assign to a strategy.</span>
+</span><span data-line="185"><span class="sd">        :param bool inplace: Permanent or not. Default is false, because of some testing required sometimes.</span>
+</span><span data-line="186"><span class="sd">        :param str suffix: A string to decorate resulting Pandas series name.</span>
+</span><span data-line="187"><span class="sd">        :param str | int color: A color from plotly list of colors or its index in that list.</span>
+</span><span data-line="188"><span class="sd">        :return pd.Series: A serie with tags as values.</span>
+</span><span data-line="189">
+</span><span data-line="190">
+</span><span data-line="191"><span class="sd">        .. code-block::</span>
+</span><span data-line="192">
+</span><span data-line="193"><span class="sd">           import binpan</span>
+</span><span data-line="194">
+</span><span data-line="195"><span class="sd">           sym = binpan.Symbol(&#39;btcbusd&#39;, &#39;1m&#39;)</span>
+</span><span data-line="196"><span class="sd">           sym.ema(window=200, color=&#39;darkgrey&#39;)</span>
+</span><span data-line="197">
+</span><span data-line="198"><span class="sd">           # comparing close price (default) greater or equal, than exponential moving average of 200 ticks window previously added.</span>
+</span><span data-line="199"><span class="sd">           sym.tag(reference=&#39;EMA_200&#39;, relation=&#39;ge&#39;)</span>
+</span><span data-line="200"><span class="sd">           sym.plot()</span>
+</span><span data-line="201">
+</span><span data-line="202"><span class="sd">        .. image:: images/relations/tag.png</span>
+</span><span data-line="203"><span class="sd">           :width: 1000</span>
+</span><span data-line="204">
+</span><span data-line="205"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="206">
+</span><span data-line="207">        <span class="k">if</span> <span class="n">relation</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;gt&#39;</span><span class="p">,</span> <span class="s1">&#39;ge&#39;</span><span class="p">,</span> <span class="s1">&#39;eq&#39;</span><span class="p">,</span> <span class="s1">&#39;le&#39;</span><span class="p">,</span> <span class="s1">&#39;lt&#39;</span><span class="p">):</span>
+</span><span data-line="208">            <span class="k">raise</span> <span class="n">BinPanException</span><span class="p">(</span><span class="s2">&quot;relation must be &#39;gt&#39;,&#39;ge&#39;,&#39;eq&#39;,&#39;le&#39; or &#39;lt&#39;&quot;</span><span class="p">)</span>
+</span><span data-line="209">
+</span><span data-line="210">        <span class="c1"># parse params</span>
+</span><span data-line="211">        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">column</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="212">            <span class="n">data_a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span>
+</span><span data-line="213">        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">column</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">:</span>
+</span><span data-line="214">            <span class="n">data_a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="n">column</span><span class="p">]</span>
+</span><span data-line="215">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="216">            <span class="n">data_a</span> <span class="o">=</span> <span class="n">column</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="217">
+</span><span data-line="218">        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="219">            <span class="n">data_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">reference</span><span class="p">]</span>
+</span><span data-line="220">        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span> <span class="o">==</span> <span class="nb">float</span><span class="p">:</span>
+</span><span data-line="221">            <span class="n">data_b</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">reference</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">data_a</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+</span><span data-line="222">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="223">            <span class="n">data_b</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="224">
+</span><span data-line="225">        <span class="n">compared</span> <span class="o">=</span> <span class="n">tag_comparison</span><span class="p">(</span><span class="n">serie_a</span><span class="o">=</span><span class="n">data_a</span><span class="p">,</span> <span class="n">serie_b</span><span class="o">=</span><span class="n">data_b</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="n">relation</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span> <span class="n">match_tag</span><span class="o">=</span><span class="n">match_tag</span><span class="p">,</span> <span class="n">mismatch_tag</span><span class="o">=</span><span class="n">mismatch_tag</span><span class="p">)</span>
+</span><span data-line="226">
+</span><span data-line="227">        <span class="k">if</span> <span class="ow">not</span> <span class="n">data_b</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+</span><span data-line="228">            <span class="n">data_b</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">reference</span>
+</span><span data-line="229">
+</span><span data-line="230">        <span class="k">if</span> <span class="n">suffix</span><span class="p">:</span>
+</span><span data-line="231">            <span class="n">suffix</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">suffix</span>
+</span><span data-line="232">
+</span><span data-line="233">        <span class="n">column_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Tag_</span><span class="si">{</span><span class="n">data_a</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">relation</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">data_b</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">suffix</span>
+</span><span data-line="234">        <span class="n">compared</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">column_name</span>
+</span><span data-line="235">
+</span><span data-line="236">        <span class="k">if</span> <span class="n">inplace</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_new</span><span class="p">(</span><span class="n">compared</span><span class="p">):</span>
+</span><span data-line="237">            <span class="bp">self</span><span class="o">.</span><span class="n">row_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span data-line="238">
+</span><span data-line="239">            <span class="bp">self</span><span class="o">.</span><span class="n">set_plot_color</span><span class="p">(</span><span class="n">indicator_column</span><span class="o">=</span><span class="n">column_name</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+</span><span data-line="240">            <span class="bp">self</span><span class="o">.</span><span class="n">set_plot_color_fill</span><span class="p">(</span><span class="n">indicator_column</span><span class="o">=</span><span class="n">column_name</span><span class="p">,</span> <span class="n">color_fill</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</span><span data-line="241">            <span class="bp">self</span><span class="o">.</span><span class="n">set_plot_row</span><span class="p">(</span><span class="n">indicator_column</span><span class="o">=</span><span class="n">column_name</span><span class="p">,</span> <span class="n">row_position</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">row_counter</span><span class="p">)</span>  <span class="c1"># overlaps are one</span>
+</span><span data-line="242">            <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">column_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">compared</span>
+</span><span data-line="243">
+</span><span data-line="244">        <span class="k">if</span> <span class="n">strategy_group</span><span class="p">:</span>
+</span><span data-line="245">            <span class="bp">self</span><span class="o">.</span><span class="n">strategy_groups</span> <span class="o">=</span> <span class="n">tag_column_to_strategy_group</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="n">column_name</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="n">strategy_group</span><span class="p">,</span>
+</span><span data-line="246">                                                                <span class="n">strategy_groups</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">strategy_groups</span><span class="p">)</span>
+</span><span data-line="247">        <span class="k">return</span> <span class="n">compared</span></div>
+
+</span><span data-line="248">
+<div class="viewcode-block" id="SymbolStrategy.cross">
+<a class="viewcode-back" href="../../symbol_strategy.html#binpan.symbol_strategy.SymbolStrategy.cross">[docs]</a>
+</span><span data-line="249">    <span class="k">def</span><span class="w"> </span><span class="nf">cross</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+</span><span data-line="250">              <span class="n">slow</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span>
+</span><span data-line="251">              <span class="n">fast</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">=</span> <span class="s1">&#39;Close&#39;</span><span class="p">,</span>
+</span><span data-line="252">              <span class="n">cross_over_tag</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+</span><span data-line="253">              <span class="n">cross_below_tag</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">echo</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+</span><span data-line="254">              <span class="n">non_zeros</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="255">              <span class="n">strategy_group</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="256">              <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="257">              <span class="n">suffix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+</span><span data-line="258">              <span class="n">color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="s1">&#39;green&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+</span><span data-line="259"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="260"><span class="sd">        It tags crossing values from a column/serie (fast) over a serie or value (slow).</span>
+</span><span data-line="261">
+</span><span data-line="262"><span class="sd">        :param pd.Series | str | int | float slow: A number or numeric serie or column name.</span>
+</span><span data-line="263"><span class="sd">        :param pd.Series | str fast: A numeric serie or column name or column index. Default is Close price.</span>
+</span><span data-line="264"><span class="sd">        :param int | str cross_over_tag: Value or string to tag matched crossing fast over slow.</span>
+</span><span data-line="265"><span class="sd">        :param int | str cross_below_tag: Value or string to tag crossing slow over fast.</span>
+</span><span data-line="266"><span class="sd">        :param bool non_zeros: Result will not contain zeros as non tagged values, instead will be nans.</span>
+</span><span data-line="267"><span class="sd">        :param int echo: It tags a fixed amount of candles forward the crossed point not including cross candle. If echo want to be used,</span>
+</span><span data-line="268"><span class="sd">         must be used non_zeros.</span>
+</span><span data-line="269"><span class="sd">        :param str strategy_group: A name for a group of columns to assign to a strategy.</span>
+</span><span data-line="270"><span class="sd">        :param bool inplace: Permanent or not. Default is false, because of some testing required sometimes.</span>
+</span><span data-line="271"><span class="sd">        :param str suffix: A string to decorate resulting Pandas series name.</span>
+</span><span data-line="272"><span class="sd">        :param str | int color: A color from plotly list of colors or its index in that list.</span>
+</span><span data-line="273"><span class="sd">        :return pd.Series: A serie with tags as values. 1 and -1 for both crosses.</span>
+</span><span data-line="274">
+</span><span data-line="275"><span class="sd">        .. code-block::</span>
+</span><span data-line="276">
+</span><span data-line="277"><span class="sd">           import binpan</span>
+</span><span data-line="278">
+</span><span data-line="279"><span class="sd">           sym = binpan.Symbol(symbol=&#39;ethbusd&#39;, tick_interval=&#39;1m&#39;, limit=300, time_zone=&#39;Europe/Madrid&#39;)</span>
+</span><span data-line="280"><span class="sd">           sym.ema(window=10, color=&#39;darkgrey&#39;)</span>
+</span><span data-line="281">
+</span><span data-line="282"><span class="sd">           sym.cross(slow=&#39;Close&#39;, fast=&#39;EMA_10&#39;)</span>
+</span><span data-line="283">
+</span><span data-line="284"><span class="sd">           sym.plot(actions_col=&#39;Cross_EMA_10_Close&#39;, priced_actions_col=&#39;EMA_10&#39;,</span>
+</span><span data-line="285"><span class="sd">                            labels=[&#39;over&#39;, &#39;below&#39;],</span>
+</span><span data-line="286"><span class="sd">                            markers=[&#39;arrow-bar-left&#39;, &#39;arrow-bar-right&#39;],</span>
+</span><span data-line="287"><span class="sd">                            marker_colors=[&#39;orange&#39;, &#39;blue&#39;])</span>
+</span><span data-line="288">
+</span><span data-line="289"><span class="sd">        .. image:: images/relations/cross.png</span>
+</span><span data-line="290"><span class="sd">           :width: 1000</span>
+</span><span data-line="291">
+</span><span data-line="292"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="293">
+</span><span data-line="294">        <span class="c1"># parse params</span>
+</span><span data-line="295">        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">fast</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="296">            <span class="n">data_a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">fast</span><span class="p">]</span>
+</span><span data-line="297">        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">fast</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">:</span>
+</span><span data-line="298">            <span class="n">data_a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="n">fast</span><span class="p">]</span>
+</span><span data-line="299">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="300">            <span class="n">data_a</span> <span class="o">=</span> <span class="n">fast</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="301">
+</span><span data-line="302">        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">slow</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="303">            <span class="n">data_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">slow</span><span class="p">]</span>
+</span><span data-line="304">        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">slow</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="n">slow</span><span class="p">)</span> <span class="o">==</span> <span class="nb">float</span><span class="p">:</span>
+</span><span data-line="305">            <span class="n">data_b</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">slow</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">data_a</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+</span><span data-line="306">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="307">            <span class="n">data_b</span> <span class="o">=</span> <span class="n">slow</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="308">
+</span><span data-line="309">        <span class="k">if</span> <span class="ow">not</span> <span class="n">data_a</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+</span><span data-line="310">            <span class="n">data_a</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">fast</span>
+</span><span data-line="311">        <span class="k">if</span> <span class="ow">not</span> <span class="n">data_b</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+</span><span data-line="312">            <span class="n">data_b</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">slow</span>
+</span><span data-line="313">
+</span><span data-line="314">        <span class="k">if</span> <span class="n">suffix</span><span class="p">:</span>
+</span><span data-line="315">            <span class="n">suffix</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">suffix</span>
+</span><span data-line="316">
+</span><span data-line="317">        <span class="n">column_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Cross_</span><span class="si">{</span><span class="n">data_b</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">data_a</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">suffix</span>
+</span><span data-line="318">
+</span><span data-line="319">        <span class="n">cross</span> <span class="o">=</span> <span class="n">tag_cross</span><span class="p">(</span><span class="n">serie_a</span><span class="o">=</span><span class="n">data_a</span><span class="p">,</span> <span class="n">serie_b</span><span class="o">=</span><span class="n">data_b</span><span class="p">,</span> <span class="n">echo</span><span class="o">=</span><span class="n">echo</span><span class="p">,</span> <span class="n">cross_over_tag</span><span class="o">=</span><span class="n">cross_over_tag</span><span class="p">,</span> <span class="n">cross_below_tag</span><span class="o">=</span><span class="n">cross_below_tag</span><span class="p">,</span>
+</span><span data-line="320">                          <span class="n">name</span><span class="o">=</span><span class="n">column_name</span><span class="p">,</span> <span class="n">non_zeros</span><span class="o">=</span><span class="n">non_zeros</span><span class="p">)</span>
+</span><span data-line="321">
+</span><span data-line="322">        <span class="k">if</span> <span class="n">inplace</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_new</span><span class="p">(</span><span class="n">cross</span><span class="p">):</span>
+</span><span data-line="323">            <span class="bp">self</span><span class="o">.</span><span class="n">row_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span data-line="324">            <span class="bp">self</span><span class="o">.</span><span class="n">set_plot_color</span><span class="p">(</span><span class="n">indicator_column</span><span class="o">=</span><span class="n">column_name</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+</span><span data-line="325">            <span class="bp">self</span><span class="o">.</span><span class="n">set_plot_color_fill</span><span class="p">(</span><span class="n">indicator_column</span><span class="o">=</span><span class="n">column_name</span><span class="p">,</span> <span class="n">color_fill</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</span><span data-line="326">            <span class="bp">self</span><span class="o">.</span><span class="n">set_plot_row</span><span class="p">(</span><span class="n">indicator_column</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">column_name</span><span class="p">),</span> <span class="n">row_position</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">row_counter</span><span class="p">)</span>  <span class="c1"># overlaps are one</span>
+</span><span data-line="327">            <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">column_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">cross</span>
+</span><span data-line="328">
+</span><span data-line="329">        <span class="k">if</span> <span class="n">strategy_group</span><span class="p">:</span>
+</span><span data-line="330">            <span class="bp">self</span><span class="o">.</span><span class="n">strategy_groups</span> <span class="o">=</span> <span class="n">tag_column_to_strategy_group</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="n">column_name</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="n">strategy_group</span><span class="p">,</span>
+</span><span data-line="331">                                                                <span class="n">strategy_groups</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">strategy_groups</span><span class="p">)</span>
+</span><span data-line="332">        <span class="k">return</span> <span class="n">cross</span></div>
+
+</span><span data-line="333">
+<div class="viewcode-block" id="SymbolStrategy.shift">
+<a class="viewcode-back" href="../../symbol_strategy.html#binpan.symbol_strategy.SymbolStrategy.shift">[docs]</a>
+</span><span data-line="334">    <span class="k">def</span><span class="w"> </span><span class="nf">shift</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+</span><span data-line="335">              <span class="n">column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+</span><span data-line="336">              <span class="n">strategy_group</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+</span><span data-line="337">              <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">suffix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+</span><span data-line="338">              <span class="n">color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="s1">&#39;grey&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+</span><span data-line="339"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="340"><span class="sd">        It shifts a candle ahead by the window argument value (or backwards if negative)</span>
+</span><span data-line="341">
+</span><span data-line="342"><span class="sd">        :param str | int | pd.Series column: Column to shift values.</span>
+</span><span data-line="343"><span class="sd">        :param int window: Number of candles moved ahead.</span>
+</span><span data-line="344"><span class="sd">        :param str strategy_group: A name for a group of columns to assign to a strategy.</span>
+</span><span data-line="345"><span class="sd">        :param bool inplace: Permanent or not. Default is false, because of some testing required sometimes.</span>
+</span><span data-line="346"><span class="sd">        :param str suffix: A string to decorate resulting Pandas series name.</span>
+</span><span data-line="347"><span class="sd">        :param str | int color: A color from plotly list of colors or its index in that list.</span>
+</span><span data-line="348"><span class="sd">        :return pd.Series: A serie with tags as values.</span>
+</span><span data-line="349"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="350">        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">column</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="351">            <span class="n">data_a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span>
+</span><span data-line="352">        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">column</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">:</span>
+</span><span data-line="353">            <span class="n">data_a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="n">column</span><span class="p">]</span>
+</span><span data-line="354">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="355">            <span class="n">data_a</span> <span class="o">=</span> <span class="n">column</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="356">
+</span><span data-line="357">        <span class="k">if</span> <span class="n">suffix</span><span class="p">:</span>
+</span><span data-line="358">            <span class="n">suffix</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">suffix</span>
+</span><span data-line="359">        <span class="n">column_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Shift_</span><span class="si">{</span><span class="n">data_a</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">window</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">suffix</span>
+</span><span data-line="360">        <span class="n">shift</span> <span class="o">=</span> <span class="n">shift_indicator</span><span class="p">(</span><span class="n">serie</span><span class="o">=</span><span class="n">data_a</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="n">window</span><span class="p">)</span>
+</span><span data-line="361">        <span class="n">shift</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">column_name</span>
+</span><span data-line="362">
+</span><span data-line="363">        <span class="k">if</span> <span class="n">inplace</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_new</span><span class="p">(</span><span class="n">shift</span><span class="p">):</span>
+</span><span data-line="364">
+</span><span data-line="365">            <span class="k">if</span> <span class="n">data_a</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_control</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+</span><span data-line="366">                <span class="n">row_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_control</span><span class="p">[</span><span class="n">data_a</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+</span><span data-line="367">            <span class="k">elif</span> <span class="n">data_a</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;High&#39;</span><span class="p">,</span> <span class="s1">&#39;Low&#39;</span><span class="p">,</span> <span class="s1">&#39;Close&#39;</span><span class="p">,</span> <span class="s1">&#39;Open&#39;</span><span class="p">]:</span>
+</span><span data-line="368">                <span class="n">row_pos</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span data-line="369">            <span class="k">else</span><span class="p">:</span>
+</span><span data-line="370">                <span class="bp">self</span><span class="o">.</span><span class="n">row_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span data-line="371">                <span class="n">row_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_counter</span>
+</span><span data-line="372">
+</span><span data-line="373">            <span class="bp">self</span><span class="o">.</span><span class="n">set_plot_color</span><span class="p">(</span><span class="n">indicator_column</span><span class="o">=</span><span class="n">column_name</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+</span><span data-line="374">            <span class="bp">self</span><span class="o">.</span><span class="n">set_plot_color_fill</span><span class="p">(</span><span class="n">indicator_column</span><span class="o">=</span><span class="n">column_name</span><span class="p">,</span> <span class="n">color_fill</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</span><span data-line="375">            <span class="bp">self</span><span class="o">.</span><span class="n">set_plot_row</span><span class="p">(</span><span class="n">indicator_column</span><span class="o">=</span><span class="n">column_name</span><span class="p">,</span> <span class="n">row_position</span><span class="o">=</span><span class="n">row_pos</span><span class="p">)</span>
+</span><span data-line="376">            <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">column_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">shift</span>
+</span><span data-line="377">
+</span><span data-line="378">        <span class="k">if</span> <span class="n">strategy_group</span><span class="p">:</span>
+</span><span data-line="379">            <span class="bp">self</span><span class="o">.</span><span class="n">strategy_groups</span> <span class="o">=</span> <span class="n">tag_column_to_strategy_group</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="n">column_name</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="n">strategy_group</span><span class="p">,</span>
+</span><span data-line="380">                                                                <span class="n">strategy_groups</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">strategy_groups</span><span class="p">)</span>
+</span><span data-line="381">
+</span><span data-line="382">        <span class="k">return</span> <span class="n">shift</span></div>
+
+</span><span data-line="383">
+<div class="viewcode-block" id="SymbolStrategy.merge_columns">
+<a class="viewcode-back" href="../../symbol_strategy.html#binpan.symbol_strategy.SymbolStrategy.merge_columns">[docs]</a>
+</span><span data-line="384">    <span class="k">def</span><span class="w"> </span><span class="nf">merge_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+</span><span data-line="385">                      <span class="n">main_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span>
+</span><span data-line="386">                      <span class="n">other_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span>
+</span><span data-line="387">                      <span class="n">sign_other</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="388">                      <span class="n">strategy_group</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+</span><span data-line="389">                      <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="390">                      <span class="n">suffix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+</span><span data-line="391">                      <span class="n">color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="s1">&#39;grey&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+</span><span data-line="392"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="393"><span class="sd">        Predominant serie will be filled nans with values, if existing, from the other serie.</span>
+</span><span data-line="394">
+</span><span data-line="395"><span class="sd">        Same kind of index needed.</span>
+</span><span data-line="396">
+</span><span data-line="397"><span class="sd">        :param pd.Series main_column: A serie with nans to fill from other serie.</span>
+</span><span data-line="398"><span class="sd">        :param pd.Series other_column: A serie to pick values for the nans.</span>
+</span><span data-line="399"><span class="sd">        :param dict sign_other: Replace values by a dict for the &quot;other column&quot;. Default is: {1: -1}</span>
+</span><span data-line="400"><span class="sd">        :param str strategy_group: A name for a group of columns to assign to a strategy.</span>
+</span><span data-line="401"><span class="sd">        :param bool inplace: Permanent or not. Default is false, because of some testing required sometimes.</span>
+</span><span data-line="402"><span class="sd">        :param str suffix: A string to decorate resulting Pandas series name.</span>
+</span><span data-line="403"><span class="sd">        :param str | int color: A color from plotly list of colors or its index in that list.</span>
+</span><span data-line="404"><span class="sd">        :return pd.Series: A merged serie.</span>
+</span><span data-line="405"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="406">        <span class="k">if</span> <span class="ow">not</span> <span class="n">sign_other</span><span class="p">:</span>
+</span><span data-line="407">            <span class="n">sign_other</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">}</span>
+</span><span data-line="408">        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">main_column</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="409">            <span class="n">data_a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">main_column</span><span class="p">]</span>
+</span><span data-line="410">        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">main_column</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">:</span>
+</span><span data-line="411">            <span class="n">data_a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="n">main_column</span><span class="p">]</span>
+</span><span data-line="412">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="413">            <span class="n">data_a</span> <span class="o">=</span> <span class="n">main_column</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="414">
+</span><span data-line="415">        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">other_column</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="416">            <span class="n">data_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">other_column</span><span class="p">]</span>
+</span><span data-line="417">        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">other_column</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">:</span>
+</span><span data-line="418">            <span class="n">data_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="n">other_column</span><span class="p">]</span>
+</span><span data-line="419">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="420">            <span class="n">data_b</span> <span class="o">=</span> <span class="n">other_column</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="421">
+</span><span data-line="422">        <span class="k">if</span> <span class="n">sign_other</span><span class="p">:</span>
+</span><span data-line="423">            <span class="n">data_b</span> <span class="o">=</span> <span class="n">data_b</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">sign_other</span><span class="p">)</span>
+</span><span data-line="424">
+</span><span data-line="425">        <span class="n">merged</span> <span class="o">=</span> <span class="n">merge_series</span><span class="p">(</span><span class="n">predominant</span><span class="o">=</span><span class="n">data_a</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="n">data_b</span><span class="p">)</span>
+</span><span data-line="426">        <span class="k">if</span> <span class="n">suffix</span><span class="p">:</span>
+</span><span data-line="427">            <span class="n">suffix</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">suffix</span>
+</span><span data-line="428">        <span class="n">column_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Merged_</span><span class="si">{</span><span class="n">data_a</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">data_b</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">suffix</span>
+</span><span data-line="429">        <span class="n">merged</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">column_name</span>
+</span><span data-line="430">
+</span><span data-line="431">        <span class="k">if</span> <span class="n">inplace</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_new</span><span class="p">(</span><span class="n">merged</span><span class="p">):</span>
+</span><span data-line="432">
+</span><span data-line="433">            <span class="k">if</span> <span class="n">data_a</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_control</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+</span><span data-line="434">                <span class="n">row_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_control</span><span class="p">[</span><span class="n">data_a</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+</span><span data-line="435">            <span class="k">elif</span> <span class="n">data_a</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;High&#39;</span><span class="p">,</span> <span class="s1">&#39;Low&#39;</span><span class="p">,</span> <span class="s1">&#39;Close&#39;</span><span class="p">,</span> <span class="s1">&#39;Open&#39;</span><span class="p">]:</span>
+</span><span data-line="436">                <span class="n">row_pos</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span data-line="437">            <span class="k">else</span><span class="p">:</span>
+</span><span data-line="438">                <span class="bp">self</span><span class="o">.</span><span class="n">row_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span data-line="439">                <span class="n">row_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_counter</span>
+</span><span data-line="440">
+</span><span data-line="441">            <span class="bp">self</span><span class="o">.</span><span class="n">set_plot_color</span><span class="p">(</span><span class="n">indicator_column</span><span class="o">=</span><span class="n">column_name</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+</span><span data-line="442">            <span class="bp">self</span><span class="o">.</span><span class="n">set_plot_color_fill</span><span class="p">(</span><span class="n">indicator_column</span><span class="o">=</span><span class="n">column_name</span><span class="p">,</span> <span class="n">color_fill</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</span><span data-line="443">            <span class="bp">self</span><span class="o">.</span><span class="n">set_plot_row</span><span class="p">(</span><span class="n">indicator_column</span><span class="o">=</span><span class="n">column_name</span><span class="p">,</span> <span class="n">row_position</span><span class="o">=</span><span class="n">row_pos</span><span class="p">)</span>
+</span><span data-line="444">            <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">column_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">merged</span>
+</span><span data-line="445">
+</span><span data-line="446">        <span class="k">if</span> <span class="n">strategy_group</span><span class="p">:</span>
+</span><span data-line="447">            <span class="bp">self</span><span class="o">.</span><span class="n">strategy_groups</span> <span class="o">=</span> <span class="n">tag_column_to_strategy_group</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="n">column_name</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="n">strategy_group</span><span class="p">,</span>
+</span><span data-line="448">                                                                <span class="n">strategy_groups</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">strategy_groups</span><span class="p">)</span>
+</span><span data-line="449">        <span class="k">return</span> <span class="n">merged</span></div>
+
+</span><span data-line="450">
+<div class="viewcode-block" id="SymbolStrategy.clean_in_out">
+<a class="viewcode-back" href="../../symbol_strategy.html#binpan.symbol_strategy.SymbolStrategy.clean_in_out">[docs]</a>
+</span><span data-line="451">    <span class="k">def</span><span class="w"> </span><span class="nf">clean_in_out</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+</span><span data-line="452">                     <span class="n">column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span>
+</span><span data-line="453">                     <span class="n">in_tag</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+</span><span data-line="454">                     <span class="n">out_tag</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+</span><span data-line="455">                     <span class="n">strategy_group</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+</span><span data-line="456">                     <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">suffix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+</span><span data-line="457">                     <span class="n">color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="s1">&#39;grey&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+</span><span data-line="458"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="459"><span class="sd">        It cleans a serie with in and out tags by eliminating in streaks and out streaks.</span>
+</span><span data-line="460">
+</span><span data-line="461"><span class="sd">        Same kind of index needed.</span>
+</span><span data-line="462">
+</span><span data-line="463"><span class="sd">        :param pd.Series column: A column to clean in and out values.</span>
+</span><span data-line="464"><span class="sd">        :param in_tag: Tag for in tags. Default is 1.</span>
+</span><span data-line="465"><span class="sd">        :param out_tag: Tag for out tags. Default is -1.</span>
+</span><span data-line="466"><span class="sd">        :param str strategy_group: A name for a group of columns to assign to a strategy.</span>
+</span><span data-line="467"><span class="sd">        :param bool inplace: Permanent or not. Default is false, because of some testing required sometimes.</span>
+</span><span data-line="468"><span class="sd">        :param str suffix: A string to decorate resulting Pandas series name.</span>
+</span><span data-line="469"><span class="sd">        :param str | int color: A color from plotly list of colors or its index in that list.</span>
+</span><span data-line="470"><span class="sd">        :return pd.Series: A merged serie.</span>
+</span><span data-line="471"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="472">        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">column</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="473">            <span class="n">data_a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span>
+</span><span data-line="474">        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">column</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">:</span>
+</span><span data-line="475">            <span class="n">data_a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="476">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="477">            <span class="n">data_a</span> <span class="o">=</span> <span class="n">column</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="478">
+</span><span data-line="479">        <span class="n">clean</span> <span class="o">=</span> <span class="n">clean_in_out_func</span><span class="p">(</span><span class="n">serie</span><span class="o">=</span><span class="n">data_a</span><span class="p">,</span> <span class="n">in_tag</span><span class="o">=</span><span class="n">in_tag</span><span class="p">,</span> <span class="n">out_tag</span><span class="o">=</span><span class="n">out_tag</span><span class="p">)</span>
+</span><span data-line="480">        <span class="k">if</span> <span class="n">suffix</span><span class="p">:</span>
+</span><span data-line="481">            <span class="n">suffix</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">suffix</span>
+</span><span data-line="482">        <span class="n">column_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Clean_</span><span class="si">{</span><span class="n">data_a</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">suffix</span>
+</span><span data-line="483">
+</span><span data-line="484">        <span class="n">clean</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">column_name</span>
+</span><span data-line="485">
+</span><span data-line="486">        <span class="k">if</span> <span class="n">inplace</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_new</span><span class="p">(</span><span class="n">clean</span><span class="p">):</span>
+</span><span data-line="487">
+</span><span data-line="488">            <span class="k">if</span> <span class="n">data_a</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_control</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+</span><span data-line="489">                <span class="n">row_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_control</span><span class="p">[</span><span class="n">data_a</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+</span><span data-line="490">            <span class="k">elif</span> <span class="n">data_a</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;High&#39;</span><span class="p">,</span> <span class="s1">&#39;Low&#39;</span><span class="p">,</span> <span class="s1">&#39;Close&#39;</span><span class="p">,</span> <span class="s1">&#39;Open&#39;</span><span class="p">]:</span>
+</span><span data-line="491">                <span class="n">row_pos</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span data-line="492">            <span class="k">else</span><span class="p">:</span>
+</span><span data-line="493">                <span class="bp">self</span><span class="o">.</span><span class="n">row_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span data-line="494">                <span class="n">row_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_counter</span>
+</span><span data-line="495">
+</span><span data-line="496">            <span class="bp">self</span><span class="o">.</span><span class="n">set_plot_color</span><span class="p">(</span><span class="n">indicator_column</span><span class="o">=</span><span class="n">column_name</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+</span><span data-line="497">            <span class="bp">self</span><span class="o">.</span><span class="n">set_plot_color_fill</span><span class="p">(</span><span class="n">indicator_column</span><span class="o">=</span><span class="n">column_name</span><span class="p">,</span> <span class="n">color_fill</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</span><span data-line="498">            <span class="bp">self</span><span class="o">.</span><span class="n">set_plot_row</span><span class="p">(</span><span class="n">indicator_column</span><span class="o">=</span><span class="n">column_name</span><span class="p">,</span> <span class="n">row_position</span><span class="o">=</span><span class="n">row_pos</span><span class="p">)</span>
+</span><span data-line="499">            <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">column_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">clean</span>
+</span><span data-line="500">
+</span><span data-line="501">        <span class="k">if</span> <span class="n">strategy_group</span><span class="p">:</span>
+</span><span data-line="502">            <span class="bp">self</span><span class="o">.</span><span class="n">strategy_groups</span> <span class="o">=</span> <span class="n">tag_column_to_strategy_group</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="n">column_name</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="n">strategy_group</span><span class="p">,</span>
+</span><span data-line="503">                                                                <span class="n">strategy_groups</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">strategy_groups</span><span class="p">)</span>
+</span><span data-line="504">        <span class="k">return</span> <span class="n">clean</span></div>
+
+</span><span data-line="505">
+<div class="viewcode-block" id="SymbolStrategy.set_strategy_groups">
+<a class="viewcode-back" href="../../symbol_strategy.html#binpan.symbol_strategy.SymbolStrategy.set_strategy_groups">[docs]</a>
+</span><span data-line="506">    <span class="k">def</span><span class="w"> </span><span class="nf">set_strategy_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">strategy_groups</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span data-line="507"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="508"><span class="sd">        Returns strategy_groups for BinPan DataFrame.</span>
+</span><span data-line="509">
+</span><span data-line="510"><span class="sd">        :param str column: A column to tag with a strategy group.</span>
+</span><span data-line="511"><span class="sd">        :param str group: Name of the group.</span>
+</span><span data-line="512"><span class="sd">        :param str strategy_groups: The existing strategy groups.</span>
+</span><span data-line="513"><span class="sd">        :return dict: Updated strategy groups of columns.</span>
+</span><span data-line="514"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="515">        <span class="k">if</span> <span class="ow">not</span> <span class="n">strategy_groups</span><span class="p">:</span>
+</span><span data-line="516">            <span class="n">strategy_groups</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">strategy_groups</span>
+</span><span data-line="517">        <span class="k">if</span> <span class="n">column</span> <span class="ow">and</span> <span class="n">group</span><span class="p">:</span>
+</span><span data-line="518">            <span class="bp">self</span><span class="o">.</span><span class="n">strategy_groups</span> <span class="o">=</span> <span class="n">tag_column_to_strategy_group</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="n">column</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">,</span> <span class="n">strategy_groups</span><span class="o">=</span><span class="n">strategy_groups</span><span class="p">)</span>
+</span><span data-line="519">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">strategy_groups</span></div>
+
+</span><span data-line="520">
+<div class="viewcode-block" id="SymbolStrategy.get_strategy_columns">
+<a class="viewcode-back" href="../../symbol_strategy.html#binpan.symbol_strategy.SymbolStrategy.get_strategy_columns">[docs]</a>
+</span><span data-line="521">    <span class="k">def</span><span class="w"> </span><span class="nf">get_strategy_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+</span><span data-line="522"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="523"><span class="sd">        Returns column names starting with &quot;Strategy&quot;.</span>
+</span><span data-line="524">
+</span><span data-line="525"><span class="sd">        :return dict: Updated strategy groups of columns.</span>
+</span><span data-line="526"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="527">        <span class="k">return</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;strategy&#39;</span><span class="p">)]</span></div>
+
+</span><span data-line="528">
+<div class="viewcode-block" id="SymbolStrategy.strategy_from_tags_crosses">
+<a class="viewcode-back" href="../../symbol_strategy.html#binpan.symbol_strategy.SymbolStrategy.strategy_from_tags_crosses">[docs]</a>
+</span><span data-line="529">    <span class="k">def</span><span class="w"> </span><span class="nf">strategy_from_tags_crosses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+</span><span data-line="530">                                   <span class="n">columns</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="531">                                   <span class="n">strategy_group</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+</span><span data-line="532">                                   <span class="n">matching_tag</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+</span><span data-line="533">                                   <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span><span class="p">,</span>
+</span><span data-line="534">                                   <span class="n">tag_reversed_match</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span data-line="535">                                   <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="536">                                   <span class="n">suffix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+</span><span data-line="537">                                   <span class="n">color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="s1">&#39;magenta&#39;</span><span class="p">,</span>
+</span><span data-line="538">                                   <span class="n">reversed_match</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+</span><span data-line="539"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="540"><span class="sd">        Checks where all tags and cross columns get value &quot;1&quot; at the same time. And also gets points where all tags gets value of &quot;0&quot; and</span>
+</span><span data-line="541"><span class="sd">        cross columns get &quot;-1&quot; value.</span>
+</span><span data-line="542">
+</span><span data-line="543"><span class="sd">        :param list columns: A list of Tag and Cross columns with numeric o 1,0 for tags and 1,-1 for cross points.</span>
+</span><span data-line="544"><span class="sd">        :param str strategy_group: A name for a group of columns to restrict application of strategy. If both columns and strategy_group</span>
+</span><span data-line="545"><span class="sd">         passed, a interjection between the two arguments is applied.</span>
+</span><span data-line="546"><span class="sd">        :param bool tag_reversed_match: If enabled, all zeros or minus ones tag and cross columns are interpreted as reversed match,</span>
+</span><span data-line="547"><span class="sd">         this will enable tagging those.</span>
+</span><span data-line="548"><span class="sd">        :param any matching_tag: A tag to search for the strategy where will be revised method for matched rows.</span>
+</span><span data-line="549"><span class="sd">        :param str method: Can be &#39;all&#39; or &#39;any&#39;. It produces a match when all or any columns are matching tags.</span>
+</span><span data-line="550"><span class="sd">        :param any reversed_match: A tag for the all/any not matched strategy rows.</span>
+</span><span data-line="551"><span class="sd">        :param bool inplace: Permanent or not. Default is false, because of some testing required sometimes.</span>
+</span><span data-line="552"><span class="sd">        :param str suffix: A string to decorate resulting Pandas series name.</span>
+</span><span data-line="553"><span class="sd">        :param str | int color: A color from plotly list of colors or its index in that list.</span>
+</span><span data-line="554"><span class="sd">        :return pd.Series: A serie with &quot;1&quot; value where all columns are ones and &quot;-1&quot; where all columns are minus ones.</span>
+</span><span data-line="555"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="556">        <span class="k">if</span> <span class="n">columns</span><span class="p">:</span>
+</span><span data-line="557">            <span class="n">my_columns</span> <span class="o">=</span> <span class="n">columns</span>
+</span><span data-line="558">            <span class="n">cross_columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;cross_&#39;</span><span class="p">)]</span>  <span class="c1"># used to keep out zeros</span>
+</span><span data-line="559">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="560">            <span class="n">tag_columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;tag_&#39;</span><span class="p">)]</span>
+</span><span data-line="561">            <span class="n">cross_columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;cross_&#39;</span><span class="p">)]</span>
+</span><span data-line="562">            <span class="n">my_columns</span> <span class="o">=</span> <span class="n">tag_columns</span> <span class="o">+</span> <span class="n">cross_columns</span>
+</span><span data-line="563">
+</span><span data-line="564">        <span class="k">if</span> <span class="n">strategy_group</span><span class="p">:</span>
+</span><span data-line="565">            <span class="n">set_my_cols</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">my_columns</span><span class="p">)</span>
+</span><span data-line="566">            <span class="n">set_strategy_group</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">strategy_groups</span><span class="p">[</span><span class="n">strategy_group</span><span class="p">])</span>
+</span><span data-line="567">            <span class="k">if</span> <span class="n">columns</span><span class="p">:</span>
+</span><span data-line="568">                <span class="n">my_columns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">set_my_cols</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">set_strategy_group</span><span class="p">))</span>
+</span><span data-line="569">            <span class="k">else</span><span class="p">:</span>
+</span><span data-line="570">                <span class="n">my_columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">strategy_groups</span><span class="p">[</span><span class="n">strategy_group</span><span class="p">]</span>
+</span><span data-line="571">                <span class="n">cross_columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">my_columns</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;cross_&#39;</span><span class="p">)]</span>
+</span><span data-line="572">
+</span><span data-line="573">        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">my_columns</span><span class="p">:</span>
+</span><span data-line="574">            <span class="n">data_col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+</span><span data-line="575">            <span class="n">unique_values</span> <span class="o">=</span> <span class="n">data_col</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">index</span>
+</span><span data-line="576">            <span class="n">numeric_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">unique_values</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">complex</span><span class="p">))]</span>
+</span><span data-line="577">            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unique_values</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">numeric_values</span><span class="p">):</span>
+</span><span data-line="578">                <span class="k">raise</span> <span class="n">BinPanException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Not numeric labels on </span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">unique_values</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="579">
+</span><span data-line="580">        <span class="n">temp_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="581">        <span class="n">temp_df</span> <span class="o">=</span> <span class="n">temp_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">my_columns</span><span class="p">]</span>
+</span><span data-line="582">
+</span><span data-line="583">        <span class="c1"># remove zeros from cross columns</span>
+</span><span data-line="584">        <span class="n">temp_df</span><span class="p">[</span><span class="n">cross_columns</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_df</span><span class="p">[</span><span class="n">cross_columns</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">({</span><span class="s1">&#39;0&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">})</span>
+</span><span data-line="585">
+</span><span data-line="586">        <span class="c1"># matching magic</span>
+</span><span data-line="587">        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+</span><span data-line="588">            <span class="n">bull_serie</span> <span class="o">=</span> <span class="p">(</span><span class="n">temp_df</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span><span data-line="589">        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;any&#39;</span><span class="p">:</span>
+</span><span data-line="590">            <span class="n">bull_serie</span> <span class="o">=</span> <span class="p">(</span><span class="n">temp_df</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span><span data-line="591">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="592">            <span class="k">raise</span> <span class="n">BinPanException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Method not &#39;all&#39; or &#39;any&#39; -&gt; </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="593">
+</span><span data-line="594">        <span class="n">ret</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">matching_tag</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">bull_serie</span><span class="p">[</span><span class="n">bull_serie</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+</span><span data-line="595">
+</span><span data-line="596">        <span class="k">if</span> <span class="n">tag_reversed_match</span><span class="p">:</span>
+</span><span data-line="597">            <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+</span><span data-line="598">                <span class="n">bear_serie</span> <span class="o">=</span> <span class="p">(</span><span class="n">temp_df</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span><span data-line="599">            <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;any&#39;</span><span class="p">:</span>
+</span><span data-line="600">                <span class="n">bear_serie</span> <span class="o">=</span> <span class="p">(</span><span class="n">temp_df</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span><span data-line="601">            <span class="k">else</span><span class="p">:</span>
+</span><span data-line="602">                <span class="k">raise</span> <span class="n">BinPanException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Method not &#39;all&#39; or &#39;any&#39; -&gt; </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="603">
+</span><span data-line="604">            <span class="n">ret_reversed</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">reversed_match</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">bear_serie</span><span class="p">[</span><span class="n">bear_serie</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+</span><span data-line="605">            <span class="n">ret</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">ret</span><span class="p">,</span> <span class="n">ret_reversed</span><span class="p">])</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+</span><span data-line="606">
+</span><span data-line="607">        <span class="k">if</span> <span class="n">suffix</span><span class="p">:</span>
+</span><span data-line="608">            <span class="n">suffix</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">suffix</span>
+</span><span data-line="609">
+</span><span data-line="610">        <span class="bp">self</span><span class="o">.</span><span class="n">strategies</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span data-line="611">        <span class="n">column_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Strategy_cross_tag_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">strategies</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">suffix</span>
+</span><span data-line="612">        <span class="n">ret</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">column_name</span>
+</span><span data-line="613">
+</span><span data-line="614">        <span class="k">if</span> <span class="n">inplace</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_new</span><span class="p">(</span><span class="n">ret</span><span class="p">):</span>
+</span><span data-line="615">            <span class="bp">self</span><span class="o">.</span><span class="n">row_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span data-line="616">            <span class="n">row_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_counter</span>
+</span><span data-line="617">            <span class="bp">self</span><span class="o">.</span><span class="n">set_plot_color</span><span class="p">(</span><span class="n">indicator_column</span><span class="o">=</span><span class="n">column_name</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+</span><span data-line="618">            <span class="bp">self</span><span class="o">.</span><span class="n">set_plot_color_fill</span><span class="p">(</span><span class="n">indicator_column</span><span class="o">=</span><span class="n">column_name</span><span class="p">,</span> <span class="n">color_fill</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</span><span data-line="619">            <span class="bp">self</span><span class="o">.</span><span class="n">set_plot_row</span><span class="p">(</span><span class="n">indicator_column</span><span class="o">=</span><span class="n">column_name</span><span class="p">,</span> <span class="n">row_position</span><span class="o">=</span><span class="n">row_pos</span><span class="p">)</span>
+</span><span data-line="620">            <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">column_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">ret</span>
+</span><span data-line="621">
+</span><span data-line="622">        <span class="k">return</span> <span class="n">ret</span></div>
+
+</span><span data-line="623">
+<div class="viewcode-block" id="SymbolStrategy.ffill_window">
+<a class="viewcode-back" href="../../symbol_strategy.html#binpan.symbol_strategy.SymbolStrategy.ffill_window">[docs]</a>
+</span><span data-line="624">    <span class="k">def</span><span class="w"> </span><span class="nf">ffill_window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+</span><span data-line="625">                     <span class="n">column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span>
+</span><span data-line="626">                     <span class="n">window</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+</span><span data-line="627">                     <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="628">                     <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span data-line="629">                     <span class="n">suffix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+</span><span data-line="630">                     <span class="n">color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="s1">&#39;blue&#39;</span><span class="p">):</span>
+</span><span data-line="631"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="632"><span class="sd">        It forward fills a value through nans a window ahead.</span>
+</span><span data-line="633">
+</span><span data-line="634"><span class="sd">        :param str | int | pd.Series column: A pandas Series.</span>
+</span><span data-line="635"><span class="sd">        :param int window: Times values are shifted ahead. Default is 1.</span>
+</span><span data-line="636"><span class="sd">        :param bool replace: Permanent replace for a column with results.</span>
+</span><span data-line="637"><span class="sd">        :param bool inplace: Permanent or not. Default is false, because of some testing required sometimes.</span>
+</span><span data-line="638"><span class="sd">        :param str suffix: A string to decorate resulting Pandas series name.</span>
+</span><span data-line="639"><span class="sd">        :param str | int color: A color from plotly list of colors or its index in that list.</span>
+</span><span data-line="640"><span class="sd">        :return pd.Series: A series with index adjusted to the new shifted positions of values.</span>
+</span><span data-line="641"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="642">        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">column</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="643">            <span class="n">serie</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span>
+</span><span data-line="644">        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">column</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">:</span>
+</span><span data-line="645">            <span class="n">serie</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="n">column</span><span class="p">]</span>
+</span><span data-line="646">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="647">            <span class="n">serie</span> <span class="o">=</span> <span class="n">column</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="648">
+</span><span data-line="649">        <span class="n">my_ffill</span> <span class="o">=</span> <span class="n">ffill_indicator</span><span class="p">(</span><span class="n">serie</span><span class="o">=</span><span class="n">serie</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="n">window</span><span class="p">)</span>
+</span><span data-line="650">
+</span><span data-line="651">        <span class="k">if</span> <span class="n">suffix</span><span class="p">:</span>
+</span><span data-line="652">            <span class="n">suffix</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">suffix</span>
+</span><span data-line="653">
+</span><span data-line="654">        <span class="bp">self</span><span class="o">.</span><span class="n">strategies</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span data-line="655">        <span class="n">column_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Ffill_</span><span class="si">{</span><span class="n">serie</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">strategies</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">suffix</span>
+</span><span data-line="656">
+</span><span data-line="657">        <span class="n">my_ffill</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">column_name</span>
+</span><span data-line="658">        <span class="k">if</span> <span class="n">replace</span><span class="p">:</span>
+</span><span data-line="659">            <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">serie</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">my_ffill</span>
+</span><span data-line="660">
+</span><span data-line="661">        <span class="k">if</span> <span class="n">inplace</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_new</span><span class="p">(</span><span class="n">my_ffill</span><span class="p">):</span>
+</span><span data-line="662">            <span class="bp">self</span><span class="o">.</span><span class="n">row_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span data-line="663">            <span class="n">row_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_counter</span>
+</span><span data-line="664">            <span class="bp">self</span><span class="o">.</span><span class="n">set_plot_color</span><span class="p">(</span><span class="n">indicator_column</span><span class="o">=</span><span class="n">column_name</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+</span><span data-line="665">            <span class="bp">self</span><span class="o">.</span><span class="n">set_plot_color_fill</span><span class="p">(</span><span class="n">indicator_column</span><span class="o">=</span><span class="n">column_name</span><span class="p">,</span> <span class="n">color_fill</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</span><span data-line="666">            <span class="bp">self</span><span class="o">.</span><span class="n">set_plot_row</span><span class="p">(</span><span class="n">indicator_column</span><span class="o">=</span><span class="n">column_name</span><span class="p">,</span> <span class="n">row_position</span><span class="o">=</span><span class="n">row_pos</span><span class="p">)</span>
+</span><span data-line="667">            <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">column_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">my_ffill</span>
+</span><span data-line="668">        <span class="k">return</span> <span class="n">my_ffill</span></div>
+</div>
+
+</span></pre></div>
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2022, Fernando Alfonso</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+<a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+  <iconify-icon icon="simple-icons:github"></iconify-icon>
+</a></div>
+    </div>
+  </div>
+</footer>
+      <script src="../../_static/documentation_options.js?v=11e62b30"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/shibuya.js?v=50760d75"></script></body>
+</html>

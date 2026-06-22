@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="iris" data-content_root="./">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Numba Tools Module - BinPan 0.10.2</title><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Time Helpers" href="time_helper.html" /><link rel="prev" title="Statistical Tests and Tools" href="stat_tests.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="_static/pygments.css?v=e1a1ceaf" />
+    <link rel="stylesheet" type="text/css" href="_static/shibuya.css?v=9454f7d5" />
+    <link rel="stylesheet" type="text/css" href="_static/style.css?v=1e48dca6" />
+    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/><meta property="og:title" content="Numba Tools Module"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="index.html">
+      
+      
+      <strong>BinPan</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Main Classes:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="binpan.html">BinPan Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="symbol_indicators.html">Symbol Indicators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="symbol_plotting.html">Symbol Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="symbol_strategy.html">Symbol Strategy</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">API &amp; Market:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exchange.html">Exchange Info Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="auth.html">Authentication Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wallet_api.html">Wallet API Functions</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Analysis:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="indicators.html">Indicators Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aggregations.html">Aggregations Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tags.html">Tags &amp; Backtesting Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stat_tests.html">Statistical Tests and Tools</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Numba Tools Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Core:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="time_helper.html">Time Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timeframes.html">Timeframes Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trades.html">Trades Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="standards.html">Standards Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="secrets.html">Secrets Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logs.html">Logs Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Plotting:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Storage &amp; Database:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="files.html">Files Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postgresql.html">PostgreSQL Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postgresql_database.html">PostgreSQL Database Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="influx_manager.html">Influx Manager Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#binpan.analysis.numba_tools.rolling_max_with_steps_back_numba"><code class="docutils literal notranslate"><span class="pre">rolling_max_with_steps_back_numba()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.numba_tools.rolling_max_with_steps_back_last_value_numba"><code class="docutils literal notranslate"><span class="pre">rolling_max_with_steps_back_last_value_numba()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.numba_tools.rolling_min_with_steps_back_numba"><code class="docutils literal notranslate"><span class="pre">rolling_min_with_steps_back_numba()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.numba_tools.rolling_min_with_steps_back_last_value_numba"><code class="docutils literal notranslate"><span class="pre">rolling_min_with_steps_back_last_value_numba()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.numba_tools.ema_numba"><code class="docutils literal notranslate"><span class="pre">ema_numba()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.numba_tools.rma_numba"><code class="docutils literal notranslate"><span class="pre">rma_numba()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.numba_tools.rsi_numba"><code class="docutils literal notranslate"><span class="pre">rsi_numba()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.numba_tools.sma_numba"><code class="docutils literal notranslate"><span class="pre">sma_numba()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.numba_tools.close_support_log_numba"><code class="docutils literal notranslate"><span class="pre">close_support_log_numba()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.numba_tools.close_support_dynamic_numba"><code class="docutils literal notranslate"><span class="pre">close_support_dynamic_numba()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.numba_tools.close_support_log_single_numba"><code class="docutils literal notranslate"><span class="pre">close_support_log_single_numba()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.numba_tools.close_resistance_log_numba"><code class="docutils literal notranslate"><span class="pre">close_resistance_log_numba()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.numba_tools.close_resistance_dynamic_numba"><code class="docutils literal notranslate"><span class="pre">close_resistance_dynamic_numba()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.numba_tools.close_resistance_log_single_numba"><code class="docutils literal notranslate"><span class="pre">close_resistance_log_single_numba()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.numba_tools.calculate_ema_relations"><code class="docutils literal notranslate"><span class="pre">calculate_ema_relations()</span></code></a></li>
+</ul>
+</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="index.html"><span itemprop="name">BinPan</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">Numba Tools Module</strong>
+        <meta itemprop="position" content="2" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue" role="main">
+          <section id="numba-tools-module">
+<h1>Numba Tools Module<a class="headerlink" href="#numba-tools-module" title="Link to this heading">¶</a></h1>
+<p>Numba-accelerated kernels for technical indicator calculations (EMA, SMA, RMA, RSI).</p>
+<p id="module-binpan.analysis.numba_tools"><strong>Functions:</strong></p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.numba_tools.rolling_max_with_steps_back_numba" title="binpan.analysis.numba_tools.rolling_max_with_steps_back_numba"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rolling_max_with_steps_back_numba</span></code></a>(values, ...)</p></td>
+<td><p>Calculate the rolling maximum and the number of steps back to the rolling maximum within a moving window.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.numba_tools.rolling_max_with_steps_back_last_value_numba" title="binpan.analysis.numba_tools.rolling_max_with_steps_back_last_value_numba"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rolling_max_with_steps_back_last_value_numba</span></code></a>(...)</p></td>
+<td><p>Calculate the rolling maximum and the steps back to the maximum for the last value in the input array.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.numba_tools.rolling_min_with_steps_back_numba" title="binpan.analysis.numba_tools.rolling_min_with_steps_back_numba"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rolling_min_with_steps_back_numba</span></code></a>(values, ...)</p></td>
+<td><p>Calculate the rolling minimum and the number of steps back to the rolling minimum within a moving window.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.numba_tools.rolling_min_with_steps_back_last_value_numba" title="binpan.analysis.numba_tools.rolling_min_with_steps_back_last_value_numba"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rolling_min_with_steps_back_last_value_numba</span></code></a>(...)</p></td>
+<td><p>Calculate the rolling minimum for the last value in the given array using NumPy.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.numba_tools.ema_numba" title="binpan.analysis.numba_tools.ema_numba"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ema_numba</span></code></a>(arr, window)</p></td>
+<td><p>Calculate the Exponential Moving Average (EMA) of the given array.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.numba_tools.rma_numba" title="binpan.analysis.numba_tools.rma_numba"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rma_numba</span></code></a>(values, window)</p></td>
+<td><p>Calculate the Rolling Moving Average (RMA) of the given array.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.numba_tools.rsi_numba" title="binpan.analysis.numba_tools.rsi_numba"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rsi_numba</span></code></a>(close, window)</p></td>
+<td><p>Calculate the Relative Strength Index (RSI) for an array of closing prices.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.numba_tools.sma_numba" title="binpan.analysis.numba_tools.sma_numba"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sma_numba</span></code></a>(arr, window)</p></td>
+<td><p>Calculate the Simple Moving Average (SMA) of the given array using NumPy.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.numba_tools.close_support_log_numba" title="binpan.analysis.numba_tools.close_support_log_numba"><code class="xref py py-obj docutils literal notranslate"><span class="pre">close_support_log_numba</span></code></a>(close, support)</p></td>
+<td><p>Calculate the logarithmic ratio between the closing price and the closest support level.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.numba_tools.close_support_dynamic_numba" title="binpan.analysis.numba_tools.close_support_dynamic_numba"><code class="xref py py-obj docutils literal notranslate"><span class="pre">close_support_dynamic_numba</span></code></a>(close, supports)</p></td>
+<td><p>Calculate the logarithmic ratio between the closing price and the closest support level for each point in time, where the support levels can change over time.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.numba_tools.close_support_log_single_numba" title="binpan.analysis.numba_tools.close_support_log_single_numba"><code class="xref py py-obj docutils literal notranslate"><span class="pre">close_support_log_single_numba</span></code></a>(close, support)</p></td>
+<td><p>Calculate the logarithmic ratio between a single closing price and the closest support level to it.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.numba_tools.close_resistance_log_numba" title="binpan.analysis.numba_tools.close_resistance_log_numba"><code class="xref py py-obj docutils literal notranslate"><span class="pre">close_resistance_log_numba</span></code></a>(close, resistance)</p></td>
+<td><p>Calculate the logarithmic ratio between the closest resistance level and the closing price.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.numba_tools.close_resistance_dynamic_numba" title="binpan.analysis.numba_tools.close_resistance_dynamic_numba"><code class="xref py py-obj docutils literal notranslate"><span class="pre">close_resistance_dynamic_numba</span></code></a>(close, ...)</p></td>
+<td><p>Calculate the logarithmic ratio between the closest resistance level and the closing price for each point in time, where the resistance levels can change over time.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.numba_tools.close_resistance_log_single_numba" title="binpan.analysis.numba_tools.close_resistance_log_single_numba"><code class="xref py py-obj docutils literal notranslate"><span class="pre">close_resistance_log_single_numba</span></code></a>(close, ...)</p></td>
+<td><p>Calculate the logarithmic ratio between the closest resistance level and a single closing price.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.numba_tools.calculate_ema_relations" title="binpan.analysis.numba_tools.calculate_ema_relations"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_ema_relations</span></code></a>(arr, windows[, epsilon])</p></td>
+<td><p>Calcula las relaciones de media móvil exponencial (EMA) para una serie de valores, utilizando un conjunto de ventanas especificadas.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.numba_tools.rolling_max_with_steps_back_numba">
+<span class="sig-name descname"><span class="pre">rolling_max_with_steps_back_numba</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pct_diff</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/binpan/analysis/numba_tools.html#rolling_max_with_steps_back_numba"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.numba_tools.rolling_max_with_steps_back_numba" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate the rolling maximum and the number of steps back to the rolling maximum within a moving window.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> – A 1D NumPy array containing the input data.</p></li>
+<li><p><strong>window</strong> – An integer specifying the size of the moving window.</p></li>
+<li><p><strong>pct_diff</strong> – A boolean to determine if the output should be the percentage difference
+between the current value and the rolling maximum. If False, the rolling maximum is returned.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple of two 1D NumPy arrays. The first array is the rolling maximum or the percentage difference
+(based on <cite>pct_diff</cite>). The second array contains the number of steps back to the rolling maximum.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.numba_tools.rolling_max_with_steps_back_last_value_numba">
+<span class="sig-name descname"><span class="pre">rolling_max_with_steps_back_last_value_numba</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">pct_diff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/binpan/analysis/numba_tools.html#rolling_max_with_steps_back_last_value_numba"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.numba_tools.rolling_max_with_steps_back_last_value_numba" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate the rolling maximum and the steps back to the maximum for the last value in the input array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> – A 1D NumPy array containing the input data.</p></li>
+<li><p><strong>window</strong> – An integer specifying the size of the moving window.</p></li>
+<li><p><strong>pct_diff</strong> – A boolean to determine if the output should be the percentage difference
+between the last value and its rolling maximum. If False, the rolling maximum is returned.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing the rolling maximum or the percentage difference (based on <cite>pct_diff</cite>) for the last value,
+and the steps back to the rolling maximum for the last value.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.numba_tools.rolling_min_with_steps_back_numba">
+<span class="sig-name descname"><span class="pre">rolling_min_with_steps_back_numba</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pct_diff</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/binpan/analysis/numba_tools.html#rolling_min_with_steps_back_numba"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.numba_tools.rolling_min_with_steps_back_numba" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate the rolling minimum and the number of steps back to the rolling minimum within a moving window.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> – A 1D NumPy array containing the input data.</p></li>
+<li><p><strong>window</strong> – An integer specifying the size of the moving window.</p></li>
+<li><p><strong>pct_diff</strong> – A boolean to determine if the output should be the percentage difference
+between the current value and the rolling minimum. If False, the rolling minimum is returned.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple of two 1D NumPy arrays. The first array is the rolling minimum or the percentage difference
+(based on <cite>pct_diff</cite>). The second array contains the number of steps back to the rolling minimum.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.numba_tools.rolling_min_with_steps_back_last_value_numba">
+<span class="sig-name descname"><span class="pre">rolling_min_with_steps_back_last_value_numba</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">pct_diff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/binpan/analysis/numba_tools.html#rolling_min_with_steps_back_last_value_numba"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.numba_tools.rolling_min_with_steps_back_last_value_numba" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate the rolling minimum for the last value in the given array using NumPy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> – A NumPy array containing the input data.</p></li>
+<li><p><strong>window</strong> – An integer for the window size.</p></li>
+<li><p><strong>pct_diff</strong> – A boolean indicating whether to calculate the percentage difference.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing the rolling minimum value and the steps back for the last value.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.numba_tools.ema_numba">
+<span class="sig-name descname"><span class="pre">ema_numba</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/binpan/analysis/numba_tools.html#ema_numba"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.numba_tools.ema_numba" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate the Exponential Moving Average (EMA) of the given array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>arr</strong> – A 1D NumPy array containing the input data.</p></li>
+<li><p><strong>window</strong> – An integer specifying the size of the moving window for EMA calculation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A 1D NumPy array containing the EMA values.</p>
+</dd>
+</dl>
+<p>Note: The EMA is calculated using the formula <cite>EMA[today] = (Value[today] * (2 / (1 + window))) + (EMA[yesterday] * (1 - (2 / (1 + window))))</cite>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.numba_tools.rma_numba">
+<span class="sig-name descname"><span class="pre">rma_numba</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/binpan/analysis/numba_tools.html#rma_numba"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.numba_tools.rma_numba" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate the Rolling Moving Average (RMA) of the given array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> – A 1D NumPy array containing the input data.</p></li>
+<li><p><strong>window</strong> – An integer specifying the size of the moving window for RMA calculation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A 1D NumPy array containing the RMA values.</p>
+</dd>
+</dl>
+<p>Note: The RMA is a type of moving average that gives more weight to recent data points, similar to the EMA.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.numba_tools.rsi_numba">
+<span class="sig-name descname"><span class="pre">rsi_numba</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">close</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/binpan/analysis/numba_tools.html#rsi_numba"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.numba_tools.rsi_numba" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate the Relative Strength Index (RSI) for an array of closing prices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>close</strong> – A 1D NumPy array containing the closing prices.</p></li>
+<li><p><strong>window</strong> – An integer specifying the size of the moving window for RSI calculation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A 1D NumPy array containing the RSI values.</p>
+</dd>
+</dl>
+<p>Note: The RSI is calculated using the formula <cite>RSI = 100 - (100 / (1 + (Average Gain / Average Loss)))</cite>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.numba_tools.sma_numba">
+<span class="sig-name descname"><span class="pre">sma_numba</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/binpan/analysis/numba_tools.html#sma_numba"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.numba_tools.sma_numba" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate the Simple Moving Average (SMA) of the given array using NumPy.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>arr: A NumPy array containing the input data.
+window: The window size for the SMA calculation.</p>
+</dd>
+<dt>Returns:</dt><dd><p>A NumPy array containing the SMA values.</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span data-line="2"><span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="mf">3.7</span><span class="p">,</span> <span class="mf">4.2</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">6.3</span><span class="p">])</span>
+</span><span data-line="3"><span class="n">window</span> <span class="o">=</span> <span class="mi">3</span>
+</span><span data-line="4"><span class="n">sma_result</span> <span class="o">=</span> <span class="n">sma_numpy</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">window</span><span class="p">)</span>
+</span><span data-line="5"><span class="nb">print</span><span class="p">(</span><span class="n">sma_result</span><span class="p">)</span>
+</span><span data-line="6">
+</span><span data-line="7"><span class="p">[</span>       <span class="n">nan</span>        <span class="n">nan</span> <span class="mf">2.4</span>        <span class="mf">3.46666667</span> <span class="mf">4.3</span>        <span class="mf">5.16666667</span><span class="p">]</span>
+</span></pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.numba_tools.close_support_log_numba">
+<span class="sig-name descname"><span class="pre">close_support_log_numba</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">close</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">support</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/binpan/analysis/numba_tools.html#close_support_log_numba"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.numba_tools.close_support_log_numba" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate the logarithmic ratio between the closing price and the closest support level.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>close</strong> – A NumPy array containing the closing prices.</p></li>
+<li><p><strong>support</strong> – A NumPy array containing the support levels.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A NumPy array containing the logarithmic ratio.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.numba_tools.close_support_dynamic_numba">
+<span class="sig-name descname"><span class="pre">close_support_dynamic_numba</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">close</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supports</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/binpan/analysis/numba_tools.html#close_support_dynamic_numba"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.numba_tools.close_support_dynamic_numba" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate the logarithmic ratio between the closing price and the closest support level
+for each point in time, where the support levels can change over time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>close</strong> – A NumPy array containing the closing prices.</p></li>
+<li><p><strong>supports</strong> – A 2D NumPy array where each row contains the support levels at a given time.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A NumPy array containing the logarithmic ratio for each point in time.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.numba_tools.close_support_log_single_numba">
+<span class="sig-name descname"><span class="pre">close_support_log_single_numba</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">close</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">support</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float64</span></span></span><a class="reference internal" href="_modules/binpan/analysis/numba_tools.html#close_support_log_single_numba"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.numba_tools.close_support_log_single_numba" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate the logarithmic ratio between a single closing price and the closest support level to it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>close</strong> – A single closing price (float).</p></li>
+<li><p><strong>support</strong> – A NumPy array containing the support levels.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The logarithmic ratio for the given closing price.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.numba_tools.close_resistance_log_numba">
+<span class="sig-name descname"><span class="pre">close_resistance_log_numba</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">close</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resistance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/binpan/analysis/numba_tools.html#close_resistance_log_numba"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.numba_tools.close_resistance_log_numba" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate the logarithmic ratio between the closest resistance level and the closing price.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>close</strong> – A NumPy array containing the closing prices.</p></li>
+<li><p><strong>resistance</strong> – A NumPy array containing the resistance levels.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A NumPy array containing the logarithmic ratio.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.numba_tools.close_resistance_dynamic_numba">
+<span class="sig-name descname"><span class="pre">close_resistance_dynamic_numba</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">close</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resistances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/binpan/analysis/numba_tools.html#close_resistance_dynamic_numba"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.numba_tools.close_resistance_dynamic_numba" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate the logarithmic ratio between the closest resistance level and the closing price
+for each point in time, where the resistance levels can change over time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>close</strong> – A NumPy array containing the closing prices.</p></li>
+<li><p><strong>resistances</strong> – A 2D NumPy array where each row contains the resistance levels at a given time.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A NumPy array containing the logarithmic ratio for each point in time.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.numba_tools.close_resistance_log_single_numba">
+<span class="sig-name descname"><span class="pre">close_resistance_log_single_numba</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">close</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resistance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float64</span></span></span><a class="reference internal" href="_modules/binpan/analysis/numba_tools.html#close_resistance_log_single_numba"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.numba_tools.close_resistance_log_single_numba" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate the logarithmic ratio between the closest resistance level and a single closing price.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>close</strong> – A single closing price (float).</p></li>
+<li><p><strong>resistance</strong> – A NumPy array containing the resistance levels.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The logarithmic ratio for the given closing price.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.numba_tools.calculate_ema_relations">
+<span class="sig-name descname"><span class="pre">calculate_ema_relations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">windows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/binpan/analysis/numba_tools.html#calculate_ema_relations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.numba_tools.calculate_ema_relations" title="Link to this definition">¶</a></dt>
+<dd><p>Calcula las relaciones de media móvil exponencial (EMA) para una serie de valores, utilizando un conjunto de ventanas especificadas.</p>
+<p>La función utiliza Numba para la optimización del cálculo, especialmente efectiva en grandes conjuntos de datos. Para cada ventana en
+‘windows’, calcula la EMA de la serie ‘arr’. Luego, ajusta los valores de EMA para evitar divisiones por cero, usando ‘epsilon’. Finalmente, devuelve una lista de arrays, cada uno representando la serie ‘arr’ dividida por su respectiva EMA calculada.</p>
+<p>:param arr : Array de valores para el cálculo de EMA.
+:param windows : Array de ventanas para el cálculo de EMA.
+:param epsilon : Valor de ajuste para evitar divisiones por cero.
+:return : Lista de arrays, cada uno representando la serie ‘arr’ dividida por su respectiva EMA calculada.</p>
+</dd></dl>
+
+</section>
+
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"><div class="navigation-prev">
+    <a href="stat_tests.html">
+      <i class="i-lucide chevron-left"></i>
+      <div class="page-info">
+        <span>Previous</span><div class="title">Statistical Tests and Tools</div></div>
+    </a>
+  </div><div class="navigation-next">
+    <a href="time_helper.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title">Time Helpers</div>
+      </div>
+      <i class="i-lucide chevron-right"></i>
+    </a>
+  </div></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2022, Fernando Alfonso</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+<a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+  <iconify-icon icon="simple-icons:github"></iconify-icon>
+</a></div>
+    </div>
+  </div>
+</footer>
+      <script src="_static/documentation_options.js?v=11e62b30"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/shibuya.js?v=50760d75"></script></body>
+</html>

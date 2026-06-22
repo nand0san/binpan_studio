@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="iris" data-content_root="./">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Tags &amp; Backtesting Module - BinPan 0.10.2</title><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Statistical Tests and Tools" href="stat_tests.html" /><link rel="prev" title="Strategies Module" href="strategies.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="_static/pygments.css?v=e1a1ceaf" />
+    <link rel="stylesheet" type="text/css" href="_static/shibuya.css?v=9454f7d5" />
+    <link rel="stylesheet" type="text/css" href="_static/style.css?v=1e48dca6" />
+    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/><meta property="og:title" content="Tags &amp; Backtesting Module"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="index.html">
+      
+      
+      <strong>BinPan</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Main Classes:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="binpan.html">BinPan Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="symbol_indicators.html">Symbol Indicators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="symbol_plotting.html">Symbol Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="symbol_strategy.html">Symbol Strategy</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">API &amp; Market:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exchange.html">Exchange Info Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="auth.html">Authentication Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wallet_api.html">Wallet API Functions</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Analysis:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="indicators.html">Indicators Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aggregations.html">Aggregations Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Tags &amp; Backtesting Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stat_tests.html">Statistical Tests and Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_tools.html">Numba Tools Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Core:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="time_helper.html">Time Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timeframes.html">Timeframes Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trades.html">Trades Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="standards.html">Standards Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="secrets.html">Secrets Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logs.html">Logs Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Plotting:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Storage &amp; Database:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="files.html">Files Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postgresql.html">PostgreSQL Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postgresql_database.html">PostgreSQL Database Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="influx_manager.html">Influx Manager Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#binpan.analysis.tags.tag_value"><code class="docutils literal notranslate"><span class="pre">tag_value()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.tags.tag_comparison"><code class="docutils literal notranslate"><span class="pre">tag_comparison()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.tags.tag_cross"><code class="docutils literal notranslate"><span class="pre">tag_cross()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.tags.tag_column_to_strategy_group"><code class="docutils literal notranslate"><span class="pre">tag_column_to_strategy_group()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.tags.merge_series"><code class="docutils literal notranslate"><span class="pre">merge_series()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.tags.clean_in_out"><code class="docutils literal notranslate"><span class="pre">clean_in_out()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.tags.buy_base_backtesting"><code class="docutils literal notranslate"><span class="pre">buy_base_backtesting()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.tags.sell_base_backtesting"><code class="docutils literal notranslate"><span class="pre">sell_base_backtesting()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.tags.evaluate_wallets"><code class="docutils literal notranslate"><span class="pre">evaluate_wallets()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.tags.check_action_labels_for_backtesting"><code class="docutils literal notranslate"><span class="pre">check_action_labels_for_backtesting()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.tags.simple_backtesting"><code class="docutils literal notranslate"><span class="pre">simple_backtesting()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.tags.backtesting"><code class="docutils literal notranslate"><span class="pre">backtesting()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.tags.add_future_index_threshold_label"><code class="docutils literal notranslate"><span class="pre">add_future_index_threshold_label()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.tags.is_alternating"><code class="docutils literal notranslate"><span class="pre">is_alternating()</span></code></a></li>
+</ul>
+</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="index.html"><span itemprop="name">BinPan</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">Tags &amp; Backtesting Module</strong>
+        <meta itemprop="position" content="2" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue" role="main">
+          <section id="module-binpan.analysis.tags">
+<span id="tags-backtesting-module"></span><h1>Tags &amp; Backtesting Module<a class="headerlink" href="#module-binpan.analysis.tags" title="Link to this heading">¶</a></h1>
+<p>Tagging utils.</p>
+<p><strong>Functions:</strong></p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.tags.tag_value" title="binpan.analysis.tags.tag_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tag_value</span></code></a>(serie, value[, gt, ge, eq, le, ...])</p></td>
+<td><p>It tags values of a serie compared to one value and a gt,ge,eq,le,lt condition.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.tags.tag_comparison" title="binpan.analysis.tags.tag_comparison"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tag_comparison</span></code></a>(serie_a, serie_b[, gt, ge, ...])</p></td>
+<td><p>It tags values of a serie compared to other serie by methods gt,ge,eq,le,lt condition.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.tags.tag_cross" title="binpan.analysis.tags.tag_cross"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tag_cross</span></code></a>(serie_a, serie_b[, echo, ...])</p></td>
+<td><p>It tags points where serie_a crosses over serie_b or optionally below.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.tags.tag_column_to_strategy_group" title="binpan.analysis.tags.tag_column_to_strategy_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tag_column_to_strategy_group</span></code></a>(column, group, ...)</p></td>
+<td><p>Tags a columns as part of Strategy group of columns.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.tags.merge_series" title="binpan.analysis.tags.merge_series"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_series</span></code></a>(predominant, other)</p></td>
+<td><p>Predominant serie will be filled nans with values, if existing, from the other serie.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.tags.clean_in_out" title="binpan.analysis.tags.clean_in_out"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clean_in_out</span></code></a>(serie[, in_tag, out_tag])</p></td>
+<td><p>Balance from in tag to first out tag and discards any other tag until next in tag.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.tags.buy_base_backtesting" title="binpan.analysis.tags.buy_base_backtesting"><code class="xref py py-obj docutils literal notranslate"><span class="pre">buy_base_backtesting</span></code></a>(row, price, base, quote)</p></td>
+<td><p>A simple backtesting buy function.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.tags.sell_base_backtesting" title="binpan.analysis.tags.sell_base_backtesting"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sell_base_backtesting</span></code></a>(row, price, base, quote)</p></td>
+<td><p>A simple backtesting sell function.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.tags.evaluate_wallets" title="binpan.analysis.tags.evaluate_wallets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">evaluate_wallets</span></code></a>(df_, base_serie, ...[, ...])</p></td>
+<td><p>Obtains total wallet values in a quote value through time.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.tags.check_action_labels_for_backtesting" title="binpan.analysis.tags.check_action_labels_for_backtesting"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_action_labels_for_backtesting</span></code></a>(actions, ...)</p></td>
+<td><p>This function verify labels in actions series, if labels for in actions and labels for out actions are or not the specified ones. Also</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.tags.simple_backtesting" title="binpan.analysis.tags.simple_backtesting"><code class="xref py py-obj docutils literal notranslate"><span class="pre">simple_backtesting</span></code></a>(df, actions[, base, ...])</p></td>
+<td><p>Returns two pandas series as base wallet and quote wallet over time.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.tags.backtesting" title="binpan.analysis.tags.backtesting"><code class="xref py py-obj docutils literal notranslate"><span class="pre">backtesting</span></code></a>(df, actions_column, ...[, ...])</p></td>
+<td><p>Returns two pandas series as base wallet and quote wallet over time.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.tags.add_future_index_threshold_label" title="binpan.analysis.tags.add_future_index_threshold_label"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_future_index_threshold_label</span></code></a>(data[, ...])</p></td>
+<td><p>Adds next indices for each kline touching prices percentage thresholds as usable target labels for a given threshold to a DataFrame.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.tags.is_alternating" title="binpan.analysis.tags.is_alternating"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_alternating</span></code></a>(lst)</p></td>
+<td><p>Verify if a list is alternating 1 to -1 or -1 to 1 alternatively.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.tags.tag_value">
+<span class="sig-name descname"><span class="pre">tag_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">serie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">gt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ge</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">le</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mismatch_tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_numeric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="reference internal" href="_modules/binpan/analysis/tags.html#tag_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.tags.tag_value" title="Link to this definition">¶</a></dt>
+<dd><p>It tags values of a serie compared to one value and a gt,ge,eq,le,lt condition.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>serie</strong> (<em>pd.Series</em>) – A numeric serie.</p></li>
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em> or </em><em>Decimal</em>) – Value of comparison.</p></li>
+<li><p><strong>gt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Value to match if strictly greater than value.</p></li>
+<li><p><strong>ge</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Value to match if greater or equal than value.</p></li>
+<li><p><strong>eq</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Value to match if equal than value.</p></li>
+<li><p><strong>le</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Value to match if lower or equal than value.</p></li>
+<li><p><strong>lt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Value to match if strictly lower than value.</p></li>
+<li><p><strong>match_tag</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Value to tag previous logic.</p></li>
+<li><p><strong>mismatch_tag</strong> – Value to tag not matched previous logic.</p></li>
+<li><p><strong>to_numeric</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – If true, if possible, downcast type until the most basic numeric type (integer)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.Series<span class="colon">:</span></dt>
+<dd class="field-even"><p>A serie with tags as values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.tags.tag_comparison">
+<span class="sig-name descname"><span class="pre">tag_comparison</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">serie_a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serie_b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ge</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">le</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mismatch_tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_numeric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="reference internal" href="_modules/binpan/analysis/tags.html#tag_comparison"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.tags.tag_comparison" title="Link to this definition">¶</a></dt>
+<dd><p>It tags values of a serie compared to other serie by methods gt,ge,eq,le,lt condition.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>serie_a</strong> (<em>pd.Series</em>) – A numeric serie.</p></li>
+<li><p><strong>serie_b</strong> (<em>pd.Series</em>) – A numeric serie.</p></li>
+<li><p><strong>gt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Value to match if strictly greater than serie_b values.</p></li>
+<li><p><strong>ge</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Value to match if greater or equal than serie_b values.</p></li>
+<li><p><strong>eq</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Value to match if equal than serie_b values.</p></li>
+<li><p><strong>le</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Value to match if lower or equal than serie_b values.</p></li>
+<li><p><strong>lt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Value to match if strictly lower than serie_b values.</p></li>
+<li><p><strong>match_tag</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Value to tag previous logic.</p></li>
+<li><p><strong>mismatch_tag</strong> – Value to tag not matched previous logic.</p></li>
+<li><p><strong>to_numeric</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – If true, if possible, downcast type until the most basic numeric type (integer)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.Series<span class="colon">:</span></dt>
+<dd class="field-even"><p>A serie with tags (argument) as values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.tags.tag_cross">
+<span class="sig-name descname"><span class="pre">tag_cross</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">serie_a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serie_b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">echo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_over_tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'buy'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_below_tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sell'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Cross'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">non_zeros</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="reference internal" href="_modules/binpan/analysis/tags.html#tag_cross"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.tags.tag_cross" title="Link to this definition">¶</a></dt>
+<dd><p>It tags points where serie_a crosses over serie_b or optionally below.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>serie_a</strong> (<em>pd.Series</em>) – A numeric serie.</p></li>
+<li><p><strong>serie_b</strong> (<em>pd.Series</em>) – A numeric serie.</p></li>
+<li><p><strong>echo</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – It tags a fixed amount of candles forward the crossed point not including cross candle.</p></li>
+<li><p><strong>cross_over_tag</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Value to tag over cross. Default is “buy”.</p></li>
+<li><p><strong>cross_below_tag</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Value to tag below cross. Default is “sell”</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Name for the resulting serie.</p></li>
+<li><p><strong>non_zeros</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Substitutes zeros by nans. If echo want to be used, must be used non_zeros.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.Series<span class="colon">:</span></dt>
+<dd class="field-even"><p>A serie with tags as values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.tags.tag_column_to_strategy_group">
+<span class="sig-name descname"><span class="pre">tag_column_to_strategy_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">strategy_groups</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="_modules/binpan/analysis/tags.html#tag_column_to_strategy_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.tags.tag_column_to_strategy_group" title="Link to this definition">¶</a></dt>
+<dd><p>Tags a columns as part of Strategy group of columns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>column</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A column to tag with a strategy group.</p></li>
+<li><p><strong>group</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Name of the group.</p></li>
+<li><p><strong>strategy_groups</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The existing strategy groups.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return dict<span class="colon">:</span></dt>
+<dd class="field-even"><p>Updated strategy groups of columns.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.tags.merge_series">
+<span class="sig-name descname"><span class="pre">merge_series</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">predominant</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="reference internal" href="_modules/binpan/analysis/tags.html#merge_series"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.tags.merge_series" title="Link to this definition">¶</a></dt>
+<dd><p>Predominant serie will be filled nans with values, if existing, from the other serie.</p>
+<p>Same kind of index needed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>predominant</strong> (<em>pd.Series</em>) – A serie with nans to fill from other serie.</p></li>
+<li><p><strong>other</strong> (<em>pd.Series</em>) – A serie to pick values for the nans.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.Series<span class="colon">:</span></dt>
+<dd class="field-even"><p>A merged serie.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.tags.clean_in_out">
+<span class="sig-name descname"><span class="pre">clean_in_out</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">serie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="reference internal" href="_modules/binpan/analysis/tags.html#clean_in_out"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.tags.clean_in_out" title="Link to this definition">¶</a></dt>
+<dd><p>Balance from in tag to first out tag and discards any other tag until next in tag. This cleans redundant in or out tags.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>serie</strong> (<em>pd.Series</em>) – A serie with in and out tags.</p></li>
+<li><p><strong>in_tag</strong> – Tag for in tags. Default is 1.</p></li>
+<li><p><strong>out_tag</strong> – Tag for out tags. Default is -1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.Series<span class="colon">:</span></dt>
+<dd class="field-even"><p>Clean serie with ech in with next out.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.tags.buy_base_backtesting">
+<span class="sig-name descname"><span class="pre">buy_base_backtesting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">price</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">quote</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">fee</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a></span></span><a class="reference internal" href="_modules/binpan/analysis/tags.html#buy_base_backtesting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.tags.buy_base_backtesting" title="Link to this definition">¶</a></dt>
+<dd><p>A simple backtesting buy function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>row</strong> (<em>pd.Series</em>) – A row of a BinPan DataFrame with prices.</p></li>
+<li><p><strong>price</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Price of the action.</p></li>
+<li><p><strong>base</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Inverted base.</p></li>
+<li><p><strong>quote</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Inverted quote.</p></li>
+<li><p><strong>fee</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Fee applied to the operation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return tuple<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple with resulting base and quote after operation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.tags.sell_base_backtesting">
+<span class="sig-name descname"><span class="pre">sell_base_backtesting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">price</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">quote</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">fee</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a></span></span><a class="reference internal" href="_modules/binpan/analysis/tags.html#sell_base_backtesting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.tags.sell_base_backtesting" title="Link to this definition">¶</a></dt>
+<dd><p>A simple backtesting sell function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>row</strong> (<em>pd.Series</em>) – A row of a BinPan DataFrame with prices.</p></li>
+<li><p><strong>price</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Price of the action.</p></li>
+<li><p><strong>base</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Inverted base.</p></li>
+<li><p><strong>quote</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Inverted quote.</p></li>
+<li><p><strong>fee</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Fee applied to the operation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return tuple<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple with resulting base and quote after operation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.tags.evaluate_wallets">
+<span class="sig-name descname"><span class="pre">evaluate_wallets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_serie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quote_serie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evaluating_quote</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Series</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Series</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Series</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/binpan/analysis/tags.html#evaluate_wallets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.tags.evaluate_wallets" title="Link to this definition">¶</a></dt>
+<dd><p>Obtains total wallet values in a quote value through time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – A BinPan’s dataframe.</p></li>
+<li><p><strong>base_serie</strong> (<em>pd.Series</em>) – A wallet serie for symbol’s base.</p></li>
+<li><p><strong>quote_serie</strong> (<em>pd.Series</em>) – A wallet serie for symbol’s quote.</p></li>
+<li><p><strong>evaluating_quote</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – a Binance valid quote to evaluate operations.</p></li>
+<li><p><strong>info_dic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – BinPan exchange info dict to extract information about quotes and bases of symbols.</p></li>
+<li><p><strong>suffix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A suffix for the names of the columns.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
+<dd class="field-even"><p>It returns a dataframe with base and quote series plus an evaluated serie in any quote coin of both wallets merged.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.tags.check_action_labels_for_backtesting">
+<span class="sig-name descname"><span class="pre">check_action_labels_for_backtesting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">actions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_in</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_out</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><span class="pre">any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/binpan/analysis/tags.html#check_action_labels_for_backtesting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.tags.check_action_labels_for_backtesting" title="Link to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>This function verify labels in actions series, if labels for in actions and labels for out actions are or not the specified ones. Also</dt><dd><p>if there are any other label it will throw an exception.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>actions</strong> (<em>pd.Series</em>) – A serie with labels to check if there are just in and out labels or not.</p></li>
+<li><p><strong>label_in</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Usually 1</p></li>
+<li><p><strong>label_out</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Usually -1</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return tuple<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns verified label in and label out.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.tags.simple_backtesting">
+<span class="sig-name descname"><span class="pre">simple_backtesting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quote</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priced_actions_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Open'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fee</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evaluating_quote</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BUSD'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/binpan/analysis/tags.html#simple_backtesting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.tags.simple_backtesting" title="Link to this definition">¶</a></dt>
+<dd><p>Returns two pandas series as base wallet and quote wallet over time. Its expected a serie with strings like ‘buy’ or ‘sell’.
+That serie is called the “actions”. If it is available a column with the exact price of the actions, can be passed in
+actions_col parameter by column name or a pandas series, if not, Closed price column can be a good approximation.</p>
+<p>All actions will be considered to buy all base as possible or to sell all base as posible.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – A BinPan dataframe.</p></li>
+<li><p><strong>actions</strong> (<em>pd.Series</em>) – A pandas series with buy or sell strings for simulate actions.</p></li>
+<li><p><strong>base</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – A starting quantity of symbol’s base.</p></li>
+<li><p><strong>quote</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – A starting quantity of symbol’s quote.</p></li>
+<li><p><strong>priced_actions_col</strong> (<em>pd.Series</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Column with the prices for the action emulation.</p></li>
+<li><p><strong>fee</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Binance applicable fee for trading. DEfault is 0.001.</p></li>
+<li><p><strong>label_in</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – A label consider as trade in trigger.</p></li>
+<li><p><strong>label_out</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – A label consider as trade out trigger.</p></li>
+<li><p><strong>evaluating_quote</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – a Binance valid quote to evaluate operations.</p></li>
+<li><p><strong>info_dic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – BinPan exchange info dict to extract information about quotes and bases of symbols.</p></li>
+<li><p><strong>suffix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A suffix for the names of the columns.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return tuple<span class="colon">:</span></dt>
+<dd class="field-even"><p>Two series with the base wallet and quote wallet funds in time.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.tags.backtesting">
+<span class="sig-name descname"><span class="pre">backtesting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actions_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_loss_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entry_filter_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Series</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priced_actions_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Series</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Open'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixed_target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixed_stop_loss</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quote</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fee</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evaluating_quote</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_dic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">direction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'long'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/binpan/analysis/tags.html#backtesting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.tags.backtesting" title="Link to this definition">¶</a></dt>
+<dd><p>Returns two pandas series as base wallet and quote wallet over time. Its expected a serie with numbers like 1 for ins and -1 for outs.
+By ins and out I mean buys or sells, shorts and repays, etc.</p>
+<dl class="simple">
+<dt>If it is available a column with the exact price of the actions, can be passed in actions_col parameter by column name or a pandas</dt><dd><p>series, if not, Open price column can be a good approximation because operations start at the next candle of the tagged one.</p>
+</dd>
+</dl>
+<p>All actions will be considered to buy all base as possible or to sell all base as posible.</p>
+<p>Supports both long and short positions backtesting via the <code class="docutils literal notranslate"><span class="pre">direction</span></code> parameter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – A BinPan dataframe.</p></li>
+<li><p><strong>actions_column</strong> (<em>pd.Series</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A pandas series with buy or sell strings for simulate actions.</p></li>
+<li><p><strong>target_column</strong> (<em>pd.Series</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Column with data for operation target values.</p></li>
+<li><p><strong>stop_loss_column</strong> (<em>pd.Series</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Column with data for operation stop loss values.</p></li>
+<li><p><strong>entry_filter_column</strong> (<em>pd.Series</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A serie or colum with ones or zeros to allow or avoid entries.</p></li>
+<li><p><strong>priced_actions_col</strong> (<em>pd.Series</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Column with the prices for the action emulation.</p></li>
+<li><p><strong>fixed_target</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Target for any operation will be calculated and fixed at the beginning of the operation.</p></li>
+<li><p><strong>fixed_stop_loss</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Stop loss for any operation will be calculated and fixed at the beginning of the operation.</p></li>
+<li><p><strong>base</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – A starting quantity of symbol’s base.</p></li>
+<li><p><strong>quote</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – A starting quantity of symbol’s quote.</p></li>
+<li><p><strong>fee</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Binance applicable fee for trading. DEfault is 0.001.</p></li>
+<li><p><strong>label_in</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – A label consider as trade in trigger.</p></li>
+<li><p><strong>label_out</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – A label consider as trade out trigger.</p></li>
+<li><p><strong>evaluating_quote</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – a Binance valid quote to evaluate operations.</p></li>
+<li><p><strong>info_dic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – BinPan exchange info dict to extract information about quotes and bases of symbols.</p></li>
+<li><p><strong>suffix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A suffix for the names of the columns.</p></li>
+<li><p><strong>direction</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Direction of the backtesting: <code class="docutils literal notranslate"><span class="pre">'long'</span></code> (default) or <code class="docutils literal notranslate"><span class="pre">'short'</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return tuple<span class="colon">:</span></dt>
+<dd class="field-even"><p>Two series with the base wallet and quote wallet funds in time.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.tags.add_future_index_threshold_label">
+<span class="sig-name descname"><span class="pre">add_future_index_threshold_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thresholds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[0.002,</span> <span class="pre">-0.002,</span> <span class="pre">0.006,</span> <span class="pre">-0.006]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_lookahead</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/binpan/analysis/tags.html#add_future_index_threshold_label"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.tags.add_future_index_threshold_label" title="Link to this definition">¶</a></dt>
+<dd><p>Adds next indices for each kline touching prices percentage thresholds as usable target labels for a given threshold to a DataFrame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – DataFrame containing the OHLC (Open, High, Low, Close) price data.</p></li>
+<li><p><strong>thresholds</strong> – List of thresholds for which to create future action labels. Positive values indicate a
+price increase, negative values indicate a price decrease.</p></li>
+<li><p><strong>max_lookahead</strong> – Maximum number of bars to look ahead to determine if a threshold is met. Default is 30.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>DataFrame with additional columns for each threshold. Each column contains the number of bars until
+the price change defined by the threshold is met. If the price change is not met within max_lookahead
+bars, the value is NaN.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.tags.is_alternating">
+<span class="sig-name descname"><span class="pre">is_alternating</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lst</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="_modules/binpan/analysis/tags.html#is_alternating"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.tags.is_alternating" title="Link to this definition">¶</a></dt>
+<dd><p>Verify if a list is alternating 1 to -1 or -1 to 1 alternatively.
+:param lst: A list of integers.
+:return:</p>
+</dd></dl>
+
+</section>
+
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"><div class="navigation-prev">
+    <a href="strategies.html">
+      <i class="i-lucide chevron-left"></i>
+      <div class="page-info">
+        <span>Previous</span><div class="title">Strategies Module</div></div>
+    </a>
+  </div><div class="navigation-next">
+    <a href="stat_tests.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title">Statistical Tests and Tools</div>
+      </div>
+      <i class="i-lucide chevron-right"></i>
+    </a>
+  </div></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2022, Fernando Alfonso</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+<a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+  <iconify-icon icon="simple-icons:github"></iconify-icon>
+</a></div>
+    </div>
+  </div>
+</footer>
+      <script src="_static/documentation_options.js?v=11e62b30"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/shibuya.js?v=50760d75"></script></body>
+</html>

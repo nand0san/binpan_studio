@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="iris" data-content_root="./">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Aggregations Module - BinPan 0.10.2</title><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Strategies Module" href="strategies.html" /><link rel="prev" title="Indicators Module" href="indicators.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="_static/pygments.css?v=e1a1ceaf" />
+    <link rel="stylesheet" type="text/css" href="_static/shibuya.css?v=9454f7d5" />
+    <link rel="stylesheet" type="text/css" href="_static/style.css?v=1e48dca6" />
+    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/><meta property="og:title" content="Aggregations Module"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="index.html">
+      
+      
+      <strong>BinPan</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Main Classes:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="binpan.html">BinPan Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="symbol_indicators.html">Symbol Indicators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="symbol_plotting.html">Symbol Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="symbol_strategy.html">Symbol Strategy</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">API &amp; Market:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="market.html">Market Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exchange.html">Exchange Info Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="auth.html">Authentication Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wallet.html">Wallet Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wallet_api.html">Wallet API Functions</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Analysis:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="indicators.html">Indicators Module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Aggregations Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tags.html">Tags &amp; Backtesting Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stat_tests.html">Statistical Tests and Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_tools.html">Numba Tools Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Core:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="time_helper.html">Time Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timeframes.html">Timeframes Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trades.html">Trades Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="standards.html">Standards Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="secrets.html">Secrets Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logs.html">Logs Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Plotting:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Storage &amp; Database:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="files.html">Files Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postgresql.html">PostgreSQL Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postgresql_database.html">PostgreSQL Database Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="influx_manager.html">Influx Manager Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_fetch.html">Redis Module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#binpan.analysis.aggregations.generate_count_grouper_column"><code class="docutils literal notranslate"><span class="pre">generate_count_grouper_column()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.aggregations.ohlc_group"><code class="docutils literal notranslate"><span class="pre">ohlc_group()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.aggregations.sum_split_by_boolean_column_and_group"><code class="docutils literal notranslate"><span class="pre">sum_split_by_boolean_column_and_group()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.aggregations.count_trues_cumulative"><code class="docutils literal notranslate"><span class="pre">count_trues_cumulative()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.aggregations.drop_aggregated"><code class="docutils literal notranslate"><span class="pre">drop_aggregated()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.aggregations.tag_by_accumulation"><code class="docutils literal notranslate"><span class="pre">tag_by_accumulation()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.aggregations.resample_klines"><code class="docutils literal notranslate"><span class="pre">resample_klines()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.aggregations.oversample"><code class="docutils literal notranslate"><span class="pre">oversample()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.aggregations.time_index_from_timestamps"><code class="docutils literal notranslate"><span class="pre">time_index_from_timestamps()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.aggregations.columns_restriction"><code class="docutils literal notranslate"><span class="pre">columns_restriction()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.aggregations.generate_volume_column"><code class="docutils literal notranslate"><span class="pre">generate_volume_column()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.aggregations.sign_of_price"><code class="docutils literal notranslate"><span class="pre">sign_of_price()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.aggregations.tick_bars"><code class="docutils literal notranslate"><span class="pre">tick_bars()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.aggregations.volume_bars"><code class="docutils literal notranslate"><span class="pre">volume_bars()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.aggregations.dollar_bars"><code class="docutils literal notranslate"><span class="pre">dollar_bars()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.aggregations.ohlc_bars"><code class="docutils literal notranslate"><span class="pre">ohlc_bars()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.aggregations.ImbalanceBars"><code class="docutils literal notranslate"><span class="pre">ImbalanceBars</span></code></a><ul>
+<li><a class="reference internal" href="#binpan.analysis.aggregations.ImbalanceBars.initialize_startup_variables"><code class="docutils literal notranslate">initialize_startup_variables()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.aggregations.ImbalanceBars.get_expected_size"><code class="docutils literal notranslate">get_expected_size()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.aggregations.ImbalanceBars.get_expected_probability"><code class="docutils literal notranslate">get_expected_probability()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.aggregations.ImbalanceBars.get_expected_imbalance"><code class="docutils literal notranslate">get_expected_imbalance()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.aggregations.ImbalanceBars.sampling_loop"><code class="docutils literal notranslate">sampling_loop()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.aggregations.ImbalanceBars.decide_sampling"><code class="docutils literal notranslate">decide_sampling()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.aggregations.ImbalanceBars.construct_bars"><code class="docutils literal notranslate">construct_bars()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#binpan.analysis.aggregations.imbalance_bars_divergent"><code class="docutils literal notranslate"><span class="pre">imbalance_bars_divergent()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.aggregations.imbalance_bars_fixed"><code class="docutils literal notranslate"><span class="pre">imbalance_bars_fixed()</span></code></a></li>
+<li><a class="reference internal" href="#binpan.analysis.aggregations.tick_imbalance_bars"><code class="docutils literal notranslate"><span class="pre">tick_imbalance_bars()</span></code></a></li>
+</ul>
+</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="index.html"><span itemprop="name">BinPan</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">Aggregations Module</strong>
+        <meta itemprop="position" content="2" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue" role="main">
+          <section id="aggregations-module">
+<h1>Aggregations Module<a class="headerlink" href="#aggregations-module" title="Link to this heading">¶</a></h1>
+<p>This module is inspired by the exercises in the book “Advances in Financial Machine Learning” by Marcos Lopez de Prado.</p>
+<p id="module-binpan.analysis.aggregations">Data Aggregation.</p>
+<p><strong>Functions:</strong></p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.aggregations.generate_count_grouper_column" title="binpan.analysis.aggregations.generate_count_grouper_column"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_count_grouper_column</span></code></a>(data, ...)</p></td>
+<td><p>It adds a column with a value for each rows count.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.aggregations.ohlc_group" title="binpan.analysis.aggregations.ohlc_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ohlc_group</span></code></a>(data, column_to_ohlc, group_column)</p></td>
+<td><p>Creates  OHLC columns for a column based on group by other column with discrete values.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.aggregations.sum_split_by_boolean_column_and_group" title="binpan.analysis.aggregations.sum_split_by_boolean_column_and_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sum_split_by_boolean_column_and_group</span></code></a>(data)</p></td>
+<td><p>Splits the sum of a numeric column into two new columns based on a boolean column and groups the data using another column.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.aggregations.count_trues_cumulative" title="binpan.analysis.aggregations.count_trues_cumulative"><code class="xref py py-obj docutils literal notranslate"><span class="pre">count_trues_cumulative</span></code></a>(data, bool_column, ...)</p></td>
+<td><p>Add a new column to the DataFrame with cumulative numbers for each True value in a boolean column.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.aggregations.drop_aggregated" title="binpan.analysis.aggregations.drop_aggregated"><code class="xref py py-obj docutils literal notranslate"><span class="pre">drop_aggregated</span></code></a>(data, group_column[, by])</p></td>
+<td><p>Drop lines except the first/last/min/max etc row of each group_column streak.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.aggregations.tag_by_accumulation" title="binpan.analysis.aggregations.tag_by_accumulation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tag_by_accumulation</span></code></a>(trades, threshold[, ...])</p></td>
+<td><p>Creates integer sequence by column value threshold accumulation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.aggregations.resample_klines" title="binpan.analysis.aggregations.resample_klines"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resample_klines</span></code></a>(data, tick_interval)</p></td>
+<td><p>Resamples a DataFrame of klines to a different frequency.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.aggregations.oversample" title="binpan.analysis.aggregations.oversample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">oversample</span></code></a>(data, new_interval)</p></td>
+<td><p>Expands a DataFrame of klines by calculating aggregated values for new columns from the start of the oversampled interval to each row.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.aggregations.time_index_from_timestamps" title="binpan.analysis.aggregations.time_index_from_timestamps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time_index_from_timestamps</span></code></a>(data[, ...])</p></td>
+<td><p>Assumes existing timestamp column or at least Open timestamp column.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.aggregations.columns_restriction" title="binpan.analysis.aggregations.columns_restriction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">columns_restriction</span></code></a>(data, mode[, extra])</p></td>
+<td><p>Filter columns by preset.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.aggregations.generate_volume_column" title="binpan.analysis.aggregations.generate_volume_column"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_volume_column</span></code></a>(data, add_cols[, ...])</p></td>
+<td><p>Add two columns to generate volume of base.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.aggregations.sign_of_price" title="binpan.analysis.aggregations.sign_of_price"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sign_of_price</span></code></a>(data[, col_name])</p></td>
+<td><p>Creates a new dataframe with a column with the sign of the price by each trade.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.aggregations.tick_bars" title="binpan.analysis.aggregations.tick_bars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tick_bars</span></code></a>(trades, size)</p></td>
+<td><p>Creates Tick Bars OHLC bars from trades-</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.aggregations.volume_bars" title="binpan.analysis.aggregations.volume_bars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">volume_bars</span></code></a>(trades, threshold)</p></td>
+<td><p>Creates Volume Bars OHLC bars from trades.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.aggregations.dollar_bars" title="binpan.analysis.aggregations.dollar_bars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dollar_bars</span></code></a>(trades, threshold)</p></td>
+<td><p>Creates Dollar (or quote) Bars OHLC bars from trades.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.aggregations.ohlc_bars" title="binpan.analysis.aggregations.ohlc_bars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ohlc_bars</span></code></a>(rows_with_bar_counter, index[, mode])</p></td>
+<td><p>Generate an OHLC dataframe from a trades dataframe with a column containing sampled numeric tags for each bar's aggregation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.aggregations.imbalance_bars_divergent" title="binpan.analysis.aggregations.imbalance_bars_divergent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">imbalance_bars_divergent</span></code></a>(trades, ...)</p></td>
+<td><p>Generates candles by grouping each accumulated imbalance defined by:</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.aggregations.imbalance_bars_fixed" title="binpan.analysis.aggregations.imbalance_bars_fixed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">imbalance_bars_fixed</span></code></a>(trades, imbalance)</p></td>
+<td><p>Generates candles by grouping each accumulated fixed imbalance threshold defined by:</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.aggregations.tick_imbalance_bars" title="binpan.analysis.aggregations.tick_imbalance_bars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tick_imbalance_bars</span></code></a>(trades[, window])</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Classes:</strong></p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.aggregations.ImbalanceBars" title="binpan.analysis.aggregations.ImbalanceBars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ImbalanceBars</span></code></a>(trades, bar_type[, method, ...])</p></td>
+<td><p>Sample imbalance bars.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.aggregations.generate_count_grouper_column">
+<span class="sig-name descname"><span class="pre">generate_count_grouper_column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grouper_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/binpan/analysis/aggregations.html#generate_count_grouper_column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.aggregations.generate_count_grouper_column" title="Link to this definition">¶</a></dt>
+<dd><p>It adds a column with a value for each rows count.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>pd.Dataframe</em>) – A dataframe with at least two columns.</p></li>
+<li><p><strong>grouper_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Name for the column to be used as grouper.</p></li>
+<li><p><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Count of rows to declare grouper integer sequence.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A copy of the dataframe with a new column.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.aggregations.ohlc_group">
+<span class="sig-name descname"><span class="pre">ohlc_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_ohlc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/binpan/analysis/aggregations.html#ohlc_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.aggregations.ohlc_group" title="Link to this definition">¶</a></dt>
+<dd><p>Creates  OHLC columns for a column based on group by other column with discrete values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>pd.Dataframe</em>) – A dataframe with at least two columns.</p></li>
+<li><p><strong>column_to_ohlc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Column to sparse values to OHLC columns in each group.</p></li>
+<li><p><strong>group_column</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – This column will be the grouping key.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A copy of the dataframe with OHLC data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.aggregations.sum_split_by_boolean_column_and_group">
+<span class="sig-name descname"><span class="pre">sum_split_by_boolean_column_and_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_to_split_sum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Quantity'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bool_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Buyer</span> <span class="pre">was</span> <span class="pre">maker'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/binpan/analysis/aggregations.html#sum_split_by_boolean_column_and_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.aggregations.sum_split_by_boolean_column_and_group" title="Link to this definition">¶</a></dt>
+<dd><p>Splits the sum of a numeric column into two new columns based on a boolean column and groups the data using another column.</p>
+<p>This function is useful for generating two new columns, one for the true values and another for the false values, with the sum
+of the specified numeric column for each group and filling the remaining cells with NaNs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>pd.DataFrame</em>) – A dataframe with at least 3 columns.</p></li>
+<li><p><strong>column_to_split_sum</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – Numeric column with data to sum by group and split by boolean column, defaults to “Quantity”.</p></li>
+<li><p><strong>bool_col</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – Column to define splitting, defaults to “Buyer was maker”.</p></li>
+<li><p><strong>group_column</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – This column will be the grouping key, defaults to “group”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A copy of the dataframe with splitted sum by group from the column to split sum.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.aggregations.count_trues_cumulative">
+<span class="sig-name descname"><span class="pre">count_trues_cumulative</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bool_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/binpan/analysis/aggregations.html#count_trues_cumulative"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.aggregations.count_trues_cumulative" title="Link to this definition">¶</a></dt>
+<dd><p>Add a new column to the DataFrame with cumulative numbers for each True value in a boolean column.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>pd.DataFrame</em>) – The input DataFrame.</p></li>
+<li><p><strong>bool_column</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The name of the boolean column to evaluate.</p></li>
+<li><p><strong>new_column</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The name of the new column to store the cumulative numbers for True values.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A new DataFrame with an additional column containing the cumulative numbers for True values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.aggregations.drop_aggregated">
+<span class="sig-name descname"><span class="pre">drop_aggregated</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'last'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/binpan/analysis/aggregations.html#drop_aggregated"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.aggregations.drop_aggregated" title="Link to this definition">¶</a></dt>
+<dd><p>Drop lines except the first/last/min/max etc row of each group_column streak.</p>
+<p>It assumes that the grouping column is a serie of integers to group it by blocks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>pd.Dataframe</em>) – A dataframe.</p></li>
+<li><p><strong>group_column</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – This column will be the grouping key.</p></li>
+<li><p><strong>by</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Pandas valid aggregation method.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A copy of the dataframe with just the first row each grouper streak.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.aggregations.tag_by_accumulation">
+<span class="sig-name descname"><span class="pre">tag_by_accumulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">agg_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Quantity'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grouper_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/binpan/analysis/aggregations.html#tag_by_accumulation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.aggregations.tag_by_accumulation" title="Link to this definition">¶</a></dt>
+<dd><p>Creates integer sequence by column value threshold accumulation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>trades</strong> (<em>pd.DataFrame</em>) – Expected binpan aggregated trades or atomic trades dataframe.</p></li>
+<li><p><strong>agg_column</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Name of the column to group by volume accumulation.</p></li>
+<li><p><strong>grouper_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Name for the column to be used as grouper.</p></li>
+<li><p><strong>threshold</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Size of volume aggregated in bars to be compiled.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.aggregations.resample_klines">
+<span class="sig-name descname"><span class="pre">resample_klines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/binpan/analysis/aggregations.html#resample_klines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.aggregations.resample_klines" title="Link to this definition">¶</a></dt>
+<dd><p>Resamples a DataFrame of klines to a different frequency.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>pd.DataFrame</em>) – The original DataFrame of klines. The index must be a DatetimeIndex.</p></li>
+<li><p><strong>tick_interval</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The new frequency for the klines. This can be any Binance frequency.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A new DataFrame with the resampled klines.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.aggregations.oversample">
+<span class="sig-name descname"><span class="pre">oversample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/binpan/analysis/aggregations.html#oversample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.aggregations.oversample" title="Link to this definition">¶</a></dt>
+<dd><p>Expands a DataFrame of klines by calculating aggregated values for new columns
+from the start of the oversampled interval to each row.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>pd.DataFrame</em>) – The original DataFrame of klines. The index must be a DatetimeIndex.</p></li>
+<li><p><strong>new_interval</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The new frequency for oversampling. This can be any Binance frequency.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An expanded DataFrame with oversampled data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.aggregations.time_index_from_timestamps">
+<span class="sig-name descname"><span class="pre">time_index_from_timestamps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Europe/Madrid'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/binpan/analysis/aggregations.html#time_index_from_timestamps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.aggregations.time_index_from_timestamps" title="Link to this definition">¶</a></dt>
+<dd><p>Assumes existing timestamp column or at least Open timestamp column.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>pd.Dataframe</em>) – A dataframe.</p></li>
+<li><p><strong>drop_col</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Drop column applied as index.</p></li>
+<li><p><strong>index_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Name for the resulting index.</p></li>
+<li><p><strong>timezone</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The index of the pandas dataframe in the object can be converted to any timezone, i.e. “Europe/Madrid”
+- TZ database: <a class="reference external" href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones">https://en.wikipedia.org/wiki/List_of_tz_database_time_zones</a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dataframe copy with the new index. Timestamp columns will be not dropped.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.aggregations.columns_restriction">
+<span class="sig-name descname"><span class="pre">columns_restriction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/binpan/analysis/aggregations.html#columns_restriction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.aggregations.columns_restriction" title="Link to this definition">¶</a></dt>
+<dd><p>Filter columns by preset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>pd.DataFrame</em>) – A dataframe.</p></li>
+<li><p><strong>mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Presets are: TB, VB, DB, VIB, DIB, TRB, VRB, DRB. All from chapter 2 of AFML book (Marcos López de Prado).
+<a class="reference external" href="https://www.amazon.com/-/es/Marcos-Lopez-Prado/dp/1119482089">https://www.amazon.com/-/es/Marcos-Lopez-Prado/dp/1119482089</a></p></li>
+<li><p><strong>extra</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – Optional extra columns.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
+<dd class="field-even"><p>Just preset columns.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.aggregations.generate_volume_column">
+<span class="sig-name descname"><span class="pre">generate_volume_column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_cols</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">quote_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/binpan/analysis/aggregations.html#generate_volume_column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.aggregations.generate_volume_column" title="Link to this definition">¶</a></dt>
+<dd><p>Add two columns to generate volume of base.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>pd.DataFrame</em>) – A dataframe.</p></li>
+<li><p><strong>add_cols</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a>) – Ordered tuple with two columns to add for calculating the total volume.</p></li>
+<li><p><strong>quote_column</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – If True, Volume for quote will be added obtained from Volume and Close price.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
+<dd class="field-even"><p>A copy with volume added.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.aggregations.sign_of_price">
+<span class="sig-name descname"><span class="pre">sign_of_price</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'sign'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/binpan/analysis/aggregations.html#sign_of_price"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.aggregations.sign_of_price" title="Link to this definition">¶</a></dt>
+<dd><p>Creates a new dataframe with a column with the sign of the price by each trade.
+1 if the trade increased the price and -1 for decreased price. Also called “tick rule”.</p>
+<p>Nans will be filled as zero.</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\begin{split}b_t= \begin{cases}b_{t-1} &amp; \text { if } \Delta p_t=0 \\ \frac{\left|\Delta p_t\right|}{\Delta p_t} &amp; \text { if } \Delta p_t \neq 0\end{cases}\end{split}\]</div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>pd.DataFrame</em>) – Trades dataframe.</p></li>
+<li><p><strong>col_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – New column name.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pd.DataFrame<span class="colon">:</span></dt>
+<dd class="field-even"><p>A copy of the data with the new column.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.aggregations.tick_bars">
+<span class="sig-name descname"><span class="pre">tick_bars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/binpan/analysis/aggregations.html#tick_bars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.aggregations.tick_bars" title="Link to this definition">¶</a></dt>
+<dd><p>Creates Tick Bars OHLC bars from trades-</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>trades</strong> (<em>pd.DataFrame</em>) – Expected binpan aggregated trades or atomic trades dataframe.</p></li>
+<li><p><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Size of ticks in bars to be compiled.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dataframe sampled with the new bars sampling.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.aggregations.volume_bars">
+<span class="sig-name descname"><span class="pre">volume_bars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/binpan/analysis/aggregations.html#volume_bars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.aggregations.volume_bars" title="Link to this definition">¶</a></dt>
+<dd><p>Creates Volume Bars OHLC bars from trades.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>trades</strong> (<em>pd.DataFrame</em>) – Expected binpan aggregated trades or atomic trades dataframe.</p></li>
+<li><p><strong>threshold</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Size of volume threshold in bars to be compiled.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dataframe sampled with the new bars sampling.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.aggregations.dollar_bars">
+<span class="sig-name descname"><span class="pre">dollar_bars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/binpan/analysis/aggregations.html#dollar_bars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.aggregations.dollar_bars" title="Link to this definition">¶</a></dt>
+<dd><p>Creates Dollar (or quote) Bars OHLC bars from trades.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>trades</strong> (<em>pd.DataFrame</em>) – Expected binpan aggregated trades or atomic trades dataframe.</p></li>
+<li><p><strong>threshold</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Size of Dollar (or quote) threshold in bars to be compiled.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dataframe sampled with the new bars sampling.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.aggregations.ohlc_bars">
+<span class="sig-name descname"><span class="pre">ohlc_bars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rows_with_bar_counter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'IB'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/binpan/analysis/aggregations.html#ohlc_bars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.aggregations.ohlc_bars" title="Link to this definition">¶</a></dt>
+<dd><p>Generate an OHLC dataframe from a trades dataframe with a column containing sampled numeric tags for each bar’s aggregation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rows_with_bar_counter</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – A list of trades with a column containing bar numbers to group into OHLC bars.</p></li>
+<li><p><strong>index</strong> (<em>pd.Index</em>) – Index for the resulting dataframe.</p></li>
+<li><p><strong>mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Presets are: TB, VB, DB, VIB, DIB, TRB, VRB, DRB. All from chapter 2 of AFML book (Marcos López de Prado).
+<a class="reference external" href="https://www.amazon.com/-/es/Marcos-Lopez-Prado/dp/1119482089">https://www.amazon.com/-/es/Marcos-Lopez-Prado/dp/1119482089</a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dataframe with OHLC bars.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="binpan.analysis.aggregations.ImbalanceBars">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">ImbalanceBars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bar_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'ema'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixed_imbalance_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">21</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boot_trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adjust_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/binpan/analysis/aggregations.html#ImbalanceBars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.aggregations.ImbalanceBars" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Sample imbalance bars.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>trades</strong> (<em>pd.DataFrame</em>) – A dataframe with trades, atomic or aggregated.</p></li>
+<li><p><strong>bar_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Can be ‘imbalance’, ‘volume’, ‘dollar’.</p></li>
+<li><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Expected imbalance calculation method can be ‘fix’, ‘sma’, ‘ema’</p></li>
+<li><p><strong>fixed_imbalance_threshold</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – A threshold for fixed imbalance</p></li>
+<li><p><strong>window</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – A rolling window size for moving averages.</p></li>
+<li><p><strong>boot_trades</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Number of trades to use for initial imbalance calculation.</p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Prints data while computing bars.</p></li>
+<li><p><strong>adjust_threshold</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – If true, threshold will be multiplied by first price. Ca be useful with volume bars.</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Methods:</strong></p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.aggregations.ImbalanceBars.initialize_startup_variables" title="binpan.analysis.aggregations.ImbalanceBars.initialize_startup_variables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">initialize_startup_variables</span></code></a>()</p></td>
+<td><p>Initialize startup variables based on the chosen method.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.aggregations.ImbalanceBars.get_expected_size" title="binpan.analysis.aggregations.ImbalanceBars.get_expected_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_expected_size</span></code></a>()</p></td>
+<td><p>Calculate the expected size of the imbalance bars using the chosen method.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.aggregations.ImbalanceBars.get_expected_probability" title="binpan.analysis.aggregations.ImbalanceBars.get_expected_probability"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_expected_probability</span></code></a>()</p></td>
+<td><p>Calculate the expected probability of the imbalance bars using the chosen method.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.aggregations.ImbalanceBars.get_expected_imbalance" title="binpan.analysis.aggregations.ImbalanceBars.get_expected_imbalance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_expected_imbalance</span></code></a>()</p></td>
+<td><p>Calculate the expected imbalance value based on the bar type and chosen method.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.aggregations.ImbalanceBars.sampling_loop" title="binpan.analysis.aggregations.ImbalanceBars.sampling_loop"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sampling_loop</span></code></a>()</p></td>
+<td><p>Main sampling loop to iterate through trades and create imbalance bars.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#binpan.analysis.aggregations.ImbalanceBars.decide_sampling" title="binpan.analysis.aggregations.ImbalanceBars.decide_sampling"><code class="xref py py-obj docutils literal notranslate"><span class="pre">decide_sampling</span></code></a>(my_molecule_sign, ...)</p></td>
+<td><p>Decide whether to sample the current bar and update variables accordingly.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#binpan.analysis.aggregations.ImbalanceBars.construct_bars" title="binpan.analysis.aggregations.ImbalanceBars.construct_bars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">construct_bars</span></code></a>()</p></td>
+<td><p>Construct the resulting imbalance bars DataFrame.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.analysis.aggregations.ImbalanceBars.initialize_startup_variables">
+<span class="sig-name descname"><span class="pre">initialize_startup_variables</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/binpan/analysis/aggregations.html#ImbalanceBars.initialize_startup_variables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.aggregations.ImbalanceBars.initialize_startup_variables" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize startup variables based on the chosen method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.analysis.aggregations.ImbalanceBars.get_expected_size">
+<span class="sig-name descname"><span class="pre">get_expected_size</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/binpan/analysis/aggregations.html#ImbalanceBars.get_expected_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.aggregations.ImbalanceBars.get_expected_size" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate the expected size of the imbalance bars using the chosen method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.analysis.aggregations.ImbalanceBars.get_expected_probability">
+<span class="sig-name descname"><span class="pre">get_expected_probability</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/binpan/analysis/aggregations.html#ImbalanceBars.get_expected_probability"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.aggregations.ImbalanceBars.get_expected_probability" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate the expected probability of the imbalance bars using the chosen method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.analysis.aggregations.ImbalanceBars.get_expected_imbalance">
+<span class="sig-name descname"><span class="pre">get_expected_imbalance</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="reference internal" href="_modules/binpan/analysis/aggregations.html#ImbalanceBars.get_expected_imbalance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.aggregations.ImbalanceBars.get_expected_imbalance" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate the expected imbalance value based on the bar type and chosen method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.analysis.aggregations.ImbalanceBars.sampling_loop">
+<span class="sig-name descname"><span class="pre">sampling_loop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/binpan/analysis/aggregations.html#ImbalanceBars.sampling_loop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.aggregations.ImbalanceBars.sampling_loop" title="Link to this definition">¶</a></dt>
+<dd><p>Main sampling loop to iterate through trades and create imbalance bars.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.analysis.aggregations.ImbalanceBars.decide_sampling">
+<span class="sig-name descname"><span class="pre">decide_sampling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">my_molecule_sign</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">my_molecule_cum_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/binpan/analysis/aggregations.html#ImbalanceBars.decide_sampling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.aggregations.ImbalanceBars.decide_sampling" title="Link to this definition">¶</a></dt>
+<dd><p>Decide whether to sample the current bar and update variables accordingly.</p>
+<p>Sample surpassing data to the next bar.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="binpan.analysis.aggregations.ImbalanceBars.construct_bars">
+<span class="sig-name descname"><span class="pre">construct_bars</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/binpan/analysis/aggregations.html#ImbalanceBars.construct_bars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.aggregations.ImbalanceBars.construct_bars" title="Link to this definition">¶</a></dt>
+<dd><p>Construct the resulting imbalance bars DataFrame.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.aggregations.imbalance_bars_divergent">
+<span class="sig-name descname"><span class="pre">imbalance_bars_divergent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">starting_imbalance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/binpan/analysis/aggregations.html#imbalance_bars_divergent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.aggregations.imbalance_bars_divergent" title="Link to this definition">¶</a></dt>
+<dd><p>Generates candles by grouping each accumulated imbalance defined by:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\theta_T=\sum_{t=1}^T b_t\]</div>
+</div>
+<p>To close a bar, the imbalance must meet expected imbalance while iterating trades, in other words, when expected ticks times the
+difference between probability of positive signs versus negative signes meets the imbalance.</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[T^*=\underset{T}{\arg \min }\left\{\left|\theta_T\right| \geq \mathrm{E}_0[T]\left|2 \mathrm{P}\left[b_t=1\right]-1\right|\right\}\]</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>No matter how you obtain expected ticks size and probability for the next imbalance threshold. It explodes. I will focus on fixed
+threshold in other function.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>trades</strong> (<em>pd.DataFrame</em>) – Expected binpan aggregated trades or atomic trades dataframe.</p></li>
+<li><p><strong>starting_imbalance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Starting value for following bars. Its recommended to wait some bars quantity to consider established sizes.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dataframe sampled with the new bars sampling.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.aggregations.imbalance_bars_fixed">
+<span class="sig-name descname"><span class="pre">imbalance_bars_fixed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imbalance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/binpan/analysis/aggregations.html#imbalance_bars_fixed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.aggregations.imbalance_bars_fixed" title="Link to this definition">¶</a></dt>
+<dd><p>Generates candles by grouping each accumulated fixed imbalance threshold defined by:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\theta_T=\sum_{t=1}^T b_t\]</div>
+</div>
+<p>To close a bar, the imbalance must meet expected fixed imbalance while iterating trades.</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[T^*=\underset{T}{\arg \min }\left\{\left|\theta_T\right| \geq \mathrm{E}_0[T]\left|2 \mathrm{P}\left[b_t=1\right]-1\right|\right\}\]</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Fixed threshold for rendering imbalance bars.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>trades</strong> (<em>pd.DataFrame</em>) – Expected binpan aggregated trades or atomic trades dataframe.</p></li>
+<li><p><strong>imbalance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Fixed value for imbalance threshold.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dataframe sampled with the new bars sampling.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="binpan.analysis.aggregations.tick_imbalance_bars">
+<span class="sig-name descname"><span class="pre">tick_imbalance_bars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trades</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/binpan/analysis/aggregations.html#tick_imbalance_bars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binpan.analysis.aggregations.tick_imbalance_bars" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"><div class="navigation-prev">
+    <a href="indicators.html">
+      <i class="i-lucide chevron-left"></i>
+      <div class="page-info">
+        <span>Previous</span><div class="title">Indicators Module</div></div>
+    </a>
+  </div><div class="navigation-next">
+    <a href="strategies.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title">Strategies Module</div>
+      </div>
+      <i class="i-lucide chevron-right"></i>
+    </a>
+  </div></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2022, Fernando Alfonso</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+<a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+  <iconify-icon icon="simple-icons:github"></iconify-icon>
+</a></div>
+    </div>
+  </div>
+</footer>
+      <script src="_static/documentation_options.js?v=11e62b30"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/shibuya.js?v=50760d75"></script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script></body>
+</html>

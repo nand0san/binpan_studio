@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="iris" data-content_root="../../../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>binpan.analysis.tags - BinPan 0.10.2</title><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=e1a1ceaf" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/shibuya.css?v=9454f7d5" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/style.css?v=1e48dca6" />
+    <link media="print" rel="stylesheet" type="text/css" href="../../../_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/><meta property="og:title" content="binpan.analysis.tags"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="../../../index.html">
+      
+      
+      <strong>BinPan</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Main Classes:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../binpan.html">BinPan Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../symbol_indicators.html">Symbol Indicators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../symbol_plotting.html">Symbol Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../symbol_strategy.html">Symbol Strategy</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">API &amp; Market:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../market.html">Market Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exchange.html">Exchange Info Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../auth.html">Authentication Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../wallet.html">Wallet Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../wallet_api.html">Wallet API Functions</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Analysis:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../indicators.html">Indicators Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../aggregations.html">Aggregations Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../strategies.html">Strategies Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tags.html">Tags &amp; Backtesting Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stat_tests.html">Statistical Tests and Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../numba_tools.html">Numba Tools Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Core:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../time_helper.html">Time Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../timeframes.html">Timeframes Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../trades.html">Trades Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../standards.html">Standards Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../secrets.html">Secrets Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logs.html">Logs Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exceptions.html">Exceptions Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Plotting:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../plotting.html">Plotting Module</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Storage &amp; Database:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../files.html">Files Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../postgresql.html">PostgreSQL Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../postgresql_database.html">PostgreSQL Database Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../influx_manager.html">Influx Manager Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../redis_fetch.html">Redis Module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../../index.html"><span itemprop="name">BinPan</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../index.html"><span itemprop="name">Module code</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">binpan.analysis.tags</strong>
+        <meta itemprop="position" content="3" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue" role="main">
+          <h1>Source code for binpan.analysis.tags</h1><div class="highlight"><pre>
+<span></span><span data-line="1"><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="sd">Tagging utils.</span>
+</span><span data-line="4">
+</span><span data-line="5"><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="6"><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+</span><span data-line="7">
+</span><span data-line="8"><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span data-line="9">
+</span><span data-line="10"><span class="kn">from</span><span class="w"> </span><span class="nn">..api.exchange_info</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_info_dic</span><span class="p">,</span> <span class="n">get_bases_dic</span><span class="p">,</span> <span class="n">get_quotes_dic</span>
+</span><span data-line="11"><span class="kn">from</span><span class="w"> </span><span class="nn">..api.market</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_candles_by_time_stamps</span><span class="p">,</span> <span class="n">parse_candles_to_dataframe</span>
+</span><span data-line="12"><span class="kn">from</span><span class="w"> </span><span class="nn">..core.logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogManager</span>
+</span><span data-line="13">
+</span><span data-line="14"><span class="n">logger</span> <span class="o">=</span> <span class="n">LogManager</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;./logs/tags.log&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;tags&#39;</span><span class="p">,</span> <span class="n">info_level</span><span class="o">=</span><span class="s1">&#39;INFO&#39;</span><span class="p">)</span>
+</span><span data-line="15">
+</span><span data-line="16">
+<div class="viewcode-block" id="tag_value">
+<a class="viewcode-back" href="../../../tags.html#binpan.analysis.tags.tag_value">[docs]</a>
+</span><span data-line="17"><span class="k">def</span><span class="w"> </span><span class="nf">tag_value</span><span class="p">(</span><span class="n">serie</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span>
+</span><span data-line="18">              <span class="n">value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span>
+</span><span data-line="19">              <span class="n">gt</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span data-line="20">              <span class="n">ge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span data-line="21">              <span class="n">eq</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span data-line="22">              <span class="n">le</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span data-line="23">              <span class="n">lt</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span data-line="24">              <span class="n">match_tag</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+</span><span data-line="25">              <span class="n">mismatch_tag</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+</span><span data-line="26">              <span class="n">to_numeric</span><span class="o">=</span><span class="kc">True</span>
+</span><span data-line="27">              <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+</span><span data-line="28"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="29"><span class="sd">    It tags values of a serie compared to one value and a gt,ge,eq,le,lt condition.</span>
+</span><span data-line="30">
+</span><span data-line="31"><span class="sd">    :param pd.Series serie: A numeric serie.</span>
+</span><span data-line="32"><span class="sd">    :param int or float or Decimal value: Value of comparison.</span>
+</span><span data-line="33"><span class="sd">    :param bool gt: Value to match if strictly greater than value.</span>
+</span><span data-line="34"><span class="sd">    :param bool ge: Value to match if greater or equal than value.</span>
+</span><span data-line="35"><span class="sd">    :param bool eq: Value to match if equal than value.</span>
+</span><span data-line="36"><span class="sd">    :param bool le: Value to match if lower or equal than value.</span>
+</span><span data-line="37"><span class="sd">    :param bool lt: Value to match if strictly lower than value.</span>
+</span><span data-line="38"><span class="sd">    :param int or str match_tag: Value to tag previous logic.</span>
+</span><span data-line="39"><span class="sd">    :param mismatch_tag: Value to tag not matched previous logic.</span>
+</span><span data-line="40"><span class="sd">    :param bool to_numeric: If true, if possible, downcast type until the most basic numeric type (integer)</span>
+</span><span data-line="41"><span class="sd">    :return pd.Series: A serie with tags as values.</span>
+</span><span data-line="42"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="43">    <span class="n">ret</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">serie</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">type</span><span class="p">(</span><span class="n">match_tag</span><span class="p">))</span>
+</span><span data-line="44">
+</span><span data-line="45">    <span class="k">if</span> <span class="n">gt</span><span class="p">:</span>
+</span><span data-line="46">        <span class="n">ret</span> <span class="o">=</span> <span class="n">serie</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</span><span data-line="47">    <span class="k">if</span> <span class="n">ge</span><span class="p">:</span>
+</span><span data-line="48">        <span class="n">ret</span> <span class="o">=</span> <span class="n">serie</span><span class="o">.</span><span class="n">ge</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</span><span data-line="49">    <span class="k">if</span> <span class="n">eq</span><span class="p">:</span>
+</span><span data-line="50">        <span class="n">ret</span> <span class="o">=</span> <span class="n">serie</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</span><span data-line="51">    <span class="k">if</span> <span class="n">le</span><span class="p">:</span>
+</span><span data-line="52">        <span class="n">ret</span> <span class="o">=</span> <span class="n">serie</span><span class="o">.</span><span class="n">le</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</span><span data-line="53">    <span class="k">if</span> <span class="n">lt</span><span class="p">:</span>
+</span><span data-line="54">        <span class="n">ret</span> <span class="o">=</span> <span class="n">serie</span><span class="o">.</span><span class="n">lt</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</span><span data-line="55">
+</span><span data-line="56">    <span class="n">ret</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">ret</span><span class="p">]</span> <span class="o">=</span> <span class="n">match_tag</span>
+</span><span data-line="57">    <span class="n">ret</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">ret</span> <span class="o">==</span> <span class="kc">False</span><span class="p">]</span> <span class="o">=</span> <span class="n">mismatch_tag</span>
+</span><span data-line="58">    <span class="k">if</span> <span class="n">to_numeric</span><span class="p">:</span>
+</span><span data-line="59">        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="n">ret</span><span class="p">)</span>
+</span><span data-line="60">    <span class="k">else</span><span class="p">:</span>
+</span><span data-line="61">        <span class="k">return</span> <span class="n">ret</span></div>
+
+</span><span data-line="62">
+</span><span data-line="63">
+<div class="viewcode-block" id="tag_comparison">
+<a class="viewcode-back" href="../../../tags.html#binpan.analysis.tags.tag_comparison">[docs]</a>
+</span><span data-line="64"><span class="k">def</span><span class="w"> </span><span class="nf">tag_comparison</span><span class="p">(</span><span class="n">serie_a</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span>
+</span><span data-line="65">                   <span class="n">serie_b</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span>
+</span><span data-line="66">                   <span class="n">gt</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span data-line="67">                   <span class="n">ge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span data-line="68">                   <span class="n">eq</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span data-line="69">                   <span class="n">le</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span data-line="70">                   <span class="n">lt</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span data-line="71">                   <span class="n">match_tag</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+</span><span data-line="72">                   <span class="n">mismatch_tag</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+</span><span data-line="73">                   <span class="n">to_numeric</span><span class="o">=</span><span class="kc">True</span>
+</span><span data-line="74">                   <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+</span><span data-line="75"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="76"><span class="sd">    It tags values of a serie compared to other serie by methods gt,ge,eq,le,lt condition.</span>
+</span><span data-line="77">
+</span><span data-line="78"><span class="sd">    :param pd.Series serie_a: A numeric serie.</span>
+</span><span data-line="79"><span class="sd">    :param pd.Series serie_b: A numeric serie.</span>
+</span><span data-line="80"><span class="sd">    :param bool gt: Value to match if strictly greater than serie_b values.</span>
+</span><span data-line="81"><span class="sd">    :param bool ge: Value to match if greater or equal than serie_b values.</span>
+</span><span data-line="82"><span class="sd">    :param bool eq: Value to match if equal than serie_b values.</span>
+</span><span data-line="83"><span class="sd">    :param bool le: Value to match if lower or equal than serie_b values.</span>
+</span><span data-line="84"><span class="sd">    :param bool lt: Value to match if strictly lower than serie_b values.</span>
+</span><span data-line="85"><span class="sd">    :param int or str match_tag: Value to tag previous logic.</span>
+</span><span data-line="86"><span class="sd">    :param mismatch_tag: Value to tag not matched previous logic.</span>
+</span><span data-line="87"><span class="sd">    :param bool to_numeric: If true, if possible, downcast type until the most basic numeric type (integer)</span>
+</span><span data-line="88"><span class="sd">    :return pd.Series: A serie with tags (argument) as values.</span>
+</span><span data-line="89"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="90">    <span class="k">if</span> <span class="n">gt</span><span class="p">:</span>
+</span><span data-line="91">        <span class="n">mask</span> <span class="o">=</span> <span class="n">serie_a</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span><span class="n">serie_b</span><span class="p">)</span>
+</span><span data-line="92">    <span class="k">elif</span> <span class="n">ge</span><span class="p">:</span>
+</span><span data-line="93">        <span class="n">mask</span> <span class="o">=</span> <span class="n">serie_a</span><span class="o">.</span><span class="n">ge</span><span class="p">(</span><span class="n">serie_b</span><span class="p">)</span>
+</span><span data-line="94">    <span class="k">elif</span> <span class="n">eq</span><span class="p">:</span>
+</span><span data-line="95">        <span class="n">mask</span> <span class="o">=</span> <span class="n">serie_a</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="n">serie_b</span><span class="p">)</span>
+</span><span data-line="96">    <span class="k">elif</span> <span class="n">le</span><span class="p">:</span>
+</span><span data-line="97">        <span class="n">mask</span> <span class="o">=</span> <span class="n">serie_a</span><span class="o">.</span><span class="n">le</span><span class="p">(</span><span class="n">serie_b</span><span class="p">)</span>
+</span><span data-line="98">    <span class="k">elif</span> <span class="n">lt</span><span class="p">:</span>
+</span><span data-line="99">        <span class="n">mask</span> <span class="o">=</span> <span class="n">serie_a</span><span class="o">.</span><span class="n">lt</span><span class="p">(</span><span class="n">serie_b</span><span class="p">)</span>
+</span><span data-line="100">    <span class="k">else</span><span class="p">:</span>
+</span><span data-line="101">        <span class="n">mask</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">serie_a</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+</span><span data-line="102">
+</span><span data-line="103">    <span class="n">ret</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">match_tag</span><span class="p">,</span> <span class="n">mismatch_tag</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="n">serie_a</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+</span><span data-line="104">
+</span><span data-line="105">    <span class="k">if</span> <span class="n">to_numeric</span><span class="p">:</span>
+</span><span data-line="106">        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="n">ret</span><span class="p">)</span>
+</span><span data-line="107">    <span class="k">else</span><span class="p">:</span>
+</span><span data-line="108">        <span class="k">return</span> <span class="n">ret</span></div>
+
+</span><span data-line="109">
+</span><span data-line="110">
+<div class="viewcode-block" id="tag_cross">
+<a class="viewcode-back" href="../../../tags.html#binpan.analysis.tags.tag_cross">[docs]</a>
+</span><span data-line="111"><span class="k">def</span><span class="w"> </span><span class="nf">tag_cross</span><span class="p">(</span><span class="n">serie_a</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span>
+</span><span data-line="112">              <span class="n">serie_b</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span>
+</span><span data-line="113">              <span class="n">echo</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+</span><span data-line="114">              <span class="n">cross_over_tag</span><span class="o">=</span><span class="s1">&#39;buy&#39;</span><span class="p">,</span>
+</span><span data-line="115">              <span class="n">cross_below_tag</span><span class="o">=</span><span class="s1">&#39;sell&#39;</span><span class="p">,</span>
+</span><span data-line="116">              <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Cross&#39;</span><span class="p">,</span>
+</span><span data-line="117">              <span class="n">non_zeros</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+</span><span data-line="118"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="119"><span class="sd">    It tags points where serie_a crosses over serie_b or optionally below.</span>
+</span><span data-line="120">
+</span><span data-line="121"><span class="sd">    :param pd.Series serie_a: A numeric serie.</span>
+</span><span data-line="122"><span class="sd">    :param pd.Series serie_b: A numeric serie.</span>
+</span><span data-line="123"><span class="sd">    :param int echo: It tags a fixed amount of candles forward the crossed point not including cross candle.</span>
+</span><span data-line="124"><span class="sd">    :param int or str cross_over_tag: Value to tag over cross. Default is &quot;buy&quot;.</span>
+</span><span data-line="125"><span class="sd">    :param int or str cross_below_tag: Value to tag below cross. Default is &quot;sell&quot;</span>
+</span><span data-line="126"><span class="sd">    :param str name: Name for the resulting serie.</span>
+</span><span data-line="127"><span class="sd">    :param bool non_zeros: Substitutes zeros by nans. If echo want to be used, must be used non_zeros.</span>
+</span><span data-line="128"><span class="sd">    :return pd.Series: A serie with tags as values.</span>
+</span><span data-line="129"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="130">    <span class="n">dif</span> <span class="o">=</span> <span class="n">tag_comparison</span><span class="p">(</span><span class="n">serie_a</span><span class="o">=</span><span class="n">serie_a</span><span class="p">,</span> <span class="n">serie_b</span><span class="o">=</span><span class="n">serie_b</span><span class="p">,</span> <span class="n">gt</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="131">    <span class="n">ret</span> <span class="o">=</span> <span class="n">dif</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span>
+</span><span data-line="132">
+</span><span data-line="133">    <span class="k">if</span> <span class="n">echo</span><span class="p">:</span>
+</span><span data-line="134">        <span class="n">ret</span> <span class="o">=</span> <span class="n">ret</span><span class="o">.</span><span class="n">ffill</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="n">echo</span><span class="p">)</span>
+</span><span data-line="135">
+</span><span data-line="136">    <span class="n">ret</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+</span><span data-line="137">    <span class="k">if</span> <span class="n">non_zeros</span><span class="p">:</span>
+</span><span data-line="138">        <span class="n">ret</span> <span class="o">=</span> <span class="n">ret</span><span class="o">.</span><span class="n">replace</span><span class="p">({</span><span class="s1">&#39;1&#39;</span><span class="p">:</span> <span class="n">cross_over_tag</span><span class="p">,</span>
+</span><span data-line="139">                           <span class="mi">1</span><span class="p">:</span> <span class="n">cross_over_tag</span><span class="p">,</span>
+</span><span data-line="140">                           <span class="s1">&#39;-1&#39;</span><span class="p">:</span> <span class="n">cross_below_tag</span><span class="p">,</span>
+</span><span data-line="141">                           <span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="n">cross_below_tag</span><span class="p">,</span>
+</span><span data-line="142">                           <span class="s1">&#39;0&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+</span><span data-line="143">                           <span class="mi">0</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+</span><span data-line="144">                           <span class="p">})</span>
+</span><span data-line="145">    <span class="k">else</span><span class="p">:</span>
+</span><span data-line="146">        <span class="n">ret</span> <span class="o">=</span> <span class="n">ret</span><span class="o">.</span><span class="n">replace</span><span class="p">({</span><span class="s1">&#39;1&#39;</span><span class="p">:</span> <span class="n">cross_over_tag</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="n">cross_over_tag</span><span class="p">,</span> <span class="s1">&#39;-1&#39;</span><span class="p">:</span> <span class="n">cross_below_tag</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="n">cross_below_tag</span><span class="p">})</span>
+</span><span data-line="147">
+</span><span data-line="148">    <span class="k">if</span> <span class="n">echo</span><span class="p">:</span>
+</span><span data-line="149">        <span class="n">ret</span> <span class="o">=</span> <span class="n">ret</span><span class="o">.</span><span class="n">ffill</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="n">echo</span><span class="p">)</span>
+</span><span data-line="150">    <span class="k">return</span> <span class="n">ret</span></div>
+
+</span><span data-line="151">
+</span><span data-line="152">
+<div class="viewcode-block" id="tag_column_to_strategy_group">
+<a class="viewcode-back" href="../../../tags.html#binpan.analysis.tags.tag_column_to_strategy_group">[docs]</a>
+</span><span data-line="153"><span class="k">def</span><span class="w"> </span><span class="nf">tag_column_to_strategy_group</span><span class="p">(</span><span class="n">column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="154">                                 <span class="n">group</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="155">                                 <span class="n">strategy_groups</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span data-line="156"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="157"><span class="sd">    Tags a columns as part of Strategy group of columns.</span>
+</span><span data-line="158">
+</span><span data-line="159"><span class="sd">    :param str column: A column to tag with a strategy group.</span>
+</span><span data-line="160"><span class="sd">    :param str group: Name of the group.</span>
+</span><span data-line="161"><span class="sd">    :param str strategy_groups: The existing strategy groups.</span>
+</span><span data-line="162"><span class="sd">    :return dict: Updated strategy groups of columns.</span>
+</span><span data-line="163">
+</span><span data-line="164"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="165">
+</span><span data-line="166">    <span class="k">if</span> <span class="ow">not</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">strategy_groups</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+</span><span data-line="167">        <span class="n">strategy_groups</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">group</span><span class="p">:</span> <span class="p">[</span><span class="n">column</span><span class="p">]})</span>
+</span><span data-line="168">    <span class="k">else</span><span class="p">:</span>
+</span><span data-line="169">        <span class="n">group_columns</span> <span class="o">=</span> <span class="n">strategy_groups</span><span class="p">[</span><span class="n">group</span><span class="p">]</span>
+</span><span data-line="170">        <span class="n">group_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">column</span><span class="p">)</span>
+</span><span data-line="171">        <span class="n">strategy_groups</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">group</span><span class="p">:</span> <span class="n">group_columns</span><span class="p">})</span>
+</span><span data-line="172">
+</span><span data-line="173">    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Added to strategy group </span><span class="si">{</span><span class="n">group</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="174">
+</span><span data-line="175">    <span class="k">return</span> <span class="n">strategy_groups</span></div>
+
+</span><span data-line="176">
+</span><span data-line="177">
+</span><span data-line="178"><span class="c1">################</span>
+</span><span data-line="179"><span class="c1"># merge series #</span>
+</span><span data-line="180"><span class="c1">################</span>
+</span><span data-line="181">
+</span><span data-line="182">
+<div class="viewcode-block" id="merge_series">
+<a class="viewcode-back" href="../../../tags.html#binpan.analysis.tags.merge_series">[docs]</a>
+</span><span data-line="183"><span class="k">def</span><span class="w"> </span><span class="nf">merge_series</span><span class="p">(</span><span class="n">predominant</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span>
+</span><span data-line="184">                 <span class="n">other</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+</span><span data-line="185"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="186"><span class="sd">    Predominant serie will be filled nans with values, if existing, from the other serie.</span>
+</span><span data-line="187"><span class="sd">    </span>
+</span><span data-line="188"><span class="sd">    Same kind of index needed.</span>
+</span><span data-line="189"><span class="sd">    </span>
+</span><span data-line="190"><span class="sd">    :param pd.Series predominant: A serie with nans to fill from other serie.</span>
+</span><span data-line="191"><span class="sd">    :param pd.Series other: A serie to pick values for the nans.</span>
+</span><span data-line="192"><span class="sd">    :return pd.Series: A merged serie. </span>
+</span><span data-line="193"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="194">    <span class="k">return</span> <span class="n">predominant</span><span class="o">.</span><span class="n">combine_first</span><span class="p">(</span><span class="n">other</span><span class="o">=</span><span class="n">other</span><span class="p">)</span></div>
+
+</span><span data-line="195">
+</span><span data-line="196">
+<div class="viewcode-block" id="clean_in_out">
+<a class="viewcode-back" href="../../../tags.html#binpan.analysis.tags.clean_in_out">[docs]</a>
+</span><span data-line="197"><span class="k">def</span><span class="w"> </span><span class="nf">clean_in_out</span><span class="p">(</span><span class="n">serie</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span>
+</span><span data-line="198">                 <span class="n">in_tag</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+</span><span data-line="199">                 <span class="n">out_tag</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+</span><span data-line="200"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="201"><span class="sd">    Balance from in tag to first out tag and discards any other tag until next in tag. This cleans redundant in or out tags.</span>
+</span><span data-line="202">
+</span><span data-line="203"><span class="sd">    :param pd.Series serie: A serie with in and out tags.</span>
+</span><span data-line="204"><span class="sd">    :param in_tag: Tag for in tags. Default is 1.</span>
+</span><span data-line="205"><span class="sd">    :param out_tag: Tag for out tags. Default is -1.</span>
+</span><span data-line="206"><span class="sd">    :return pd.Series: Clean serie with ech in with next out.</span>
+</span><span data-line="207"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="208">    <span class="n">ret</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">serie</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+</span><span data-line="209">    <span class="n">last_tag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+</span><span data-line="210">    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">serie</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span data-line="211">        <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="n">out_tag</span> <span class="ow">and</span> <span class="n">last_tag</span> <span class="o">!=</span> <span class="n">out_tag</span><span class="p">:</span>
+</span><span data-line="212">            <span class="n">ret</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+</span><span data-line="213">            <span class="n">last_tag</span> <span class="o">=</span> <span class="n">value</span>
+</span><span data-line="214">        <span class="k">elif</span> <span class="n">value</span> <span class="o">==</span> <span class="n">in_tag</span> <span class="ow">and</span> <span class="n">last_tag</span> <span class="o">!=</span> <span class="n">in_tag</span><span class="p">:</span>
+</span><span data-line="215">            <span class="n">ret</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+</span><span data-line="216">            <span class="n">last_tag</span> <span class="o">=</span> <span class="n">value</span>
+</span><span data-line="217">    <span class="k">return</span> <span class="n">ret</span></div>
+
+</span><span data-line="218">
+</span><span data-line="219">
+</span><span data-line="220"><span class="c1">################</span>
+</span><span data-line="221"><span class="c1"># BACK TESTING #</span>
+</span><span data-line="222"><span class="c1">################</span>
+</span><span data-line="223">
+<div class="viewcode-block" id="buy_base_backtesting">
+<a class="viewcode-back" href="../../../tags.html#binpan.analysis.tags.buy_base_backtesting">[docs]</a>
+</span><span data-line="224"><span class="k">def</span><span class="w"> </span><span class="nf">buy_base_backtesting</span><span class="p">(</span><span class="n">row</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">price</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">base</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">quote</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">fee</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+</span><span data-line="225"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="226"><span class="sd">    A simple backtesting buy function.</span>
+</span><span data-line="227">
+</span><span data-line="228"><span class="sd">    :param pd.Series row: A row of a BinPan DataFrame with prices.</span>
+</span><span data-line="229"><span class="sd">    :param float price: Price of the action.</span>
+</span><span data-line="230"><span class="sd">    :param float base: Inverted base.</span>
+</span><span data-line="231"><span class="sd">    :param float quote: Inverted quote.</span>
+</span><span data-line="232"><span class="sd">    :param float fee: Fee applied to the operation.</span>
+</span><span data-line="233"><span class="sd">    :return tuple: A tuple with resulting base and quote after operation.</span>
+</span><span data-line="234"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="235">    <span class="n">high_value</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;High&#39;</span><span class="p">]</span>
+</span><span data-line="236">    <span class="n">low_value</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;Low&#39;</span><span class="p">]</span>
+</span><span data-line="237">
+</span><span data-line="238">    <span class="k">if</span> <span class="n">low_value</span> <span class="o">&lt;=</span> <span class="n">price</span> <span class="o">&lt;=</span> <span class="n">high_value</span><span class="p">:</span>
+</span><span data-line="239">        <span class="n">ordered_price</span> <span class="o">=</span> <span class="n">price</span>
+</span><span data-line="240">
+</span><span data-line="241">    <span class="k">elif</span> <span class="n">price</span> <span class="o">&gt;</span> <span class="n">high_value</span><span class="p">:</span>
+</span><span data-line="242">        <span class="n">ordered_price</span> <span class="o">=</span> <span class="n">high_value</span>
+</span><span data-line="243">
+</span><span data-line="244">    <span class="k">else</span><span class="p">:</span>
+</span><span data-line="245">        <span class="k">return</span> <span class="n">base</span><span class="p">,</span> <span class="n">quote</span>
+</span><span data-line="246">
+</span><span data-line="247">    <span class="n">base</span> <span class="o">+=</span> <span class="p">(</span><span class="n">quote</span> <span class="o">/</span> <span class="n">ordered_price</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">fee</span><span class="p">)</span>
+</span><span data-line="248">    <span class="n">quote</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span data-line="249">    <span class="k">return</span> <span class="n">base</span><span class="p">,</span> <span class="n">quote</span></div>
+
+</span><span data-line="250">
+</span><span data-line="251">
+<div class="viewcode-block" id="sell_base_backtesting">
+<a class="viewcode-back" href="../../../tags.html#binpan.analysis.tags.sell_base_backtesting">[docs]</a>
+</span><span data-line="252"><span class="k">def</span><span class="w"> </span><span class="nf">sell_base_backtesting</span><span class="p">(</span><span class="n">row</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span>
+</span><span data-line="253">                          <span class="n">price</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+</span><span data-line="254">                          <span class="n">base</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+</span><span data-line="255">                          <span class="n">quote</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+</span><span data-line="256">                          <span class="n">fee</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+</span><span data-line="257"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="258"><span class="sd">    A simple backtesting sell function.</span>
+</span><span data-line="259">
+</span><span data-line="260"><span class="sd">    :param pd.Series row: A row of a BinPan DataFrame with prices.</span>
+</span><span data-line="261"><span class="sd">    :param float price: Price of the action.</span>
+</span><span data-line="262"><span class="sd">    :param float base: Inverted base.</span>
+</span><span data-line="263"><span class="sd">    :param float quote: Inverted quote.</span>
+</span><span data-line="264"><span class="sd">    :param float fee: Fee applied to the operation.</span>
+</span><span data-line="265"><span class="sd">    :return tuple: A tuple with resulting base and quote after operation.</span>
+</span><span data-line="266"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="267">    <span class="n">high_value</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;High&#39;</span><span class="p">]</span>
+</span><span data-line="268">    <span class="n">low_value</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;Low&#39;</span><span class="p">]</span>
+</span><span data-line="269">
+</span><span data-line="270">    <span class="k">if</span> <span class="n">low_value</span> <span class="o">&lt;=</span> <span class="n">price</span> <span class="o">&lt;=</span> <span class="n">high_value</span><span class="p">:</span>
+</span><span data-line="271">        <span class="n">ordered_price</span> <span class="o">=</span> <span class="n">price</span>
+</span><span data-line="272">
+</span><span data-line="273">    <span class="k">elif</span> <span class="n">price</span> <span class="o">&lt;</span> <span class="n">low_value</span><span class="p">:</span>
+</span><span data-line="274">        <span class="n">ordered_price</span> <span class="o">=</span> <span class="n">low_value</span>
+</span><span data-line="275">
+</span><span data-line="276">    <span class="k">else</span><span class="p">:</span>
+</span><span data-line="277">        <span class="k">return</span> <span class="n">base</span><span class="p">,</span> <span class="n">quote</span>
+</span><span data-line="278">
+</span><span data-line="279">    <span class="n">quote</span> <span class="o">+=</span> <span class="n">base</span> <span class="o">*</span> <span class="n">ordered_price</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">fee</span><span class="p">)</span>
+</span><span data-line="280">    <span class="n">base</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span data-line="281">    <span class="k">return</span> <span class="n">base</span><span class="p">,</span> <span class="n">quote</span></div>
+
+</span><span data-line="282">
+</span><span data-line="283">
+<div class="viewcode-block" id="evaluate_wallets">
+<a class="viewcode-back" href="../../../tags.html#binpan.analysis.tags.evaluate_wallets">[docs]</a>
+</span><span data-line="284"><span class="k">def</span><span class="w"> </span><span class="nf">evaluate_wallets</span><span class="p">(</span><span class="n">df_</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+</span><span data-line="285">                     <span class="n">base_serie</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span>
+</span><span data-line="286">                     <span class="n">quote_serie</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span>
+</span><span data-line="287">                     <span class="n">evaluating_quote</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="288">                     <span class="n">info_dic</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="289">                     <span class="n">suffix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+</span><span data-line="290">                     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">]:</span>
+</span><span data-line="291"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="292"><span class="sd">    Obtains total wallet values in a quote value through time.</span>
+</span><span data-line="293">
+</span><span data-line="294"><span class="sd">    :param pd.DataFrame df_: A BinPan&#39;s dataframe.</span>
+</span><span data-line="295"><span class="sd">    :param pd.Series base_serie: A wallet serie for symbol&#39;s base.</span>
+</span><span data-line="296"><span class="sd">    :param pd.Series quote_serie: A wallet serie for symbol&#39;s quote.</span>
+</span><span data-line="297"><span class="sd">    :param str evaluating_quote: a Binance valid quote to evaluate operations.</span>
+</span><span data-line="298"><span class="sd">    :param dict info_dic: BinPan exchange info dict to extract information about quotes and bases of symbols.</span>
+</span><span data-line="299"><span class="sd">    :param str suffix: A suffix for the names of the columns.</span>
+</span><span data-line="300"><span class="sd">    :return pd.DataFrame: It returns a dataframe with base and quote series plus an evaluated serie in any quote coin of both wallets merged.</span>
+</span><span data-line="301"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="302">    <span class="k">if</span> <span class="n">evaluating_quote</span><span class="p">:</span>
+</span><span data-line="303">        <span class="n">evaluating_quote</span> <span class="o">=</span> <span class="n">evaluating_quote</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+</span><span data-line="304">
+</span><span data-line="305">    <span class="n">original_index</span> <span class="o">=</span> <span class="n">df_</span><span class="o">.</span><span class="n">index</span>
+</span><span data-line="306">
+</span><span data-line="307">    <span class="n">symbol</span> <span class="o">=</span> <span class="n">original_index</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</span><span data-line="308">    <span class="n">tick_interval</span> <span class="o">=</span> <span class="n">original_index</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+</span><span data-line="309">    <span class="n">df_</span> <span class="o">=</span> <span class="n">df_</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;Open timestamp&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span data-line="310">
+</span><span data-line="311">    <span class="k">if</span> <span class="ow">not</span> <span class="n">info_dic</span><span class="p">:</span>
+</span><span data-line="312">        <span class="n">info_dic</span> <span class="o">=</span> <span class="n">get_info_dic</span><span class="p">()</span>
+</span><span data-line="313">
+</span><span data-line="314">    <span class="n">bases</span> <span class="o">=</span> <span class="n">get_bases_dic</span><span class="p">(</span><span class="n">info_dic</span><span class="o">=</span><span class="n">info_dic</span><span class="p">)</span>
+</span><span data-line="315">    <span class="n">quotes</span> <span class="o">=</span> <span class="n">get_quotes_dic</span><span class="p">(</span><span class="n">info_dic</span><span class="o">=</span><span class="n">info_dic</span><span class="p">)</span>
+</span><span data-line="316">
+</span><span data-line="317">    <span class="n">base</span> <span class="o">=</span> <span class="n">bases</span><span class="p">[</span><span class="n">symbol</span><span class="p">]</span>
+</span><span data-line="318">    <span class="n">quote</span> <span class="o">=</span> <span class="n">quotes</span><span class="p">[</span><span class="n">symbol</span><span class="p">]</span>
+</span><span data-line="319">
+</span><span data-line="320">    <span class="k">if</span> <span class="ow">not</span> <span class="n">evaluating_quote</span><span class="p">:</span>
+</span><span data-line="321">        <span class="n">evaluating_quote</span> <span class="o">=</span> <span class="n">quote</span>
+</span><span data-line="322">
+</span><span data-line="323">    <span class="k">if</span> <span class="n">quote</span> <span class="o">==</span> <span class="n">evaluating_quote</span><span class="p">:</span>
+</span><span data-line="324">        <span class="n">evaluated_base_serie</span> <span class="o">=</span> <span class="n">df_</span><span class="p">[</span><span class="s1">&#39;Close&#39;</span><span class="p">]</span>
+</span><span data-line="325">        <span class="n">evaluated_quote_serie</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">df_</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+</span><span data-line="326">    <span class="k">else</span><span class="p">:</span>
+</span><span data-line="327">        <span class="n">evaluate_base_symbol</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">evaluating_quote</span>
+</span><span data-line="328">        <span class="n">evaluate_quote_symbol</span> <span class="o">=</span> <span class="n">quote</span> <span class="o">+</span> <span class="n">evaluating_quote</span>
+</span><span data-line="329">
+</span><span data-line="330">        <span class="n">start_timestamp</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">df_</span><span class="p">[</span><span class="s1">&#39;Open timestamp&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</span><span data-line="331">        <span class="n">end_timestamp</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">df_</span><span class="p">[</span><span class="s1">&#39;Close timestamp&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+</span><span data-line="332">
+</span><span data-line="333">        <span class="n">evaluated_base_list</span> <span class="o">=</span> <span class="n">get_candles_by_time_stamps</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="n">evaluate_base_symbol</span><span class="p">,</span>
+</span><span data-line="334">                                                         <span class="n">tick_interval</span><span class="o">=</span><span class="n">tick_interval</span><span class="p">,</span>
+</span><span data-line="335">                                                         <span class="n">start_time</span><span class="o">=</span><span class="n">start_timestamp</span><span class="p">,</span>
+</span><span data-line="336">                                                         <span class="n">end_time</span><span class="o">=</span><span class="n">end_timestamp</span><span class="p">)</span>
+</span><span data-line="337">        <span class="n">evaluated_base_df</span> <span class="o">=</span> <span class="n">parse_candles_to_dataframe</span><span class="p">(</span><span class="n">raw_response</span><span class="o">=</span><span class="n">evaluated_base_list</span><span class="p">,</span>
+</span><span data-line="338">                                                       <span class="n">symbol</span><span class="o">=</span><span class="n">evaluate_base_symbol</span><span class="p">,</span>
+</span><span data-line="339">                                                       <span class="n">tick_interval</span><span class="o">=</span><span class="n">tick_interval</span><span class="p">)</span>
+</span><span data-line="340">        <span class="n">evaluated_base_df</span> <span class="o">=</span> <span class="n">evaluated_base_df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;Open timestamp&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span data-line="341">
+</span><span data-line="342">        <span class="n">evaluated_quote_list</span> <span class="o">=</span> <span class="n">get_candles_by_time_stamps</span><span class="p">(</span><span class="n">symbol</span><span class="o">=</span><span class="n">evaluate_quote_symbol</span><span class="p">,</span>
+</span><span data-line="343">                                                          <span class="n">tick_interval</span><span class="o">=</span><span class="n">tick_interval</span><span class="p">,</span>
+</span><span data-line="344">                                                          <span class="n">start_time</span><span class="o">=</span><span class="n">start_timestamp</span><span class="p">,</span>
+</span><span data-line="345">                                                          <span class="n">end_time</span><span class="o">=</span><span class="n">end_timestamp</span><span class="p">)</span>
+</span><span data-line="346">        <span class="n">evaluated_quote_df</span> <span class="o">=</span> <span class="n">parse_candles_to_dataframe</span><span class="p">(</span><span class="n">raw_response</span><span class="o">=</span><span class="n">evaluated_quote_list</span><span class="p">,</span>
+</span><span data-line="347">                                                        <span class="n">symbol</span><span class="o">=</span><span class="n">evaluate_quote_symbol</span><span class="p">,</span>
+</span><span data-line="348">                                                        <span class="n">tick_interval</span><span class="o">=</span><span class="n">tick_interval</span><span class="p">)</span>
+</span><span data-line="349">
+</span><span data-line="350">        <span class="n">evaluated_quote_df</span> <span class="o">=</span> <span class="n">evaluated_quote_df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;Open timestamp&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span data-line="351">        <span class="c1"># try:</span>
+</span><span data-line="352">        <span class="c1">#     assert df_.index == evaluated_base_df.index</span>
+</span><span data-line="353">        <span class="c1">#     assert df_.index == evaluated_quote_df.index</span>
+</span><span data-line="354">        <span class="c1"># except AssertionError:</span>
+</span><span data-line="355">        <span class="c1">#     raise Exception(f&quot;Index not matching original object index when evaluating quote price.&quot;)</span>
+</span><span data-line="356">
+</span><span data-line="357">        <span class="n">evaluated_base_serie</span> <span class="o">=</span> <span class="n">evaluated_base_df</span><span class="p">[</span><span class="s1">&#39;Close&#39;</span><span class="p">]</span>
+</span><span data-line="358">        <span class="n">evaluated_quote_serie</span> <span class="o">=</span> <span class="n">evaluated_quote_df</span><span class="p">[</span><span class="s1">&#39;Close&#39;</span><span class="p">]</span>
+</span><span data-line="359">
+</span><span data-line="360">    <span class="c1"># apply qty for the price</span>
+</span><span data-line="361">    <span class="n">base_value</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">(</span><span class="n">evaluated_base_serie</span><span class="o">.</span><span class="n">values</span> <span class="o">*</span> <span class="n">base_serie</span><span class="o">.</span><span class="n">values</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="n">original_index</span><span class="p">)</span>
+</span><span data-line="362">    <span class="n">quote_value</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">(</span><span class="n">evaluated_quote_serie</span><span class="o">.</span><span class="n">values</span> <span class="o">*</span> <span class="n">quote_serie</span><span class="o">.</span><span class="n">values</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="n">original_index</span><span class="p">)</span>
+</span><span data-line="363">
+</span><span data-line="364">    <span class="c1"># merge data</span>
+</span><span data-line="365">    <span class="n">merged</span> <span class="o">=</span> <span class="n">base_value</span> <span class="o">+</span> <span class="n">quote_value</span>
+</span><span data-line="366">
+</span><span data-line="367">    <span class="k">if</span> <span class="n">suffix</span><span class="p">:</span>
+</span><span data-line="368">        <span class="n">merged</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Evaluated_</span><span class="si">{</span><span class="n">symbol</span><span class="si">}</span><span class="s2">_in_</span><span class="si">{</span><span class="n">evaluating_quote</span><span class="si">}{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="369">    <span class="k">else</span><span class="p">:</span>
+</span><span data-line="370">        <span class="n">merged</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Evaluated_</span><span class="si">{</span><span class="n">symbol</span><span class="si">}</span><span class="s2">_in_</span><span class="si">{</span><span class="n">evaluating_quote</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="371">    <span class="c1"># merged.index = original_index</span>
+</span><span data-line="372">    <span class="k">return</span> <span class="n">base_serie</span><span class="p">,</span> <span class="n">quote_serie</span><span class="p">,</span> <span class="n">merged</span></div>
+
+</span><span data-line="373">
+</span><span data-line="374">
+<div class="viewcode-block" id="check_action_labels_for_backtesting">
+<a class="viewcode-back" href="../../../tags.html#binpan.analysis.tags.check_action_labels_for_backtesting">[docs]</a>
+</span><span data-line="375"><span class="k">def</span><span class="w"> </span><span class="nf">check_action_labels_for_backtesting</span><span class="p">(</span><span class="n">actions</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span>
+</span><span data-line="376">                                        <span class="n">label_in</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+</span><span data-line="377">                                        <span class="n">label_out</span><span class="p">:</span> <span class="nb">int</span>
+</span><span data-line="378">                                        <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">any</span><span class="p">,</span> <span class="nb">any</span><span class="p">]:</span>
+</span><span data-line="379"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="380"><span class="sd">    This function verify labels in actions series, if labels for in actions and labels for out actions are or not the specified ones. Also</span>
+</span><span data-line="381"><span class="sd">     if there are any other label it will throw an exception.</span>
+</span><span data-line="382">
+</span><span data-line="383"><span class="sd">    :param pd.Series actions: A serie with labels to check if there are just in and out labels or not.</span>
+</span><span data-line="384"><span class="sd">    :param int label_in: Usually 1</span>
+</span><span data-line="385"><span class="sd">    :param int label_out: Usually -1</span>
+</span><span data-line="386"><span class="sd">    :return tuple: Returns verified label in and label out.</span>
+</span><span data-line="387"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="388">    <span class="n">actions_no_zeros</span> <span class="o">=</span> <span class="n">actions</span><span class="p">[</span><span class="n">actions</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">]</span>
+</span><span data-line="389">    <span class="n">actions_labels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">actions_no_zeros</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+</span><span data-line="390">
+</span><span data-line="391">    <span class="k">try</span><span class="p">:</span>
+</span><span data-line="392">        <span class="k">assert</span> <span class="nb">set</span><span class="p">(</span><span class="n">actions_labels</span><span class="p">)</span><span class="o">.</span><span class="n">issubset</span><span class="p">({</span><span class="n">label_in</span><span class="p">,</span> <span class="n">label_out</span><span class="p">})</span>
+</span><span data-line="393">    <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+</span><span data-line="394">        <span class="k">try</span><span class="p">:</span>
+</span><span data-line="395">            <span class="k">assert</span> <span class="nb">set</span><span class="p">(</span><span class="n">actions_labels</span><span class="p">)</span><span class="o">.</span><span class="n">issubset</span><span class="p">({</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">})</span>
+</span><span data-line="396">            <span class="n">label_in</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span data-line="397">            <span class="n">label_out</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+</span><span data-line="398">        <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+</span><span data-line="399">            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;BinPan Exception: Backtesting expected labels were not correctly specified: </span><span class="si">{</span><span class="n">actions_labels</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="400">    <span class="k">return</span> <span class="n">label_in</span><span class="p">,</span> <span class="n">label_out</span></div>
+
+</span><span data-line="401">
+</span><span data-line="402">
+<div class="viewcode-block" id="simple_backtesting">
+<a class="viewcode-back" href="../../../tags.html#binpan.analysis.tags.simple_backtesting">[docs]</a>
+</span><span data-line="403"><span class="k">def</span><span class="w"> </span><span class="nf">simple_backtesting</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+</span><span data-line="404">                       <span class="n">actions</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="ow">or</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="405">                       <span class="n">base</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+</span><span data-line="406">                       <span class="n">quote</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+</span><span data-line="407">                       <span class="n">priced_actions_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Open&#39;</span><span class="p">,</span>
+</span><span data-line="408">                       <span class="n">fee</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">,</span>
+</span><span data-line="409">                       <span class="n">label_in</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+</span><span data-line="410">                       <span class="n">label_out</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+</span><span data-line="411">                       <span class="n">suffix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+</span><span data-line="412">                       <span class="n">evaluating_quote</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;BUSD&#39;</span><span class="p">,</span>
+</span><span data-line="413">                       <span class="n">info_dic</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span data-line="414"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="415"><span class="sd">    Returns two pandas series as base wallet and quote wallet over time. Its expected a serie with strings like &#39;buy&#39; or &#39;sell&#39;.</span>
+</span><span data-line="416"><span class="sd">    That serie is called the &quot;actions&quot;. If it is available a column with the exact price of the actions, can be passed in</span>
+</span><span data-line="417"><span class="sd">    actions_col parameter by column name or a pandas series, if not, Closed price column can be a good approximation.</span>
+</span><span data-line="418">
+</span><span data-line="419"><span class="sd">    All actions will be considered to buy all base as possible or to sell all base as posible.</span>
+</span><span data-line="420">
+</span><span data-line="421"><span class="sd">    :param pd.DataFrame df: A BinPan dataframe.</span>
+</span><span data-line="422"><span class="sd">    :param pd.Series actions: A pandas series with buy or sell strings for simulate actions.</span>
+</span><span data-line="423"><span class="sd">    :param float base: A starting quantity of symbol&#39;s base.</span>
+</span><span data-line="424"><span class="sd">    :param float quote: A starting quantity of symbol&#39;s quote.</span>
+</span><span data-line="425"><span class="sd">    :param pd.Series or str priced_actions_col: Column with the prices for the action emulation.</span>
+</span><span data-line="426"><span class="sd">    :param float fee: Binance applicable fee for trading. DEfault is 0.001.</span>
+</span><span data-line="427"><span class="sd">    :param str or int label_in: A label consider as trade in trigger.</span>
+</span><span data-line="428"><span class="sd">    :param str or int label_out: A label consider as trade out trigger.</span>
+</span><span data-line="429"><span class="sd">    :param str evaluating_quote: a Binance valid quote to evaluate operations.</span>
+</span><span data-line="430"><span class="sd">    :param dict info_dic: BinPan exchange info dict to extract information about quotes and bases of symbols.</span>
+</span><span data-line="431"><span class="sd">    :param str suffix: A suffix for the names of the columns.</span>
+</span><span data-line="432"><span class="sd">    :return tuple: Two series with the base wallet and quote wallet funds in time.</span>
+</span><span data-line="433"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="434">
+</span><span data-line="435">    <span class="n">df_</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="436">
+</span><span data-line="437">    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">actions</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="438">        <span class="n">actions_</span> <span class="o">=</span> <span class="n">df_</span><span class="p">[</span><span class="n">actions</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="439">    <span class="k">else</span><span class="p">:</span>
+</span><span data-line="440">        <span class="n">actions_</span> <span class="o">=</span> <span class="n">actions</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="441">
+</span><span data-line="442">    <span class="c1"># check action labels</span>
+</span><span data-line="443">    <span class="n">label_in</span><span class="p">,</span> <span class="n">label_out</span> <span class="o">=</span> <span class="n">check_action_labels_for_backtesting</span><span class="p">(</span><span class="n">actions</span><span class="o">=</span><span class="n">actions_</span><span class="p">,</span>
+</span><span data-line="444">                                                              <span class="n">label_in</span><span class="o">=</span><span class="n">label_in</span><span class="p">,</span>
+</span><span data-line="445">                                                              <span class="n">label_out</span><span class="o">=</span><span class="n">label_out</span><span class="p">)</span>
+</span><span data-line="446">
+</span><span data-line="447">    <span class="n">base_wallet</span><span class="p">,</span> <span class="n">quote_wallet</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+</span><span data-line="448">
+</span><span data-line="449">    <span class="n">last_action</span> <span class="o">=</span> <span class="mi">2314213</span>  <span class="c1"># any random thing</span>
+</span><span data-line="450">
+</span><span data-line="451">    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df_</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+</span><span data-line="452">
+</span><span data-line="453">        <span class="n">curr_action</span> <span class="o">=</span> <span class="n">actions_</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+</span><span data-line="454">        <span class="n">price</span> <span class="o">=</span> <span class="n">df_</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="n">priced_actions_col</span><span class="p">]</span>
+</span><span data-line="455">
+</span><span data-line="456">        <span class="k">if</span> <span class="n">last_action</span> <span class="o">==</span> <span class="n">label_in</span><span class="p">:</span>
+</span><span data-line="457">            <span class="n">base</span><span class="p">,</span> <span class="n">quote</span> <span class="o">=</span> <span class="n">buy_base_backtesting</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="n">price</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">,</span> <span class="n">quote</span><span class="o">=</span><span class="n">quote</span><span class="p">,</span> <span class="n">fee</span><span class="o">=</span><span class="n">fee</span><span class="p">)</span>
+</span><span data-line="458">        <span class="k">elif</span> <span class="n">last_action</span> <span class="o">==</span> <span class="n">label_out</span><span class="p">:</span>
+</span><span data-line="459">            <span class="n">base</span><span class="p">,</span> <span class="n">quote</span> <span class="o">=</span> <span class="n">sell_base_backtesting</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="n">price</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">,</span> <span class="n">quote</span><span class="o">=</span><span class="n">quote</span><span class="p">,</span> <span class="n">fee</span><span class="o">=</span><span class="n">fee</span><span class="p">)</span>
+</span><span data-line="460">
+</span><span data-line="461">        <span class="n">base_wallet</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">base</span><span class="p">)</span>
+</span><span data-line="462">        <span class="n">quote_wallet</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">quote</span><span class="p">)</span>
+</span><span data-line="463">
+</span><span data-line="464">        <span class="n">last_action</span> <span class="o">=</span> <span class="n">curr_action</span>
+</span><span data-line="465">
+</span><span data-line="466">    <span class="n">base_serie</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">base_wallet</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">df_</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Wallet_base</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="467">    <span class="n">quote_serie</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">quote_wallet</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">df_</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Wallet_quote</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="468">
+</span><span data-line="469">    <span class="k">if</span> <span class="n">evaluating_quote</span><span class="p">:</span>
+</span><span data-line="470">        <span class="n">base_serie</span><span class="p">,</span> <span class="n">quote_serie</span><span class="p">,</span> <span class="n">merged</span> <span class="o">=</span> <span class="n">evaluate_wallets</span><span class="p">(</span><span class="n">df_</span><span class="o">=</span><span class="n">df_</span><span class="p">,</span>
+</span><span data-line="471">                                                           <span class="n">base_serie</span><span class="o">=</span><span class="n">base_serie</span><span class="p">,</span>
+</span><span data-line="472">                                                           <span class="n">quote_serie</span><span class="o">=</span><span class="n">quote_serie</span><span class="p">,</span>
+</span><span data-line="473">                                                           <span class="n">evaluating_quote</span><span class="o">=</span><span class="n">evaluating_quote</span><span class="p">,</span>
+</span><span data-line="474">                                                           <span class="n">info_dic</span><span class="o">=</span><span class="n">info_dic</span><span class="p">,</span>
+</span><span data-line="475">                                                           <span class="n">suffix</span><span class="o">=</span><span class="n">suffix</span><span class="p">)</span>
+</span><span data-line="476">        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">base_serie</span><span class="p">,</span> <span class="n">quote_serie</span><span class="p">,</span> <span class="n">merged</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+</span><span data-line="477">
+</span><span data-line="478">    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">base_serie</span><span class="p">,</span> <span class="n">quote_serie</span><span class="p">])</span><span class="o">.</span><span class="n">T</span></div>
+
+</span><span data-line="479">
+</span><span data-line="480">
+</span><span data-line="481"><span class="c1">########################</span>
+</span><span data-line="482"><span class="c1"># ADVANCED BACKTESTING #</span>
+</span><span data-line="483"><span class="c1">########################</span>
+</span><span data-line="484">
+</span><span data-line="485">
+</span><span data-line="486"><span class="k">def</span><span class="w"> </span><span class="nf">_resolve_column_data</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+</span><span data-line="487">                         <span class="n">column_param</span><span class="p">,</span>
+</span><span data-line="488">                         <span class="n">default_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span data-line="489">                         <span class="n">param_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;column&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+</span><span data-line="490"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Resolve a parameter that can be a column name (str), a pd.Series, or</span>
+</span><span data-line="491"><span class="sd">    fall back to a default value.</span>
+</span><span data-line="492">
+</span><span data-line="493"><span class="sd">    When *default_value* is ``None`` (the default) the parameter is</span>
+</span><span data-line="494"><span class="sd">    mandatory and an ``Exception`` is raised if *column_param* is neither</span>
+</span><span data-line="495"><span class="sd">    ``str`` nor ``pd.Series``.</span>
+</span><span data-line="496">
+</span><span data-line="497"><span class="sd">    :param pd.DataFrame df: Source dataframe.</span>
+</span><span data-line="498"><span class="sd">    :param column_param: Column name, pd.Series, or any other value.</span>
+</span><span data-line="499"><span class="sd">    :param default_value: Fallback used to build a constant Series when</span>
+</span><span data-line="500"><span class="sd">        *column_param* is not str/Series.  ``None`` means &quot;required&quot;.</span>
+</span><span data-line="501"><span class="sd">    :param str param_name: Name shown in error messages.</span>
+</span><span data-line="502"><span class="sd">    :return pd.Series: Resolved data series.</span>
+</span><span data-line="503"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="504">    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">column_param</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="505">        <span class="k">return</span> <span class="n">df</span><span class="p">[</span><span class="n">column_param</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="506">    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">column_param</span><span class="p">)</span> <span class="o">==</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+</span><span data-line="507">        <span class="k">return</span> <span class="n">column_param</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="508">    <span class="k">if</span> <span class="n">default_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="509">        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+</span><span data-line="510">            <span class="sa">f</span><span class="s2">&quot;BinPan Backtesting Error: Incorrect type for </span><span class="si">{</span><span class="n">param_name</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">column_param</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="511">        <span class="p">)</span>
+</span><span data-line="512">    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">default_value</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+</span><span data-line="513">
+</span><span data-line="514">
+</span><span data-line="515"><span class="k">def</span><span class="w"> </span><span class="nf">_build_backtesting_results</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+</span><span data-line="516">                                <span class="n">base_wallet</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
+</span><span data-line="517">                                <span class="n">quote_wallet</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
+</span><span data-line="518">                                <span class="n">resulting_actions</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span>
+</span><span data-line="519">                                <span class="n">executed_prices</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span>
+</span><span data-line="520">                                <span class="n">actions_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="521">                                <span class="n">evaluating_quote</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="522">                                <span class="n">info_dic</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="523">                                <span class="n">suffix</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span data-line="524"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Construct the output DataFrame from raw backtesting loop results.</span>
+</span><span data-line="525">
+</span><span data-line="526"><span class="sd">    :param pd.DataFrame df: The (copied) BinPan dataframe used in the loop.</span>
+</span><span data-line="527"><span class="sd">    :param list base_wallet: Per-row base wallet values.</span>
+</span><span data-line="528"><span class="sd">    :param list quote_wallet: Per-row quote wallet values.</span>
+</span><span data-line="529"><span class="sd">    :param pd.Series resulting_actions: Actions actually executed.</span>
+</span><span data-line="530"><span class="sd">    :param pd.Series executed_prices: Prices at which actions executed.</span>
+</span><span data-line="531"><span class="sd">    :param str actions_name: Name of the original actions column/series.</span>
+</span><span data-line="532"><span class="sd">    :param str evaluating_quote: Quote coin for wallet evaluation.</span>
+</span><span data-line="533"><span class="sd">    :param dict info_dic: Exchange info dict (may be None).</span>
+</span><span data-line="534"><span class="sd">    :param str suffix: Suffix for column names.</span>
+</span><span data-line="535"><span class="sd">    :return pd.DataFrame: Combined results.</span>
+</span><span data-line="536"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="537">    <span class="n">base_serie</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">base_wallet</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Wallet_base</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="538">    <span class="n">quote_serie</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">quote_wallet</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Wallet_quote</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="539">
+</span><span data-line="540">    <span class="n">resulting_actions</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Resulting_actions_</span><span class="si">{</span><span class="n">actions_name</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="541">    <span class="n">executed_prices</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Executed_prices_</span><span class="si">{</span><span class="n">actions_name</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="542">
+</span><span data-line="543">    <span class="n">base_serie</span><span class="p">,</span> <span class="n">quote_serie</span><span class="p">,</span> <span class="n">merged</span> <span class="o">=</span> <span class="n">evaluate_wallets</span><span class="p">(</span><span class="n">df_</span><span class="o">=</span><span class="n">df</span><span class="p">,</span>
+</span><span data-line="544">                                                       <span class="n">base_serie</span><span class="o">=</span><span class="n">base_serie</span><span class="p">,</span>
+</span><span data-line="545">                                                       <span class="n">quote_serie</span><span class="o">=</span><span class="n">quote_serie</span><span class="p">,</span>
+</span><span data-line="546">                                                       <span class="n">evaluating_quote</span><span class="o">=</span><span class="n">evaluating_quote</span><span class="p">,</span>
+</span><span data-line="547">                                                       <span class="n">info_dic</span><span class="o">=</span><span class="n">info_dic</span><span class="p">,</span>
+</span><span data-line="548">                                                       <span class="n">suffix</span><span class="o">=</span><span class="n">suffix</span><span class="p">)</span>
+</span><span data-line="549">
+</span><span data-line="550">    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">base_serie</span><span class="p">,</span> <span class="n">quote_serie</span><span class="p">,</span> <span class="n">merged</span><span class="p">,</span> <span class="n">resulting_actions</span><span class="p">,</span> <span class="n">executed_prices</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+</span><span data-line="551">
+</span><span data-line="552">
+<div class="viewcode-block" id="backtesting">
+<a class="viewcode-back" href="../../../tags.html#binpan.analysis.tags.backtesting">[docs]</a>
+</span><span data-line="553"><span class="k">def</span><span class="w"> </span><span class="nf">backtesting</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+</span><span data-line="554">                <span class="n">actions_column</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="555">                <span class="n">target_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span>
+</span><span data-line="556">                <span class="n">stop_loss_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span>
+</span><span data-line="557">                <span class="n">entry_filter_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="558">                <span class="n">priced_actions_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">=</span> <span class="s1">&#39;Open&#39;</span><span class="p">,</span>
+</span><span data-line="559">                <span class="n">fixed_target</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="560">                <span class="n">fixed_stop_loss</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="561">                <span class="n">base</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+</span><span data-line="562">                <span class="n">quote</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+</span><span data-line="563">                <span class="n">fee</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">,</span>
+</span><span data-line="564">                <span class="n">label_in</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+</span><span data-line="565">                <span class="n">label_out</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+</span><span data-line="566">                <span class="n">suffix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+</span><span data-line="567">                <span class="n">evaluating_quote</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="568">                <span class="n">info_dic</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="569">                <span class="n">direction</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;long&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span data-line="570"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="571"><span class="sd">    Returns two pandas series as base wallet and quote wallet over time. Its expected a serie with numbers like 1 for ins and -1 for outs.</span>
+</span><span data-line="572"><span class="sd">    By ins and out I mean buys or sells, shorts and repays, etc.</span>
+</span><span data-line="573">
+</span><span data-line="574"><span class="sd">    If it is available a column with the exact price of the actions, can be passed in actions_col parameter by column name or a pandas</span>
+</span><span data-line="575"><span class="sd">     series, if not, Open price column can be a good approximation because operations start at the next candle of the tagged one.</span>
+</span><span data-line="576">
+</span><span data-line="577"><span class="sd">    All actions will be considered to buy all base as possible or to sell all base as posible.</span>
+</span><span data-line="578">
+</span><span data-line="579"><span class="sd">    Supports both long and short positions backtesting via the ``direction`` parameter.</span>
+</span><span data-line="580">
+</span><span data-line="581"><span class="sd">    :param pd.DataFrame df: A BinPan dataframe.</span>
+</span><span data-line="582"><span class="sd">    :param pd.Series or str actions_column: A pandas series with buy or sell strings for simulate actions.</span>
+</span><span data-line="583"><span class="sd">    :param pd.Series or str target_column: Column with data for operation target values.</span>
+</span><span data-line="584"><span class="sd">    :param pd.Series or str stop_loss_column: Column with data for operation stop loss values.</span>
+</span><span data-line="585"><span class="sd">    :param pd.Series or str entry_filter_column: A serie or colum with ones or zeros to allow or avoid entries.</span>
+</span><span data-line="586"><span class="sd">    :param pd.Series or str priced_actions_col: Column with the prices for the action emulation.</span>
+</span><span data-line="587"><span class="sd">    :param bool fixed_target: Target for any operation will be calculated and fixed at the beginning of the operation.</span>
+</span><span data-line="588"><span class="sd">    :param bool fixed_stop_loss: Stop loss for any operation will be calculated and fixed at the beginning of the operation.</span>
+</span><span data-line="589"><span class="sd">    :param float base: A starting quantity of symbol&#39;s base.</span>
+</span><span data-line="590"><span class="sd">    :param float quote: A starting quantity of symbol&#39;s quote.</span>
+</span><span data-line="591"><span class="sd">    :param float fee: Binance applicable fee for trading. DEfault is 0.001.</span>
+</span><span data-line="592"><span class="sd">    :param str or int label_in: A label consider as trade in trigger.</span>
+</span><span data-line="593"><span class="sd">    :param str or int label_out: A label consider as trade out trigger.</span>
+</span><span data-line="594"><span class="sd">    :param str evaluating_quote: a Binance valid quote to evaluate operations.</span>
+</span><span data-line="595"><span class="sd">    :param dict info_dic: BinPan exchange info dict to extract information about quotes and bases of symbols.</span>
+</span><span data-line="596"><span class="sd">    :param str suffix: A suffix for the names of the columns.</span>
+</span><span data-line="597"><span class="sd">    :param str direction: Direction of the backtesting: ``&#39;long&#39;`` (default) or ``&#39;short&#39;``.</span>
+</span><span data-line="598"><span class="sd">    :return tuple: Two series with the base wallet and quote wallet funds in time.</span>
+</span><span data-line="599"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="600">
+</span><span data-line="601">    <span class="n">df_</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="602">
+</span><span data-line="603">    <span class="n">actions_data</span> <span class="o">=</span> <span class="n">_resolve_column_data</span><span class="p">(</span><span class="n">df_</span><span class="p">,</span> <span class="n">actions_column</span><span class="p">,</span> <span class="n">param_name</span><span class="o">=</span><span class="s1">&#39;actions_column&#39;</span><span class="p">)</span>
+</span><span data-line="604">    <span class="n">stop_loss_data</span> <span class="o">=</span> <span class="n">_resolve_column_data</span><span class="p">(</span><span class="n">df_</span><span class="p">,</span> <span class="n">stop_loss_column</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">param_name</span><span class="o">=</span><span class="s1">&#39;stop_loss_column&#39;</span><span class="p">)</span>
+</span><span data-line="605">    <span class="n">target_data</span> <span class="o">=</span> <span class="n">_resolve_column_data</span><span class="p">(</span><span class="n">df_</span><span class="p">,</span> <span class="n">target_column</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">param_name</span><span class="o">=</span><span class="s1">&#39;target_column&#39;</span><span class="p">)</span>
+</span><span data-line="606">    <span class="n">priced_actions_data</span> <span class="o">=</span> <span class="n">_resolve_column_data</span><span class="p">(</span><span class="n">df_</span><span class="p">,</span> <span class="n">priced_actions_col</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="n">df_</span><span class="p">[</span><span class="s1">&#39;Open&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+</span><span data-line="607">                                               <span class="n">param_name</span><span class="o">=</span><span class="s1">&#39;priced_actions_col&#39;</span><span class="p">)</span>
+</span><span data-line="608">    <span class="n">entry_filter_data</span> <span class="o">=</span> <span class="n">_resolve_column_data</span><span class="p">(</span><span class="n">df_</span><span class="p">,</span> <span class="n">entry_filter_column</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+</span><span data-line="609">                                             <span class="n">param_name</span><span class="o">=</span><span class="s1">&#39;entry_filter_column&#39;</span><span class="p">)</span>
+</span><span data-line="610">
+</span><span data-line="611">    <span class="c1"># check action labels</span>
+</span><span data-line="612">    <span class="n">label_in</span><span class="p">,</span> <span class="n">label_out</span> <span class="o">=</span> <span class="n">check_action_labels_for_backtesting</span><span class="p">(</span><span class="n">actions</span><span class="o">=</span><span class="n">actions_data</span><span class="p">,</span>
+</span><span data-line="613">                                                              <span class="n">label_in</span><span class="o">=</span><span class="n">label_in</span><span class="p">,</span>
+</span><span data-line="614">                                                              <span class="n">label_out</span><span class="o">=</span><span class="n">label_out</span><span class="p">)</span>
+</span><span data-line="615">
+</span><span data-line="616">    <span class="c1"># direction-dependent functions and comparators</span>
+</span><span data-line="617">    <span class="n">is_long</span> <span class="o">=</span> <span class="n">direction</span> <span class="o">==</span> <span class="s1">&#39;long&#39;</span>
+</span><span data-line="618">    <span class="n">trailing_fn</span> <span class="o">=</span> <span class="nb">max</span> <span class="k">if</span> <span class="n">is_long</span> <span class="k">else</span> <span class="nb">min</span>
+</span><span data-line="619">    <span class="n">enter_fn</span> <span class="o">=</span> <span class="n">buy_base_backtesting</span> <span class="k">if</span> <span class="n">is_long</span> <span class="k">else</span> <span class="n">sell_base_backtesting</span>
+</span><span data-line="620">    <span class="n">exit_fn</span> <span class="o">=</span> <span class="n">sell_base_backtesting</span> <span class="k">if</span> <span class="n">is_long</span> <span class="k">else</span> <span class="n">buy_base_backtesting</span>
+</span><span data-line="621">
+</span><span data-line="622">    <span class="n">base_wallet</span><span class="p">,</span> <span class="n">quote_wallet</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+</span><span data-line="623">
+</span><span data-line="624">    <span class="n">last_action</span> <span class="o">=</span> <span class="mi">2314213</span>  <span class="c1"># any random thing</span>
+</span><span data-line="625">    <span class="n">target</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="626">    <span class="n">sl</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="627">    <span class="n">prev_target</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span data-line="628">    <span class="n">prev_sl</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span data-line="629">    <span class="n">state</span> <span class="o">=</span> <span class="s1">&#39;out&#39;</span>
+</span><span data-line="630">    <span class="n">label_in_out</span> <span class="o">=</span> <span class="mi">2</span>
+</span><span data-line="631">
+</span><span data-line="632">    <span class="n">resulting_actions</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">df_</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+</span><span data-line="633">    <span class="n">executed_prices</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">df_</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+</span><span data-line="634">
+</span><span data-line="635">    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df_</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+</span><span data-line="636">
+</span><span data-line="637">        <span class="n">curr_action</span> <span class="o">=</span> <span class="n">actions_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+</span><span data-line="638">        <span class="n">price</span> <span class="o">=</span> <span class="n">priced_actions_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+</span><span data-line="639">        <span class="n">curr_entry_filter</span> <span class="o">=</span> <span class="n">entry_filter_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+</span><span data-line="640">
+</span><span data-line="641">        <span class="n">curr_stop_loss</span> <span class="o">=</span> <span class="n">stop_loss_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+</span><span data-line="642">        <span class="n">curr_target</span> <span class="o">=</span> <span class="n">target_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+</span><span data-line="643">
+</span><span data-line="644">        <span class="n">curr_low</span> <span class="o">=</span> <span class="n">df_</span><span class="p">[</span><span class="s1">&#39;Low&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+</span><span data-line="645">        <span class="n">curr_high</span> <span class="o">=</span> <span class="n">df_</span><span class="p">[</span><span class="s1">&#39;High&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+</span><span data-line="646">
+</span><span data-line="647">        <span class="n">executed_price</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="648">
+</span><span data-line="649">        <span class="k">if</span> <span class="ow">not</span> <span class="n">fixed_target</span><span class="p">:</span>
+</span><span data-line="650">            <span class="n">target</span> <span class="o">=</span> <span class="n">trailing_fn</span><span class="p">(</span><span class="n">curr_target</span><span class="p">,</span> <span class="n">prev_target</span><span class="p">)</span>
+</span><span data-line="651">        <span class="k">if</span> <span class="ow">not</span> <span class="n">fixed_stop_loss</span><span class="p">:</span>
+</span><span data-line="652">            <span class="n">sl</span> <span class="o">=</span> <span class="n">trailing_fn</span><span class="p">(</span><span class="n">curr_stop_loss</span><span class="p">,</span> <span class="n">prev_sl</span><span class="p">)</span>
+</span><span data-line="653">
+</span><span data-line="654">        <span class="c1"># catch actions</span>
+</span><span data-line="655">        <span class="k">if</span> <span class="n">last_action</span> <span class="o">==</span> <span class="n">label_in</span><span class="p">:</span>
+</span><span data-line="656">            <span class="k">if</span> <span class="n">curr_entry_filter</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">state</span> <span class="o">==</span> <span class="s1">&#39;out&#39;</span><span class="p">:</span>
+</span><span data-line="657">                <span class="n">base</span><span class="p">,</span> <span class="n">quote</span> <span class="o">=</span> <span class="n">enter_fn</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="n">price</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">,</span> <span class="n">quote</span><span class="o">=</span><span class="n">quote</span><span class="p">,</span> <span class="n">fee</span><span class="o">=</span><span class="n">fee</span><span class="p">)</span>
+</span><span data-line="658">                <span class="n">resulting_actions</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">label_in</span>
+</span><span data-line="659">                <span class="n">executed_prices</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">price</span>
+</span><span data-line="660">
+</span><span data-line="661">                <span class="n">target</span> <span class="o">=</span> <span class="n">curr_target</span>
+</span><span data-line="662">                <span class="n">sl</span> <span class="o">=</span> <span class="n">curr_stop_loss</span>
+</span><span data-line="663">                <span class="n">executed_price</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="664">
+</span><span data-line="665">                <span class="n">state</span> <span class="o">=</span> <span class="s1">&#39;in&#39;</span>
+</span><span data-line="666">
+</span><span data-line="667">        <span class="k">elif</span> <span class="n">last_action</span> <span class="o">==</span> <span class="n">label_out</span> <span class="ow">and</span> <span class="n">state</span> <span class="o">==</span> <span class="s1">&#39;in&#39;</span><span class="p">:</span>  <span class="c1"># label outs are processed at the end with sl and targets</span>
+</span><span data-line="668">            <span class="n">executed_price</span> <span class="o">=</span> <span class="n">price</span>
+</span><span data-line="669">            <span class="n">target</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="670">            <span class="n">sl</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="671">
+</span><span data-line="672">        <span class="c1"># check execution if not any previous label</span>
+</span><span data-line="673">        <span class="k">if</span> <span class="n">executed_price</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">sl</span> <span class="ow">and</span> <span class="n">target</span> <span class="ow">and</span> <span class="n">state</span> <span class="o">==</span> <span class="s1">&#39;in&#39;</span><span class="p">:</span>
+</span><span data-line="674">            <span class="c1"># stop loss check</span>
+</span><span data-line="675">            <span class="k">if</span> <span class="n">is_long</span><span class="p">:</span>
+</span><span data-line="676">                <span class="n">sl_hit</span> <span class="o">=</span> <span class="n">curr_low</span> <span class="o">&lt;=</span> <span class="n">sl</span>
+</span><span data-line="677">            <span class="k">else</span><span class="p">:</span>
+</span><span data-line="678">                <span class="n">sl_hit</span> <span class="o">=</span> <span class="n">curr_high</span> <span class="o">&gt;=</span> <span class="n">sl</span>
+</span><span data-line="679">
+</span><span data-line="680">            <span class="c1"># target check</span>
+</span><span data-line="681">            <span class="k">if</span> <span class="n">is_long</span><span class="p">:</span>
+</span><span data-line="682">                <span class="n">target_hit</span> <span class="o">=</span> <span class="n">curr_high</span> <span class="o">&gt;</span> <span class="n">target</span>
+</span><span data-line="683">            <span class="k">else</span><span class="p">:</span>
+</span><span data-line="684">                <span class="n">target_hit</span> <span class="o">=</span> <span class="n">curr_low</span> <span class="o">&lt;</span> <span class="n">target</span>
+</span><span data-line="685">
+</span><span data-line="686">            <span class="k">if</span> <span class="n">sl_hit</span><span class="p">:</span>
+</span><span data-line="687">                <span class="n">executed_price</span> <span class="o">=</span> <span class="n">sl</span>
+</span><span data-line="688">                <span class="n">target</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="689">                <span class="n">sl</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="690">            <span class="k">elif</span> <span class="n">target_hit</span><span class="p">:</span>
+</span><span data-line="691">                <span class="n">executed_price</span> <span class="o">=</span> <span class="n">target</span>
+</span><span data-line="692">                <span class="n">target</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="693">                <span class="n">sl</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="694">
+</span><span data-line="695">        <span class="k">if</span> <span class="n">executed_price</span> <span class="ow">and</span> <span class="n">state</span> <span class="o">==</span> <span class="s1">&#39;in&#39;</span><span class="p">:</span>
+</span><span data-line="696">            <span class="c1"># noinspection PyTypeChecker</span>
+</span><span data-line="697">            <span class="n">base</span><span class="p">,</span> <span class="n">quote</span> <span class="o">=</span> <span class="n">exit_fn</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="n">executed_price</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">,</span> <span class="n">quote</span><span class="o">=</span><span class="n">quote</span><span class="p">,</span> <span class="n">fee</span><span class="o">=</span><span class="n">fee</span><span class="p">)</span>
+</span><span data-line="698">            <span class="n">executed_prices</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">executed_price</span>
+</span><span data-line="699">            <span class="n">state</span> <span class="o">=</span> <span class="s1">&#39;out&#39;</span>
+</span><span data-line="700">            <span class="k">if</span> <span class="n">last_action</span> <span class="o">==</span> <span class="n">label_in</span><span class="p">:</span>
+</span><span data-line="701">                <span class="c1"># fast buy and sell</span>
+</span><span data-line="702">                <span class="n">resulting_actions</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">label_in_out</span>
+</span><span data-line="703">            <span class="k">else</span><span class="p">:</span>
+</span><span data-line="704">                <span class="n">resulting_actions</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">label_out</span>
+</span><span data-line="705">
+</span><span data-line="706">        <span class="n">base_wallet</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">base</span><span class="p">)</span>
+</span><span data-line="707">        <span class="n">quote_wallet</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">quote</span><span class="p">)</span>
+</span><span data-line="708">
+</span><span data-line="709">        <span class="n">last_action</span> <span class="o">=</span> <span class="n">curr_action</span>
+</span><span data-line="710">        <span class="n">prev_target</span> <span class="o">=</span> <span class="n">curr_target</span>
+</span><span data-line="711">        <span class="n">prev_sl</span> <span class="o">=</span> <span class="n">curr_stop_loss</span>
+</span><span data-line="712">        <span class="c1"># prev_idx = idx</span>
+</span><span data-line="713">
+</span><span data-line="714">    <span class="k">return</span> <span class="n">_build_backtesting_results</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df_</span><span class="p">,</span>
+</span><span data-line="715">                                       <span class="n">base_wallet</span><span class="o">=</span><span class="n">base_wallet</span><span class="p">,</span>
+</span><span data-line="716">                                       <span class="n">quote_wallet</span><span class="o">=</span><span class="n">quote_wallet</span><span class="p">,</span>
+</span><span data-line="717">                                       <span class="n">resulting_actions</span><span class="o">=</span><span class="n">resulting_actions</span><span class="p">,</span>
+</span><span data-line="718">                                       <span class="n">executed_prices</span><span class="o">=</span><span class="n">executed_prices</span><span class="p">,</span>
+</span><span data-line="719">                                       <span class="n">actions_name</span><span class="o">=</span><span class="n">actions_data</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+</span><span data-line="720">                                       <span class="n">evaluating_quote</span><span class="o">=</span><span class="n">evaluating_quote</span><span class="p">,</span>
+</span><span data-line="721">                                       <span class="n">info_dic</span><span class="o">=</span><span class="n">info_dic</span><span class="p">,</span>
+</span><span data-line="722">                                       <span class="n">suffix</span><span class="o">=</span><span class="n">suffix</span><span class="p">)</span></div>
+
+</span><span data-line="723">
+</span><span data-line="724">
+</span><span data-line="725"><span class="c1">######################</span>
+</span><span data-line="726"><span class="c1"># dataframe labeling #</span>
+</span><span data-line="727"><span class="c1">######################</span>
+</span><span data-line="728">
+</span><span data-line="729">
+<div class="viewcode-block" id="add_future_index_threshold_label">
+<a class="viewcode-back" href="../../../tags.html#binpan.analysis.tags.add_future_index_threshold_label">[docs]</a>
+</span><span data-line="730"><span class="k">def</span><span class="w"> </span><span class="nf">add_future_index_threshold_label</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">thresholds</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.002</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.002</span><span class="p">,</span> <span class="mf">0.006</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.006</span><span class="p">],</span> <span class="n">max_lookahead</span><span class="o">=</span><span class="mi">30</span><span class="p">):</span>
+</span><span data-line="731"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="732"><span class="sd">    Adds next indices for each kline touching prices percentage thresholds as usable target labels for a given threshold to a DataFrame.</span>
+</span><span data-line="733">
+</span><span data-line="734"><span class="sd">    :param data: DataFrame containing the OHLC (Open, High, Low, Close) price data.</span>
+</span><span data-line="735"><span class="sd">    :param thresholds: List of thresholds for which to create future action labels. Positive values indicate a</span>
+</span><span data-line="736"><span class="sd">                       price increase, negative values indicate a price decrease.</span>
+</span><span data-line="737"><span class="sd">    :param max_lookahead: Maximum number of bars to look ahead to determine if a threshold is met. Default is 30.</span>
+</span><span data-line="738"><span class="sd">    :return: DataFrame with additional columns for each threshold. Each column contains the number of bars until</span>
+</span><span data-line="739"><span class="sd">             the price change defined by the threshold is met. If the price change is not met within max_lookahead</span>
+</span><span data-line="740"><span class="sd">             bars, the value is NaN.</span>
+</span><span data-line="741"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="742">    <span class="n">df</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="743">    <span class="n">close_prices</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Close&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+</span><span data-line="744">    <span class="n">high_prices</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;High&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+</span><span data-line="745">    <span class="n">low_prices</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Low&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+</span><span data-line="746">
+</span><span data-line="747">    <span class="c1"># Crear nuevas columnas para los umbrales</span>
+</span><span data-line="748">    <span class="k">for</span> <span class="n">threshold</span> <span class="ow">in</span> <span class="n">thresholds</span><span class="p">:</span>
+</span><span data-line="749">        <span class="n">col_name</span> <span class="o">=</span> <span class="s1">&#39;future_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">threshold</span><span class="p">)</span>
+</span><span data-line="750">        <span class="n">df</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+</span><span data-line="751">
+</span><span data-line="752">        <span class="c1"># Calcular los precios objetivo</span>
+</span><span data-line="753">        <span class="n">target_prices</span> <span class="o">=</span> <span class="n">close_prices</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">threshold</span><span class="p">)</span>
+</span><span data-line="754">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Adding threshold: </span><span class="si">{</span><span class="n">threshold</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="755">        <span class="c1"># Para cada fila en el DataFrame</span>
+</span><span data-line="756">        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)):</span>
+</span><span data-line="757">
+</span><span data-line="758">            <span class="c1"># Si el umbral es positivo, buscar en los precios altos, de lo contrario en los precios bajos</span>
+</span><span data-line="759">            <span class="k">if</span> <span class="n">threshold</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span data-line="760">                <span class="c1"># Obtener los índices donde los precios altos son mayores o iguales al precio objetivo</span>
+</span><span data-line="761">                <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">high_prices</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">max_lookahead</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">target_prices</span><span class="p">[</span><span class="n">i</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+</span><span data-line="762">            <span class="k">else</span><span class="p">:</span>
+</span><span data-line="763">                <span class="c1"># Obtener los índices donde los precios bajos son menores o iguales al precio objetivo</span>
+</span><span data-line="764">                <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">low_prices</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">max_lookahead</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">target_prices</span><span class="p">[</span><span class="n">i</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+</span><span data-line="765">
+</span><span data-line="766">            <span class="c1"># Si se encontraron índices</span>
+</span><span data-line="767">            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span data-line="768">                <span class="c1"># Guardar el índice de la fila en el futuro</span>
+</span><span data-line="769">                <span class="c1"># df.at[df.index[i], col_name] = df.index[i + indices[0] + 1]</span>
+</span><span data-line="770">                <span class="n">df</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">col_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">indices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+</span><span data-line="771">    <span class="k">return</span> <span class="n">df</span></div>
+
+</span><span data-line="772">
+</span><span data-line="773">
+<div class="viewcode-block" id="is_alternating">
+<a class="viewcode-back" href="../../../tags.html#binpan.analysis.tags.is_alternating">[docs]</a>
+</span><span data-line="774"><span class="k">def</span><span class="w"> </span><span class="nf">is_alternating</span><span class="p">(</span><span class="n">lst</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span data-line="775"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="776"><span class="sd">    Verify if a list is alternating 1 to -1 or -1 to 1 alternatively.</span>
+</span><span data-line="777"><span class="sd">    :param lst: A list of integers.</span>
+</span><span data-line="778"><span class="sd">    :return:</span>
+</span><span data-line="779"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="780">    <span class="n">last_non_zero</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span data-line="781">    <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="n">lst</span><span class="p">:</span>
+</span><span data-line="782">        <span class="c1"># Si el número es cero, continuar con el siguiente número</span>
+</span><span data-line="783">        <span class="k">if</span> <span class="n">num</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span data-line="784">            <span class="k">continue</span>
+</span><span data-line="785">        <span class="c1"># Si el número es igual al último valor no cero, la lista no es alternante</span>
+</span><span data-line="786">        <span class="k">if</span> <span class="n">num</span> <span class="o">==</span> <span class="n">last_non_zero</span><span class="p">:</span>
+</span><span data-line="787">            <span class="k">return</span> <span class="kc">False</span>
+</span><span data-line="788">        <span class="n">last_non_zero</span> <span class="o">=</span> <span class="n">num</span>
+</span><span data-line="789">    <span class="k">return</span> <span class="kc">True</span></div>
+
+</span></pre></div>
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2022, Fernando Alfonso</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+<a href="https://github.com/nand0san/binpan_studio" aria-label="GitHub">
+  <iconify-icon icon="simple-icons:github"></iconify-icon>
+</a></div>
+    </div>
+  </div>
+</footer>
+      <script src="../../../_static/documentation_options.js?v=11e62b30"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/shibuya.js?v=50760d75"></script></body>
+</html>
