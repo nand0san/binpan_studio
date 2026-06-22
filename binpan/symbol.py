@@ -3,7 +3,7 @@
 This is the main classes file.
 
 """
-__version__ = "0.10.0"
+__version__ = "0.10.1"
 
 import os
 import pandas as pd

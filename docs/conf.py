@@ -8,7 +8,7 @@ copyright = '2022, Fernando Alfonso'
 author = 'Fernando Alfonso'
 
 # Las credenciales las gestiona panzer (~/.panzer_creds); la doc no necesita cargar nada.
-version = "0.10.0"
+version = "0.10.1"
 release = version
 
 extensions = [

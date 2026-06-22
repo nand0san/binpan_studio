@@ -1,5 +1,26 @@
 # CHANGELOG
 
+## v0.10.1 (2026-06-22)
+
+`Wallet` class audited after the panzer credential migration; two pre-existing bugs fixed and a
+self-contained test notebook added.
+
+### Fixed
+
+- **`Wallet` snapshot methods were unreachable.** `spot_snapshot`/`margin_snapshot` collided with
+  instance attributes set to `None` in `__init__`, shadowing the methods (`TypeError: 'NoneType' object
+  is not callable`). Renamed to `update_spot_snapshot`/`update_margin_snapshot`; the `spot_snapshot`/
+  `margin_snapshot` attributes now hold the snapshot DataFrames. `update_margin_snapshot` also wrote to
+  `self.spot` (wrong side) and both returned balances instead of the snapshot — corrected.
+- **`spot_wallet_performance`/`margin_wallet_performance` clobbered balances.** They overwrote
+  `self.spot`/`self.margin` with snapshot rows and raised `KeyError('totalAssetOfBtc')` on a cache hit.
+  They now use the snapshot attribute as cache and leave the balances untouched.
+
+### Added
+
+- `notebooks/18_wallet_tests.ipynb`: self-contained `Wallet` tests that run without API keys (they mock
+  `panzer.BinanceClient.signed_request`), covering the shadowing regression and the no-clobber invariant.
+
 ## v0.10.0 (2026-06-18)
 
 Credential management fully delegated to `panzer`, Telegram support removed, new `Trades` value
